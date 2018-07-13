@@ -684,7 +684,7 @@ namespace TombEditor
         {
             ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
             if (data == null)
-                Editor.Instance.SendMessage("Clipboard contains no object data.", PopupType.Error);
+                _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
             else
                 PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
         }
@@ -1415,7 +1415,7 @@ namespace TombEditor
             int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
             if (remainingRoomCount <= 0)
             {
-                Editor.Instance.SendMessage("You must have at least one room in your level.", PopupType.Error);
+                _editor.SendMessage("You must have at least one room in your level.", PopupType.Error);
                 return;
             }
 
@@ -1453,7 +1453,7 @@ namespace TombEditor
             newArea = newArea.Inflate(1);
             if (newArea.Width + 1 > Room.MaxRoomDimensions || newArea.Height + 1 > Room.MaxRoomDimensions)
             {
-                Editor.Instance.SendMessage("The selected area exceeds the maximum room size.", PopupType.Error);
+                _editor.SendMessage("The selected area exceeds the maximum room size.", PopupType.Error);
                 return;
             }
             if (DarkMessageBox.Show(owner, "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
@@ -1842,7 +1842,7 @@ namespace TombEditor
 
             if (cornerSelected)
             {
-                Editor.Instance.SendMessage("You have selected one of the four room's corners.", PopupType.Error);
+                _editor.SendMessage("You have selected one of the four room's corners.", PopupType.Error);
                 return;
             }
 
@@ -1933,7 +1933,7 @@ namespace TombEditor
             }
             if (candidates.Count != 1)
             {
-                Editor.Instance.SendMessage("There are no possible room candidates for a portal.", PopupType.Error);
+                _editor.SendMessage("There are no possible room candidates for a portal.", PopupType.Error);
                 return;
             }
 
@@ -2139,7 +2139,7 @@ namespace TombEditor
                 area.Y0 == -1 || area.Y1 == -1 ||
                 area.Y0 == room.NumZSectors || area.Y1 == room.NumZSectors)
             {
-                Editor.Instance.SendMessage("You can't select border walls when splitting a room.", PopupType.Error);
+                _editor.SendMessage("You can't select border walls when splitting a room.", PopupType.Error);
                 return;
             }
 
@@ -2191,7 +2191,7 @@ namespace TombEditor
         {
             if (_editor.SelectedRoom == null || !_editor.SelectedSectors.Valid)
             {
-                Editor.Instance.SendMessage("Please select a valid group of sectors.", PopupType.Error);
+                _editor.SendMessage("Please select a valid group of sectors.", PopupType.Error);
                 return false;
             }
             return true;
@@ -2229,7 +2229,7 @@ namespace TombEditor
             Level level = _editor.Level;
             if(level.Settings.Wads.All(wad => wad.Wad == null))
             {
-                Editor.Instance.SendMessage("No wads loaded. Can't compile level without wads.", PopupType.Error);
+                _editor.SendMessage("No wads loaded. Can't compile level without wads.", PopupType.Error);
                 return false;
             }
 
@@ -2269,7 +2269,7 @@ namespace TombEditor
                     TombLauncher.Launch(_editor.Level.Settings, owner);
             }
             else
-                Editor.Instance.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
+                _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
 
         }
 
@@ -2448,7 +2448,7 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                Editor.Instance.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
+                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
             }
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));
@@ -2463,7 +2463,7 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                Editor.Instance.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
+                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
             }
             _editor.Action = new EditorActionPlace(false, (level, room) => (PositionBasedObjectInstance)instance.Clone());
@@ -2562,7 +2562,7 @@ namespace TombEditor
             var portal = _editor.SelectedObject as PortalInstance;
             if (_editor.SelectedRoom == null || portal == null)
             {
-                Editor.Instance.SendMessage("No portal selected.", PopupType.Error);
+                _editor.SendMessage("No portal selected.", PopupType.Error);
                 return;
             }
 
@@ -2589,7 +2589,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + filePath + "\".");
-                Editor.Instance.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
+                _editor.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
                 return false;
             }
 
@@ -2607,7 +2607,7 @@ namespace TombEditor
         {
             ItemType? result = _editor.ChosenItem;
             if (result == null)
-                Editor.Instance.SendMessage("Select an item first.", PopupType.Error);
+                _editor.SendMessage("Select an item first.", PopupType.Error);
             return result;
         }
 
@@ -2628,7 +2628,7 @@ namespace TombEditor
 
             // Show result
             if (instance == null)
-                Editor.Instance.SendMessage("No object of the selected item type found.", PopupType.Info);
+                _editor.SendMessage("No object of the selected item type found.", PopupType.Info);
             else
                 _editor.ShowObject(instance);
         }
@@ -2748,7 +2748,7 @@ namespace TombEditor
 
                             if (exporter.ExportToFile(model, saveFileDialog.FileName) /*&& RoomsImportExportXmlDatabase.WriteToFile(dbFile, db)*/)
                             {
-                                Editor.Instance.SendMessage("Room exported correctly.", PopupType.Info);
+                                _editor.SendMessage("Room exported correctly.", PopupType.Info);
                             }
                         }
                     }
@@ -2873,7 +2873,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc.Message);
-                Editor.Instance.SendMessage("Unable to import rooms from geometry.", PopupType.Error);
+                _editor.SendMessage("Unable to import rooms from geometry.", PopupType.Error);
             }
         }
 
@@ -2895,7 +2895,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to open \"" + fileName + "\"");
-                Editor.Instance.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, PopupType.Error);
+                _editor.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, PopupType.Error);
             }
             _editor.Level = newLevel;
         }
@@ -2960,7 +2960,7 @@ namespace TombEditor
         public static void BookmarkObject(ObjectInstance objectToBookmark)
         {
             _editor.BookmarkedObject = objectToBookmark;
-            Editor.Instance.SendMessage("Object bookmarked: " + _editor.BookmarkedObject, PopupType.Info);
+            _editor.SendMessage("Object bookmarked: " + _editor.BookmarkedObject, PopupType.Info);
         }
 
         public static void SwitchMode(EditorMode mode)
