@@ -976,6 +976,8 @@
 			// showStringTableButton
 			// 
 			this.showStringTableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.showStringTableButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.showStringTableButton.BackColorUseGeneric = false;
 			this.showStringTableButton.Location = new System.Drawing.Point(672, 12);
 			this.showStringTableButton.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
 			this.showStringTableButton.Name = "showStringTableButton";

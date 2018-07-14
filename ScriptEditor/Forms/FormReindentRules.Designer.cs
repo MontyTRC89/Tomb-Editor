@@ -153,6 +153,7 @@
 			// 
 			// defaultButton
 			// 
+			this.defaultButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.defaultButton.Location = new System.Drawing.Point(6, 9);
 			this.defaultButton.Name = "defaultButton";
 			this.defaultButton.Size = new System.Drawing.Size(128, 25);
@@ -162,6 +163,7 @@
 			// 
 			// cancelButton
 			// 
+			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cancelButton.Location = new System.Drawing.Point(489, 9);
 			this.cancelButton.Name = "cancelButton";
@@ -171,6 +173,7 @@
 			// 
 			// saveButton
 			// 
+			this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.saveButton.Location = new System.Drawing.Point(408, 9);
 			this.saveButton.Name = "saveButton";

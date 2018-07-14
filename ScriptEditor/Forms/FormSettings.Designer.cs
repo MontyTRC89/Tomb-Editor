@@ -93,6 +93,7 @@
 			this.autocompleteCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.autocompleteCheck.AutoSize = true;
 			this.autocompleteCheck.Location = new System.Drawing.Point(6, 165);
+			this.autocompleteCheck.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
 			this.autocompleteCheck.Name = "autocompleteCheck";
 			this.autocompleteCheck.Size = new System.Drawing.Size(126, 17);
 			this.autocompleteCheck.TabIndex = 13;
@@ -139,7 +140,7 @@
 			// closeBracketsCheck
 			// 
 			this.closeBracketsCheck.AutoSize = true;
-			this.closeBracketsCheck.Location = new System.Drawing.Point(6, 347);
+			this.closeBracketsCheck.Location = new System.Drawing.Point(6, 333);
 			this.closeBracketsCheck.Name = "closeBracketsCheck";
 			this.closeBracketsCheck.Size = new System.Drawing.Size(132, 17);
 			this.closeBracketsCheck.TabIndex = 9;
@@ -201,7 +202,7 @@
 			// 
 			// reindentRulesButton
 			// 
-			this.reindentRulesButton.Location = new System.Drawing.Point(6, 393);
+			this.reindentRulesButton.Location = new System.Drawing.Point(6, 392);
 			this.reindentRulesButton.Name = "reindentRulesButton";
 			this.reindentRulesButton.Size = new System.Drawing.Size(150, 23);
 			this.reindentRulesButton.TabIndex = 16;
@@ -222,7 +223,8 @@
 			// wordWrapCheck
 			// 
 			this.wordWrapCheck.AutoSize = true;
-			this.wordWrapCheck.Location = new System.Drawing.Point(6, 324);
+			this.wordWrapCheck.Location = new System.Drawing.Point(6, 310);
+			this.wordWrapCheck.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
 			this.wordWrapCheck.Name = "wordWrapCheck";
 			this.wordWrapCheck.Size = new System.Drawing.Size(78, 17);
 			this.wordWrapCheck.TabIndex = 12;
@@ -232,7 +234,7 @@
 			// 
 			this.showNumbersCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.showNumbersCheck.AutoSize = true;
-			this.showNumbersCheck.Location = new System.Drawing.Point(6, 258);
+			this.showNumbersCheck.Location = new System.Drawing.Point(6, 249);
 			this.showNumbersCheck.Name = "showNumbersCheck";
 			this.showNumbersCheck.Size = new System.Drawing.Size(115, 17);
 			this.showNumbersCheck.TabIndex = 11;
@@ -241,7 +243,8 @@
 			// reindentCheck
 			// 
 			this.reindentCheck.AutoSize = true;
-			this.reindentCheck.Location = new System.Drawing.Point(6, 370);
+			this.reindentCheck.Location = new System.Drawing.Point(6, 369);
+			this.reindentCheck.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
 			this.reindentCheck.Name = "reindentCheck";
 			this.reindentCheck.Size = new System.Drawing.Size(110, 17);
 			this.reindentCheck.TabIndex = 10;
@@ -251,7 +254,8 @@
 			// 
 			this.showToolbarCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.showToolbarCheck.AutoSize = true;
-			this.showToolbarCheck.Location = new System.Drawing.Point(6, 235);
+			this.showToolbarCheck.Location = new System.Drawing.Point(6, 226);
+			this.showToolbarCheck.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
 			this.showToolbarCheck.Name = "showToolbarCheck";
 			this.showToolbarCheck.Size = new System.Drawing.Size(88, 17);
 			this.showToolbarCheck.TabIndex = 7;
@@ -418,7 +422,7 @@
 			// showSpacesCheck
 			// 
 			this.showSpacesCheck.AutoSize = true;
-			this.showSpacesCheck.Location = new System.Drawing.Point(6, 281);
+			this.showSpacesCheck.Location = new System.Drawing.Point(6, 272);
 			this.showSpacesCheck.Name = "showSpacesCheck";
 			this.showSpacesCheck.Size = new System.Drawing.Size(90, 17);
 			this.showSpacesCheck.TabIndex = 8;
