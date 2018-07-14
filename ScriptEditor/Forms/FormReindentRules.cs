@@ -33,8 +33,8 @@ namespace ScriptEditor
 			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
 			e.ChangedRange.SetStyle(SyntaxColors.Values, @"=\s?.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + string.Join("|", SyntaxKeyWords.Headers()) + @")\]");
-			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join(@"[\s]?=[\s]?|", SyntaxKeyWords.NewCommands()) + ")");
-			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join(@"[\s]?=[\s]?|", SyntaxKeyWords.OldCommands()) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", SyntaxKeyWords.NewCommands()) + @")[\s·]?=[\s·]?");
+			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", SyntaxKeyWords.OldCommands()) + @")[\s·]?=[\s·]?");
 		}
 
 		private void defaultButton_Click(object sender, EventArgs e)
