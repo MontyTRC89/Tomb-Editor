@@ -29,8 +29,8 @@ namespace ScriptEditor
 			string[] newCommands =
 			{
 				"AddEffect",
-				"AnimationSlot",
 				"Animation",
+				"AnimationSlot",
 				"AssignSlot",
 				"ColorRGB",
 				"CombineItems",
@@ -41,8 +41,8 @@ namespace ScriptEditor
 				"DefaultWindowsFont",
 				"Demo",
 				"Detector",
-				"DiagnosticType",
 				"Diagnostic",
+				"DiagnosticType",
 				"Diary",
 				"Elevator",
 				"Enemy",
@@ -102,8 +102,8 @@ namespace ScriptEditor
 				"FOG",
 				"Horizon",
 				"InputTimeout",
-				"KeyCombo",
 				"Key",
+				"KeyCombo",
 				"Layer1",
 				"Legend",
 				"LensFlare",
@@ -113,11 +113,11 @@ namespace ScriptEditor
 				"LoadSave",
 				"Mirror",
 				"Name",
-				"PickupCombo",
 				"Pickup",
+				"PickupCombo",
 				"PlayAnyLevel",
-				"PuzzleCombo",
 				"Puzzle",
+				"PuzzleCombo",
 				"RemoveAmulet",
 				"ResetHUB",
 				"ResidentCut",
@@ -127,6 +127,7 @@ namespace ScriptEditor
 				"UVRotate",
 				"YoungLara",
 
+				// Dunno where these belong :P
 				"Cut",
 				"File",
 				"FMV"
