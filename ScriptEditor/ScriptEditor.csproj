@@ -51,6 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocompleteItems.cs" />
+    <Compile Include="Forms\FormReindentRules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormReindentRules.Designer.cs">
+      <DependentUpon>FormReindentRules.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +123,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormReindentRules.resx">
+      <DependentUpon>FormReindentRules.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSelectPaths.resx">
       <DependentUpon>FormSelectPaths.cs</DependentUpon>

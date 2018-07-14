@@ -7,24 +7,72 @@ namespace ScriptEditor
 	{
 		public static List<string> ReindentLines(string editorContent)
 		{
-			editorContent = editorContent.Replace("=", " = ");
-			editorContent = editorContent.Replace(",", ", ");
+			string firstCondition = string.Empty;
+			string secondCondition = string.Empty;
 
-			// Check if there are too many spaces
-			if (editorContent.Contains("  "))
+			if (Properties.Settings.Default.PreEqualSpace)
 			{
-				bool ScriptNeedsCleaning = true;
+				editorContent = editorContent.Replace("=", " =");
+				firstCondition = "  =";
+				secondCondition = " =";
+			}
+			else
+			{
+				editorContent = editorContent.Replace(" =", "=");
+				firstCondition = " =";
+				secondCondition = "=";
+			}
 
-				while (ScriptNeedsCleaning)
-				{
-					editorContent = editorContent.Replace("  ", " ");
+			editorContent = LoopReplace(editorContent, firstCondition, secondCondition);
 
-					// Is the script cleaned yet?
-					if (!editorContent.Contains("  "))
-					{
-						ScriptNeedsCleaning = false;
-					}
-				}
+			if (Properties.Settings.Default.PostEqualSpace)
+			{
+				editorContent = editorContent.Replace("=", "= ");
+				firstCondition = "=  ";
+				secondCondition = "= ";
+			}
+			else
+			{
+				editorContent = editorContent.Replace("= ", "=");
+				firstCondition = "= ";
+				secondCondition = "=";
+			}
+
+			editorContent = LoopReplace(editorContent, firstCondition, secondCondition);
+
+			if (Properties.Settings.Default.PreCommaSpace)
+			{
+				editorContent = editorContent.Replace(",", " ,");
+				firstCondition = "  ,";
+				secondCondition = " ,";
+			}
+			else
+			{
+				editorContent = editorContent.Replace(" ,", ",");
+				firstCondition = " ,";
+				secondCondition = ",";
+			}
+
+			editorContent = LoopReplace(editorContent, firstCondition, secondCondition);
+
+			if (Properties.Settings.Default.PostCommaSpace)
+			{
+				editorContent = editorContent.Replace(",", ", ");
+				firstCondition = ",  ";
+				secondCondition = ", ";
+			}
+			else
+			{
+				editorContent = editorContent.Replace(", ", ",");
+				firstCondition = ", ";
+				secondCondition = ",";
+			}
+
+			editorContent = LoopReplace(editorContent, firstCondition, secondCondition);
+
+			if (Properties.Settings.Default.ReduceSpaces)
+			{
+				editorContent = LoopReplace(editorContent, "  ", " ");
 			}
 
 			return TrimLines(editorContent);
@@ -44,6 +92,27 @@ namespace ScriptEditor
 			}
 
 			return trimmedText;
+		}
+
+		private static string LoopReplace(string editorContent, string firstCondition, string secondCondition)
+		{
+			if (editorContent.Contains(firstCondition))
+			{
+				bool ScriptNeedsCleaning = true;
+
+				while (ScriptNeedsCleaning)
+				{
+					editorContent = editorContent.Replace(firstCondition, secondCondition);
+
+					// Is the script cleaned yet?
+					if (!editorContent.Contains(firstCondition))
+					{
+						ScriptNeedsCleaning = false;
+					}
+				}
+			}
+
+			return editorContent;
 		}
 	}
 }
