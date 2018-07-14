@@ -52,6 +52,14 @@ namespace ScriptEditor
 
 		#region Buttons
 
+		private void reindentRulesButton_Click(object sender, EventArgs e)
+		{
+			using (FormReindentRules form = new FormReindentRules())
+			{
+				form.ShowDialog(this);
+			}
+		}
+
 		private void applyButton_Click(object sender, EventArgs e)
 		{
 			Properties.Settings.Default.FontSize = fontSizeNumeric.Value;
