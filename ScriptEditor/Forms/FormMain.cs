@@ -2,12 +2,9 @@
 using DarkUI.Forms;
 using FastColoredTextBoxNS;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -202,59 +199,8 @@ namespace ScriptEditor
 
 		#region Editor events
 
-		private void textEditor_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			// Re-enable save buttons since the text has changed
-			saveToolStripMenuItem.Enabled = true;
-			saveToolStripButton.Enabled = true;
-
-			DoSyntaxHighlighting(e);
-
-			// If "Show Spaces" is enabled and the text contains spaces
-			if (Properties.Settings.Default.ShowSpaces && textEditor.Text.Contains(" "))
-			{
-				// Cache caret position
-				Place caretPosition = textEditor.Selection.Start;
-
-				// Scan all lines
-				for (int i = 0; i < textEditor.LinesCount; i++)
-				{
-					// If a line contains whitespace
-					if (textEditor.GetLineText(i).Contains(" "))
-					{
-						textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-						textEditor.InsertText(textEditor.GetLineText(i).Replace(" ", "·"));
-					}
-				}
-
-				// Restore caret position
-				textEditor.Selection.Start = caretPosition;
-				textEditor.Invalidate();
-			}
-			else if (!Properties.Settings.Default.ShowSpaces && textEditor.Text.Contains("·")) // Too lazy to somehow merge these 2 "if" statements...
-			{
-				// Cache caret position
-				Place caretPosition = textEditor.Selection.Start;
-
-				// Scan all lines
-				for (int i = 0; i < textEditor.LinesCount; i++)
-				{
-					// If a line contains a "whitespace dot"
-					if (textEditor.GetLineText(i).Contains("·"))
-					{
-						textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-						textEditor.InsertText(textEditor.GetLineText(i).Replace("·", " "));
-					}
-				}
-
-				// Restore caret position
-				textEditor.Selection.Start = caretPosition;
-				textEditor.Invalidate();
-			}
-		}
-
 		private void textEditor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
-		private void textEditor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e) => HandleToolTips(e);
+		private void textEditor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e) => ToolTips.CreateToolTip(textEditor, e);
 		private void textEditor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
 		private void textEditor_KeyUp(object sender, KeyEventArgs e) => UpdateObjectBrowser(string.Empty);
 
@@ -266,6 +212,19 @@ namespace ScriptEditor
 				// Move the caret to the new position
 				textEditor.Selection.Start = textEditor.PointToPlace(e.Location);
 			}
+		}
+
+		private void textEditor_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			// Re-enable save buttons since the text has changed
+			saveToolStripMenuItem.Enabled = true;
+			saveToolStripButton.Enabled = true;
+
+			SyntaxHighlighting.DoSyntaxHighlighting(e);
+			VisibleSpaces.HandleVisibleSpaces(textEditor);
+
+			// Redraw the editor
+			textEditor.Invalidate();
 		}
 
 		private void textEditor_ZoomChanged(object sender, EventArgs e)
@@ -329,6 +288,13 @@ namespace ScriptEditor
 			}
 		}
 
+		private void DoStatusCounting()
+		{
+			lineNumberLabel.Text = "Line: " + (textEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0.
+			colNumberLabel.Text = "Column: " + textEditor.Selection.Start.iChar;
+			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
+		}
+
 		#endregion Editor events
 
 		#region File menu items
@@ -345,9 +311,9 @@ namespace ScriptEditor
 		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(0);
 		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(1);
 
-		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => CutToClipboard();
-		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => CopyToClipboard();
-		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => PasteFromClipboard();
+		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
+		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
+		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.PasteFromClipboard(textEditor);
 
 		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowFindDialog();
 		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowReplaceDialog();
@@ -362,16 +328,16 @@ namespace ScriptEditor
 
 		#region Tools menu items
 
-		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
-		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
+		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => SyntaxTidying.TidyScript(textEditor);
+		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => SyntaxTidying.TidyScript(textEditor, true);
 
 		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
 
-		private void Tools_ToggleBookmark_MenuItem_Click(object sender, EventArgs e) => ToggleBookmark();
+		private void Tools_ToggleBookmark_MenuItem_Click(object sender, EventArgs e) => Bookmarks.ToggleBookmark(textEditor);
 		private void Tools_NextBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoNextBookmark(textEditor.Selection.Start.iLine);
 		private void Tools_PrevBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
-		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => ClearAllBookmarks();
+		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => Bookmarks.ClearAllBookmarks(textEditor);
 
 		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e) => OpenSettingsForm();
 
@@ -410,14 +376,14 @@ namespace ScriptEditor
 
 		#region Context menu items
 
-		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => CutToClipboard();
-		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => CopyToClipboard();
-		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => PasteFromClipboard();
+		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
+		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
+		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => ClipboardMethods.PasteFromClipboard(textEditor);
 
 		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
 
-		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => ToggleBookmark();
+		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => Bookmarks.ToggleBookmark(textEditor);
 
 		#endregion Context menu items
 
@@ -429,17 +395,17 @@ namespace ScriptEditor
 		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => HandleUndoRedo(0);
 		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => HandleUndoRedo(1);
 
-		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => CutToClipboard();
-		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => CopyToClipboard();
-		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => PasteFromClipboard();
+		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
+		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
+		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => ClipboardMethods.PasteFromClipboard(textEditor);
 
 		private void ToolStrip_CommentButton_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void ToolStrip_UncommentButton_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
 
-		private void ToolStrip_ToggleBookmarkButton_Click(object sender, EventArgs e) => ToggleBookmark();
+		private void ToolStrip_ToggleBookmarkButton_Click(object sender, EventArgs e) => Bookmarks.ToggleBookmark(textEditor);
 		private void ToolStrip_PrevBookmarkButton_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
 		private void ToolStrip_NextBookmarkButton_Click(object sender, EventArgs e) => textEditor.GotoNextBookmark(textEditor.Selection.Start.iLine);
-		private void ToolStrip_ClearAllBookmarksButton_Click(object sender, EventArgs e) => ClearAllBookmarks();
+		private void ToolStrip_ClearAllBookmarksButton_Click(object sender, EventArgs e) => Bookmarks.ClearAllBookmarks(textEditor);
 
 		private void ToolStrip_AboutButton_Click(object sender, EventArgs e) => ShowAboutForm();
 
@@ -506,145 +472,6 @@ namespace ScriptEditor
 		}
 
 		#endregion Undo / Redo methods
-
-		#region Clipboard methods
-
-		private void CutToClipboard()
-		{
-			if (!string.IsNullOrEmpty(textEditor.SelectedText))
-			{
-				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
-				textEditor.SelectedText = string.Empty;
-			}
-		}
-
-		private void CopyToClipboard()
-		{
-			if (!string.IsNullOrEmpty(textEditor.SelectedText))
-			{
-				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
-			}
-		}
-
-		private void PasteFromClipboard()
-		{
-			textEditor.SelectedText = Clipboard.GetText();
-		}
-
-		#endregion Clipboard methods
-
-		#region ToolTips handling
-
-		private void HandleToolTips(ToolTipNeededEventArgs e)
-		{
-			// If tool tips are enabled in the settings and the hovered word isn't whitespace
-			if (Properties.Settings.Default.ToolTips && !string.IsNullOrWhiteSpace(e.HoveredWord))
-			{
-				// If the hovered word is a header
-				if (textEditor.GetLineText(e.Place.iLine).StartsWith("["))
-				{
-					ShowHeaderToolTips(e);
-				}
-				else
-				{
-					ShowCommandToolTips(e);
-				}
-			}
-		}
-
-		private void ShowHeaderToolTips(ToolTipNeededEventArgs e)
-		{
-			// ToolTip title with brackets added
-			e.ToolTipTitle = "[" + e.HoveredWord + "]";
-
-			// Get resources from HeaderToolTips.resx
-			ResourceManager headerToolTipResource = new ResourceManager(typeof(Resources.HeaderToolTips));
-			ResourceSet resourceSet = headerToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			// Loop through resources
-			foreach (DictionaryEntry entry in resourceSet)
-			{
-				// If the hovered word matches a "header key"
-				if (e.HoveredWord == entry.Key.ToString())
-				{
-					e.ToolTipText = entry.Value.ToString();
-					return;
-				}
-			}
-		}
-
-		private void ShowCommandToolTips(ToolTipNeededEventArgs e)
-		{
-			// Get resources from CommandToolTips.resx
-			ResourceManager commandToolTipResource = new ResourceManager(typeof(Resources.CommandToolTips));
-			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			// There are different definitions for the "Level" key, so handle them all!
-			if (e.HoveredWord == "Level")
-			{
-				HandleLevelToolTips(e);
-			}
-			else
-			{
-				e.ToolTipTitle = e.HoveredWord;
-
-				// Loop through resources
-				foreach (DictionaryEntry entry in resourceSet)
-				{
-					// If the hovered word matches a "command key"
-					if (e.HoveredWord == entry.Key.ToString())
-					{
-						e.ToolTipText = entry.Value.ToString();
-						return;
-					}
-				}
-			}
-		}
-
-		private void HandleLevelToolTips(ToolTipNeededEventArgs e)
-		{
-			// Get the current line number
-			int i = e.Place.iLine;
-
-			do
-			{
-				if (i < 0)
-				{
-					// The line number might go to -1 and it will crash the app, so stop the loop to prevent it!
-					return;
-				}
-
-				if (textEditor.GetLineText(i).StartsWith("[PSXExtensions]"))
-				{
-					e.ToolTipTitle = "Level [PSXExtensions]";
-					e.ToolTipText = Resources.CommandToolTips.LevelPSX;
-					return;
-				}
-				else if (textEditor.GetLineText(i).StartsWith("[PCExtensions]"))
-				{
-					e.ToolTipTitle = "Level [PCExtensions]";
-					e.ToolTipText = Resources.CommandToolTips.LevelPC;
-					return;
-				}
-				else if (textEditor.GetLineText(i).StartsWith("[Title]"))
-				{
-					e.ToolTipTitle = "Level [Title]";
-					e.ToolTipText = Resources.CommandToolTips.LevelTitle;
-					return;
-				}
-				else if (textEditor.GetLineText(i).StartsWith("[Level]"))
-				{
-					e.ToolTipTitle = "Level";
-					e.ToolTipText = Resources.CommandToolTips.LevelLevel;
-					return;
-				}
-
-				i--; // Go 1 line higher if no header was found yet
-			}
-			while (!textEditor.GetLineText(i + 1).StartsWith("["));
-		}
-
-		#endregion ToolTips handling
 
 		#region Object browser handling
 
@@ -824,137 +651,6 @@ namespace ScriptEditor
 
 		#endregion Object browser handling
 
-		#region Styles and status
-
-		private void DoSyntaxHighlighting(TextChangedEventArgs e)
-		{
-			// Clear styles
-			e.ChangedRange.ClearStyle(
-				SyntaxColors.Comments, SyntaxColors.Regular, SyntaxColors.References, SyntaxColors.Values,
-				SyntaxColors.Headers, SyntaxColors.NewCommands, SyntaxColors.OldCommands, SyntaxColors.Unknown);
-
-			// Apply styles (THE ORDER IS IMPORTANT!)
-			e.ChangedRange.SetStyle(SyntaxColors.Whitespace, "·");
-			e.ChangedRange.SetStyle(SyntaxColors.Comments, @";.*$", RegexOptions.Multiline);
-			e.ChangedRange.SetStyle(SyntaxColors.Regular, @"[\[\],=]");
-			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
-			e.ChangedRange.SetStyle(SyntaxColors.Values, @"=\s?.*$", RegexOptions.Multiline);
-			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + string.Join("|", SyntaxKeyWords.Headers()) + @")\]");
-			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", SyntaxKeyWords.NewCommands()) + @")[\s·]?=[\s·]?");
-			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", SyntaxKeyWords.OldCommands()) + @")[\s·]?=[\s·]?");
-			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join("|", SyntaxKeyWords.Unknown()) + @")[\s·]?=[\s·]?");
-		}
-
-		private void DoStatusCounting()
-		{
-			lineNumberLabel.Text = "Line: " + (textEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0.
-			colNumberLabel.Text = "Column: " + textEditor.Selection.Start.iChar;
-			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
-		}
-
-		#endregion Styles and status
-
-		#region Syntax tidy methods
-
-		private void TidyScript(bool trimOnly = false)
-		{
-			// Start AutoUndo to allow the user to undo the tidying process using only a single stack
-			textEditor.BeginAutoUndo();
-
-			// Save set bookmarks and remove them from the editor to prevent a bug
-			int[] bookmarkLines = GetBookmarkedLines();
-			textEditor.Bookmarks.Clear();
-
-			// Store current scroll position
-			int scrollPosition = textEditor.VerticalScroll.Value;
-
-			// Store the editor content in a string and replace the "whitespace dots" (if there are any) with whitespace
-			string editorContent = textEditor.Text.Replace("·", " ");
-
-			// Setup a list to store all tidied lines
-			List<string> tidiedlines = trimOnly ? SyntaxTidy.TrimLines(editorContent) : SyntaxTidy.ReindentLines(editorContent);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				// Also check if the user has "Show Spaces" enabled
-				string currentTidiedLine = Properties.Settings.Default.ShowSpaces ? tidiedlines[i].Replace(" ", "·") : tidiedlines[i];
-
-				// If a line has changed
-				if (textEditor.GetLineText(i) != currentTidiedLine)
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(tidiedlines[i]);
-				}
-			}
-
-			// Go to the last scroll position
-			textEditor.VerticalScroll.Value = scrollPosition;
-			textEditor.UpdateScrollbars();
-
-			// Add lost bookmarks
-			foreach (int line in bookmarkLines)
-			{
-				textEditor.BookmarkLine(line);
-			}
-
-			textEditor.Invalidate();
-
-			// End AutoUndo to stop recording the actions and put them into a single stack
-			textEditor.EndAutoUndo();
-		}
-
-		#endregion Syntax tidy methods
-
-		#region Bookmark methods
-
-		private void ToggleBookmark()
-		{
-			// Get the current line number
-			int currentLine = textEditor.Selection.Start.iLine;
-
-			// If there's a bookmark on the current line
-			if (textEditor.Bookmarks.Contains(currentLine))
-			{
-				textEditor.Bookmarks.Remove(currentLine);
-			}
-			else
-			{
-				textEditor.Bookmarks.Add(currentLine);
-			}
-		}
-
-		private void ClearAllBookmarks()
-		{
-			DialogResult result = DarkMessageBox.Show(this,
-				Resources.Messages.ClearBookmarks, "Delete all bookmarks?",
-				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-			if (result == DialogResult.Yes)
-			{
-				textEditor.Bookmarks.Clear();
-				textEditor.Invalidate();
-			}
-		}
-
-		private int[] GetBookmarkedLines()
-		{
-			List<int> lineNumbers = new List<int>();
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.Bookmarks.Contains(i))
-				{
-					lineNumbers.Add(i);
-				}
-			}
-
-			return lineNumbers.ToArray();
-		}
-
-		#endregion Bookmark methods
-
 		#region File handling
 
 		public void ReadScriptFolder()
@@ -1081,8 +777,8 @@ namespace ScriptEditor
 			if (textEditor.IsChanged)
 			{
 				DialogResult result = DarkMessageBox.Show(this,
-				string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(gS_CurrentFilePath)), "Unsaved changes!",
-				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+					string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(gS_CurrentFilePath)), "Unsaved changes!",
+					MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
 				{
@@ -1106,7 +802,7 @@ namespace ScriptEditor
 			// If "Reindent on Save" is enabled
 			if (Properties.Settings.Default.ReindentOnSave)
 			{
-				TidyScript();
+				SyntaxTidying.TidyScript(textEditor);
 			}
 
 			try
@@ -1121,8 +817,6 @@ namespace ScriptEditor
 				// Disable "Save" buttons since we've just saved
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
-
-				textEditor.Invalidate();
 			}
 			catch (Exception ex) // Saving failed somehow
 			{

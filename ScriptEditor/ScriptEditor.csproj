@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocompleteItems.cs" />
+    <Compile Include="Bookmarks.cs" />
+    <Compile Include="ClipboardMethods.cs" />
     <Compile Include="Forms\FormReindentRules.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,9 +117,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommandToolTips.resx</DependentUpon>
     </Compile>
-    <Compile Include="SyntaxColors.cs" />
+    <Compile Include="SyntaxHighlighting.cs" />
     <Compile Include="SyntaxKeyWords.cs" />
-    <Compile Include="SyntaxTidy.cs" />
+    <Compile Include="SyntaxTidying.cs" />
+    <Compile Include="ToolTips.cs" />
+    <Compile Include="VisibleSpaces.cs" />
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
