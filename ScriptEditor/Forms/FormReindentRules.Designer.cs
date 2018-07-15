@@ -98,7 +98,6 @@
 			// postCommaSpaceCheck
 			// 
 			this.postCommaSpaceCheck.AutoSize = true;
-			this.postCommaSpaceCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.postCommaSpaceCheck.Location = new System.Drawing.Point(124, 78);
 			this.postCommaSpaceCheck.Margin = new System.Windows.Forms.Padding(0, 32, 40, 26);
 			this.postCommaSpaceCheck.Name = "postCommaSpaceCheck";
@@ -109,7 +108,6 @@
 			// preCommaSpaceCheck
 			// 
 			this.preCommaSpaceCheck.AutoSize = true;
-			this.preCommaSpaceCheck.Font = new System.Drawing.Font("Consolas", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.preCommaSpaceCheck.Location = new System.Drawing.Point(43, 78);
 			this.preCommaSpaceCheck.Margin = new System.Windows.Forms.Padding(40, 32, 0, 26);
 			this.preCommaSpaceCheck.Name = "preCommaSpaceCheck";
@@ -120,7 +118,6 @@
 			// postEqualSpaceCheck
 			// 
 			this.postEqualSpaceCheck.AutoSize = true;
-			this.postEqualSpaceCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.postEqualSpaceCheck.Location = new System.Drawing.Point(124, 32);
 			this.postEqualSpaceCheck.Margin = new System.Windows.Forms.Padding(0, 16, 40, 0);
 			this.postEqualSpaceCheck.Name = "postEqualSpaceCheck";
@@ -131,7 +128,6 @@
 			// preEqualSpaceCheck
 			// 
 			this.preEqualSpaceCheck.AutoSize = true;
-			this.preEqualSpaceCheck.Font = new System.Drawing.Font("Consolas", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.preEqualSpaceCheck.Location = new System.Drawing.Point(43, 32);
 			this.preEqualSpaceCheck.Margin = new System.Windows.Forms.Padding(40, 16, 0, 0);
 			this.preEqualSpaceCheck.Name = "preEqualSpaceCheck";
