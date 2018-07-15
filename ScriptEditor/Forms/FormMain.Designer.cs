@@ -385,7 +385,7 @@
 			this.textEditor.ToolTipNeeded += new System.EventHandler<FastColoredTextBoxNS.ToolTipNeededEventArgs>(this.textEditor_ToolTipNeeded);
 			this.textEditor.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.textEditor_TextChanged);
 			this.textEditor.SelectionChanged += new System.EventHandler(this.textEditor_SelectionChanged);
-			this.textEditor.UndoRedoStateChanged += new System.EventHandler<System.EventArgs>(this.undoRedoState_Changed);
+			this.textEditor.UndoRedoStateChanged += new System.EventHandler<System.EventArgs>(this.UndoRedoState_Changed);
 			this.textEditor.ZoomChanged += new System.EventHandler(this.textEditor_ZoomChanged);
 			this.textEditor.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textEditor_KeyPress);
 			this.textEditor.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textEditor_KeyUp);
