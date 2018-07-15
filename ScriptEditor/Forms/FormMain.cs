@@ -1,12 +1,9 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using FastColoredTextBoxNS;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ScriptEditor
@@ -16,12 +13,12 @@ namespace ScriptEditor
 		#region Global variables
 
 		/// <summary>
-		/// Store the currently edited file name and path.
+		/// Stores the currently edited file name and path.
 		/// </summary>
 		private string gS_CurrentFilePath;
 
 		/// <summary>
-		/// Store the previous zoom value to fix a strange FCTB bug.
+		/// Stores the previous zoom value to fix a strange FCTB bug.
 		/// </summary>
 		private int gI_PrevZoom = 100;
 
@@ -109,7 +106,7 @@ namespace ScriptEditor
 
 		private void CheckRequiredPaths()
 		{
-			// If the required paths aren't defined yet (script folder and game folder)
+			// If the required paths aren't defined yet
 			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
 			{
 				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
@@ -130,7 +127,7 @@ namespace ScriptEditor
 
 		#endregion Application launch methods
 
-		#region Interface methods
+		#region Interface toggling methods
 
 		private void ToggleInterface(bool state)
 		{
@@ -195,14 +192,14 @@ namespace ScriptEditor
 			documentMapToolStripMenuItem.Checked = state;
 		}
 
-		#endregion Interface methods
+		#endregion Interface toggling methods
 
-		#region Editor events
+		#region Text editor events
 
-		private void textEditor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
 		private void textEditor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e) => ToolTips.CreateToolTip(textEditor, e);
+		private void textEditor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
 		private void textEditor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
-		private void textEditor_KeyUp(object sender, KeyEventArgs e) => UpdateObjectBrowser(string.Empty);
+		private void textEditor_KeyUp(object sender, KeyEventArgs e) => ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
 
 		private void textEditor_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -243,23 +240,24 @@ namespace ScriptEditor
 				textEditor.Zoom = gI_PrevZoom;
 			}
 
-			// Update the label
+			// Update the label with the current zoom value
 			zoomLabel.Text = "Zoom: " + textEditor.Zoom + "%";
 
+			// Show the "Reset" button if the zoom value is different than 100
 			resetZoomButton.Visible = textEditor.Zoom != 100;
 
-			// Limit the zoom
-			if (textEditor.Zoom > 500)
-			{
-				textEditor.Zoom = 500;
-			}
-			else if (textEditor.Zoom < 25)
+			// Limit the zoom to a minumum of 25 and a maximum of 500
+			if (textEditor.Zoom < 25)
 			{
 				textEditor.Zoom = 25;
 			}
+			else if (textEditor.Zoom > 500)
+			{
+				textEditor.Zoom = 500;
+			}
 		}
 
-		private void undoRedoState_Changed(object sender, EventArgs e)
+		private void UndoRedoState_Changed(object sender, EventArgs e)
 		{
 			if (textEditor.UndoEnabled)
 			{
@@ -286,16 +284,57 @@ namespace ScriptEditor
 				redoToolStripMenuItem.Text = "Can't Redo";
 				redoToolStripButton.Enabled = false;
 			}
+
+			if (!string.IsNullOrWhiteSpace(gS_CurrentFilePath))
+			{
+				string editorContent = textEditor.Text.Replace("·", " ");
+				string fileContent = File.ReadAllText(gS_CurrentFilePath, Encoding.GetEncoding(1252)).Replace("·", " ");
+
+				// If the editor content is the same as the file content
+				if (editorContent == fileContent)
+				{
+					textEditor.IsChanged = false;
+					saveToolStripMenuItem.Enabled = false;
+					saveToolStripButton.Enabled = false;
+				}
+			}
 		}
 
-		private void DoStatusCounting()
+		#endregion Text editor events
+
+		#region Object browser events
+
+		private void objectBrowser_Click(object sender, EventArgs e) => ObjectBrowser.GoToSelectedObject(objectBrowser, textEditor);
+
+		private void searchTextBox_TextChanged(object sender, EventArgs e)
 		{
-			lineNumberLabel.Text = "Line: " + (textEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0.
-			colNumberLabel.Text = "Column: " + textEditor.Selection.Start.iChar;
-			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
+			if (string.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
+			{
+				ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
+			}
+			else
+			{
+				ObjectBrowser.UpdateNodes(objectBrowser, textEditor, searchTextBox.Text);
+			}
 		}
 
-		#endregion Editor events
+		private void searchTextBox_GotFocus(object sender, EventArgs e)
+		{
+			if (searchTextBox.Text == "Search...")
+			{
+				searchTextBox.Text = string.Empty;
+			}
+		}
+
+		private void searchTextBox_LostFocus(object sender, EventArgs e)
+		{
+			if (searchTextBox.Text == string.Empty)
+			{
+				searchTextBox.Text = "Search...";
+			}
+		}
+
+		#endregion Object browser events
 
 		#region File menu items
 
@@ -308,8 +347,8 @@ namespace ScriptEditor
 
 		#region Edit menu items
 
-		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(0);
-		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(1);
+		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 0);
+		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 1);
 
 		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
 		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
@@ -392,8 +431,8 @@ namespace ScriptEditor
 		private void ToolStrip_ChangeButton_Click(object sender, EventArgs e) => ShowPathSelectionForm();
 		private void ToolStrip_SaveButton_Click(object sender, EventArgs e) => SaveFile();
 
-		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => HandleUndoRedo(0);
-		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => HandleUndoRedo(1);
+		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 0);
+		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 1);
 
 		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
 		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
@@ -413,7 +452,7 @@ namespace ScriptEditor
 
 		#endregion ToolStrip buttons
 
-		#region StatusStrip buttons
+		#region StatusStrip elements
 
 		private void StatusStrip_ResetZoomButton_Click(object sender, EventArgs e)
 		{
@@ -424,232 +463,14 @@ namespace ScriptEditor
 			resetZoomButton.Visible = false;
 		}
 
-		#endregion StatusStrip buttons
-
-		#region Undo / Redo methods
-
-		private void HandleUndoRedo(int index) // 0 - Undo, 1 - Redo
+		private void DoStatusCounting()
 		{
-			string editorContent = string.Empty;
-
-			// If "Show Spaces" is enabled
-			if (Properties.Settings.Default.ShowSpaces)
-			{
-				TriggerUndoRedo(index);
-
-				while (textEditor.Text.Contains(" "))
-				{
-					TriggerUndoRedo(index);
-				}
-
-				editorContent = textEditor.Text.Replace("·", " ");
-			}
-			else
-			{
-				TriggerUndoRedo(index);
-				editorContent = textEditor.Text;
-			}
-
-			// If the editor content is the same as the file content
-			if (editorContent == File.ReadAllText(gS_CurrentFilePath))
-			{
-				textEditor.IsChanged = false;
-				saveToolStripMenuItem.Enabled = false;
-				saveToolStripButton.Enabled = false;
-			}
+			lineNumberLabel.Text = "Line: " + (textEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0.
+			colNumberLabel.Text = "Column: " + textEditor.Selection.Start.iChar;
+			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
 		}
 
-		private void TriggerUndoRedo(int index)
-		{
-			if (index == 0)
-			{
-				textEditor.Undo();
-			}
-			else if (index == 1)
-			{
-				textEditor.Redo();
-			}
-		}
-
-		#endregion Undo / Redo methods
-
-		#region Object browser handling
-
-		private void searchTextBox_TextChanged(object sender, EventArgs e)
-		{
-			if (string.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
-			{
-				UpdateObjectBrowser(string.Empty);
-			}
-			else
-			{
-				UpdateObjectBrowser(searchTextBox.Text);
-			}
-		}
-
-		private void searchTextBox_GotFocus(object sender, EventArgs e)
-		{
-			if (searchTextBox.Text == "Search...")
-			{
-				searchTextBox.Text = string.Empty;
-			}
-		}
-
-		private void searchTextBox_LostFocus(object sender, EventArgs e)
-		{
-			if (searchTextBox.Text == string.Empty)
-			{
-				searchTextBox.Text = "Search...";
-			}
-		}
-
-		private void objectBrowser_Click(object sender, EventArgs e)
-		{
-			// If the user hasn't selected any nodes
-			if (objectBrowser.SelectedNodes.Count < 1)
-			{
-				return;
-			}
-
-			// If the selected node is a default item
-			if (objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[0] || objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[1])
-			{
-				return;
-			}
-
-			// If the selected node is empty
-			if (string.IsNullOrWhiteSpace(objectBrowser.SelectedNodes[0].Text))
-			{
-				return;
-			}
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				// Find the line that contains the node text
-				if (textEditor.GetLineText(i).ToLower().Replace("·", " ").Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
-				{
-					textEditor.Focus();
-					textEditor.Navigate(i); // Scroll to the line position
-
-					// Select the line
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					return;
-				}
-			}
-		}
-
-		private void UpdateObjectBrowser(string filter)
-		{
-			bool headersNodeExpanded = false;
-			bool levelsNodeExpanded = false;
-
-			// If all default nodes are set
-			if (objectBrowser.Nodes.Count == 2)
-			{
-				// Cache the current expand state
-				headersNodeExpanded = objectBrowser.Nodes[0].Expanded;
-				levelsNodeExpanded = objectBrowser.Nodes[1].Expanded;
-			}
-
-			ResetObjectBrowserNodes();
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				AddObjectBrowserNodes(i, filter);
-			}
-
-			// If all default nodes are set
-			if (objectBrowser.Nodes.Count == 2)
-			{
-				// Set the previous expand state
-				objectBrowser.Nodes[0].Expanded = headersNodeExpanded;
-				objectBrowser.Nodes[1].Expanded = levelsNodeExpanded;
-			}
-
-			objectBrowser.Invalidate();
-		}
-
-		private void AddObjectBrowserNodes(int lineNumber, string filter)
-		{
-			AddLevelNodes(lineNumber, filter);
-			AddHeaderNodes(lineNumber, filter);
-		}
-
-		private void AddLevelNodes(int lineNumber, string filter)
-		{
-			// Regex rule to find lines that start with "Name = "
-			Regex rgx = new Regex(@"\bName[\s·]?=[\s·]?");
-
-			// If we found a line that starts with our Regex rule ("Name = ")
-			if (rgx.IsMatch(textEditor.GetLineText(lineNumber)))
-			{
-				// Create a new node, remove "Name = ", replace dots with spaces and trim it, so we only get the level name string
-				DarkTreeNode levelNode = new DarkTreeNode(rgx.Replace(textEditor.GetLineText(lineNumber), string.Empty).Replace("·", " ").Trim());
-
-				// If the level name matches the filter (It always does if there's nothing in the search bar)
-				if (levelNode.Text.ToLower().Contains(filter.ToLower()))
-				{
-					objectBrowser.Nodes[1].Nodes.Add(levelNode);
-				}
-			}
-		}
-
-		private void AddHeaderNodes(int lineNumber, string filter)
-		{
-			// Get header key words
-			List<string> headers = SyntaxKeyWords.Headers();
-
-			// Loop through headers
-			foreach (string header in headers)
-			{
-				// Add brackets to the header
-				string fullHeader = "[" + header + "]";
-
-				// If there are any headers except "Level" headers
-				if (fullHeader != "[Level]" && textEditor.GetLineText(lineNumber).StartsWith(fullHeader))
-				{
-					DarkTreeNode headerNode = new DarkTreeNode(fullHeader);
-
-					// If the header name matches the filter (It always does if there's nothing in the search bar)
-					if (headerNode.Text.ToLower().Contains(filter.ToLower()))
-					{
-						objectBrowser.Nodes[0].Nodes.Add(headerNode);
-					}
-				}
-			}
-		}
-
-		private void ResetObjectBrowserNodes()
-		{
-			bool headersNodeExpanded = false;
-			bool levelsNodeExpanded = false;
-
-			// If all default nodes are set
-			if (objectBrowser.Nodes.Count == 2)
-			{
-				// Cache the current expand state
-				headersNodeExpanded = objectBrowser.Nodes[0].Expanded;
-				levelsNodeExpanded = objectBrowser.Nodes[1].Expanded;
-			}
-
-			objectBrowser.Nodes.Clear();
-			objectBrowser.Nodes.Add(new DarkTreeNode("Headers"));
-			objectBrowser.Nodes.Add(new DarkTreeNode("Levels"));
-
-			// If all default nodes are set
-			if (objectBrowser.Nodes.Count == 2)
-			{
-				// Set the previous expand state
-				objectBrowser.Nodes[0].Expanded = headersNodeExpanded;
-				objectBrowser.Nodes[1].Expanded = levelsNodeExpanded;
-			}
-
-			objectBrowser.Invalidate();
-		}
-
-		#endregion Object browser handling
+		#endregion StatusStrip elements
 
 		#region File handling
 
@@ -697,7 +518,7 @@ namespace ScriptEditor
 					else if (result == DialogResult.No)
 					{
 						textEditor.Clear();
-						UpdateObjectBrowser(string.Empty);
+						ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
 					}
 				}
 			}
@@ -715,7 +536,7 @@ namespace ScriptEditor
 				// "Copy" the file contents into a string
 				string fileContent = File.ReadAllText(filePath, Encoding.GetEncoding(1252));
 
-				// Replace all spaces with a dot if the user wants to have visible spaces
+				// Replace all spaces with dots if the user wants to have visible spaces
 				if (Properties.Settings.Default.ShowSpaces && fileContent.Contains(" "))
 				{
 					fileContent = fileContent.Replace(" ", "·");
@@ -736,8 +557,8 @@ namespace ScriptEditor
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
 
-				// Update the object browser with levels (if they exist)
-				UpdateObjectBrowser(string.Empty);
+				// Update the object browser with objects (if they exist)
+				ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
 
 				// If Autosave is enabled
 				if (Properties.Settings.Default.AutosaveTime != 0)
@@ -761,7 +582,7 @@ namespace ScriptEditor
 			textEditor.Clear();
 			textEditor.IsChanged = false;
 
-			ResetObjectBrowserNodes();
+			ObjectBrowser.ResetNodes(objectBrowser);
 
 			// Disable the interface
 			ToggleInterface(false);
