@@ -101,7 +101,7 @@ namespace ScriptEditor
 				"FlyCheat",
 				"FOG",
 				"Horizon",
-				"InputTimeout",
+				"InputTimeOut",
 				"Key",
 				"KeyCombo",
 				"Layer1",

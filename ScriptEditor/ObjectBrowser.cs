@@ -83,8 +83,8 @@ namespace ScriptEditor
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
-				AddHeaderNodes(objectBrowser, textEditor, i, filter);
-				AddLevelNodes(objectBrowser, textEditor, i, filter);
+				AddHeaderNode(objectBrowser, textEditor, i, filter);
+				AddLevelNode(objectBrowser, textEditor, i, filter);
 			}
 
 			// If all default nodes are set
@@ -98,7 +98,7 @@ namespace ScriptEditor
 			objectBrowser.Invalidate();
 		}
 
-		private static void AddHeaderNodes(DarkTreeView objectBrowser, FastColoredTextBox textEditor, int lineNumber, string filter)
+		private static void AddHeaderNode(DarkTreeView objectBrowser, FastColoredTextBox textEditor, int lineNumber, string filter)
 		{
 			// Get header key words
 			List<string> headers = SyntaxKeyWords.Headers();
@@ -109,8 +109,8 @@ namespace ScriptEditor
 				// Add brackets to the header
 				string fullHeader = "[" + header + "]";
 
-				// If there are any headers except "Level" headers
-				if (fullHeader != "[Level]" && textEditor.GetLineText(lineNumber).StartsWith(fullHeader))
+				// If the current line starts with a header and the header is not a [Level] header
+				if (textEditor.GetLineText(lineNumber).StartsWith(fullHeader) && fullHeader != "[Level]")
 				{
 					DarkTreeNode headerNode = new DarkTreeNode(fullHeader);
 
@@ -123,7 +123,7 @@ namespace ScriptEditor
 			}
 		}
 
-		private static void AddLevelNodes(DarkTreeView objectBrowser, FastColoredTextBox textEditor, int lineNumber, string filter)
+		private static void AddLevelNode(DarkTreeView objectBrowser, FastColoredTextBox textEditor, int lineNumber, string filter)
 		{
 			// Regex rule to find lines that start with "Name = "
 			Regex rgx = new Regex(@"\bName[\s·]?=[\s·]?");

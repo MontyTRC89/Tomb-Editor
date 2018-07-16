@@ -350,9 +350,9 @@ namespace ScriptEditor
 		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 0);
 		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 1);
 
-		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
-		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
-		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.PasteFromClipboard(textEditor);
+		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.Cut(textEditor);
+		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.Copy(textEditor);
+		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.Paste(textEditor);
 
 		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowFindDialog();
 		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowReplaceDialog();
@@ -415,9 +415,9 @@ namespace ScriptEditor
 
 		#region Context menu items
 
-		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
-		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
-		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => ClipboardMethods.PasteFromClipboard(textEditor);
+		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => ClipboardMethods.Cut(textEditor);
+		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => ClipboardMethods.Copy(textEditor);
+		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => ClipboardMethods.Paste(textEditor);
 
 		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
@@ -434,9 +434,9 @@ namespace ScriptEditor
 		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 0);
 		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 1);
 
-		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => ClipboardMethods.CutToClipboard(textEditor);
-		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => ClipboardMethods.CopyToClipboard(textEditor);
-		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => ClipboardMethods.PasteFromClipboard(textEditor);
+		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => ClipboardMethods.Cut(textEditor);
+		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => ClipboardMethods.Copy(textEditor);
+		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => ClipboardMethods.Paste(textEditor);
 
 		private void ToolStrip_CommentButton_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void ToolStrip_UncommentButton_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
@@ -638,6 +638,8 @@ namespace ScriptEditor
 				// Disable "Save" buttons since we've just saved
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
+
+				textEditor.Invalidate();
 			}
 			catch (Exception ex) // Saving failed somehow
 			{
