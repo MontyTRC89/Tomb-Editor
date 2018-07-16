@@ -285,6 +285,7 @@ namespace ScriptEditor
 				redoToolStripButton.Enabled = false;
 			}
 
+			// If there's currently a file in the editor
 			if (!string.IsNullOrWhiteSpace(gS_CurrentFilePath))
 			{
 				string editorContent = textEditor.Text.Replace("·", " ");
@@ -294,6 +295,8 @@ namespace ScriptEditor
 				if (editorContent == fileContent)
 				{
 					textEditor.IsChanged = false;
+
+					// Disable the save buttons since there are no changes
 					saveToolStripMenuItem.Enabled = false;
 					saveToolStripButton.Enabled = false;
 				}
@@ -545,10 +548,12 @@ namespace ScriptEditor
 				// "Paste" the file contents into the textEditor
 				textEditor.Text = fileContent;
 
-				textEditor.IsChanged = false; // Opening the file has changed the text, so set it back to false
+				// Opening the file has changed the text, so set it back to false
+				textEditor.IsChanged = false;
 				textEditor.ClearUndo();
 
-				ToggleInterface(true); // Enable the interface since we got a file we can edit
+				// Enable the interface since we got a file we can edit
+				ToggleInterface(true);
 
 				// Store the file (with it's path) and open it in the editor
 				gS_CurrentFilePath = filePath;
@@ -639,6 +644,7 @@ namespace ScriptEditor
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
 
+				// Redraw the editor
 				textEditor.Invalidate();
 			}
 			catch (Exception ex) // Saving failed somehow
