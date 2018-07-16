@@ -5,7 +5,7 @@ namespace ScriptEditor
 {
 	public class ClipboardMethods
 	{
-		public static void CutToClipboard(FastColoredTextBox textEditor)
+		public static void Cut(FastColoredTextBox textEditor)
 		{
 			if (!string.IsNullOrEmpty(textEditor.SelectedText))
 			{
@@ -14,7 +14,7 @@ namespace ScriptEditor
 			}
 		}
 
-		public static void CopyToClipboard(FastColoredTextBox textEditor)
+		public static void Copy(FastColoredTextBox textEditor)
 		{
 			if (!string.IsNullOrEmpty(textEditor.SelectedText))
 			{
@@ -22,7 +22,7 @@ namespace ScriptEditor
 			}
 		}
 
-		public static void PasteFromClipboard(FastColoredTextBox textEditor)
+		public static void Paste(FastColoredTextBox textEditor)
 		{
 			textEditor.SelectedText = Clipboard.GetText();
 		}
