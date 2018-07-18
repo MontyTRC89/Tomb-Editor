@@ -407,7 +407,7 @@ namespace TombLib.LevelData.Compilers
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Intensity1 = PackColorTo16Bit(instance.Color),
+                    Intensity1 = PackColorTo16Bit(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X)),
                     Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 ? 0x0001 : instance.Ocb)
                 });
             }
