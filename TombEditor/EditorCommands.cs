@@ -555,22 +555,22 @@ namespace TombEditor
                 _editor.Level = Level.CreateSimpleLevel();
             });
 
-            AddCommand("OpenLevel", "Open existing project...", CommandType.File, delegate ()
+            AddCommand("OpenLevel", "Open existing level...", CommandType.File, delegate ()
             {
                 EditorActions.OpenLevel(_editorWindow);
             });
 
-            AddCommand("SaveLevel", "Save project", CommandType.File, delegate ()
+            AddCommand("SaveLevel", "Save level", CommandType.File, delegate ()
             {
                 EditorActions.SaveLevel(_editorWindow, false);
             });
 
-            AddCommand("SaveLevelAs", "Save project as...", CommandType.File, delegate ()
+            AddCommand("SaveLevelAs", "Save level as...", CommandType.File, delegate ()
             {
                 EditorActions.SaveLevel(_editorWindow, true);
             });
 
-            AddCommand("ImportPrj", "Import TRLE project...", CommandType.File, delegate ()
+            AddCommand("ImportPrj", "Import TRLE level...", CommandType.File, delegate ()
             {
                 EditorActions.OpenLevelPrj(_editorWindow);
             });
