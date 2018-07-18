@@ -106,7 +106,8 @@ namespace TombEditor
         public bool AutoSave_NamePutDateFirst { get; set; } = true;
         public string AutoSave_NameSeparator { get; set; } = " ";
 
-        public List<HotkeySet> Keyboard_Hotkeys { get; set; }
+        // Do NOT use a list because the xml serliazer will append the loaded values instead of replacing them!!!
+        public HotkeySet[] Keyboard_Hotkeys { get; set; } = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout);
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
@@ -272,7 +273,7 @@ namespace TombEditor
             if (!File.Exists(path))
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout) };
+                return new Configuration { FilePath = path  };
             }
 
             try
@@ -282,7 +283,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout) };
+                return new Configuration { FilePath = path };
             }
         }
     }
