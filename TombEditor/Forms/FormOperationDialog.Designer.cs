@@ -32,19 +32,21 @@ namespace TombEditor.Forms
         {
             this.butOk = new DarkUI.Controls.DarkButton();
             this.pbStato = new DarkUI.Controls.DarkProgressBar();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.lstLog = new System.Windows.Forms.RichTextBox();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // butOk
             // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butOk.Enabled = false;
-            this.butOk.Location = new System.Drawing.Point(482, 373);
+            this.butOk.Location = new System.Drawing.Point(3, 3);
             this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 23);
+            this.butOk.Size = new System.Drawing.Size(317, 26);
             this.butOk.TabIndex = 1;
-            this.butOk.Text = "OK";
+            this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
@@ -52,18 +54,35 @@ namespace TombEditor.Forms
             // 
             this.pbStato.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbStato.Location = new System.Drawing.Point(7, 344);
+            this.pbStato.Location = new System.Drawing.Point(7, 339);
             this.pbStato.Name = "pbStato";
             this.pbStato.Size = new System.Drawing.Size(641, 23);
             this.pbStato.TabIndex = 3;
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.butCancel, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.butOk, 0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(4, 366);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(646, 32);
+            this.tableLayoutPanel1.TabIndex = 4;
+            // 
             // butCancel
             // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(568, 373);
+            this.butCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butCancel.Location = new System.Drawing.Point(326, 3);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 23);
+            this.butCancel.Size = new System.Drawing.Size(317, 26);
             this.butCancel.TabIndex = 2;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -78,7 +97,7 @@ namespace TombEditor.Forms
             this.lstLog.Location = new System.Drawing.Point(7, 7);
             this.lstLog.Name = "lstLog";
             this.lstLog.ReadOnly = true;
-            this.lstLog.Size = new System.Drawing.Size(641, 331);
+            this.lstLog.Size = new System.Drawing.Size(641, 325);
             this.lstLog.TabIndex = 0;
             this.lstLog.Text = "";
             // 
@@ -89,8 +108,7 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(654, 402);
-            this.Controls.Add(this.butCancel);
-            this.Controls.Add(this.butOk);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.pbStato);
             this.Controls.Add(this.lstLog);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
@@ -104,6 +122,7 @@ namespace TombEditor.Forms
             this.Text = "<Unknown>";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormImportPRJ_FormClosing);
             this.Shown += new System.EventHandler(this.FormBuildLevel_Shown);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -112,6 +131,7 @@ namespace TombEditor.Forms
 
         private DarkButton butOk;
         private DarkProgressBar pbStato;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private DarkButton butCancel;
         private System.Windows.Forms.RichTextBox lstLog;
     }
