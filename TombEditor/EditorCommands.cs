@@ -28,7 +28,7 @@ namespace TombEditor
         View,
         Settings
     }
-    
+
     public class HotkeySet : ICloneable
     {
         public static List<Keys> ReservedCameraKeys = new List<Keys>
@@ -1117,7 +1117,7 @@ namespace TombEditor
             return result;
         }
 
-        public static List<HotkeySet> GenerateDefaultHotkeys(KeyboardLayout layout)
+        public static HotkeySet[] GenerateDefaultHotkeys(KeyboardLayout layout)
         {
             Keys Q = Keys.Q;
             Keys A = Keys.A;
@@ -1138,7 +1138,7 @@ namespace TombEditor
                 Z = Keys.Y;
             }
 
-            return new List<HotkeySet>
+            return new HotkeySet[]
             {
                 new HotkeySet { Name = "CancelAnyAction", Hotkeys = new List<uint> { (uint)(Keys.Escape) } },
                 new HotkeySet { Name = "Switch2DMode", Hotkeys = new List<uint> { (uint)(Keys.F1) } },

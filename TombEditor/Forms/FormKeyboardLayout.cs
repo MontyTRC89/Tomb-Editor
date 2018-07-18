@@ -22,7 +22,7 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             _editor = editor;
-            _currConfig = _editor.Configuration.Keyboard_Hotkeys.ConvertAll(hotkeys => hotkeys.Clone());
+            _currConfig = _editor.Configuration.Keyboard_Hotkeys.Select(hotkeys => hotkeys.Clone()).ToList();
             commandList.RowCount = _editor.CommandHandler.Commands.Count();
             listenKeys.Text = _listenerMessage;
 
@@ -81,7 +81,7 @@ namespace TombEditor.Forms
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            _editor.Configuration.Keyboard_Hotkeys = _currConfig;
+            _editor.Configuration.Keyboard_Hotkeys = _currConfig.ToArray();
             _editor.ConfigurationChange();
             Close();
         }
@@ -93,8 +93,7 @@ namespace TombEditor.Forms
 
         private void butDefaults_Click(object sender, EventArgs e)
         {
-            _currConfig.Clear();
-            _currConfig = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout);
+            _currConfig = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout).ToList();
             RedrawList();
         }
 
