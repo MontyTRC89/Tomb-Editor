@@ -114,6 +114,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HotkeySet.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
@@ -145,7 +146,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EditorAction.cs" />
-    <Compile Include="EditorCommands.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="Forms\FormKeyboardLayout.cs">
       <SubType>Form</SubType>
     </Compile>

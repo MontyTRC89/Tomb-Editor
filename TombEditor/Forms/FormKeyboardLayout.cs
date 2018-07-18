@@ -93,7 +93,7 @@ namespace TombEditor.Forms
 
         private void butDefaults_Click(object sender, EventArgs e)
         {
-            _currConfig = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout).ToList();
+            _currConfig = HotkeySet.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout).ToList();
             RedrawList();
         }
 
@@ -102,7 +102,7 @@ namespace TombEditor.Forms
             if (_editor.CommandHandler.Commands == null || _editor.CommandHandler.Commands.Count == 0 || e.RowIndex < 0 || e.RowIndex >= _editor.CommandHandler.Commands.Count)
                 return;
 
-            EditorCommand entry = _editor.CommandHandler.Commands.ElementAt(e.RowIndex);
+            CommandObj entry = _editor.CommandHandler.Commands.ElementAt(e.RowIndex);
 
             if (commandList.Columns[e.ColumnIndex].Name == commandListColumnType.Name)
                 e.Value = entry.Type;
