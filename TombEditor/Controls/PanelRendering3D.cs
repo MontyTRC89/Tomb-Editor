@@ -1135,7 +1135,10 @@ namespace TombEditor.Controls
 
                 float height = _editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner();
                 Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(_editor.SelectedRoom.NumXSectors * 4.0f, height, _editor.SelectedRoom.NumZSectors * 4.0f);
-                Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(0.0f, _editor.SelectedRoom.GetLowestCorner() * 256.0f, 0.0f));
+                float boxX = _editor.SelectedRoom.WorldPos.X + (_editor.SelectedRoom.NumXSectors * 1024.0f) / 2.0f;
+                float boxY = _editor.SelectedRoom.WorldPos.Y + height * 256.0f / 2.0f; 
+                float boxZ = _editor.SelectedRoom.WorldPos.Z + (_editor.SelectedRoom.NumZSectors * 1024.0f) / 2.0f;
+                Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
                 solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * viewProjection).ToSharpDX());
                 solidEffect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
