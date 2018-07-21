@@ -263,11 +263,20 @@ namespace TombEditor.Forms
                                 }
                             }
 
-                            var firstAvailableHotkey = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper())?.Hotkeys.FirstOrDefault();
-                            if (firstAvailableHotkey != null)
-                                subMenu.ShortcutKeyDisplayString = CommandHandler.KeysToString((Keys)(firstAvailableHotkey));
-                            else
-                                subMenu.ShortcutKeyDisplayString = string.Empty;
+                            var hotkeysForCommand = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.Equals(subMenu.Tag.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                            if (hotkeysForCommand != null)
+                            {
+                                string str = subMenu.ShortcutKeyDisplayString; // Preserve existing hot keys.
+                                foreach (uint hotkey in hotkeysForCommand.Hotkeys)
+                                {
+                                    if (string.IsNullOrWhiteSpace(str))
+                                        str = "";
+                                    else
+                                        str = ";   ";
+                                    str += HotkeySet.KeysToString((Keys)hotkey);
+                                }
+                                subMenu.ShortcutKeyDisplayString = str;
+                            }
                         }
                     }
                 }

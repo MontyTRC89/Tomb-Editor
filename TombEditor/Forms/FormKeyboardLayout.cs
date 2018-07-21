@@ -116,7 +116,7 @@ namespace TombEditor.Forms
                 if(hotkeyList != null)
                     for (int i = 0; i < hotkeyList.Hotkeys.Count; i++)
                     {
-                        hotkeyString += CommandHandler.KeysToString((Keys)hotkeyList.Hotkeys[i]);
+                        hotkeyString += HotkeySet.KeysToString((Keys)hotkeyList.Hotkeys[i]);
                         hotkeyString += hotkeyList.Hotkeys.Count > 1 && i < hotkeyList.Hotkeys.Count - 1 ? ", " : "";
                     }
 
@@ -156,7 +156,7 @@ namespace TombEditor.Forms
                 {
                     _keyPushCount++;
                     _listenedKeys |= realKey;
-                    listenKeys.Text = CommandHandler.KeysToString(_listenedKeys);
+                    listenKeys.Text = HotkeySet.KeysToString(_listenedKeys);
                 }
 
                 return true; // Always don't process while listening

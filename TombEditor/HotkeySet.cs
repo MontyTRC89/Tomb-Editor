@@ -171,6 +171,31 @@ namespace TombEditor
                 new HotkeySet { Name = "SharpRandomCeilingDown", Hotkeys = new List<uint> { (uint)(Keys.D | Keys.Control | Keys.Alt) } }
             };
         }
-    }
 
+        public static string KeysToString(Keys keys)
+        {
+            string result = "";
+
+            result += keys.HasFlag(Keys.Control) ? "Ctrl" + "+" : ""; // Instead of 'Control'
+            result += keys.HasFlag(Keys.Alt) ? ((keys & Keys.Alt)).ToString() + "+" : "";
+            result += keys.HasFlag(Keys.Shift) ? ((keys & Keys.Shift)).ToString() + "+" : "";
+
+            var realKey = (keys & ~(Keys.Alt | Keys.Shift | Keys.Control));
+            if (realKey != Keys.None)
+            {
+                // Microsoft has weird ToString mappings for certain characters. Here is a switch to fix it.
+                // Currently only PageUp is fixed.
+                switch (realKey)
+                {
+                    /*case Keys.PageDown:
+                        result += "PageDown";
+                        break;*/
+                    default:
+                        result += realKey.ToString();
+                        break;
+                }
+            }
+            return result;
+        }
+    }
 }
