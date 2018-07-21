@@ -21,9 +21,6 @@ namespace WadTool
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [XmlIgnore]
-        public string FilePath { get; set; }
-
-        [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
         [XmlElement(nameof(Log_MinLevel))]
         public string Log_MinLevelSerialized
@@ -143,17 +140,16 @@ namespace WadTool
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 Save(stream);
-            FilePath = path;
         }
 
         public void Save()
         {
-            Save(FilePath);
+            Save(GetDefaultPath());
         }
 
         public void SaveTry()
         {
-            if (!string.IsNullOrEmpty(FilePath))
+            if (!string.IsNullOrEmpty(GetDefaultPath()))
                 try
                 {
                     Save();
@@ -174,7 +170,6 @@ namespace WadTool
             Configuration result;
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 result = Load(stream);
-            result.FilePath = filePath;
             return result;
         }
 
@@ -189,7 +184,7 @@ namespace WadTool
             if (!File.Exists(path))
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration { FilePath = path };
+                return new Configuration();
             }
 
             try
@@ -199,7 +194,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration { FilePath = path };
+                return new Configuration();
             }
         }
     }

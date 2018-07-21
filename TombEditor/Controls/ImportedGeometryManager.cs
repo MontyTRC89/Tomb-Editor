@@ -133,7 +133,7 @@ namespace TombEditor.Controls
             dataGridViewControls.Enabled = true;
             dataGridViewControls.CreateNewRow = delegate
             {
-                List<string> paths = LevelFileDialog.BrowseFiles(this, LevelSettings, FileSystemUtils.GetDirectoryNameTry(LevelSettings.LevelFilePath),
+                List<string> paths = LevelFileDialog.BrowseFiles(this, LevelSettings, PathC.GetDirectoryNameTry(LevelSettings.LevelFilePath),
                     "Select the 3D files that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory).ToList();
 
                 // Load imported geometries
@@ -142,7 +142,7 @@ namespace TombEditor.Controls
                 {
                     ImportedGeometryInfo info = ImportedGeometryInfo.Default;
                     info.Path = path;
-                    info.Name = FileSystemUtils.GetFileNameWithoutExtensionTry(path);
+                    info.Name = PathC.GetFileNameWithoutExtensionTry(path);
                     importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                 }
                 LevelSettings.ImportedGeometryUpdate(importInfos);

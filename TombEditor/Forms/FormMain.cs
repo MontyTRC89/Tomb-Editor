@@ -40,7 +40,7 @@ namespace TombEditor.Forms
             InitializeComponent();
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
-            
+
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
@@ -85,77 +85,6 @@ namespace TombEditor.Forms
             if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
-        }
-
-        public void GenerateMenus(bool onlyHotkeys = false)
-        {
-            GenerateMenusRecursive(menuStrip.Items, onlyHotkeys);
-        }
-
-        private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
-        {
-            foreach (object obj in dropDownItems)
-            {
-                ToolStripMenuItem subMenu = obj as ToolStripMenuItem;
-
-                if (subMenu != null)
-                {
-                    if (subMenu.HasDropDownItems)
-                        GenerateMenusRecursive(subMenu.DropDownItems, onlyHotkeys);
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(subMenu.Tag?.ToString()))
-                        {
-                            if(!onlyHotkeys)
-                            {
-                                var command = _editor.CommandHandler.Commands.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper());
-                                if (command != null)
-                                {
-                                    subMenu.Click += (sender, e) => { command.Command.Invoke(); };
-                                    subMenu.Text = command.FriendlyName;
-                                }
-                            }
-
-                            var firstAvailableHotkey = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper())?.Hotkeys.FirstOrDefault();
-                            if (firstAvailableHotkey != null)
-                                subMenu.ShortcutKeyDisplayString = CommandHandler.KeysToString((Keys)(firstAvailableHotkey));
-                            else
-                                subMenu.ShortcutKeyDisplayString = string.Empty;
-                        }
-                    }
-                }
-            }
-        }
-
-        private DarkDockContent FindDockContentByKey(string key)
-        {
-            switch (key)
-            {
-                case "MainView":
-                    return MainView;
-                case "TriggerList":
-                    return TriggerList;
-                case "Lighting":
-                    return Lighting;
-                case "Palette":
-                    return Palette;
-                case "ItemBrowser":
-                case "ObjectBrowser": // Deprecated name
-                    return ItemBrowser;
-                case "RoomOptions":
-                    return RoomOptions;
-                case "SectorOptions":
-                    return SectorOptions;
-                case "TexturePanel":
-                    return TexturePanel;
-                case "ObjectList":
-                    return ObjectList;
-                case "ToolPalette":
-                    return ToolPalette;
-                default:
-                    logger.Warn("Unknown tool window '" + key + "' in configuration.");
-                    return null;
-            }
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -258,7 +187,7 @@ namespace TombEditor.Forms
             if (obj is Editor.LevelFileNameChangedEvent || obj is Editor.HasUnsavedChangesChangedEvent)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
-                    FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
+                    PathC.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
                 Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
@@ -303,6 +232,77 @@ namespace TombEditor.Forms
             // Quit editor
             if (obj is Editor.EditorQuitEvent)
                 Close();
+        }
+
+        public void GenerateMenus(bool onlyHotkeys = false)
+        {
+            GenerateMenusRecursive(menuStrip.Items, onlyHotkeys);
+        }
+
+        private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
+        {
+            foreach (object obj in dropDownItems)
+            {
+                ToolStripMenuItem subMenu = obj as ToolStripMenuItem;
+
+                if (subMenu != null)
+                {
+                    if (subMenu.HasDropDownItems)
+                        GenerateMenusRecursive(subMenu.DropDownItems, onlyHotkeys);
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(subMenu.Tag?.ToString()))
+                        {
+                            if (!onlyHotkeys)
+                            {
+                                var command = _editor.CommandHandler.Commands.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper());
+                                if (command != null)
+                                {
+                                    subMenu.Click += (sender, e) => { command.Command.Invoke(); };
+                                    subMenu.Text = command.FriendlyName;
+                                }
+                            }
+
+                            var firstAvailableHotkey = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper())?.Hotkeys.FirstOrDefault();
+                            if (firstAvailableHotkey != null)
+                                subMenu.ShortcutKeyDisplayString = CommandHandler.KeysToString((Keys)(firstAvailableHotkey));
+                            else
+                                subMenu.ShortcutKeyDisplayString = string.Empty;
+                        }
+                    }
+                }
+            }
+        }
+
+        private DarkDockContent FindDockContentByKey(string key)
+        {
+            switch (key)
+            {
+                case "MainView":
+                    return MainView;
+                case "TriggerList":
+                    return TriggerList;
+                case "Lighting":
+                    return Lighting;
+                case "Palette":
+                    return Palette;
+                case "ItemBrowser":
+                case "ObjectBrowser": // Deprecated name
+                    return ItemBrowser;
+                case "RoomOptions":
+                    return RoomOptions;
+                case "SectorOptions":
+                    return SectorOptions;
+                case "TexturePanel":
+                    return TexturePanel;
+                case "ObjectList":
+                    return ObjectList;
+                case "ToolPalette":
+                    return ToolPalette;
+                default:
+                    logger.Warn("Unknown tool window '" + key + "' in configuration.");
+                    return null;
+            }
         }
 
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
