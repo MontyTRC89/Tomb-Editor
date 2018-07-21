@@ -159,7 +159,16 @@ namespace TombEditor
                 new HotkeySet { Name = "FlattenCeiling", Hotkeys = new List<uint> { (uint)(Keys.F | Keys.Control | Keys.Alt) } },
                 new HotkeySet { Name = "GridWallsIn3", Hotkeys = new List<uint> { (uint)(Keys.D3 | Keys.Control) } },
                 new HotkeySet { Name = "GridWallsIn5", Hotkeys = new List<uint> { (uint)(Keys.D5 | Keys.Control) } },
-                new HotkeySet { Name = "QuitEditor", Hotkeys = new List<uint> { (uint)(Keys.F4 | Keys.Alt) } }
+                new HotkeySet { Name = "QuitEditor", Hotkeys = new List<uint> { (uint)(Keys.F4 | Keys.Alt) } },
+                new HotkeySet { Name = "RemapTexture", Hotkeys = new List<uint> { (uint)(Keys.R | Keys.Shift | Keys.Alt) } },
+                new HotkeySet { Name = "SmoothRandomFloorUp", Hotkeys = new List<uint> { (uint)(Keys.A | Keys.Control | Keys.Shift) } },
+                new HotkeySet { Name = "SmoothRandomFloorDown", Hotkeys = new List<uint> { (uint)(Keys.B | Keys.Control | Keys.Shift) } },
+                new HotkeySet { Name = "SmoothRandomCeilingUp", Hotkeys = new List<uint> { (uint)(Keys.C | Keys.Control | Keys.Shift) } },
+                new HotkeySet { Name = "SmoothRandomCeilingDown", Hotkeys = new List<uint> { (uint)(Keys.D | Keys.Control | Keys.Shift) } },
+                new HotkeySet { Name = "SharpRandomFloorUp", Hotkeys = new List<uint> { (uint)(Keys.A | Keys.Control | Keys.Alt) } },
+                new HotkeySet { Name = "SharpRandomFloorDown", Hotkeys = new List<uint> { (uint)(Keys.B | Keys.Control | Keys.Alt) } },
+                new HotkeySet { Name = "SharpRandomCeilingUp", Hotkeys = new List<uint> { (uint)(Keys.C | Keys.Control | Keys.Alt) } },
+                new HotkeySet { Name = "SharpRandomCeilingDown", Hotkeys = new List<uint> { (uint)(Keys.D | Keys.Control | Keys.Alt) } }
             };
         }
     }
