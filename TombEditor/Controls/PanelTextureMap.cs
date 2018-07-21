@@ -216,6 +216,11 @@ namespace TombEditor.Controls
             selectedTexture.TexCoord1 = texCoordStartQuantized;
             selectedTexture.TexCoord2 = new Vector2(texCoordEndQuantized.X, texCoordStartQuantized.Y);
             selectedTexture.TexCoord3 = texCoordEndQuantized;
+
+            // Avoid mirroring the texture by rectangular selections
+            if ((texCoordStartQuantized.X > texCoordEndQuantized.X) != (texCoordStartQuantized.Y > texCoordEndQuantized.Y))
+                Swap.Do(ref selectedTexture.TexCoord0, ref selectedTexture.TexCoord2);
+
             selectedTexture.Texture = VisibleTexture;
             SelectedTexture = selectedTexture;
         }
