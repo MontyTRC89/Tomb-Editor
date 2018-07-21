@@ -2220,7 +2220,7 @@ namespace TombEditor
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 room.AmbientLight = _editor.SelectedRoom.AmbientLight;
             Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => room.RoomGeometry?.Relight(room));
-            foreach (var room in _editor.Level.Rooms)
+            foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
         }
 
@@ -2997,9 +2997,9 @@ namespace TombEditor
             if (_editor.Mode == EditorMode.Map2D || toolIndex > (int)EditorToolType.Terrain ||
                 _editor.Mode != EditorMode.Geometry && toolIndex > 5)
                 return;
-            
+
             EditorTool currentTool = _editor.Tool;
-            
+
             switch (toolIndex)
             {
                 case 0:
