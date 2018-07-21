@@ -292,6 +292,9 @@ namespace TombLib.LevelData
                         var tempEditorUV = VertexEditorUVs[i + 2];
                         VertexEditorUVs[i + 2] = VertexEditorUVs[i];
                         VertexEditorUVs[i] = tempEditorUV;
+                        TextureArea textureArea = TriangleTextureAreas[i / 3];
+                        Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
+                        TriangleTextureAreas[i / 3] = textureArea;
                     }
                 }
             }
