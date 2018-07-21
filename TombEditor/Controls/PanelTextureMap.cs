@@ -467,8 +467,8 @@ namespace TombEditor.Controls
                     notifyMessage = "Click here to load a new texture file.";
                 else
                 {
-                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
-                    if (FileSystemUtils.IsFileNotFoundException(VisibleTexture?.LoadException))
+                    string fileName = PathC.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
+                    if (PathC.IsFileNotFoundException(VisibleTexture?.LoadException))
                         notifyMessage = "Texture file '" + fileName + "' was not found!\n";
                     else
                         notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";

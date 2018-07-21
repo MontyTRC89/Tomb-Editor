@@ -170,9 +170,9 @@ namespace TombLib.LevelData
                     return MakeAbsolute(GameDirectory ?? VariableCreate(VariableType.LevelDirectory), VariableType.GameDirectory);
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
-                        return FileSystemUtils.GetFileNameWithoutExtensionTry(LevelFilePath);
+                        return PathC.GetFileNameWithoutExtensionTry(LevelFilePath);
                     if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
-                        return FileSystemUtils.GetFileNameWithoutExtensionTry(Wads[0].Path);
+                        return PathC.GetFileNameWithoutExtensionTry(Wads[0].Path);
                     return "Default";
                 case VariableType.EngineVersion:
                     return GameVersion.ToString();

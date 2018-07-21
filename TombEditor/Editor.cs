@@ -639,28 +639,32 @@ namespace TombEditor
         }
 
         // Configuration
-        private LevelSettingsWatcher _levelSettingsWatcher { get; set; }
-        FileSystemWatcher configurationWatcher;
-        bool configurationIsLoadedFromFile;
-        private void ConfigurationWatcher_Changed(object sender, FileSystemEventArgs e)
+        private LevelSettingsWatcher _levelSettingsWatcher;
+        private FileSystemWatcherManager _configurationWatcher;
+        private bool _configurationIsLoadedFromFile = false;
+
+        private class ConfigurationWatchedObj : FileSystemWatcherManager.WatchedObj
         {
-            if (Path.GetFullPath(e.FullPath) == Path.GetFullPath(Configuration.FilePath))
+            public Editor Parent;
+            public override IEnumerable<string> Directories => null;
+            public override IEnumerable<string> Files => new[] { Configuration.GetDefaultPath() };
+            public override string Name => "Configuration";
+            public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => other is ConfigurationWatchedObj;
+            public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
-                Configuration configuration = Configuration;
-                if (!FileSystemUtils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
-                    logger.Warn("Unable to load configuration from '" + Path.GetFullPath(Configuration.FilePath) + "' after it changed.");
+                Configuration configuration = Configuration.Load(Configuration.GetDefaultPath());
 
                 // Update configuration
-                SynchronizationContext.Post(o =>
+                Parent.SynchronizationContext.Send(o =>
                 {
                     try
                     {
-                        configurationIsLoadedFromFile = true; // Don't save the configuration again just yet
-                        Configuration = configuration;
+                        Parent._configurationIsLoadedFromFile = true; // Don't save the configuration in a loop.
+                        Parent.Configuration = configuration;
                     }
                     finally
                     {
-                        configurationIsLoadedFromFile = false;
+                        Parent._configurationIsLoadedFromFile = false;
                     }
                 }, null);
             }
@@ -674,20 +678,7 @@ namespace TombEditor
                 Configuration previous = ((ConfigurationChangedEvent)obj).Previous;
                 Configuration current = ((ConfigurationChangedEvent)obj).Current;
 
-                if (!string.Equals(previous?.FilePath ?? "", current?.FilePath ?? "", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    configurationWatcher?.Dispose();
-                    if (!string.IsNullOrEmpty(current?.FilePath))
-                    {
-                        configurationWatcher = new FileSystemWatcher(Path.GetDirectoryName(current.FilePath), Path.GetFileName(current.FilePath));
-                        configurationWatcher.EnableRaisingEvents = true;
-                        configurationWatcher.Created += ConfigurationWatcher_Changed;
-                        configurationWatcher.Deleted += ConfigurationWatcher_Changed;
-                        configurationWatcher.Renamed += ConfigurationWatcher_Changed;
-                        configurationWatcher.Changed += ConfigurationWatcher_Changed;
-                    }
-                }
-                if (!configurationIsLoadedFromFile)
+                if (!_configurationIsLoadedFromFile)
                     current?.SaveTry();
                 if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
                     _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
@@ -849,18 +840,22 @@ namespace TombEditor
             Configuration = configuration;
             Level = level;
             SectorColoringManager = new SectorColoringManager(this);
+            _configurationWatcher = new FileSystemWatcherManager();
+            _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();
 
             EditorEventRaised += Editor_EditorEventRaised;
+            _configurationIsLoadedFromFile = true;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
+            _configurationIsLoadedFromFile = false;
         }
 
         public void Dispose()
         {
-            configurationWatcher?.Dispose();
             SectorColoringManager?.Dispose();
             _autoSavingTimer?.Dispose();
             _levelSettingsWatcher?.Dispose();
+            _configurationWatcher?.Dispose();
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)

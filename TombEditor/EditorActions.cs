@@ -2276,7 +2276,7 @@ namespace TombEditor
         public static IEnumerable<LevelTexture> AddTexture(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
         {
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
-                FileSystemUtils.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
+                PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory)).ToList();
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new LevelTexture[0];
@@ -2353,7 +2353,7 @@ namespace TombEditor
         public static IEnumerable<ReferencedWad> AddWad(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
         {
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
-                FileSystemUtils.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
+                PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load object files (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory)).ToList();
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new ReferencedWad[0];
