@@ -23,7 +23,7 @@ namespace TombEditor.Forms
 
             _editor = editor;
             _currConfig = _editor.Configuration.Keyboard_Hotkeys.Select(hotkeys => hotkeys.Clone()).ToList();
-            commandList.RowCount = _editor.CommandHandler.Commands.Count();
+            commandList.RowCount = CommandHandler.Commands.Count();
             listenKeys.Text = _listenerMessage;
 
             CheckForConflicts();
@@ -75,7 +75,7 @@ namespace TombEditor.Forms
 
         private void ClearCurrentCommand()
         {
-            _currConfig.FirstOrDefault(set => set.Name == _editor.CommandHandler.Commands[commandList.SelectedRows[0].Index].Name)?.Hotkeys?.Clear();
+            _currConfig.FirstOrDefault(set => set.Name == CommandHandler.Commands.ElementAt(commandList.SelectedRows[0].Index).Name)?.Hotkeys?.Clear();
             RedrawList();
         }
 
@@ -99,10 +99,10 @@ namespace TombEditor.Forms
 
         private void commandList_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            if (_editor.CommandHandler.Commands == null || _editor.CommandHandler.Commands.Count == 0 || e.RowIndex < 0 || e.RowIndex >= _editor.CommandHandler.Commands.Count)
+            if (e.RowIndex < 0 || e.RowIndex >= CommandHandler.Commands.Count())
                 return;
 
-            CommandObj entry = _editor.CommandHandler.Commands.ElementAt(e.RowIndex);
+            CommandObj entry = CommandHandler.Commands.ElementAt(e.RowIndex);
 
             if (commandList.Columns[e.ColumnIndex].Name == commandListColumnType.Name)
                 e.Value = entry.Type;
@@ -181,9 +181,9 @@ namespace TombEditor.Forms
                         if (_clearAfterListening)
                             ClearCurrentCommand();
 
-                        var foundHotkeySet = _currConfig.FirstOrDefault(set => set.Name == _editor.CommandHandler.Commands[commandList.SelectedRows[0].Index].Name)?.Hotkeys;
+                        var foundHotkeySet = _currConfig.FirstOrDefault(set => set.Name == CommandHandler.Commands.ElementAt(commandList.SelectedRows[0].Index).Name)?.Hotkeys;
                         if (foundHotkeySet == null)
-                            _currConfig.Add(new HotkeySet { Name = _editor.CommandHandler.Commands[commandList.SelectedRows[0].Index].Name, Hotkeys = new List<uint> { (uint)_listenedKeys } });
+                            _currConfig.Add(new HotkeySet { Name = CommandHandler.Commands.ElementAt(commandList.SelectedRows[0].Index).Name, Hotkeys = new List<uint> { (uint)_listenedKeys } });
                         else if (!foundHotkeySet.Any(hotkey => hotkey == (uint)_listenedKeys))
                             foundHotkeySet.Add((uint)_listenedKeys);
                     }

@@ -43,9 +43,7 @@ namespace TombEditor
     public class Editor : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        public CommandHandler CommandHandler;
-
+        
         public event Action<IEditorEvent> EditorEventRaised;
 
         public void RaiseEvent(IEditorEvent eventObj)

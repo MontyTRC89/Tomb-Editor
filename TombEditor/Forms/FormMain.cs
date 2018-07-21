@@ -255,10 +255,10 @@ namespace TombEditor.Forms
                         {
                             if (!onlyHotkeys)
                             {
-                                var command = _editor.CommandHandler.Commands.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper());
+                                var command = CommandHandler.GetCommand(subMenu.Tag.ToString());
                                 if (command != null)
                                 {
-                                    subMenu.Click += (sender, e) => { command.Command.Invoke(); };
+                                    subMenu.Click += (sender, e) => { command.Command?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
                                     subMenu.Text = command.FriendlyName;
                                 }
                             }
@@ -356,7 +356,13 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            _editor.CommandHandler.ProcessHotkeys(keyData, IsFocused(MainView) || IsFocused(TexturePanel));
+            CommandHandler.ProcessHotkeys(new CommandArgs
+            {
+                Editor = _editor,
+                KeyData = keyData,
+                PrimaryControlFocused = IsFocused(MainView) || IsFocused(TexturePanel),
+                Window = this
+            });
 
             // Don't open menus with the alt key
             if (keyData.HasFlag(Keys.Alt))

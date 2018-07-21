@@ -33,928 +33,927 @@ namespace TombEditor
     {
         public string Name;
         public string FriendlyName;
-        public Action Command;
+        public Action<CommandArgs> Command;
         public CommandType Type;
     }
 
-    public class CommandHandler
+    public class CommandArgs
     {
-        private readonly Editor _editor;
-        private IWin32Window _editorWindow;
+        public Editor Editor;
+        public IWin32Window Window;
+        public bool PrimaryControlFocused = false;
+        public Keys KeyData = Keys.None;
+    }
+
+    public static class CommandHandler
+    {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static List<CommandObj> _commands = new List<CommandObj>();
+        public static IEnumerable<CommandObj> Commands => _commands;
 
-        private bool _primaryControlFocused;
-
-        public List<CommandObj> Commands { get; private set; }
-
-        public CommandHandler(IWin32Window window, Editor editor)
+        public static CommandObj GetCommand(string name)
         {
-            _editorWindow = window;
-            _editor = editor;
-
-            Commands = new List<CommandObj>();
-            AddCommands();
+            CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            if (command == null)
+                throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+            return command;
         }
 
-        public void ProcessHotkeys(Keys keyData, bool primaryControlFocused)
+        public static void ProcessHotkeys(CommandArgs args)
         {
-            _primaryControlFocused = primaryControlFocused;
-
-            var commandNames = _editor.Configuration.Keyboard_Hotkeys.Where(set => set.Hotkeys.Contains((uint)keyData)).ToList();
-            foreach (var name in commandNames)
-                Execute(name.Name);
-        }
-
-        public void Execute(string commandName)
-        {
-            Commands.FirstOrDefault(cmd => cmd.Name.ToUpper().Equals(commandName.ToUpper()))?.Command.Invoke();
-        }
-
-        private void AddCommand(string commandName, string friendlyName, CommandType type, Action command)
-        {
-            if (Commands.Any(cmd => cmd.Name.ToUpper().Equals(commandName.ToUpper())))
-                return;
-            Commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Command = command, Type = type });
-        }
-
-        private void AddCommands()
-        {
-            AddCommand("CancelAnyAction", "Cancel any action", CommandType.General, delegate ()
+            var hotkeyForCommands = args.Editor.Configuration.Keyboard_Hotkeys.Where(set => set.Hotkeys.Contains((uint)args.KeyData));
+            foreach (var hotkeyForCommand in hotkeyForCommands)
             {
-                _editor.Action = null;
-                _editor.SelectedSectors = SectorSelection.None;
-                _editor.SelectedObject = null;
-                _editor.SelectedRooms = new[] { _editor.SelectedRoom };
+                CommandObj command = GetCommand(hotkeyForCommand.Name);
+                command.Command.Invoke(args);
+            }
+        }
+
+        private static void AddCommand(string commandName, string friendlyName, CommandType type, Action<CommandArgs> command)
+        {
+            if (_commands.Any(cmd => cmd.Name.Equals(commandName, StringComparison.InvariantCultureIgnoreCase)))
+                throw new InvalidOperationException("You cannot add multiple commands with the same name.");
+            _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Command = command, Type = type });
+        }
+
+        static CommandHandler()
+        {
+            AddCommand("CancelAnyAction", "Cancel any action", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.Action = null;
+                args.Editor.SelectedSectors = SectorSelection.None;
+                args.Editor.SelectedObject = null;
+                args.Editor.SelectedRooms = new[] { args.Editor.SelectedRoom };
             });
 
-            AddCommand("Switch2DMode", "Switch to 2D map", CommandType.General, delegate ()
+            AddCommand("Switch2DMode", "Switch to 2D map", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchMode(EditorMode.Map2D);
             });
 
-            AddCommand("SwitchGeometryMode", "Switch to Geometry mode", CommandType.General, delegate ()
+            AddCommand("SwitchGeometryMode", "Switch to Geometry mode", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchMode(EditorMode.Geometry);
             });
 
-            AddCommand("SwitchFaceEditMode", "Switch to Face Edit mode", CommandType.General, delegate ()
+            AddCommand("SwitchFaceEditMode", "Switch to Face Edit mode", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchMode(EditorMode.FaceEdit);
             });
 
-            AddCommand("SwitchLightingMode", "Switch to Lighting mode", CommandType.General, delegate ()
+            AddCommand("SwitchLightingMode", "Switch to Lighting mode", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchMode(EditorMode.Lighting);
             });
 
-            AddCommand("ResetCamera", "Reset camera position to default", CommandType.View, delegate ()
+            AddCommand("ResetCamera", "Reset camera position to default", CommandType.View, delegate(CommandArgs args)
             {
-                _editor.ResetCamera();
+                args.Editor.ResetCamera();
             });
 
-            AddCommand("AddTrigger", "Add trigger...", CommandType.Objects, delegate ()
+            AddCommand("AddTrigger", "Add trigger...", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editorWindow);
+                if (args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window);
             });
 
-            AddCommand("AddPortal", "Add portal", CommandType.Geometry, delegate ()
+            AddCommand("AddPortal", "Add portal", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.SelectedSectors.Valid && _primaryControlFocused)
+                if (args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
                     try
                     {
-                        EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editorWindow);
+                        EditorActions.AddPortal(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window);
                     }
                     catch (Exception exc)
                     {
                         logger.Error(exc, "Unable to create portal");
-                        _editor.SendMessage("Unable to create portal. \nException: " + exc.Message, PopupType.Error);
+                        args.Editor.SendMessage("Unable to create portal. \nException: " + exc.Message, PopupType.Error);
                     }
             });
 
-            AddCommand("EditObject", "Edit object properties", CommandType.Objects, delegate ()
+            AddCommand("EditObject", "Edit object properties", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null && _primaryControlFocused)
-                    EditorActions.EditObject(_editor.SelectedObject, _editorWindow);
+                if (args.Editor.SelectedObject != null && args.PrimaryControlFocused)
+                    EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
             });
 
-            AddCommand("SetTextureBlendMode", "Set blending mode", CommandType.Textures, delegate ()
+            AddCommand("SetTextureBlendMode", "Set blending mode", CommandType.Textures, delegate(CommandArgs args)
             {
-                var texture = _editor.SelectedTexture;
+                var texture = args.Editor.SelectedTexture;
                 if (texture.BlendMode == BlendMode.Additive)
                     texture.BlendMode = BlendMode.Normal;
                 else
                     texture.BlendMode = BlendMode.Additive;
-                _editor.SelectedTexture = texture;
+                args.Editor.SelectedTexture = texture;
             });
 
-            AddCommand("SetTextureDoubleSided", "Set double-sided attribute", CommandType.Textures, delegate ()
+            AddCommand("SetTextureDoubleSided", "Set double-sided attribute", CommandType.Textures, delegate(CommandArgs args)
             {
-                var texture = _editor.SelectedTexture;
+                var texture = args.Editor.SelectedTexture;
                 texture.DoubleSided = !texture.DoubleSided;
-                _editor.SelectedTexture = texture;
+                args.Editor.SelectedTexture = texture;
             });
 
-            AddCommand("SetTextureInvisible", "Set invisibility attribute", CommandType.Textures, delegate ()
+            AddCommand("SetTextureInvisible", "Set invisibility attribute", CommandType.Textures, delegate(CommandArgs args)
             {
-                var texture = _editor.SelectedTexture;
+                var texture = args.Editor.SelectedTexture;
                 texture.Texture = TextureInvisible.Instance;
-                _editor.SelectedTexture = texture;
+                args.Editor.SelectedTexture = texture;
             });
 
-            AddCommand("RotateObjectLeft", "Rotate object left", CommandType.Objects, delegate ()
+            AddCommand("RotateObjectLeft", "Rotate object left", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null)
-                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                if (args.Editor.SelectedObject != null)
+                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
             });
 
-            AddCommand("RotateObjectRight", "Rotate object right", CommandType.Objects, delegate ()
+            AddCommand("RotateObjectRight", "Rotate object right", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null)
-                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                if (args.Editor.SelectedObject != null)
+                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
             });
 
-            AddCommand("RotateObjectUp", "Rotate object up", CommandType.Objects, delegate ()
+            AddCommand("RotateObjectUp", "Rotate object up", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null)
-                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
+                if (args.Editor.SelectedObject != null)
+                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.X, 1);
             });
 
-            AddCommand("RotateObjectDown", "Rotate object down", CommandType.Objects, delegate ()
+            AddCommand("RotateObjectDown", "Rotate object down", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null)
-                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                if (args.Editor.SelectedObject != null)
+                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.X, -1);
             });
 
-            AddCommand("MoveObjectLeft", "Move object left (4 clicks)", CommandType.Objects, delegate ()
+            AddCommand("MoveObjectLeft", "Move object left (4 clicks)", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
             });
 
-            AddCommand("MoveObjectRight", "Move object right (4 clicks)", CommandType.Objects, delegate ()
+            AddCommand("MoveObjectRight", "Move object right (4 clicks)", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
             });
 
-            AddCommand("MoveObjectForward", "Move object forward (4 clicks)", CommandType.Objects, delegate ()
+            AddCommand("MoveObjectForward", "Move object forward (4 clicks)", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
             });
 
-            AddCommand("MoveObjectBack", "Move object back (4 clicks)", CommandType.Objects, delegate ()
+            AddCommand("MoveObjectBack", "Move object back (4 clicks)", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
             });
 
-            AddCommand("MoveObjectUp", "Move object up", CommandType.Objects, delegate ()
+            AddCommand("MoveObjectUp", "Move object up", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 1024, 0), new Vector3(), true);
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 1024, 0), new Vector3(), true);
             });
 
-            AddCommand("MoveObjectDown", "Move object down", CommandType.Objects, delegate ()
+            AddCommand("MoveObjectDown", "Move object down", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -1024, 0), new Vector3(), true);
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -1024, 0), new Vector3(), true);
             });
 
-            AddCommand("MoveRoomLeft", "Move room left", CommandType.Rooms, delegate ()
+            AddCommand("MoveRoomLeft", "Move room left", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(1, 0, 0), _editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(1, 0, 0), args.Editor.SelectedRoom.Versions);
             });
 
-            AddCommand("MoveRoomRight", "Move room right", CommandType.Rooms, delegate ()
+            AddCommand("MoveRoomRight", "Move room right", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(-1, 0, 0), _editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(-1, 0, 0), args.Editor.SelectedRoom.Versions);
             });
 
-            AddCommand("MoveRoomForward", "Move room forward", CommandType.Rooms, delegate ()
+            AddCommand("MoveRoomForward", "Move room forward", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 0, -1), _editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, 0, -1), args.Editor.SelectedRoom.Versions);
             });
 
-            AddCommand("MoveRoomBack", "Move room back", CommandType.Rooms, delegate ()
+            AddCommand("MoveRoomBack", "Move room back", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 0, 1), _editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, 0, 1), args.Editor.SelectedRoom.Versions);
             });
 
-            AddCommand("MoveRoomUp", "Move room up", CommandType.Rooms, delegate ()
+            AddCommand("MoveRoomUp", "Move room up", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, 1, 0), args.Editor.SelectedRoom.Versions);
             });
 
-            AddCommand("MoveRoomDown", "Move room down", CommandType.Rooms, delegate ()
+            AddCommand("MoveRoomDown", "Move room down", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, -1, 0), args.Editor.SelectedRoom.Versions);
             });
 
-            AddCommand("RaiseQA1Click", "Raise selected floor (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseQA1Click", "Raise selected floor (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false);
             });
 
-            AddCommand("RaiseQA4Click", "Raise selected floor (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseQA4Click", "Raise selected floor (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false);
             });
 
-            AddCommand("LowerQA1Click", "Lower selected floor (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerQA1Click", "Lower selected floor (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false);
             });
 
-            AddCommand("LowerQA4Click", "Lower selected floor (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerQA4Click", "Lower selected floor (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false);
             });
 
-            AddCommand("RaiseWS1Click", "Raise selected ceiling (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseWS1Click", "Raise selected ceiling (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, false);
             });
 
-            AddCommand("RaiseWS4Click", "Raise selected ceiling (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseWS4Click", "Raise selected ceiling (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, false);
             });
 
-            AddCommand("LowerWS1Click", "Lower selected ceiling (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerWS1Click", "Lower selected ceiling (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, false);
             });
 
-            AddCommand("LowerWS4Click", "Lower selected ceiling (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerWS4Click", "Lower selected ceiling (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, false);
             });
 
-            AddCommand("RaiseED1Click", "Raise selected floor subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseED1Click", "Raise selected floor subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, 1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 1, false);
             });
 
-            AddCommand("RaiseED4Click", "Raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseED4Click", "Raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, 4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 4, false);
             });
 
-            AddCommand("LowerED1Click", "Lower selected floor subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerED1Click", "Lower selected floor subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, -1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -1, false);
             });
 
-            AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, -4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -4, false);
             });
 
-            AddCommand("RaiseRF1Click", "Raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseRF1Click", "Raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, 1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 1, false);
             });
 
-            AddCommand("RaiseRF4Click", "Raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseRF4Click", "Raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, 4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 4, false);
             });
 
-            AddCommand("LowerRF1Click", "Lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerRF1Click", "Lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, -1, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -1, false);
             });
 
-            AddCommand("LowerRF4Click", "Lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerRF4Click", "Lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, -4, false);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -4, false);
             });
 
-            AddCommand("RaiseQA1ClickSmooth", "Smoothly raise selected floor (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseQA1ClickSmooth", "Smoothly raise selected floor (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, true);
             });
 
-            AddCommand("RaiseQA4ClickSmooth", "Smoothly raise selected floor (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseQA4ClickSmooth", "Smoothly raise selected floor (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, true);
             });
 
-            AddCommand("LowerQA1ClickSmooth", "Smoothly lower selected floor (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerQA1ClickSmooth", "Smoothly lower selected floor (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, true);
             });
 
-            AddCommand("LowerQA4ClickSmooth", "Smoothly lower selected floor (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerQA4ClickSmooth", "Smoothly lower selected floor (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, true);
             });
 
-            AddCommand("RaiseWS1ClickSmooth", "Smoothly raise selected ceiling (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseWS1ClickSmooth", "Smoothly raise selected ceiling (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, true);
             });
 
-            AddCommand("RaiseWS4ClickSmooth", "Smoothly raise selected ceiling (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseWS4ClickSmooth", "Smoothly raise selected ceiling (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, true);
             });
 
-            AddCommand("LowerWS1ClickSmooth", "Smoothly lower selected ceiling (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerWS1ClickSmooth", "Smoothly lower selected ceiling (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, true);
             });
 
-            AddCommand("LowerWS4ClickSmooth", "Smoothly lower selected ceiling (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerWS4ClickSmooth", "Smoothly lower selected ceiling (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, true);
             });
 
-            AddCommand("RaiseED1ClickSmooth", "Smoothly raise selected floor subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseED1ClickSmooth", "Smoothly raise selected floor subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, 1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 1, true);
             });
 
-            AddCommand("RaiseED4ClickSmooth", "Smoothly raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseED4ClickSmooth", "Smoothly raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, 4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 4, true);
             });
 
-            AddCommand("LowerED1ClickSmooth", "Smoothly lower selected floor subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerED1ClickSmooth", "Smoothly lower selected floor subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, -1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -1, true);
             });
 
-            AddCommand("LowerED4ClickSmooth", "Smoothly lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerED4ClickSmooth", "Smoothly lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, -4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -4, true);
             });
 
-            AddCommand("RaiseRF1ClickSmooth", "Smoothly raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseRF1ClickSmooth", "Smoothly raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, 1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 1, true);
             });
 
-            AddCommand("RaiseRF4ClickSmooth", "Smoothly raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseRF4ClickSmooth", "Smoothly raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, 4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 4, true);
             });
 
-            AddCommand("LowerRF1ClickSmooth", "Smoothly lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerRF1ClickSmooth", "Smoothly lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, -1, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -1, true);
             });
 
-            AddCommand("LowerRF4ClickSmooth", "Smoothly lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerRF4ClickSmooth", "Smoothly lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, -4, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -4, true);
             });
 
-            AddCommand("RaiseYH1Click", "Raise selected floor diagonal step (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseYH1Click", "Raise selected floor diagonal step (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false, true);
             });
 
-            AddCommand("RaiseYH4Click", "Raise selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseYH4Click", "Raise selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false, true);
             });
 
-            AddCommand("LowerYH1Click", "Lower selected floor diagonal step (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerYH1Click", "Lower selected floor diagonal step (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false, true);
             });
 
-            AddCommand("LowerYH4Click", "Lower selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerYH4Click", "Lower selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false, true);
             });
 
-            AddCommand("RaiseUJ1Click", "Raise selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseUJ1Click", "Raise selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, false, true);
             });
 
-            AddCommand("RaiseUJ4Click", "Raise selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("RaiseUJ4Click", "Raise selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, false, true);
             });
 
-            AddCommand("LowerUJ1Click", "Lower selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate ()
+            AddCommand("LowerUJ1Click", "Lower selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, false, true);
             });
 
-            AddCommand("LowerUJ4Click", "Lower selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate ()
+            AddCommand("LowerUJ4Click", "Lower selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _primaryControlFocused)
-                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, false, true);
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, false, true);
             });
 
-            AddCommand("RotateObject5", "Rotate object (5 degrees)", CommandType.Objects, delegate ()
+            AddCommand("RotateObject5", "Rotate object (5 degrees)", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null && _primaryControlFocused)
-                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 5.0f);
+                if (args.Editor.SelectedObject != null && args.PrimaryControlFocused)
+                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, 5.0f);
             });
 
-            AddCommand("RotateObject45", "Rotate object (45 degrees)", CommandType.Objects, delegate ()
+            AddCommand("RotateObject45", "Rotate object (45 degrees)", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (_editor.SelectedObject != null && _primaryControlFocused)
-                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 45.0f);
+                if (args.Editor.SelectedObject != null && args.PrimaryControlFocused)
+                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, 45.0f);
             });
 
-            AddCommand("RelocateCamera", "Relocate camera", CommandType.View, delegate ()
+            AddCommand("RelocateCamera", "Relocate camera", CommandType.View, delegate(CommandArgs args)
             {
-                _editor.Action = new EditorActionRelocateCamera();
+                args.Editor.Action = new EditorActionRelocateCamera();
             });
 
-            AddCommand("RotateTexture", "Rotate selected texture", CommandType.Textures, delegate ()
+            AddCommand("RotateTexture", "Rotate selected texture", CommandType.Textures, delegate(CommandArgs args)
             {
                 EditorActions.RotateSelectedTexture();
             });
 
-            AddCommand("MirrorTexture", "Mirror selected texture", CommandType.Textures, delegate ()
+            AddCommand("MirrorTexture", "Mirror selected texture", CommandType.Textures, delegate(CommandArgs args)
             {
                 EditorActions.MirrorSelectedTexture();
             });
 
-            AddCommand("NewLevel", "New level", CommandType.File, delegate ()
+            AddCommand("NewLevel", "New level", CommandType.File, delegate(CommandArgs args)
             {
-                if (!EditorActions.ContinueOnFileDrop(_editorWindow, "New level"))
+                if (!EditorActions.ContinueOnFileDrop(args.Window, "New level"))
                     return;
 
-                _editor.Level = Level.CreateSimpleLevel();
+                args.Editor.Level = Level.CreateSimpleLevel();
             });
 
-            AddCommand("OpenLevel", "Open existing level...", CommandType.File, delegate ()
+            AddCommand("OpenLevel", "Open existing level...", CommandType.File, delegate(CommandArgs args)
             {
-                EditorActions.OpenLevel(_editorWindow);
+                EditorActions.OpenLevel(args.Window);
             });
 
-            AddCommand("SaveLevel", "Save level", CommandType.File, delegate ()
+            AddCommand("SaveLevel", "Save level", CommandType.File, delegate(CommandArgs args)
             {
-                EditorActions.SaveLevel(_editorWindow, false);
+                EditorActions.SaveLevel(args.Window, false);
             });
 
-            AddCommand("SaveLevelAs", "Save level as...", CommandType.File, delegate ()
+            AddCommand("SaveLevelAs", "Save level as...", CommandType.File, delegate(CommandArgs args)
             {
-                EditorActions.SaveLevel(_editorWindow, true);
+                EditorActions.SaveLevel(args.Window, true);
             });
 
-            AddCommand("ImportPrj", "Import TRLE level...", CommandType.File, delegate ()
+            AddCommand("ImportPrj", "Import TRLE level...", CommandType.File, delegate(CommandArgs args)
             {
-                EditorActions.OpenLevelPrj(_editorWindow);
+                EditorActions.OpenLevelPrj(args.Window);
             });
 
-            AddCommand("BuildLevel", "Build level", CommandType.File, delegate ()
+            AddCommand("BuildLevel", "Build level", CommandType.File, delegate(CommandArgs args)
             {
-                EditorActions.BuildLevel(false, _editorWindow);
+                EditorActions.BuildLevel(false, args.Window);
             });
 
-            AddCommand("BuildAndPlay", "Build level and play", CommandType.File, delegate ()
+            AddCommand("BuildAndPlay", "Build level and play", CommandType.File, delegate(CommandArgs args)
             {
-                EditorActions.BuildLevelAndPlay(_editorWindow);
+                EditorActions.BuildLevelAndPlay(args.Window);
             });
 
-            AddCommand("Copy", "Copy", CommandType.Edit, delegate ()
+            AddCommand("Copy", "Copy", CommandType.Edit, delegate(CommandArgs args)
             {
-                if (_editor.Mode != EditorMode.Map2D)
+                if (args.Editor.Mode != EditorMode.Map2D)
                 {
-                    if (_editor.SelectedObject != null)
-                        EditorActions.TryCopyObject(_editor.SelectedObject, _editorWindow);
-                    else if (_editor.SelectedSectors.Valid)
-                        EditorActions.TryCopySectors(_editor.SelectedSectors, _editorWindow);
+                    if (args.Editor.SelectedObject != null)
+                        EditorActions.TryCopyObject(args.Editor.SelectedObject, args.Window);
+                    else if (args.Editor.SelectedSectors.Valid)
+                        EditorActions.TryCopySectors(args.Editor.SelectedSectors, args.Window);
                 }
                 else
-                    Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
+                    Clipboard.SetDataObject(new RoomClipboardData(args.Editor), true);
             });
 
-            AddCommand("Paste", "Paste", CommandType.Edit, delegate ()
+            AddCommand("Paste", "Paste", CommandType.Edit, delegate(CommandArgs args)
             {
-                if (_editor.Mode != EditorMode.Map2D)
+                if (args.Editor.Mode != EditorMode.Map2D)
                 {
                     if (Clipboard.ContainsData(typeof(ObjectClipboardData).FullName))
                     {
                         var data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
                         if (data == null)
-                            _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
+                            args.Editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
                         else
-                            _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
+                            args.Editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(args.Editor));
                     }
-                    else if (_editor.SelectedSectors.Valid && Clipboard.ContainsData(typeof(SectorsClipboardData).FullName))
+                    else if (args.Editor.SelectedSectors.Valid && Clipboard.ContainsData(typeof(SectorsClipboardData).FullName))
                     {
                         var data = Clipboard.GetDataObject().GetData(typeof(SectorsClipboardData)) as SectorsClipboardData;
                         if (data == null)
-                            _editor.SendMessage("Clipboard contains no sector data.", PopupType.Error);
+                            args.Editor.SendMessage("Clipboard contains no sector data.", PopupType.Error);
                         else
-                            EditorActions.TryPasteSectors(data, _editorWindow);
+                            EditorActions.TryPasteSectors(data, args.Window);
                     }
                 }
                 else
                 {
                     var roomClipboardData = Clipboard.GetDataObject().GetData(typeof(RoomClipboardData)) as RoomClipboardData;
                     if (roomClipboardData == null)
-                        _editor.SendMessage("Clipboard contains no room data.", PopupType.Error);
+                        args.Editor.SendMessage("Clipboard contains no room data.", PopupType.Error);
                     else
-                        roomClipboardData.MergeInto(_editor, new VectorInt2());
+                        roomClipboardData.MergeInto(args.Editor, new VectorInt2());
                 }
             });
 
-            AddCommand("StampObject", "Stamp object", CommandType.Objects, delegate ()
+            AddCommand("StampObject", "Stamp object", CommandType.Objects, delegate(CommandArgs args)
             {
-                EditorActions.TryStampObject(_editor.SelectedObject, _editorWindow);
+                EditorActions.TryStampObject(args.Editor.SelectedObject, args.Window);
             });
 
-            AddCommand("Delete", "Delete", CommandType.Edit, delegate ()
+            AddCommand("Delete", "Delete", CommandType.Edit, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Map2D)
-                    if (_editor.SelectedObject != null && (_editor.SelectedObject is PortalInstance || _editor.SelectedObject is TriggerInstance))
-                        EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, _editorWindow);
+                if (args.Editor.Mode == EditorMode.Map2D)
+                    if (args.Editor.SelectedObject != null && (args.Editor.SelectedObject is PortalInstance || args.Editor.SelectedObject is TriggerInstance))
+                        EditorActions.DeleteObjectWithWarning(args.Editor.SelectedObject, args.Window);
                     else
-                        EditorActions.DeleteRooms(_editor.SelectedRooms, _editorWindow);
+                        EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
                 else
                 {
-                    if (_editor.SelectedObject != null)
-                        EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, _editorWindow);
+                    if (args.Editor.SelectedObject != null)
+                        EditorActions.DeleteObjectWithWarning(args.Editor.SelectedObject, args.Window);
                     else
-                        _editor.SendMessage("No object selected. Nothing to delete.", PopupType.Warning);
+                        args.Editor.SendMessage("No object selected. Nothing to delete.", PopupType.Warning);
                 }
             });
 
-            AddCommand("SelectAll", "Select all", CommandType.Edit, delegate ()
+            AddCommand("SelectAll", "Select all", CommandType.Edit, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Map2D)
-                    _editor.SelectRooms(_editor.Level.Rooms.Where(room => room != null));
+                if (args.Editor.Mode == EditorMode.Map2D)
+                    args.Editor.SelectRooms(args.Editor.Level.Rooms.Where(room => room != null));
                 else
-                    _editor.SelectedSectors = new SectorSelection { Area = _editor.SelectedRoom.LocalArea };
+                    args.Editor.SelectedSectors = new SectorSelection { Area = args.Editor.SelectedRoom.LocalArea };
             });
 
-            AddCommand("BookmarkObject", "Bookmark object", CommandType.Objects, delegate ()
+            AddCommand("BookmarkObject", "Bookmark object", CommandType.Objects, delegate(CommandArgs args)
             {
-                EditorActions.BookmarkObject(_editor.SelectedObject);
+                EditorActions.BookmarkObject(args.Editor.SelectedObject);
             });
 
-            AddCommand("SelectBookmarkedObject", "Select bookmarked object", CommandType.Objects, delegate ()
+            AddCommand("SelectBookmarkedObject", "Select bookmarked object", CommandType.Objects, delegate(CommandArgs args)
             {
-                _editor.SelectedObject = _editor.BookmarkedObject;
+                args.Editor.SelectedObject = args.Editor.BookmarkedObject;
             });
 
-            AddCommand("Search", "Search...", CommandType.Edit, delegate ()
+            AddCommand("Search", "Search...", CommandType.Edit, delegate(CommandArgs args)
             {
-                Forms.FormSearch searchForm = new Forms.FormSearch(_editor);
-                searchForm.Show(_editorWindow); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
+                Forms.FormSearch searchForm = new Forms.FormSearch(args.Editor);
+                searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
             });
 
-            AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate ()
+            AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (_editor.Mode == EditorMode.Map2D)
-                    EditorActions.DeleteRooms(_editor.SelectedRooms, _editorWindow);
+                if (args.Editor.Mode == EditorMode.Map2D)
+                    EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
                 else
-                    EditorActions.DeleteRooms(new[] { _editor.SelectedRoom }, _editorWindow);
+                    EditorActions.DeleteRooms(new[] { args.Editor.SelectedRoom }, args.Window);
             });
 
-            AddCommand("DuplicateRooms", "Duplicate rooms", CommandType.Rooms, delegate ()
+            AddCommand("DuplicateRooms", "Duplicate rooms", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.DuplicateRooms(_editorWindow);
+                EditorActions.DuplicateRooms(args.Window);
             });
 
-            AddCommand("SelectConnectedRooms", "Select connected rooms", CommandType.Rooms, delegate ()
+            AddCommand("SelectConnectedRooms", "Select connected rooms", CommandType.Rooms, delegate(CommandArgs args)
             {
                 EditorActions.SelectConnectedRooms();
             });
 
-            AddCommand("RotateRoomsClockwise", "Rotate rooms clockwise", CommandType.Rooms, delegate ()
+            AddCommand("RotateRoomsClockwise", "Rotate rooms clockwise", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = -1 }, _editorWindow);
+                EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = -1 }, args.Window);
             });
 
-            AddCommand("RotateRoomsCounterClockwise", "Rotate rooms counterclockwise", CommandType.Rooms, delegate ()
+            AddCommand("RotateRoomsCounterClockwise", "Rotate rooms counterclockwise", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = 1 }, _editorWindow);
+                EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = 1 }, args.Window);
             });
 
-            AddCommand("MirrorRoomsX", "Mirror rooms on X axis", CommandType.Rooms, delegate ()
+            AddCommand("MirrorRoomsX", "Mirror rooms on X axis", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.TransformRooms(new RectTransformation { MirrorX = true }, _editorWindow);
+                EditorActions.TransformRooms(new RectTransformation { MirrorX = true }, args.Window);
             });
 
-            AddCommand("MirrorRoomsZ", "Mirror rooms on Z axis", CommandType.Rooms, delegate ()
+            AddCommand("MirrorRoomsZ", "Mirror rooms on Z axis", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.TransformRooms(new RectTransformation { MirrorX = true, QuadrantRotation = 2 }, _editorWindow);
+                EditorActions.TransformRooms(new RectTransformation { MirrorX = true, QuadrantRotation = 2 }, args.Window);
             });
 
-            AddCommand("SplitRoom", "Split room", CommandType.Rooms, delegate ()
+            AddCommand("SplitRoom", "Split room", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.SplitRoom(_editorWindow);
+                EditorActions.SplitRoom(args.Window);
             });
 
-            AddCommand("CropRoom", "Crop room", CommandType.Rooms, delegate ()
+            AddCommand("CropRoom", "Crop room", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editorWindow);
+                EditorActions.CropRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window);
             });
 
-            AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate ()
+            AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, room => room.GetHighestCorner(), 12);
+                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, room => room.GetHighestCorner(), 12);
             });
 
-            AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate ()
+            AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
+                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
             });
 
-            AddCommand("ExportRooms", "Export rooms...", CommandType.Rooms, delegate ()
+            AddCommand("ExportRooms", "Export rooms...", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.ExportRooms(_editor.SelectedRooms, _editorWindow);
+                EditorActions.ExportRooms(args.Editor.SelectedRooms, args.Window);
             });
 
-            AddCommand("ImportRooms", "Import rooms...", CommandType.Rooms, delegate ()
+            AddCommand("ImportRooms", "Import rooms...", CommandType.Rooms, delegate(CommandArgs args)
             {
-                EditorActions.ImportRooms(_editorWindow);
+                EditorActions.ImportRooms(args.Window);
             });
 
-            AddCommand("ApplyAmbientLightToAllRooms", "Apply current ambient light to all rooms", CommandType.Rooms, delegate ()
+            AddCommand("ApplyAmbientLightToAllRooms", "Apply current ambient light to all rooms", CommandType.Rooms, delegate(CommandArgs args)
             {
-                if (DarkMessageBox.Show(_editorWindow, "Do you really want to apply the ambient light of the current room to all rooms?",
+                if (DarkMessageBox.Show(args.Window, "Do you really want to apply the ambient light of the current room to all rooms?",
                                        "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     EditorActions.ApplyCurrentAmbientLightToAllRooms();
-                    _editor.SendMessage("Ambient light was applied to all rooms.", PopupType.Info);
+                    args.Editor.SendMessage("Ambient light was applied to all rooms.", PopupType.Info);
                 }
             });
 
-            AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate ()
+            AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate(CommandArgs args)
             {
-                EditorActions.AddWad(_editorWindow);
+                EditorActions.AddWad(args.Window);
             });
 
-            AddCommand("RemoveWads", "Remove all wads", CommandType.Objects, delegate ()
+            AddCommand("RemoveWads", "Remove all wads", CommandType.Objects, delegate(CommandArgs args)
             {
-                EditorActions.RemoveWads(_editorWindow);
+                EditorActions.RemoveWads(args.Window);
             });
 
-            AddCommand("ReloadWads", "Reload all wads", CommandType.Objects, delegate ()
+            AddCommand("ReloadWads", "Reload all wads", CommandType.Objects, delegate(CommandArgs args)
             {
-                EditorActions.ReloadWads(_editorWindow);
+                EditorActions.ReloadWads(args.Window);
             });
 
-            AddCommand("AddCamera", "Add camera", CommandType.Objects, delegate ()
+            AddCommand("AddCamera", "Add camera", CommandType.Objects, delegate(CommandArgs args)
             {
-                _editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
             });
 
-            AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate ()
+            AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate(CommandArgs args)
             {
-                _editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
             });
 
-            AddCommand("AddSink", "Add sink", CommandType.Objects, delegate ()
+            AddCommand("AddSink", "Add sink", CommandType.Objects, delegate(CommandArgs args)
             {
-                _editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
             });
 
-            AddCommand("AddSoundSource", "Add sound source", CommandType.Objects, delegate ()
+            AddCommand("AddSoundSource", "Add sound source", CommandType.Objects, delegate(CommandArgs args)
             {
-                _editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
             });
 
-            AddCommand("AddImportedGeometry", "Add imported geometry", CommandType.Objects, delegate ()
+            AddCommand("AddImportedGeometry", "Add imported geometry", CommandType.Objects, delegate(CommandArgs args)
             {
-                _editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
             });
 
-            AddCommand("LocateItem", "Locate item", CommandType.Objects, delegate ()
+            AddCommand("LocateItem", "Locate item", CommandType.Objects, delegate(CommandArgs args)
             {
                 EditorActions.FindItem();
             });
 
-            AddCommand("MoveLara", "Move Lara here", CommandType.Objects, delegate ()
+            AddCommand("MoveLara", "Move Lara here", CommandType.Objects, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
 
-                EditorActions.MoveLara(_editorWindow, _editor.SelectedSectors.Start);
+                EditorActions.MoveLara(args.Window, args.Editor.SelectedSectors.Start);
             });
 
-            AddCommand("AddTexture", "Add texture...", CommandType.Textures, delegate ()
+            AddCommand("AddTexture", "Add texture...", CommandType.Textures, delegate(CommandArgs args)
             {
-                EditorActions.AddTexture(_editorWindow);
+                EditorActions.AddTexture(args.Window);
             });
 
-            AddCommand("RemoveTextures", "Remove all textures", CommandType.Textures, delegate ()
+            AddCommand("RemoveTextures", "Remove all textures", CommandType.Textures, delegate(CommandArgs args)
             {
-                EditorActions.RemoveTextures(_editorWindow);
+                EditorActions.RemoveTextures(args.Window);
             });
 
-            AddCommand("UnloadTextures", "Unload all textures", CommandType.Textures, delegate ()
+            AddCommand("UnloadTextures", "Unload all textures", CommandType.Textures, delegate(CommandArgs args)
             {
-                EditorActions.UnloadTextures(_editorWindow);
+                EditorActions.UnloadTextures(args.Window);
             });
 
-            AddCommand("ReloadTextures", "Reload all textures", CommandType.Textures, delegate ()
+            AddCommand("ReloadTextures", "Reload all textures", CommandType.Textures, delegate(CommandArgs args)
             {
-                foreach (var texture in _editor.Level.Settings.Textures)
-                    texture.Reload(_editor.Level.Settings);
-                _editor.LoadedTexturesChange();
+                foreach (var texture in args.Editor.Level.Settings.Textures)
+                    texture.Reload(args.Editor.Level.Settings);
+                args.Editor.LoadedTexturesChange();
             });
 
-            AddCommand("ConvertTexturesToPNG", "Convert all textures to PNG", CommandType.Textures, delegate ()
+            AddCommand("ConvertTexturesToPNG", "Convert all textures to PNG", CommandType.Textures, delegate(CommandArgs args)
             {
-                if (_editor.Level == null || _editor.Level.Settings.Textures.Count == 0)
+                if (args.Editor.Level == null || args.Editor.Level.Settings.Textures.Count == 0)
                 {
-                    _editor.SendMessage("No texture loaded. Nothing to convert.", PopupType.Error);
+                    args.Editor.SendMessage("No texture loaded. Nothing to convert.", PopupType.Error);
                     return;
                 }
 
-                foreach (LevelTexture texture in _editor.Level.Settings.Textures)
+                foreach (LevelTexture texture in args.Editor.Level.Settings.Textures)
                 {
                     if (texture.LoadException != null)
                     {
-                        _editor.SendMessage("The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, PopupType.Error);
+                        args.Editor.SendMessage("The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, PopupType.Error);
                         return;
                     }
 
-                    string currentTexturePath = _editor.Level.Settings.MakeAbsolute(texture.Path);
+                    string currentTexturePath = args.Editor.Level.Settings.MakeAbsolute(texture.Path);
                     string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
 
                     if (File.Exists(pngFilePath))
                     {
-                        if (DarkMessageBox.Show(_editorWindow,
+                        if (DarkMessageBox.Show(args.Window,
                                 "There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
                                 "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             return;
                     }
                     texture.Image.Save(pngFilePath);
 
-                    _editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
-                    texture.SetPath(_editor.Level.Settings, pngFilePath);
+                    args.Editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
+                    texture.SetPath(args.Editor.Level.Settings, pngFilePath);
                 }
-                _editor.LoadedTexturesChange();
+                args.Editor.LoadedTexturesChange();
             });
 
-            AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate ()
+            AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate(CommandArgs args)
             {
-                using (var form = new Forms.FormTextureRemap(_editor))
-                    form.ShowDialog(_editorWindow);
+                using (var form = new Forms.FormTextureRemap(args.Editor))
+                    form.ShowDialog(args.Window);
             });
 
-            AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate ()
+            AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate(CommandArgs args)
             {
-                EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
+                EditorActions.TexturizeAll(args.Editor.SelectedRoom, args.Editor.SelectedSectors, args.Editor.SelectedTexture, BlockFaceType.Floor);
             });
 
-            AddCommand("TextureCeiling", "Texture ceiling", CommandType.Textures, delegate ()
+            AddCommand("TextureCeiling", "Texture ceiling", CommandType.Textures, delegate(CommandArgs args)
             {
-                EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
+                EditorActions.TexturizeAll(args.Editor.SelectedRoom, args.Editor.SelectedSectors, args.Editor.SelectedTexture, BlockFaceType.Ceiling);
             });
 
-            AddCommand("TextureWalls", "Texture walls", CommandType.Textures, delegate ()
+            AddCommand("TextureWalls", "Texture walls", CommandType.Textures, delegate(CommandArgs args)
             {
-                EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
+                EditorActions.TexturizeAll(args.Editor.SelectedRoom, args.Editor.SelectedSectors, args.Editor.SelectedTexture, BlockFaceType.Wall);
             });
 
-            AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate ()
+            AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate(CommandArgs args)
             {
-                using (Forms.FormAnimatedTextures form = new Forms.FormAnimatedTextures(_editor, null))
-                    form.ShowDialog(_editorWindow);
+                using (Forms.FormAnimatedTextures form = new Forms.FormAnimatedTextures(args.Editor, null))
+                    form.ShowDialog(args.Window);
             });
 
-            AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate ()
+            AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Floor);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor);
             });
 
-            AddCommand("SmoothRandomFloorDown", "Smooth random floor down", CommandType.Geometry, delegate ()
+            AddCommand("SmoothRandomFloorDown", "Smooth random floor down", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Floor);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor);
             });
 
-            AddCommand("SmoothRandomCeilingUp", "Smooth random ceiling up", CommandType.Geometry, delegate ()
+            AddCommand("SmoothRandomCeilingUp", "Smooth random ceiling up", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
             });
 
-            AddCommand("SmoothRandomCeilingDown", "Smooth random ceiling down", CommandType.Geometry, delegate ()
+            AddCommand("SmoothRandomCeilingDown", "Smooth random ceiling down", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
             });
 
-            AddCommand("SharpRandomFloorUp", "Sharp random floor up", CommandType.Geometry, delegate ()
+            AddCommand("SharpRandomFloorUp", "Sharp random floor up", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Floor);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor);
             });
 
-            AddCommand("SharpRandomFloorDown", "Sharp random floor down", CommandType.Geometry, delegate ()
+            AddCommand("SharpRandomFloorDown", "Sharp random floor down", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Floor);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor);
             });
 
-            AddCommand("SharpRandomCeilingUp", "Sharp random ceiling up", CommandType.Geometry, delegate ()
+            AddCommand("SharpRandomCeilingUp", "Sharp random ceiling up", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
             });
 
-            AddCommand("SharpRandomCeilingDown", "Sharp random ceiling down", CommandType.Geometry, delegate ()
+            AddCommand("SharpRandomCeilingDown", "Sharp random ceiling down", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
             });
 
-            AddCommand("FlattenFloor", "Flatten floor", CommandType.Geometry, delegate ()
+            AddCommand("FlattenFloor", "Flatten floor", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Floor);
+                EditorActions.Flatten(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Floor);
             });
 
-            AddCommand("FlattenCeiling", "Flatten ceiling", CommandType.Geometry, delegate ()
+            AddCommand("FlattenCeiling", "Flatten ceiling", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Ceiling);
+                EditorActions.Flatten(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Ceiling);
             });
 
-            AddCommand("GridWallsIn3", "Grid walls in 3", CommandType.Geometry, delegate ()
+            AddCommand("GridWallsIn3", "Grid walls in 3", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
-                    EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+                if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    EditorActions.GridWalls(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
             });
 
-            AddCommand("GridWallsIn5", "Grid walls in 5", CommandType.Geometry, delegate ()
+            AddCommand("GridWallsIn5", "Grid walls in 5", CommandType.Geometry, delegate(CommandArgs args)
             {
-                if (EditorActions.CheckForRoomAndBlockSelection(_editorWindow))
-                    EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, true);
+                if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    EditorActions.GridWalls(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, true);
             });
 
-            AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate ()
+            AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate(CommandArgs args)
             {
-                using (Forms.FormLevelSettings form = new Forms.FormLevelSettings(_editor))
-                    form.ShowDialog(_editorWindow);
+                using (Forms.FormLevelSettings form = new Forms.FormLevelSettings(args.Editor))
+                    form.ShowDialog(args.Window);
             });
 
-            AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate ()
+            AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate(CommandArgs args)
             {
                 try
                 {
@@ -963,11 +962,11 @@ namespace TombEditor
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Error while starting Wad Tool.");
-                    _editor.SendMessage("Error while starting Wad Tool.", PopupType.Error);
+                    args.Editor.SendMessage("Error while starting Wad Tool.", PopupType.Error);
                 }
             });
 
-            AddCommand("StartSoundTool", "Start Sound Tool...", CommandType.Settings, delegate ()
+            AddCommand("StartSoundTool", "Start Sound Tool...", CommandType.Settings, delegate(CommandArgs args)
             {
                 try
                 {
@@ -976,97 +975,97 @@ namespace TombEditor
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Error while starting Sound Tool.");
-                    _editor.SendMessage("Error while starting Sound Tool.", PopupType.Error);
+                    args.Editor.SendMessage("Error while starting Sound Tool.", PopupType.Error);
                 }
             });
 
-            AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate ()
+            AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate(CommandArgs args)
             {
-                using (var f = new FormKeyboardLayout(_editor))
+                using (var f = new FormKeyboardLayout(args.Editor))
                     f.ShowDialog();
             });
 
-            AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate ()
+            AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(0);
             });
 
-            AddCommand("SwitchTool2", "Switch tool 2", CommandType.General, delegate ()
+            AddCommand("SwitchTool2", "Switch tool 2", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(1);
             });
 
-            AddCommand("SwitchTool3", "Switch tool 3", CommandType.General, delegate ()
+            AddCommand("SwitchTool3", "Switch tool 3", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(2);
             });
 
-            AddCommand("SwitchTool4", "Switch tool 4", CommandType.General, delegate ()
+            AddCommand("SwitchTool4", "Switch tool 4", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(3);
             });
 
-            AddCommand("SwitchTool5", "Switch tool 5", CommandType.General, delegate ()
+            AddCommand("SwitchTool5", "Switch tool 5", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(4);
             });
 
-            AddCommand("SwitchTool6", "Switch tool 6", CommandType.General, delegate ()
+            AddCommand("SwitchTool6", "Switch tool 6", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(5);
             });
 
-            AddCommand("SwitchTool7", "Switch tool 7", CommandType.General, delegate ()
+            AddCommand("SwitchTool7", "Switch tool 7", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(6);
             });
 
-            AddCommand("SwitchTool8", "Switch tool 8", CommandType.General, delegate ()
+            AddCommand("SwitchTool8", "Switch tool 8", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(7);
             });
 
-            AddCommand("SwitchTool9", "Switch tool 9", CommandType.General, delegate ()
+            AddCommand("SwitchTool9", "Switch tool 9", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(8);
             });
 
-            AddCommand("SwitchTool10", "Switch tool 10", CommandType.General, delegate ()
+            AddCommand("SwitchTool10", "Switch tool 10", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(9);
             });
 
-            AddCommand("SwitchTool11", "Switch tool 11", CommandType.General, delegate ()
+            AddCommand("SwitchTool11", "Switch tool 11", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(10);
             });
 
-            AddCommand("SwitchTool12", "Switch tool 12", CommandType.General, delegate ()
+            AddCommand("SwitchTool12", "Switch tool 12", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(11);
             });
 
-            AddCommand("SwitchTool13", "Switch tool 13", CommandType.General, delegate ()
+            AddCommand("SwitchTool13", "Switch tool 13", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(12);
             });
 
-            AddCommand("SwitchTool14", "Switch tool 14", CommandType.General, delegate ()
+            AddCommand("SwitchTool14", "Switch tool 14", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(13);
             });
 
-            AddCommand("SwitchTool15", "SwitchTool15", CommandType.General, delegate ()
+            AddCommand("SwitchTool15", "SwitchTool15", CommandType.General, delegate(CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(14);
             });
 
-            AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate ()
+            AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate(CommandArgs args)
             {
-                _editor.Quit();
+                args.Editor.Quit();
             });
 
-            Commands = Commands.OrderBy(o => o.Type).ToList();
+            _commands = _commands.OrderBy(o => o.Type).ToList();
         }
 
         public static string KeysToString(Keys keys)
