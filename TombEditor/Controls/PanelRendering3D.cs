@@ -1756,7 +1756,7 @@ namespace TombEditor.Controls
         private List<Room> CollectRoomsToDraw(Room baseRoom)
         {
             if (DrawAllRooms)
-                return _editor.Level.Rooms.Where(room => room != null).ToList();
+                return _editor.Level.Rooms.Where(room => room != null && room.AlternateBaseRoom == null).ToList();
             else if (!DrawPortals)
                 return new List<Room>(new[] { baseRoom });
 

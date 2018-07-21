@@ -111,7 +111,7 @@
             this.darkLabel1.Location = new System.Drawing.Point(3, 0);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Padding = new System.Windows.Forms.Padding(5, 8, 8, 8);
-            this.darkLabel1.Size = new System.Drawing.Size(283, 28);
+            this.darkLabel1.Size = new System.Drawing.Size(282, 28);
             this.darkLabel1.TabIndex = 29;
             this.darkLabel1.Text = "This tool is part of the Tomb Editor SDK (Software Development Kit).";
             // 
@@ -503,7 +503,7 @@
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(8, 327);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(362, 24);
+            this.darkLabel16.Size = new System.Drawing.Size(360, 24);
             this.darkLabel16.TabIndex = 28;
             this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
     "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
@@ -588,7 +588,7 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(6, 106);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(123, 15);
+            this.darkLabel4.Size = new System.Drawing.Size(124, 15);
             this.darkLabel4.TabIndex = 2;
             this.darkLabel4.Text = "Licensing Information";
             // 
@@ -613,10 +613,10 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(143, 0);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(320, 60);
+            this.darkLabel3.Size = new System.Drawing.Size(376, 60);
             this.darkLabel3.TabIndex = 2;
-            this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte\r\nteme9, Lwmte\r\nDu" +
-    "stie, Titak, Gemini";
+            this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte, Nickelony\r\nteme9" +
+    ", Lwmte\r\nDustie, Titak, Gemini, Caesum";
             // 
             // darkLabel2
             // 
