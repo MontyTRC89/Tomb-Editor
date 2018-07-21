@@ -44,7 +44,6 @@ namespace TombEditor
                 Editor.Instance = editor;
                 using (FormMain form = new FormMain(editor))
                 {
-                    Editor.Instance.CommandHandler = new CommandHandler(form, editor);
                     form.Show();
                     form.GenerateMenus();
 
