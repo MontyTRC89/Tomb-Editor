@@ -727,7 +727,10 @@ namespace TombEditor
 
             // Update unsaved changes state
             if (obj is IEditorEventCausesUnsavedChanges)
-                _autoSavingTimer.Enabled = _configuration.AutoSave_Enable && HasUnsavedChanges;
+            {
+                HasUnsavedChanges = true;
+                _autoSavingTimer.Enabled = _configuration.AutoSave_Enable;
+            }
 
             // Make sure an object that was removed isn't selected
             if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
