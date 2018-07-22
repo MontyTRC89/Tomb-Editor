@@ -10,11 +10,15 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Script;
 using TombLib.Utils;
+using System.Collections.Generic;
 
 namespace TombEditor.Forms
 {
     public partial class FormMain : DarkForm
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Editor _editor;
+
         // Dockable tool windows are placed on actual dock panel at runtime.
 
         private readonly ToolWindows.MainView MainView = new ToolWindows.MainView();
@@ -30,10 +34,7 @@ namespace TombEditor.Forms
 
         // Floating tool boxes are placed on 3D view at runtime
         private readonly ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
-
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private readonly Editor _editor;
+        private readonly Dictionary<ToolStripItem, string> _originalShortcutKeyDisplayStrings = new Dictionary<ToolStripItem, string>();
 
         public FormMain(Editor editor)
         {
@@ -51,10 +52,6 @@ namespace TombEditor.Forms
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
 
-            // Hook window added/removed events.
-            dockArea.ContentAdded += ToolWindow_Added;
-            dockArea.ContentRemoved += ToolWindow_Removed;
-
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
             Application.AddMessageFilter(dockArea.DockResizeFilter);
@@ -65,12 +62,14 @@ namespace TombEditor.Forms
 
             // Restore window settings
             LoadWindowLayout(_editor.Configuration);
-
-            logger.Info("Tomb Editor is ready :)");
+            GenerateMenusRecursive(menuStrip.Items);
 
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
+
+            // Done
+            logger.Info("Tomb Editor is ready :)");
         }
 
         protected override void Dispose(bool disposing)
@@ -206,7 +205,7 @@ namespace TombEditor.Forms
                     @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
 
-                GenerateMenus(true);
+                GenerateMenusRecursive(menuStrip.Items, true);
             }
 
             // Update texture controls
@@ -234,9 +233,12 @@ namespace TombEditor.Forms
                 Close();
         }
 
-        public void GenerateMenus(bool onlyHotkeys = false)
+        private void GarbageCollectOoriginalShortcutKeyDisplayStrings()
         {
-            GenerateMenusRecursive(menuStrip.Items, onlyHotkeys);
+            // Clean up old _originalShortcutKeyDisplayStrings
+            foreach (var key in _originalShortcutKeyDisplayStrings.Keys.ToArray())
+                if (key.IsDisposed)
+                    _originalShortcutKeyDisplayStrings.Remove(key);
         }
 
         private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
@@ -258,25 +260,26 @@ namespace TombEditor.Forms
                                 var command = CommandHandler.GetCommand(subMenu.Tag.ToString());
                                 if (command != null)
                                 {
-                                    subMenu.Click += (sender, e) => { command.Command?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
+                                    subMenu.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
                                     subMenu.Text = command.FriendlyName;
                                 }
                             }
 
-                            var hotkeysForCommand = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.Equals(subMenu.Tag.ToString(), StringComparison.InvariantCultureIgnoreCase));
-                            if (hotkeysForCommand != null)
+                            var hotkeysForCommand = _editor.Configuration.Keyboard_HotkeySets[subMenu.Tag.ToString()];
+
+                            // Store original shortcut key display strings
+                            string baseShortcutKeyDisplayString;
+                            if (!_originalShortcutKeyDisplayStrings.TryGetValue(subMenu, out baseShortcutKeyDisplayString))
                             {
-                                string str = subMenu.ShortcutKeyDisplayString; // Preserve existing hot keys.
-                                foreach (uint hotkey in hotkeysForCommand.Hotkeys)
-                                {
-                                    if (string.IsNullOrWhiteSpace(str))
-                                        str = "";
-                                    else
-                                        str = ";   ";
-                                    str += HotkeySet.KeysToString((Keys)hotkey);
-                                }
-                                subMenu.ShortcutKeyDisplayString = str;
+                                _originalShortcutKeyDisplayStrings.Add(subMenu, subMenu.ShortcutKeyDisplayString);
+                                baseShortcutKeyDisplayString = subMenu.ShortcutKeyDisplayString;
                             }
+
+                            // Create new shortcut key display
+                            subMenu.ShortcutKeyDisplayString = string.Join(", ",
+                                new[] { baseShortcutKeyDisplayString } // Preserve existing hot keys.
+                                .Concat(hotkeysForCommand.Select(h => h.ToString())) // Add new hot keys
+                                .Where(str => !string.IsNullOrWhiteSpace(str))); // Only those which aren't empty
                         }
                     }
                 }
@@ -365,7 +368,7 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            CommandHandler.ProcessHotkeys(new CommandArgs
+            CommandHandler.ExecuteHotkey(new CommandArgs
             {
                 Editor = _editor,
                 KeyData = keyData,
@@ -484,6 +487,8 @@ namespace TombEditor.Forms
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
+
+            GarbageCollectOoriginalShortcutKeyDisplayStrings();
         }
 
         private void ToolBox_Show(bool show)

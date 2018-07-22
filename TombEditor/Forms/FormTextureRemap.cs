@@ -59,7 +59,7 @@ namespace TombEditor.Forms
 
             if (sourceTexture == null || destinationTexture == null)
             {
-                DarkMessageBox.Show(this, "Source or destination texture may not be unset.", "Problem", MessageBoxIcon.Asterisk);
+                DarkMessageBox.Show(this, "Source or destination texture may not be unset.", "Problem", MessageBoxIcon.Exclamation);
                 return;
             }
 

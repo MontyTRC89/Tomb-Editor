@@ -13,7 +13,6 @@ using TombEditor.Forms;
 using TombLib;
 using TombLib.Forms;
 using TombLib.GeometryIO;
-using TombLib.GeometryIO.Exporters;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
@@ -450,13 +449,14 @@ namespace TombEditor
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
         {
             // Allow creating a trigger using the bookmarked object if shift was pressed.
-            ObjectInstance @object;
             if (Control.ModifierKeys.HasFlag(Keys.Shift))
-                @object = _editor.BookmarkedObject;
+                AddTrigger(room, area, owner, _editor.BookmarkedObject);
             else
-                @object = _editor.SelectedObject;
+                AddTrigger(room, area, owner, _editor.SelectedObject);
+        }
 
-
+        public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner, ObjectInstance @object)
+        {
             // Initialize trigger with selected object if the selected object makes sense in the trigger context.
             var trigger = new TriggerInstance(area);
             if (@object is MoveableInstance)
@@ -2227,7 +2227,7 @@ namespace TombEditor
         public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
         {
             Level level = _editor.Level;
-            if(level.Settings.Wads.All(wad => wad.Wad == null))
+            if (level.Settings.Wads.All(wad => wad.Wad == null))
             {
                 _editor.SendMessage("No wads loaded. Can't compile level without wads.", PopupType.Error);
                 return false;
@@ -2965,7 +2965,7 @@ namespace TombEditor
 
         public static void SwitchMode(EditorMode mode)
         {
-            if((mode == EditorMode.Map2D) != (_editor.Mode == EditorMode.Map2D))
+            if ((mode == EditorMode.Map2D) != (_editor.Mode == EditorMode.Map2D))
                 _editor.SendMessage(); // We change 2D to 3D, reset notifications
 
             _editor.Mode = mode;

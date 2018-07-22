@@ -114,7 +114,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HotkeySet.cs" />
+    <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
@@ -537,8 +537,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>del "$(TargetDir)TombEditorConfiguration.xml"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -550,7 +549,8 @@
   </Target>
   <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>del "$(TargetDir)TombEditorConfiguration.xml"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -104,8 +104,7 @@ namespace TombEditor
         public bool AutoSave_NamePutDateFirst { get; set; } = true;
         public string AutoSave_NameSeparator { get; set; } = " ";
 
-        // Do NOT use a list because the xml serliazer will append the loaded values instead of replacing them!!!
-        public HotkeySet[] Keyboard_Hotkeys { get; set; } = HotkeySet.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout);
+        public HotkeySets Keyboard_HotkeySets { get; set; } = HotkeySets.GenerateDefault(KeyboardLayoutDetector.KeyboardLayout);
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState

@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using DarkUI.Collections;
+using System.Drawing;
 
 namespace TombEditor.Forms
 {
     public partial class FormKeyboardLayout : DarkForm
     {
         private readonly Editor _editor;
-        private List<HotkeySet> _currConfig;
+        private HotkeySets _currConfig;
 
-        private int _keyPushCount = 0;
-        private Keys _listenedKeys = Keys.None;
-        private bool _clearAfterListening = false;
+        private Keys _listeningKeys = Keys.None;
+        private bool _listeningClearAfterwards = false;
+        private CommandObj _listeningDestination = null;
 
         private static readonly string _listenerMessage = "Push keys! Click here to cancel!";
 
@@ -22,8 +24,8 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             _editor = editor;
-            _currConfig = _editor.Configuration.Keyboard_Hotkeys.Select(hotkeys => hotkeys.Clone()).ToList();
-            commandList.RowCount = CommandHandler.Commands.Count();
+            _currConfig = _editor.Configuration.Keyboard_HotkeySets.Clone();
+            commandList.DataSource = new SortableBindingList<CommandObj>(CommandHandler.Commands);
             listenKeys.Text = _listenerMessage;
 
             CheckForConflicts();
@@ -31,8 +33,7 @@ namespace TombEditor.Forms
 
         private void RedrawList()
         {
-            foreach (DataGridViewColumn column in commandList.Columns)
-                commandList.InvalidateColumn(column.Index);
+            commandList.InvalidateColumn(commandList.Columns[commandListColumnHotkeys.Name].Index);
             CheckForConflicts();
         }
 
@@ -43,22 +44,22 @@ namespace TombEditor.Forms
             foreach (var left in _currConfig)
                 foreach (var right in _currConfig)
                 {
-                    if ((left.Name != right.Name) && (left.Hotkeys.Intersect(right.Hotkeys).Count() > 0))
+                    if ((left.Key != right.Key) && (left.Value.Intersect(right.Value).Count() > 0))
                     {
                         lblConflicts.Visible = true;
-                        lblConflicts.Text = "Possible conflict found: " + left.Name + " and " + right.Name;
+                        lblConflicts.Text = "Possible conflict found: " + left.Key + " and " + right.Key;
                         return;
                     }
                 }
         }
 
-        private void StartListening(bool clearAfterListening = false)
+        private void StartListening(CommandObj destination, bool clearAfterListening)
         {
             if (!listenKeys.Visible)
             {
-                _clearAfterListening = clearAfterListening;
+                _listeningClearAfterwards = clearAfterListening;
                 listenKeys.Visible = true;
-                _keyPushCount = 0;
+                _listeningDestination = destination;
             }
         }
 
@@ -66,22 +67,15 @@ namespace TombEditor.Forms
         {
             if (listenKeys.Visible)
             {
-                _keyPushCount = 0;
-                _listenedKeys = Keys.None;
+                _listeningKeys = Keys.None;
                 listenKeys.Visible = false;
                 listenKeys.Text = _listenerMessage;
             }
         }
 
-        private void ClearCurrentCommand()
-        {
-            _currConfig.FirstOrDefault(set => set.Name == CommandHandler.Commands.ElementAt(commandList.SelectedRows[0].Index).Name)?.Hotkeys?.Clear();
-            RedrawList();
-        }
-
         private void butOK_Click(object sender, EventArgs e)
         {
-            _editor.Configuration.Keyboard_Hotkeys = _currConfig.ToArray();
+            _editor.Configuration.Keyboard_HotkeySets = _currConfig;
             _editor.ConfigurationChange();
             Close();
         }
@@ -93,114 +87,151 @@ namespace TombEditor.Forms
 
         private void butDefaults_Click(object sender, EventArgs e)
         {
-            _currConfig = HotkeySet.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout).ToList();
+            if (DarkMessageBox.Show(this, "Do you really want to restore ALL key bindings to their default?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            _currConfig = HotkeySets.GenerateDefault(KeyboardLayoutDetector.KeyboardLayout);
             RedrawList();
         }
 
-        private void commandList_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        private void commandList_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= CommandHandler.Commands.Count())
+            if (e.RowIndex < 0 || e.RowIndex >= commandList.Rows.Count)
                 return;
 
-            CommandObj entry = CommandHandler.Commands.ElementAt(e.RowIndex);
-
-            if (commandList.Columns[e.ColumnIndex].Name == commandListColumnType.Name)
-                e.Value = entry.Type;
-            else if (commandList.Columns[e.ColumnIndex].Name == commandListColumnCommand.Name)
-                e.Value = entry.FriendlyName;
-            else if (commandList.Columns[e.ColumnIndex].Name == commandListColumnHotkeys.Name)
+            if (commandList.Columns[e.ColumnIndex].Name == commandListColumnHotkeys.Name)
             {
-                var hotkeyList = _currConfig.FirstOrDefault(set => set.Name.ToUpper().Equals(entry.Name.ToUpper()));
-                string hotkeyString = "";
-
-                if(hotkeyList != null)
-                    for (int i = 0; i < hotkeyList.Hotkeys.Count; i++)
-                    {
-                        hotkeyString += HotkeySet.KeysToString((Keys)hotkeyList.Hotkeys[i]);
-                        hotkeyString += hotkeyList.Hotkeys.Count > 1 && i < hotkeyList.Hotkeys.Count - 1 ? ", " : "";
-                    }
-
-                e.Value = hotkeyString;
+                CommandObj entry = (CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem);
+                e.Value = string.Join(", ", _currConfig[entry].Select(h => h.ToString()));
             }
         }
 
-        private void butClear_Click(object sender, EventArgs e)
+        private void commandList_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
         {
-            ClearCurrentCommand();
+            if (e.RowIndex < 0 || e.RowIndex >= commandList.Rows.Count)
+                return;
+
+            if (commandList.Columns[e.ColumnIndex].Name == commandListColumnHotkeys.Name)
+            {
+                // Parse
+                string errorMessage;
+                SortedSet<Hotkey> hotkeys = HotkeySets.ParseHotkeys(e.Value.ToString(), out errorMessage);
+                if (hotkeys == null)
+                    return;
+
+                // Set
+                CommandObj entry = (CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem);
+                _currConfig[entry] = hotkeys;
+
+                CheckForConflicts();
+            }
         }
 
-        private void butAdd_Click(object sender, EventArgs e)
+        private void commandList_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            StartListening();
+            if (commandList.Columns[e.ColumnIndex].Name == commandListColumnHotkeys.Name)
+            {
+                // Parse
+                string errorMessage;
+                HotkeySets.ParseHotkeys(e.FormattedValue.ToString(), out errorMessage);
+                if (errorMessage != null)
+                    if (DarkMessageBox.Show(this, errorMessage, "Invalid input", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) != DialogResult.Cancel)
+                        e.Cancel = true; // We cancel the cell parsing, the user can retry inputting something.
+            }
+        }
+
+        private void commandList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= commandList.Rows.Count)
+                return;
+            var command = (CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem);
+            if (commandList.Columns[e.ColumnIndex].Name == commandListColumnAdd.Name)
+                StartListening(command, false);
+            else if (commandList.Columns[e.ColumnIndex].Name == commandListColumnDelete.Name)
+            {
+                _currConfig[command].Clear();
+                commandList.InvalidateCell(commandList.Columns[commandListColumnHotkeys.Name].Index, e.RowIndex);
+            }
+        }
+
+        private void commandList_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= commandList.Rows.Count)
+                return;
+            if (commandList.Columns[e.ColumnIndex].Name == commandListColumnDelete.Name)
+                PaintCell(e, Properties.Resources.general_trash_16);
+            else if (commandList.Columns[e.ColumnIndex].Name == commandListColumnAdd.Name)
+                PaintCell(e, Properties.Resources.general_plus_math_16);
+        }
+
+        private static void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
+        {
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+            e.Graphics.DrawImage(image,
+                e.CellBounds.Left + (e.CellBounds.Width - image.Width) / 2 - 1,
+                e.CellBounds.Top + (e.CellBounds.Height - image.Height) / 2,
+                image.Width, image.Height);
+            e.Handled = true;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (listenKeys.Visible)
             {
-                Keys realKey = keyData & ~(Keys.Alt | Keys.Shift | Keys.Control);
-                switch (realKey)
+                _listeningKeys |= keyData & ~Keys.KeyCode;
+                switch (keyData & Keys.KeyCode)
                 {
                     case Keys.ControlKey:
-                        realKey = Keys.Control;
+                        _listeningKeys |= Keys.Control;
                         break;
                     case Keys.ShiftKey:
-                        realKey = Keys.Shift;
+                        _listeningKeys |= Keys.Shift;
                         break;
                     case Keys.Menu:
-                        realKey = Keys.Alt;
+                        _listeningKeys |= Keys.Alt;
+                        break;
+                    default:
+                        _listeningKeys = (_listeningKeys & ~Keys.KeyCode) | (keyData & Keys.KeyCode);
                         break;
                 }
 
-                if((_listenedKeys & realKey) != realKey)
-                {
-                    _keyPushCount++;
-                    _listenedKeys |= realKey;
-                    listenKeys.Text = HotkeySet.KeysToString(_listenedKeys);
-                }
+                listenKeys.Text = _listeningKeys.ToString();
 
                 return true; // Always don't process while listening
             }
-            else if (keyData == Keys.Delete || keyData == Keys.Back)
-                ClearCurrentCommand();
+            else if (keyData == Keys.Delete)
+            {
+                _currConfig[(CommandObj)(commandList.SelectedRows[0].DataBoundItem)].Clear();
+                RedrawList();
+            }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void FormKeyboardLayout_KeyUp(object sender, KeyEventArgs e)
         {
-            if (listenKeys.Visible)
-            {
-                _keyPushCount--;
-                if (_keyPushCount == 0)
-                {
-                    if (HotkeySet.ReservedCameraKeys.Contains(_listenedKeys))
-                        DarkMessageBox.Show(this, "This key is reserved for camera movement. Please define another key.", "Reserved key", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    else if((_listenedKeys & ~(Keys.Alt | Keys.Shift | Keys.Control)) != Keys.None)
-                    {
-                        if (_clearAfterListening)
-                            ClearCurrentCommand();
+            if (!listenKeys.Visible)
+                return;
+            if ((_listeningKeys & Keys.KeyCode) == Keys.None)
+                return;
 
-                        var foundHotkeySet = _currConfig.FirstOrDefault(set => set.Name == CommandHandler.Commands.ElementAt(commandList.SelectedRows[0].Index).Name)?.Hotkeys;
-                        if (foundHotkeySet == null)
-                            _currConfig.Add(new HotkeySet { Name = CommandHandler.Commands.ElementAt(commandList.SelectedRows[0].Index).Name, Hotkeys = new List<uint> { (uint)_listenedKeys } });
-                        else if (!foundHotkeySet.Any(hotkey => hotkey == (uint)_listenedKeys))
-                            foundHotkeySet.Add((uint)_listenedKeys);
-                    }
-                    RedrawList();
-                    StopListening();
-                }
+            if (HotkeySets.ReservedCameraKeys.Contains(_listeningKeys))
+            {
+                DarkMessageBox.Show(this, "This key is reserved for camera movement. Please define another key.", "Reserved key", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            if (_listeningClearAfterwards)
+                _currConfig[_listeningDestination.Name]?.Clear();
+            _currConfig[_listeningDestination.Name].Add(_listeningKeys);
+
+            RedrawList();
+            StopListening();
         }
 
         private void listenKeys_Click(object sender, EventArgs e)
         {
             StopListening();
-        }
-
-        private void commandList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            StartListening(true);
         }
     }
 }

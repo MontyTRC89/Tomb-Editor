@@ -45,7 +45,6 @@ namespace TombEditor
                 using (FormMain form = new FormMain(editor))
                 {
                     form.Show();
-                    form.GenerateMenus();
 
                     if (args.Length > 0) // Open files on start
                         if (args[0].EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
