@@ -9,8 +9,8 @@ namespace TombEditor.Controls.ContextMenus
     class BlockContextMenu : BaseContextMenu
     {
         private readonly ToolStripMenuItem _itemPaste;
-        public BlockContextMenu(Editor editor, Room targetRoom, VectorInt2 targetBlock)
-            : base(editor)
+        public BlockContextMenu(Editor editor, IWin32Window owner, Room targetRoom, VectorInt2 targetBlock)
+            : base(editor, owner)
         {
             Items.Add(_itemPaste = new ToolStripMenuItem("Paste", Properties.Resources.general_clipboard_16, (o, e) =>
             {

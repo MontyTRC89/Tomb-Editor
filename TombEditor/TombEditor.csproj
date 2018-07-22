@@ -114,6 +114,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">

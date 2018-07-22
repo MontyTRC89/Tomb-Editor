@@ -9,7 +9,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
@@ -792,15 +791,15 @@ namespace TombEditor.Controls
                         {
                             ObjectInstance target = ((PickingResultObject)newPicking).ObjectInstance;
                             if (target is PositionBasedObjectInstance)
-                                _currentContextMenu = new PositionBasedObjectContextMenu(_editor, (PositionBasedObjectInstance)target);
+                                _currentContextMenu = new PositionBasedObjectContextMenu(_editor, this, (PositionBasedObjectInstance)target);
                         }
                         else if (newPicking is PickingResultBlock)
                         {
                             var pickedBlock = newPicking as PickingResultBlock;
                             if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedBlock.Pos))
-                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, _editor.SelectedRoom, _editor.SelectedSectors.Area);
+                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, _editor.SelectedRoom, _editor.SelectedSectors.Area);
                             else
-                                _currentContextMenu = new BlockContextMenu(_editor, _editor.SelectedRoom, pickedBlock.Pos);
+                                _currentContextMenu = new BlockContextMenu(_editor, this, _editor.SelectedRoom, pickedBlock.Pos);
                         }
                         _currentContextMenu?.Show(PointToScreen(e.Location));
                     }
