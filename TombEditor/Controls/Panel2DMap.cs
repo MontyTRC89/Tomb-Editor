@@ -352,7 +352,7 @@ namespace TombEditor.Controls
                         if (_roomsToMove == null)
                             _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
 
-                        if(_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove))
+                        if (_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove))
                         {
                             foreach (Room room in _roomsToMove)
                                 _editor.RoomPropertiesChange(room);
@@ -412,8 +412,11 @@ namespace TombEditor.Controls
                     if (distance.Length() < 4.0f)
                     {
                         _currentContextMenu?.Dispose();
-                        _currentContextMenu = null;
-                        _currentContextMenu = new SelectedRoomContextMenu(_editor);
+                        Vector2 clickPos = FromVisualCoord(e.Location);
+                        if (_editor.SelectedRooms.Contains(DoPicking(clickPos)))
+                            _currentContextMenu = new SelectedRoomContextMenu(_editor, this, clickPos);
+                        else
+                            _currentContextMenu = new Space2DMapContextMenu(_editor, this, clickPos);
                         _currentContextMenu.Show(PointToScreen(e.Location));
                     }
 
