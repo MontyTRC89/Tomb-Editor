@@ -809,8 +809,7 @@ namespace TombEditor
         public static void MirrorSelectedTexture()
         {
             TextureArea textureArea = _editor.SelectedTexture;
-            Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord3);
-            Swap.Do(ref textureArea.TexCoord1, ref textureArea.TexCoord2);
+            Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
             _editor.SelectedTexture = textureArea;
         }
 
