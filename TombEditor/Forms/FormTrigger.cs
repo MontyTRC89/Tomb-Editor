@@ -111,7 +111,7 @@ namespace TombEditor.Forms
             // Test if everything is 'ok'
             if (!NgParameterInfo.TriggerIsValid(_level.Settings, TestTrigger))
                 if (DarkMessageBox.Show(this, "The currently selected trigger data is not valid for the engine.",
-                    "Trigger invalid", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) != DialogResult.OK)
+                    "Trigger invalid", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) != DialogResult.OK)
                     return;
 
             // Store some values like we have not NG triggers

@@ -243,7 +243,7 @@ namespace TombEditor.Controls
         {
             return DarkMessageBox.Show(this, "You are about to delete " + dataGridView.SelectedRows.Count +
                 " imported geometries from the list! The geometry infos will also be removed from all associated objects. " +
-                "Do you want to continue?", "Imported geometry removal", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2) != DialogResult.Yes;
+                "Do you want to continue?", "Imported geometry removal", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes;
         }
 
         // Prevent user message from appearing multiple time for multi row deletes
