@@ -427,9 +427,18 @@ namespace TombEditor.Controls
             if (!(VisibleTexture?.IsAvailable ?? false))
                 return;
 
-            Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
-            MoveToFixedPoint(e.Location, FixedPointInWorld);
+            if (_editor.Configuration.TextureMap_MouseWheelMovesTheTextureInsteadOfZooming)
+            {
+                ViewPosition -= 440.0f * new Vector2(0.0f, e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+                LimitPosition();
+                Invalidate();
+            }
+            else
+            {
+                Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
+                ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+                MoveToFixedPoint(e.Location, FixedPointInWorld);
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
