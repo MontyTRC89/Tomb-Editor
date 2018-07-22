@@ -1510,6 +1510,47 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
+        private void DrawSkybox(Matrix4x4 viewProjection)
+        {
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+
+            Effect skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
+
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+
+            WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.SkyBox);
+            if (moveable == null)
+                return;
+
+            AnimatedModel model = _wadRenderer.GetMoveable(moveable);
+            _legacyDevice.SetVertexBuffer(0, model.VertexBuffer);
+            _legacyDevice.SetIndexBuffer(model.IndexBuffer, true);
+            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
+            
+            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+            skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+            
+            for (int i = 0; i < model.Meshes.Count; i++)
+            {
+                var mesh = model.Meshes[i];
+                if (mesh.Vertices.Count == 0)
+                    continue;
+
+                Matrix4x4 world = Matrix4x4.CreateScale(20.0f) * 
+                                  model.AnimationTransforms[i] * 
+                                  Matrix4x4.CreateTranslation(_editor.SelectedRoom.GetLocalCenter() + _editor.SelectedRoom.WorldPos);
+
+                skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+
+                skinnedModelEffect.Techniques[0].Passes[0].Apply();
+
+                foreach (var submesh in mesh.Submeshes)
+                {
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                }
+            }
+        }
+
         private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw)
         {
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
@@ -1935,7 +1976,8 @@ namespace TombEditor.Controls
             }
 
             // Draw skybox
-            int TODO_DRAW_SKYBOX;
+            if (DrawHorizon)
+                DrawSkybox(viewProjection);
 
             // Draw rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
