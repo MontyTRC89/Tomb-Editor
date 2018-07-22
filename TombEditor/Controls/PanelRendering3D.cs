@@ -170,10 +170,13 @@ namespace TombEditor.Controls
             _renderingStateBuffer = device.CreateStateBuffer();
             _fontTexture = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
 
-            _fontDefault = device.CreateFont(new RenderingFont.Description { FontName   = _editor.Configuration.Rendering3D_FontName,
-                                                                             FontSize   = _editor.Configuration.Rendering3D_FontSize,
-                                                                             FontIsBold = _editor.Configuration.Rendering3D_FontIsBold,
-                                                                             TextureAllocator = _fontTexture });
+            _fontDefault = device.CreateFont(new RenderingFont.Description
+            {
+                FontName = _editor.Configuration.Rendering3D_FontName,
+                FontSize = _editor.Configuration.Rendering3D_FontSize,
+                FontIsBold = _editor.Configuration.Rendering3D_FontIsBold,
+                TextureAllocator = _fontTexture
+            });
             // Legacy
             {
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
@@ -1136,7 +1139,7 @@ namespace TombEditor.Controls
                 float height = _editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner();
                 Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(_editor.SelectedRoom.NumXSectors * 4.0f, height, _editor.SelectedRoom.NumZSectors * 4.0f);
                 float boxX = _editor.SelectedRoom.WorldPos.X + (_editor.SelectedRoom.NumXSectors * 1024.0f) / 2.0f;
-                float boxY = _editor.SelectedRoom.WorldPos.Y + height * 256.0f / 2.0f; 
+                float boxY = _editor.SelectedRoom.WorldPos.Y + height * 256.0f / 2.0f;
                 float boxZ = _editor.SelectedRoom.WorldPos.Z + (_editor.SelectedRoom.NumZSectors * 1024.0f) / 2.0f;
                 Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
                 solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * viewProjection).ToSharpDX());
@@ -1155,11 +1158,8 @@ namespace TombEditor.Controls
             return message;
         }
 
-        private void DrawLights(Matrix4x4 viewProjection, Room room, List<Text> textToDraw)
+        private void DrawLights(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
-            if (room == null)
-                return;
-
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
             _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
@@ -1167,32 +1167,32 @@ namespace TombEditor.Controls
 
             Effect solidEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
 
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var light in room.Objects.OfType<LightInstance>())
+                {
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((light.ObjectMatrix * viewProjection).ToSharpDX());
 
-            foreach (var light in room.Objects.OfType<LightInstance>())
-            {
-                solidEffect.Parameters["ModelViewProjection"].SetValue((light.ObjectMatrix * viewProjection).ToSharpDX());
+                    if (light.Type == LightType.Point)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                    if (light.Type == LightType.Spot)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                    if (light.Type == LightType.FogBulb)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
+                    if (light.Type == LightType.Shadow)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+                    if (light.Type == LightType.Effect)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                    if (light.Type == LightType.Sun)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
 
-                if (light.Type == LightType.Point)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-                if (light.Type == LightType.Spot)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-                if (light.Type == LightType.FogBulb)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
-                if (light.Type == LightType.Shadow)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
-                if (light.Type == LightType.Effect)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-                if (light.Type == LightType.Sun)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
+                    if (_editor.SelectedObject == light)
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.2f, 0.2f, 1.0f));
 
-                if (_editor.SelectedObject == light)
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.2f, 0.2f, 1.0f));
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                }
 
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
-            }
-
-            if (_editor.SelectedObject?.Room == room && _editor.SelectedObject is LightInstance)
+            if (Array.IndexOf(roomsWhoseObjectsToDraw, _editor.SelectedObject?.Room) != -1 && _editor.SelectedObject is LightInstance)
             {
                 LightInstance light = (LightInstance)_editor.SelectedObject;
 
@@ -1277,7 +1277,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawObjects(Matrix4x4 viewProjection, Room room, List<Text> textToDraw)
+        private void DrawObjects(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
             Effect effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
 
@@ -1285,205 +1285,214 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
 
-            foreach (var instance in room.Objects.OfType<CameraInstance>())
-            {
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-                var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-                if (_editor.SelectedObject == instance)
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<CameraInstance>())
                 {
-                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-                    _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        "Camera " + (instance.Fixed ? "(Fixed)" : "") +
-                            " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
-                            "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(room, instance.Position);
-                }
-
-                effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(color);
-
-                effect.Techniques[0].Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-            }
-
-            foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
-            {
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.SelectedObject == instance)
-                {
-                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-                    _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") " +
-                            "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
-                            "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(room, instance.Position);
-
-                    // Add the path of the flyby
-                    AddFlybyPath(instance.Sequence);
-                }
-
-                effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(color);
-
-                effect.Techniques[0].Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-            }
-
-            foreach (var instance in room.Objects.OfType<SinkInstance>())
-            {
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.SelectedObject == instance)
-                {
-                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-                    _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        "Sink[ID = " + (instance.ScriptId?.ToString() ?? " < None > ") + "]" +
-                            "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(room, instance.Position);
-                }
-
-                effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(color);
-
-                effect.Techniques[0].Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-            }
-
-            foreach (var instance in room.Objects.OfType<SoundSourceInstance>())
-            {
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                Vector4 color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
-                if (_editor.SelectedObject == instance)
-                {
-                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-                    _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") +
-                            "](" + instance.SoundNameToDisplay + ")\n" + GetObjectPositionString(room, instance)));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(room, instance.Position);
-                }
-
-                effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(color);
-
-                effect.Techniques[0].Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-            }
-
-            if (_editor.SelectedRoom != null)
-            {
-                foreach (var instance in room.Objects.OfType<MoveableInstance>())
-                {
-                    if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
-                        continue;
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
-                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                        color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * viewProjection,
-                            instance + "\nUnavailable " + instance.ItemType +
+                            "Camera " + (instance.Fixed ? "(Fixed)" : "") +
+                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
                                 "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
                     effect.Parameters["Color"].SetValue(color);
 
                     effect.Techniques[0].Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
 
-                foreach (var instance in room.Objects.OfType<StaticInstance>())
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
-                    if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
-                        continue;
-
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
-                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                        color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * viewProjection,
-                            instance + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
+                            "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") " +
+                                "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                                "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
+
+                        // Add the path of the flyby
+                        AddFlybyPath(instance.Sequence);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
                     effect.Parameters["Color"].SetValue(color);
 
                     effect.Techniques[0].Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
 
-                foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
+
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<SinkInstance>())
                 {
-                    if (instance.Model?.DirectXModel != null)
-                        if (instance.Model.DirectXModel.Meshes.Any(mesh => instance.MeshNameMatchesFilter(mesh.Name)))
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            "Sink[ID = " + (instance.ScriptId?.ToString() ?? " < None > ") + "]" +
+                                "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(room, instance.Position);
+                    }
+
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<SoundSourceInstance>())
+                {
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") +
+                                "](" + instance.SoundNameToDisplay + ")\n" + GetObjectPositionString(room, instance)));
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(room, instance.Position);
+                    }
+
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+            if (_editor.SelectedRoom != null)
+            {
+                foreach (Room room in roomsWhoseObjectsToDraw)
+                    foreach (var instance in room.Objects.OfType<MoveableInstance>())
+                    {
+                        if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
+                            continue;
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                        if (_editor.SelectedObject == instance)
+                        {
+                            color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * viewProjection,
+                                instance + "\nUnavailable " + instance.ItemType +
+                                    "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(room, instance.Position);
+                        }
+
+                        effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(color);
+
+                        effect.Techniques[0].Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    }
+
+                foreach (Room room in roomsWhoseObjectsToDraw)
+                    foreach (var instance in room.Objects.OfType<StaticInstance>())
+                    {
+                        if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
                             continue;
 
-                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
-                    {
-                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
-                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                        // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * viewProjection,
-                            instance.ToString()));
+                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                        if (_editor.SelectedObject == instance)
+                        {
+                            color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(room, instance.Position);
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * viewProjection,
+                                instance + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(room, instance.Position);
+                        }
+
+                        effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(color);
+
+                        effect.Techniques[0].Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(color);
+                foreach (Room room in roomsWhoseObjectsToDraw)
+                    foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
+                    {
+                        if (instance.Model?.DirectXModel != null)
+                            if (instance.Model.DirectXModel.Meshes.Any(mesh => instance.MeshNameMatchesFilter(mesh.Name)))
+                                continue;
 
-                    effect.Techniques[0].Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-                }
+                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                        if (_editor.SelectedObject == instance)
+                        {
+                            color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * viewProjection,
+                                instance.ToString()));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(room, instance.Position);
+                        }
+
+                        effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(color);
+
+                        effect.Techniques[0].Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    }
             }
 
             _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
@@ -1491,21 +1500,22 @@ namespace TombEditor.Controls
             _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-            foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
-            {
-                // Outer cone
-                float coneAngle = (float)Math.Atan2(512, 1024);
-                float cutoffScaleH = 1;
-                float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
+                {
+                    // Outer cone
+                    float coneAngle = (float)Math.Atan2(512, 1024);
+                    float cutoffScaleH = 1;
+                    float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
 
-                Matrix4x4 model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
+                    Matrix4x4 model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
 
-                effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                    effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-                effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-            }
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                }
 
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
@@ -1526,18 +1536,18 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexBuffer(0, model.VertexBuffer);
             _legacyDevice.SetIndexBuffer(model.IndexBuffer, true);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-            
+
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-            
+
             for (int i = 0; i < model.Meshes.Count; i++)
             {
                 var mesh = model.Meshes[i];
                 if (mesh.Vertices.Count == 0)
                     continue;
 
-                Matrix4x4 world = Matrix4x4.CreateScale(20.0f) * 
-                                  model.AnimationTransforms[i] * 
+                Matrix4x4 world = Matrix4x4.CreateScale(20.0f) *
+                                  model.AnimationTransforms[i] *
                                   Matrix4x4.CreateTranslation(_editor.SelectedRoom.GetLocalCenter() + _editor.SelectedRoom.WorldPos);
 
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -2024,9 +2034,9 @@ namespace TombEditor.Controls
             if (ShowOtherObjects)
             {
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-                DrawObjects(viewProjection, _editor.SelectedRoom, textToDraw);
+                DrawObjects(viewProjection, roomsToDraw, textToDraw);
                 // Draw light objects and bounding volumes only for current room
-                DrawLights(viewProjection, _editor.SelectedRoom, textToDraw);
+                DrawLights(viewProjection, roomsToDraw, textToDraw);
             }
 
             // Draw the height of the object
@@ -2046,9 +2056,9 @@ namespace TombEditor.Controls
             if (_editor.Configuration.Rendering3D_ShowFPS)
                 DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Rooms vertices: " + roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count) + "\n";
             DebugString += "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n";
-            if(_editor.SelectedObject != null)
+            if (_editor.SelectedObject != null)
                 DebugString += "Selected Object: " + _editor.SelectedObject;
-                    
+
             // Draw debug string
             textToDraw.Add(new Text
             {
