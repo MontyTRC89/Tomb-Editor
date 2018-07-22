@@ -519,10 +519,10 @@ namespace TombEditor
                 logScale = Math.Round(logScale / logQuantization) * logQuantization;
                 newScale = (float)Math.Exp(logScale);
             }
+
             // Set some limits to scale
-            // TODO: object risks to be too small and to be not pickable. We should add some size check
-            if (newScale < 1 / 32.0f)
-                newScale = 1 / 32.0f;
+            if (newScale < 1 / 64.0f)
+                newScale = 1 / 64.0f;
             if (newScale > 128.0f)
                 newScale = 128.0f;
             instance.Scale = newScale;
