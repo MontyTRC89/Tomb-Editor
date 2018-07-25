@@ -333,7 +333,7 @@ namespace TombEditor.Controls
             // Update depth bar...
             _depthBar.MouseMove(e, Size, _editor.Level);
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
-            Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X), (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right) - 1, (int)Math.Ceiling(area.Bottom) - 1));
+            Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X) - 1, (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right) - 1, (int)Math.Ceiling(area.Bottom) - 1));
 
             switch (e.Button)
             {
@@ -512,9 +512,10 @@ namespace TombEditor.Controls
                 }
 
                 RectangleF barArea = _depthBar.getBarArea(Size);
+                RectangleF barAreaWithSpace = new RectangleF(barArea.X - 1, barArea.Y, barArea.Width, barArea.Height);
 
                 // Draw 2d map if necessary and not occluded by 2d bar
-                if (!barArea.Contains(e.ClipRectangle))
+                if (!barAreaWithSpace.Contains(e.ClipRectangle))
                 {
                     Rectangle2 visibleArea = FromVisualCoord(e.ClipRectangle);
                     e.Graphics.Clear(Color.White);
@@ -579,7 +580,7 @@ namespace TombEditor.Controls
                             e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probeTextBrush, new RectangleF(textRextPos, textRectSize), DepthBar.ProbeStringLayout);
 
                             // Draw depth bar numbers
-                            if (!barArea.Contains(e.ClipRectangle))
+                            if (!barAreaWithSpace.Contains(e.ClipRectangle))
                             {
                                 RectangleF groupArea = _depthBar.groupGetArea(barArea, i);
                                 e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probeTextBrush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
