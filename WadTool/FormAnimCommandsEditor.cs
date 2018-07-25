@@ -25,7 +25,7 @@ namespace WadTool
             PlaySoundWater,
             FlipEffect
         }
-        
+
         private class AnimCommand
         {
             public AnimCommandType Type { get; set; }
@@ -259,8 +259,8 @@ namespace WadTool
                 cmd.Horizontal = short.Parse(tbHorizontal.Text);
                 cmd.Vertical = short.Parse(tbVertical.Text);
             }
-            else if (cmd.Type== AnimCommandType.PlaySound || 
-                     cmd.Type == AnimCommandType.PlaySoundLand || 
+            else if (cmd.Type== AnimCommandType.PlaySound ||
+                     cmd.Type == AnimCommandType.PlaySoundLand ||
                      cmd.Type == AnimCommandType.PlaySoundWater)
             {
                 cmd.Frame= short.Parse(tbPlaySoundFrame.Text);

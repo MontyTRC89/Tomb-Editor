@@ -964,7 +964,7 @@
             this.MainMenuStrip = this.darkMenuStrip1;
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FormMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Wad Tool";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.darkMenuStrip1.ResumeLayout(false);

@@ -86,10 +86,10 @@
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 705);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 717);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1008, 24);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(1016, 24);
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -361,7 +361,7 @@
             this.cbDrawGrid.AutoSize = true;
             this.cbDrawGrid.Checked = true;
             this.cbDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGrid.Location = new System.Drawing.Point(766, 672);
+            this.cbDrawGrid.Location = new System.Drawing.Point(766, 676);
             this.cbDrawGrid.Name = "cbDrawGrid";
             this.cbDrawGrid.Size = new System.Drawing.Size(77, 17);
             this.cbDrawGrid.TabIndex = 78;
@@ -374,7 +374,7 @@
             this.cbDrawGizmo.AutoSize = true;
             this.cbDrawGizmo.Checked = true;
             this.cbDrawGizmo.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGizmo.Location = new System.Drawing.Point(766, 649);
+            this.cbDrawGizmo.Location = new System.Drawing.Point(766, 653);
             this.cbDrawGizmo.Name = "cbDrawGizmo";
             this.cbDrawGizmo.Size = new System.Drawing.Size(87, 17);
             this.cbDrawGizmo.TabIndex = 79;
@@ -409,7 +409,7 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
-            this.butSaveChanges.Location = new System.Drawing.Point(884, 668);
+            this.butSaveChanges.Location = new System.Drawing.Point(884, 672);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(112, 23);
             this.butSaveChanges.TabIndex = 46;
@@ -625,7 +625,7 @@
             this.cbDrawLights.AutoSize = true;
             this.cbDrawLights.Checked = true;
             this.cbDrawLights.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawLights.Location = new System.Drawing.Point(766, 626);
+            this.cbDrawLights.Location = new System.Drawing.Point(766, 630);
             this.cbDrawLights.Name = "cbDrawLights";
             this.cbDrawLights.Size = new System.Drawing.Size(85, 17);
             this.cbDrawLights.TabIndex = 96;
@@ -650,7 +650,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRendering.Location = new System.Drawing.Point(13, 13);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(743, 678);
+            this.panelRendering.Size = new System.Drawing.Size(743, 682);
             this.panelRendering.TabIndex = 1;
             // 
             // butImportMeshFromFile
@@ -669,7 +669,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.ClientSize = new System.Drawing.Size(1016, 741);
             this.Controls.Add(this.butImportMeshFromFile);
             this.Controls.Add(this.lstLights);
             this.Controls.Add(this.cbDrawLights);
@@ -720,10 +720,11 @@
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.darkStatusStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormStaticEditor";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Static editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormStaticEditor_FormClosing);
