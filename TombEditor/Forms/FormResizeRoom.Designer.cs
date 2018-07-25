@@ -310,7 +310,7 @@
             this.darkGroupBox1.Size = new System.Drawing.Size(290, 272);
             this.darkGroupBox1.TabIndex = 2;
             this.darkGroupBox1.TabStop = false;
-            this.darkGroupBox1.Text = "darkGroupBox1";
+            this.darkGroupBox1.Text = "New dimensions";
             // 
             // FormResizeRoom
             // 
