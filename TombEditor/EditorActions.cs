@@ -2213,11 +2213,16 @@ namespace TombEditor
         {
             if (rooms.All(room => !room.Locked))
                 return false;
+            string lockedRoomList = "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
+
+            if (_editor.Configuration.Editor_OnlyShowSmallMessageWhenRoomIsLocked)
+            {
+                _editor.SendMessage("Can't move rooms because some rooms are locked.\n" + lockedRoomList, PopupType.Info);
+                return true;
+            }
 
             // Inform user and offer an option to unlock the room position
-            string message = "Can't move rooms because some rooms are locked. Unlock and continue?\n" +
-                "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
-            if (DarkMessageBox.Show(owner, message, "Locked rooms", MessageBoxButtons.YesNo,
+            if (DarkMessageBox.Show(owner, "Can't move rooms because some rooms are locked. Unlock and continue?\n" + lockedRoomList, "Locked rooms", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return true;
 
