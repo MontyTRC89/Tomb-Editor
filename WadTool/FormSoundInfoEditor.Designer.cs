@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.soundInfoEditor1 = new TombLib.Controls.SoundInfoEditor();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
-            // soundInfoEditor1
+            // soundInfoEditor
             // 
-            this.soundInfoEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor1.Location = new System.Drawing.Point(12, 12);
-            this.soundInfoEditor1.MinimumSize = new System.Drawing.Size(442, 346);
-            this.soundInfoEditor1.Name = "soundInfoEditor1";
-            this.soundInfoEditor1.Size = new System.Drawing.Size(656, 535);
-            this.soundInfoEditor1.TabIndex = 0;
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Location = new System.Drawing.Point(12, 12);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.Size = new System.Drawing.Size(656, 535);
+            this.soundInfoEditor.TabIndex = 0;
             // 
             // btCancel
             // 
@@ -72,7 +72,7 @@
             this.ClientSize = new System.Drawing.Size(680, 585);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
-            this.Controls.Add(this.soundInfoEditor1);
+            this.Controls.Add(this.soundInfoEditor);
             this.MinimizeBox = false;
             this.Name = "FormSoundInfoEditor";
             this.ShowIcon = false;
@@ -85,7 +85,7 @@
 
         #endregion
 
-        private TombLib.Controls.SoundInfoEditor soundInfoEditor1;
+        private TombLib.Controls.SoundInfoEditor soundInfoEditor;
         private DarkUI.Controls.DarkButton btCancel;
         private DarkUI.Controls.DarkButton btOk;
     }

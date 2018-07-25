@@ -284,7 +284,7 @@ namespace TombLib.LevelData.Compilers
 
                                 break;
 
-                            case WadAnimCommandType.JumpDistance:
+                            case WadAnimCommandType.SetJumpDistance:
                                 _animCommands.Add(0x02);
 
                                 _animCommands.Add(command.Parameter1);

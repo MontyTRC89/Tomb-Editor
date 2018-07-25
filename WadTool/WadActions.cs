@@ -387,7 +387,7 @@ namespace WadTool
                 // Save sound names
                 foreach (var cmd in animation.AnimCommands)
                     if (cmd.Type == WadAnimCommandType.PlaySound)
-                        cmd.SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
+                        cmd.XmlSerializer_SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
 
                 // Serialize the animation to XML
                 var xmlSerializer = new XmlSerializer(typeof(WadAnimation));
@@ -466,7 +466,7 @@ namespace WadTool
                     {
                         // Try to get a sound with the same name
                         foreach (var soundInfo in wad.SoundInfosUnique)
-                            if (soundInfo.Name == cmd.SoundInfoName)
+                            if (soundInfo.Name == cmd.XmlSerializer_SoundInfoName)
                             {
                                 cmd.SoundInfo = soundInfo;
                                 break;
