@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
@@ -25,8 +26,6 @@ namespace TombEditor.Controls
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
 
-        private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
-        private float _gridStep => _gridSize / Room.MaxRecommendedRoomDimensions;
         private ToolTip _toolTip = new ToolTip();
 
         public Panel2DGrid()
@@ -73,48 +72,68 @@ namespace TombEditor.Controls
             return e.Previous is SectorBasedObjectInstance || e.Current is SectorBasedObjectInstance;
         }
 
+        private VectorInt2 GetGridDimensions()
+        {
+            return VectorInt2.Max(_editor.SelectedRoom.SectorSize, new VectorInt2(Room.DefaultRoomDimensions, Room.DefaultRoomDimensions));
+        }
+
+        private float GetGridStep()
+        {
+            VectorInt2 gridDimensions = GetGridDimensions();
+            Size ClientSize = this.ClientSize;
+            if ((ClientSize.Width * gridDimensions.Y) < (ClientSize.Height * gridDimensions.X))
+                return ClientSize.Width / gridDimensions.X;
+            else
+                return ClientSize.Height / gridDimensions.Y;
+        }
+
         private RectangleF GetVisualAreaTotal()
         {
+            Vector2 gridSize = (Vector2)GetGridDimensions() * GetGridStep();
             return new RectangleF(
-                (ClientSize.Width - _gridSize) * 0.5f,
-                (ClientSize.Height - _gridSize) * 0.5f,
-                _gridSize,
-                _gridSize);
+                (ClientSize.Width - gridSize.X) * 0.5f,
+                (ClientSize.Height - gridSize.Y) * 0.5f,
+                gridSize.X,
+                gridSize.Y);
         }
 
         private RectangleF GetVisualAreaRoom()
         {
-            Room currentRoom = _editor.SelectedRoom;
             RectangleF totalArea = GetVisualAreaTotal();
+            float gridStep = GetGridStep();
+            VectorInt2 gridDimensions = GetGridDimensions();
 
             return new RectangleF(
-                totalArea.X + _gridStep * ((Room.MaxRecommendedRoomDimensions - currentRoom.NumXSectors) / 2),
-                totalArea.Y + _gridStep * ((Room.MaxRecommendedRoomDimensions - currentRoom.NumZSectors) / 2),
-                _gridStep * currentRoom.NumXSectors,
-                _gridStep * currentRoom.NumZSectors);
+                totalArea.X + gridStep * ((gridDimensions.X - _editor.SelectedRoom.NumXSectors) / 2),
+                totalArea.Y + gridStep * ((gridDimensions.Y - _editor.SelectedRoom.NumZSectors) / 2),
+                gridStep * _editor.SelectedRoom.NumXSectors,
+                gridStep * _editor.SelectedRoom.NumZSectors);
         }
 
         private PointF ToVisualCoord(VectorInt2 sectorCoord)
         {
             RectangleF roomArea = GetVisualAreaRoom();
-            return new PointF(sectorCoord.X * _gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * _gridStep);
+            float gridStep = GetGridStep();
+            return new PointF(sectorCoord.X * gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * gridStep);
         }
 
         private RectangleF ToVisualCoord(RectangleInt2 sectorArea)
         {
             PointF convertedPoint0 = ToVisualCoord(sectorArea.Start);
             PointF convertedPoint1 = ToVisualCoord(sectorArea.End);
+            float gridStep = GetGridStep();
             return RectangleF.FromLTRB(
                 Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
-                Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
+                Math.Max(convertedPoint0.X, convertedPoint1.X) + gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + gridStep);
         }
 
         private VectorInt2 FromVisualCoord(PointF point)
         {
             RectangleF roomArea = GetVisualAreaRoom();
+            float gridStep = GetGridStep();
             return new VectorInt2(
-                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
-                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
+                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / gridStep)),
+                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / gridStep)));
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -220,6 +239,8 @@ namespace TombEditor.Controls
                 Room currentRoom = _editor.SelectedRoom;
                 RectangleF totalArea = GetVisualAreaTotal();
                 RectangleF roomArea = GetVisualAreaRoom();
+                VectorInt2 gridDimensions = GetGridDimensions();
+                float gridStep = GetGridStep();
                 bool probePortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals;
 
                 e.Graphics.FillRectangle(Brushes.White, totalArea);
@@ -228,7 +249,7 @@ namespace TombEditor.Controls
                 for (int x = 0; x < currentRoom.NumXSectors; x++)
                     for (int z = 0; z < currentRoom.NumZSectors; z++)
                     {
-                        RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
+                        RectangleF rectangle = new RectangleF(roomArea.X + x * gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * gridStep, gridStep, gridStep);
 
                         var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(currentRoom, x, z, probePortals);
                         if (currentSectorColoringInfos != null)
@@ -309,10 +330,10 @@ namespace TombEditor.Controls
                     }
 
                 // Draw black grid lines
-                for (int x = 0; x <= Room.MaxRecommendedRoomDimensions; ++x)
-                    e.Graphics.DrawLine(_gridPen, totalArea.X + x * _gridStep, totalArea.Y, totalArea.X + x * _gridStep, totalArea.Y + _gridSize);
-                for (int y = 0; y <= Room.MaxRecommendedRoomDimensions; ++y)
-                    e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * _gridStep, totalArea.X + _gridSize, totalArea.Y + y * _gridStep);
+                for (int x = 0; x <= gridDimensions.X; ++x)
+                    e.Graphics.DrawLine(_gridPen, totalArea.X + x * gridStep, totalArea.Y, totalArea.X + x * gridStep, totalArea.Y + gridStep * gridDimensions.Y);
+                for (int y = 0; y <= gridDimensions.Y; ++y)
+                    e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * gridStep, totalArea.X + gridStep * gridDimensions.X, totalArea.Y + y * gridStep);
 
                 // Draw selection
                 if (_editor.SelectedSectors.Valid)

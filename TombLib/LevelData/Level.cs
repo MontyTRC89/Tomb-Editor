@@ -12,8 +12,8 @@ namespace TombLib.LevelData
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public const short MaxSectorCoord = 100;
-        public const short MaxNumberOfRooms = 512;
+        public const short MaxRecommendedSectorCoord = 100;
+        public const short MaxNumberOfRooms = 1024;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
@@ -24,7 +24,7 @@ namespace TombLib.LevelData
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-                result.Rooms[0] = new Room(result, Room.MaxRoomDimensions, Room.MaxRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");
+                result.Rooms[0] = new Room(result, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");
             return result;
         }
 
