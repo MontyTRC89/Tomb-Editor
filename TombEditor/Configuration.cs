@@ -92,11 +92,6 @@ namespace TombEditor
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
         public float Gizmo_LineThickness { get; set; } = 45.0f;
 
-        public Point Window_Position { get; set; } = new Point(32, 32);
-        public Size Window_Size { get; set; } = Window_SizeDefault;
-        public bool Window_Maximized { get; set; } = true;
-        public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
-
         public bool AutoSave_Enable { get; set; } = true;
         public int AutoSave_TimeInSeconds { get; set; } = 500;
         public string AutoSave_DateTimeFormat { get; set; } = "yyyy-MM-dd HH-mm";
@@ -105,8 +100,11 @@ namespace TombEditor
         public bool AutoSave_NamePutDateFirst { get; set; } = true;
         public string AutoSave_NameSeparator { get; set; } = " ";
 
-        public HotkeySets Keyboard_HotkeySets { get; set; } = HotkeySets.GenerateDefault(KeyboardLayoutDetector.KeyboardLayout);
-
+        public HotkeySets Window_HotkeySets { get; set; } = new HotkeySets();
+        public Point Window_Position { get; set; } = new Point(32, 32);
+        public Size Window_Size { get; set; } = Window_SizeDefault;
+        public bool Window_Maximized { get; set; } = true;
+        public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
         {
@@ -252,10 +250,8 @@ namespace TombEditor
 
         public static Configuration Load(string filePath)
         {
-            Configuration result;
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = Load(stream);
-            return result;
+                return Load(stream);
         }
 
         public static Configuration Load()
