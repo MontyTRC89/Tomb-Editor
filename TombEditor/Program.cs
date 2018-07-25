@@ -26,9 +26,8 @@ namespace TombEditor
             // Setup logging
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
-                // Create configuration file, but only if there is a need to.
-                if (initialEvents.Count != 0)
-                    configuration.SaveTry();
+                // Create configuration file
+                configuration.SaveTry();
 
                 // Setup application
                 Application.EnableVisualStyles();
