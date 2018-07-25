@@ -21,6 +21,7 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+            panel2DGrid.Room = _editor.SelectedRoom;
         }
 
         protected override void Dispose(bool disposing)
@@ -34,7 +35,8 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-
+            if (obj is Editor.SelectedRoomChangedEvent)
+                panel2DGrid.Room = ((Editor.SelectedRoomChangedEvent)obj).Current;
         }
 
         private void butWall_Click(object sender, EventArgs e)

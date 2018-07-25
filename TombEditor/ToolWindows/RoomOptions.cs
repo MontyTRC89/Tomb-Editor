@@ -298,8 +298,6 @@ namespace TombEditor.ToolWindows
 
         private void butCropRoom_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
             EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
 

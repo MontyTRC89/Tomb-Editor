@@ -1449,23 +1449,36 @@ namespace TombEditor
 
         public static void CropRoom(Room room, RectangleInt2 newArea, IWin32Window owner)
         {
-            newArea = newArea.Inflate(1);
-            if (newArea.Width + 1 > Room.MaxRecommendedRoomDimensions || newArea.Height + 1 > Room.MaxRecommendedRoomDimensions)
+            // Figure out new room area
+            if (newArea.X0 <= 0 || newArea.Y0 <= 0 || newArea.X1 <= 0  || newArea.Y1 <= 0)
+                newArea = new RectangleInt2(new VectorInt2(), room.SectorSize - new VectorInt2(1, 1));
+            else
+                newArea = newArea.Inflate(1);
+
+            bool useFloor;
+            using (FormResizeRoom form = new FormResizeRoom(room, newArea))
             {
-                _editor.SendMessage("The selected area exceeds the maximum room size.", PopupType.Error);
-                return;
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                newArea = form.NewArea;
+                useFloor = form.UseFloor;
             }
-            if (DarkMessageBox.Show(owner, "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
-                " Do you want to continue?", "Crop room", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
+
+            // Estimate wether triggers or portals must be removed
+            // Ask the user again if portals or triggers are being removed in process.
+            if (room.Portals.Any(portal => portal.Direction != PortalDirection.Floor && portal.Direction != PortalDirection.Ceiling && !newArea.Inflate(-1).Contains(portal.Area)) ||
+                room.Triggers.Any(trigger => !newArea.Inflate(-1).Contains(trigger.Area)))
+                if (DarkMessageBox.Show(owner, "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
+                    " Do you want to continue?", "Crop room", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
 
             // Resize room
             if (room.AlternateOpposite != null)
             {
-                room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+                room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.AlternateOpposite.GetLowestCorner(), (short)room.AlternateOpposite.GetHighestCorner(), useFloor);
                 room.AlternateOpposite.BuildGeometry();
             }
-            room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+            room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
             room.BuildGeometry();
 
             // Fix selection if necessary

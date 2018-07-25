@@ -30,7 +30,7 @@ namespace TombLib.LevelData
 
         public const short DefaultHeight = 12;
         public const short DefaultRoomDimensions = 20;
-        public const short MaxRecommendedRoomDimensions = 30;
+        public const short MaxRecommendedRoomDimensions = 32;
 
         public string Name { get; set; }
         public VectorInt3 Position { get; set; }
@@ -68,14 +68,14 @@ namespace TombLib.LevelData
             Name = name;
             Level = level;
             AmbientLight = ambientLight;
-            Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
+            Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
         }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
             : this(level, sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
         { }
 
-        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight)
+        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool useFloor = false)
         {
             int numXSectors = area.Width + 1;
             int numZSectors = area.Height + 1;
@@ -96,8 +96,8 @@ namespace TombLib.LevelData
                 {
                     Block oldBlock = GetBlockTry(new VectorInt2(x, z) + offset);
                     newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
-                    if (newBlocks[x, z].Type == BlockType.BorderWall)
-                        newBlocks[x, z].Type = BlockType.Wall;
+                    if (oldBlock == null || newBlocks[x, z].Type == BlockType.BorderWall)
+                        newBlocks[x, z].Type = useFloor ? BlockType.Floor : BlockType.Wall;
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         newBlocks[x, z].Type = BlockType.BorderWall;

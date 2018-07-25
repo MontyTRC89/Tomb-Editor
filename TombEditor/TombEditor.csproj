@@ -117,6 +117,12 @@
     <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\FormResizeRoom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormResizeRoom.Designer.cs">
+      <DependentUpon>FormResizeRoom.cs</DependentUpon>
+    </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
@@ -385,6 +391,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPreviewWad.resx">
       <DependentUpon>FormPreviewWad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormResizeRoom.resx">
+      <DependentUpon>FormResizeRoom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormTextureRemap.resx">
       <DependentUpon>FormTextureRemap.cs</DependentUpon>
