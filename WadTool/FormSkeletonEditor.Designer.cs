@@ -134,6 +134,7 @@
             this.Controls.Add(this.treeSkeleton);
             this.Controls.Add(this.panelRendering);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormSkeletonEditor";
             this.ShowIcon = false;

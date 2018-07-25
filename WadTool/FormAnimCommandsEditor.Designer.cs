@@ -65,7 +65,7 @@
             // 
             // btCancel
             // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btCancel.Location = new System.Drawing.Point(147, 312);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(113, 26);
@@ -75,7 +75,7 @@
             // 
             // btOk
             // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btOk.Location = new System.Drawing.Point(266, 312);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(113, 26);
@@ -85,16 +85,20 @@
             // 
             // treeCommands
             // 
+            this.treeCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treeCommands.Location = new System.Drawing.Point(12, 13);
             this.treeCommands.MaxDragChange = 20;
             this.treeCommands.Name = "treeCommands";
             this.treeCommands.Size = new System.Drawing.Size(499, 227);
             this.treeCommands.TabIndex = 52;
-            this.treeCommands.Text = "darkTreeView1";
             this.treeCommands.SelectedNodesChanged += new System.EventHandler(this.treeCommands_SelectedNodesChanged);
             // 
             // comboCommandType
             // 
+            this.comboCommandType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboCommandType.FormattingEnabled = true;
             this.comboCommandType.Items.AddRange(new object[] {
             "Set position",
@@ -113,13 +117,15 @@
             // 
             // panelPosition
             // 
+            this.panelPosition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelPosition.Controls.Add(this.darkLabel3);
             this.panelPosition.Controls.Add(this.tbPosZ);
             this.panelPosition.Controls.Add(this.darkLabel2);
             this.panelPosition.Controls.Add(this.tbPosY);
             this.panelPosition.Controls.Add(this.darkLabel1);
             this.panelPosition.Controls.Add(this.tbPosX);
-            this.panelPosition.Location = new System.Drawing.Point(12, 275);
+            this.panelPosition.Location = new System.Drawing.Point(12, 272);
             this.panelPosition.Name = "panelPosition";
             this.panelPosition.Size = new System.Drawing.Size(324, 31);
             this.panelPosition.TabIndex = 54;
@@ -180,11 +186,13 @@
             // 
             // panelJumpDistance
             // 
+            this.panelJumpDistance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelJumpDistance.Controls.Add(this.darkLabel5);
             this.panelJumpDistance.Controls.Add(this.tbVertical);
             this.panelJumpDistance.Controls.Add(this.darkLabel6);
             this.panelJumpDistance.Controls.Add(this.tbHorizontal);
-            this.panelJumpDistance.Location = new System.Drawing.Point(12, 312);
+            this.panelJumpDistance.Location = new System.Drawing.Point(12, 309);
             this.panelJumpDistance.Name = "panelJumpDistance";
             this.panelJumpDistance.Size = new System.Drawing.Size(324, 29);
             this.panelJumpDistance.TabIndex = 55;
@@ -227,11 +235,13 @@
             // 
             // panelEffect
             // 
+            this.panelEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelEffect.Controls.Add(this.darkLabel4);
             this.panelEffect.Controls.Add(this.tbFlipEffect);
             this.panelEffect.Controls.Add(this.darkLabel7);
             this.panelEffect.Controls.Add(this.tbFlipEffectFrame);
-            this.panelEffect.Location = new System.Drawing.Point(12, 347);
+            this.panelEffect.Location = new System.Drawing.Point(12, 344);
             this.panelEffect.Name = "panelEffect";
             this.panelEffect.Size = new System.Drawing.Size(324, 29);
             this.panelEffect.TabIndex = 56;
@@ -274,11 +284,13 @@
             // 
             // panelSound
             // 
+            this.panelSound.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelSound.Controls.Add(this.comboSound);
             this.panelSound.Controls.Add(this.darkLabel8);
             this.panelSound.Controls.Add(this.darkLabel9);
             this.panelSound.Controls.Add(this.tbPlaySoundFrame);
-            this.panelSound.Location = new System.Drawing.Point(12, 382);
+            this.panelSound.Location = new System.Drawing.Point(12, 379);
             this.panelSound.Name = "panelSound";
             this.panelSound.Size = new System.Drawing.Size(324, 29);
             this.panelSound.TabIndex = 57;
@@ -321,8 +333,7 @@
             // 
             // butAddEffect
             // 
-            this.butAddEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddEffect.Image = global::WadTool.Properties.Resources.plus_math_16;
             this.butAddEffect.Location = new System.Drawing.Point(342, 246);
             this.butAddEffect.Name = "butAddEffect";
@@ -334,8 +345,7 @@
             // 
             // butDeleteEffect
             // 
-            this.butDeleteEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteEffect.Image = global::WadTool.Properties.Resources.trash_161;
             this.butDeleteEffect.Location = new System.Drawing.Point(431, 246);
             this.butDeleteEffect.Name = "butDeleteEffect";
@@ -349,9 +359,9 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
-            this.butSaveChanges.Location = new System.Drawing.Point(342, 275);
+            this.butSaveChanges.Location = new System.Drawing.Point(342, 276);
             this.butSaveChanges.Name = "butSaveChanges";
-            this.butSaveChanges.Size = new System.Drawing.Size(83, 23);
+            this.butSaveChanges.Size = new System.Drawing.Size(83, 22);
             this.butSaveChanges.TabIndex = 96;
             this.butSaveChanges.Text = "Save";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -374,10 +384,10 @@
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(529, 377);
             this.Name = "FormAnimCommandsEditor";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Anim commands editor";

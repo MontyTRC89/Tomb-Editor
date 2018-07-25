@@ -60,7 +60,7 @@
             this.dgvStateChanges.Name = "dgvStateChanges";
             this.dgvStateChanges.RowHeadersWidth = 40;
             this.dgvStateChanges.RowTemplate.Height = 16;
-            this.dgvStateChanges.Size = new System.Drawing.Size(524, 365);
+            this.dgvStateChanges.Size = new System.Drawing.Size(517, 372);
             this.dgvStateChanges.TabIndex = 48;
             // 
             // columnStateId
@@ -96,7 +96,7 @@
             // btCancel
             // 
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.Location = new System.Drawing.Point(175, 393);
+            this.btCancel.Location = new System.Drawing.Point(168, 400);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(113, 26);
             this.btCancel.TabIndex = 50;
@@ -106,7 +106,7 @@
             // btOk
             // 
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOk.Location = new System.Drawing.Point(294, 393);
+            this.btOk.Location = new System.Drawing.Point(287, 400);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(113, 26);
             this.btOk.TabIndex = 51;
@@ -118,26 +118,25 @@
             this.dgvControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvControls.Enabled = false;
-            this.dgvControls.Location = new System.Drawing.Point(545, 12);
+            this.dgvControls.Location = new System.Drawing.Point(538, 12);
             this.dgvControls.MinimumSize = new System.Drawing.Size(24, 24);
             this.dgvControls.Name = "dgvControls";
-            this.dgvControls.Size = new System.Drawing.Size(27, 365);
+            this.dgvControls.Size = new System.Drawing.Size(27, 372);
             this.dgvControls.TabIndex = 49;
             // 
             // FormStateChangesEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 431);
+            this.ClientSize = new System.Drawing.Size(577, 438);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
             this.Controls.Add(this.dgvControls);
             this.Controls.Add(this.dgvStateChanges);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormStateChangesEditor";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "State changes";
