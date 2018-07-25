@@ -174,7 +174,7 @@ namespace TombEditor.Controls
 
         private void LimitPosition()
         {
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(Level.MaxSectorCoord));
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(Level.MaxRecommendedSectorCoord));
         }
 
         private int? FindClosestProbe(Vector2 clickPos)
@@ -536,18 +536,18 @@ namespace TombEditor.Controls
                 Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
                 Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
                 Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
-                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
-                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
+                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(Level.MaxRecommendedSectorCoord));
+                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(Level.MaxRecommendedSectorCoord));
                 Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
                 Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
                 for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
                     e.Graphics.DrawLine(x % 10 == 0 ? _gridPenThick : _gridPenThin,
-                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxSectorCoord)));
+                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxRecommendedSectorCoord)));
 
                 for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
                     e.Graphics.DrawLine(y % 10 == 0 ? _gridPenThick : _gridPenThin,
-                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxSectorCoord, y)));
+                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxRecommendedSectorCoord, y)));
 
                 // Draw visible rooms
                 foreach (Room room in sortedRoomList)

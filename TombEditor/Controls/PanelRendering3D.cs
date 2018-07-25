@@ -2222,30 +2222,23 @@ namespace TombEditor.Controls
         {
             private class ReferenceCell
             {
-                public readonly short[,] Heights;
-                public bool Processed;
-
-                public ReferenceCell()
-                {
-                    Heights = new short[2, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-                    Processed = false;
-                }
+                public readonly short[,] Heights = new short[2, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+                public bool Processed = false;
             }
 
             private readonly PanelRendering3D _parent;
-            private readonly ReferenceCell[,] _actionGrid = new ReferenceCell[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
+            private ReferenceCell[,] _actionGrid;
             private PickingResultBlock _referencePicking;
             private Point _referencePosition;
             private Point _newPosition;
             private Room _referenceRoom;
 
             // Terrain map resolution must be ALWAYS POWER OF 2 PLUS 1 - this is the requirement of diamond square algorithm.
-            private const int TerrainMapResolution = 32 + 1;
-            public readonly float[,] RandomHeightMap = new float[TerrainMapResolution, TerrainMapResolution];
+            public float[,] RandomHeightMap;
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
-            public Block ReferenceBlock => _parent._editor.SelectedRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
+            public Block ReferenceBlock => _referenceRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
             public bool ReferenceIsFloor => _referencePicking.BelongsToFloor;
             public bool ReferenceIsDiagonalStep => _referencePicking.BelongsToFloor ? ReferenceBlock.Floor.DiagonalSplit != DiagonalSplit.None : ReferenceBlock.Ceiling.DiagonalSplit != DiagonalSplit.None;
             public bool ReferenceIsOppositeDiagonalStep
@@ -2339,21 +2332,16 @@ namespace TombEditor.Controls
             public ToolHandler(PanelRendering3D parent)
             {
                 _parent = parent;
-
-                for (int i = 0; i < Room.MaxRoomDimensions; i++)
-                    for (int j = 0; j < Room.MaxRoomDimensions; j++)
-                        _actionGrid[i, j] = new ReferenceCell();
             }
 
             private void PrepareActionGrid()
             {
-                for (int x = 0; x < _parent._editor.SelectedRoom.NumXSectors; x++)
-                    for (int z = 0; z < _parent._editor.SelectedRoom.NumZSectors; z++)
+                _actionGrid = new ReferenceCell[_referenceRoom.NumXSectors, _referenceRoom.NumZSectors];
+                for (int x = 0; x < _actionGrid.GetLength(0); x++)
+                    for (int z = 0; z < _actionGrid.GetLength(1); z++)
                     {
-                        _actionGrid[x, z].Processed = false;
-
+                        _actionGrid[x, z] = new ReferenceCell();
                         for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
-                        {
                             if (_referencePicking.BelongsToFloor)
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = _referenceRoom.Blocks[x, z].Floor.GetHeight(edge);
@@ -2364,7 +2352,6 @@ namespace TombEditor.Controls
                                 _actionGrid[x, z].Heights[0, (int)edge] = _referenceRoom.Blocks[x, z].Ceiling.GetHeight(edge);
                                 _actionGrid[x, z].Heights[1, (int)edge] = _referenceRoom.Blocks[x, z].GetHeight(BlockVertical.Rf, edge);
                             }
-                        }
                     }
             }
 
@@ -2372,7 +2359,7 @@ namespace TombEditor.Controls
             {
                 // Algorithm used here is naive Diamond-Square, which should be enough for low-res TR geometry.
 
-                int s = TerrainMapResolution - 1;
+                int s = RandomHeightMap.GetLength(0) - 1;
 
                 if ((s & (s - 1)) != 0)
                     throw new Exception("Wrong heightmap size defined for Diamond-Square algorithm. Must be power of 2.");
@@ -2500,7 +2487,7 @@ namespace TombEditor.Controls
                             break;
                     }
 
-                    var face = EditorActions.GetFaces(_parent._editor.SelectedRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First(item => item.Key == _referencePicking.Face);
+                    var face = EditorActions.GetFaces(_referenceRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First(item => item.Key == _referencePicking.Face);
 
                     if (face.Value[0] - _referencePicking.VerticalCoord > _referencePicking.VerticalCoord - face.Value[1])
                         switch (ReferenceBlock.Floor.DiagonalSplit)
@@ -2541,7 +2528,15 @@ namespace TombEditor.Controls
                     _referencePicking = refPicking;
                     _referenceRoom = _parent._editor.SelectedRoom;
                     RelocatePicking();
+
+                    // Initialize data structures
                     PrepareActionGrid();
+
+                    int randomHeightMapSize = 1;
+                    while (randomHeightMapSize < Math.Max(_referenceRoom.NumXSectors, _referenceRoom.NumZSectors))
+                        randomHeightMapSize *= 2; // Find random height map that is a power of two plus.
+                    ++randomHeightMapSize;
+                    RandomHeightMap = new float[randomHeightMapSize, randomHeightMapSize];
 
                     if (_parent._editor.Tool.Tool == EditorToolType.Terrain)
                         GenerateNewTerrain();
@@ -2554,7 +2549,7 @@ namespace TombEditor.Controls
                 {
                     Engaged = false;
                     Dragged = false;
-                    _parent._renderingCachedRooms.Remove(_parent._editor.SelectedRoom); // To update highlight state
+                    _parent._renderingCachedRooms.Remove(_referenceRoom); // To update highlight state
                 }
             }
 
@@ -2582,7 +2577,7 @@ namespace TombEditor.Controls
                         delta = new Point(_referencePosition.X - newPosition.X, _referencePosition.Y - newPosition.Y);
                     _newPosition = newPosition;
                     Dragged = true;
-                    _parent._renderingCachedRooms.Remove(_parent._editor.SelectedRoom); // To update highlight state
+                    _parent._renderingCachedRooms.Remove(_referenceRoom); // To update highlight state
                     return delta;
                 }
                 else

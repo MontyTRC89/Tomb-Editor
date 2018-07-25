@@ -1450,7 +1450,7 @@ namespace TombEditor
         public static void CropRoom(Room room, RectangleInt2 newArea, IWin32Window owner)
         {
             newArea = newArea.Inflate(1);
-            if (newArea.Width + 1 > Room.MaxRoomDimensions || newArea.Height + 1 > Room.MaxRoomDimensions)
+            if (newArea.Width + 1 > Room.MaxRecommendedRoomDimensions || newArea.Height + 1 > Room.MaxRecommendedRoomDimensions)
             {
                 _editor.SendMessage("The selected area exceeds the maximum room size.", PopupType.Error);
                 return;
