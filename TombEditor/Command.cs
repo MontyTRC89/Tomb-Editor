@@ -720,6 +720,11 @@ searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.co
                 EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
             });
 
+            AddCommand("MergeRoomsHorizontally", "Merge rooms horizonally", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.MergeRoomsHorizontally(args.Editor.SelectedRooms, args.Window);
+            });
+
             AddCommand("ExportRooms", "Export rooms...", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.ExportRooms(args.Editor.SelectedRooms, args.Window);

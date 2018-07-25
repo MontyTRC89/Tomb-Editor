@@ -126,7 +126,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
-                butFlipMap.Enabled = _editor.SelectedRoom.Flipped;
+                butFlipMap.Enabled = _editor.SelectedRoom.Alternated;
                 butFlipMap.Checked = _editor.SelectedRoom.AlternateBaseRoom != null;
             }
 
@@ -291,12 +291,12 @@ namespace TombEditor.ToolWindows
 
             if (butFlipMap.Checked)
             {
-                if (_editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom != null)
+                if (_editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateRoom != null)
                     _editor.SelectedRoom = _editor.SelectedRoom.AlternateRoom;
             }
             else
             {
-                if (_editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateBaseRoom != null)
+                if (_editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateBaseRoom != null)
                     _editor.SelectedRoom = _editor.SelectedRoom.AlternateBaseRoom;
             }
         }

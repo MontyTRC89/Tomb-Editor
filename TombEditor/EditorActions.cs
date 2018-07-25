@@ -497,8 +497,8 @@ namespace TombEditor
             _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
 
-            if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
-                _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
+            //if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+            //    _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -1450,7 +1450,7 @@ namespace TombEditor
         public static void CropRoom(Room room, RectangleInt2 newArea, IWin32Window owner)
         {
             // Figure out new room area
-            if (newArea.X0 <= 0 || newArea.Y0 <= 0 || newArea.X1 <= 0  || newArea.Y1 <= 0)
+            if (newArea.X0 <= 0 || newArea.Y0 <= 0 || newArea.X1 <= 0 || newArea.Y1 <= 0)
                 newArea = new RectangleInt2(new VectorInt2(), room.SectorSize - new VectorInt2(1, 1));
             else
                 newArea = newArea.Inflate(1);
@@ -1974,7 +1974,7 @@ namespace TombEditor
         public static void AlternateRoomEnable(Room room, short AlternateGroup)
         {
             // Create new room
-            var newRoom = room.Clone(_editor.Level, instance => instance.CopyToFlipRooms);
+            var newRoom = room.Clone(_editor.Level, instance => instance.CopyToAlternateRooms);
             newRoom.Name = "Flipped of " + room;
             newRoom.BuildGeometry();
 
@@ -2135,6 +2135,275 @@ namespace TombEditor
             // Update the UI
             if (_editor.SelectedRoom == room)
                 _editor.SelectedRoom = newRoom; //Don't center
+        }
+
+
+        public static void MergeRoomsHorizontally(IEnumerable<Room> rooms, IWin32Window owner)
+        {
+            if (rooms.Count() < 2)
+            {
+                _editor.SendMessage("Select at least 2 rooms to merge them.");
+                return;
+            }
+
+            bool alternated = rooms.Any(room => room.Alternated);
+            if (alternated)
+                rooms = rooms.Select(room => room.AlternateBaseRoom ?? room);
+            rooms = rooms.Distinct();
+
+            // First we need to make sure that no rooms overlap
+            // If rooms overlap, it's uncertain which room takes priority.
+            Func<Room, Dictionary<VectorInt2, Room>, bool> buildSectorMap = (room, sectorMap) =>
+            {
+                bool roomOverlaps = false;
+                for (int x = 1; x < (room.NumXSectors - 1); ++x)
+                    for (int z = 1; z < (room.NumZSectors - 1); ++z)
+                        if (!room.Blocks[x, z].IsAnyWall)
+                        {
+                            VectorInt2 worldPos = room.SectorPos + new VectorInt2(x, z);
+                            Room existingRoom;
+                            if (sectorMap.TryGetValue(worldPos, out existingRoom))
+                                roomOverlaps = true;
+                            else
+                                sectorMap.Add(worldPos, room);
+                        }
+                return roomOverlaps;
+            };
+
+            bool baseRoomOverlaps = false;
+            bool alternateRoomOverlaps = false;
+            Dictionary<VectorInt2, Room> baseNewSectorMap = new Dictionary<VectorInt2, Room>();
+            Dictionary<VectorInt2, Room> alternateNewSectorMap = new Dictionary<VectorInt2, Room>();
+            foreach (Room room in rooms)
+            {
+                baseRoomOverlaps = buildSectorMap(room, baseNewSectorMap) || baseRoomOverlaps;
+                if (alternated)
+                    alternateRoomOverlaps = buildSectorMap(room.AlternateOpposite ?? room, alternateNewSectorMap) || alternateRoomOverlaps;
+            }
+
+            // If there are overlaps, ask the user about it
+            if (baseRoomOverlaps || alternateRoomOverlaps)
+                if (DarkMessageBox.Show(owner, "The selected rooms overlap horizontally. To resolve the conflict manually, put down walls on the overlapped sectors. " +
+                    "You can continue anyway, the rooms are then taken in this priority: " + string.Join(", ", rooms.Select(room => room.Name)),
+                    "Rooms are overlapping", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) != DialogResult.OK)
+                    return;
+
+            // Figure out position and size of the merged room
+            VectorInt2 minSectorPos = new VectorInt2(int.MaxValue, int.MaxValue);
+            VectorInt2 maxSectorPos = new VectorInt2(int.MinValue, int.MinValue);
+            foreach (VectorInt2 position in baseNewSectorMap.Keys.Concat(alternateNewSectorMap.Keys))
+            {
+                minSectorPos = VectorInt2.Min(minSectorPos, position);
+                maxSectorPos = VectorInt2.Max(maxSectorPos, position);
+            }
+            VectorInt2 size = maxSectorPos - minSectorPos + new VectorInt2(2, 2);
+            if (size.X > Room.MaxRecommendedRoomDimensions || size.Y > Room.MaxRecommendedRoomDimensions)
+                if (DarkMessageBox.Show(owner, "After merging all rooms, the new room will have size " + size.X + " by " + size.Y + ". That bigger than " +
+                    Room.MaxRecommendedRoomDimensions + " by " + Room.MaxRecommendedRoomDimensions + " which is maximum size for the engine. You can continue anyway," +
+                    " but in game there will be issues with rendering. Are you sure?", "Room too big.", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                    return;
+
+            // Create new room and start merging
+            Room newRoom = alternated ? rooms.First(room => room.Alternated) : rooms.First();
+            var resizeParameter = RectangleInt2.FromLTRB(minSectorPos - newRoom.SectorPos - new VectorInt2(1, 1), size);
+            if (alternated)
+                newRoom.AlternateOpposite.Resize(_editor.Level, resizeParameter,
+                    checked((short)rooms.Min(room => (room.AlternateOpposite ?? room).GetLowestCorner())),
+                    checked((short)rooms.Max(room => (room.AlternateOpposite ?? room).GetHighestCorner())));
+            newRoom.Resize(_editor.Level, resizeParameter,
+                checked((short)rooms.Min(room => room.GetLowestCorner())),
+                checked((short)rooms.Max(room => room.GetHighestCorner())));
+            IEnumerable<Room> mergeRooms = rooms.Where(room => room != newRoom);
+
+            Action<Room, IEnumerable<Room>, Dictionary<VectorInt2, Room>, bool> performMergeAction =
+                (newRoomToHandle, roomsToHandle, newSectorMap, removeObjectsInNotAlternatedRooms) =>
+                {
+                    foreach (KeyValuePair<VectorInt2, Room> sector in newSectorMap)
+                    {
+                        if (sector.Value == newRoomToHandle)
+                            continue;
+                        Block oldBlock = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos);
+                        Block newBlock = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos).Clone();
+
+                        // Preserve outer wall textures
+                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                        {
+                            var direction = face.GetDirection();
+                            if (direction == Direction.NegativeX || direction == Direction.PositiveX || direction == Direction.NegativeZ || direction == Direction.PositiveZ)
+                                newBlock.SetFaceTexture(face, oldBlock.GetFaceTexture(face));
+                        }
+
+                        // Transform positions
+                        for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                newBlock.ChangeHeight(vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y);
+
+                        newRoomToHandle.SetBlock(sector.Key - newRoomToHandle.SectorPos, newBlock);
+                    }
+                    foreach (KeyValuePair<VectorInt2, Room> sector in newSectorMap)
+                    { // Copy all adjacent sectors of walls
+                        if (sector.Value == newRoomToHandle)
+                            continue;
+
+                        // Copy adjacemt blocks
+                        Block thisBlockNegativeX = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos + new VectorInt2(-1, 0));
+                        Block otherBlockNegativeX = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos + new VectorInt2(-1, 0));
+                        Block thisBlockPositiveX = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos + new VectorInt2(1, 0));
+                        Block otherBlockPositiveX = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos + new VectorInt2(1, 0));
+                        Block thisBlockNegativeZ = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos + new VectorInt2(0, -1));
+                        Block otherBlockNegativeZ = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos + new VectorInt2(0, -1));
+                        Block thisBlockPositiveZ = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos + new VectorInt2(0, 1));
+                        Block otherBlockPositiveZ = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos + new VectorInt2(0, 1));
+
+                        // Copy adjacent outer wall textures
+                        // Unfortunately they are always on the adjacent block, so they need extra handling
+                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                        {
+                            var direction = face.GetDirection();
+                            switch (direction)
+                            {
+                                case Direction.NegativeX:
+                                    thisBlockPositiveX.SetFaceTexture(face, otherBlockPositiveX.GetFaceTexture(face));
+                                    break;
+                                case Direction.PositiveX:
+                                    thisBlockNegativeX.SetFaceTexture(face, otherBlockNegativeX.GetFaceTexture(face));
+                                    break;
+                                case Direction.NegativeZ:
+                                    thisBlockPositiveZ.SetFaceTexture(face, otherBlockPositiveZ.GetFaceTexture(face));
+                                    break;
+                                case Direction.PositiveZ:
+                                    thisBlockNegativeZ.SetFaceTexture(face, otherBlockNegativeZ.GetFaceTexture(face));
+                                    break;
+                            }
+                        }
+
+                        // Copy vertical subdivisions along edge
+                        int heightDifference = sector.Value.Position.Y - newRoomToHandle.Position.Y;
+                        for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                        {
+                            if (thisBlockNegativeX.IsAnyWall)
+                            {
+                                thisBlockNegativeX.SetHeight(vertical, BlockEdge.XpZn, otherBlockNegativeX.GetHeight(vertical, BlockEdge.XpZn) + heightDifference);
+                                thisBlockNegativeX.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeX.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
+                            }
+                            if (thisBlockPositiveX.IsAnyWall)
+                            {
+                                thisBlockPositiveX.SetHeight(vertical, BlockEdge.XnZn, otherBlockPositiveX.GetHeight(vertical, BlockEdge.XnZn) + heightDifference);
+                                thisBlockPositiveX.SetHeight(vertical, BlockEdge.XnZp, otherBlockPositiveX.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
+                            }
+                            if (thisBlockNegativeZ.IsAnyWall)
+                            {
+                                thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XnZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
+                                thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
+                            }
+                            if (thisBlockPositiveZ.IsAnyWall)
+                            {
+                                thisBlockPositiveZ.SetHeight(vertical, BlockEdge.XnZn, otherBlockPositiveZ.GetHeight(vertical, BlockEdge.XnZn) + heightDifference);
+                                thisBlockPositiveZ.SetHeight(vertical, BlockEdge.XpZn, otherBlockPositiveZ.GetHeight(vertical, BlockEdge.XpZn) + heightDifference);
+                            }
+                        }
+                    }
+                    foreach (Room room in roomsToHandle)
+                        foreach (PositionBasedObjectInstance @object in room.Objects.ToList())
+                        {
+                            PositionBasedObjectInstance objectToPlace = @object;
+                            // Remove the objects or clone it, if we need it for the alternated room. (If it's not 'CopyToAlternateRooms', we can remove it after using it)
+                            if (removeObjectsInNotAlternatedRooms || room.Alternated || !@object.CopyToAlternateRooms)
+                            {
+                                foreach (ObjectInstance removedObject in room.RemoveObjectAndKeepAlive(_editor.Level, @object))
+                                    if (removedObject != @object)
+                                        removedObject.Delete();
+                            }
+                            else
+                                objectToPlace = (PositionBasedObjectInstance)(@object.Clone());
+                            objectToPlace.Position += room.WorldPos - newRoomToHandle.WorldPos;
+                            newRoomToHandle.AddObject(_editor.Level, objectToPlace);
+                        }
+                    foreach (Room room in new[] { newRoomToHandle }.Concat(roomsToHandle)) // We also need to handle the base room.
+                        foreach (SectorBasedObjectInstance sectorObject in room.SectorObjects.ToList())
+                        {
+                            // Skip internal portals between the merged rooms
+                            if (@sectorObject is PortalInstance)
+                            {
+                                var adjoiningRoom = ((PortalInstance)@sectorObject).AdjoiningRoom;
+                                if (rooms.Contains(adjoiningRoom))
+                                    continue;
+                                if (adjoiningRoom.AlternateOpposite != null)
+                                    if (rooms.Contains(adjoiningRoom.AlternateOpposite))
+                                        continue;
+                            }
+
+                            // Remove the objects or clone it, if we need it for the alternated room. (If it's not 'CopyToAlternateRooms', we can remove it after using it)
+                            SectorBasedObjectInstance sectorObjectToPlace = sectorObject;
+                            if (removeObjectsInNotAlternatedRooms || room.Alternated || !sectorObjectToPlace.CopyToAlternateRooms)
+                            {
+                                foreach (ObjectInstance removedObject in room.RemoveObjectAndKeepAlive(_editor.Level, @sectorObject))
+                                    if (removedObject != sectorObject)
+                                        removedObject.Delete();
+                            }
+                            else
+                                sectorObjectToPlace = (SectorBasedObjectInstance)(sectorObject.Clone());
+
+                            // Split sector based objects if there are overlaps now
+                            var portalInstance = sectorObjectToPlace as PortalInstance;
+                            Func<VectorInt2, bool> sectorToBeCoveredTest;
+                            if (portalInstance == null ||
+                                portalInstance.Direction == PortalDirection.Ceiling ||
+                                portalInstance.Direction == PortalDirection.Floor)
+                            {
+                                sectorToBeCoveredTest = pos =>
+                                {
+                                    Room sectorFromRoom = newSectorMap.TryGetOrDefault(pos + room.SectorPos);
+                                    if (sectorFromRoom == room) // Must be from that room.
+                                        return true;
+                                    if (sectorFromRoom != null)
+                                        return false;
+
+                                    // Or it must be the only room with a wall here.
+                                    foreach (Room roomToHandle2 in roomsToHandle)
+                                        if (roomToHandle2 != room)
+                                            if (roomToHandle2.WorldArea.Contains(pos))
+                                                return false;
+                                    return true;
+                                };
+                            }
+                            else
+                            {
+                                sectorToBeCoveredTest = pos =>
+                                {
+                                    if ((pos.X + room.SectorPos.X) != newRoom.SectorPos.X && // It must be at the border
+                                        (pos.Y + room.SectorPos.Y) != newRoom.SectorPos.Y &&
+                                        (pos.Y + room.SectorPos.Y) != newRoom.SectorPos.X + newRoom.SectorSize.X - 1 &&
+                                        (pos.Y + room.SectorPos.Y) != newRoom.SectorPos.Y + newRoom.SectorSize.Y - 1)
+                                        return false;
+                                    if (newSectorMap.ContainsKey(pos + room.SectorPos)) // There must be a wall at the wall portal
+                                        return false;
+                                    VectorInt2 inFrontPos = PortalInstance.GetOppositePortalArea(portalInstance.Direction,
+                                        new RectangleInt2(pos, pos)).Start;
+                                    return newSectorMap.TryGetOrDefault(inFrontPos + room.SectorPos) == room; // There must be the sector from the corresponding room in front of the portal.
+                                };
+                            }
+
+                            // Add split portals
+                            IEnumerable<SectorBasedObjectInstance> newSectorBasedObjects = sectorObjectToPlace.SplitIntoRectangles(sectorToBeCoveredTest, room.SectorPos - newRoom.SectorPos);
+                            foreach (SectorBasedObjectInstance sectorBasedObjectInstance in newSectorBasedObjects)
+                                newRoomToHandle.AddObject(_editor.Level, sectorBasedObjectInstance);
+                        }
+                };
+            performMergeAction(newRoom, mergeRooms, baseNewSectorMap, !alternated);
+            if (alternated)
+                performMergeAction(newRoom.AlternateOpposite, mergeRooms?.Select(room => room.AlternateOpposite ?? room), alternateNewSectorMap, true);
+
+            // Add room and update the editor
+            Parallel.Invoke(
+                () => newRoom.BuildGeometry(),
+                () => newRoom.AlternateOpposite?.BuildGeometry());
+            foreach (Room room in mergeRooms)
+                _editor.Level.DeleteRoom(room);
+            if (_editor.SelectedRooms.Intersect(rooms).Any())
+                _editor.SelectedRoom = newRoom;
+            _editor.RoomGeometryChange(newRoom);
+            _editor.RoomSectorPropertiesChange(newRoom);
         }
 
         public static void SplitRoom(IWin32Window owner)

@@ -14,7 +14,7 @@ namespace TombLib.LevelData
         public bool ClearBody { get; set; } = false;
         public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
 
-        public override bool CopyToFlipRooms => false;
+        public override bool CopyToAlternateRooms => false;
         public override ItemType ItemType => new ItemType(WadObjectId, Room?.Level?.Settings);
     }
 }

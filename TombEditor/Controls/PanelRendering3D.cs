@@ -1820,7 +1820,7 @@ namespace TombEditor.Controls
             stackRooms.Push(baseRoom);
             stackLimits.Push(0);
 
-            bool isFlipped = baseRoom.Flipped && baseRoom.AlternateBaseRoom != null;
+            bool isFlipped = baseRoom.Alternated && baseRoom.AlternateBaseRoom != null;
 
             while (stackRooms.Count > 0)
             {
@@ -1832,7 +1832,7 @@ namespace TombEditor.Controls
 
                 if (isFlipped)
                 {
-                    if (!theRoom.Flipped)
+                    if (!theRoom.Alternated)
                     {
                         visitedRooms.Add(theRoom);
                         if (!result.Contains(theRoom))
