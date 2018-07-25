@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.dgvStateChanges = new DarkUI.Controls.DarkDataGridView();
-            this.btCancel = new DarkUI.Controls.DarkButton();
-            this.btOk = new DarkUI.Controls.DarkButton();
-            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             this.columnStateId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnLowFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnHighFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextAnimation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btCancel = new DarkUI.Controls.DarkButton();
+            this.btOk = new DarkUI.Controls.DarkButton();
+            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,6 +62,36 @@
             this.dgvStateChanges.RowTemplate.Height = 16;
             this.dgvStateChanges.Size = new System.Drawing.Size(524, 365);
             this.dgvStateChanges.TabIndex = 48;
+            // 
+            // columnStateId
+            // 
+            this.columnStateId.DataPropertyName = "StateId";
+            this.columnStateId.HeaderText = "State ID";
+            this.columnStateId.Name = "columnStateId";
+            // 
+            // columnLowFrame
+            // 
+            this.columnLowFrame.DataPropertyName = "LowFrame";
+            this.columnLowFrame.HeaderText = "Low frame";
+            this.columnLowFrame.Name = "columnLowFrame";
+            // 
+            // columnHighFrame
+            // 
+            this.columnHighFrame.DataPropertyName = "HighFrame";
+            this.columnHighFrame.HeaderText = "High frame";
+            this.columnHighFrame.Name = "columnHighFrame";
+            // 
+            // columnNextAnimation
+            // 
+            this.columnNextAnimation.DataPropertyName = "NextAnimation";
+            this.columnNextAnimation.HeaderText = "Next animation";
+            this.columnNextAnimation.Name = "columnNextAnimation";
+            // 
+            // columnNextFrame
+            // 
+            this.columnNextFrame.DataPropertyName = "NextFrame";
+            this.columnNextFrame.HeaderText = "NextFrame";
+            this.columnNextFrame.Name = "columnNextFrame";
             // 
             // btCancel
             // 
@@ -94,36 +124,6 @@
             this.dgvControls.Size = new System.Drawing.Size(27, 365);
             this.dgvControls.TabIndex = 49;
             // 
-            // columnStateId
-            // 
-            this.columnStateId.DataPropertyName = "StateId";
-            this.columnStateId.HeaderText = "State ID";
-            this.columnStateId.Name = "columnStateId";
-            // 
-            // columnLowFrame
-            // 
-            this.columnLowFrame.DataPropertyName = "LowFrame";
-            this.columnLowFrame.HeaderText = "Low frame";
-            this.columnLowFrame.Name = "columnLowFrame";
-            // 
-            // columnHighFrame
-            // 
-            this.columnHighFrame.DataPropertyName = "HighFrame";
-            this.columnHighFrame.HeaderText = "High frame";
-            this.columnHighFrame.Name = "columnHighFrame";
-            // 
-            // columnNextAnimation
-            // 
-            this.columnNextAnimation.DataPropertyName = "NextAnimation";
-            this.columnNextAnimation.HeaderText = "Next animation";
-            this.columnNextAnimation.Name = "columnNextAnimation";
-            // 
-            // columnNextFrame
-            // 
-            this.columnNextFrame.DataPropertyName = "NextFrame";
-            this.columnNextFrame.HeaderText = "NextFrame";
-            this.columnNextFrame.Name = "columnNextFrame";
-            // 
             // FormStateChangesEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -139,7 +139,7 @@
             this.MinimizeBox = false;
             this.Name = "FormStateChangesEditor";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "State changes";
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).EndInit();
             this.ResumeLayout(false);

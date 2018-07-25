@@ -56,10 +56,7 @@
             // 
             this.panelRendering.Location = new System.Drawing.Point(12, 12);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.SelectedNode = null;
             this.panelRendering.Size = new System.Drawing.Size(706, 678);
-            this.panelRendering.Skeleton = null;
-            this.panelRendering.StaticScale = 1F;
             this.panelRendering.TabIndex = 1;
             // 
             // cbDrawGizmo
@@ -128,7 +125,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.ClientSize = new System.Drawing.Size(1016, 741);
             this.Controls.Add(this.butRenameBone);
             this.Controls.Add(this.butDeleteBone);
             this.Controls.Add(this.cbDrawGizmo);
@@ -141,7 +138,7 @@
             this.Name = "FormSkeletonEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Skeleton editor";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -398,7 +398,7 @@ namespace WadTool
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
-                form.ShowDialog();
+                form.ShowDialog(this);
         }
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
@@ -508,7 +508,7 @@ namespace WadTool
             var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
             using (var form = new FormSkeletonEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
             {
-                if (form.ShowDialog() != DialogResult.OK)
+                if (form.ShowDialog(this) != DialogResult.OK)
                     return;
                 _tool.SelectedObjectEdited();
             }
@@ -520,7 +520,7 @@ namespace WadTool
             var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
             using (var form = new FormAnimationEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
             {
-                if (form.ShowDialog() != DialogResult.OK)
+                if (form.ShowDialog(this) != DialogResult.OK)
                     return;
                 _tool.SelectedObjectEdited();
             }
