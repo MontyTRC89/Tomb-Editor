@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
 
@@ -86,9 +88,9 @@ namespace TombLib.LevelData
         }
 
         public virtual void TransformRoomReferences(Func<Room, Room> transformRoom)
-        {}
+        { }
 
-        public virtual bool CopyToFlipRooms => true;
+        public virtual bool CopyToAlternateRooms => true;
 
         public virtual void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         { }
@@ -126,6 +128,52 @@ namespace TombLib.LevelData
         {
             base.Transform(transformation, oldRoomSize);
             _area = transformation.TransformRect(_area, oldRoomSize);
+        }
+
+        public static List<RectangleInt2> SplitIntoRectangles(RectangleInt2 area, Func<VectorInt2, bool> sectorToBeCovered)
+        {
+            // Check were the map must be covered
+            bool[,] toBeCoveredMap = new bool[area.Width + 1, area.Height + 1];
+            for (int x = 0; x <= area.Width; ++x)
+                for (int z = 0; z <= area.Height; ++z)
+                    toBeCoveredMap[x, z] = sectorToBeCovered(new VectorInt2(x, z) + area.Start);
+
+            // Add rectanges greedily to cover space
+            List<RectangleInt2> result = new List<RectangleInt2>();
+            for (int currentX = 0; currentX <= area.Width; ++currentX)
+                for (int currentZ = 0; currentZ <= area.Height; ++currentZ)
+                    if (toBeCoveredMap[currentX, currentZ])
+                    { // Needs to be covered with a rectangles.
+                        // Create a rectangle and cover as much space as possible
+                        int endX = currentX;
+                        while (endX < area.Width)
+                        {
+                            if (!toBeCoveredMap[endX + 1, currentZ])
+                                break;
+                            ++endX;
+                        }
+                        int endZ = currentZ;
+                        while (endZ < area.Height)
+                        {
+                            for (int x = currentX; x <= endX; ++x)
+                                if (!toBeCoveredMap[x, endZ + 1])
+                                    goto ExitEndZSearch;
+                            ++endZ;
+                        }
+                        ExitEndZSearch:
+
+                        // Update map and create actual rectangle
+                        for (int x = currentX; x <= endX; ++x)
+                            for (int z = currentZ; z <= endZ; ++z)
+                                toBeCoveredMap[x, z] = false;
+                        result.Add(new RectangleInt2(currentX, currentZ, endX, endZ) + area.Start);
+                    }
+            return result;
+        }
+
+        public IEnumerable<SectorBasedObjectInstance> SplitIntoRectangles(Func<VectorInt2, bool> sectorToBeCovered, VectorInt2 offset)
+        {
+            return SplitIntoRectangles(Area, sectorToBeCovered).Select(area => Clone(area + offset));
         }
     }
 

@@ -94,7 +94,7 @@ namespace TombEditor.ToolWindows
                     butLocked.BackColorUseGeneric = !room.Locked;
                 }
 
-                comboFlipMap.SelectedIndex = room.Flipped ? room.AlternateGroup + 1 : 0;
+                comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
             }
         }
 
@@ -120,7 +120,7 @@ namespace TombEditor.ToolWindows
             var room = _editor.SelectedRoom;
             short alternateGroupIndex = (short)(comboFlipMap.SelectedIndex - 1);
 
-            if (room.Flipped)
+            if (room.Alternated)
             {
                 if (alternateGroupIndex == -1)
                 { // Delete flipped room

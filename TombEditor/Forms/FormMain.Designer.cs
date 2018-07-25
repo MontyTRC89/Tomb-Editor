@@ -152,6 +152,7 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
+            this.mergeRoomsHorizontallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -444,6 +445,7 @@
             this.cropRoomToolStripMenuItem,
             this.newRoomUpToolStripMenuItem,
             this.newRoomDownToolStripMenuItem,
+            this.mergeRoomsHorizontallyToolStripMenuItem,
             this.toolStripMenuItem1,
             this.exportRoomToolStripMenuItem,
             this.importRoomsToolStripMenuItem,
@@ -1549,6 +1551,15 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
+            // mergeRoomsHorizontallyToolStripMenuItem
+            // 
+            this.mergeRoomsHorizontallyToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.mergeRoomsHorizontallyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.mergeRoomsHorizontallyToolStripMenuItem.Name = "mergeRoomsHorizontallyToolStripMenuItem";
+            this.mergeRoomsHorizontallyToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.mergeRoomsHorizontallyToolStripMenuItem.Tag = "MergeRoomsHorizontally";
+            this.mergeRoomsHorizontallyToolStripMenuItem.Text = "MergeRoomsHorizontally";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -1712,5 +1723,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem keyboardLayoutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mergeRoomsHorizontallyToolStripMenuItem;
     }
 }

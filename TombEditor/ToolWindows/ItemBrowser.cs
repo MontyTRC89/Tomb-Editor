@@ -93,7 +93,7 @@ namespace TombEditor.ToolWindows
             if (currentItem == null)
                 return;
 
-            if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
+            if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateRoom == null)
             {
                 _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
                 return;

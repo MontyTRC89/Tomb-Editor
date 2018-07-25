@@ -25,7 +25,7 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Copy rooms", Properties.Resources.general_copy_16, (o, e) =>
             {
-                Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
+                Clipboard.SetDataObject(new RoomClipboardData(_editor, position), true);
             }));
 
             Items.Add(new ToolStripMenuItem("Paste rooms", Properties.Resources.general_clipboard_16, (o, e) =>
@@ -58,6 +58,11 @@ namespace TombEditor.Controls.ContextMenus
             Items.Add(new ToolStripMenuItem("Mirror rooms on Z axis", null, (o, e) =>
             {
                 EditorActions.TransformRooms(new RectTransformation { MirrorX = true, QuadrantRotation = 2 }, Parent);
+            }));
+
+            Items.Add(new ToolStripMenuItem("Merge rooms horizontally", null, (o, e) =>
+            {
+                EditorActions.MergeRoomsHorizontally(_editor.SelectedRooms, Parent);
             }));
         }
 

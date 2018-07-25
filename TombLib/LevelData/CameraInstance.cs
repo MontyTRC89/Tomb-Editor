@@ -4,7 +4,7 @@
     {
         public bool Fixed { get; set; }
 
-        public override bool CopyToFlipRooms => false;
+        public override bool CopyToAlternateRooms => false;
 
         public override string ToString()
         {

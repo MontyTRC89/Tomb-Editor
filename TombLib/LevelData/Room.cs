@@ -30,7 +30,7 @@ namespace TombLib.LevelData
 
         public const short DefaultHeight = 12;
         public const short DefaultRoomDimensions = 20;
-        public const short MaxRecommendedRoomDimensions = 32;
+        public const short MaxRecommendedRoomDimensions = 31;
 
         public string Name { get; set; }
         public VectorInt3 Position { get; set; }
@@ -69,6 +69,7 @@ namespace TombLib.LevelData
             Level = level;
             AmbientLight = ambientLight;
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
+            BuildGeometry();
         }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
@@ -119,9 +120,6 @@ namespace TombLib.LevelData
             RectangleInt2 newArea = new RectangleInt2(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
             foreach (var instance in sectorObjects)
                 AddObjectCutSectors(level, newArea, instance);
-
-            // Update state
-            BuildGeometry();
         }
 
         public Room Split(Level level, RectangleInt2 area)
@@ -248,7 +246,7 @@ namespace TombLib.LevelData
             DeletedEvent?.Invoke(this);
         }
 
-        public bool Flipped => AlternateRoom != null || AlternateBaseRoom != null;
+        public bool Alternated => AlternateRoom != null || AlternateBaseRoom != null;
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
@@ -323,6 +321,11 @@ namespace TombLib.LevelData
         public Block GetBlock(VectorInt2 pos)
         {
             return Blocks[pos.X, pos.Y];
+        }
+
+        public void SetBlock(VectorInt2 pos, Block block)
+        {
+            Blocks[pos.X, pos.Y] = block;
         }
 
         public Block GetBlockTry(int x, int z)
@@ -768,14 +771,14 @@ namespace TombLib.LevelData
                 NumZSectors * (0.5f * 1024.0f));
         }
 
-        public byte NumXSectors
+        public int NumXSectors
         {
-            get { return (byte)Blocks.GetLength(0); }
+            get { return Blocks.GetLength(0); }
         }
 
-        public byte NumZSectors
+        public int NumZSectors
         {
-            get { return (byte)Blocks.GetLength(1); }
+            get { return Blocks.GetLength(1); }
         }
 
         public override string ToString()
@@ -911,11 +914,19 @@ namespace TombLib.LevelData
                 {
                     addedObjects.Add(AddObjectAndSingularPortal(level, portal));
                     if (AlternateOpposite != null)
-                        addedObjects.Add(AlternateOpposite.AddObjectAndSingularPortal(level, portal.Clone()));
+                    {
+                        PortalInstance alternateOppositePortal = (PortalInstance)portal.Clone();
+                        alternateOppositePortal.Area += SectorPos - AlternateOpposite.SectorPos;
+                        addedObjects.Add(AlternateOpposite.AddObjectAndSingularPortal(level, alternateOppositePortal));
+                    }
 
                     addedObjects.Add(portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal));
                     if (portal.AdjoiningRoom.AlternateOpposite != null)
-                        addedObjects.Add(portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
+                    {
+                        PortalInstance alternateOppositePortal = (PortalInstance)oppositePortal.Clone();
+                        alternateOppositePortal.Area += portal.AdjoiningRoom.SectorPos - portal.AdjoiningRoom.AlternateOpposite.SectorPos;
+                        addedObjects.Add(portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, alternateOppositePortal));
+                    }
                 }
                 catch
                 {
@@ -934,7 +945,7 @@ namespace TombLib.LevelData
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)
         {
             List<ObjectInstance> result = new List<ObjectInstance>();
-            result.Add(RemoveObjectAndSingularPortal(level, instance));
+            result.Add(RemoveObjectAndSingularPortalAndKeepAlive(level, instance));
 
             // Delete the corresponding other portals if necessary.
             var portal = instance as PortalInstance;
