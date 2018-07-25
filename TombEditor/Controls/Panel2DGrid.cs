@@ -26,7 +26,7 @@ namespace TombEditor.Controls
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
 
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
-        private float _gridStep => _gridSize / Room.MaxRoomDimensions;
+        private float _gridStep => _gridSize / Room.MaxRecommendedRoomDimensions;
         private ToolTip _toolTip = new ToolTip();
 
         public Panel2DGrid()
@@ -88,8 +88,8 @@ namespace TombEditor.Controls
             RectangleF totalArea = GetVisualAreaTotal();
 
             return new RectangleF(
-                totalArea.X + _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumXSectors) / 2),
-                totalArea.Y + _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumZSectors) / 2),
+                totalArea.X + _gridStep * ((Room.MaxRecommendedRoomDimensions - currentRoom.NumXSectors) / 2),
+                totalArea.Y + _gridStep * ((Room.MaxRecommendedRoomDimensions - currentRoom.NumZSectors) / 2),
                 _gridStep * currentRoom.NumXSectors,
                 _gridStep * currentRoom.NumZSectors);
         }
@@ -309,9 +309,9 @@ namespace TombEditor.Controls
                     }
 
                 // Draw black grid lines
-                for (int x = 0; x <= Room.MaxRoomDimensions; ++x)
+                for (int x = 0; x <= Room.MaxRecommendedRoomDimensions; ++x)
                     e.Graphics.DrawLine(_gridPen, totalArea.X + x * _gridStep, totalArea.Y, totalArea.X + x * _gridStep, totalArea.Y + _gridSize);
-                for (int y = 0; y <= Room.MaxRoomDimensions; ++y)
+                for (int y = 0; y <= Room.MaxRecommendedRoomDimensions; ++y)
                     e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * _gridStep, totalArea.X + _gridSize, totalArea.Y + y * _gridStep);
 
                 // Draw selection

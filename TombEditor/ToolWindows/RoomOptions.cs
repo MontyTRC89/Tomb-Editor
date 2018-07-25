@@ -103,7 +103,7 @@ namespace TombEditor.ToolWindows
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
             if (selectedRoom == null)
             {
-                selectedRoom = new Room(_editor.Level, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
+                selectedRoom = new Room(_editor.Level, Room.MaxRecommendedRoomDimensions, Room.MaxRecommendedRoomDimensions,
                                         _editor.Level.Settings.DefaultAmbientLight,
                                         "Room " + comboRoom.SelectedIndex);
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
