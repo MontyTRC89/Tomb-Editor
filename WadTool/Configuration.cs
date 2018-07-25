@@ -167,10 +167,8 @@ namespace WadTool
 
         public static Configuration Load(string filePath)
         {
-            Configuration result;
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = Load(stream);
-            return result;
+                return Load(stream);
         }
 
         public static Configuration Load()

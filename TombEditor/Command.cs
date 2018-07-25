@@ -61,7 +61,7 @@ namespace TombEditor
 
         public static void ExecuteHotkey(CommandArgs args)
         {
-            var hotkeyForCommands = args.Editor.Configuration.Keyboard_HotkeySets.Where(set => set.Value.Contains(args.KeyData));
+            var hotkeyForCommands = args.Editor.Configuration.Window_HotkeySets.Where(set => set.Value.Contains(args.KeyData));
             foreach (var hotkeyForCommand in hotkeyForCommands)
                 GetCommand(hotkeyForCommand.Key).Execute?.Invoke(args);
         }

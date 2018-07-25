@@ -99,11 +99,18 @@ namespace TombEditor
         private readonly SortedList<string, SortedSet<Hotkey>> _list = new SortedList<string, SortedSet<Hotkey>>(StringComparer.InvariantCultureIgnoreCase);
 
         public HotkeySets()
+            : this(KeyboardLayoutDetector.KeyboardLayout)
+        { }
+        public HotkeySets(KeyboardLayout keyboardLayout, bool generateEmptyInstead = false)
         {
             // Generate entries for all commands
             // We also want them to be in the XML.
             foreach (CommandObj command in CommandHandler.Commands)
                 _list.Add(command.Name, new SortedSet<Hotkey>());
+
+            // Generate keyboard layout
+            if (!generateEmptyInstead)
+                GenerateDefault(keyboardLayout);
         }
 
         private HotkeySets(HotkeySets other)
@@ -124,6 +131,7 @@ namespace TombEditor
             set { _list[command.Name] = value; }
         }
 
+        public int Count => _list.Count;
         public HotkeySets Clone() => new HotkeySets(this);
         object ICloneable.Clone() => Clone();
 
@@ -159,8 +167,8 @@ namespace TombEditor
         {
             writer.WriteComment("An example hotkey would be 'Ctrl+C'. You can specify multiple hotkeys per command like this 'Shift+Ctrl+T, Alt+I'.");
             writer.WriteComment("You may combine any key with Ctrl, Shift or Alt, but other combinations are not allowed.");
-            writer.WriteComment("For a comprehensive list of possible keys look here: https://msdn.microsoft.com/en-us/library/system.windows.forms.keys(v=vs.110).aspx ");
-            HotkeySets @default = GenerateDefault();
+            writer.WriteComment("For a comprehensive list of possible keys look here: https://msdn.microsoft.com/en-us/library/system.windows.forms.keys(v=vs.110).aspx#Members ");
+            HotkeySets @default = new HotkeySets();
             foreach (var commandAndHotkey in _list)
             {
                 bool isDefault = commandAndHotkey.Value.SetEquals(@default[commandAndHotkey.Key]);
@@ -190,8 +198,7 @@ namespace TombEditor
             return hotkeys;
         }
 
-        public static HotkeySets GenerateDefault() => GenerateDefault();
-        public static HotkeySets GenerateDefault(KeyboardLayout layout)
+        private void GenerateDefault(KeyboardLayout layout)
         {
             Keys Q = Keys.Q;
             Keys A = Keys.A;
@@ -212,131 +219,126 @@ namespace TombEditor
                 Z = Keys.Y;
             }
 
-            HotkeySets result = new HotkeySets();
-            result["CancelAnyAction"] = new SortedSet<Hotkey> { Keys.Escape };
-            result["Switch2DMode"] = new SortedSet<Hotkey> { Keys.F1 };
-            result["SwitchGeometryMode"] = new SortedSet<Hotkey> { Keys.F2 };
-            result["SwitchFaceEditMode"] = new SortedSet<Hotkey> { Keys.F3 };
-            result["SwitchLightingMode"] = new SortedSet<Hotkey> { Keys.F4 };
-            result["ResetCamera"] = new SortedSet<Hotkey> { Keys.F6 };
-            result["AddTrigger"] = new SortedSet<Hotkey> { Keys.T };
-            result["AddTriggerWithBookmark"] = new SortedSet<Hotkey> { Keys.T | Keys.Shift };
-            result["AddPortal"] = new SortedSet<Hotkey> { Keys.P };
-            result["EditObject"] = new SortedSet<Hotkey> { Keys.O };
-            result["SetTextureBlendMode"] = new SortedSet<Hotkey> { Keys.NumPad1 | Keys.Shift, Keys.D1 | Keys.Shift };
-            result["SetTextureDoubleSided"] = new SortedSet<Hotkey> { Keys.NumPad2 | Keys.Shift, Keys.D2 | Keys.Shift };
-            result["SetTextureInvisible"] = new SortedSet<Hotkey> { Keys.NumPad3 | Keys.Shift, Keys.D3 | Keys.Shift };
-            result["RotateObjectLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Shift };
-            result["RotateObjectRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Shift };
-            result["RotateObjectUp"] = new SortedSet<Hotkey> { Keys.Up | Keys.Shift };
-            result["RotateObjectDown"] = new SortedSet<Hotkey> { Keys.Down | Keys.Shift };
-            result["MoveObjectLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Control };
-            result["MoveObjectRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Control };
-            result["MoveObjectForward"] = new SortedSet<Hotkey> { Keys.Up | Keys.Control };
-            result["MoveObjectBack"] = new SortedSet<Hotkey> { Keys.Down | Keys.Control };
-            result["MoveObjectUp"] = new SortedSet<Hotkey> { Keys.PageUp | Keys.Control };
-            result["MoveObjectDown"] = new SortedSet<Hotkey> { Keys.PageDown | Keys.Control };
-            result["MoveRoomLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Alt };
-            result["MoveRoomRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Alt };
-            result["MoveRoomForward"] = new SortedSet<Hotkey> { Keys.Up | Keys.Alt };
-            result["MoveRoomBack"] = new SortedSet<Hotkey> { Keys.Down | Keys.Alt };
-            result["MoveRoomUp"] = new SortedSet<Hotkey> { Keys.PageUp | Keys.Alt };
-            result["MoveRoomDown"] = new SortedSet<Hotkey> { Keys.PageDown | Keys.Alt };
-            result["RaiseQA1Click"] = new SortedSet<Hotkey> { Q };
-            result["RaiseQA4Click"] = new SortedSet<Hotkey> { Q | Keys.Shift };
-            result["LowerQA1Click"] = new SortedSet<Hotkey> { A };
-            result["LowerQA4Click"] = new SortedSet<Hotkey> { A | Keys.Shift };
-            result["RaiseQA1ClickSmooth"] = new SortedSet<Hotkey> { Q | Keys.Alt };
-            result["RaiseQA4ClickSmooth"] = new SortedSet<Hotkey> { Q | Keys.Alt | Keys.Shift };
-            result["LowerQA1ClickSmooth"] = new SortedSet<Hotkey> { A | Keys.Alt };
-            result["LowerQA4ClickSmooth"] = new SortedSet<Hotkey> { A | Keys.Alt | Keys.Shift };
-            result["RaiseWS1Click"] = new SortedSet<Hotkey> { W };
-            result["RaiseWS4Click"] = new SortedSet<Hotkey> { W | Keys.Shift };
-            result["LowerWS1Click"] = new SortedSet<Hotkey> { Keys.S };
-            result["LowerWS4Click"] = new SortedSet<Hotkey> { Keys.S | Keys.Shift };
-            result["RaiseWS1ClickSmooth"] = new SortedSet<Hotkey> { W | Keys.Alt };
-            result["RaiseWS4ClickSmooth"] = new SortedSet<Hotkey> { W | Keys.Alt | Keys.Shift };
-            result["LowerWS1ClickSmooth"] = new SortedSet<Hotkey> { Keys.S | Keys.Alt };
-            result["LowerWS4ClickSmooth"] = new SortedSet<Hotkey> { Keys.S | Keys.Alt | Keys.Shift };
-            result["RaiseED1Click"] = new SortedSet<Hotkey> { Keys.E };
-            result["RaiseED4Click"] = new SortedSet<Hotkey> { Keys.E | Keys.Shift };
-            result["LowerED1Click"] = new SortedSet<Hotkey> { Keys.D };
-            result["LowerED4Click"] = new SortedSet<Hotkey> { Keys.D | Keys.Shift };
-            result["RaiseED1ClickSmooth"] = new SortedSet<Hotkey> { Keys.E | Keys.Alt };
-            result["RaiseED4ClickSmooth"] = new SortedSet<Hotkey> { Keys.E | Keys.Alt | Keys.Shift };
-            result["LowerED1ClickSmooth"] = new SortedSet<Hotkey> { Keys.D | Keys.Alt };
-            result["LowerED4ClickSmooth"] = new SortedSet<Hotkey> { Keys.D | Keys.Alt | Keys.Shift };
-            result["RaiseRF1Click"] = new SortedSet<Hotkey> { Keys.R };
-            result["RaiseRF4Click"] = new SortedSet<Hotkey> { Keys.R | Keys.Shift };
-            result["LowerRF1Click"] = new SortedSet<Hotkey> { Keys.F };
-            result["LowerRF4Click"] = new SortedSet<Hotkey> { Keys.F | Keys.Shift };
-            result["RaiseRF1ClickSmooth"] = new SortedSet<Hotkey> { Keys.R | Keys.Alt };
-            result["RaiseRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.R | Keys.Alt | Keys.Shift };
-            result["LowerRF1ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt };
-            result["LowerRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt | Keys.Shift };
-            result["RaiseYH1Click"] = new SortedSet<Hotkey> { Keys.Y };
-            result["RaiseYH4Click"] = new SortedSet<Hotkey> { Keys.Y | Keys.Shift };
-            result["LowerYH1Click"] = new SortedSet<Hotkey> { Keys.H };
-            result["LowerYH4Click"] = new SortedSet<Hotkey> { Keys.H | Keys.Shift };
-            result["RaiseUJ1Click"] = new SortedSet<Hotkey> { Keys.U };
-            result["RaiseUJ4Click"] = new SortedSet<Hotkey> { Keys.U | Keys.Shift };
-            result["LowerUJ1Click"] = new SortedSet<Hotkey> { Keys.J };
-            result["LowerUJ4Click"] = new SortedSet<Hotkey> { Keys.J | Keys.Shift };
-            result["RotateObject5"] = new SortedSet<Hotkey> { Keys.R | Keys.Control };
-            result["RotateObject45"] = new SortedSet<Hotkey> { Keys.R | Keys.Control | Keys.Shift };
-            result["RotateTexture"] = new SortedSet<Hotkey> { Keys.OemMinus, Keys.Oemplus, Keys.Oem3, Keys.Oem5 }; // US keyboard key in documentation: OemMinus      US-keyboard key: Oem3       German-keyboard key: Oem5
-            result["MirrorTexture"] = new SortedSet<Hotkey> { Keys.OemMinus | Keys.Shift, Keys.Oemplus | Keys.Shift, Keys.Oem3 | Keys.Shift, Keys.Oem5 | Keys.Shift };
-            result["NewLevel"] = new SortedSet<Hotkey> { Keys.N | Keys.Control | Keys.Shift };
-            result["OpenLevel"] = new SortedSet<Hotkey> { Keys.O | Keys.Control };
-            result["SaveLevel"] = new SortedSet<Hotkey> { Keys.S | Keys.Control };
-            result["SaveLevelAs"] = new SortedSet<Hotkey> { Keys.S | Keys.Control | Keys.Shift };
-            result["BuildLevel"] = new SortedSet<Hotkey> { Keys.F5 | Keys.Shift };
-            result["BuildAndPlay"] = new SortedSet<Hotkey> { Keys.F5 };
-            result["Copy"] = new SortedSet<Hotkey> { Keys.C | Keys.Control };
-            result["Paste"] = new SortedSet<Hotkey> { Keys.V | Keys.Control };
-            result["StampObject"] = new SortedSet<Hotkey> { Keys.B | Keys.Control };
-            result["Delete"] = new SortedSet<Hotkey> { Keys.Delete };
-            result["SelectAll"] = new SortedSet<Hotkey> { A | Keys.Control };
-            result["Search"] = new SortedSet<Hotkey> { Keys.F | Keys.Control };
-            result["DeleteRooms"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift | Keys.Alt };
-            result["DuplicateRooms"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift | Keys.Alt };
-            result["SelectConnectedRooms"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift | Keys.Alt };
-            result["RotateRoomsClockwise"] = new SortedSet<Hotkey> { Keys.F1 | Keys.Control };
-            result["RotateRoomsCounterClockwise"] = new SortedSet<Hotkey> { Keys.F2 | Keys.Control };
-            result["MirrorRoomsX"] = new SortedSet<Hotkey> { Keys.F3 | Keys.Control };
-            result["MirrorRoomsZ"] = new SortedSet<Hotkey> { Keys.F4 | Keys.Control };
-            result["SplitRoom"] = new SortedSet<Hotkey> { Keys.S | Keys.Control | Keys.Shift | Keys.Alt };
-            result["CropRoom"] = new SortedSet<Hotkey> { Keys.O | Keys.Control | Keys.Shift | Keys.Alt };
-            result["NewRoomUp"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift };
-            result["NewRoomDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift };
-            result["AddCamera"] = new SortedSet<Hotkey> { Keys.C | Keys.Alt };
-            result["AddFlybyCamera"] = new SortedSet<Hotkey> { Keys.M | Keys.Alt };
-            result["AddSink"] = new SortedSet<Hotkey> { Keys.K | Keys.Alt };
-            result["AddSoundSource"] = new SortedSet<Hotkey> { Keys.X | Keys.Alt };
-            result["AddImportedGeometry"] = new SortedSet<Hotkey> { Keys.I | Keys.Alt };
-            result["MoveLara"] = new SortedSet<Hotkey> { Keys.M | Keys.Control };
-            result["TextureFloor"] = new SortedSet<Hotkey> { Keys.T | Keys.Control | Keys.Alt };
-            result["TextureCeiling"] = new SortedSet<Hotkey> { Keys.V | Keys.Control | Keys.Alt };
-            result["TextureWalls"] = new SortedSet<Hotkey> { W | Keys.Control | Keys.Alt };
-            result["FlattenFloor"] = new SortedSet<Hotkey> { Keys.E | Keys.Control | Keys.Alt };
-            result["FlattenCeiling"] = new SortedSet<Hotkey> { Keys.F | Keys.Control | Keys.Alt };
-            result["GridWallsIn3"] = new SortedSet<Hotkey> { Keys.D3 | Keys.Control };
-            result["GridWallsIn5"] = new SortedSet<Hotkey> { Keys.D5 | Keys.Control };
-            result["QuitEditor"] = new SortedSet<Hotkey> { Keys.F4 | Keys.Alt };
-            result["RemapTexture"] = new SortedSet<Hotkey> { Keys.R | Keys.Shift | Keys.Alt };
-            result["SmoothRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Shift };
-            result["SmoothRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Shift };
-            result["SmoothRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift };
-            result["SmoothRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift };
-            result["SharpRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Alt };
-            result["SharpRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Alt };
-            result["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Alt };
-            result["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Alt };
-            result["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
-            return result;
+            this["CancelAnyAction"] = new SortedSet<Hotkey> { Keys.Escape };
+            this["Switch2DMode"] = new SortedSet<Hotkey> { Keys.F1 };
+            this["SwitchGeometryMode"] = new SortedSet<Hotkey> { Keys.F2 };
+            this["SwitchFaceEditMode"] = new SortedSet<Hotkey> { Keys.F3 };
+            this["SwitchLightingMode"] = new SortedSet<Hotkey> { Keys.F4 };
+            this["ResetCamera"] = new SortedSet<Hotkey> { Keys.F6 };
+            this["AddTrigger"] = new SortedSet<Hotkey> { Keys.T };
+            this["AddTriggerWithBookmark"] = new SortedSet<Hotkey> { Keys.T | Keys.Shift };
+            this["AddPortal"] = new SortedSet<Hotkey> { Keys.P };
+            this["EditObject"] = new SortedSet<Hotkey> { Keys.O };
+            this["SetTextureBlendMode"] = new SortedSet<Hotkey> { Keys.NumPad1 | Keys.Shift, Keys.D1 | Keys.Shift };
+            this["SetTextureDoubleSided"] = new SortedSet<Hotkey> { Keys.NumPad2 | Keys.Shift, Keys.D2 | Keys.Shift };
+            this["SetTextureInvisible"] = new SortedSet<Hotkey> { Keys.NumPad3 | Keys.Shift, Keys.D3 | Keys.Shift };
+            this["RotateObjectLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Shift };
+            this["RotateObjectRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Shift };
+            this["RotateObjectUp"] = new SortedSet<Hotkey> { Keys.Up | Keys.Shift };
+            this["RotateObjectDown"] = new SortedSet<Hotkey> { Keys.Down | Keys.Shift };
+            this["MoveObjectLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Control };
+            this["MoveObjectRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Control };
+            this["MoveObjectForward"] = new SortedSet<Hotkey> { Keys.Up | Keys.Control };
+            this["MoveObjectBack"] = new SortedSet<Hotkey> { Keys.Down | Keys.Control };
+            this["MoveObjectUp"] = new SortedSet<Hotkey> { Keys.PageUp | Keys.Control };
+            this["MoveObjectDown"] = new SortedSet<Hotkey> { Keys.PageDown | Keys.Control };
+            this["MoveRoomLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Alt };
+            this["MoveRoomRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Alt };
+            this["MoveRoomForward"] = new SortedSet<Hotkey> { Keys.Up | Keys.Alt };
+            this["MoveRoomBack"] = new SortedSet<Hotkey> { Keys.Down | Keys.Alt };
+            this["MoveRoomUp"] = new SortedSet<Hotkey> { Keys.PageUp | Keys.Alt };
+            this["MoveRoomDown"] = new SortedSet<Hotkey> { Keys.PageDown | Keys.Alt };
+            this["RaiseQA1Click"] = new SortedSet<Hotkey> { Q };
+            this["RaiseQA4Click"] = new SortedSet<Hotkey> { Q | Keys.Shift };
+            this["LowerQA1Click"] = new SortedSet<Hotkey> { A };
+            this["LowerQA4Click"] = new SortedSet<Hotkey> { A | Keys.Shift };
+            this["RaiseQA1ClickSmooth"] = new SortedSet<Hotkey> { Q | Keys.Alt };
+            this["RaiseQA4ClickSmooth"] = new SortedSet<Hotkey> { Q | Keys.Alt | Keys.Shift };
+            this["LowerQA1ClickSmooth"] = new SortedSet<Hotkey> { A | Keys.Alt };
+            this["LowerQA4ClickSmooth"] = new SortedSet<Hotkey> { A | Keys.Alt | Keys.Shift };
+            this["RaiseWS1Click"] = new SortedSet<Hotkey> { W };
+            this["RaiseWS4Click"] = new SortedSet<Hotkey> { W | Keys.Shift };
+            this["LowerWS1Click"] = new SortedSet<Hotkey> { Keys.S };
+            this["LowerWS4Click"] = new SortedSet<Hotkey> { Keys.S | Keys.Shift };
+            this["RaiseWS1ClickSmooth"] = new SortedSet<Hotkey> { W | Keys.Alt };
+            this["RaiseWS4ClickSmooth"] = new SortedSet<Hotkey> { W | Keys.Alt | Keys.Shift };
+            this["LowerWS1ClickSmooth"] = new SortedSet<Hotkey> { Keys.S | Keys.Alt };
+            this["LowerWS4ClickSmooth"] = new SortedSet<Hotkey> { Keys.S | Keys.Alt | Keys.Shift };
+            this["RaiseED1Click"] = new SortedSet<Hotkey> { Keys.E };
+            this["RaiseED4Click"] = new SortedSet<Hotkey> { Keys.E | Keys.Shift };
+            this["LowerED1Click"] = new SortedSet<Hotkey> { Keys.D };
+            this["LowerED4Click"] = new SortedSet<Hotkey> { Keys.D | Keys.Shift };
+            this["RaiseED1ClickSmooth"] = new SortedSet<Hotkey> { Keys.E | Keys.Alt };
+            this["RaiseED4ClickSmooth"] = new SortedSet<Hotkey> { Keys.E | Keys.Alt | Keys.Shift };
+            this["LowerED1ClickSmooth"] = new SortedSet<Hotkey> { Keys.D | Keys.Alt };
+            this["LowerED4ClickSmooth"] = new SortedSet<Hotkey> { Keys.D | Keys.Alt | Keys.Shift };
+            this["RaiseRF1Click"] = new SortedSet<Hotkey> { Keys.R };
+            this["RaiseRF4Click"] = new SortedSet<Hotkey> { Keys.R | Keys.Shift };
+            this["LowerRF1Click"] = new SortedSet<Hotkey> { Keys.F };
+            this["LowerRF4Click"] = new SortedSet<Hotkey> { Keys.F | Keys.Shift };
+            this["RaiseRF1ClickSmooth"] = new SortedSet<Hotkey> { Keys.R | Keys.Alt };
+            this["RaiseRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.R | Keys.Alt | Keys.Shift };
+            this["LowerRF1ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt };
+            this["LowerRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt | Keys.Shift };
+            this["RaiseYH1Click"] = new SortedSet<Hotkey> { Keys.Y };
+            this["RaiseYH4Click"] = new SortedSet<Hotkey> { Keys.Y | Keys.Shift };
+            this["LowerYH1Click"] = new SortedSet<Hotkey> { Keys.H };
+            this["LowerYH4Click"] = new SortedSet<Hotkey> { Keys.H | Keys.Shift };
+            this["RaiseUJ1Click"] = new SortedSet<Hotkey> { Keys.U };
+            this["RaiseUJ4Click"] = new SortedSet<Hotkey> { Keys.U | Keys.Shift };
+            this["LowerUJ1Click"] = new SortedSet<Hotkey> { Keys.J };
+            this["LowerUJ4Click"] = new SortedSet<Hotkey> { Keys.J | Keys.Shift };
+            this["RotateObject5"] = new SortedSet<Hotkey> { Keys.R | Keys.Control };
+            this["RotateObject45"] = new SortedSet<Hotkey> { Keys.R | Keys.Control | Keys.Shift };
+            this["RotateTexture"] = new SortedSet<Hotkey> { Keys.OemMinus, Keys.Oemplus, Keys.Oem3, Keys.Oem5 }; // US keyboard key in documentation: OemMinus      US-keyboard key: Oem3       German-keyboard key: Oem5
+            this["MirrorTexture"] = new SortedSet<Hotkey> { Keys.OemMinus | Keys.Shift, Keys.Oemplus | Keys.Shift, Keys.Oem3 | Keys.Shift, Keys.Oem5 | Keys.Shift };
+            this["NewLevel"] = new SortedSet<Hotkey> { Keys.N | Keys.Control | Keys.Shift };
+            this["OpenLevel"] = new SortedSet<Hotkey> { Keys.O | Keys.Control };
+            this["SaveLevel"] = new SortedSet<Hotkey> { Keys.S | Keys.Control };
+            this["SaveLevelAs"] = new SortedSet<Hotkey> { Keys.S | Keys.Control | Keys.Shift };
+            this["BuildLevel"] = new SortedSet<Hotkey> { Keys.F5 | Keys.Shift };
+            this["BuildAndPlay"] = new SortedSet<Hotkey> { Keys.F5 };
+            this["Copy"] = new SortedSet<Hotkey> { Keys.C | Keys.Control };
+            this["Paste"] = new SortedSet<Hotkey> { Keys.V | Keys.Control };
+            this["StampObject"] = new SortedSet<Hotkey> { Keys.B | Keys.Control };
+            this["Delete"] = new SortedSet<Hotkey> { Keys.Delete };
+            this["SelectAll"] = new SortedSet<Hotkey> { A | Keys.Control };
+            this["Search"] = new SortedSet<Hotkey> { Keys.F | Keys.Control };
+            this["DeleteRooms"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift | Keys.Alt };
+            this["DuplicateRooms"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift | Keys.Alt };
+            this["SelectConnectedRooms"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift | Keys.Alt };
+            this["RotateRoomsClockwise"] = new SortedSet<Hotkey> { Keys.F1 | Keys.Control };
+            this["RotateRoomsCounterClockwise"] = new SortedSet<Hotkey> { Keys.F2 | Keys.Control };
+            this["MirrorRoomsX"] = new SortedSet<Hotkey> { Keys.F3 | Keys.Control };
+            this["MirrorRoomsZ"] = new SortedSet<Hotkey> { Keys.F4 | Keys.Control };
+            this["SplitRoom"] = new SortedSet<Hotkey> { Keys.S | Keys.Control | Keys.Shift | Keys.Alt };
+            this["CropRoom"] = new SortedSet<Hotkey> { Keys.O | Keys.Control | Keys.Shift | Keys.Alt };
+            this["NewRoomUp"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift };
+            this["NewRoomDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift };
+            this["AddCamera"] = new SortedSet<Hotkey> { Keys.C | Keys.Alt };
+            this["AddFlybyCamera"] = new SortedSet<Hotkey> { Keys.M | Keys.Alt };
+            this["AddSink"] = new SortedSet<Hotkey> { Keys.K | Keys.Alt };
+            this["AddSoundSource"] = new SortedSet<Hotkey> { Keys.X | Keys.Alt };
+            this["AddImportedGeometry"] = new SortedSet<Hotkey> { Keys.I | Keys.Alt };
+            this["MoveLara"] = new SortedSet<Hotkey> { Keys.M | Keys.Control };
+            this["TextureFloor"] = new SortedSet<Hotkey> { Keys.T | Keys.Control | Keys.Alt };
+            this["TextureCeiling"] = new SortedSet<Hotkey> { Keys.V | Keys.Control | Keys.Alt };
+            this["TextureWalls"] = new SortedSet<Hotkey> { W | Keys.Control | Keys.Alt };
+            this["FlattenFloor"] = new SortedSet<Hotkey> { Keys.E | Keys.Control | Keys.Alt };
+            this["FlattenCeiling"] = new SortedSet<Hotkey> { Keys.F | Keys.Control | Keys.Alt };
+            this["GridWallsIn3"] = new SortedSet<Hotkey> { Keys.D3 | Keys.Control };
+            this["GridWallsIn5"] = new SortedSet<Hotkey> { Keys.D5 | Keys.Control };
+            this["QuitEditor"] = new SortedSet<Hotkey> { Keys.F4 | Keys.Alt };
+            this["RemapTexture"] = new SortedSet<Hotkey> { Keys.R | Keys.Shift | Keys.Alt };
+            this["SmoothRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Shift };
+            this["SmoothRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Shift };
+            this["SmoothRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift };
+            this["SmoothRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift };
+            this["SharpRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Alt };
+            this["SharpRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Alt };
+            this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Alt };
+            this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Alt };
+            this["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
         }
-
-        public int Count => _list.Count;
-        public bool IsReadOnly => false;
     }
 }

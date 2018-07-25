@@ -24,7 +24,7 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             _editor = editor;
-            _currConfig = _editor.Configuration.Keyboard_HotkeySets.Clone();
+            _currConfig = _editor.Configuration.Window_HotkeySets.Clone();
             commandList.DataSource = new SortableBindingList<CommandObj>(CommandHandler.Commands);
             listenKeys.Text = _listenerMessage;
 
@@ -75,7 +75,7 @@ namespace TombEditor.Forms
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            _editor.Configuration.Keyboard_HotkeySets = _currConfig;
+            _editor.Configuration.Window_HotkeySets = _currConfig;
             _editor.ConfigurationChange();
             Close();
         }
@@ -90,7 +90,7 @@ namespace TombEditor.Forms
             if (DarkMessageBox.Show(this, "Do you really want to restore ALL key bindings to their default?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            _currConfig = HotkeySets.GenerateDefault(KeyboardLayoutDetector.KeyboardLayout);
+            _currConfig = new HotkeySets();
             RedrawList();
         }
 

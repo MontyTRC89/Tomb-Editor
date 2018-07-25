@@ -43,7 +43,7 @@
             this.panelMessage.Location = new System.Drawing.Point(0, 21);
             this.panelMessage.Name = "panelMessage";
             this.panelMessage.Padding = new System.Windows.Forms.Padding(3);
-            this.panelMessage.Size = new System.Drawing.Size(50, 0);
+            this.panelMessage.Size = new System.Drawing.Size(104, 0);
             this.panelMessage.TabIndex = 1;
             // 
             // lblMessage
@@ -52,7 +52,7 @@
             this.lblMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblMessage.Location = new System.Drawing.Point(3, 3);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(44, 0);
+            this.lblMessage.Size = new System.Drawing.Size(98, 0);
             this.lblMessage.TabIndex = 0;
             this.lblMessage.Text = "Text";
             // 
@@ -63,7 +63,7 @@
             this.panelTitle.Location = new System.Drawing.Point(0, 0);
             this.panelTitle.Name = "panelTitle";
             this.panelTitle.Padding = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.panelTitle.Size = new System.Drawing.Size(50, 21);
+            this.panelTitle.Size = new System.Drawing.Size(104, 21);
             this.panelTitle.TabIndex = 0;
             // 
             // lblTitle
@@ -84,7 +84,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(50, 15);
+            this.ClientSize = new System.Drawing.Size(104, 15);
             this.Controls.Add(this.panelMessage);
             this.Controls.Add(this.panelTitle);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
