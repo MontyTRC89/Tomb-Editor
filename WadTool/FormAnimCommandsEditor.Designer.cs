@@ -195,7 +195,7 @@
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(188, 6);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(47, 13);
+            this.darkLabel5.Size = new System.Drawing.Size(48, 13);
             this.darkLabel5.TabIndex = 3;
             this.darkLabel5.Text = "Vertical:";
             // 
@@ -379,7 +379,7 @@
             this.MinimizeBox = false;
             this.Name = "FormAnimCommandsEditor";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Anim commands editor";
             this.panelPosition.ResumeLayout(false);
             this.panelPosition.PerformLayout();

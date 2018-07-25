@@ -572,7 +572,7 @@ namespace WadTool
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusFrame});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 693);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 705);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(1030, 36);
@@ -1437,9 +1437,7 @@ namespace WadTool
             this.panelRendering.Controls.Add(this.tbAccel);
             this.panelRendering.Location = new System.Drawing.Point(3, 54);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.SelectedMesh = null;
             this.panelRendering.Size = new System.Drawing.Size(781, 575);
-            this.panelRendering.Skeleton = null;
             this.panelRendering.TabIndex = 4;
             // 
             // panelInterpolate
@@ -1668,7 +1666,7 @@ namespace WadTool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1030, 729);
+            this.ClientSize = new System.Drawing.Size(1030, 741);
             this.Controls.Add(this.topBar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panelRendering);
@@ -1681,7 +1679,7 @@ namespace WadTool
             this.Name = "FormAnimationEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animation editor";
             this.topMenu.ResumeLayout(false);
             this.topMenu.PerformLayout();

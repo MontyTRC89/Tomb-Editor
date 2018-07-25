@@ -288,7 +288,7 @@ namespace WadTool
             {
                 using (var form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
                 {
-                    if (form.ShowDialog() != DialogResult.OK)
+                    if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
                     tool.WadChanged(tool.MainSelection.Value.WadArea);
                 }

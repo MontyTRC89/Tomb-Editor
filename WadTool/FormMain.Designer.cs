@@ -774,7 +774,7 @@
             this.groupSelectedMoveable.Controls.Add(this.tableLayoutPanel2);
             this.groupSelectedMoveable.Location = new System.Drawing.Point(0, 8);
             this.groupSelectedMoveable.Name = "groupSelectedMoveable";
-            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 260);
+            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 262);
             this.groupSelectedMoveable.TabIndex = 21;
             this.groupSelectedMoveable.TabStop = false;
             this.groupSelectedMoveable.Text = "Selected moveable:";
@@ -793,7 +793,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 233);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 235);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel5
@@ -805,7 +805,7 @@
             this.panel5.Location = new System.Drawing.Point(285, 0);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(285, 233);
+            this.panel5.Size = new System.Drawing.Size(285, 235);
             this.panel5.TabIndex = 1;
             // 
             // flowLayoutPanel2
@@ -815,7 +815,7 @@
             this.flowLayoutPanel2.Controls.Add(this.butPlayAnimation);
             this.flowLayoutPanel2.Controls.Add(this.butStop);
             this.flowLayoutPanel2.Controls.Add(this.darkButton2);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 192);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 194);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(285, 41);
             this.flowLayoutPanel2.TabIndex = 21;
@@ -872,7 +872,7 @@
             this.treeAnimations.Location = new System.Drawing.Point(3, 22);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(279, 167);
+            this.treeAnimations.Size = new System.Drawing.Size(279, 169);
             this.treeAnimations.TabIndex = 20;
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
@@ -886,7 +886,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(282, 233);
+            this.panel4.Size = new System.Drawing.Size(282, 235);
             this.panel4.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -895,7 +895,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.butPlaySound);
             this.flowLayoutPanel1.Controls.Add(this.butRenameSound);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 192);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 194);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(282, 41);
             this.flowLayoutPanel1.TabIndex = 22;
@@ -930,7 +930,7 @@
             this.treeSounds.Location = new System.Drawing.Point(6, 22);
             this.treeSounds.MaxDragChange = 20;
             this.treeSounds.Name = "treeSounds";
-            this.treeSounds.Size = new System.Drawing.Size(273, 167);
+            this.treeSounds.Size = new System.Drawing.Size(273, 169);
             this.treeSounds.TabIndex = 16;
             this.treeSounds.Text = "darkTreeView1";
             // 
@@ -964,7 +964,7 @@
             this.MainMenuStrip = this.darkMenuStrip1;
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FormMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Wad Tool";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.darkMenuStrip1.ResumeLayout(false);

@@ -219,7 +219,7 @@ namespace WadTool
 
             using (var form = new FormInputBox("Rename bone", "Insert the name of the bone:", theNode.Bone.Name))
             {
-                if (form.ShowDialog() == DialogResult.OK && form.Result != "")
+                if (form.ShowDialog(this) == DialogResult.OK && form.Result != "")
                 {
                     theNode.Bone.Name = form.Result;
                     treeSkeleton.SelectedNodes[0].Text = form.Result;
