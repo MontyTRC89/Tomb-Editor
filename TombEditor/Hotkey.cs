@@ -96,7 +96,7 @@ namespace TombEditor
     {
         public static List<Keys> ReservedCameraKeys = new List<Keys> { Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp };
 
-        private readonly SortedDictionary<string, SortedSet<Hotkey>> _list = new SortedDictionary<string, SortedSet<Hotkey>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly SortedList<string, SortedSet<Hotkey>> _list = new SortedList<string, SortedSet<Hotkey>>(StringComparer.InvariantCultureIgnoreCase);
 
         public HotkeySets()
         {
@@ -108,7 +108,7 @@ namespace TombEditor
 
         private HotkeySets(HotkeySets other)
         {
-            _list = new SortedDictionary<string, SortedSet<Hotkey>>(
+            _list = new SortedList<string, SortedSet<Hotkey>>(
                 other._list.DicSelect(e => new SortedSet<Hotkey>(e.Value)), StringComparer.InvariantCultureIgnoreCase);
         }
 
@@ -146,6 +146,8 @@ namespace TombEditor
                 string commandName = reader.GetAttribute("CommandName");
                 string hotkeys = reader.GetAttribute("Hotkeys");
 
+                if (hotkeys.Equals("UseDefault", StringComparison.InvariantCultureIgnoreCase))
+                    continue;
                 if (!_list.ContainsKey(commandName))
                     continue;
                 string unused;
@@ -155,11 +157,16 @@ namespace TombEditor
 
         public void WriteXml(XmlWriter writer)
         {
-            foreach (var item in _list)
+            writer.WriteComment("An example hotkey would be 'Ctrl+C'. You can specify multiple hotkeys per command like this 'Shift+Ctrl+T, Alt+I'.");
+            writer.WriteComment("You may combine any key with Ctrl, Shift or Alt, but other combinations are not allowed.");
+            writer.WriteComment("For a comprehensive list of possible keys look here: https://msdn.microsoft.com/en-us/library/system.windows.forms.keys(v=vs.110).aspx ");
+            HotkeySets @default = GenerateDefault();
+            foreach (var commandAndHotkey in _list)
             {
+                bool isDefault = commandAndHotkey.Value.SetEquals(@default[commandAndHotkey.Key]);
                 writer.WriteStartElement("HotkeySet");
-                writer.WriteAttributeString("CommandName", item.Key);
-                writer.WriteAttributeString("Hotkeys", string.Join(", ", item.Value));
+                writer.WriteAttributeString("CommandName", commandAndHotkey.Key);
+                writer.WriteAttributeString("Hotkeys", isDefault ? "UseDefault" : string.Join(", ", commandAndHotkey.Value));
                 writer.WriteEndElement();
             }
         }
@@ -183,6 +190,7 @@ namespace TombEditor
             return hotkeys;
         }
 
+        public static HotkeySets GenerateDefault() => GenerateDefault();
         public static HotkeySets GenerateDefault(KeyboardLayout layout)
         {
             Keys Q = Keys.Q;
