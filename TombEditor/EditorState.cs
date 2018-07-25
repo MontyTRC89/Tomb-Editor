@@ -50,7 +50,7 @@ namespace TombEditor
         public VectorInt2 End { get; set; }
         public ArrowType Arrow { get; set; }
 
-        public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, 1), End = new VectorInt2(-1, 1) };
+        public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, -1), End = new VectorInt2(-1, -1) };
 
         public static bool operator ==(SectorSelection first, SectorSelection second)
         {

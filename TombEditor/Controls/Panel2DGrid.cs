@@ -19,6 +19,8 @@ namespace TombEditor.Controls
 
         private bool _doSectorSelection;
         private readonly Editor _editor;
+        private Room _room;
+        private ToolTip _toolTip = new ToolTip();
 
         private static readonly float _outlineSectorColoringInfoWidth = 3;
         private static readonly Pen _gridPen = Pens.Black;
@@ -26,7 +28,11 @@ namespace TombEditor.Controls
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
 
-        private ToolTip _toolTip = new ToolTip();
+        public Room Room
+        {
+            get { return _room; }
+            set { if (_room == value) return; _room = value; Invalidate(); }
+        }
 
         public Panel2DGrid()
         {
@@ -51,7 +57,6 @@ namespace TombEditor.Controls
         {
             // Update drawing
             if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
-                obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
@@ -72,12 +77,14 @@ namespace TombEditor.Controls
             return e.Previous is SectorBasedObjectInstance || e.Current is SectorBasedObjectInstance;
         }
 
-        private VectorInt2 GetGridDimensions()
+        protected virtual VectorInt2 RoomSize => Room.SectorSize;
+
+        protected virtual VectorInt2 GetGridDimensions()
         {
-            return VectorInt2.Max(_editor.SelectedRoom.SectorSize, new VectorInt2(Room.DefaultRoomDimensions, Room.DefaultRoomDimensions));
+            return VectorInt2.Max(RoomSize, new VectorInt2(Room.DefaultRoomDimensions, Room.DefaultRoomDimensions));
         }
 
-        private float GetGridStep()
+        protected float GetGridStep()
         {
             VectorInt2 gridDimensions = GetGridDimensions();
             Size ClientSize = this.ClientSize;
@@ -87,7 +94,7 @@ namespace TombEditor.Controls
                 return ClientSize.Height / gridDimensions.Y;
         }
 
-        private RectangleF GetVisualAreaTotal()
+        protected RectangleF GetVisualAreaTotal()
         {
             Vector2 gridSize = (Vector2)GetGridDimensions() * GetGridStep();
             return new RectangleF(
@@ -97,27 +104,28 @@ namespace TombEditor.Controls
                 gridSize.Y);
         }
 
-        private RectangleF GetVisualAreaRoom()
+        protected RectangleF GetVisualAreaRoom()
         {
             RectangleF totalArea = GetVisualAreaTotal();
             float gridStep = GetGridStep();
             VectorInt2 gridDimensions = GetGridDimensions();
+            VectorInt2 roomSize = RoomSize;
 
             return new RectangleF(
-                totalArea.X + gridStep * ((gridDimensions.X - _editor.SelectedRoom.NumXSectors) / 2),
-                totalArea.Y + gridStep * ((gridDimensions.Y - _editor.SelectedRoom.NumZSectors) / 2),
-                gridStep * _editor.SelectedRoom.NumXSectors,
-                gridStep * _editor.SelectedRoom.NumZSectors);
+                totalArea.X + gridStep * ((gridDimensions.X - roomSize.X) / 2),
+                totalArea.Y + gridStep * ((gridDimensions.Y - roomSize.Y) / 2),
+                gridStep * roomSize.X,
+                gridStep * roomSize.Y);
         }
 
-        private PointF ToVisualCoord(VectorInt2 sectorCoord)
+        protected PointF ToVisualCoord(VectorInt2 sectorCoord)
         {
             RectangleF roomArea = GetVisualAreaRoom();
             float gridStep = GetGridStep();
             return new PointF(sectorCoord.X * gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * gridStep);
         }
 
-        private RectangleF ToVisualCoord(RectangleInt2 sectorArea)
+        protected RectangleF ToVisualCoord(RectangleInt2 sectorArea)
         {
             PointF convertedPoint0 = ToVisualCoord(sectorArea.Start);
             PointF convertedPoint1 = ToVisualCoord(sectorArea.End);
@@ -127,13 +135,14 @@ namespace TombEditor.Controls
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + gridStep);
         }
 
-        private VectorInt2 FromVisualCoord(PointF point)
+        protected VectorInt2 FromVisualCoord(PointF point)
         {
             RectangleF roomArea = GetVisualAreaRoom();
             float gridStep = GetGridStep();
+            VectorInt2 roomSize = RoomSize;
             return new VectorInt2(
-                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / gridStep)),
-                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / gridStep)));
+                (int)Math.Max(0, Math.Min(roomSize.X - 1, (point.X - roomArea.X) / gridStep)),
+                (int)Math.Max(0, Math.Min(roomSize.Y - 1, (roomArea.Bottom - point.Y) / gridStep)));
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -141,7 +150,7 @@ namespace TombEditor.Controls
             base.OnMouseDown(e);
             _toolTip.Hide(this);
 
-            if (_editor == null || _editor.SelectedRoom == null)
+            if (_editor == null || Room == null)
                 return;
 
             // Move camera to selected sector
@@ -159,12 +168,12 @@ namespace TombEditor.Controls
             if (e.Button == MouseButtons.Left)
             {
                 if (selectedSectorObject != null &&
-                    selectedSectorObject.Room == _editor.SelectedRoom &&
+                    selectedSectorObject.Room == Room &&
                     selectedSectorObject.Area.Contains(sectorPos))
                 {
                     if (selectedSectorObject is PortalInstance)
                     {
-                        Room room = _editor.SelectedRoom;
+                        Room room = Room;
                         _editor.SelectRoomAndResetCamera(((PortalInstance)selectedSectorObject).AdjoiningRoom);
                         _editor.SelectedObject = ((PortalInstance)selectedSectorObject).FindOppositePortal(room);
                     }
@@ -185,8 +194,8 @@ namespace TombEditor.Controls
             else if (e.Button == MouseButtons.Right)
             {
                 // Find next object
-                var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
-                var triggersInRoom = _editor.SelectedRoom.Triggers.Cast<SectorBasedObjectInstance>();
+                var portalsInRoom = Room.Portals.Cast<SectorBasedObjectInstance>();
+                var triggersInRoom = Room.Triggers.Cast<SectorBasedObjectInstance>();
                 var relevantTriggersAndPortals = portalsInRoom.Concat(triggersInRoom)
                     .Where(obj => obj.Area.Contains(sectorPos));
 
@@ -231,103 +240,23 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (_editor == null || Room == null)
+                return;
+
             try
             {
-                if (_editor == null || _editor.SelectedRoom == null)
-                    return;
-
-                Room currentRoom = _editor.SelectedRoom;
                 RectangleF totalArea = GetVisualAreaTotal();
                 RectangleF roomArea = GetVisualAreaRoom();
                 VectorInt2 gridDimensions = GetGridDimensions();
                 float gridStep = GetGridStep();
-                bool probePortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals;
+                VectorInt2 roomSize = RoomSize;
 
                 e.Graphics.FillRectangle(Brushes.White, totalArea);
 
                 // Draw tiles
-                for (int x = 0; x < currentRoom.NumXSectors; x++)
-                    for (int z = 0; z < currentRoom.NumZSectors; z++)
-                    {
-                        RectangleF rectangle = new RectangleF(roomArea.X + x * gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * gridStep, gridStep, gridStep);
-
-                        var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(currentRoom, x, z, probePortals);
-                        if (currentSectorColoringInfos != null)
-                        {
-                            for (int i = 0; i < currentSectorColoringInfos.Count; i++)
-                            {
-                                e.Graphics.SmoothingMode = currentSectorColoringInfos[i].Shape == SectorColoringShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
-
-                                switch (currentSectorColoringInfos[i].Shape)
-                                {
-                                    case SectorColoringShape.Rectangle:
-                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, rectangle);
-                                        break;
-                                    case SectorColoringShape.Frame:
-                                        RectangleF frameAttribRect = rectangle;
-                                        frameAttribRect.Inflate(-(_outlineSectorColoringInfoWidth / 2), -(_outlineSectorColoringInfoWidth / 2));
-                                        using (var b = new Pen(currentSectorColoringInfos[i].Color.ToWinFormsColor(), _outlineSectorColoringInfoWidth))
-                                            e.Graphics.DrawRectangle(b, frameAttribRect);
-                                        break;
-                                    case SectorColoringShape.Hatch:
-                                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentSectorColoringInfos[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, rectangle);
-                                        break;
-                                    case SectorColoringShape.EdgeZp:
-                                    case SectorColoringShape.EdgeZn:
-                                    case SectorColoringShape.EdgeXp:
-                                    case SectorColoringShape.EdgeXn:
-                                        RectangleF edgeRect;
-                                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZp)
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, _outlineSectorColoringInfoWidth);
-                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZn)
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Bottom - _outlineSectorColoringInfoWidth, rectangle.Width, _outlineSectorColoringInfoWidth);
-                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeXp)
-                                            edgeRect = new RectangleF(rectangle.Right - _outlineSectorColoringInfoWidth, rectangle.Y, _outlineSectorColoringInfoWidth, rectangle.Height);
-                                        else
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, _outlineSectorColoringInfoWidth, rectangle.Height);
-                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, edgeRect);
-                                        break;
-                                    case SectorColoringShape.TriangleXnZn:
-                                    case SectorColoringShape.TriangleXnZp:
-                                    case SectorColoringShape.TriangleXpZn:
-                                    case SectorColoringShape.TriangleXpZp:
-                                        PointF[] points = new PointF[3];
-                                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZn)
-                                        {
-                                            points[0] = new PointF(rectangle.Left, rectangle.Top);
-                                            points[1] = new PointF(rectangle.Left, rectangle.Bottom);
-                                            points[2] = new PointF(rectangle.Right, rectangle.Bottom);
-                                        }
-                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZp)
-                                        {
-                                            points[0] = new PointF(rectangle.Left, rectangle.Bottom);
-                                            points[1] = new PointF(rectangle.Left, rectangle.Top);
-                                            points[2] = new PointF(rectangle.Right, rectangle.Top);
-                                        }
-                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXpZn)
-                                        {
-                                            points[0] = new PointF(rectangle.Left, rectangle.Bottom);
-                                            points[1] = new PointF(rectangle.Right, rectangle.Top);
-                                            points[2] = new PointF(rectangle.Right, rectangle.Bottom);
-                                        }
-                                        else
-                                        {
-                                            points[0] = new PointF(rectangle.Left, rectangle.Top);
-                                            points[1] = new PointF(rectangle.Right, rectangle.Top);
-                                            points[2] = new PointF(rectangle.Right, rectangle.Bottom);
-                                        }
-                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillPolygon(b, points);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                        }
-                    }
+                for (int x = 0; x < roomSize.X; x++)
+                    for (int z = 0; z < roomSize.Y; z++)
+                        PaintSectorTile(e, new RectangleF(roomArea.X + x * gridStep, roomArea.Y + (roomSize.Y - 1 - z) * gridStep, gridStep, gridStep), x, z);
 
                 // Draw black grid lines
                 for (int x = 0; x <= gridDimensions.X; ++x)
@@ -336,20 +265,105 @@ namespace TombEditor.Controls
                     e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * gridStep, totalArea.X + gridStep * gridDimensions.X, totalArea.Y + y * gridStep);
 
                 // Draw selection
-                if (_editor.SelectedSectors.Valid)
-                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
-
-                var instance = _editor.SelectedObject as SectorBasedObjectInstance;
-                if (instance != null && instance.Room == _editor.SelectedRoom)
+                if (DrawSelection)
                 {
-                    Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
-                    RectangleF visualArea = ToVisualCoord(instance.Area);
-                    e.Graphics.DrawRectangle(pen, visualArea);
+                    if (_editor.SelectedSectors.Valid)
+                        e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
+
+                    var instance = _editor.SelectedObject as SectorBasedObjectInstance;
+                    if (instance != null && instance.Room == Room)
+                    {
+                        Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
+                        RectangleF visualArea = ToVisualCoord(instance.Area);
+                        e.Graphics.DrawRectangle(pen, visualArea);
+                    }
                 }
             }
             catch (Exception exc)
             {
                 logger.Error(exc, "An exception occured while drawing the 2D grid.");
+            }
+        }
+
+        protected virtual bool DrawSelection { get; } = true;
+
+        protected virtual void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
+        {
+            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+            if (currentSectorColoringInfos == null)
+                return;
+
+            for (int i = 0; i < currentSectorColoringInfos.Count; i++)
+            {
+                e.Graphics.SmoothingMode = currentSectorColoringInfos[i].Shape == SectorColoringShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
+
+                switch (currentSectorColoringInfos[i].Shape)
+                {
+                    case SectorColoringShape.Rectangle:
+                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
+                            e.Graphics.FillRectangle(b, sectorArea);
+                        break;
+                    case SectorColoringShape.Frame:
+                        RectangleF frameAttribRect = sectorArea;
+                        frameAttribRect.Inflate(-(_outlineSectorColoringInfoWidth / 2), -(_outlineSectorColoringInfoWidth / 2));
+                        using (var b = new Pen(currentSectorColoringInfos[i].Color.ToWinFormsColor(), _outlineSectorColoringInfoWidth))
+                            e.Graphics.DrawRectangle(b, frameAttribRect);
+                        break;
+                    case SectorColoringShape.Hatch:
+                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentSectorColoringInfos[i].Color.ToWinFormsColor()))
+                            e.Graphics.FillRectangle(b, sectorArea);
+                        break;
+                    case SectorColoringShape.EdgeZp:
+                    case SectorColoringShape.EdgeZn:
+                    case SectorColoringShape.EdgeXp:
+                    case SectorColoringShape.EdgeXn:
+                        RectangleF edgeRect;
+                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZp)
+                            edgeRect = new RectangleF(sectorArea.X, sectorArea.Y, sectorArea.Width, _outlineSectorColoringInfoWidth);
+                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZn)
+                            edgeRect = new RectangleF(sectorArea.X, sectorArea.Bottom - _outlineSectorColoringInfoWidth, sectorArea.Width, _outlineSectorColoringInfoWidth);
+                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeXp)
+                            edgeRect = new RectangleF(sectorArea.Right - _outlineSectorColoringInfoWidth, sectorArea.Y, _outlineSectorColoringInfoWidth, sectorArea.Height);
+                        else
+                            edgeRect = new RectangleF(sectorArea.X, sectorArea.Y, _outlineSectorColoringInfoWidth, sectorArea.Height);
+                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
+                            e.Graphics.FillRectangle(b, edgeRect);
+                        break;
+                    case SectorColoringShape.TriangleXnZn:
+                    case SectorColoringShape.TriangleXnZp:
+                    case SectorColoringShape.TriangleXpZn:
+                    case SectorColoringShape.TriangleXpZp:
+                        PointF[] points = new PointF[3];
+                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZn)
+                        {
+                            points[0] = new PointF(sectorArea.Left, sectorArea.Top);
+                            points[1] = new PointF(sectorArea.Left, sectorArea.Bottom);
+                            points[2] = new PointF(sectorArea.Right, sectorArea.Bottom);
+                        }
+                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZp)
+                        {
+                            points[0] = new PointF(sectorArea.Left, sectorArea.Bottom);
+                            points[1] = new PointF(sectorArea.Left, sectorArea.Top);
+                            points[2] = new PointF(sectorArea.Right, sectorArea.Top);
+                        }
+                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXpZn)
+                        {
+                            points[0] = new PointF(sectorArea.Left, sectorArea.Bottom);
+                            points[1] = new PointF(sectorArea.Right, sectorArea.Top);
+                            points[2] = new PointF(sectorArea.Right, sectorArea.Bottom);
+                        }
+                        else
+                        {
+                            points[0] = new PointF(sectorArea.Left, sectorArea.Top);
+                            points[1] = new PointF(sectorArea.Right, sectorArea.Top);
+                            points[2] = new PointF(sectorArea.Right, sectorArea.Bottom);
+                        }
+                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
+                            e.Graphics.FillPolygon(b, points);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
