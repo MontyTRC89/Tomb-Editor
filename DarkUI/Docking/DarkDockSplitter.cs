@@ -9,10 +9,8 @@ namespace DarkUI.Docking
     {
         #region Field Region
 
-        private Control _parentControl;
-        private Control _control;
-
-        private DarkSplitterType _splitterType;
+        private readonly Control _parentControl;
+        private readonly Control _control;
 
         private int _minimum;
         private int _maximum;
@@ -22,6 +20,9 @@ namespace DarkUI.Docking
 
         #region Property Region
 
+        public DarkSplitterMode SplitterMode { get; private set; }
+        public DarkSplitterType SplitterType { get; private set; }
+
         public Rectangle Bounds { get; set; }
 
         public Cursor ResizeCursor { get; private set; }
@@ -30,13 +31,14 @@ namespace DarkUI.Docking
 
         #region Constructor Region
 
-        public DarkDockSplitter(Control parentControl, Control control, DarkSplitterType splitterType)
+        public DarkDockSplitter(Control parentControl, Control control, DarkSplitterType splitterType, DarkSplitterMode splitterMode)
         {
             _parentControl = parentControl;
             _control = control;
-            _splitterType = splitterType;
+            SplitterType = splitterType;
+            SplitterMode = splitterMode;
 
-            switch (_splitterType)
+            switch (SplitterType)
             {
                 case DarkSplitterType.Left:
                 case DarkSplitterType.Right:
@@ -55,8 +57,7 @@ namespace DarkUI.Docking
 
         public void ShowOverlay()
         {
-            _overlayForm = new DarkTranslucentForm(Color.Black);
-            _overlayForm.Visible = true;
+            _overlayForm = new DarkTranslucentForm(Color.Black) {Visible = true};
 
             UpdateOverlay(new Point(0, 0));
         }
@@ -70,7 +71,7 @@ namespace DarkUI.Docking
         {
             var bounds = new Rectangle(Bounds.Location, Bounds.Size);
 
-            switch (_splitterType)
+            switch (SplitterType)
             {
                 case DarkSplitterType.Left:
                     var leftX = Math.Max(bounds.Location.X - difference.X, _minimum);
@@ -100,7 +101,7 @@ namespace DarkUI.Docking
                     var bottomY = Math.Max(bounds.Location.Y - difference.Y, _minimum);
 
                     if (_maximum != 0 && bottomY > _maximum)
-                        topY = _maximum;
+                        bottomY = _maximum;
 
                     bounds.Location = new Point(bounds.Location.X, bottomY);
                     break;
@@ -111,7 +112,7 @@ namespace DarkUI.Docking
 
         public void Move(Point difference)
         {
-            switch (_splitterType)
+            switch (SplitterType)
             {
                 case DarkSplitterType.Left:
                     _control.SetBounds(_control.Bounds.X - difference.X, _control.Bounds.Y, _control.Bounds.Width + difference.X, _control.Bounds.Height);
@@ -134,7 +135,7 @@ namespace DarkUI.Docking
         {
             var bounds = _parentControl.RectangleToScreen(_control.Bounds);
 
-            switch (_splitterType)
+            switch (SplitterType)
             {
                 case DarkSplitterType.Left:
                     Bounds = new Rectangle(bounds.Left - 2, bounds.Top, 5, bounds.Height);

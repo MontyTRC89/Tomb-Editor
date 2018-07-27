@@ -12,13 +12,14 @@ namespace DarkUI.Controls
     {
         #region Field Region
 
+        private bool _useGenericBackColor = true;
         private DarkButtonStyle _style = DarkButtonStyle.Normal;
         private DarkControlState _buttonState = DarkControlState.Normal;
 
         private bool _isDefault;
         private bool _spacePressed;
 
-        private int _padding = Consts.Padding / 2;
+        private const int _padding = Consts.Padding / 2;
         private int _imagePadding = 5; // Consts.Padding / 2
 
         #endregion
@@ -41,6 +42,28 @@ namespace DarkUI.Controls
             set
             {
                 base.Enabled = value;
+                Invalidate();
+            }
+        }
+
+        [Localizable(true)]
+        [ReadOnly(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new Padding Padding
+        {
+            get { return base.Padding; }
+            set { base.Padding = value; }
+        }
+
+        [Category("Appearance")]
+        [Description("Determines if system BackColor should be used or not.")]
+        [DefaultValue(true)]
+        public bool BackColorUseGeneric
+        {
+            get { return _useGenericBackColor; }
+            set
+            {
+                _useGenericBackColor = value;
                 Invalidate();
             }
         }
@@ -276,17 +299,17 @@ namespace DarkUI.Controls
         {
             base.OnKeyUp(e);
 
-            if (e.KeyCode == Keys.Space)
-            {
-                _spacePressed = false;
+            if (e.KeyCode != Keys.Space)
+                return;
 
-                var location = Cursor.Position;
+            _spacePressed = false;
 
-                if (!ClientRectangle.Contains(location))
-                    SetButtonState(DarkControlState.Normal);
-                else
-                    SetButtonState(DarkControlState.Hover);
-            }
+            var location = Cursor.Position;
+
+            if (!ClientRectangle.Contains(location))
+                SetButtonState(DarkControlState.Normal);
+            else
+                SetButtonState(DarkControlState.Hover);
         }
 
         public override void NotifyDefault(bool value)
@@ -311,39 +334,41 @@ namespace DarkUI.Controls
 
             var textColor = Colors.LightText;
             var borderColor = Colors.GreySelection;
-            var fillColor = _isDefault ? Colors.DarkBlueBackground : Colors.LightBackground;
+            var fillColor = _useGenericBackColor ? (_isDefault ? Colors.DarkBlueBackground : Colors.LightBackground) : BackColor;
+            var hoverColor = _useGenericBackColor ? (_isDefault ? Colors.BlueBackground : Colors.LighterBackground) : ControlPaint.Light(BackColor);
 
             if (Enabled)
             {
-                if (ButtonStyle == DarkButtonStyle.Normal)
+                switch (ButtonStyle)
                 {
-                    if (Focused && TabStop)
-                        borderColor = Colors.BlueHighlight;
+                    case DarkButtonStyle.Normal:
+                        if (Focused && TabStop)
+                            borderColor = Colors.BlueHighlight;
 
-                    switch (ButtonState)
-                    {
-                        case DarkControlState.Hover:
-                            fillColor = _isDefault ? Colors.BlueBackground : Colors.LighterBackground;
-                            break;
-                        case DarkControlState.Pressed:
-                            fillColor = _isDefault ? Colors.DarkBackground : Colors.DarkBackground;
-                            break;
-                    }
-                }
-                else if (ButtonStyle == DarkButtonStyle.Flat)
-                {
-                    switch (ButtonState)
-                    {
-                        case DarkControlState.Normal:
-                            fillColor = Colors.GreyBackground;
-                            break;
-                        case DarkControlState.Hover:
-                            fillColor = Colors.MediumBackground;
-                            break;
-                        case DarkControlState.Pressed:
-                            fillColor = Colors.DarkBackground;
-                            break;
-                    }
+                        switch (ButtonState)
+                        {
+                            case DarkControlState.Hover:
+                                fillColor = hoverColor;
+                                break;
+                            case DarkControlState.Pressed:
+                                fillColor = Colors.DarkBackground;
+                                break;
+                        }
+                        break;
+                    case DarkButtonStyle.Flat:
+                        switch (ButtonState)
+                        {
+                            case DarkControlState.Normal:
+                                fillColor = Colors.GreyBackground;
+                                break;
+                            case DarkControlState.Hover:
+                                fillColor = Colors.MediumBackground;
+                                break;
+                            case DarkControlState.Pressed:
+                                fillColor = Colors.DarkBackground;
+                                break;
+                        }
+                        break;
                 }
             }
             else
@@ -374,21 +399,21 @@ namespace DarkUI.Controls
             {
                 var stringSize = g.MeasureString(Text, Font, rect.Size);
 
-                var x = (ClientSize.Width / 2) - (Image.Size.Width / 2);
-                var y = (ClientSize.Height / 2) - (Image.Size.Height / 2);
+                var x = ClientSize.Width / 2 - Image.Size.Width / 2;
+                var y = ClientSize.Height / 2 - Image.Size.Height / 2;
 
                 switch (TextImageRelation)
                 {
                     case TextImageRelation.ImageAboveText:
-                        textOffsetY = (Image.Size.Height / 2) + (ImagePadding / 2);
-                        y = y - ((int)(stringSize.Height / 2) + (ImagePadding / 2));
+                        textOffsetY = Image.Size.Height / 2 + ImagePadding / 2;
+                        y = y - ((int)(stringSize.Height / 2) + ImagePadding / 2);
                         break;
                     case TextImageRelation.TextAboveImage:
-                        textOffsetY = ((Image.Size.Height / 2) + (ImagePadding / 2)) * -1;
-                        y = y + ((int)(stringSize.Height / 2) + (ImagePadding / 2));
+                        textOffsetY = (Image.Size.Height / 2 + ImagePadding / 2) * -1;
+                        y = y + (int)(stringSize.Height / 2) + ImagePadding / 2;
                         break;
                     case TextImageRelation.ImageBeforeText:
-                        textOffsetX = Image.Size.Width + (ImagePadding / 2);
+                        textOffsetX = Image.Size.Width + ImagePadding / 2;
                         x = ImagePadding;
                         break;
                     case TextImageRelation.TextBeforeImage:
@@ -396,7 +421,7 @@ namespace DarkUI.Controls
                         break;
                 }
 
-                //g.DrawImageUnscaled(Image, x, y);
+                //g.DrawImage(Image, x, y);
                 g.DrawImage(Image, new Rectangle(x, y, Image.Width, Image.Height));
             }
 

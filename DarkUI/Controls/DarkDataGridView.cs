@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataGridView;
 using System.Collections;
+using System.Diagnostics;
 using System.Drawing.Design;
 
 using System.Reflection;
@@ -15,24 +14,24 @@ using DarkUI.Config;
 
 namespace DarkUI.Controls
 {
-    public partial class DarkDataGridView : UserControl, ISupportInitialize
+    public class DarkDataGridView : UserControl, ISupportInitialize
     {
-        private class DragDropMetaData { };
+        private class DragDropMetaData { }
 
-        private const int _borderWidth = 1;
+        private const int BorderWidth = 1;
         private readonly DataGridView _base = new DataGridView();
         private readonly DarkScrollBar _vScrollBar = new DarkScrollBar { ScrollOrientation = DarkScrollOrientation.Vertical };
         private readonly DarkScrollBar _hScrollBar = new DarkScrollBar { ScrollOrientation = DarkScrollOrientation.Horizontal };
-        private bool _isInit = false;
+        private bool _isInit;
         private ScrollBars _scrollBars = ScrollBars.Both;
-        private int __dragPosition = -1;
+        private int _dragPosition = -1;
 
-        private readonly static DataGridViewCellStyle _cellStyleUnfocusedEven = GetCellStyle(false, false, false);
-        private readonly static DataGridViewCellStyle _cellStyleUnfocusedOdd = GetCellStyle(false, true, false);
-        private readonly static DataGridViewCellStyle _cellStyleFocusedEven = GetCellStyle(true, false, false);
-        private readonly static DataGridViewCellStyle _cellStyleFocusedOdd = GetCellStyle(true, true, false);
-        private readonly static DataGridViewCellStyle _cellStyleHeader = GetCellStyle(true, true, true);
-        private readonly static PropertyInfo _dataGridViewDoubleBuffered = typeof(DataGridView).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly DataGridViewCellStyle _cellStyleUnfocusedEven = GetCellStyle(false, false, false);
+        private static readonly DataGridViewCellStyle _cellStyleUnfocusedOdd = GetCellStyle(false, true, false);
+        private static readonly DataGridViewCellStyle _cellStyleFocusedEven = GetCellStyle(true, false, false);
+        private static readonly DataGridViewCellStyle _cellStyleFocusedOdd = GetCellStyle(true, true, false);
+        private static readonly DataGridViewCellStyle _cellStyleHeader = GetCellStyle(true, true, true);
+        private static readonly PropertyInfo _dataGridViewDoubleBuffered = typeof(DataGridView).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static DataGridViewCellStyle GetCellStyle(bool isFocused, bool isOdd, bool isHeader)
         {
@@ -48,13 +47,12 @@ namespace DarkUI.Controls
             };
         }
 
-        private const int _dragDrawSideMargin = 3;
-        private const int _dragDrawHeight = 2;
+        private const int DragDrawSideMargin = 3;
+        private const int DragDrawHeight = 2;
 
         private static readonly Brush _dragDrawBrush = new HatchBrush(HatchStyle.Percent50, Color.Transparent, Color.LightGray);
-        private static readonly StringFormat _stringFormat = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
 
-        private int _scrollSize => DarkUI.Config.Consts.ScrollBarSize;
+        private int _scrollSize => Consts.ScrollBarSize;
 
         public DarkDataGridView()
         {
@@ -83,6 +81,7 @@ namespace DarkUI.Controls
             _base.ColumnHeadersDefaultCellStyle = _cellStyleHeader;
             _base.RowHeadersDefaultCellStyle = _cellStyleHeader;
 
+            _base.CellFormatting += BaseCellFormatting;
             _base.CellValueChanged += BaseCellValueChanged;
             _base.MouseWheel += BaseMouseWheel;
             _base.KeyDown += BaseKeyDown;
@@ -94,12 +93,22 @@ namespace DarkUI.Controls
             _base.Paint += BasePaint;
             _base.GotFocus += BaseGotFocus;
             _base.LostFocus += BaseLostFocus;
-            _base.RowsAdded += delegate { UpdateScrollBarLayout(); };
-            _base.RowsRemoved += delegate { UpdateScrollBarLayout(); };
-            _base.ColumnStateChanged += delegate { UpdateScrollBarLayout(); };
-            _base.ColumnWidthChanged += delegate { UpdateScrollBarLayout(); };
-            _base.ColumnAdded += delegate { UpdateScrollBarLayout(); };
-            _base.ColumnRemoved += delegate { UpdateScrollBarLayout(); };
+            _base.RowsAdded += delegate
+            { UpdateScrollBarLayout(); };
+            _base.RowsRemoved += delegate
+            { UpdateScrollBarLayout(); };
+            _base.ColumnStateChanged += delegate
+            { UpdateScrollBarLayout(); };
+            _base.ColumnWidthChanged += delegate
+            { UpdateScrollBarLayout(); };
+            _base.ColumnAdded += delegate
+            { UpdateScrollBarLayout(); };
+            _base.ColumnRemoved += delegate
+            { UpdateScrollBarLayout(); };
+            _base.Click += delegate
+            { OnClick(EventArgs.Empty); };
+            _base.DoubleClick += delegate
+            { OnDoubleClick(EventArgs.Empty); };
             _base.Scroll += BaseScrolled;
 
             // Configure scroll bars
@@ -136,7 +145,7 @@ namespace DarkUI.Controls
         {
             // Raise a data event update if necessary
             var dataSource = DataSource as IBindingList;
-            if (dataSource != null)
+            if (dataSource != null && e.RowIndex >= 0)
             {
                 object obj = dataSource[e.RowIndex];
                 if (!(obj is INotifyPropertyChanged))
@@ -151,9 +160,9 @@ namespace DarkUI.Controls
 
         private void BaseKeyDown(object sender, KeyEventArgs e)
         {
-            if ((e.KeyCode == Keys.V) && (e.Modifiers == Keys.Control) && AllowUserToPasteCells)
+            if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control && AllowUserToPasteCells)
             {
-                string clipboardString = System.Windows.Forms.Clipboard.GetDataObject().GetData(DataFormats.UnicodeText) as string;
+                string clipboardString = Clipboard.GetDataObject()?.GetData(DataFormats.UnicodeText) as string;
                 if (clipboardString == null)
                     return;
 
@@ -170,26 +179,26 @@ namespace DarkUI.Controls
                     startColumn = Math.Min(startColumn, columns.IndexOf(cell.OwningColumn));
                     startRow = Math.Min(startRow, cell.RowIndex);
                 }
-                if ((startColumn == int.MaxValue) || (startRow == int.MaxValue))
+                if (startColumn == int.MaxValue || startRow == int.MaxValue)
                     return;
 
                 // Paste string
-                string[] rowSeparator = new string[] { "\r", "\n" };
-                string[] columnSeperator = new string[] { "\t" };
+                string[] rowSeparator = new[] { "\r", "\n" };
+                string[] columnSeperator = new[] { "\t" };
                 string[] pastedRows = clipboardString.Split(rowSeparator, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < pastedRows.GetLength(0); ++i)
                 {
-                    if ((startRow + i) >= Rows.Count)
+                    if (startRow + i >= Rows.Count)
                         break;
 
                     var row = Rows[startRow + i];
                     string[] pastedCells = pastedRows[i].Split(columnSeperator, StringSplitOptions.None);
                     for (int j = 0; j < pastedCells.GetLength(0); ++j)
                     {
-                        if ((startColumn + j) >= columns.Count)
+                        if (startColumn + j >= columns.Count)
                             break;
                         var cell = row.Cells[columns[startColumn + j].Name];
-                        if ((cell.ReadOnly) || (cell.OwningColumn is DataGridViewButtonColumn))
+                        if (cell.ReadOnly || cell.OwningColumn is DataGridViewButtonColumn)
                             continue;
                         cell.Value = pastedCells[j];
                         cell.Selected = true;
@@ -198,14 +207,14 @@ namespace DarkUI.Controls
             }
         }
 
-        private int _dragPosition
+        private int DragPosition
         {
-            get { return __dragPosition; }
+            get { return _dragPosition; }
             set
             {
-                if (value == _dragPosition)
+                if (value == DragPosition)
                     return;
-                __dragPosition = value;
+                _dragPosition = value;
                 _base.Invalidate();
             }
         }
@@ -222,7 +231,7 @@ namespace DarkUI.Controls
         private void BaseMouseMove(object sender, MouseEventArgs e)
         {
             if (AllowUserToDragDropRows && !IsCurrentCellInEditMode &&
-                (e.Button == MouseButtons.Left) && (ModifierKeys == Keys.None))
+                e.Button == MouseButtons.Left && ModifierKeys == Keys.None)
             {
                 var info = HitTest(e.Location);
                 switch (info.Type)
@@ -247,7 +256,7 @@ namespace DarkUI.Controls
             // Is it from the data grid view itself?
             if (e.Data.GetData(typeof(DragDropMetaData)) == null)
             {
-                _dragPosition = -1;
+                DragPosition = -1;
                 return;
             }
 
@@ -258,13 +267,13 @@ namespace DarkUI.Controls
             {
                 case DataGridViewHitTestType.Cell:
                 case DataGridViewHitTestType.RowHeader:
-                    _dragPosition = info.RowIndex;
+                    DragPosition = info.RowIndex;
                     break;
                 case DataGridViewHitTestType.None:
-                    _dragPosition = Rows.Count;
+                    DragPosition = Rows.Count;
                     break;
                 default:
-                    _dragPosition = -1;
+                    DragPosition = -1;
                     break;
             }
         }
@@ -272,26 +281,26 @@ namespace DarkUI.Controls
         private void BaseDragLeave(object sender, EventArgs e)
         {
             // End drag and drop if necessary
-            _dragPosition = -1;
+            DragPosition = -1;
         }
 
         private void BaseDragDrop(object sender, DragEventArgs e)
         {
             // Get drag data
             var metaData = e.Data.GetData(typeof(DragDropMetaData)) as DragDropMetaData;
-            if ((metaData == null) || (_dragPosition < 0))
+            if (metaData == null || DragPosition < 0)
                 return;
 
             IList rows = EditableRowCollection;
 
             object[] previousRows = Rows.Cast<DataGridViewRow>()
-                .Where(row => row.Index < _dragPosition)
+                .Where(row => row.Index < DragPosition)
                 .Except(SelectedRows.Cast<DataGridViewRow>())
                 .Select(row => rows[row.Index])
                 .ToArray();
 
             object[] followingRows = Rows.Cast<DataGridViewRow>()
-                .Where(row => row.Index >= _dragPosition)
+                .Where(row => row.Index >= DragPosition)
                 .Except(SelectedRows.Cast<DataGridViewRow>())
                 .Select(row => rows[row.Index])
                 .ToArray();
@@ -315,21 +324,21 @@ namespace DarkUI.Controls
              foreach (var row in selectedRows)
                  row.Selected = true;*/
 
-            _dragPosition = -1;
+            DragPosition = -1;
         }
 
         private void BasePaint(object sender, PaintEventArgs e)
         {
-            base.OnPaint(e);
+            OnPaint(e);
 
             // Draw drag
-            if ((_dragPosition >= 0) && (_dragPosition <= Rows.Count))
-            {
-                int positionY = GetCellDisplayY(_dragPosition);
+            if (DragPosition < 0 || DragPosition > Rows.Count)
+                return;
 
-                e.Graphics.FillRectangle(_dragDrawBrush, _dragDrawSideMargin,
-                    positionY - _dragDrawHeight / 2, Width - _dragDrawSideMargin * 2, _dragDrawHeight);
-            }
+            int positionY = GetCellDisplayY(DragPosition);
+
+            e.Graphics.FillRectangle(_dragDrawBrush, DragDrawSideMargin,
+                positionY - DragDrawHeight / 2, Width - DragDrawSideMargin * 2, DragDrawHeight);
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -352,12 +361,13 @@ namespace DarkUI.Controls
 
         private void _hScrollBar_ValueChanged(object sender, ScrollValueEventArgs e)
         {
-            _base.HorizontalScrollingOffset = Math.Max(0, Math.Min(TotalColumnsWidth - 1, e.Value));
+            _base.HorizontalScrollingOffset = Math.Max(0, Math.Min(Math.Max(TotalColumnsWidth - 1, 0), e.Value));
         }
 
         private void _vScrollBar_ValueChanged(object sender, ScrollValueEventArgs e)
         {
-            _base.FirstDisplayedScrollingRowIndex = Math.Max(0, Math.Min(_base.Rows.Count - 1, e.Value));
+            if (_base.Rows.Count != 0)
+                _base.FirstDisplayedScrollingRowIndex = Math.Max(0, Math.Min(Math.Max(_base.Rows.Count - 1, 0), e.Value));
         }
 
         private void BaseScrolled(object sender, ScrollEventArgs e)
@@ -404,7 +414,7 @@ namespace DarkUI.Controls
             return result;
         }
 
-        private bool _updateScrollBarLayout = false;
+        private bool _updateScrollBarLayout;
 
         private void UpdateScrollBarLayout()
         {
@@ -420,14 +430,14 @@ namespace DarkUI.Controls
                 // Do update twice to ensure proper updating if columns auto resize during the first update
                 for (int i = 0; i < 2; ++i)
                 {
-                    Rectangle baseBounds = new Rectangle(_borderWidth, _borderWidth, size.Width - _borderWidth * 2, size.Height - _borderWidth * 2);
-                    Rectangle hScrollBarBounds = new Rectangle(_borderWidth, size.Height - _scrollSize - _borderWidth, size.Width - _borderWidth * 2, _scrollSize);
-                    Rectangle vScrollBarBounds = new Rectangle(size.Width - _scrollSize - _borderWidth, _borderWidth, _scrollSize, size.Height - _borderWidth * 2);
+                    Rectangle baseBounds = new Rectangle(BorderWidth, BorderWidth, size.Width - BorderWidth * 2, size.Height - BorderWidth * 2);
+                    Rectangle hScrollBarBounds = new Rectangle(BorderWidth, size.Height - _scrollSize - BorderWidth, size.Width - BorderWidth * 2, _scrollSize);
+                    Rectangle vScrollBarBounds = new Rectangle(size.Width - _scrollSize - BorderWidth, BorderWidth, _scrollSize, size.Height - BorderWidth * 2);
 
                     // Setup rows
-                    int rowCount = _base.Rows.Count;
+                    int rowCount = _base.Rows.Count + 1;
                     int rowInView = CountVisibleRows(_base.FirstDisplayedScrollingRowIndex, size.Height - _scrollSize);
-                    bool rowScrollVisible = _scrollBars.HasFlag(ScrollBars.Vertical) && (rowInView < rowCount);
+                    bool rowScrollVisible = _scrollBars.HasFlag(ScrollBars.Vertical) && rowInView < rowCount;
                     if (rowScrollVisible)
                     {
                         _vScrollBar.ViewSize = rowInView + 1;
@@ -439,8 +449,8 @@ namespace DarkUI.Controls
 
                     // Setup columns
                     int columnsPixelCount = TotalColumnsWidth;
-                    int columnsPixelInView = size.Width - 2 * _borderWidth;
-                    bool columnScrollVisible = _scrollBars.HasFlag(ScrollBars.Horizontal) && (columnsPixelInView < columnsPixelCount);
+                    int columnsPixelInView = size.Width - 2 * BorderWidth;
+                    bool columnScrollVisible = _scrollBars.HasFlag(ScrollBars.Horizontal) && columnsPixelInView < columnsPixelCount;
                     if (columnScrollVisible)
                     {
                         _hScrollBar.ViewSize = columnsPixelInView;
@@ -467,6 +477,39 @@ namespace DarkUI.Controls
                 _updateScrollBarLayout = false;
             }
         }
+
+        private void BaseCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (CellFormattingSafe == null)
+                return;
+            if (e.RowIndex < 0 || e.RowIndex >= Rows.Count)
+                return;
+            if (e.ColumnIndex < 0 || e.ColumnIndex >= Columns.Count)
+                return;
+
+            // Try to get row or column (yes, sometimes, this can fail even though the row index and column index are in range.
+            DataGridViewRow row;
+            DataGridViewColumn column;
+            try
+            {
+                row = Rows[e.RowIndex];
+                column = Columns[e.ColumnIndex];
+                object unused = row.DataBoundItem;
+            }
+            catch
+            {
+                return;
+            }
+
+            // Invoke event
+            var args = new DarkDataGridViewSafeCellFormattingEventArgs(e.ColumnIndex, e.RowIndex, e.Value, e.DesiredType, e.CellStyle, column, row);
+            CellFormattingSafe?.Invoke(sender, args);
+            e.CellStyle = args.CellStyle;
+            e.Value = args.Value;
+            e.FormattingApplied = args.FormattingApplied;
+        }
+
+        public event DarkDataGridViewSafeCellFormattingEventHandler CellFormattingSafe;
 
         public IList EditableRowCollection
         {
@@ -567,7 +610,6 @@ namespace DarkUI.Controls
         public bool AllowUserToResizeColumns { get { return _base.AllowUserToResizeColumns; } set { _base.AllowUserToResizeColumns = value; } }
         [DefaultValue(false)]
         public bool AllowUserToResizeRows { get { return _base.AllowUserToResizeRows; } set { _base.AllowUserToResizeRows = value; } }
-        [Browsable(false)]
         [DefaultValue(true)]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public bool AutoGenerateColumns { get { return _base.AutoGenerateColumns; } set { _base.AutoGenerateColumns = value; } }
@@ -953,20 +995,20 @@ namespace DarkUI.Controls
         {
             private class TypeDescriptionContext : ITypeDescriptorContext
             {
-                private Control editingObject;
-                private PropertyDescriptor editingProperty;
+                private readonly Control _editingObject;
+
                 public TypeDescriptionContext(Control obj, PropertyDescriptor property)
                 {
-                    editingObject = obj;
-                    editingProperty = property;
+                    _editingObject = obj;
+                    PropertyDescriptor = property;
                 }
                 public IContainer Container
                 {
-                    get { return editingObject.Container; }
+                    get { return _editingObject.Container; }
                 }
                 public object Instance
                 {
-                    get { return editingObject; }
+                    get { return _editingObject; }
                 }
                 public void OnComponentChanged()
                 { }
@@ -974,13 +1016,11 @@ namespace DarkUI.Controls
                 {
                     return true;
                 }
-                public PropertyDescriptor PropertyDescriptor
-                {
-                    get { return editingProperty; }
-                }
+                public PropertyDescriptor PropertyDescriptor { get; }
+
                 public object GetService(Type serviceType)
                 {
-                    return editingObject.Site.GetService(serviceType);
+                    return _editingObject.Site.GetService(serviceType);
                 }
             }
 
@@ -991,12 +1031,19 @@ namespace DarkUI.Controls
             public override object EditValue(ITypeDescriptorContext context,
                                              IServiceProvider provider, object value)
             {
+                Debug.Assert(context != null, nameof(context) + " != null");
+
                 var field = context.Instance.GetType().GetField("_base", BindingFlags.NonPublic | BindingFlags.Instance);
+                Debug.Assert(field != null, nameof(field) + " != null");
+
                 var _base = (DataGridView)field.GetValue(context.Instance);
                 _base.Site = ((Control)context.Instance).Site;
                 var columnsProperty = TypeDescriptor.GetProperties(_base)["Columns"];
                 var tdc = new TypeDescriptionContext(_base, columnsProperty);
+
                 var editor = (UITypeEditor)columnsProperty.GetEditor(typeof(UITypeEditor));
+                Debug.Assert(editor != null, nameof(editor) + " != null");
+
                 var result = editor.EditValue(tdc, provider, value);
                 _base.Site = null;
                 return result;
@@ -1032,8 +1079,10 @@ namespace DarkUI.Controls
             }
             set
             {
-                if (value != Enabled)
-                    _enabled = value;
+                if (value == Enabled)
+                    return;
+                _enabled = value;
+                DataGridView?.InvalidateCell(this);
             }
         }
 
@@ -1042,13 +1091,13 @@ namespace DarkUI.Controls
         {
             base.OnMouseEnter(rowIndex);
 
-            int? previous_mousePositionCellCell = _mouseCurserCell;
+            int? previousMousePositionCellCell = _mouseCurserCell;
             _mouseCurserCell = rowIndex;
 
             // Update
-            if (previous_mousePositionCellCell.HasValue)
+            if (previousMousePositionCellCell.HasValue)
             {
-                DataGridView.InvalidateCell(ColumnIndex, previous_mousePositionCellCell.Value);
+                DataGridView.InvalidateCell(ColumnIndex, previousMousePositionCellCell.Value);
                 DataGridView.InvalidateCell(ColumnIndex, RowIndex);
             }
             DataGridView.InvalidateCell(ColumnIndex, RowIndex);
@@ -1103,7 +1152,7 @@ namespace DarkUI.Controls
             Color borderColor = Colors.GreySelection;
             Color fillColor = Colors.GreyBackground;
 
-            if (DataGridView.Focused && (DataGridView.CurrentCellAddress == new Point(ColumnIndex, rowIndex)))
+            if (DataGridView.Focused && DataGridView.CurrentCellAddress == new Point(ColumnIndex, rowIndex))
                 borderColor = Colors.BlueHighlight; //Selection
 
             if (ButtonState.HasFlag(ButtonState.Inactive) || !Enabled)
@@ -1135,17 +1184,25 @@ namespace DarkUI.Controls
 
             // Paint error
             if (DataGridView.ShowCellErrors && paintParts.HasFlag(DataGridViewPaintParts.ErrorIcon))
-                base.PaintErrorIcon(graphics, clipBounds, contentBounds, errorText);
+                PaintErrorIcon(graphics, clipBounds, contentBounds, errorText);
         }
     }
 
     public class DarkDataGridViewButtonColumn : DataGridViewButtonColumn
     {
+        private bool _enabled = true;
+
         public DarkDataGridViewButtonColumn()
         {
-            base.CellTemplate = new DarkDataGridViewButtonCell();
+            CellTemplate = new DarkDataGridViewButtonCell();
             base.UseColumnTextForButtonValue = true;
             base.FlatStyle = FlatStyle.Flat;
+        }
+
+        public sealed override DataGridViewCell CellTemplate
+        {
+            get { return base.CellTemplate; }
+            set { base.CellTemplate = value; }
         }
 
         [DefaultValue(FlatStyle.Flat)]
@@ -1162,11 +1219,21 @@ namespace DarkUI.Controls
         }
 
         [DefaultValue(true)]
-        public bool Enabled { get; set; } = true;
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (value == _enabled)
+                    return;
+                _enabled = value;
+                DataGridView?.InvalidateColumn(Index);
+            }
+        }
     }
 
     public class DarkDataGridViewCheckBoxCell : DataGridViewCheckBoxCell
-    {}
+    { }
 
     public class DarkDataGridViewCheckBoxColumn : DataGridViewCheckBoxColumn
     {
@@ -1181,4 +1248,20 @@ namespace DarkUI.Controls
             get { return FlatStyle.Flat; }
         }
     }
+
+    public class DarkDataGridViewSafeCellFormattingEventArgs : DataGridViewCellFormattingEventArgs
+    {
+        public DataGridViewColumn Column { get; }
+        public DataGridViewRow Row { get; }
+
+        public DarkDataGridViewSafeCellFormattingEventArgs(int columnIndex, int rowIndex, object value,
+            Type desiredType, DataGridViewCellStyle style, DataGridViewColumn column, DataGridViewRow row)
+            : base(columnIndex, rowIndex, value, desiredType, style)
+        {
+            Column = column;
+            Row = row;
+        }
+    }
+
+    public delegate void DarkDataGridViewSafeCellFormattingEventHandler(object sender, DarkDataGridViewSafeCellFormattingEventArgs e);
 }

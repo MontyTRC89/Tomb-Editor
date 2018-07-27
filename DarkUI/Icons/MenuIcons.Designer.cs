@@ -9,9 +9,6 @@
 //------------------------------------------------------------------------------
 
 namespace DarkUI.Icons {
-    using System;
-    
-    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -66,6 +63,16 @@ namespace DarkUI.Icons {
         public static System.Drawing.Bitmap grip {
             get {
                 object obj = ResourceManager.GetObject("grip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap grip_fill {
+            get {
+                object obj = ResourceManager.GetObject("grip_fill", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

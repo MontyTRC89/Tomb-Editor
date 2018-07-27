@@ -1,25 +1,27 @@
-﻿using DarkUI.Docking;
-using DarkUI.Forms;
-using DarkUI.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using DarkUI.Docking;
+using DarkUI.Forms;
+using DarkUI.Win32;
+using Example.Forms.Dialogs;
+using Example.Forms.Docking;
 
-namespace Example
+namespace Example.Forms
 {
     public partial class MainForm : DarkForm
     {
         #region Field Region
 
-        private List<DarkDockContent> _toolWindows = new List<DarkDockContent>();
+        private readonly List<DarkDockContent> _toolWindows = new List<DarkDockContent>();
 
-        private DockProject _dockProject;
-        private DockProperties _dockProperties;
-        private DockConsole _dockConsole;
-        private DockLayers _dockLayers;
-        private DockHistory _dockHistory;
+        private readonly DockProject _dockProject;
+        private readonly DockProperties _dockProperties;
+        private readonly DockConsole _dockConsole;
+        private readonly DockLayers _dockLayers;
+        private readonly DockHistory _dockHistory;
 
         #endregion
 

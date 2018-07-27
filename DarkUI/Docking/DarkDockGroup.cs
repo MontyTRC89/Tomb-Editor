@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DarkUI.Icons;
 
 namespace DarkUI.Docking
 {
@@ -13,13 +14,13 @@ namespace DarkUI.Docking
     {
         #region Field Region
 
-        private List<DarkDockContent> _contents = new List<DarkDockContent>();
+        private readonly List<DarkDockContent> _contents = new List<DarkDockContent>();
 
-        private Dictionary<DarkDockContent, DarkDockTab> _tabs = new Dictionary<DarkDockContent, DarkDockTab>();
+        private readonly Dictionary<DarkDockContent, DarkDockTab> _tabs = new Dictionary<DarkDockContent, DarkDockTab>();
 
-        private DarkDockTabArea _tabArea;
+        private readonly DarkDockTabArea _tabArea;
 
-        private DarkDockTab _dragTab = null;
+        private DarkDockTab _dragTab;
 
         private DarkDockSplitter _splitter;
 
@@ -86,7 +87,7 @@ namespace DarkUI.Docking
             _contents.Add(dockContent);
             _tabs.Add(dockContent, new DarkDockTab(dockContent));
 
-            var _size = CalculateGroupSize();
+            var size = CalculateGroupSize();
 
             Controls.Add(dockContent);
 
@@ -102,13 +103,12 @@ namespace DarkUI.Docking
                 dockContent.Visible = false;
             }
 
-            var menuItem = new ToolStripMenuItem(dockContent.DockText);
-            menuItem.Tag = dockContent;
+            var menuItem = new ToolStripMenuItem(dockContent.DockText) {Tag = dockContent};
             menuItem.Click += TabMenuItem_Select;
             menuItem.Image = dockContent.Icon;
             _tabArea.AddMenuItem(menuItem);
 
-            Size = _size;
+            Size = size;
 
             UpdateTabArea();
         }
@@ -155,17 +155,17 @@ namespace DarkUI.Docking
             UpdateTabArea();
         }
 
-        public List<DarkDockContent> GetContents()
+        public IEnumerable<DarkDockContent> GetContents()
         {
             return _contents.OrderBy(c => c.Order).ToList();
         }
 
         private void UpdateTabArea()
         {
-            if ((DockArea == DarkDockArea.Document) && (Consts.DisableSingleDocumentTab == false))
-                _tabArea.Visible = (_contents.Count > 0);
+            if (DockArea == DarkDockArea.Document && Consts.DisableSingleDocumentTab == false)
+                _tabArea.Visible = _contents.Count > 0;
             else
-                _tabArea.Visible = (_contents.Count > 1);
+                _tabArea.Visible = _contents.Count > 1;
 
             var size = 0;
 
@@ -191,7 +191,7 @@ namespace DarkUI.Docking
 
             if (DockArea == DarkDockArea.Document)
             {
-                var dropdownSize = Consts.DocumentTabAreaSize;
+                const int dropdownSize = Consts.DocumentTabAreaSize;
                 _tabArea.DropdownRectangle = new Rectangle(_tabArea.ClientRectangle.Right - dropdownSize, 0, dropdownSize, dropdownSize);
             }
 
@@ -208,10 +208,10 @@ namespace DarkUI.Docking
             {
                 case DarkDockArea.Left:
                 case DarkDockArea.Right:
-                    _splitter = new DarkDockSplitter(DockRegion, this, DarkSplitterType.Bottom);
+                    _splitter = new DarkDockSplitter(DockRegion, this, DarkSplitterType.Bottom, DarkSplitterMode.Group);
                     break;
                 case DarkDockArea.Bottom:
-                    _splitter = new DarkDockSplitter(DockRegion, this, DarkSplitterType.Right);
+                    _splitter = new DarkDockSplitter(DockRegion, this, DarkSplitterType.Right, DarkSplitterMode.Group);
                     break;
                 default:
                     return;
@@ -234,40 +234,37 @@ namespace DarkUI.Docking
 
             Size maxSize = new Size(0, 0);
 
-            if (_contents.Count > 0)
+            if (_contents.Count <= 0)
+                return maxSize;
+
+            Size maxMinSize = new Size(Consts.ToolWindowHeaderSize, Consts.ToolWindowHeaderSize);
+
+            foreach (var currContent in _contents)
             {
-                Size maxMinSize = new Size(Consts.ToolWindowHeaderSize, Consts.ToolWindowHeaderSize);
-
-                if(DockArea != DarkDockArea.Bottom && _contents.Count > 1)
-                    maxMinSize.Height += Consts.ToolWindowTabAreaSize;
-
-                foreach (var currContent in _contents)
+                switch (DockArea)
                 {
-                    switch (DockArea)
-                    {
-                        default:
-                            break;
+                    case DarkDockArea.Left:
+                    case DarkDockArea.Right:
+                        if (currContent.Size.Height > maxSize.Height)
+                            maxSize.Height = currContent.Size.Height;
+                        break;
 
-                        case DarkDockArea.Left:
-                        case DarkDockArea.Right:
-                            if (currContent.Size.Height > maxSize.Height)
-                                maxSize.Height = currContent.Size.Height;
-                            break;
-
-                        case DarkDockArea.Bottom:
-                            if (currContent.Size.Width > maxSize.Width)
-                                maxSize.Width = currContent.Size.Width;
-                            break;
-                    }
-
-                    if (currContent.MinimumSize.Height > maxMinSize.Height)
-                        maxMinSize.Height = currContent.MinimumSize.Height;
-                    if (currContent.MinimumSize.Width > maxMinSize.Width)
-                        maxMinSize.Width = currContent.MinimumSize.Width;
+                    case DarkDockArea.Bottom:
+                        if (currContent.Size.Width > maxSize.Width)
+                            maxSize.Width = currContent.Size.Width;
+                        break;
                 }
 
-                MinimumSize = maxMinSize;
+                if (currContent.MinimumSize.Height > maxMinSize.Height)
+                    maxMinSize.Height = currContent.MinimumSize.Height;
+                if (currContent.MinimumSize.Width > maxMinSize.Width)
+                    maxMinSize.Width = currContent.MinimumSize.Width;
             }
+
+            if (_contents.Count > 1)
+                maxMinSize.Height += Consts.ToolWindowTabAreaSize;
+
+            MinimumSize = maxMinSize;
 
             return maxSize;
         }
@@ -380,7 +377,7 @@ namespace DarkUI.Docking
                 {
                     var tab = _tabs[content];
                     var closeRect = new Rectangle(tab.ClientRectangle.Right - 7 - closeButtonSize - 1,
-                                                  tab.ClientRectangle.Top + (tab.ClientRectangle.Height / 2) - (closeButtonSize / 2) - 1,
+                                                  tab.ClientRectangle.Top + tab.ClientRectangle.Height / 2 - closeButtonSize / 2 - 1,
                                                   closeButtonSize, closeButtonSize);
                     tab.CloseButtonRectangle = closeRect;
                 }
@@ -461,8 +458,7 @@ namespace DarkUI.Docking
 
         public void UpdateSplitterBounds()
         {
-            if (_splitter != null)
-                _splitter.UpdateBounds();
+            _splitter?.UpdateBounds();
         }
 
         private Point PointToTabArea(Point point)
@@ -616,7 +612,7 @@ namespace DarkUI.Docking
                         EnsureVisible();
 
                         _dragTab = tab;
-   
+
                         return;
                     }
                 }
@@ -661,10 +657,8 @@ namespace DarkUI.Docking
         private void TabMenuItem_Select(object sender, EventArgs e)
         {
             var menuItem = sender as ToolStripMenuItem;
-            if (menuItem == null)
-                return;
 
-            var content = menuItem.Tag as DarkDockContent;
+            var content = menuItem?.Tag as DarkDockContent;
             if (content == null)
                 return;
 
@@ -673,21 +667,13 @@ namespace DarkUI.Docking
 
         private void DockPanel_ActiveContentChanged(object sender, DockContentEventArgs e)
         {
-            if (!_contents.Contains(e.Content))
+            if (e.Content == VisibleContent || !_contents.Contains(e.Content))
                 return;
-
-            if (e.Content == VisibleContent)
-            {
-                VisibleContent.Focus();
-                return;
-            }
 
             VisibleContent = e.Content;
 
             foreach (var content in _contents)
                 content.Visible = content == VisibleContent;
-
-            VisibleContent.Focus();
 
             EnsureVisible();
             Invalidate();
@@ -735,29 +721,32 @@ namespace DarkUI.Docking
                     PaintToolWindowTab(g, tab);
             }
 
-            if (DockArea == DarkDockArea.Document)
+            if (DockArea != DarkDockArea.Document)
+                return;
+
+            // Color divider
+            var isActiveGroup = DockPanel.ActiveGroup == this;
+            var divColor = isActiveGroup ? Colors.BlueSelection : Colors.GreySelection;
+            using (var b = new SolidBrush(divColor))
             {
-                // Color divider
-                var isActiveGroup = DockPanel.ActiveGroup == this;
-                var divColor = isActiveGroup ? Colors.BlueSelection : Colors.GreySelection;
-                using (var b = new SolidBrush(divColor))
-                {
-                    var divRect = new Rectangle(_tabArea.ClientRectangle.Left, _tabArea.ClientRectangle.Bottom - 2, _tabArea.ClientRectangle.Width, 2);
-                    g.FillRectangle(b, divRect);
-                }
+                var divRect = new Rectangle(_tabArea.ClientRectangle.Left, _tabArea.ClientRectangle.Bottom - 2,
+                    _tabArea.ClientRectangle.Width, 2);
+                g.FillRectangle(b, divRect);
+            }
 
-                // Content dropdown list
-                var dropdownRect = new Rectangle(_tabArea.DropdownRectangle.Left, _tabArea.DropdownRectangle.Top, _tabArea.DropdownRectangle.Width, _tabArea.DropdownRectangle.Height - 2);
+            // Content dropdown list
+            var dropdownRect = new Rectangle(_tabArea.DropdownRectangle.Left, _tabArea.DropdownRectangle.Top,
+                _tabArea.DropdownRectangle.Width, _tabArea.DropdownRectangle.Height - 2);
 
-                using (var b = new SolidBrush(Colors.MediumBackground))
-                {
-                    g.FillRectangle(b, dropdownRect);
-                }
+            using (var b = new SolidBrush(Colors.MediumBackground))
+            {
+                g.FillRectangle(b, dropdownRect);
+            }
 
-                using (var img = DockIcons.arrow)
-                {
-                    g.DrawImageUnscaled(img, dropdownRect.Left + (dropdownRect.Width / 2) - (img.Width / 2), dropdownRect.Top + (dropdownRect.Height / 2) - (img.Height / 2) + 1);
-                }
+            using (var img = DockIcons.arrow)
+            {
+                g.DrawImage(img, dropdownRect.Left + dropdownRect.Width / 2 - img.Width / 2,
+                    dropdownRect.Top + dropdownRect.Height / 2 - img.Height / 2 + 1);
             }
         }
 
@@ -795,7 +784,7 @@ namespace DarkUI.Docking
             // Draw icon
             if (tab.DockContent.Icon != null)
             {
-                g.DrawImageUnscaled(tab.DockContent.Icon, tabRect.Left + 5, tabRect.Top + 4);
+                g.DrawImage(tab.DockContent.Icon, tabRect.Left + 5, tabRect.Top + 4);
                 xOffset += tab.DockContent.Icon.Width + 2;
             }
 
@@ -827,7 +816,7 @@ namespace DarkUI.Docking
             }
 
             var closeRect = RectangleToTabArea(tab.CloseButtonRectangle);
-            g.DrawImageUnscaled(img, closeRect.Left, closeRect.Top);
+            g.DrawImage(img, closeRect.Left, closeRect.Top);
         }
 
         private void PaintToolWindowTab(Graphics g, DarkDockTab tab)

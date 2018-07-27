@@ -21,12 +21,11 @@ namespace DarkUI.Controls
         #region Field Region
 
         private int _itemHeight = 20;
-        private bool _multiSelect;
 
-        private readonly int _iconSize = 16;
+        private const int IconSize = 16;
 
         private ObservableCollection<DarkListItem> _items;
-        private List<int> _selectedIndices;
+        private readonly List<int> _selectedIndices;
         private int _anchoredItemStart = -1;
         private int _anchoredItemEnd = -1;
 
@@ -75,11 +74,7 @@ namespace DarkUI.Controls
         [Category("Behaviour")]
         [Description("Determines whether multiple list view items can be selected at once.")]
         [DefaultValue(false)]
-        public bool MultiSelect
-        {
-            get { return _multiSelect; }
-            set { _multiSelect = value; }
-        }
+        public bool MultiSelect { get; set; }
 
         [Category("Appearance")]
         [Description("Determines whether icons are rendered with the list items.")]
@@ -115,7 +110,7 @@ namespace DarkUI.Controls
                 }
 
                 // Find the starting index of the new item list and update anything past that
-                if (e.NewStartingIndex < (Items.Count - 1))
+                if (e.NewStartingIndex < Items.Count - 1)
                 {
                     for (var i = e.NewStartingIndex; i <= Items.Count - 1; i++)
                     {
@@ -130,7 +125,7 @@ namespace DarkUI.Controls
                     item.TextChanged -= Item_TextChanged;
 
                 // Find the starting index of the old item list and update anything past that
-                if (e.OldStartingIndex < (Items.Count - 1))
+                if (e.OldStartingIndex < Items.Count - 1)
                 {
                     for (var i = e.OldStartingIndex; i <= Items.Count - 1; i++)
                     {
@@ -145,8 +140,7 @@ namespace DarkUI.Controls
                 {
                     _selectedIndices.Clear();
 
-                    if (SelectedIndicesChanged != null)
-                        SelectedIndicesChanged(this, null);
+                    SelectedIndicesChanged?.Invoke(this, null);
                 }
             }
 
@@ -184,15 +178,15 @@ namespace DarkUI.Controls
             {
                 var rect = new Rectangle(0, i * ItemHeight, width, ItemHeight);
 
-                if (rect.Contains(pos))
-                {
-                    if (MultiSelect && ModifierKeys == Keys.Shift)
-                        SelectAnchoredRange(i);
-                    else if (MultiSelect && ModifierKeys == Keys.Control)
-                        ToggleItem(i);
-                    else
-                        SelectItem(i);
-                }
+                if (!rect.Contains(pos))
+                    continue;
+
+                if (MultiSelect && ModifierKeys == Keys.Shift)
+                    SelectAnchoredRange(i);
+                else if (MultiSelect && ModifierKeys == Keys.Control)
+                    ToggleItem(i);
+                else
+                    SelectItem(i);
             }
         }
 
@@ -258,8 +252,7 @@ namespace DarkUI.Controls
             _selectedIndices.Clear();
             _selectedIndices.Add(index);
 
-            if (SelectedIndicesChanged != null)
-                SelectedIndicesChanged(this, null);
+            SelectedIndicesChanged?.Invoke(this, null);
 
             _anchoredItemStart = index;
             _anchoredItemEnd = index;
@@ -281,8 +274,7 @@ namespace DarkUI.Controls
                 _selectedIndices.Add(index);
             }
 
-            if (SelectedIndicesChanged != null)
-                SelectedIndicesChanged(this, null);
+            SelectedIndicesChanged?.Invoke(this, null);
 
             _anchoredItemStart = list[list.Count - 1];
             _anchoredItemEnd = list[list.Count - 1];
@@ -340,8 +332,7 @@ namespace DarkUI.Controls
                 _anchoredItemEnd = index;
             }
 
-            if (SelectedIndicesChanged != null)
-                SelectedIndicesChanged(this, null);
+            SelectedIndicesChanged?.Invoke(this, null);
 
             Invalidate();
         }
@@ -364,8 +355,7 @@ namespace DarkUI.Controls
                     _selectedIndices.Add(i);
             }
 
-            if (SelectedIndicesChanged != null)
-                SelectedIndicesChanged(this, null);
+            SelectedIndicesChanged?.Invoke(this, null);
 
             Invalidate();
         }
@@ -405,14 +395,14 @@ namespace DarkUI.Controls
             size.Width++;
 
             if (ShowIcons)
-                size.Width += _iconSize + 8;
+                size.Width += IconSize + 8;
 
             item.Area = new Rectangle(item.Area.Left, item.Area.Top, (int)size.Width, item.Area.Height);
         }
 
         private void UpdateItemPosition(DarkListItem item, int index)
         {
-            item.Area = new Rectangle(2, (index * ItemHeight), item.Area.Width, ItemHeight);
+            item.Area = new Rectangle(2, index * ItemHeight, item.Area.Width, ItemHeight);
         }
 
         private void UpdateContentSize()
@@ -457,8 +447,7 @@ namespace DarkUI.Controls
             if (SelectedIndices.Count == 0)
                 return;
 
-            var itemTop = -1;
-
+            int itemTop;
             if (!MultiSelect)
                 itemTop = SelectedIndices[0] * ItemHeight;
             else
@@ -470,29 +459,22 @@ namespace DarkUI.Controls
                 VScrollTo(itemTop);
 
             if (itemBottom > Viewport.Bottom)
-                VScrollTo((itemBottom - Viewport.Height));
+                VScrollTo(itemBottom - Viewport.Height);
         }
 
         private IEnumerable<int> ItemIndexesInView()
         {
-            var top = (Viewport.Top / ItemHeight) - 1;
+            var top = Viewport.Top / ItemHeight - 1;
 
             if (top < 0)
                 top = 0;
 
-            var bottom = ((Viewport.Top + Viewport.Height) / ItemHeight) + 1;
+            var bottom = (Viewport.Top + Viewport.Height) / ItemHeight + 1;
 
             if (bottom > Items.Count)
                 bottom = Items.Count;
 
             var result = Enumerable.Range(top, bottom - top);
-            return result;
-        }
-
-        private IEnumerable<DarkListItem> ItemsInView()
-        {
-            var indexes = ItemIndexesInView();
-            var result = indexes.Select(index => Items[index]).ToList();
             return result;
         }
 
@@ -504,59 +486,59 @@ namespace DarkUI.Controls
         {
             var range = ItemIndexesInView().ToList();
 
-            if (range.Count == 0)
-                return;
-
-            var top = range.Min();
-            var bottom = range.Max();
-
-            for (var i = top; i <= bottom; i++)
+            if (range.Count != 0)
             {
-                var width = Math.Max(ContentSize.Width, Viewport.Width);
-                var rect = new Rectangle(0, i * ItemHeight, width, ItemHeight);
+                var top = range.Min();
+                var bottom = range.Max();
 
-                // Background
-                var odd = i % 2 != 0;
-                var bgColor = !odd ? Colors.HeaderBackground : Colors.GreyBackground;
-
-                if (SelectedIndices.Count > 0 && SelectedIndices.Contains(i))
-                    bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
-
-                using (var b = new SolidBrush(bgColor))
+                for (var i = top; i <= bottom; i++)
                 {
-                    g.FillRectangle(b, rect);
-                }
+                    var width = Math.Max(ContentSize.Width, Viewport.Width);
+                    var rect = new Rectangle(0, i * ItemHeight, width, ItemHeight);
 
-                // DEBUG: Border
-                /*using (var p = new Pen(Colors.DarkBorder))
-                {
-                    g.DrawLine(p, new Point(rect.Left, rect.Bottom - 1), new Point(rect.Right, rect.Bottom - 1));
-                }*/
+                    // Background
+                    var odd = i % 2 != 0;
+                    var bgColor = !odd ? Colors.HeaderBackground : Colors.GreyBackground;
 
-                // Icon
-                if (ShowIcons && Items[i].Icon != null)
-                {
-                    g.DrawImageUnscaled(Items[i].Icon, new Point(rect.Left + 5, rect.Top + (rect.Height / 2) - (_iconSize / 2)));
-                }
+                    if (SelectedIndices.Count > 0 && SelectedIndices.Contains(i))
+                        bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
 
-                // Text
-                using (var b = new SolidBrush(Items[i].TextColor))
-                {
-                    var stringFormat = new StringFormat
+                    using (var b = new SolidBrush(bgColor))
                     {
-                        Alignment = StringAlignment.Near,
-                        LineAlignment = StringAlignment.Center
-                    };
+                        g.FillRectangle(b, rect);
+                    }
 
-                    var modFont = new Font(Font, Items[i].FontStyle);
+                    // Icon
+                    if (ShowIcons && Items[i].Icon != null)
+                    {
+                        g.DrawImage(Items[i].Icon, new Point(rect.Left + 5, rect.Top + rect.Height / 2 - IconSize / 2));
+                    }
 
-                    var modRect = new Rectangle(rect.Left + 2, rect.Top, rect.Width, rect.Height);
+                    // Text
+                    using (var b = new SolidBrush(Items[i].TextColor))
+                    {
+                        var stringFormat = new StringFormat
+                        {
+                            Alignment = StringAlignment.Near,
+                            LineAlignment = StringAlignment.Center
+                        };
 
-                    if (ShowIcons)
-                        modRect.X += _iconSize + 8;
+                        var modFont = new Font(Font, Items[i].FontStyle);
 
-                    g.DrawString(Items[i].Text, modFont, b, modRect, stringFormat);
+                        var modRect = new Rectangle(rect.Left + 2, rect.Top, rect.Width, rect.Height);
+
+                        if (ShowIcons)
+                            modRect.X += IconSize + 8;
+
+                        g.DrawString(Items[i].Text, modFont, b, modRect, stringFormat);
+                    }
                 }
+            }
+
+            // Border
+            using (var p = new Pen(Colors.LightBorder))
+            {
+                g.DrawRectangle(p, new Rectangle(new Point(), ClientSize - new Size(1, 1)));
             }
         }
 

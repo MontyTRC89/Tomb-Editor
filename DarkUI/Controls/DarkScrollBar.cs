@@ -1,9 +1,9 @@
 ﻿using DarkUI.Config;
-using DarkUI.Icons;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using DarkUI.Icons;
 
 namespace DarkUI.Controls
 {
@@ -20,7 +20,7 @@ namespace DarkUI.Controls
         private DarkScrollOrientation _scrollOrientation;
 
         private int _value;
-        private int _minimum = 0;
+        private int _minimum;
         private int _maximum = 100;
 
         private int _viewSize;
@@ -36,7 +36,6 @@ namespace DarkUI.Controls
         private bool _upArrowHot;
         private bool _downArrowHot;
 
-        private bool _thumbClicked;
         private bool _upArrowClicked;
         private bool _downArrowClicked;
 
@@ -44,7 +43,7 @@ namespace DarkUI.Controls
         private int _initialValue;
         private Point _initialContact;
 
-        private Timer _scrollTimer;
+        private readonly Timer _scrollTimer;
 
         #endregion
 
@@ -71,12 +70,8 @@ namespace DarkUI.Controls
             get { return _value; }
             set
             {
-                if (value < Minimum)
-                    value = Minimum;
-
-                var maximumValue = Maximum - ViewSize;
-                if (value > maximumValue)
-                    value = maximumValue;
+                value = Math.Max(value, Minimum);
+                value = Math.Min(value, Maximum - ViewSize);
 
                 if (_value == value)
                     return;
@@ -248,7 +243,6 @@ namespace DarkUI.Controls
                     _initialValue = _thumbArea.Left;
 
                 Invalidate();
-                return;
             }
         }
 
@@ -258,7 +252,6 @@ namespace DarkUI.Controls
 
             _isScrolling = false;
 
-            _thumbClicked = false;
             _upArrowClicked = false;
             _downArrowClicked = false;
 
@@ -293,33 +286,38 @@ namespace DarkUI.Controls
                 }
             }
 
-            if (_isScrolling)
+            if (!_isScrolling)
+                return;
+
+            if (e.Button != MouseButtons.Left)
             {
-                if (e.Button != MouseButtons.Left)
-                {
-                    OnMouseUp(null);
-                    return;
-                }
+                OnMouseUp(null);
+                return;
+            }
 
-                var difference = new Point(e.Location.X - _initialContact.X, e.Location.Y - _initialContact.Y);
+            var difference = new Point(e.Location.X - _initialContact.X, e.Location.Y - _initialContact.Y);
 
-                if (_scrollOrientation == DarkScrollOrientation.Vertical)
+            switch (_scrollOrientation)
+            {
+                case DarkScrollOrientation.Vertical:
                 {
-                    var thumbPos = (_initialValue - _trackArea.Top);
+                    var thumbPos = _initialValue - _trackArea.Top;
                     var newPosition = thumbPos + difference.Y;
 
                     ScrollToPhysical(newPosition);
+                    break;
                 }
-                else if (_scrollOrientation == DarkScrollOrientation.Horizontal)
+                case DarkScrollOrientation.Horizontal:
                 {
-                    var thumbPos = (_initialValue - _trackArea.Left);
+                    var thumbPos = _initialValue - _trackArea.Left;
                     var newPosition = thumbPos + difference.X;
 
                     ScrollToPhysical(newPosition);
+                    break;
                 }
-
-                UpdateScrollBar();
             }
+
+            UpdateScrollBar();
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -362,8 +360,8 @@ namespace DarkUI.Controls
 
             var trackAreaSize = isVert ? _trackArea.Height - _thumbArea.Height : _trackArea.Width - _thumbArea.Width;
 
-            var positionRatio = (float)positionInPixels / (float)trackAreaSize;
-            var viewScrollSize = (Maximum - ViewSize);
+            var positionRatio = positionInPixels / (float)trackAreaSize;
+            var viewScrollSize = Maximum - ViewSize;
 
             var newValue = (int)(positionRatio * viewScrollSize);
             Value = newValue;
@@ -379,7 +377,7 @@ namespace DarkUI.Controls
         {
             var isVert = _scrollOrientation == DarkScrollOrientation.Vertical;
 
-            var thumbPos = isVert ? (_thumbArea.Top - _trackArea.Top) : (_thumbArea.Left - _trackArea.Left);
+            var thumbPos = isVert ? _thumbArea.Top - _trackArea.Top : _thumbArea.Left - _trackArea.Left;
 
             var newPosition = thumbPos - offsetInPixels;
 
@@ -391,25 +389,27 @@ namespace DarkUI.Controls
             var area = ClientRectangle;
 
             // Arrow buttons
-            if (_scrollOrientation == DarkScrollOrientation.Vertical)
+            switch (_scrollOrientation)
             {
-                _upArrowArea = new Rectangle(area.Left, area.Top, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
-                _downArrowArea = new Rectangle(area.Left, area.Bottom - Consts.ArrowButtonSize, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
-            }
-            else if (_scrollOrientation == DarkScrollOrientation.Horizontal)
-            {
-                _upArrowArea = new Rectangle(area.Left, area.Top, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
-                _downArrowArea = new Rectangle(area.Right - Consts.ArrowButtonSize, area.Top, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
+                case DarkScrollOrientation.Vertical:
+                    _upArrowArea = new Rectangle(area.Left, area.Top, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
+                    _downArrowArea = new Rectangle(area.Left, area.Bottom - Consts.ArrowButtonSize, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
+                    break;
+                case DarkScrollOrientation.Horizontal:
+                    _upArrowArea = new Rectangle(area.Left, area.Top, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
+                    _downArrowArea = new Rectangle(area.Right - Consts.ArrowButtonSize, area.Top, Consts.ArrowButtonSize, Consts.ArrowButtonSize);
+                    break;
             }
 
             // Track
-            if (_scrollOrientation == DarkScrollOrientation.Vertical)
+            switch (_scrollOrientation)
             {
-                _trackArea = new Rectangle(area.Left, area.Top + Consts.ArrowButtonSize, area.Width, area.Height - (Consts.ArrowButtonSize * 2));
-            }
-            else if (_scrollOrientation == DarkScrollOrientation.Horizontal)
-            {
-                _trackArea = new Rectangle(area.Left + Consts.ArrowButtonSize, area.Top, area.Width - (Consts.ArrowButtonSize * 2), area.Height);
+                case DarkScrollOrientation.Vertical:
+                    _trackArea = new Rectangle(area.Left, area.Top + Consts.ArrowButtonSize, area.Width, area.Height - Consts.ArrowButtonSize * 2);
+                    break;
+                case DarkScrollOrientation.Horizontal:
+                    _trackArea = new Rectangle(area.Left + Consts.ArrowButtonSize, area.Top, area.Width - Consts.ArrowButtonSize * 2, area.Height);
+                    break;
             }
 
             // Thumb
@@ -419,7 +419,7 @@ namespace DarkUI.Controls
         }
 
         private void UpdateThumb(bool forceRefresh = false)
-        { 
+        {
             if (ViewSize >= Maximum)
                 return;
 
@@ -429,34 +429,39 @@ namespace DarkUI.Controls
                 Value = maximumValue;
 
             // Calculate size ratio
-            _viewContentRatio = (float)ViewSize / (float)Maximum;
+            _viewContentRatio = ViewSize / (float)Maximum;
             var viewAreaSize = Maximum - ViewSize;
-            var positionRatio = (float)Value / (float)viewAreaSize;
+            var positionRatio = Value / (float)viewAreaSize;
 
             // Update area
-            if (_scrollOrientation == DarkScrollOrientation.Vertical)
+            switch (_scrollOrientation)
             {
-                var thumbSize = (int)(_trackArea.Height * _viewContentRatio);
+                case DarkScrollOrientation.Vertical:
+                {
+                    var thumbSize = (int)(_trackArea.Height * _viewContentRatio);
 
-                if (thumbSize < Consts.MinimumThumbSize)
-                    thumbSize = Consts.MinimumThumbSize;
+                    if (thumbSize < Consts.MinimumThumbSize)
+                        thumbSize = Consts.MinimumThumbSize;
 
-                var trackAreaSize = _trackArea.Height - thumbSize;
-                var thumbPosition = (int)(trackAreaSize * positionRatio);
+                    var trackAreaSize = _trackArea.Height - thumbSize;
+                    var thumbPosition = (int)(trackAreaSize * positionRatio);
 
-                _thumbArea = new Rectangle(_trackArea.Left + 3, _trackArea.Top + thumbPosition, Consts.ScrollBarSize - 6, thumbSize);
-            }
-            else if (_scrollOrientation == DarkScrollOrientation.Horizontal)
-            {
-                var thumbSize = (int)(_trackArea.Width * _viewContentRatio);
+                    _thumbArea = new Rectangle(_trackArea.Left + 3, _trackArea.Top + thumbPosition, Consts.ScrollBarSize - 6, thumbSize);
+                    break;
+                }
+                case DarkScrollOrientation.Horizontal:
+                {
+                    var thumbSize = (int)(_trackArea.Width * _viewContentRatio);
 
-                if (thumbSize < Consts.MinimumThumbSize)
-                    thumbSize = Consts.MinimumThumbSize;
+                    if (thumbSize < Consts.MinimumThumbSize)
+                        thumbSize = Consts.MinimumThumbSize;
 
-                var trackAreaSize = _trackArea.Width - thumbSize;
-                var thumbPosition = (int)(trackAreaSize * positionRatio);
+                    var trackAreaSize = _trackArea.Width - thumbSize;
+                    var thumbPosition = (int)(trackAreaSize * positionRatio);
 
-                _thumbArea = new Rectangle(_trackArea.Left + thumbPosition, _trackArea.Top + 3, thumbSize, Consts.ScrollBarSize - 6);
+                    _thumbArea = new Rectangle(_trackArea.Left + thumbPosition, _trackArea.Top + 3, thumbSize, Consts.ScrollBarSize - 6);
+                    break;
+                }
             }
 
             if (forceRefresh)
@@ -496,14 +501,19 @@ namespace DarkUI.Controls
             if (!Enabled)
                 upIcon = ScrollIcons.scrollbar_arrow_disabled;
 
-            if (_scrollOrientation == DarkScrollOrientation.Vertical)
-                upIcon.RotateFlip(RotateFlipType.RotateNoneFlipY);
-            else if (_scrollOrientation == DarkScrollOrientation.Horizontal)
-                upIcon.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            switch (_scrollOrientation)
+            {
+                case DarkScrollOrientation.Vertical:
+                    upIcon.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    break;
+                case DarkScrollOrientation.Horizontal:
+                    upIcon.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+            }
 
-            g.DrawImageUnscaled(upIcon,
-                                _upArrowArea.Left + (_upArrowArea.Width / 2) - (upIcon.Width / 2),
-                                _upArrowArea.Top + (_upArrowArea.Height / 2) - (upIcon.Height / 2));
+            g.DrawImage(upIcon,
+                                _upArrowArea.Left + _upArrowArea.Width / 2 - upIcon.Width / 2,
+                                _upArrowArea.Top + _upArrowArea.Height / 2 - upIcon.Height / 2);
 
             // Down arrow
             var downIcon = _downArrowHot ? ScrollIcons.scrollbar_arrow_hot : ScrollIcons.scrollbar_arrow_standard;
@@ -517,22 +527,22 @@ namespace DarkUI.Controls
             if (_scrollOrientation == DarkScrollOrientation.Horizontal)
                 downIcon.RotateFlip(RotateFlipType.Rotate270FlipNone);
 
-            g.DrawImageUnscaled(downIcon,
-                                _downArrowArea.Left + (_downArrowArea.Width / 2) - (downIcon.Width / 2),
-                                _downArrowArea.Top + (_downArrowArea.Height / 2) - (downIcon.Height / 2));
+            g.DrawImage(downIcon,
+                                _downArrowArea.Left + _downArrowArea.Width / 2 - downIcon.Width / 2,
+                                _downArrowArea.Top + _downArrowArea.Height / 2 - downIcon.Height / 2);
 
             // Draw thumb
-            if (Enabled)
+            if (!Enabled)
+                return;
+
+            var scrollColor = _thumbHot ? Colors.GreyHighlight : Colors.GreySelection;
+
+            if (_isScrolling)
+                scrollColor = Colors.ActiveControl;
+
+            using (var b = new SolidBrush(scrollColor))
             {
-                var scrollColor = _thumbHot ? Colors.GreyHighlight : Colors.GreySelection;
-
-                if (_isScrolling)
-                    scrollColor = Colors.ActiveControl;
-
-                using (var b = new SolidBrush(scrollColor))
-                {
-                    g.FillRectangle(b, _thumbArea);
-                }
+                g.FillRectangle(b, _thumbArea);
             }
         }
 

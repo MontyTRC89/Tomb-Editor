@@ -1,9 +1,8 @@
 ﻿using DarkUI.Config;
-using DarkUI.Controls;
-using DarkUI.Icons;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DarkUI.Icons;
 
 namespace DarkUI.Renderers
 {
@@ -64,12 +63,12 @@ namespace DarkUI.Renderers
             var rect = new Rectangle(e.ImageRectangle.Left - 2, e.ImageRectangle.Top - 2,
                                          e.ImageRectangle.Width + 4, e.ImageRectangle.Height + 4);
 
-            using (var b = new SolidBrush(Color.FromArgb(80, 72, 69)))
+            using (var b = new SolidBrush(Colors.MenuItemToggledOnFill))
             {
                 g.FillRectangle(b, rect);
             }
 
-            using (var p = new Pen(Color.FromArgb(225, 128, 68)))
+            using (var p = new Pen(Colors.MenuItemToggledOnBorder))
             {
                 var modRect = new Rectangle(rect.Left, rect.Top, rect.Width - 1, rect.Height - 1);
                 g.DrawRectangle(p, modRect);
@@ -77,7 +76,7 @@ namespace DarkUI.Renderers
 
             if (e.Item.ImageIndex == -1 && String.IsNullOrEmpty(e.Item.ImageKey) && e.Item.Image == null)
             {
-                g.DrawImageUnscaled(MenuIcons.tick, new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
+                g.DrawImage(MenuIcons.tick, new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
             }
         }
 
@@ -107,30 +106,30 @@ namespace DarkUI.Renderers
 
             e.Item.ForeColor = e.Item.Enabled ? Colors.LightText : Colors.DisabledText;
 
-            if (e.Item.Enabled)
+            if (!e.Item.Enabled)
+                return;
+
+            var bgColor = e.Item.Selected ? Colors.GreyHighlight : e.Item.BackColor;
+
+            // Normal item
+            var rect = new Rectangle(2, 0, e.Item.Width - 3, e.Item.Height);
+
+            using (var b = new SolidBrush(bgColor))
             {
-                
-                var bgColor = e.Item.Selected ? Colors.GreyHighlight : e.Item.BackColor;
+                g.FillRectangle(b, rect);
+            }
 
-                // Normal item
-                var rect = new Rectangle(2, 0, e.Item.Width - 3, e.Item.Height);
+            // Header item on open menu
+            var menuItem = e.Item as ToolStripMenuItem;
+            if (menuItem == null)
+                return;
 
-                using (var b = new SolidBrush(bgColor))
-                {
-                    g.FillRectangle(b, rect);
-                }
-
-                // Header item on open menu
-                if (e.Item.GetType() == typeof(ToolStripMenuItem))
-                {
-                    if (((ToolStripMenuItem)e.Item).DropDown.Visible && e.Item.IsOnDropDown == false)
-                    {
-                        using (var b = new SolidBrush(Colors.GreySelection))
-                        {
-                            g.FillRectangle(b, rect);
-                        }
-                    }
-                }
+            if (!menuItem.DropDown.Visible || menuItem.IsOnDropDown)
+                return;
+            
+            using (var b = new SolidBrush(Colors.GreySelection))
+            {
+                g.FillRectangle(b, rect);
             }
         }
 

@@ -1,7 +1,8 @@
-﻿using DarkUI.Controls;
+﻿using System.Windows.Forms;
+using DarkUI.Controls;
 using DarkUI.Forms;
 
-namespace Example
+namespace Example.Forms.Dialogs
 {
     public partial class DialogControls : DarkDialog
     {
@@ -38,12 +39,12 @@ namespace Example
             // Hook dialog button events
             btnDialog.Click += delegate
             {
-                DarkMessageBox.ShowError("This is an error", "Dark UI - Example");
+                DarkMessageBox.Show(this, "This is an error", "Dark UI - Example", MessageBoxIcon.Error);
             };
 
             btnMessageBox.Click += delegate
             {
-                DarkMessageBox.ShowInformation("This is some information, except it is much bigger, so there we go. I wonder how this is going to go. I hope it resizes properly. It probably will.", "Dark UI - Example");
+                DarkMessageBox.Show(this, "This is some information, except it is much bigger, so there we go. I wonder how this is going to go. I hope it resizes properly. It probably will.", "Dark UI - Example", MessageBoxIcon.Warning);
             };
         }
     }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using DarkUI.Icons;
 
 namespace DarkUI.Docking
 {
@@ -12,8 +13,8 @@ namespace DarkUI.Docking
         #region Field Region
 
         private Rectangle _closeButtonRect;
-        private bool _closeButtonHot = false;
-        private bool _closeButtonPressed = false;
+        private bool _closeButtonHot;
+        private bool _closeButtonPressed;
 
         private Rectangle _headerRect;
         private bool _shouldDrag;
@@ -27,6 +28,12 @@ namespace DarkUI.Docking
         public new Padding Padding
         {
             get { return base.Padding; }
+        }
+
+        public sealed override Color BackColor
+        {
+            get { return base.BackColor; }
+            set { base.BackColor = value; }
         }
 
         #endregion
@@ -70,7 +77,7 @@ namespace DarkUI.Docking
             _closeButtonRect = new Rectangle
             {
                 X = ClientRectangle.Right - DockIcons.tw_close.Width - 5 - 3,
-                Y = ClientRectangle.Top + (Consts.ToolWindowHeaderSize / 2) - (DockIcons.tw_close.Height / 2),
+                Y = ClientRectangle.Top + Consts.ToolWindowHeaderSize / 2 - DockIcons.tw_close.Height / 2,
                 Width = DockIcons.tw_close.Width,
                 Height = DockIcons.tw_close.Height
             };
@@ -110,7 +117,6 @@ namespace DarkUI.Docking
                 if (_shouldDrag)
                 {
                     DockPanel.DragContent(this);
-                    return;
                 }
             }
         }
@@ -130,7 +136,6 @@ namespace DarkUI.Docking
             if (_headerRect.Contains(e.Location))
             {
                 _shouldDrag = true;
-                return;
             }
         }
 
@@ -192,7 +197,7 @@ namespace DarkUI.Docking
             // Draw icon
             if (Icon != null)
             {
-                g.DrawImageUnscaled(Icon, ClientRectangle.Left + 5, ClientRectangle.Top + (Consts.ToolWindowHeaderSize / 2) - (Icon.Height / 2) + 1);
+                g.DrawImage(Icon, ClientRectangle.Left + 5, ClientRectangle.Top + Consts.ToolWindowHeaderSize / 2 - Icon.Height / 2 + 1);
                 xOffset = Icon.Width + 8;
             }
 
@@ -218,7 +223,7 @@ namespace DarkUI.Docking
             if (isActive)
                 img = _closeButtonHot ? DockIcons.tw_active_close_selected : DockIcons.tw_active_close;
 
-            g.DrawImageUnscaled(img, _closeButtonRect.Left, _closeButtonRect.Top);
+            g.DrawImage(img, _closeButtonRect.Left, _closeButtonRect.Top);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)

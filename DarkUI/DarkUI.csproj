@@ -16,6 +16,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,6 +58,7 @@
     <Compile Include="Controls\DarkDataGridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\DarkFloatingToolBox.cs" />
     <Compile Include="Controls\DarkGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -64,12 +66,17 @@
     <Compile Include="Controls\DarkDropdownList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DarkContentAlignment.cs" />
     <Compile Include="Controls\DarkControlState.cs" />
+    <Compile Include="Controls\DarkCheckedListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkListBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DarkNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DarkProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DarkRadioButton.cs">
@@ -155,26 +162,30 @@
     <Compile Include="Docking\DockRegionState.cs" />
     <Compile Include="Docking\DockInsertType.cs" />
     <Compile Include="Extensions\BitmapExtensions.cs" />
-    <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\ProgressBarExtensions.cs" />
     <Compile Include="Forms\DarkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DarkDialog.Designer.cs">
       <DependentUpon>DarkDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DarkDialogButton.cs" />
     <Compile Include="Forms\DarkForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\DarkMessageBox.cs">
+    <Compile Include="Forms\DarkDialogMessageBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\DarkMessageBox.Designer.cs">
-      <DependentUpon>DarkMessageBox.cs</DependentUpon>
+    <Compile Include="Forms\DarkDialogMessageBox.Designer.cs">
+      <DependentUpon>DarkDialogMessageBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DarkMessageBoxIcon.cs" />
+    <Compile Include="Forms\DarkMessageBox.cs" />
     <Compile Include="Forms\DarkTranslucentForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Icons\ComboBoxIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ComboBoxIcons.resx</DependentUpon>
     </Compile>
     <Compile Include="Icons\DockIcons.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -195,6 +206,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MessageBoxIcons.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Icons\NumericUpDownIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NumericUpDownIcons.resx</DependentUpon>
     </Compile>
     <Compile Include="Icons\ScrollIcons.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -222,13 +238,18 @@
     <EmbeddedResource Include="Forms\DarkDialog.resx">
       <DependentUpon>DarkDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DarkMessageBox.resx">
-      <DependentUpon>DarkMessageBox.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\DarkDialogMessageBox.resx">
+      <DependentUpon>DarkDialogMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ComboBoxIcons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComboBoxIcons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\DockIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DockIcons.Designer.cs</LastGenOutput>
       <CustomToolNamespace>DarkUI</CustomToolNamespace>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\DropdownIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -239,16 +260,21 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>MenuIcons.Designer.cs</LastGenOutput>
       <CustomToolNamespace>DarkUI</CustomToolNamespace>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\MessageBoxIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MessageBoxIcons.Designer.cs</LastGenOutput>
       <CustomToolNamespace>DarkUI</CustomToolNamespace>
     </EmbeddedResource>
+    <EmbeddedResource Include="Icons\NumericUpDownIcons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NumericUpDownIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Icons\ScrollIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ScrollIcons.Designer.cs</LastGenOutput>
       <CustomToolNamespace>DarkUI</CustomToolNamespace>
+      <LastGenOutput>ScrollIcons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\TreeViewIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -296,7 +322,7 @@
     <None Include="Resources\node_open_empty.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\active-inactive-close.png" />
+    <None Include="Resources\active_inactive_close.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow.png" />
@@ -305,13 +331,13 @@
     <None Include="Resources\close.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\close-selected.png" />
+    <None Include="Resources\close_selected.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\inactive-close.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\inactive-close-selected.png" />
+    <None Include="Resources\inactive_close_selected.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\tw_close.png" />
@@ -329,7 +355,15 @@
     <None Include="Resources\small_arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\scrollbar_disabled.png" />
+    <None Include="Resources\scrollbar_arrow_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\numericUpDown_arrow.png" />
+    <None Include="Resources\combobox_arrow.png" />
+    <Content Include="Resources\grip_fill.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

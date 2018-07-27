@@ -1,11 +1,10 @@
-﻿using DarkUI.Config;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using DarkUI.Controls;
 using DarkUI.Docking;
 using DarkUI.Forms;
-using System.Drawing;
-using System.Windows.Forms;
 
-namespace Example
+namespace Example.Forms.Docking
 {
     public partial class DockDocument : DarkDocument
     {
@@ -40,7 +39,7 @@ namespace Example
 
         public override void Close()
         {
-            var result = DarkMessageBox.ShowWarning(@"You will lose any unsaved changes. Continue?", @"Close document", DarkDialogButton.YesNo);
+            var result = DarkMessageBox.Show(this, @"You will lose any unsaved changes. Continue?", @"Close document", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (result == DialogResult.No)
                 return;
 
