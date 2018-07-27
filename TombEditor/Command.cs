@@ -798,6 +798,11 @@ searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.co
                 EditorActions.MoveLara(args.Window, args.Editor.SelectedSectors.Start);
             });
 
+            AddCommand("SplitSectorObjectOnSelection", "Split sector based object on selection", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.SplitSectorObjectOnSelection(args.Editor.SelectedObject as SectorBasedObjectInstance);
+            });
+
             AddCommand("AddTexture", "Add texture...", CommandType.Textures, delegate (CommandArgs args)
             {
                 EditorActions.AddTexture(args.Window);

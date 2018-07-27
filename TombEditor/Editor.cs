@@ -507,6 +507,16 @@ namespace TombEditor
                 throw new ArgumentNullException();
             RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
         }
+        public void ObjectChange(IEnumerable<ObjectInstance> objects, ObjectChangeType changeType)
+        {
+            foreach (ObjectInstance @object in objects)
+                ObjectChange(@object, changeType, @object.Room);
+        }
+        public void ObjectChange(IEnumerable<ObjectInstance> objects, ObjectChangeType changeType, Room room)
+        {
+            foreach (ObjectInstance @object in objects)
+                ObjectChange(@object, changeType, room);
+        }
 
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
