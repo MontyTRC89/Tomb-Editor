@@ -3225,6 +3225,41 @@ namespace TombEditor
                 _editor.RoomGeometryChange(room);
         }
 
+        public static void SplitSectorObjectOnSelection(SectorBasedObjectInstance @object)
+        {
+            if (@object == null || !_editor.SelectedSectors.Valid)
+            {
+                _editor.SendMessage("Please select a sector object as well as some sectors.", PopupType.Info);
+                return;
+            }
+            RectangleInt2 area = _editor.SelectedSectors.Area;
+            Room room = @object.Room;
+            if (!@object.Area.Intersects(area))
+            {
+                _editor.SendMessage("Object and sectors don't intersect. No operation performed", PopupType.Info);
+                return;
+            }
+            bool wasSelected = _editor.SelectedObject == @object;
+
+            // Remove object
+            foreach (ObjectInstance instance in room.RemoveObject(_editor.Level, @object))
+                if (instance != @object)
+                    instance.Delete();
+            _editor.ObjectChange(@object, ObjectChangeType.Remove, room);
+
+            // Readd in smaller pieces
+            var newObjects = new List<ObjectInstance>();
+            foreach (SectorBasedObjectInstance splitInstance in @object.SplitIntoRectangles(pos => !area.Contains(pos), new VectorInt2()))
+                newObjects.AddRange(room.AddObject(_editor.Level, splitInstance));
+            SectorBasedObjectInstance newObject = @object.Clone(@object.Area.Intersect(area));
+            newObjects.AddRange(room.AddObject(_editor.Level, newObject));
+
+            // Update
+            _editor.ObjectChange(newObjects, ObjectChangeType.Add);
+            if (wasSelected)
+                _editor.SelectedObject = newObject;
+        }
+
         public static void BookmarkObject(ObjectInstance objectToBookmark)
         {
             _editor.BookmarkedObject = objectToBookmark;

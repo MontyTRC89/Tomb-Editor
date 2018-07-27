@@ -99,6 +99,7 @@ namespace TombEditor.Forms
 
                 deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
                 bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
+                splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
             }
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -119,6 +120,7 @@ namespace TombEditor.Forms
                 flattenFloorToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn3ToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
+                splitSectorObjectOnSelectionToolStripMenuItem.Enabled = _editor.SelectedObject is SectorBasedObjectInstance && validSectorSelection;
             }
 
             // Update compilation statistics

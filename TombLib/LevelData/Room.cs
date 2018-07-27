@@ -119,7 +119,7 @@ namespace TombLib.LevelData
             // Add sector based objects again
             RectangleInt2 newArea = new RectangleInt2(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
             foreach (var instance in sectorObjects)
-                AddObjectCutSectors(level, newArea, instance);
+                AddObjectCutSectorsAndMove(level, newArea, instance);
         }
 
         public Room Split(Level level, RectangleInt2 area)
@@ -138,7 +138,7 @@ namespace TombLib.LevelData
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectCutSectorsAndMove(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.Z < 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
@@ -150,7 +150,7 @@ namespace TombLib.LevelData
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectCutSectorsAndMove(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.X < 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
@@ -162,7 +162,7 @@ namespace TombLib.LevelData
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectCutSectorsAndMove(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.Z > (NumZSectors - 2) * 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
@@ -174,7 +174,7 @@ namespace TombLib.LevelData
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectCutSectorsAndMove(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.Z > (NumXSectors - 2) * 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
@@ -197,7 +197,7 @@ namespace TombLib.LevelData
                     RectangleInt2 validPortalArea = portal.GetValidArea(area);
                     foreach (PortalInstance splitPortal in portal.SplitIntoRectangles(pos => !validPortalArea.Contains(pos), new VectorInt2()))
                         AddObject(level, splitPortal);
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectCutSectorsAndMove(level, area, portal);
                 }
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.X > start.X && instance.Position.Z > start.Y &&
@@ -848,7 +848,7 @@ namespace TombLib.LevelData
             return true;
         }
 
-        public bool AddObjectCutSectors(Level level, RectangleInt2 newArea, SectorBasedObjectInstance instance)
+        private bool AddObjectCutSectorsAndMove(Level level, RectangleInt2 newArea, SectorBasedObjectInstance instance)
         {
             // Determine area
             RectangleInt2 instanceNewAreaConstraint = instance.GetValidArea(newArea);
