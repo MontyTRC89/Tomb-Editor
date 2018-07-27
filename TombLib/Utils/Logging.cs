@@ -4,6 +4,7 @@ using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 namespace TombLib.Utils
@@ -39,7 +40,7 @@ namespace TombLib.Utils
                 AddTargetAndRule(config, minLogLevel, new FileTarget("File")
                 {
                     Layout = _layout,
-                    FileName = Assembly.GetExecutingAssembly() + "\\" + fileName,
+                    FileName = Path.Combine(PathC.GetDirectoryNameTry(Assembly.GetExecutingAssembly().FullName), fileName),
                     KeepFileOpen = true,
                     DeleteOldFileOnStartup = true,
 
