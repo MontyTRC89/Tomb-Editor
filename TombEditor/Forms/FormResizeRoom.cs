@@ -49,10 +49,10 @@ namespace TombEditor.Forms
             try
             {
                 _alreadyUpdatingGui = true;
-                numericXn.Minimum = (1 - _roomToResize.NumXSectors) - numericXp.Value;
-                numericZn.Minimum = (1 - _roomToResize.NumZSectors) - numericZp.Value;
-                numericXp.Minimum = (1 - _roomToResize.NumXSectors) - numericXn.Value;
-                numericZp.Minimum = (1 - _roomToResize.NumZSectors) - numericZn.Value;
+                numericXn.Minimum = (3 - _roomToResize.NumXSectors) - numericXp.Value;
+                numericZn.Minimum = (3 - _roomToResize.NumZSectors) - numericZp.Value;
+                numericXp.Minimum = (3 - _roomToResize.NumXSectors) - numericXn.Value;
+                numericZp.Minimum = (3 - _roomToResize.NumZSectors) - numericZn.Value;
 
                 int maxDimensions = cbAllowOversizedRooms.Checked ? 255 : Room.MaxRecommendedRoomDimensions;
                 numericXn.Maximum = (maxDimensions - _roomToResize.NumXSectors) - numericXp.Value;
@@ -140,25 +140,26 @@ namespace TombEditor.Forms
             {
                 Room room = Parent._roomToResize;
                 RectangleInt2 newArea = Parent.NewArea;
-                int oldX = x + newArea.X0;
-                int oldZ = z + newArea.Y0;
+                VectorInt2 old = new VectorInt2(x, z) + newArea.Start;
 
                 // Draw new border wall
                 if ((x == 0) || (z == 0) || (x == newArea.Width) || (z == newArea.Height))
                 {
                     // Draw border wall using old room if possible
-                    if (room.LocalArea.Contains(new VectorInt2(oldX, oldZ)) &&
-                        !room.LocalArea.Inflate(-1).Contains(new VectorInt2(oldX, oldZ)))
-                        base.PaintSectorTile(e, sectorArea, oldX, oldZ);
+                    if ((newArea.X0 == 0 && x == 0 && room.LocalArea.Inflate(0, -1).Contains(old) && 0 < z && z < newArea.Height) ||
+                        (newArea.Y0 == 0 && z == 0 && room.LocalArea.Inflate(-1, 0).Contains(old) && 0 < x && x < newArea.Width) ||
+                        (newArea.X1 == room.NumXSectors - 1 && x == newArea.Width && room.LocalArea.Inflate(0, -1).Contains(old) && 0 < z && z < newArea.Height) ||
+                        (newArea.Y1 == room.NumZSectors - 1 && z == newArea.Height && room.LocalArea.Inflate(-1, 0).Contains(old) && 0 < x && x < newArea.Width))
+                        base.PaintSectorTile(e, sectorArea, old.X, old.Y);
                     else
                         e.Graphics.FillRectangle(_borderWallBrush, sectorArea);
                     return;
                 }
 
                 // Draw inner parts of the old room
-                if (oldX > 0 && oldZ > 0 && oldX < (room.NumXSectors - 1) && oldZ < (room.NumZSectors - 1))
+                if (old.X > 0 && old.Y > 0 && old.X < (room.NumXSectors - 1) && old.Y < (room.NumZSectors - 1))
                 {
-                    base.PaintSectorTile(e, sectorArea, oldX, oldZ);
+                    base.PaintSectorTile(e, sectorArea, old.X, old.Y);
                     return;
                 }
 
