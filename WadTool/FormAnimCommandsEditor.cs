@@ -12,6 +12,7 @@ namespace WadTool
     {
         private readonly WadToolClass _tool;
         public IEnumerable<WadAnimCommand> AnimCommands => treeCommands.Nodes.Select(node => node.Tag).OfType<WadAnimCommand>();
+        private bool _currentlyDoingCommandSelection = false;
 
         private WadAnimCommand _selectedCommand => treeCommands.SelectedNodes.FirstOrDefault()?.Tag as WadAnimCommand;
 
@@ -30,89 +31,99 @@ namespace WadTool
 
         private void SelectCommand(WadAnimCommand cmd, bool selectInTree = true)
         {
-            if (selectInTree)
-                treeCommands.SelectNode(treeCommands.Nodes.FirstOrDefault(node => node.Tag == cmd));
-
-            switch (cmd.Type)
+            if (_currentlyDoingCommandSelection)
+                return;
+            try
             {
-                case WadAnimCommandType.SetPosition:
-                    comboCommandType.Enabled = true;
-                    panelEffect.Visible = false;
-                    panelJumpDistance.Visible = false;
-                    panelPosition.Visible = true;
-                    panelSound.Visible = false;
+                _currentlyDoingCommandSelection = true;
+                if (selectInTree)
+                    treeCommands.SelectNode(treeCommands.Nodes.FirstOrDefault(node => node.Tag == cmd));
 
-                    comboCommandType.SelectedIndex = (int)(cmd.Type);
-                    tbPosX.Value = cmd.Parameter1;
-                    tbPosY.Value = cmd.Parameter2;
-                    tbPosZ.Value = cmd.Parameter3;
-                    break;
+                switch (cmd.Type)
+                {
+                    case WadAnimCommandType.SetPosition:
+                        comboCommandType.Enabled = true;
+                        panelEffect.Visible = false;
+                        panelJumpDistance.Visible = false;
+                        panelPosition.Visible = true;
+                        panelSound.Visible = false;
 
-                case WadAnimCommandType.SetJumpDistance:
-                    comboCommandType.Enabled = true;
-                    panelEffect.Visible = false;
-                    panelJumpDistance.Visible = true;
-                    panelPosition.Visible = false;
-                    panelSound.Visible = false;
+                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                        tbPosX.Value = cmd.Parameter1;
+                        tbPosY.Value = cmd.Parameter2;
+                        tbPosZ.Value = cmd.Parameter3;
+                        break;
 
-                    comboCommandType.SelectedIndex = (int)(cmd.Type);
-                    tbHorizontal.Value = cmd.Parameter1;
-                    tbVertical.Value = cmd.Parameter2;
-                    break;
+                    case WadAnimCommandType.SetJumpDistance:
+                        comboCommandType.Enabled = true;
+                        panelEffect.Visible = false;
+                        panelJumpDistance.Visible = true;
+                        panelPosition.Visible = false;
+                        panelSound.Visible = false;
 
-                case WadAnimCommandType.EmptyHands:
-                case WadAnimCommandType.KillEntity:
-                    comboCommandType.Enabled = true;
-                    panelEffect.Visible = false;
-                    panelJumpDistance.Visible = false;
-                    panelPosition.Visible = false;
-                    panelSound.Visible = false;
+                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                        tbHorizontal.Value = cmd.Parameter1;
+                        tbVertical.Value = cmd.Parameter2;
+                        break;
 
-                    comboCommandType.SelectedIndex = (int)(cmd.Type);
-                    break;
+                    case WadAnimCommandType.EmptyHands:
+                    case WadAnimCommandType.KillEntity:
+                        comboCommandType.Enabled = true;
+                        panelEffect.Visible = false;
+                        panelJumpDistance.Visible = false;
+                        panelPosition.Visible = false;
+                        panelSound.Visible = false;
 
-                case WadAnimCommandType.PlaySound:
-                    comboCommandType.Enabled = true;
-                    panelEffect.Visible = false;
-                    panelJumpDistance.Visible = false;
-                    panelPosition.Visible = false;
-                    panelSound.Visible = true;
+                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                        break;
 
-                    comboCommandType.SelectedIndex = (int)(cmd.Type);
-                    tbPlaySoundFrame.Value = cmd.Parameter1;
-                    soundInfoEditor.SoundInfo = cmd.SoundInfo;
-                    switch (cmd.Parameter2 & 0xC000)
-                    {
-                        default:
-                            comboPlaySoundConditions.SelectedIndex = 0;
-                            break;
-                        case 0x4000:
-                            comboPlaySoundConditions.SelectedIndex = 1;
-                            break;
-                        case 0x8000:
-                            comboPlaySoundConditions.SelectedIndex = 2;
-                            break;
-                    }
-                    break;
-                case WadAnimCommandType.FlipEffect:
-                    comboCommandType.Enabled = true;
-                    panelEffect.Visible = true;
-                    panelJumpDistance.Visible = false;
-                    panelPosition.Visible = false;
-                    panelSound.Visible = false;
+                    case WadAnimCommandType.PlaySound:
+                        comboCommandType.Enabled = true;
+                        panelEffect.Visible = false;
+                        panelJumpDistance.Visible = false;
+                        panelPosition.Visible = false;
+                        panelSound.Visible = true;
 
-                    comboCommandType.SelectedIndex = (int)(cmd.Type);
-                    tbFlipEffectFrame.Value = cmd.Parameter1;
-                    tbFlipEffect.Value = cmd.Parameter2;
-                    break;
+                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                        tbPlaySoundFrame.Value = cmd.Parameter1;
+                        soundInfoEditor.SoundInfo = cmd.SoundInfo;
+                        switch (cmd.Parameter2 & 0xC000)
+                        {
+                            default:
+                                comboPlaySoundConditions.SelectedIndex = 0;
+                                break;
+                            case 0x4000:
+                                comboPlaySoundConditions.SelectedIndex = 1;
+                                break;
+                            case 0x8000:
+                                comboPlaySoundConditions.SelectedIndex = 2;
+                                break;
+                        }
+                        break;
+                    case WadAnimCommandType.FlipEffect:
+                        comboCommandType.Enabled = true;
+                        panelEffect.Visible = true;
+                        panelJumpDistance.Visible = false;
+                        panelPosition.Visible = false;
+                        panelSound.Visible = false;
 
-                default:
-                    comboCommandType.Enabled = false;
-                    panelEffect.Visible = false;
-                    panelJumpDistance.Visible = false;
-                    panelPosition.Visible = false;
-                    panelSound.Visible = false;
-                    break;
+                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                        tbFlipEffectFrame.Value = cmd.Parameter1;
+                        tbFlipEffect.Value = cmd.Parameter2;
+                        break;
+
+                    default:
+                        comboCommandType.Enabled = false;
+                        panelEffect.Visible = false;
+                        panelJumpDistance.Visible = false;
+                        panelPosition.Visible = false;
+                        panelSound.Visible = false;
+                        break;
+                }
+            }
+            finally
+            {
+                _currentlyDoingCommandSelection = false;
             }
         }
 
@@ -125,14 +136,10 @@ namespace WadTool
 
         private void butDeleteEffect_Click(object sender, EventArgs e)
         {
-            if (treeCommands.SelectedNodes.Count != 0)
-            {
-                treeCommands.Nodes.Remove(treeCommands.SelectedNodes[0]);
-                if (treeCommands.Nodes.Count > 0)
-                    treeCommands.SelectNode(treeCommands.Nodes[0]);
-                else
-                    comboCommandType.SelectedIndex = 0;
-            }
+            if (treeCommands.SelectedNodes.Count == 0)
+                return;
+            treeCommands.Nodes.Remove(treeCommands.SelectedNodes[0]);
+            SelectCommand(treeCommands.Nodes.FirstOrDefault()?.Tag as WadAnimCommand);
         }
 
         private void btOk_Click(object sender, EventArgs e)
@@ -149,14 +156,18 @@ namespace WadTool
 
         private void treeCommands_SelectedNodesChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand != null)
+            if (_selectedCommand == null)
+                return;
                 SelectCommand(_selectedCommand, false);
         }
 
         private void comboCommandType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand != null)
-                _selectedCommand.Type = (WadAnimCommandType)(comboCommandType.SelectedIndex);
+            if (_selectedCommand == null || _currentlyDoingCommandSelection)
+                return;
+            _selectedCommand.Type = (WadAnimCommandType)(comboCommandType.SelectedIndex) + 1;
+            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            SelectCommand(_selectedCommand, false);
         }
 
         private void tbPosX_ValueChanged(object sender, EventArgs e)

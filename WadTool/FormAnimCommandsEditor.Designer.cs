@@ -50,6 +50,8 @@
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
             this.tbFlipEffectFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.panelSound = new System.Windows.Forms.Panel();
+            this.groupBox = new DarkUI.Controls.DarkGroupBox();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.comboPlaySoundConditions = new DarkUI.Controls.DarkComboBox();
             this.tbPlaySoundFrame = new DarkUI.Controls.DarkNumericUpDown();
@@ -58,8 +60,6 @@
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.darkTreeView1 = new DarkUI.Controls.DarkTreeView();
-            this.groupBox = new DarkUI.Controls.DarkGroupBox();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.panelPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosY)).BeginInit();
@@ -71,12 +71,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffect)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffectFrame)).BeginInit();
             this.panelSound.SuspendLayout();
+            this.groupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
-            this.groupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // btCancel
@@ -123,8 +123,6 @@
             "Empty hands",
             "Kill entity",
             "Play sound",
-            "Play sound (On land)",
-            "Play sound (On water)",
             "Flipeffect"});
             this.comboCommandType.Location = new System.Drawing.Point(45, 4);
             this.comboCommandType.Name = "comboCommandType";
@@ -443,6 +441,31 @@
             this.panelSound.TabIndex = 57;
             this.panelSound.Visible = false;
             // 
+            // groupBox
+            // 
+            this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox.Controls.Add(this.soundInfoEditor);
+            this.groupBox.Location = new System.Drawing.Point(2, 29);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Size = new System.Drawing.Size(453, 371);
+            this.groupBox.TabIndex = 98;
+            this.groupBox.TabStop = false;
+            this.groupBox.Text = "Sound settings";
+            // 
+            // soundInfoEditor
+            // 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Location = new System.Drawing.Point(6, 22);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(440, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.Size = new System.Drawing.Size(440, 346);
+            this.soundInfoEditor.TabIndex = 98;
+            // 
             // darkLabel9
             // 
             this.darkLabel9.AutoSize = true;
@@ -564,31 +587,6 @@
             this.darkTreeView1.TabIndex = 99;
             this.darkTreeView1.Text = "darkTreeView1";
             // 
-            // groupBox
-            // 
-            this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox.Controls.Add(this.soundInfoEditor);
-            this.groupBox.Location = new System.Drawing.Point(2, 29);
-            this.groupBox.Name = "groupBox";
-            this.groupBox.Size = new System.Drawing.Size(453, 371);
-            this.groupBox.TabIndex = 98;
-            this.groupBox.TabStop = false;
-            this.groupBox.Text = "Sound settings";
-            // 
-            // soundInfoEditor
-            // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Location = new System.Drawing.Point(6, 22);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(440, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(440, 346);
-            this.soundInfoEditor.TabIndex = 98;
-            // 
             // FormAnimCommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -621,13 +619,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffectFrame)).EndInit();
             this.panelSound.ResumeLayout(false);
             this.panelSound.PerformLayout();
+            this.groupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).EndInit();
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
-            this.groupBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
