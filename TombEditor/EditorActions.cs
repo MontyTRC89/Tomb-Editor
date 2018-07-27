@@ -2411,29 +2411,13 @@ namespace TombEditor
             if (!CheckForRoomAndBlockSelection(owner))
                 return;
 
-            RectangleInt2 area = _editor.SelectedSectors.Area.Inflate(1);
             var room = _editor.SelectedRoom;
+            RectangleInt2 area = _editor.SelectedSectors.Area.Inflate(1).Intersect(room.LocalArea);
 
-            // Check for gray walls selection
-            if (area.X0 == -1 || area.X1 == -1 ||
-                area.X0 == room.NumXSectors || area.X1 == room.NumXSectors ||
-                area.Y0 == -1 || area.Y1 == -1 ||
-                area.Y0 == room.NumZSectors || area.Y1 == room.NumZSectors)
+            // Split alternate room
+            if (room.Alternated)
             {
-                _editor.SendMessage("You can't select border walls when splitting a room.", PopupType.Error);
-                return;
-            }
-
-            if (room.AlternateBaseRoom != null)
-            {
-                _editor.Level.AssignRoomToFree(room.AlternateBaseRoom.Split(_editor.Level, area));
-                _editor.RoomGeometryChange(room);
-                _editor.RoomSectorPropertiesChange(room);
-            }
-
-            if (room.AlternateRoom != null)
-            {
-                _editor.Level.AssignRoomToFree(room.AlternateRoom.Split(_editor.Level, area));
+                _editor.Level.AssignRoomToFree(room.AlternateOpposite.Split(_editor.Level, area));
                 _editor.RoomGeometryChange(room);
                 _editor.RoomSectorPropertiesChange(room);
             }
@@ -2446,11 +2430,7 @@ namespace TombEditor
 
             // Fix selection
             if (_editor.SelectedRoom == room && _editor.SelectedSectors.Valid)
-            {
-                var selection = _editor.SelectedSectors;
-                selection.Area = selection.Area + new VectorInt2((int)(oldRoomPos.X - room.Position.X), (int)(oldRoomPos.Z - room.Position.Z));
-                _editor.SelectedSectors = selection;
-            }
+                _editor.SelectedSectors = SectorSelection.None;
         }
 
         public static void SelectConnectedRooms()
