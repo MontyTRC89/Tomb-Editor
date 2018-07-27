@@ -709,6 +709,17 @@ namespace TombEditor
                     }
             }
 
+            // Reset notifications, when changeing between 2D and 3D mode
+            // Also reset selected sectors if wanted
+            if (obj is ModeChangedEvent)
+            {
+                var @event = (ModeChangedEvent)obj;
+                if ((@event.Previous == EditorMode.Map2D) != (@event.Current == EditorMode.Map2D))
+                    SendMessage();
+                if (Configuration.Editor_DiscardSelectionOnModeSwitch)
+                    SelectedSectors = SectorSelection.None;
+            }
+
             // Update room selection so that no deleted rooms are selected
             if (obj is RoomListChangedEvent)
             {

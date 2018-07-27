@@ -85,22 +85,22 @@ namespace TombEditor
 
             AddCommand("Switch2DMode", "Switch to 2D map", CommandType.General, delegate (CommandArgs args)
             {
-                EditorActions.SwitchMode(EditorMode.Map2D);
+                args.Editor.Mode = EditorMode.Map2D;
             });
 
             AddCommand("SwitchGeometryMode", "Switch to Geometry mode", CommandType.General, delegate (CommandArgs args)
             {
-                EditorActions.SwitchMode(EditorMode.Geometry);
+                args.Editor.Mode = EditorMode.Geometry;
             });
 
             AddCommand("SwitchFaceEditMode", "Switch to Face Edit mode", CommandType.General, delegate (CommandArgs args)
             {
-                EditorActions.SwitchMode(EditorMode.FaceEdit);
+                args.Editor.Mode = EditorMode.FaceEdit;
             });
 
             AddCommand("SwitchLightingMode", "Switch to Lighting mode", CommandType.General, delegate (CommandArgs args)
             {
-                EditorActions.SwitchMode(EditorMode.Lighting);
+                args.Editor.Mode = EditorMode.Lighting;
             });
 
             AddCommand("ResetCamera", "Reset camera position to default", CommandType.View, delegate (CommandArgs args)

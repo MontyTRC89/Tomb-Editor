@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
@@ -134,6 +135,20 @@ namespace TombEditor.Controls
                 if (_editor.Mode == EditorMode.Map2D)
                     Invalidate();
             }
+
+            // Show message when displaying 2D map for the first time.
+            if (obj is Editor.ModeChangedEvent)
+                if (_editor.Mode == EditorMode.Map2D && (_editor.Configuration.Map2D_ShowTimes < 3)) // Show up to 3 times to increase likelyhood of the user noticing.
+                {
+                    _editor.SendMessage("Double click or press Alt + left click on the map to add a depth probe.\n" +
+                        "Double click or press Ctrl + left click on a depth probe to remove it.\n" +
+                        "\n" +
+                        "Press the middle mouse button to select multiple rooms or select connected rooms by double clicking.\n" +
+                        "The selection can be modified using Ctrl, Shift, Alt. To copy rooms, press Ctrl while moving.", PopupType.Info);
+
+                    _editor.Configuration.Map2D_ShowTimes++;
+                    _editor.ConfigurationChange();
+                }
         }
 
         public void ResetView()

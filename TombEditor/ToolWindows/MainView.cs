@@ -57,7 +57,7 @@ namespace TombEditor.ToolWindows
             else
                 EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
         }
-        
+
         public void MoveRoomRelative(Room room, VectorInt3 pos)
         {
             if (panel3D.Camera.RotationY < Math.PI * (1.0 / 4.0))
@@ -182,23 +182,23 @@ namespace TombEditor.ToolWindows
         // Opens editor's 3D view
         private void but3D_Click(object sender, EventArgs e)
         {
-            EditorActions.SwitchMode(EditorMode.Geometry);
+            _editor.Mode = EditorMode.Geometry;
         }
 
         // Opens editor's 2D view
         private void but2D_Click(object sender, EventArgs e)
         {
-            EditorActions.SwitchMode(EditorMode.Map2D);
+            _editor.Mode = EditorMode.Map2D;
         }
 
         private void butFaceEdit_Click(object sender, EventArgs e)
         {
-            EditorActions.SwitchMode(EditorMode.FaceEdit);
+            _editor.Mode = EditorMode.FaceEdit;
         }
 
         private void butLightingMode_Click(object sender, EventArgs e)
         {
-            EditorActions.SwitchMode(EditorMode.Lighting);
+            _editor.Mode = EditorMode.Lighting;
         }
 
         private void butCenterCamera_Click(object sender, EventArgs e)
