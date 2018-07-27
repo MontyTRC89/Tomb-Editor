@@ -138,20 +138,27 @@ namespace TombEditor.Forms
 
             protected override void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
             {
-                // Draw new border wall
+                Room room = Parent._roomToResize;
                 RectangleInt2 newArea = Parent.NewArea;
+                int oldX = x + newArea.X0;
+                int oldZ = z + newArea.Y0;
+
+                // Draw new border wall
                 if ((x == 0) || (z == 0) || (x == newArea.Width) || (z == newArea.Height))
                 {
-                    e.Graphics.FillRectangle(_borderWallBrush, sectorArea);
+                    // Draw border wall using old room if possible
+                    if (room.LocalArea.Contains(new VectorInt2(oldX, oldZ)) &&
+                        !room.LocalArea.Inflate(-1).Contains(new VectorInt2(oldX, oldZ)))
+                        base.PaintSectorTile(e, sectorArea, oldX, oldZ);
+                    else
+                        e.Graphics.FillRectangle(_borderWallBrush, sectorArea);
                     return;
                 }
 
-                // Draw parts of the old room
-                x += newArea.X0;
-                z += newArea.Y0;
-                if (x > 0 && z > 0 && x < (Parent._roomToResize.NumXSectors - 1) && z < (Parent._roomToResize.NumZSectors - 1))
+                // Draw inner parts of the old room
+                if (oldX > 0 && oldZ > 0 && oldX < (room.NumXSectors - 1) && oldZ < (room.NumZSectors - 1))
                 {
-                    base.PaintSectorTile(e, sectorArea, x, z);
+                    base.PaintSectorTile(e, sectorArea, oldX, oldZ);
                     return;
                 }
 
