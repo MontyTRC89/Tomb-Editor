@@ -2126,11 +2126,12 @@ namespace TombEditor
                                    "", newRoomHeight);
             newRoom.Position = room.Position + new VectorInt3(0, GetYOffset(newRoom), 0);
             newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
+            newRoom.AddObject(_editor.Level, new PortalInstance(newRoom.LocalArea.Inflate(-1), newRoom.Position.Y < room.Position.Y ? PortalDirection.Ceiling : PortalDirection.Floor, room));
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
 
             // Build the geometry of the new room
-            newRoom.BuildGeometry();
+            Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
 
             // Update the UI
             if (_editor.SelectedRoom == room)
