@@ -124,6 +124,11 @@ namespace TombLib.LevelData
             return result;
         }
 
+        public virtual RectangleInt2 GetValidArea(RectangleInt2 newLocalRoomArea)
+        {
+            return newLocalRoomArea.Inflate(-1); // Not on room walls
+        }
+
         public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);

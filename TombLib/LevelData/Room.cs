@@ -189,6 +189,16 @@ namespace TombLib.LevelData
                 // Move objects
                 Vector2 start = new Vector2(area.X0, area.Y0) * 1024.0f;
                 Vector2 end = new Vector2(area.X0 + 1, area.Y1 + 1) * 1024.0f;
+                foreach (PortalInstance portal in portals)
+                {
+                    foreach (PortalInstance removedPortal in RemoveObjectAndKeepAlive(level, portal))
+                        if (removedPortal != portal)
+                            removedPortal.Delete();
+                    RectangleInt2 validPortalArea = portal.GetValidArea(area);
+                    foreach (PortalInstance splitPortal in portal.SplitIntoRectangles(pos => !validPortalArea.Contains(pos), new VectorInt2()))
+                        AddObject(level, splitPortal);
+                    newRoom.AddObjectCutSectors(level, area, portal);
+                }
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.X > start.X && instance.Position.Z > start.Y &&
                         instance.Position.X < end.X && instance.Position.Z < end.Y)
@@ -841,23 +851,7 @@ namespace TombLib.LevelData
         public bool AddObjectCutSectors(Level level, RectangleInt2 newArea, SectorBasedObjectInstance instance)
         {
             // Determine area
-            RectangleInt2 instanceNewAreaConstraint = newArea.Inflate(-1);
-            if (instance is PortalInstance)
-                switch (((PortalInstance)instance).Direction) // Special constraints for portals on walls
-                {
-                    case PortalDirection.WallPositiveZ:
-                        instanceNewAreaConstraint = newArea.Inflate(-1, 0);
-                        break;
-                    case PortalDirection.WallNegativeZ:
-                        instanceNewAreaConstraint = newArea.Inflate(-1, 0);
-                        break;
-                    case PortalDirection.WallPositiveX:
-                        instanceNewAreaConstraint = newArea.Inflate(0, -1);
-                        break;
-                    case PortalDirection.WallNegativeX:
-                        instanceNewAreaConstraint = newArea.Inflate(0, -1);
-                        break;
-                }
+            RectangleInt2 instanceNewAreaConstraint = instance.GetValidArea(newArea);
             if (!instance.Area.Intersects(instanceNewAreaConstraint))
                 return false;
             RectangleInt2 instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint) - newArea.Start;

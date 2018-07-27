@@ -219,6 +219,23 @@ namespace TombLib.LevelData
             }
         }
 
+        public override RectangleInt2 GetValidArea(RectangleInt2 newLocalRoomArea)
+        {
+            switch (Direction) // Special constraints for portals on walls
+            {
+                case PortalDirection.WallPositiveZ:
+                    return newLocalRoomArea.Inflate(-1, 0);
+                case PortalDirection.WallNegativeZ:
+                    return newLocalRoomArea.Inflate(-1, 0);
+                case PortalDirection.WallPositiveX:
+                    return newLocalRoomArea.Inflate(0, -1);
+                case PortalDirection.WallNegativeX:
+                    return newLocalRoomArea.Inflate(0, -1);
+                default:
+                    return newLocalRoomArea.Inflate(-1, -1);
+            }
+        }
+
         public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);
