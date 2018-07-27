@@ -3266,35 +3266,6 @@ namespace TombEditor
             _editor.SendMessage("Object bookmarked: " + _editor.BookmarkedObject, PopupType.Info);
         }
 
-        public static void SwitchMode(EditorMode mode)
-        {
-            if ((mode == EditorMode.Map2D) != (_editor.Mode == EditorMode.Map2D))
-                _editor.SendMessage(); // We change 2D to 3D, reset notifications
-
-            _editor.Mode = mode;
-
-            if (mode == EditorMode.Map2D && _editor.Configuration.Map2D_ShowFirstTimeHint)
-            {
-                _editor.SendMessage("Double click or press Alt + left click on the map to add a depth probe.\n" +
-                                    "Double click or press Ctrl + left click on a depth probe to remove it.\n" +
-                                    "\n" +
-                                    "Press the middle mouse button to select multiple rooms or select connected rooms by double clicking.\n" +
-                                    "The selection can be modified using Ctrl, Shift, Alt. To copy rooms, press Ctrl while moving.",
-                                    PopupType.Info);
-
-                _editor.Configuration.Map2D_ShowFirstTimeHint = false;
-                _editor.ConfigurationChange();
-            }
-
-            if (_editor.Configuration.Editor_DiscardSelectionOnModeSwitch)
-                _editor.SelectedSectors = SectorSelection.None;
-        }
-
-        public static void SwitchTool(EditorTool tool)
-        {
-            _editor.Tool = tool;
-        }
-
         public static void SwitchToolOrdered(int toolIndex)
         {
             if (_editor.Mode == EditorMode.Map2D || toolIndex > (int)EditorToolType.Terrain ||
@@ -3339,7 +3310,7 @@ namespace TombEditor
                     currentTool.Tool = (EditorToolType)(toolIndex + 3);
                     break;
             }
-            SwitchTool(currentTool);
+            _editor.Tool = currentTool;
         }
     }
 }
