@@ -2827,14 +2827,15 @@ namespace TombEditor
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
         {
             var portal = _editor.SelectedObject as PortalInstance;
-            if (_editor.SelectedRoom == null || portal == null)
+            if (portal == null)
             {
                 _editor.SendMessage("No portal selected.", PopupType.Error);
                 return;
             }
 
             portal.Opacity = opacity;
-            _editor.SelectedRoom.BuildGeometry();
+            portal.Room.BuildGeometry();
+            _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
 
