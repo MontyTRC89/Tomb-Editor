@@ -1473,23 +1473,25 @@ namespace TombEditor
                     return;
 
             // Resize room
-            if (room.AlternateOpposite != null)
-            {
+            var relevantRooms = new HashSet<Room>(room.Portals.Select(p => p.AdjoiningRoom));
+            if (room.Alternated)
                 room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.AlternateOpposite.GetLowestCorner(), (short)room.AlternateOpposite.GetHighestCorner(), useFloor);
-                room.AlternateOpposite.BuildGeometry();
-            }
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
-            room.BuildGeometry();
+            Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
+            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
 
-            // Fix selection if necessary
-            if (_editor.SelectedRoom == room && _editor.SelectedSectors.Valid)
+            // Cleanup
+            if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
             {
                 var selection = _editor.SelectedSectors;
                 selection.Area = selection.Area.Intersect(newArea) - newArea.Start;
                 _editor.SelectedSectors = selection;
             }
-            _editor.RoomPropertiesChange(room);
-            _editor.RoomSectorPropertiesChange(room);
+            foreach (Room relevantRoom in relevantRooms)
+            {
+                _editor.RoomPropertiesChange(relevantRoom);
+                _editor.RoomSectorPropertiesChange(relevantRoom);
+            }
         }
 
         public static void SetDiagonalFloorSplit(Room room, RectangleInt2 area)
@@ -2134,7 +2136,7 @@ namespace TombEditor
             Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
 
             // Update the UI
-            if (_editor.SelectedRoom == room)
+            if (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite)
                 _editor.SelectedRoom = newRoom; //Don't center
         }
 
@@ -2205,6 +2207,7 @@ namespace TombEditor
                     return;
 
             // Create new room and start merging
+            var relevantRooms = new HashSet<Room>(rooms.SelectMany(room => room.Portals).Select(portal => portal.AdjoiningRoom));
             Room newRoom = alternated ? rooms.First(room => room.Alternated) : rooms.First();
             var resizeParameter = RectangleInt2.FromLTRB(minSectorPos - newRoom.SectorPos - new VectorInt2(1, 1), size);
             if (alternated)
@@ -2310,15 +2313,11 @@ namespace TombEditor
                             PositionBasedObjectInstance objectToPlace = @object;
                             // Remove the objects or clone it, if we need it for the alternated room. (If it's not 'CopyToAlternateRooms', we can remove it after using it)
                             if (removeObjectsInNotAlternatedRooms || room.Alternated || !@object.CopyToAlternateRooms)
-                            {
-                                foreach (ObjectInstance removedObject in room.RemoveObjectAndKeepAlive(_editor.Level, @object))
-                                    if (removedObject != @object)
-                                        removedObject.Delete();
-                            }
+                                room.RemoveObjectAndSingularPortalAndKeepAlive(_editor.Level, @object);
                             else
                                 objectToPlace = (PositionBasedObjectInstance)(@object.Clone());
                             objectToPlace.Position += room.WorldPos - newRoomToHandle.WorldPos;
-                            newRoomToHandle.AddObject(_editor.Level, objectToPlace);
+                            newRoomToHandle.AddObjectAndSingularPortal(_editor.Level, objectToPlace);
                         }
                     foreach (Room room in new[] { newRoomToHandle }.Concat(roomsToHandle)) // We also need to handle the base room.
                         foreach (SectorBasedObjectInstance sectorObject in room.SectorObjects.ToList())
@@ -2337,11 +2336,7 @@ namespace TombEditor
                             // Remove the objects or clone it, if we need it for the alternated room. (If it's not 'CopyToAlternateRooms', we can remove it after using it)
                             SectorBasedObjectInstance sectorObjectToPlace = sectorObject;
                             if (removeObjectsInNotAlternatedRooms || room.Alternated || !sectorObjectToPlace.CopyToAlternateRooms)
-                            {
-                                foreach (ObjectInstance removedObject in room.RemoveObjectAndKeepAlive(_editor.Level, @sectorObject))
-                                    if (removedObject != sectorObject)
-                                        removedObject.Delete();
-                            }
+                                room.RemoveObjectAndSingularPortalAndKeepAlive(_editor.Level, @sectorObject);
                             else
                                 sectorObjectToPlace = (SectorBasedObjectInstance)(sectorObject.Clone());
 
@@ -2388,23 +2383,25 @@ namespace TombEditor
                             // Add split portals
                             IEnumerable<SectorBasedObjectInstance> newSectorBasedObjects = sectorObjectToPlace.SplitIntoRectangles(sectorToBeCoveredTest, room.SectorPos - newRoom.SectorPos);
                             foreach (SectorBasedObjectInstance sectorBasedObjectInstance in newSectorBasedObjects)
-                                newRoomToHandle.AddObject(_editor.Level, sectorBasedObjectInstance);
+                                newRoomToHandle.AddObjectAndSingularPortal(_editor.Level, sectorBasedObjectInstance);
                         }
                 };
             performMergeAction(newRoom, mergeRooms, baseNewSectorMap, !alternated);
             if (alternated)
                 performMergeAction(newRoom.AlternateOpposite, mergeRooms?.Select(room => room.AlternateOpposite ?? room), alternateNewSectorMap, true);
+            Room.FixupNeighborPortals(_editor.Level, new[] { newRoom }, new[] { newRoom }.Concat(mergeRooms), ref relevantRooms);
+            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
 
             // Add room and update the editor
-            Parallel.Invoke(
-                () => newRoom.BuildGeometry(),
-                () => newRoom.AlternateOpposite?.BuildGeometry());
             foreach (Room room in mergeRooms)
                 _editor.Level.DeleteRoom(room);
             if (_editor.SelectedRooms.Intersect(rooms).Any())
                 _editor.SelectedRoom = newRoom;
-            _editor.RoomGeometryChange(newRoom);
-            _editor.RoomSectorPropertiesChange(newRoom);
+            foreach (Room relevantRoom in relevantRooms)
+            {
+                _editor.RoomPropertiesChange(relevantRoom);
+                _editor.RoomSectorPropertiesChange(relevantRoom);
+            }
         }
 
         public static void SplitRoom(IWin32Window owner)
@@ -2413,25 +2410,30 @@ namespace TombEditor
                 return;
 
             var room = _editor.SelectedRoom;
+            room = room.AlternateBaseRoom ?? room;
             RectangleInt2 area = _editor.SelectedSectors.Area.Inflate(1).Intersect(room.LocalArea);
 
             // Split alternate room
+            var relevantRooms = new HashSet<Room>(room.Portals.Select(p => p.AdjoiningRoom));
+            Room splitRoom = room.Split(_editor.Level, area);
+            _editor.Level.AssignRoomToFree(splitRoom);
             if (room.Alternated)
-            {
-                _editor.Level.AssignRoomToFree(room.AlternateOpposite.Split(_editor.Level, area));
-                _editor.RoomGeometryChange(room);
-                _editor.RoomSectorPropertiesChange(room);
-            }
+                _editor.Level.AssignRoomToFree(room.AlternateRoom.Split(_editor.Level, area, splitRoom));
 
-            Vector3 oldRoomPos = room.Position;
-            _editor.Level.AssignRoomToFree(room.Split(_editor.Level, area));
-            _editor.RoomGeometryChange(room);
-            _editor.RoomSectorPropertiesChange(room);
-            _editor.RoomListChange();
+            relevantRooms.Add(room);
+            relevantRooms.Add(splitRoom);
+            Room.FixupNeighborPortals(_editor.Level, new[] { room, splitRoom }, new[] { room, splitRoom }, ref relevantRooms);
+            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
 
-            // Fix selection
-            if (_editor.SelectedRoom == room && _editor.SelectedSectors.Valid)
+            // Cleanup
+            if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
                 _editor.SelectedSectors = SectorSelection.None;
+            foreach (Room relevantRoom in relevantRooms)
+            {
+                _editor.RoomPropertiesChange(relevantRoom);
+                _editor.RoomSectorPropertiesChange(relevantRoom);
+            }
+            _editor.RoomListChange();
         }
 
         public static void SelectConnectedRooms()
@@ -3241,20 +3243,62 @@ namespace TombEditor
             }
             bool wasSelected = _editor.SelectedObject == @object;
 
-            // Remove object
-            foreach (ObjectInstance instance in room.RemoveObject(_editor.Level, @object))
-                if (instance != @object)
-                    instance.Delete();
-            _editor.ObjectChange(@object, ObjectChangeType.Remove, room);
+            // Figure out where trigger was placed
+            int[,] triggerIndices = null;
+            if (@object is TriggerInstance)
+            {
+                triggerIndices = new int[@object.Area.Width + 1, @object.Area.Height + 1];
+                for (int x = 0; x <= @object.Area.Width; ++x)
+                    for (int z = 0; z <= @object.Area.Height; ++z)
+                        triggerIndices[x, z] = room.Blocks[x + @object.Area.X0, z + @object.Area.Y0].Triggers.IndexOf((TriggerInstance)@object);
+            }
 
-            // Readd in smaller pieces
+            // Handle both base room and alternated room
             var newObjects = new List<ObjectInstance>();
-            foreach (SectorBasedObjectInstance splitInstance in @object.SplitIntoRectangles(pos => !area.Contains(pos), new VectorInt2()))
-                newObjects.AddRange(room.AddObject(_editor.Level, splitInstance));
-            SectorBasedObjectInstance newObject = @object.Clone(@object.Area.Intersect(area));
-            newObjects.AddRange(room.AddObject(_editor.Level, newObject));
+            SectorBasedObjectInstance newObject = null;
+            Action<Room, SectorBasedObjectInstance> handleRoomVersion = (roomVersion, objectVersion) =>
+            {
+                // Remove object
+                roomVersion.RemoveObjectAndSingularPortal(_editor.Level, objectVersion);
+                _editor.ObjectChange(objectVersion, ObjectChangeType.Remove, roomVersion);
+
+                // Readd in smaller pieces
+                foreach (SectorBasedObjectInstance splitInstance in objectVersion.SplitIntoRectangles(pos => !area.Contains(pos), new VectorInt2()))
+                    newObjects.Add(roomVersion.AddObjectAndSingularPortal(_editor.Level, splitInstance));
+                newObject = objectVersion.Clone(objectVersion.Area.Intersect(area));
+                newObjects.Add(roomVersion.AddObjectAndSingularPortal(_editor.Level, newObject));
+            };
+            if (@object is PortalInstance && room.Alternated)
+                handleRoomVersion(room.AlternateOpposite, ((PortalInstance)@object).FindAlternatePortal(room.AlternateOpposite));
+            handleRoomVersion(room, @object);
+
+            // Handle special objects
+            if (@object is PortalInstance)
+            {
+                var relevantRooms = new HashSet<Room> { room, ((PortalInstance)@object).AdjoiningRoom };
+                Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
+                Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+                foreach (Room relevantRoom in relevantRooms)
+                    _editor.RoomPropertiesChange(relevantRoom);
+            }
+            else if (@object is TriggerInstance)
+            {
+                // Make sure that the trigger is in the same place in the trigger list.
+                // We don't want to change the order.
+                for (int x = 0; x <= @object.Area.Width; ++x)
+                    for (int z = 0; z <= @object.Area.Height; ++z)
+                    {
+                        var triggersOnSector = room.Blocks[x + @object.Area.X0, z + @object.Area.Y0].Triggers;
+                        TriggerInstance last = triggersOnSector[triggersOnSector.Count - 1];
+                        triggersOnSector.RemoveAt(triggersOnSector.Count - 1);
+                        triggersOnSector.Insert(triggerIndices[x, z], last);
+                    }
+            }
 
             // Update
+            _editor.RoomSectorPropertiesChange(room);
+            if (room.AlternateOpposite != null)
+                _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
             _editor.ObjectChange(newObjects, ObjectChangeType.Add);
             if (wasSelected)
                 _editor.SelectedObject = newObject;

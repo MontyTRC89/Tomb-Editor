@@ -658,8 +658,8 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate (CommandArgs args)
             {
-                Forms.FormSearch searchForm = new Forms.FormSearch(args.Editor);
-searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
+                FormSearch searchForm = new FormSearch(args.Editor);
+                searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
             });
 
             AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate (CommandArgs args)
@@ -842,7 +842,7 @@ searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.co
                     }
 
                     string currentTexturePath = args.Editor.Level.Settings.MakeAbsolute(texture.Path);
-string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
+                    string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
 
                     if (File.Exists(pngFilePath))
                     {
