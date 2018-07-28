@@ -146,20 +146,21 @@ namespace TombEditor.Controls
                     info.Path = path;
                     info.Name = PathC.GetFileNameWithoutExtensionTry(path);
 
-                    using (var formImport = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
-                        if (formImport.ShowDialog() == DialogResult.Cancel)
+                        settingsDialog.AddPreset(IOSettingsPresets.SettingsPresets);
+                        if (settingsDialog.ShowDialog() == DialogResult.Cancel)
                             continue;
 
-                        info.Scale = formImport.Settings.Scale;
-                        info.SwapXY = formImport.Settings.SwapXY;
-                        info.SwapXZ = formImport.Settings.SwapXZ;
-                        info.SwapYZ = formImport.Settings.SwapYZ;
-                        info.InvertFaces = formImport.Settings.InvertFaces;
-                        info.FlipX = formImport.Settings.FlipX;
-                        info.FlipY = formImport.Settings.FlipY;
-                        info.FlipZ = formImport.Settings.FlipZ;
-                        info.FlipUV_V = formImport.Settings.FlipUV_V;
+                        info.Scale = settingsDialog.Settings.Scale;
+                        info.SwapXY = settingsDialog.Settings.SwapXY;
+                        info.SwapXZ = settingsDialog.Settings.SwapXZ;
+                        info.SwapYZ = settingsDialog.Settings.SwapYZ;
+                        info.InvertFaces = settingsDialog.Settings.InvertFaces;
+                        info.FlipX = settingsDialog.Settings.FlipX;
+                        info.FlipY = settingsDialog.Settings.FlipY;
+                        info.FlipZ = settingsDialog.Settings.FlipZ;
+                        info.FlipUV_V = settingsDialog.Settings.FlipUV_V;
                     }
 
                     importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
