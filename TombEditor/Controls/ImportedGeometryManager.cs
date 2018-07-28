@@ -7,6 +7,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
+using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -143,8 +145,26 @@ namespace TombEditor.Controls
                     ImportedGeometryInfo info = ImportedGeometryInfo.Default;
                     info.Path = path;
                     info.Name = PathC.GetFileNameWithoutExtensionTry(path);
+
+                    using (var formImport = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                    {
+                        if (formImport.ShowDialog() == DialogResult.Cancel)
+                            continue;
+
+                        info.Scale = formImport.Settings.Scale;
+                        info.SwapXY = formImport.Settings.SwapXY;
+                        info.SwapXZ = formImport.Settings.SwapXZ;
+                        info.SwapYZ = formImport.Settings.SwapYZ;
+                        info.InvertFaces = formImport.Settings.InvertFaces;
+                        info.FlipX = formImport.Settings.FlipX;
+                        info.FlipY = formImport.Settings.FlipY;
+                        info.FlipZ = formImport.Settings.FlipZ;
+                        info.FlipUV_V = formImport.Settings.FlipUV_V;
+                    }
+
                     importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                 }
+
                 LevelSettings.ImportedGeometryUpdate(importInfos);
                 LevelSettings.ImportedGeometries.AddRange(importInfos.Select(entry => entry.Key));
                 return importInfos.Select(entry => new ImportedGeometryWrapper(this, entry.Key));
