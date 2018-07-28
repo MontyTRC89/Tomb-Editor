@@ -20,7 +20,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>();
+        private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -138,7 +138,7 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(40, "Building sound sources");
 
-            _soundSourcesTable = new Dictionary<SoundSourceInstance, int>();
+            _soundSourcesTable = new Dictionary<SoundSourceInstance, int>(new ReferenceEqualityComparer<SoundSourceInstance>());
 
             foreach (var room in _level.Rooms.Where(room => room != null))
                 foreach (var obj in room.Objects.OfType<SoundSourceInstance>())
@@ -178,9 +178,9 @@ namespace TombLib.LevelData.Compilers
             {
                 int cameraSinkID = 0;
                 int flybyID = 0;
-                _cameraTable = new Dictionary<CameraInstance, int>();
-                _sinkTable = new Dictionary<SinkInstance, int>();
-                _flybyTable = new Dictionary<FlybyCameraInstance, int>();
+                _cameraTable = new Dictionary<CameraInstance, int>(new ReferenceEqualityComparer<CameraInstance>());
+                _sinkTable = new Dictionary<SinkInstance, int>(new ReferenceEqualityComparer<SinkInstance>());
+                _flybyTable = new Dictionary<FlybyCameraInstance, int>(new ReferenceEqualityComparer<FlybyCameraInstance>());
                 foreach (var room in _level.Rooms.Where(room => room != null))
                 {
                     foreach (var obj in room.Objects.OfType<CameraInstance>())
@@ -361,8 +361,8 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(18, "Building items table");
 
-            _moveablesTable = new Dictionary<MoveableInstance, int>();
-            _aiObjectsTable = new Dictionary<MoveableInstance, int>();
+            _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
+            _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
 
             foreach (Room room in _level.Rooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())

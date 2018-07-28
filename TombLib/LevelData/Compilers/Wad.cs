@@ -12,7 +12,7 @@ namespace TombLib.LevelData.Compilers
     public partial class LevelCompilerClassicTR
     {
         private static readonly bool _writeDbgWadTxt = false;
-        private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
+        private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
 
         private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall, bool isStatic, int objectId)
@@ -168,7 +168,7 @@ namespace TombLib.LevelData.Compilers
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
             // First thing build frames
-            var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>();
+            var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
                 {
@@ -239,7 +239,7 @@ namespace TombLib.LevelData.Compilers
                     int lateralAcceleration = 0;
                     int speed = 0;
                     int lateralSpeed = 0;
-                    
+
                     if (oldAnimation.KeyFrames.Count != 0 && oldAnimation.FrameRate != 0)
                     {
                         acceleration = (int)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /

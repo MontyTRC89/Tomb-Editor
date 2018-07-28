@@ -97,9 +97,9 @@ namespace TombLib.LevelData.IO
 
             LevelSettings settings = new LevelSettings { LevelFilePath = thisPath };
             var levelSettingsIds = new LevelSettingsIds();
-            var WadsToLoad = new Dictionary<ReferencedWad, string>();
-            var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
-            var levelTexturesToLoad = new Dictionary<LevelTexture, string>();
+            var WadsToLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
+            var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
+            var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -182,7 +182,7 @@ namespace TombLib.LevelData.IO
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Wads)
                 {
-                    var toLoad = new Dictionary<ReferencedWad, string>();
+                    var toLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
                     var list = new List<ReferencedWad>(); // Order matters
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
@@ -211,7 +211,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.Textures)
                 {
-                    var toLoad = new Dictionary<LevelTexture, string>();
+                    var toLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
                     var levelTextures = new Dictionary<long, LevelTexture>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
@@ -259,7 +259,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.ImportedGeometries)
                 {
-                    var toLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
+                    var toLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
                     var importedGeometries = new Dictionary<long, ImportedGeometry>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
