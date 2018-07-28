@@ -43,8 +43,8 @@ namespace TombLib.LevelData.Compilers.Util
             public Vector2 _texCoord2;
             public Vector2 _texCoord3;
         }
-        private readonly Dictionary<Texture, List<AnimationLookupEntry>[,]> _animationSpaceLookup = new Dictionary<Texture, List<AnimationLookupEntry>[,]>();
-        private readonly Dictionary<AnimatedTextureFrame, uint> _animationTextureSpaceIdentifierLookup = new Dictionary<AnimatedTextureFrame, uint>();
+        private readonly Dictionary<Texture, List<AnimationLookupEntry>[,]> _animationSpaceLookup = new Dictionary<Texture, List<AnimationLookupEntry>[,]>(new ReferenceEqualityComparer<Texture>());
+        private readonly Dictionary<AnimatedTextureFrame, uint> _animationTextureSpaceIdentifierLookup = new Dictionary<AnimatedTextureFrame, uint>(new ReferenceEqualityComparer<AnimatedTextureFrame>());
 
         private struct AnimationVersion
         {

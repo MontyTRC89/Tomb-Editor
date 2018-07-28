@@ -54,7 +54,7 @@ namespace TombLib.LevelData.Compilers
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return unchecked(X + Y * 695504311 + Z * 550048883);
         }
     }
 
@@ -175,7 +175,7 @@ namespace TombLib.LevelData.Compilers
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Position.GetHashCode();
         }
     }
 

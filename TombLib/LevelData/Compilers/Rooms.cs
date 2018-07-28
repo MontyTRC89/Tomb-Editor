@@ -11,7 +11,7 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
-        private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>();
+        private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
 
         private void BuildRooms()
@@ -32,7 +32,7 @@ namespace TombLib.LevelData.Compilers
             //        _tempRooms.Add(room, trRoom);
             //});
 
-            _staticsTable = new Dictionary<StaticInstance, int>();
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var room in _roomsRemappingDictionary.Keys)
             {
@@ -936,7 +936,7 @@ namespace TombLib.LevelData.Compilers
             //   - Geometry objects should also be make use of this.
 
             // Build lookup
-            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>();
+            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>(new ReferenceEqualityComparer<Room>());
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
                 var vertexLookup = new Dictionary<tr_vertex, ushort>();

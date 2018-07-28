@@ -81,8 +81,8 @@ namespace TombLib.LevelData.IO
 
         private class LevelSettingsIds
         {
-            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>();
-            public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>();
+            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>(new ReferenceEqualityComparer<ImportedGeometry>());
+            public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
         }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
