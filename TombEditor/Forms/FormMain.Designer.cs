@@ -152,7 +152,6 @@
             this.statusStripLocalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusAutosave = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
-            this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
@@ -1553,13 +1552,6 @@
             this.statusLastCompilation.Name = "statusLastCompilation";
             this.statusLastCompilation.Size = new System.Drawing.Size(0, 16);
             // 
-            // darkContextMenu1
-            // 
-            this.darkContextMenu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkContextMenu1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkContextMenu1.Name = "darkContextMenu1";
-            this.darkContextMenu1.Size = new System.Drawing.Size(61, 4);
-            // 
             // dockArea
             // 
             this.dockArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1650,7 +1642,6 @@
         private System.Windows.Forms.ToolStripMenuItem importConvertTexturesToPng;
         private System.Windows.Forms.ToolStripMenuItem addWadToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator6;
-        private DarkUI.Controls.DarkContextMenu darkContextMenu1;
         private System.Windows.Forms.ToolStripStatusLabel statusStripSelectedRoom;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingDownToolStripMenuItem;
