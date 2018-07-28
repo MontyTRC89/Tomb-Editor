@@ -149,7 +149,7 @@ namespace TombEditor.Controls
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
                         settingsDialog.AddPreset(IOSettingsPresets.SettingsPresets);
-                        if (settingsDialog.ShowDialog() == DialogResult.Cancel)
+                        if (settingsDialog.ShowDialog(this) == DialogResult.Cancel)
                             continue;
 
                         info.Scale = settingsDialog.Settings.Scale;
