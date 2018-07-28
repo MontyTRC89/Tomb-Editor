@@ -861,7 +861,7 @@ namespace TombEditor
 
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate (CommandArgs args)
             {
-                using (var form = new Forms.FormTextureRemap(args.Editor))
+                using (var form = new FormTextureRemap(args.Editor))
                     form.ShowDialog(args.Window);
             });
 
@@ -882,7 +882,7 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
-                using (Forms.FormAnimatedTextures form = new Forms.FormAnimatedTextures(args.Editor, null))
+                using (FormAnimatedTextures form = new FormAnimatedTextures(args.Editor, null))
                     form.ShowDialog(args.Window);
             });
 
@@ -970,7 +970,7 @@ namespace TombEditor
 
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (Forms.FormLevelSettings form = new Forms.FormLevelSettings(args.Editor))
+                using (FormLevelSettings form = new FormLevelSettings(args.Editor))
                     form.ShowDialog(args.Window);
             });
 
@@ -1003,7 +1003,7 @@ namespace TombEditor
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (var f = new FormKeyboardLayout(args.Editor))
-                    f.ShowDialog();
+                    f.ShowDialog(args.Window);
             });
 
             AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate (CommandArgs args)
