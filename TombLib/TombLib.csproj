@@ -146,6 +146,7 @@
     <Compile Include="Graphics\SharpDxConversions.cs" />
     <Compile Include="Graphics\Submesh.cs" />
     <Compile Include="Graphics\WadRenderer.cs" />
+    <Compile Include="IO\BinaryWriterFast.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
     <Compile Include="LevelData\BumpMappingInfo.cs" />
