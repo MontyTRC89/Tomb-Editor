@@ -219,7 +219,7 @@ namespace TombLib.LevelData.IO
                 }
                 chunkIO.WriteChunk(Prj2Chunks.EmbeddedSoundInfoWad, () =>
                 {
-                    Wad2Writer.SaveToStream(tempEmbeddedWad, chunkIO.Stream);
+                    Wad2Writer.SaveToBinaryWriterFast(tempEmbeddedWad, chunkIO.Raw);
                 }, long.MaxValue);
             }
 

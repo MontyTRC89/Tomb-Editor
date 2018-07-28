@@ -25,6 +25,12 @@ namespace TombLib.Wad
                 WriteWad2(chunkIO, wad);
         }
 
+        public static void SaveToBinaryWriterFast(Wad2 wad, BinaryWriterFast fastWriter)
+        {
+            using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, fastWriter))
+                WriteWad2(chunkIO, wad);
+        }
+
         private static void WriteWad2(ChunkWriter chunkIO, Wad2 wad)
         {
             chunkIO.WriteChunkInt(Wad2Chunks.SuggestedGameVersion, (long)wad.SuggestedGameVersion);
