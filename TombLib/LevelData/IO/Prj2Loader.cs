@@ -28,7 +28,7 @@ namespace TombLib.LevelData.IO
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
                 return LoadFromPrj2(filename, fileStream, progressReporter, loadSettings);
         }
-        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter) => LoadFromPrj2(filename, progressReporter, new Settings());
+        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter) => LoadFromPrj2(filename, stream, progressReporter, new Settings());
         public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, Settings loadSettings)
         {
             using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream))

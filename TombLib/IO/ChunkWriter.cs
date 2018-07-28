@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using TombLib.Utils;
 
@@ -71,48 +72,75 @@ namespace TombLib.IO
 
         public BinaryWriterFast Raw => _writer;
 
+        public struct ChunkWritingState : IDisposable
+        {
+            private ChunkWriter _chunkWriter;
+            private long _chunkSizePosition;
+            private long _previousPosition;
+            private long _maximumSize;
+
+            public ChunkWritingState(ChunkWriter chunkWriter, ChunkId chunkID, long maximumSize)
+            {
+                _chunkWriter = chunkWriter;
+
+                // Write chunk ID
+                chunkID.ToStream(chunkWriter._writer);
+
+                // Write chunk size
+                _chunkSizePosition = chunkWriter._writer.Position;
+                LEB128.Write(chunkWriter._writer, 0, maximumSize);
+
+                // Prepare for writeing chunk content
+                _previousPosition = chunkWriter._writer.Position;
+                _maximumSize = maximumSize;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Dispose()
+            {
+                // Update chunk size
+                long newPosition = _chunkWriter._writer.Position;
+                long chunkSize = newPosition - _previousPosition;
+                _chunkWriter._writer.Position = _chunkSizePosition;
+                LEB128.Write(_chunkWriter._writer, chunkSize, _maximumSize);
+                _chunkWriter._writer.Position = newPosition;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ChunkWritingState WriteChunk(ChunkId chunkID, long maximumSize = LEB128.MaximumSize4Byte) => new ChunkWritingState(this, chunkID, maximumSize);
+
         public delegate void WriteChunkDelegate();
+
         public void WriteChunk(ChunkId chunkID, WriteChunkDelegate writeChunk, long maximumSize = LEB128.MaximumSize4Byte)
         {
-            // Write chunk ID
-            chunkID.ToStream(_writer);
-
-            // Write chunk size
-            long chunkSizePosition = _writer.Position;
-            LEB128.Write(_writer, 0, maximumSize);
-
-            // Write chunk content
-            long previousPosition = _writer.Position;
-            writeChunk();
-            long newPosition = _writer.Position;
-
-            // Update chunk size
-            long chunkSize = newPosition - previousPosition;
-            _writer.Position = chunkSizePosition;
-            LEB128.Write(_writer, chunkSize, maximumSize);
-            _writer.Position = newPosition;
+            using (WriteChunk(chunkID, maximumSize))
+                writeChunk();
         }
 
         public void WriteChunkWithChildren(ChunkId chunkID, WriteChunkDelegate writeChunk, long maximumSize = LEB128.MaximumSize4Byte)
         {
-            WriteChunk(chunkID, () =>
+            using (WriteChunk(chunkID, maximumSize))
             {
                 writeChunk();
                 WriteChunkEnd();
-            }, maximumSize);
+            }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkEnd()
         {
             _writer.Write((byte)0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkEmpty(ChunkId chunkID)
         {
             chunkID.ToStream(_writer);
             LEB128.Write(_writer, 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkBool(ChunkId chunkID, bool value)
         {
             chunkID.ToStream(_writer);
@@ -120,6 +148,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkArrayOfBytes(ChunkId chunkID, byte[] value)
         {
             chunkID.ToStream(_writer);
@@ -127,6 +156,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkInt(ChunkId chunkID, long value)
         {
             chunkID.ToStream(_writer);
@@ -134,6 +164,7 @@ namespace TombLib.IO
             LEB128.Write(_writer, value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkFloat(ChunkId chunkID, double value)
         {
             chunkID.ToStream(_writer);
@@ -141,6 +172,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkVector2(ChunkId chunkID, Vector2 value)
         {
             chunkID.ToStream(_writer);
@@ -148,6 +180,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkVector3(ChunkId chunkID, Vector3 value)
         {
             chunkID.ToStream(_writer);
@@ -155,6 +188,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkVector4(ChunkId chunkID, Vector4 value)
         {
             chunkID.ToStream(_writer);
@@ -162,13 +196,13 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkString(ChunkId chunkID, string value)
         {
             byte[] data = Encoding.UTF8.GetBytes(value);
-
             chunkID.ToStream(_writer);
             LEB128.Write(_writer, data.Length);
-            _writer.Write(data, 0, data.Length);
+            _writer.Write(data);
         }
     }
 }
