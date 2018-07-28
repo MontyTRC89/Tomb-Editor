@@ -50,7 +50,6 @@ namespace TombLib.LevelData.IO
 
                 // Write rooms
                 WriteRooms(chunkIO, rooms, levelSettingIds, soundInfos);
-
                 chunkIO.WriteChunkEnd();
             }
         }
@@ -74,7 +73,6 @@ namespace TombLib.LevelData.IO
 
                 // Write objects
                 WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup, soundInfos);
-
                 chunkIO.WriteChunkEnd();
             }
         }
@@ -88,17 +86,22 @@ namespace TombLib.LevelData.IO
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
         {
             var levelSettingIds = new LevelSettingsIds();
-            chunkIO.WriteChunkWithChildren(Prj2Chunks.Settings, () =>
+            using (var chunkSettings = chunkIO.WriteChunk(Prj2Chunks.Settings, long.MaxValue))
             {
                 chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? "");
-                chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPaths, () =>
+                using (var chunkOldWadSoundPaths = chunkIO.WriteChunk(Prj2Chunks.OldWadSoundPaths))
                 {
                     chunkIO.WriteChunkEmpty(Prj2Chunks.OldWadSoundUpdateTag1_0_8);
                     foreach (OldWadSoundPath soundPath in settings.OldWadSoundPaths)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPath, () => chunkIO.WriteChunkString(Prj2Chunks.OldWadSoundPathPath, soundPath.Path));
-                });
+                        using (var chunkOldWadSoundPath = chunkIO.WriteChunk(Prj2Chunks.OldWadSoundPath))
+                        {
+                            chunkIO.WriteChunkString(Prj2Chunks.OldWadSoundPathPath, soundPath.Path);
+                            chunkIO.WriteChunkEnd();
+                        }
+                    chunkIO.WriteChunkEnd();
+                }
                 chunkIO.WriteChunkString(Prj2Chunks.GameDirectory, settings.GameDirectory ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.GameLevelFilePath, settings.GameLevelFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
@@ -108,43 +111,47 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
-                chunkIO.WriteChunkWithChildren(Prj2Chunks.Wads, () =>
+                using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
                     foreach (ReferencedWad wad in settings.Wads)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.Wad, () =>
+                        using (var chunkWad = chunkIO.WriteChunk(Prj2Chunks.Wad))
                         {
                             chunkIO.WriteChunkString(Prj2Chunks.WadPath, wad.Path ?? "");
-                        });
-                }, long.MaxValue);
-                chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
+                            chunkIO.WriteChunkEnd();
+                        }
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkTextures = chunkIO.WriteChunk(Prj2Chunks.Textures, long.MaxValue))
                 {
                     int index = 0;
                     foreach (LevelTexture texture in settings.Textures)
                     {
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.LevelTexture, () =>
+                        using (var chunkLevelTexture = chunkIO.WriteChunk(Prj2Chunks.LevelTexture))
                         {
                             chunkIO.WriteChunkInt(Prj2Chunks.LevelTextureIndex, index);
                             chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? "");
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows, texture.Convert512PixelsToDoubleRows);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureReplaceMagentaWithTransparency, texture.ReplaceMagentaWithTransparency);
-                            chunkIO.WriteChunk(Prj2Chunks.LevelTextureFootStepSounds, () =>
+                            using (var chunkLevelTextureFootStepSounds = chunkIO.WriteChunk(Prj2Chunks.LevelTextureFootStepSounds))
                             {
                                 chunkIO.Raw.Write(texture.FootStepSoundWidth);
                                 chunkIO.Raw.Write(texture.FootStepSoundHeight);
                                 for (int y = 0; y < texture.FootStepSoundHeight; ++y)
                                     for (int x = 0; x < texture.FootStepSoundWidth; ++x)
                                         chunkIO.Raw.Write((byte)texture.GetFootStepSound(x, y));
-                            });
-                        });
+                            }
+                            chunkIO.WriteChunkEnd();
+                        }
                         levelSettingIds.LevelTextures.Add(texture, index++);
                     }
-                }, long.MaxValue);
-                chunkIO.WriteChunkWithChildren(Prj2Chunks.ImportedGeometries, () =>
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkImportedGeometries = chunkIO.WriteChunk(Prj2Chunks.ImportedGeometries, long.MaxValue))
                 {
                     int index = 0;
                     foreach (ImportedGeometry importedGeometry in settings.ImportedGeometries)
                     {
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ImportedGeometry, () =>
+                        using (var chunkImportedGeometry = chunkIO.WriteChunk(Prj2Chunks.ImportedGeometry))
                         {
                             chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryIndex, index);
                             chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryName, importedGeometry.Info.Name);
@@ -159,26 +166,28 @@ namespace TombLib.LevelData.IO
                                 (importedGeometry.Info.FlipZ ? 32 : 0));
                             chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryTexAxisFlags, importedGeometry.Info.FlipUV_V ? 4 : 0);
                             chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryInvertFaces, importedGeometry.Info.InvertFaces);
-                        });
+                            chunkIO.WriteChunkEnd();
+                        }
                         levelSettingIds.ImportedGeometries.Add(importedGeometry, index++);
                     }
-                }, long.MaxValue);
-                chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureSets, () =>
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkAnimatedTextureSets = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSets, long.MaxValue))
                 {
                     foreach (AnimatedTextureSet set in settings.AnimatedTextureSets)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureSet, () =>
+                        using (var chunkAnimatedTextureSet = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSet))
                         {
-                            chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureFrames, () =>
+                            using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrames))
                             {
-                                chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSetExtraInfo, () =>
+                                using (var chunkAnimatedTextureSetExtraInfo = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSetExtraInfo))
                                 {
                                     LEB128.Write(chunkIO.Raw, (byte)set.AnimationType);
                                     LEB128.Write(chunkIO.Raw, set.Fps);
                                     LEB128.Write(chunkIO.Raw, set.UvRotate);
-                                });
+                                }
 
                                 foreach (AnimatedTextureFrame frame in set.Frames)
-                                    chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, () =>
+                                    using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, 120))
                                     {
                                         LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
                                         chunkIO.Raw.Write(frame.TexCoord0);
@@ -186,11 +195,16 @@ namespace TombLib.LevelData.IO
                                         chunkIO.Raw.Write(frame.TexCoord2);
                                         chunkIO.Raw.Write(frame.TexCoord3);
                                         LEB128.Write(chunkIO.Raw, frame.Repeat);
-                                    }, 120);
-                            });
-                        });
-                }, long.MaxValue);
-            }, long.MaxValue);
+                                    }
+
+                                chunkIO.WriteChunkEnd();
+                            }
+                            chunkIO.WriteChunkEnd();
+                        }
+                    chunkIO.WriteChunkEnd();
+                }
+                chunkIO.WriteChunkEnd();
+            };
 
             return levelSettingIds;
         }
@@ -217,10 +231,8 @@ namespace TombLib.LevelData.IO
                     var id = new WadFixedSoundInfoId((uint)i);
                     tempEmbeddedWad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfoList[i] });
                 }
-                chunkIO.WriteChunk(Prj2Chunks.EmbeddedSoundInfoWad, () =>
-                {
+                using (var chunk = chunkIO.WriteChunk(Prj2Chunks.EmbeddedSoundInfoWad, long.MaxValue))
                     Wad2Writer.SaveToBinaryWriterFast(tempEmbeddedWad, chunkIO.Raw);
-                }, long.MaxValue);
             }
 
             return SoundInfos;
@@ -236,10 +248,10 @@ namespace TombLib.LevelData.IO
                     objectInstanceLookup.Add(objectInstance, objectInstanceLookup.Count);
 
             // Save
-            chunkIO.WriteChunkWithChildren(Prj2Chunks.Rooms, () =>
+            using (var chunkRooms = chunkIO.WriteChunk(Prj2Chunks.Rooms, long.MaxValue))
             {
                 foreach (Room room in rooms.Keys)
-                    chunkIO.WriteChunkWithChildren(Prj2Chunks.Room, () =>
+                    using (var chunkRoom = chunkIO.WriteChunk(Prj2Chunks.Room, long.MaxValue))
                     {
                         LEB128.Write(chunkIO.Raw, room.NumXSectors);
                         LEB128.Write(chunkIO.Raw, room.NumZSectors);
@@ -250,18 +262,18 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition, room.Position);
 
                         // Write sectors
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomSectors, () =>
+                        using (var chunkRoomSectors = chunkIO.WriteChunk(Prj2Chunks.RoomSectors))
                         {
                             for (int z = 0; z < room.NumZSectors; z++)
                                 for (int x = 0; x < room.NumXSectors; x++)
-                                    chunkIO.WriteChunkWithChildren(Prj2Chunks.Sector, () =>
+                                    using (var chunkSector = chunkIO.WriteChunk(Prj2Chunks.Sector, LEB128.MaximumSize2Byte))
                                     {
                                         chunkIO.Raw.Write(x + z * room.NumXSectors);
                                         var b = room.Blocks[x, z];
 
                                         long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);
                                         chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
-                                        chunkIO.WriteChunk(Prj2Chunks.SectorFloor, () =>
+                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloor, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
@@ -269,8 +281,8 @@ namespace TombLib.LevelData.IO
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Ed, edge));
-                                        }, LEB128.MaximumSize1Byte);
-                                        chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, () =>
+                                        }
+                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
@@ -278,7 +290,7 @@ namespace TombLib.LevelData.IO
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Rf, edge));
-                                        }, LEB128.MaximumSize1Byte);
+                                        }
                                         for (BlockFace face = 0; face < BlockFace.Count; face++)
                                         {
                                             var texture = b.GetFaceTexture(face);
@@ -286,27 +298,27 @@ namespace TombLib.LevelData.IO
                                                 continue;
 
                                             if (texture.Texture is LevelTexture)
-                                            {
-                                                chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture, () =>
-                                                    {
-                                                        int textureIndex = levelSettingIds.LevelTextures[(LevelTexture)texture.Texture];
+                                                using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture, LEB128.MaximumSize1Byte))
+                                                {
+                                                    int textureIndex = levelSettingIds.LevelTextures[(LevelTexture)texture.Texture];
 
-                                                        LEB128.Write(chunkIO.Raw, (long)face);
-                                                        chunkIO.Raw.Write(texture.TexCoord0);
-                                                        chunkIO.Raw.Write(texture.TexCoord1);
-                                                        chunkIO.Raw.Write(texture.TexCoord2);
-                                                        chunkIO.Raw.Write(texture.TexCoord3);
-                                                        LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
-                                                        LEB128.Write(chunkIO.Raw, textureIndex);
-                                                    }, LEB128.MaximumSize1Byte);
-                                            }
+                                                    LEB128.Write(chunkIO.Raw, (long)face);
+                                                    chunkIO.Raw.Write(texture.TexCoord0);
+                                                    chunkIO.Raw.Write(texture.TexCoord1);
+                                                    chunkIO.Raw.Write(texture.TexCoord2);
+                                                    chunkIO.Raw.Write(texture.TexCoord3);
+                                                    LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
+                                                    LEB128.Write(chunkIO.Raw, textureIndex);
+                                                }
                                             else if (texture.Texture == TextureInvisible.Instance)
                                                 chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
                                             else
                                                 throw new NotSupportedException("Unsupported texture type " + texture.Texture.GetType().Name);
                                         }
-                                    }, LEB128.MaximumSize2Byte);
-                        });
+                                        chunkIO.WriteChunkEnd();
+                                    }
+                            chunkIO.WriteChunkEnd();
+                        }
 
                         // Write room properties
                         chunkIO.WriteChunkVector3(Prj2Chunks.RoomAmbientLight, room.AmbientLight);
@@ -325,28 +337,31 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomSnowLevel, room.SnowLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomQuickSandLevel, room.QuickSandLevel);
                         if (room.AlternateRoom != null && rooms.ContainsKey(room.AlternateRoom))
-                            chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomAlternate, () =>
+                            using (var chunkRoomAlternate = chunkIO.WriteChunk(Prj2Chunks.RoomAlternate, LEB128.MaximumSize1Byte))
                             {
                                 chunkIO.WriteChunkInt(Prj2Chunks.AlternateGroup, room.AlternateGroup);
                                 chunkIO.WriteChunkInt(Prj2Chunks.AlternateRoom, rooms[room.AlternateRoom]);
-                            }, LEB128.MaximumSize1Byte);
+                                chunkIO.WriteChunkEnd();
+                            }
 
                         // Write room objects
                         WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup, soundInfos);
-                    }, long.MaxValue);
-            }, long.MaxValue);
+                        chunkIO.WriteChunkEnd();
+                    }
+                chunkIO.WriteChunkEnd();
+            }
         }
 
         private static void WriteObjects(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects,
             Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds,
             Dictionary<ObjectInstance, int> objectInstanceLookup, Dictionary<WadSoundInfo, int> soundInfos)
         {
-            chunkIO.WriteChunkWithChildren(Prj2Chunks.Objects, () =>
+            using (var chunkObjects = chunkIO.WriteChunk(Prj2Chunks.Objects, long.MaxValue))
             {
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectMovable, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovable, LEB128.MaximumSize1Byte))
                         {
                             var instance = (MoveableInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -358,9 +373,9 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Invisible);
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
-                        }, LEB128.MaximumSize1Byte);
+                        }
                     else if (o is StaticInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, LEB128.MaximumSize1Byte))
                         {
                             var instance = (StaticInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -371,18 +386,18 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Color);
                             chunkIO.Raw.Write((int)0); // Unused 32 bit value
                             chunkIO.Raw.Write(instance.Ocb);
-                        }, LEB128.MaximumSize1Byte);
+                        }
                     else if (o is CameraInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, LEB128.MaximumSize1Byte))
                         {
                             var instance = (CameraInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                             chunkIO.Raw.Write(instance.Fixed);
-                        });
+                        }
                     else if (o is FlybyCameraInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, LEB128.MaximumSize2Byte))
                         {
                             var instance = (FlybyCameraInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -397,27 +412,27 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Number);
                             LEB128.Write(chunkIO.Raw, instance.Sequence);
                             LEB128.Write(chunkIO.Raw, instance.Timer);
-                        });
+                        }
                     else if (o is SinkInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectSink, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))
                         {
                             var instance = (SinkInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                             chunkIO.Raw.Write(instance.Strength);
-                        });
+                        }
                     else if (o is SoundSourceInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource3, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource3, LEB128.MaximumSize1Byte))
                         {
                             var instance = (SoundSourceInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.WriteStringUTF8(instance.WadReferencedSoundName ?? "");
                             LEB128.Write(chunkIO.Raw, instance.EmbeddedSoundInfo == null ? -1 : soundInfos[instance.EmbeddedSoundInfo]);
-                        });
+                        }
                     else if (o is LightInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectLight, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight, LEB128.MaximumSize2Byte))
                         {
                             var instance = (LightInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -435,9 +450,9 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.IsObstructedByRoomGeometry);
                             chunkIO.Raw.Write(instance.IsDynamicallyUsed);
                             chunkIO.Raw.Write(instance.IsStaticallyUsed);
-                        });
+                        }
                     else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, LEB128.MaximumSize2Byte))
                         {
                             var instance = (PortalInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -448,9 +463,9 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, rooms[instance.AdjoiningRoom]);
                             chunkIO.Raw.Write((byte)instance.Direction);
                             chunkIO.Raw.Write((byte)instance.Opacity);
-                        });
+                        }
                     else if (o is TriggerInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))
                         {
                             Action<ITriggerParameter> writeTriggerParameter = (ITriggerParameter parameter) =>
                             {
@@ -489,9 +504,9 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2CodeBits, instance.CodeBits);
                             chunkIO.WriteChunkBool(Prj2Chunks.ObjectTrigger2OneShot, instance.OneShot);
                             chunkIO.WriteChunkEnd();
-                        });
+                        }
                     else if (o is ImportedGeometryInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry2, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry2, LEB128.MaximumSize2Byte))
                         {
                             var instance = (ImportedGeometryInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -502,11 +517,12 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Scale);
                             chunkIO.Raw.WriteStringUTF8(instance.MeshFilter);
                             LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
-                        });
+                        }
                     else
                         logger.Warn("Object " + o + " not supported.");
                 }
-            }, long.MaxValue);
+                chunkIO.WriteChunkEnd();
+            };
         }
     }
 }
