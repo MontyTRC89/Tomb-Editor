@@ -62,11 +62,18 @@ namespace TombLib.Utils
 
             // Give startup information about the application in the log
             logger.Info((assemblyProductAttribute?.Product ?? "TombLib") + " version " + (assemblyVersionAttribute?.Version ?? "?") + " is starting");
+            logger.Info("TombLib Git Revision: " + GitVersion);
 
             // Raise initial exceptions
             if (initialEvents != null)
                 foreach (var initialEvent in initialEvents)
                     logger.Log(initialEvent);
+        }
+
+        public void Dispose()
+        {
+            var assemblyProductAttribute = Assembly.GetEntryAssembly().GetCustomAttribute(typeof(AssemblyProductAttribute)) as AssemblyProductAttribute;
+            logger.Info((assemblyProductAttribute?.Product ?? "TombLib") + " has exited cleanly.");
         }
 
         private static Target AddTargetAndRule(LoggingConfiguration loggingConfiguration, LogLevel minLevel, Target target)
@@ -76,10 +83,18 @@ namespace TombLib.Utils
             return target;
         }
 
-        public void Dispose()
+        public static string GitVersion
         {
-            var assemblyProductAttribute = Assembly.GetEntryAssembly().GetCustomAttribute(typeof(AssemblyProductAttribute)) as AssemblyProductAttribute;
-            logger.Info((assemblyProductAttribute?.Product ?? "TombLib") + " has exited cleanly.");
+            get
+            {
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("version"))
+                {
+                    if (stream == null)
+                        return "<Information missing>";
+                    using (StreamReader reader = new StreamReader(stream))
+                        return reader.ReadToEnd();
+                }
+            }
         }
     }
 }
