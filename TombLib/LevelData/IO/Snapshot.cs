@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.IO
@@ -13,7 +14,7 @@ namespace TombLib.LevelData.IO
         private volatile byte[] _data;
         private long _dataLength;
         private byte[] _dataCompressed;
-        // @Delta   private Snapshot _deltaParent;
+        private Snapshot _deltaParent;
 
         private void MaterializePrj2DataAsArray(out byte[] byteArray, out long length)
         {
@@ -27,8 +28,8 @@ namespace TombLib.LevelData.IO
             }
 
             // It's directly compressed
-            // @Delta   if (_deltaParent == null)
-            using (MemoryStream outStream = new MemoryStream(_dataCompressed.Length))
+            if (_deltaParent == null)
+                using (MemoryStream outStream = new MemoryStream(_dataCompressed.Length))
                 {
                     MiniZ.Functions.Decompress(new MemoryStream(_dataCompressed, false), outStream);
                     byteArray = outStream.GetBuffer();
@@ -37,18 +38,18 @@ namespace TombLib.LevelData.IO
                 }
 
             // It's delta compressed
-            // @Delta   byte[] parentData, deltaData;
-            // @Delta   long parentSize, deltaSize;
-            // @Delta   _deltaParent.MaterializePrj2DataAsArray(out parentData, out parentSize);
-            // @Delta   using (MemoryStream outStream = new MemoryStream(_dataCompressed.Length))
-            // @Delta   {
-            // @Delta       MiniZ.Functions.Decompress(new MemoryStream(_dataCompressed, false), outStream);
-            // @Delta       deltaData = outStream.GetBuffer();
-            // @Delta       deltaSize = (int)outStream.Length;
-            // @Delta   }
-            // @Delta   byteArray = FossilDelta.Apply(parentData, (uint)parentSize, deltaData, (uint)deltaSize);
-            // @Delta   length = byteArray.Length;
-            // @Delta   return;
+            byte[] parentData, deltaData;
+            long parentSize, deltaSize;
+            _deltaParent.MaterializePrj2DataAsArray(out parentData, out parentSize);
+            using (MemoryStream outStream = new MemoryStream(_dataCompressed.Length))
+            {
+                MiniZ.Functions.Decompress(new MemoryStream(_dataCompressed, false), outStream);
+                deltaData = outStream.GetBuffer();
+                deltaSize = (int)outStream.Length;
+            }
+            byteArray = FossilDelta.Apply(parentData, (uint)parentSize, deltaData, (uint)deltaSize);
+            length = byteArray.Length;
+            return;
         }
 
         private Stream MaterializePrj2DataAsStream()
@@ -69,7 +70,8 @@ namespace TombLib.LevelData.IO
         {
             private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-            private readonly List<WeakReference<Snapshot>> _uncompressedSnapshots = new List<WeakReference<Snapshot>>();
+            private readonly List<WeakReference<Snapshot>> _uncompressedSnapshots = new List<WeakReference<Snapshot>>(); // Use weak references so that snapshots can the thrown out by the garbage collector if they are no longer used.
+            private readonly WeakReference<Snapshot> _deltaParentSnapshot = new WeakReference<Snapshot>(null);
             private long _lastSize = 0;
             private readonly AutoResetEvent _workEvent = new AutoResetEvent(false);
             private readonly Thread[] _threads;
@@ -156,19 +158,66 @@ namespace TombLib.LevelData.IO
                         // Compress snapshot
                         try
                         {
-                            Stream stream = snapshotToCompress.MaterializePrj2DataAsStream();
-                            using (var compressedStream = new MemoryStream())
-                            {
-                                MiniZ.Functions.Compress(stream, compressedStream, 9);
-                                snapshotToCompress._dataCompressed = compressedStream.ToArray(); // No "GetBuffer" to save the extra memory long term.
-                                snapshotToCompress._data = null; // Remove old data
-                            }
+                            CompressSnapshot(snapshotToCompress);
                         }
                         catch (Exception exc)
                         {
                             logger.Error(exc, "Snapshot compression thread crashed!");
                         }
                     } while (true);
+                } while (true);
+            }
+
+            private void CompressSnapshot(Snapshot snapshotToCompress)
+            {
+                Snapshot snapshotToAvoidAsParent = null;
+                do
+                {
+                    // Figure out parent snapshot for delta compression
+                    Snapshot deltaParentSnapshot;
+                    lock (_deltaParentSnapshot)
+                    {
+                        _deltaParentSnapshot.TryGetTarget(out deltaParentSnapshot);
+                        if (deltaParentSnapshot == null || deltaParentSnapshot == snapshotToAvoidAsParent)
+                        {
+                            deltaParentSnapshot = snapshotToCompress;
+                            _deltaParentSnapshot.SetTarget(snapshotToCompress);
+                        }
+                    }
+
+                    // Compress
+                    if (deltaParentSnapshot == snapshotToCompress)
+                    { // Direction compression
+                        Stream stream = snapshotToCompress.MaterializePrj2DataAsStream();
+                        using (var compressedStream = new MemoryStream())
+                        {
+                            MiniZ.Functions.Compress(stream, compressedStream, 9);
+                            snapshotToCompress._dataCompressed = compressedStream.ToArray(); // No "GetBuffer" to save the extra memory long term.
+                            snapshotToCompress._data = null; // Remove old data
+                        }
+                        return;
+                    }
+                    else
+                    { // Attempt delta compression
+                        byte[] newData, parentData;
+                        long newLength, parentLength;
+                        snapshotToCompress.MaterializePrj2DataAsArray(out newData, out newLength);
+                        deltaParentSnapshot.MaterializePrj2DataAsArray(out parentData, out parentLength);
+                        byte[] deltaData = FossilDelta.Create(parentData, (int)parentLength, newData, (int)newLength);
+                        if (4 * deltaData.Length < (parentLength + newLength)) // Use delta compression only if it saves enough memory
+                            using (var uncompressedStream = new MemoryStream(deltaData, false))
+                            using (var compressedStream = new MemoryStream())
+                            {
+                                MiniZ.Functions.Compress(uncompressedStream, compressedStream, 9);
+                                snapshotToCompress._dataCompressed = compressedStream.ToArray(); // No "GetBuffer" to save the extra memory long term.
+                                snapshotToCompress._deltaParent = deltaParentSnapshot;
+                                snapshotToCompress._data = null; // Remove old data
+                                return;
+                            }
+
+                        // It did not save enough memory, try again but use different parent.
+                        snapshotToAvoidAsParent = deltaParentSnapshot;
+                    }
                 } while (true);
             }
         }
