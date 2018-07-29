@@ -3,9 +3,11 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace TombLib.Utils
 {
@@ -39,14 +41,10 @@ namespace TombLib.Utils
             AddTargetAndRule(config, minLogLevel, new ColoredConsoleTarget("Console") { Layout = _layout, DetectConsoleAvailable = true });
             AddTargetAndRule(config, minLogLevel, new DebuggerTarget("Debugger") { Layout = _layout });
             if (writeToFile)
-            {
-                string fileName = assemblyProductAttribute?.Product ?? "TombLib";
-                fileName = fileName.Replace(" ", "") + "Log.txt";
-
                 AddTargetAndRule(config, minLogLevel, new FileTarget("File")
                 {
                     Layout = _layout,
-                    FileName = Path.Combine(PathC.GetDirectoryNameTry(Assembly.GetExecutingAssembly().FullName), fileName),
+                    FileName = LogFileName,
                     KeepFileOpen = true,
                     DeleteOldFileOnStartup = true,
 
@@ -54,7 +52,6 @@ namespace TombLib.Utils
                     ArchiveNumbering = ArchiveNumberingMode.DateAndSequence,
                     ArchiveOldFileOnStartup = archiveFileCount > 0
                 });
-            }
             LogManager.Configuration = config;
 
             // Setup application exception handler to use nlog
@@ -81,6 +78,18 @@ namespace TombLib.Utils
             loggingConfiguration.AddTarget(target);
             loggingConfiguration.AddRule(minLevel, LogLevel.Fatal, target);
             return target;
+        }
+
+        public static string LogFileName
+        {
+            get
+            {
+                var entryAssembly = Assembly.GetEntryAssembly();
+                var assemblyProductAttribute = entryAssembly.GetCustomAttribute(typeof(AssemblyProductAttribute)) as AssemblyProductAttribute;
+                string fileName = assemblyProductAttribute?.Product ?? "TombLib";
+                fileName = fileName.Replace(" ", "") + "Log.txt";
+                return Path.Combine(PathC.GetDirectoryNameTry(Assembly.GetExecutingAssembly().Location), fileName);
+            }
         }
 
         public static string GitVersion
