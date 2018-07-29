@@ -2369,7 +2369,7 @@ namespace TombEditor
                                 {
                                     if ((pos.X + room.SectorPos.X) != newRoom.SectorPos.X && // It must be at the border
                                         (pos.Y + room.SectorPos.Y) != newRoom.SectorPos.Y &&
-                                        (pos.Y + room.SectorPos.Y) != newRoom.SectorPos.X + newRoom.SectorSize.X - 1 &&
+                                        (pos.X + room.SectorPos.X) != newRoom.SectorPos.X + newRoom.SectorSize.X - 1 &&
                                         (pos.Y + room.SectorPos.Y) != newRoom.SectorPos.Y + newRoom.SectorSize.Y - 1)
                                         return false;
                                     if (newSectorMap.ContainsKey(pos + room.SectorPos)) // There must be a wall at the wall portal
@@ -2402,6 +2402,7 @@ namespace TombEditor
                 _editor.RoomPropertiesChange(relevantRoom);
                 _editor.RoomSectorPropertiesChange(relevantRoom);
             }
+            _editor.RoomListChange();
         }
 
         public static void SplitRoom(IWin32Window owner)
