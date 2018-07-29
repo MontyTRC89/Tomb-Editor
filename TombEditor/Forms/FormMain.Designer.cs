@@ -154,6 +154,8 @@
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
+            this.makeSnapshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadSnapshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1235,7 +1237,9 @@
             this.debugAction3ToolStripMenuItem,
             this.debugAction4ToolStripMenuItem,
             this.debugAction5ToolStripMenuItem,
-            this.debugScriptToolStripMenuItem});
+            this.debugScriptToolStripMenuItem,
+            this.makeSnapshotToolStripMenuItem,
+            this.loadSnapshotToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 120, 0);
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
@@ -1574,6 +1578,24 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
+            // makeSnapshotToolStripMenuItem
+            // 
+            this.makeSnapshotToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.makeSnapshotToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.makeSnapshotToolStripMenuItem.Name = "makeSnapshotToolStripMenuItem";
+            this.makeSnapshotToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.makeSnapshotToolStripMenuItem.Text = "Make Snapshot";
+            this.makeSnapshotToolStripMenuItem.Click += new System.EventHandler(this.makeSnapshotToolStripMenuItem_Click);
+            // 
+            // loadSnapshotToolStripMenuItem
+            // 
+            this.loadSnapshotToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.loadSnapshotToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.loadSnapshotToolStripMenuItem.Name = "loadSnapshotToolStripMenuItem";
+            this.loadSnapshotToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.loadSnapshotToolStripMenuItem.Text = "Load Snapshot";
+            this.loadSnapshotToolStripMenuItem.Click += new System.EventHandler(this.loadSnapshotToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -1739,5 +1761,7 @@
         private System.Windows.Forms.ToolStripMenuItem mergeRoomsHorizontallyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem splitSectorObjectOnSelectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeSnapshotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadSnapshotToolStripMenuItem;
     }
 }

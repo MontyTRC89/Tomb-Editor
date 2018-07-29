@@ -117,6 +117,7 @@
     <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="EditorLevelSnapshot.cs" />
     <Compile Include="Forms\FormResizeRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -380,6 +381,7 @@
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </Compile>
     <Compile Include="TexturePackerTest.cs" />
+    <Compile Include="WindowInformation.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>

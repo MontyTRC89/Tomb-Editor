@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -9,7 +8,6 @@ using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -52,8 +50,19 @@ namespace TombEditor.Controls
                 Update(); // Magic fix for room view leaking into item view
             }
 
+            // Update entire view
             if (obj is Editor.LoadedWadsChangedEvent)
                 Invalidate();
+
+            // Window info (mainly for undo)
+            if (obj is WindowInfoGetEvent)
+                ((WindowInfoGetEvent)obj).Info.Data.Add("PanelRenderingItem", Camera.Clone());
+            if (obj is WindowInfoSetEvent)
+            {
+                var newCamera = ((WindowInfoSetEvent)obj).Info.Data.TryGetOrDefault("PanelRenderingItem") as ArcBallCamera;
+                if (newCamera != null)
+                    Camera = newCamera;
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)

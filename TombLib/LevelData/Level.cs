@@ -83,6 +83,16 @@ namespace TombLib.LevelData
             return result;
         }
 
+        public int RoomIndexOf(Room room)
+        {
+            if (room == null)
+                return -1;
+            for (int i = 0; i < Rooms.Length; i++)
+                if (Rooms[i] == room)
+                    return i;
+            return -1;
+        }
+
         public int GetFreeRoomIndex()
         {
             // Search the first free room

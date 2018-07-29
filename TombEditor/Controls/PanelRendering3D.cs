@@ -303,6 +303,16 @@ namespace TombEditor.Controls
                 Camera.Target = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
                 Invalidate();
             }
+
+            // Window info (mainly for undo)
+            if (obj is WindowInfoGetEvent)
+                ((WindowInfoGetEvent)obj).Info.Data.Add("PanelRendering3D", Camera.Clone());
+            if (obj is WindowInfoSetEvent)
+            {
+                var newCamera = ((WindowInfoSetEvent)obj).Info.Data.TryGetOrDefault("PanelRendering3D") as ArcBallCamera;
+                if (newCamera != null)
+                    Camera = newCamera;
+            }
         }
 
         public void ResetCamera()

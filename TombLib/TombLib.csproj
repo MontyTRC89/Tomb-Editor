@@ -147,6 +147,7 @@
     <Compile Include="Graphics\Submesh.cs" />
     <Compile Include="Graphics\WadRenderer.cs" />
     <Compile Include="IO\BinaryWriterFast.cs" />
+    <Compile Include="IO\FossilDelta.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
     <Compile Include="LevelData\BumpMappingInfo.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="IO\ChunkReader.cs" />
     <Compile Include="IO\ChunkWriter.cs" />
     <Compile Include="IO\LEB128.cs" />
+    <Compile Include="LevelData\IO\Snapshot.cs" />
     <Compile Include="LevelData\ItemInstance.cs" />
     <Compile Include="LevelData\Level.cs" />
     <Compile Include="LevelData\LevelSettings.cs" />

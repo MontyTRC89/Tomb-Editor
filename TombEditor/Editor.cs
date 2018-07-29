@@ -850,6 +850,7 @@ namespace TombEditor
         // Construction
         public SynchronizationContext SynchronizationContext { get; }
         public RenderingDevice RenderingDevice = TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device;
+        public Snapshot.Engine SnapshotEngine { get; } = new Snapshot.Engine();
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
@@ -875,6 +876,7 @@ namespace TombEditor
             _autoSavingTimer?.Dispose();
             _levelSettingsWatcher?.Dispose();
             _configurationWatcher?.Dispose();
+            SnapshotEngine?.Dispose();
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)

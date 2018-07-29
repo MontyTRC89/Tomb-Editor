@@ -11,6 +11,7 @@ using TombLib.LevelData;
 using TombLib.Script;
 using TombLib.Utils;
 using System.Collections.Generic;
+using TombLib.LevelData.IO;
 
 namespace TombEditor.Forms
 {
@@ -537,8 +538,21 @@ namespace TombEditor.Forms
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var watch = new Stopwatch();
+            watch.Start();
+            var strm = new System.IO.MemoryStream();
+            for (int i = 0; i < 250; ++i)
+            {
+                strm.Position = 0;
+                TombLib.LevelData.IO.Prj2Writer.SaveToPrj2(strm, _editor.Level);
+            }
+            watch.Stop();
+            double x = watch.Elapsed.TotalMilliseconds;
+            logger.Log(LogLevel.Error, x.ToString());
+
+
             //level.Load("");
-            var level = new TestLevel("E:\\trle\\data\\coastal.tr4");
+            //var level = new TestLevel("E:\\trle\\data\\coastal.tr4");
 
             //var level = new TrLevel();
             //level.LoadLevel("Game\\data\\title.tr4", "", "");
@@ -551,6 +565,22 @@ namespace TombEditor.Forms
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var strm = new System.IO.MemoryStream();
+            TombLib.LevelData.IO.Prj2Writer.SaveToPrj2(strm, _editor.Level);
+
+
+            var watch = new Stopwatch();
+            watch.Start();
+            for (int i = 0; i < 100; ++i)
+            {
+                strm.Position = 0;
+                TombLib.LevelData.IO.Prj2Loader.LoadFromPrj2("BLUB", strm, new ProgressReporterSimple());
+            }
+            watch.Stop();
+            double x = watch.Elapsed.TotalMilliseconds;
+            logger.Log(LogLevel.Error, x.ToString());
+
+
             //level.Load("");
 
             //var level = new TestLevel("e:\\trle\\data\\city130.tr4");
@@ -677,6 +707,18 @@ namespace TombEditor.Forms
             var script = Script.LoadFromTxt("E:\\trle\\script\\script.txt");
             script.CompileScript("E:\\trle\\script\\");
             //Script.Test();
+        }
+
+        private EditorLevelSnapshot LevelSnapshotToDebug;
+
+        private void makeSnapshotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LevelSnapshotToDebug = new EditorLevelSnapshot(_editor);
+        }
+
+        private void loadSnapshotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LevelSnapshotToDebug.Apply(_editor);
         }
     }
 }

@@ -149,6 +149,19 @@ namespace TombEditor.Controls
                     _editor.Configuration.Map2D_ShowTimes++;
                     _editor.ConfigurationChange();
                 }
+
+            // Window info (mainly for undo)
+            if (obj is WindowInfoGetEvent)
+                ((WindowInfoGetEvent)obj).Info.Data.Add("Panel2DMap", new Tuple<Vector2, float>(ViewPosition, ViewScale));
+            if (obj is WindowInfoSetEvent)
+            {
+                var cameraInfo = ((WindowInfoSetEvent)obj).Info.Data.TryGetOrDefault("Panel2DMap") as Tuple<Vector2, float>;
+                if (cameraInfo != null)
+                {
+                    ViewPosition = cameraInfo.Item1;
+                    ViewScale = cameraInfo.Item2;
+                }
+            }
         }
 
         public void ResetView()

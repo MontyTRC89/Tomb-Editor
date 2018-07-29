@@ -56,6 +56,8 @@ namespace TombLib.Graphics
             FieldOfView = fieldOfView;
         }
 
+        public override object Clone() => (ArcBallCamera)MemberwiseClone();
+
         public void Zoom(float distanceChange)
         {
             float distanceMultiplier = Distance / DefaultDistance;
