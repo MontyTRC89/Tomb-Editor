@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Forms;
@@ -2631,7 +2632,13 @@ namespace TombEditor
             // Load objects (*.wad files) concurrently
             ReferencedWad[] results = new ReferencedWad[paths.Count];
             GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
-            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler));
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler))))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
 
             // Open GUI for objects (*.wad files) that couldn't be loaded
             for (int i = 0; i < results.Length; ++i)

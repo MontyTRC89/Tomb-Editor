@@ -15,6 +15,7 @@ using TombLib.Utils;
 using DarkUI.Controls;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace TombEditor.Forms
 {
@@ -761,7 +762,13 @@ namespace TombEditor.Forms
             // Load objects concurrently
             ReferencedWadWrapper[] results = new ReferencedWadWrapper[paths.Count];
             var synchronizedDialog = new GraphicalDialogHandler(this);
-            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)));
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)))))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
             return results;
         }
 
