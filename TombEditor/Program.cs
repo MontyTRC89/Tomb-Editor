@@ -32,6 +32,14 @@ namespace TombEditor
                 // Setup application
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                Application.ThreadException += (sender, e) =>
+                {
+                    log.HandleException(e.Exception);
+                    using (var dialog = new ThreadExceptionDialog(e.Exception))
+                        if (dialog.ShowDialog() == DialogResult.Abort)
+                            Environment.Exit(1);
+                };
                 Application.AddMessageFilter(new ControlScrollFilter());
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
