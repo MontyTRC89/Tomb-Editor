@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
     <Compile Include="Utils\LevelFileDialog.cs" />
+    <Compile Include="Utils\WinFormsUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\AnimationTrackBar.resx">
