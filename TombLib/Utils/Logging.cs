@@ -18,6 +18,12 @@ namespace TombLib.Utils
             "${exception:innerFormat=Type,Message,StackTrace:maxInnerExceptionLevel=32:" +
             "innerExceptionSeparator=\r\n\r\n\r\n:separator=\r\n:format=Type,Message,Data,StackTrace}";
 
+        public void HandleException(Exception exception)
+        {
+            LogManager.GetCurrentClassLogger().Fatal(exception, "Unhandled exception");
+            LogManager.Flush();
+        }
+
         public Logging(LogLevel minLogLevel, bool writeToFile, int archiveFileCount, IEnumerable<LogEventInfo> initialEvents)
         {
             // Set culture
@@ -52,8 +58,7 @@ namespace TombLib.Utils
             LogManager.Configuration = config;
 
             // Setup application exception handler to use nlog
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-                LogManager.GetCurrentClassLogger().Fatal(e.ExceptionObject as Exception, "Unhandled exception");
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => HandleException(e.ExceptionObject as Exception);
 
             // Give startup information about the application in the log
             logger.Info((assemblyProductAttribute?.Product ?? "TombLib") + " version " + (assemblyVersionAttribute?.Version ?? "?") + " is starting");

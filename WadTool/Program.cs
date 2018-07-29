@@ -25,6 +25,14 @@ namespace WadTool
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                Application.ThreadException += (sender, e) =>
+                {
+                    log.HandleException(e.Exception);
+                    using (var dialog = new ThreadExceptionDialog(e.Exception))
+                        if (dialog.ShowDialog() == DialogResult.Abort)
+                            Environment.Exit(1);
+                };
 
                 // Show startup help
                 if (configuration.StartUpHelp_Show)
@@ -46,13 +54,13 @@ namespace WadTool
                 TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
                 using (WadToolClass tool = new WadToolClass(configuration))
-                    using (FormMain form = new FormMain(tool))
-                    {
-                        form.Show();
-                        if (args.Length > 0)
-                            WadActions.LoadWad(tool, null, true, args[0]);
-                        Application.Run(form);
-                    }
+                using (FormMain form = new FormMain(tool))
+                {
+                    form.Show();
+                    if (args.Length > 0)
+                        WadActions.LoadWad(tool, null, true, args[0]);
+                    Application.Run(form);
+                }
             }
         }
     }
