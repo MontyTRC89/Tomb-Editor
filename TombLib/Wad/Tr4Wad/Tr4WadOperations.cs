@@ -48,7 +48,7 @@ namespace TombLib.Wad.Tr4Wad
             if (!FindTr4Samples())
             {
                 var soundPathInformation = new DialogDescriptonMissingSounds { WadBasePath = oldWad.BasePath,
-                    WadBaseFileName = oldWad.BaseName, Samples = samples, SoundPaths = soundPaths.ToList() };
+                    WadBaseFileName = oldWad.BaseName, Samples = samples, SoundPaths = soundPaths }; // Reuse "SoundPaths" list directly, to update sound list in this file too.
                 soundPathInformation.FindTr4Samples = FindTr4Samples;
                 progressReporter?.RaiseDialog(soundPathInformation);
                 samples = soundPathInformation.Samples;
