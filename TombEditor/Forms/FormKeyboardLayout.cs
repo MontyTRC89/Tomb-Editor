@@ -37,8 +37,9 @@ namespace TombEditor.Forms
 
         private void RedrawList()
         {
-            commandList.InvalidateColumn(commandList.Columns[commandListColumnHotkeys.Name].Index);
             CheckForConflicts();
+            foreach (DataGridViewColumn column in commandList.Columns)
+                commandList.InvalidateColumn(column.Index);
         }
 
         private bool CheckForConflict(KeyValuePair<string, SortedSet<Hotkey>> left, KeyValuePair<string, SortedSet<Hotkey>> right)
