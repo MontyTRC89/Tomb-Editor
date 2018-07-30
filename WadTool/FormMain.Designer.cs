@@ -62,14 +62,17 @@
             this.scrollbarAnimations = new DarkUI.Controls.DarkScrollBar();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.treeSourceWad = new TombLib.Controls.WadTreeView();
             this.butAddObject = new DarkUI.Controls.DarkButton();
             this.butAddObjectToDifferentSlot = new DarkUI.Controls.DarkButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.treeDestWad = new TombLib.Controls.WadTreeView();
             this.butEditItem = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.butChangeSlot = new DarkUI.Controls.DarkButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.panel3D = new WadTool.Controls.PanelRenderingMainPreview();
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.darkButton3 = new DarkUI.Controls.DarkButton();
@@ -574,6 +577,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.treeSourceWad);
             this.panel2.Controls.Add(this.darkLabel2);
             this.panel2.Controls.Add(this.butAddObject);
             this.panel2.Controls.Add(this.butAddObjectToDifferentSlot);
@@ -583,6 +587,19 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(257, 445);
             this.panel2.TabIndex = 11;
+            // 
+            // treeSourceWad
+            // 
+            this.treeSourceWad.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeSourceWad.Location = new System.Drawing.Point(6, 26);
+            this.treeSourceWad.Name = "treeSourceWad";
+            this.treeSourceWad.Size = new System.Drawing.Size(247, 388);
+            this.treeSourceWad.TabIndex = 8;
+            this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
+            this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
+            this.treeSourceWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeSourceWad_KeyDown);
             // 
             // butAddObject
             // 
@@ -610,6 +627,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.treeDestWad);
             this.panel1.Controls.Add(this.butEditItem);
             this.panel1.Controls.Add(this.darkLabel1);
             this.panel1.Controls.Add(this.butDeleteObject);
@@ -620,6 +638,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(255, 445);
             this.panel1.TabIndex = 10;
+            // 
+            // treeDestWad
+            // 
+            this.treeDestWad.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeDestWad.Location = new System.Drawing.Point(0, 26);
+            this.treeDestWad.Name = "treeDestWad";
+            this.treeDestWad.Size = new System.Drawing.Size(251, 385);
+            this.treeDestWad.TabIndex = 7;
+            this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
+            this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
+            this.treeDestWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeDestWad_KeyDown);
             // 
             // butEditItem
             // 
@@ -673,12 +704,25 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.scrollbarAnimations);
+            this.panel3.Controls.Add(this.panel3D);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(255, 0);
             this.panel3.Margin = new System.Windows.Forms.Padding(0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(472, 445);
             this.panel3.TabIndex = 12;
+            // 
+            // panel3D
+            // 
+            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Location = new System.Drawing.Point(4, 30);
+            this.panel3D.Margin = new System.Windows.Forms.Padding(0);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.Size = new System.Drawing.Size(461, 366);
+            this.panel3D.TabIndex = 9;
             // 
             // darkButton1
             // 
