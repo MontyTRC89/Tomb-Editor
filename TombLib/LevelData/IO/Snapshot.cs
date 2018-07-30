@@ -26,7 +26,8 @@ namespace TombLib.LevelData.IO
             _fileName = fileName;
             _dataLength = dataLength;
             _data = data;
-            _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+            lock (_snapshotDecompressedDataCache)
+                _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
         }
 
         // Note that the array may be longer than necessary and contain unnecessary data at the end. Use "_dataLength" to determine true length.
@@ -35,18 +36,20 @@ namespace TombLib.LevelData.IO
             // See if data is cached already. If it is cached, use that data.
             WeakReference<byte[]> weakData;
             byte[] data;
-            if (_snapshotDecompressedDataCache.TryGetValue(this, out weakData))
-            {
-                if (weakData.TryGetTarget(out data))
-                    return data;
-                _snapshotDecompressedDataCache.Remove(this);
-            }
+            lock (_snapshotDecompressedDataCache)
+                if (_snapshotDecompressedDataCache.TryGetValue(this, out weakData))
+                {
+                    if (weakData.TryGetTarget(out data))
+                        return data;
+                    _snapshotDecompressedDataCache.Remove(this);
+                }
 
             // See if the data is directly available
             data = _data; // Copy in a thread-save way
             if (data != null)
             {
-                _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+                lock (_snapshotDecompressedDataCache)
+                    _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
                 return data;
             }
 
@@ -56,7 +59,8 @@ namespace TombLib.LevelData.IO
                 {
                     MiniZ.Functions.Decompress(new MemoryStream(_dataCompressed, false), outStream);
                     data = outStream.GetBuffer();
-                    _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+                    lock (_snapshotDecompressedDataCache)
+                        _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
                     return data;
                 }
 
@@ -69,7 +73,8 @@ namespace TombLib.LevelData.IO
                 byte[] deltaData = outStream.GetBuffer();
                 long deltaSize = (int)outStream.Length;
                 data = FossilDelta.Apply(parentData, (uint)parentSize, deltaData, (uint)deltaSize);
-                _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+                lock (_snapshotDecompressedDataCache)
+                    _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
                 return data;
             }
         }
@@ -252,7 +257,7 @@ namespace TombLib.LevelData.IO
                 {
                     Snapshot deltaParentSnapshot = GetDeltaParent(snapshotToCompress, snapshotToAvoid);
                     if (deltaParentSnapshot == null)
-                    { // Direction compression
+                    { // Direct compression
                         Stream stream = snapshotToCompress.MaterializePrj2DataAsStream();
                         using (var compressedStream = new MemoryStream())
                         {
