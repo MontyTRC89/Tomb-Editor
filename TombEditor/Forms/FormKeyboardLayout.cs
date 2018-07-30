@@ -51,8 +51,6 @@ namespace TombEditor.Forms
         {
             if(commandToCheck == null)
             {
-                lblConflicts.Visible = false;
-
                 foreach (var left in _currConfig)
                     foreach (var right in _currConfig)
                     {
@@ -63,6 +61,7 @@ namespace TombEditor.Forms
                             return true;
                         }
                     }
+                lblConflicts.Visible = false;
             }
             else
             {
@@ -81,8 +80,9 @@ namespace TombEditor.Forms
             if (!listenKeys.Visible)
             {
                 _listeningClearAfterwards = clearAfterListening;
-                listenKeys.Visible = true;
                 _listeningDestination = destination;
+                listenKeys.Visible = true;
+                commandList.Enabled = false;
             }
         }
 
@@ -91,8 +91,9 @@ namespace TombEditor.Forms
             if (listenKeys.Visible)
             {
                 _listeningKeys = Keys.None;
-                listenKeys.Visible = false;
                 listenKeys.Text = _listenerMessage;
+                listenKeys.Visible = false;
+                commandList.Enabled = true;
             }
         }
 
