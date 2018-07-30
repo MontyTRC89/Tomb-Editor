@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using DarkUI.Collections;
 using System.Drawing;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -18,6 +19,7 @@ namespace TombEditor.Forms
         private CommandObj _listeningDestination = null;
 
         private static readonly string _listenerMessage = "Push keys! Click here to cancel!";
+        private readonly Color _columnMessageWrongColor;
 
         public FormKeyboardLayout(Editor editor)
         {
@@ -28,6 +30,8 @@ namespace TombEditor.Forms
             commandList.DataSource = new SortableBindingList<CommandObj>(CommandHandler.Commands);
             listenKeys.Text = _listenerMessage;
 
+            _columnMessageWrongColor = commandList.BackColor.MixWith(Color.DarkRed, 0.55);
+
             CheckForConflicts();
         }
 
@@ -37,20 +41,38 @@ namespace TombEditor.Forms
             CheckForConflicts();
         }
 
-        private void CheckForConflicts()
+        private bool CheckForConflict(KeyValuePair<string, SortedSet<Hotkey>> left, KeyValuePair<string, SortedSet<Hotkey>> right)
         {
-            lblConflicts.Visible = false;
+            return ((left.Key != right.Key) && (left.Value.Intersect(right.Value).Count() > 0));
+        }
 
-            foreach (var left in _currConfig)
-                foreach (var right in _currConfig)
-                {
-                    if ((left.Key != right.Key) && (left.Value.Intersect(right.Value).Count() > 0))
+        private bool CheckForConflicts(CommandObj commandToCheck = null)
+        {
+            if(commandToCheck == null)
+            {
+                lblConflicts.Visible = false;
+
+                foreach (var left in _currConfig)
+                    foreach (var right in _currConfig)
                     {
-                        lblConflicts.Visible = true;
-                        lblConflicts.Text = "Possible conflict found: " + left.Key + " and " + right.Key;
-                        return;
+                        if (CheckForConflict(left, right))
+                        {
+                            lblConflicts.Visible = true;
+                            lblConflicts.Text = "Possible conflict(s) found: " + left.Key + " and " + right.Key + ". Check red highlights.";
+                            return true;
+                        }
                     }
-                }
+            }
+            else
+            {
+                var hotkeyToCheck = _currConfig.FirstOrDefault(n => n.Key.Equals(commandToCheck.Name, StringComparison.InvariantCultureIgnoreCase));
+
+                foreach (var hotkey in _currConfig)
+                    if (CheckForConflict(hotkey, hotkeyToCheck))
+                        return true;
+            }
+
+            return false;
         }
 
         private void StartListening(CommandObj destination, bool clearAfterListening)
@@ -99,11 +121,13 @@ namespace TombEditor.Forms
             if (e.RowIndex < 0 || e.RowIndex >= commandList.Rows.Count)
                 return;
 
+            CommandObj entry = (CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem);
+
             if (commandList.Columns[e.ColumnIndex].Name == commandListColumnHotkeys.Name)
-            {
-                CommandObj entry = (CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem);
                 e.Value = string.Join(", ", _currConfig[entry].Select(h => h.ToString()));
-            }
+
+            if (CheckForConflicts(entry))
+                    e.CellStyle.BackColor = _columnMessageWrongColor;
         }
 
         private void commandList_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
@@ -195,7 +219,7 @@ namespace TombEditor.Forms
                         break;
                 }
 
-                listenKeys.Text = _listeningKeys.ToString();
+                listenKeys.Text = ((Hotkey)_listeningKeys).ToString();
 
                 return true; // Always don't process while listening
             }
@@ -232,6 +256,11 @@ namespace TombEditor.Forms
         private void listenKeys_Click(object sender, EventArgs e)
         {
             StopListening();
+        }
+
+        private void commandList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            StartListening((CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem), true);
         }
     }
 }
