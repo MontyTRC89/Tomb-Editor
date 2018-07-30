@@ -94,6 +94,7 @@ namespace TombEditor.Forms
                 listenKeys.Text = _listenerMessage;
                 listenKeys.Visible = false;
                 commandList.Enabled = true;
+                commandList.Focus();
             }
         }
 
