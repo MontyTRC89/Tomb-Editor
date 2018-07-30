@@ -720,7 +720,7 @@ namespace TombEditor
                 EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
             });
 
-            AddCommand("MergeRoomsHorizontally", "Merge rooms horizonally", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("MergeRoomsHorizontally", "Merge rooms horizontally", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.MergeRoomsHorizontally(args.Editor.SelectedRooms, args.Window);
             });
@@ -1076,7 +1076,7 @@ namespace TombEditor
                 EditorActions.SwitchToolOrdered(13);
             });
 
-            AddCommand("SwitchTool15", "SwitchTool15", CommandType.General, delegate (CommandArgs args)
+            AddCommand("SwitchTool15", "Switch tool 15", CommandType.General, delegate (CommandArgs args)
             {
                 EditorActions.SwitchToolOrdered(14);
             });
