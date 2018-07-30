@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
+using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -224,6 +225,33 @@ namespace WadTool
                     theNode.Bone.Name = form.Result;
                     treeSkeleton.SelectedNodes[0].Text = form.Result;
                     panelRendering.Invalidate();
+                }
+            }
+        }
+
+        private void butLoadModel_Click(object sender, EventArgs e)
+        {
+            using (FileDialog dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
+                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
+                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
+                dialog.Title = "Select a 3D file that you want to see imported.";
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+                    theNode.WadMesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    theNode.WadMesh.RecalculateNormals();
+
+                    // Now cause the moveable to reload
+                    _moveable.Version = DataVersion.GetNext();
+                    UpdateLinearizedNodesList();
                 }
             }
         }
