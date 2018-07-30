@@ -93,6 +93,21 @@ namespace TombLib.Utils
             }
         }
 
+        public static string GetFileNameTry(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            try
+            {
+                return Path.GetFileName(path);
+            }
+            catch
+            {
+                return path;
+            }
+        }
+
         public static string GetDirectoryNameTry(string path)
         {
             if (string.IsNullOrEmpty(path))
