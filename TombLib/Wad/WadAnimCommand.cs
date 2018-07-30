@@ -27,7 +27,7 @@ namespace TombLib.Wad
                 case WadAnimCommandType.KillEntity:
                     return "Kill entity";
                 case WadAnimCommandType.SetPosition:
-                    return "Set position reference <X, Y, Z> = " + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
+                    return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
                 case WadAnimCommandType.PlaySound:
                     if ((Parameter1 & 0x8000) != 0)
                         return "Play Sound ID = " + (Parameter2 & 0x3FFF) + " (water) on Frame = " + Parameter1;
