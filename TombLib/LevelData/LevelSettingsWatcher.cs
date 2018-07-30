@@ -99,8 +99,7 @@ namespace TombEditor
                 newWad.Reload(settings);
                 Parent.SynchronizationContext.Post(unused =>
                 {
-                    for (int i = 0; i < settings.Wads.Count; ++i)
-                        settings.Wads[i] = newWad;
+                    Wad.Assign(newWad);
                     Parent?.WadChanged(null, new ChangedEventArgs<ReferencedWad> { Object = newWad });
                 }, null);
             }
