@@ -57,7 +57,7 @@ namespace WadTool
         public float GizmoAnimationEditor_ScaleCubeSize { get; set; } = 32.0f;
         public float GizmoAnimationEditor_LineThickness { get; set; } = 8.0f;
 
-        public bool StartUpHelp_Show { get; set; } = true;
+        public bool StartUpHelp_Show { get; set; } = false;
 
         // Do NOT use a list because the xml serliazer will append the loaded values instead of replacing them!!!
         public string[] OldWadSoundPaths3 { get; set; } = new string[]
