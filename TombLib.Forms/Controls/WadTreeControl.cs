@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Controls;
 using TombLib.Wad;
+using System.Drawing;
 
 namespace TombLib.Controls
 {
