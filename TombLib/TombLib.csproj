@@ -345,7 +345,17 @@
   <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>git describe --tags --long --dirty &gt; "$(ProjectDir)obj/$(ConfigurationName)/version.txt"</PreBuildEvent>
+    <PreBuildEvent>REM Create a file at "$(ProjectDir)obj/$(ConfigurationName)/version.txt" that contains information about the git version.
+git describe --tags --long --dirty &gt; "$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
+set /p HEAD=&lt;"$(SolutionDir).git/HEAD"
+set /p COMMIT_HASH=&lt;"$(SolutionDir).git/%25HEAD:~5%25"
+set /p GIT_DESCRIBE=&lt;"$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
+(
+echo Head: %25HEAD:~5%25
+echo Commit-Hash: %25COMMIT_HASH%25
+echo Git-Describe: %25GIT_DESCRIBE%25
+)&gt;"$(ProjectDir)obj/$(ConfigurationName)/version.txt"
+SET ERRORLEVEL = 0</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
