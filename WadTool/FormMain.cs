@@ -142,6 +142,12 @@ namespace WadTool
             IWadObjectId currentSelection = treeDestWad.SelectedWadObjectIds.FirstOrDefault();
             if (currentSelection != null)
                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Destination, Id = currentSelection };
+
+            // Update context menu
+            if (currentSelection is WadMoveableId)
+                treeDestWad.ContextMenuStrip = contextMenuMoveableItem;
+            else
+                treeDestWad.ContextMenuStrip = null;
         }
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
@@ -507,28 +513,24 @@ namespace WadTool
             WadActions.ShowSoundOverview(_tool, this, WadArea.Source);
         }
 
-        private void darkButton1_Click(object sender, EventArgs e)
+        private void butEditSkeleton_Click(object sender, EventArgs e)
         {
-            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            using (var form = new FormSkeletonEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
-            {
-                if (form.ShowDialog(this) != DialogResult.OK)
-                    return;
-                _tool.SelectedObjectEdited();
-            }
+            WadActions.EditSkeletion(_tool, this);
         }
 
-        private void darkButton3_Click(object sender, EventArgs e)
+        private void butEditAnimations_Click(object sender, EventArgs e)
         {
-            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            using (var form = new FormAnimationEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
-            {
-                if (form.ShowDialog(this) != DialogResult.OK)
-                    return;
-                _tool.SelectedObjectEdited();
-            }
+            WadActions.EditAnimations(_tool, this);
+        }
+
+        private void editSkeletonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.EditSkeletion(_tool, this);
+        }
+
+        private void editAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.EditAnimations(_tool, this);
         }
     }
 }
