@@ -35,7 +35,8 @@
             this.newSpriteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newFixedSoundInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.soundInfoOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.destinationSoundInfoOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sourceSoundInfoOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutWadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -282,20 +283,30 @@
             // 
             this.viewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.soundInfoOverviewToolStripMenuItem});
+            this.destinationSoundInfoOverviewToolStripMenuItem,
+            this.sourceSoundInfoOverviewToolStripMenuItem});
             this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
-            // soundInfoOverviewToolStripMenuItem
+            // destinationSoundInfoOverviewToolStripMenuItem
             // 
-            this.soundInfoOverviewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoOverviewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.soundInfoOverviewToolStripMenuItem.Name = "soundInfoOverviewToolStripMenuItem";
-            this.soundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.soundInfoOverviewToolStripMenuItem.Text = "Destination sound info overview";
-            this.soundInfoOverviewToolStripMenuItem.Click += new System.EventHandler(this.soundInfoOverviewToolStripMenuItem_Click);
+            this.destinationSoundInfoOverviewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.destinationSoundInfoOverviewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.destinationSoundInfoOverviewToolStripMenuItem.Name = "destinationSoundInfoOverviewToolStripMenuItem";
+            this.destinationSoundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.destinationSoundInfoOverviewToolStripMenuItem.Text = "Destination sound info overview";
+            this.destinationSoundInfoOverviewToolStripMenuItem.Click += new System.EventHandler(this.destinationSoundInfoOverviewToolStripMenuItem_Click);
+            // 
+            // sourceSoundInfoOverviewToolStripMenuItem
+            // 
+            this.sourceSoundInfoOverviewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.sourceSoundInfoOverviewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.sourceSoundInfoOverviewToolStripMenuItem.Name = "sourceSoundInfoOverviewToolStripMenuItem";
+            this.sourceSoundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.sourceSoundInfoOverviewToolStripMenuItem.Text = "Source sound info overview";
+            this.sourceSoundInfoOverviewToolStripMenuItem.Click += new System.EventHandler(this.sourceSoundInfoOverviewToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -774,7 +785,7 @@
             this.groupSelectedMoveable.Controls.Add(this.tableLayoutPanel2);
             this.groupSelectedMoveable.Location = new System.Drawing.Point(0, 8);
             this.groupSelectedMoveable.Name = "groupSelectedMoveable";
-            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 262);
+            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 266);
             this.groupSelectedMoveable.TabIndex = 21;
             this.groupSelectedMoveable.TabStop = false;
             this.groupSelectedMoveable.Text = "Selected moveable:";
@@ -793,7 +804,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 235);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 239);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel5
@@ -805,7 +816,7 @@
             this.panel5.Location = new System.Drawing.Point(285, 0);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(285, 235);
+            this.panel5.Size = new System.Drawing.Size(285, 239);
             this.panel5.TabIndex = 1;
             // 
             // flowLayoutPanel2
@@ -815,7 +826,7 @@
             this.flowLayoutPanel2.Controls.Add(this.butPlayAnimation);
             this.flowLayoutPanel2.Controls.Add(this.butStop);
             this.flowLayoutPanel2.Controls.Add(this.darkButton2);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 194);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 198);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(285, 41);
             this.flowLayoutPanel2.TabIndex = 21;
@@ -872,7 +883,7 @@
             this.treeAnimations.Location = new System.Drawing.Point(3, 22);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(279, 169);
+            this.treeAnimations.Size = new System.Drawing.Size(279, 173);
             this.treeAnimations.TabIndex = 20;
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
@@ -886,7 +897,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(282, 235);
+            this.panel4.Size = new System.Drawing.Size(282, 239);
             this.panel4.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -895,7 +906,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.butPlaySound);
             this.flowLayoutPanel1.Controls.Add(this.butRenameSound);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 194);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 198);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(282, 41);
             this.flowLayoutPanel1.TabIndex = 22;
@@ -930,7 +941,7 @@
             this.treeSounds.Location = new System.Drawing.Point(6, 22);
             this.treeSounds.MaxDragChange = 20;
             this.treeSounds.Name = "treeSounds";
-            this.treeSounds.Size = new System.Drawing.Size(273, 169);
+            this.treeSounds.Size = new System.Drawing.Size(273, 173);
             this.treeSounds.TabIndex = 16;
             this.treeSounds.Text = "darkTreeView1";
             // 
@@ -1049,7 +1060,7 @@
         private System.Windows.Forms.ToolStripMenuItem newFixedSoundInfoToolStripMenuItem;
         private System.Windows.Forms.Timer timerPlayAnimation;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem soundInfoOverviewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem destinationSoundInfoOverviewToolStripMenuItem;
         private DarkUI.Controls.DarkButton darkButton1;
         private DarkUI.Controls.DarkButton darkButton3;
         private System.Windows.Forms.Panel splitSeam;
@@ -1068,6 +1079,7 @@
         private DarkUI.Controls.DarkButton butRenameSound;
         private DarkUI.Controls.DarkTreeView treeSounds;
         private DarkUI.Controls.DarkLabel darkLabel3;
+        private System.Windows.Forms.ToolStripMenuItem sourceSoundInfoOverviewToolStripMenuItem;
     }
 }
 
