@@ -36,6 +36,7 @@
             this.butSaveChanges = new DarkUI.Controls.DarkButton();
             this.butRenameBone = new DarkUI.Controls.DarkButton();
             this.butDeleteBone = new DarkUI.Controls.DarkButton();
+            this.butLoadModel = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // treeSkeleton
@@ -89,7 +90,7 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
-            this.butSaveChanges.Location = new System.Drawing.Point(884, 667);
+            this.butSaveChanges.Location = new System.Drawing.Point(884, 706);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(112, 23);
             this.butSaveChanges.TabIndex = 80;
@@ -121,6 +122,18 @@
             this.butDeleteBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteBone.Click += new System.EventHandler(this.butDeleteBone_Click);
             // 
+            // butLoadModel
+            // 
+            this.butLoadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butLoadModel.Image = global::WadTool.Properties.Resources.opened_folder_16;
+            this.butLoadModel.Location = new System.Drawing.Point(890, 621);
+            this.butLoadModel.Name = "butLoadModel";
+            this.butLoadModel.Size = new System.Drawing.Size(112, 23);
+            this.butLoadModel.TabIndex = 80;
+            this.butLoadModel.Text = "Load model";
+            this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butLoadModel.Click += new System.EventHandler(this.butLoadModel_Click);
+            // 
             // FormSkeletonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -130,6 +143,7 @@
             this.Controls.Add(this.butDeleteBone);
             this.Controls.Add(this.cbDrawGizmo);
             this.Controls.Add(this.cbDrawGrid);
+            this.Controls.Add(this.butLoadModel);
             this.Controls.Add(this.butSaveChanges);
             this.Controls.Add(this.treeSkeleton);
             this.Controls.Add(this.panelRendering);
@@ -155,5 +169,6 @@
         private DarkUI.Controls.DarkButton butSaveChanges;
         private DarkUI.Controls.DarkButton butRenameBone;
         private DarkUI.Controls.DarkButton butDeleteBone;
+        private DarkUI.Controls.DarkButton butLoadModel;
     }
 }
