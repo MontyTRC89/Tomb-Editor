@@ -125,6 +125,8 @@
             this.debugAction4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeSnapshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SnapshotsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCurrentLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,8 +156,6 @@
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.makeSnapshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadSnapshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1239,7 +1239,7 @@
             this.debugAction5ToolStripMenuItem,
             this.debugScriptToolStripMenuItem,
             this.makeSnapshotToolStripMenuItem,
-            this.loadSnapshotToolStripMenuItem});
+            this.SnapshotsToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 120, 0);
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
@@ -1248,6 +1248,7 @@
             // 
             // debugAction0ToolStripMenuItem
             // 
+            this.debugAction0ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction0ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction0ToolStripMenuItem.Name = "debugAction0ToolStripMenuItem";
             this.debugAction0ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -1256,6 +1257,7 @@
             // 
             // debugAction1ToolStripMenuItem
             // 
+            this.debugAction1ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction1ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction1ToolStripMenuItem.Name = "debugAction1ToolStripMenuItem";
             this.debugAction1ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -1264,6 +1266,7 @@
             // 
             // debugAction2ToolStripMenuItem
             // 
+            this.debugAction2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction2ToolStripMenuItem.Name = "debugAction2ToolStripMenuItem";
             this.debugAction2ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -1272,6 +1275,7 @@
             // 
             // debugAction3ToolStripMenuItem
             // 
+            this.debugAction3ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction3ToolStripMenuItem.Name = "debugAction3ToolStripMenuItem";
             this.debugAction3ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -1280,6 +1284,7 @@
             // 
             // debugAction4ToolStripMenuItem
             // 
+            this.debugAction4ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction4ToolStripMenuItem.Name = "debugAction4ToolStripMenuItem";
             this.debugAction4ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -1288,6 +1293,7 @@
             // 
             // debugAction5ToolStripMenuItem
             // 
+            this.debugAction5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
             this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -1302,6 +1308,25 @@
             this.debugScriptToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.debugScriptToolStripMenuItem.Text = "Debug script";
             this.debugScriptToolStripMenuItem.Click += new System.EventHandler(this.debugScriptToolStripMenuItem_Click);
+            // 
+            // makeSnapshotToolStripMenuItem
+            // 
+            this.makeSnapshotToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.makeSnapshotToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.makeSnapshotToolStripMenuItem.Name = "makeSnapshotToolStripMenuItem";
+            this.makeSnapshotToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
+            this.makeSnapshotToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.makeSnapshotToolStripMenuItem.Text = "Make Snapshot";
+            this.makeSnapshotToolStripMenuItem.Click += new System.EventHandler(this.makeSnapshotToolStripMenuItem_Click);
+            // 
+            // SnapshotsToolStripMenuItem
+            // 
+            this.SnapshotsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.SnapshotsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.SnapshotsToolStripMenuItem.Name = "SnapshotsToolStripMenuItem";
+            this.SnapshotsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.SnapshotsToolStripMenuItem.Text = "Snapshots";
+            this.SnapshotsToolStripMenuItem.DropDownOpening += new System.EventHandler(this.SnapshotsToolStripMenuItem_DropDownOpening);
             // 
             // windowToolStripMenuItem
             // 
@@ -1578,24 +1603,6 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
-            // makeSnapshotToolStripMenuItem
-            // 
-            this.makeSnapshotToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.makeSnapshotToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.makeSnapshotToolStripMenuItem.Name = "makeSnapshotToolStripMenuItem";
-            this.makeSnapshotToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.makeSnapshotToolStripMenuItem.Text = "Make Snapshot";
-            this.makeSnapshotToolStripMenuItem.Click += new System.EventHandler(this.makeSnapshotToolStripMenuItem_Click);
-            // 
-            // loadSnapshotToolStripMenuItem
-            // 
-            this.loadSnapshotToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.loadSnapshotToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.loadSnapshotToolStripMenuItem.Name = "loadSnapshotToolStripMenuItem";
-            this.loadSnapshotToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.loadSnapshotToolStripMenuItem.Text = "Load Snapshot";
-            this.loadSnapshotToolStripMenuItem.Click += new System.EventHandler(this.loadSnapshotToolStripMenuItem_Click);
-            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -1762,6 +1769,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem splitSectorObjectOnSelectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makeSnapshotToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadSnapshotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SnapshotsToolStripMenuItem;
     }
 }

@@ -709,16 +709,20 @@ namespace TombEditor.Forms
             //Script.Test();
         }
 
-        private EditorLevelSnapshot LevelSnapshotToDebug;
+        private readonly List<EditorLevelSnapshot> _snapshotsToDebug = new List<EditorLevelSnapshot>();
 
         private void makeSnapshotToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LevelSnapshotToDebug = new EditorLevelSnapshot(_editor);
+            _snapshotsToDebug.Add(new EditorLevelSnapshot(_editor));
         }
 
-        private void loadSnapshotToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SnapshotsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            LevelSnapshotToDebug.Apply(_editor);
+            SnapshotsToolStripMenuItem.DropDownItems.Clear();
+            int i = 0;
+            foreach (EditorLevelSnapshot snapshot in _snapshotsToDebug)
+                SnapshotsToolStripMenuItem.DropDownItems.Add(i++ + " Snap: " + snapshot.DbgTechnicalInfo, null,
+                    (sender2, e2) => snapshot.Apply(_editor));
         }
     }
 }

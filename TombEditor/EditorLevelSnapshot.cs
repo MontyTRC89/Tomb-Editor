@@ -85,5 +85,28 @@ namespace TombEditor
                 return room.AnyObjects.Skip(objectIndexPlus1 - 1).FirstOrDefault();
             }
         }
+
+
+
+
+        private static readonly string[] DbgFormatSizeSuffix = { "B", "KB", "MB", "GB", "TB" };
+        private static string DbgFormatSize(double value)
+        {
+            int i = 0;
+            for (; i < DbgFormatSizeSuffix.Length && value >= 1024; i++)
+                value /= 1024;
+            return string.Format("{0:0.##} {1}", value, DbgFormatSizeSuffix[i]);
+        }
+
+        public string DbgTechnicalInfo
+        {
+            get
+            {
+                if (!_levelSnapshot.DbgIsCompressed)
+                    return "Uncompressed " + DbgFormatSize(_levelSnapshot.DbgUncompressedSize);
+                else
+                    return DbgFormatSize(_levelSnapshot.DbgUncompressedSize) + " compressed to " + DbgFormatSize(_levelSnapshot.DbgCompressedSize) + " in " + _levelSnapshot.DbgCompressionTime.Milliseconds + "ms";
+            }
+        }
     }
 }

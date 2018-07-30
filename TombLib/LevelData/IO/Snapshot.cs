@@ -1,31 +1,53 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using TombLib.IO;
 using TombLib.Utils;
+using ThreadState = System.Threading.ThreadState;
 
 namespace TombLib.LevelData.IO
 {
     public class Snapshot
     {
-        private string _fileName;
+        private static readonly ConditionalWeakTable<Snapshot, WeakReference<byte[]>> _snapshotDecompressedDataCache = new ConditionalWeakTable<Snapshot, WeakReference<byte[]>>();
+        private readonly string _fileName;
+        private readonly long _dataLength;
         private volatile byte[] _data;
-        private long _dataLength;
         private byte[] _dataCompressed;
         private Snapshot _deltaParent;
+        private TimeSpan _dbgCmpressionTimespan = TimeSpan.MinValue;
 
-        private void MaterializePrj2DataAsArray(out byte[] byteArray, out long length)
+        private Snapshot(string fileName, long dataLength, byte[] data)
         {
+            _fileName = fileName;
+            _dataLength = dataLength;
+            _data = data;
+            _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+        }
+
+        // Note that the array may be longer than necessary and contain unnecessary data at the end. Use "_dataLength" to determine true length.
+        private byte[] MaterializePrj2DataAsArray()
+        {
+            // See if data is cached already. If it is cached, use that data.
+            WeakReference<byte[]> weakData;
+            byte[] data;
+            if (_snapshotDecompressedDataCache.TryGetValue(this, out weakData))
+            {
+                if (weakData.TryGetTarget(out data))
+                    return data;
+                _snapshotDecompressedDataCache.Remove(this);
+            }
+
             // See if the data is directly available
-            byte[] data = _data; // Copy in a thread-save way
+            data = _data; // Copy in a thread-save way
             if (data != null)
             {
-                byteArray = data;
-                length = _dataLength;
-                return;
+                _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+                return data;
             }
 
             // It's directly compressed
@@ -33,32 +55,28 @@ namespace TombLib.LevelData.IO
                 using (MemoryStream outStream = new MemoryStream(_dataCompressed.Length))
                 {
                     MiniZ.Functions.Decompress(new MemoryStream(_dataCompressed, false), outStream);
-                    byteArray = outStream.GetBuffer();
-                    length = (int)outStream.Length;
-                    return;
+                    data = outStream.GetBuffer();
+                    _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+                    return data;
                 }
 
             // It's delta compressed
-            byte[] parentData, deltaData;
-            long parentSize, deltaSize;
-            _deltaParent.MaterializePrj2DataAsArray(out parentData, out parentSize);
+            byte[] parentData = _deltaParent.MaterializePrj2DataAsArray();
+            long parentSize = _deltaParent._dataLength;
             using (MemoryStream outStream = new MemoryStream(_dataCompressed.Length))
             {
                 MiniZ.Functions.Decompress(new MemoryStream(_dataCompressed, false), outStream);
-                deltaData = outStream.GetBuffer();
-                deltaSize = (int)outStream.Length;
+                byte[] deltaData = outStream.GetBuffer();
+                long deltaSize = (int)outStream.Length;
+                data = FossilDelta.Apply(parentData, (uint)parentSize, deltaData, (uint)deltaSize);
+                _snapshotDecompressedDataCache.Add(this, new WeakReference<byte[]>(data)); // Cache decompressed data for quick reusal.
+                return data;
             }
-            byteArray = FossilDelta.Apply(parentData, (uint)parentSize, deltaData, (uint)deltaSize);
-            length = byteArray.Length;
-            return;
         }
 
         private Stream MaterializePrj2DataAsStream()
         {
-            byte[] data;
-            long length;
-            MaterializePrj2DataAsArray(out data, out length);
-            return new MemoryStream(data, 0, (int)length, false);
+            return new MemoryStream(MaterializePrj2DataAsArray(), 0, (int)_dataLength, false);
         }
 
         public Level MaterializeLevel()
@@ -66,6 +84,11 @@ namespace TombLib.LevelData.IO
             using (var dataStream = MaterializePrj2DataAsStream())
                 return Prj2Loader.LoadFromPrj2(_fileName, dataStream, new ProgressReporterSimple());
         }
+
+        public bool DbgIsCompressed => _dbgCmpressionTimespan != TimeSpan.MinValue;
+        public long DbgUncompressedSize => _dataLength;
+        public long DbgCompressedSize => _dataCompressed.LongLength;
+        public TimeSpan DbgCompressionTime => _dbgCmpressionTimespan;
 
         public class Engine : IDisposable
         {
@@ -160,12 +183,7 @@ namespace TombLib.LevelData.IO
                     Prj2Writer.SaveToPrj2(stream, level);
                     _lastSize = stream.Length;
 
-                    Snapshot newSnapshot = new Snapshot
-                    {
-                        _fileName = level.Settings.LevelFilePath,
-                        _data = stream.GetBuffer(),
-                        _dataLength = stream.Length
-                    };
+                    Snapshot newSnapshot = new Snapshot(level.Settings.LevelFilePath, stream.Length, stream.GetBuffer());
 
                     // Remember object for compression in other threads
                     lock (_uncompressedSnapshots)
@@ -213,7 +231,11 @@ namespace TombLib.LevelData.IO
                         // Compress snapshot
                         try
                         {
+                            Stopwatch watch = new Stopwatch();
+                            watch.Start();
                             CompressSnapshot(snapshotToCompress);
+                            watch.Stop();
+                            snapshotToCompress._dbgCmpressionTimespan = watch.Elapsed;
                         }
                         catch (Exception exc)
                         {
@@ -242,12 +264,10 @@ namespace TombLib.LevelData.IO
                     }
                     else
                     { // Attempt delta compression
-                        byte[] newData, parentData;
-                        long newLength, parentLength;
-                        snapshotToCompress.MaterializePrj2DataAsArray(out newData, out newLength);
-                        deltaParentSnapshot.MaterializePrj2DataAsArray(out parentData, out parentLength);
-                        byte[] deltaData = FossilDelta.Create(parentData, (int)parentLength, newData, (int)newLength);
-                        if (6 * deltaData.Length < (parentLength + newLength)) // Use delta compression only if it saves enough memory
+                        byte[] newData = snapshotToCompress.MaterializePrj2DataAsArray();
+                        byte[] parentData = deltaParentSnapshot.MaterializePrj2DataAsArray();
+                        byte[] deltaData = FossilDelta.Create(parentData, (int)deltaParentSnapshot._dataLength, newData, (int)snapshotToCompress._dataLength);
+                        if (6 * deltaData.Length < (deltaParentSnapshot._dataLength + snapshotToCompress._dataLength)) // Use delta compression only if it saves enough memory
                             using (var uncompressedStream = new MemoryStream(deltaData, false))
                             using (var compressedStream = new MemoryStream())
                             {
