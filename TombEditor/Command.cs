@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Controls;
 using DarkUI.Forms;
 using TombEditor.Forms;
-using TombEditor.Controls;
 using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -23,6 +23,7 @@ namespace TombEditor
         Edit,
         Rooms,
         Geometry,
+        Sectors,
         Objects,
         Textures,
         Lighting,
@@ -65,6 +66,35 @@ namespace TombEditor
             var hotkeyForCommands = args.Editor.Configuration.Window_HotkeySets.Where(set => set.Value.Contains(args.KeyData));
             foreach (var hotkeyForCommand in hotkeyForCommands)
                 GetCommand(hotkeyForCommand.Key).Execute?.Invoke(args);
+        }
+
+        private static IEnumerable<Control> AllSubControls(Control control)
+        {
+            return Enumerable.Repeat(control, 1).Union(control.Controls.OfType<Control>().SelectMany(AllSubControls));
+        }
+
+        public static void AssignCommandsToButtons(Editor editor, Control parent, ToolTip toolTip = null, bool onlyToolTips = false)
+        {
+            var buttons = AllSubControls(parent).OfType<DarkButton>().ToList();
+            foreach (var button in buttons)
+            {
+                if (!string.IsNullOrEmpty(button.Tag?.ToString()))
+                {
+                    var command = GetCommand(button.Tag.ToString());
+
+                    if (command != null)
+                    {
+                        var hotkeyLabel = string.Join(", ", editor.Configuration.Window_HotkeySets[button.Tag.ToString()]);
+                        var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
+
+                        if(!onlyToolTips)
+                            button.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
+
+                        if (toolTip != null && !string.IsNullOrEmpty(label))
+                            toolTip.SetToolTip(button, label);
+                    }
+                }
+            }
         }
 
         private static void AddCommand(string commandName, string friendlyName, CommandType type, Action<CommandArgs> command)
@@ -111,8 +141,23 @@ namespace TombEditor
 
             AddCommand("AddTrigger", "Add trigger", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window, args.Editor.SelectedObject);
+            });
+
+            AddCommand("EditTrigger", "Edit selected trigger", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom == null || !(args.Editor.SelectedObject is TriggerInstance))
+                    return;
+                EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
+            });
+
+
+            AddCommand("DeleteTrigger", "Delete selected trigger", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom == null || !(args.Editor.SelectedObject is TriggerInstance))
+                    return;
+                EditorActions.DeleteObject(args.Editor.SelectedObject);
             });
 
             AddCommand("AddTriggerWithBookmark", "Add trigger with bookmarked object", CommandType.Objects, delegate (CommandArgs args)
@@ -123,7 +168,7 @@ namespace TombEditor
 
             AddCommand("AddPortal", "Add portal", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     try
                     {
                         EditorActions.AddPortal(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window);
@@ -701,6 +746,12 @@ namespace TombEditor
                 EditorActions.TransformRooms(new RectTransformation { MirrorX = true, QuadrantRotation = 2 }, args.Window);
             });
 
+            AddCommand("LockRoom", "Lock room position", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                args.Editor.SelectedRoom.Locked = !args.Editor.SelectedRoom.Locked;
+                args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+            });
+
             AddCommand("SplitRoom", "Split room", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SplitRoom(args.Window);
@@ -784,6 +835,22 @@ namespace TombEditor
             AddCommand("AddImportedGeometry", "Add imported geometry", CommandType.Objects, delegate (CommandArgs args)
             {
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
+            });
+
+
+            AddCommand("AddItem", "Add item", CommandType.Objects, delegate (CommandArgs args)
+            {
+                var currentItem = EditorActions.GetCurrentItemWithMessage();
+                if (currentItem == null)
+                    return;
+
+                if (!currentItem.Value.IsStatic && args.Editor.SelectedRoom.Alternated && args.Editor.SelectedRoom.AlternateRoom == null)
+                {
+                    args.Editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
+                    return;
+                }
+
+                args.Editor.Action = new EditorActionPlace(false, (r, l) => ItemInstance.FromItemType(currentItem.Value));
             });
 
             AddCommand("LocateItem", "Locate item", CommandType.Objects, delegate (CommandArgs args)
@@ -1191,6 +1258,172 @@ namespace TombEditor
             AddCommand("ToggleOpacity2", "Textured and traversable ('Toggle Opacity 2')", CommandType.Textures, delegate (CommandArgs args)
             {
                 EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, args.Window);
+            });
+
+            AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point));
+            });
+
+            AddCommand("AddShadow", "Add shadow", CommandType.Lighting, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow));
+            });
+
+            AddCommand("AddSunLight", "Add sun light", CommandType.Lighting, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun));
+            });
+
+            AddCommand("AddSpotLight", "Add directional (spot) light", CommandType.Lighting, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot));
+            });
+
+            AddCommand("AddEffectLight", "Add effect light", CommandType.Lighting, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect));
+            });
+
+            AddCommand("AddFogBulb", "Add fog bulb", CommandType.Lighting, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb));
+            });
+
+            AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                using (var form = new Forms.FormInputBox())
+                {
+                    form.Title = "Edit room's name";
+                    form.Message = "Insert the name of this room:";
+                    form.Value = args.Editor.SelectedRoom.Name;
+
+                    if (form.ShowDialog(args.Window) == DialogResult.Cancel)
+                        return;
+
+                    args.Editor.SelectedRoom.Name = form.Value;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                    args.Editor.RoomListChange();
+                }
+            });
+
+            AddCommand("SetFloor", "Set floor", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.SetFloor(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetCeiling", "Set ceiling", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.SetCeiling(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetWall", "Set wall", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.SetWall(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetBox", "Set box sector property", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.Box);
+            });
+
+            AddCommand("SetDeath", "Set death sector property", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.DeathFire);
+            });
+
+            AddCommand("SetMonkeyswing", "Set monkeyswing sector property", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.Monkey);
+            });
+
+            AddCommand("SetClimbPositiveZ", "Climb on North sector side", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbPositiveZ);
+            });
+
+            AddCommand("SetClimbPositiveX", "Climb on East sector side", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
+            });
+
+            AddCommand("SetClimbNegativeZ", "Climb on South sector side", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbNegativeZ);
+            });
+
+            AddCommand("SetClimbNegativeX", "Climb on West sector side", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
+            });
+
+            AddCommand("SetNotWalkable", "Set non-walkable floor", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.NotWalkableFloor);
+            });
+
+            AddCommand("SetDiagonalFloorStep", "Set or rotate diagonal floor step", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.SetDiagonalFloorSplit(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetDiagonalCeilingStep", "Set or rotate diagonal ceiling step", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.SetDiagonalCeilingSplit(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetDiagonalWall", "Set or rotate diagonal wall", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.SetDiagonalWall(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetBeetleCheckpoint", "Set beetle checkpoint", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.Beetle);
+            });
+
+            AddCommand("SetTriggerTriggerer", "Delay trigger until Trigger Triggerer is used", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.TriggerTriggerer);
+            });
+
+            AddCommand("ToggleForceFloorSolid", "Force solid floor", CommandType.Sectors, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.ToggleForceFloorSolid(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

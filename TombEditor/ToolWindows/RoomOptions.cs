@@ -18,6 +18,7 @@ namespace TombEditor.ToolWindows
         public RoomOptions()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -95,6 +96,13 @@ namespace TombEditor.ToolWindows
                 }
 
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
+            }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
             }
         }
 
@@ -296,60 +304,12 @@ namespace TombEditor.ToolWindows
             _editor.RoomPropertiesChange(room);
         }
 
-        private void butCropRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-        }
-
-        private void butSplitRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.SplitRoom(this);
-        }
-
-        private void butEditRoomName_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormInputBox())
-            {
-                form.Title = "Edit room's name";
-                form.Message = "Insert the name of this room:";
-                form.Value = _editor.SelectedRoom.Name;
-
-                if (form.ShowDialog(this) == DialogResult.Cancel)
-                    return;
-
-                _editor.SelectedRoom.Name = form.Value;
-                _editor.RoomPropertiesChange(_editor.SelectedRoom);
-                _editor.RoomListChange();
-            }
-        }
-
-        private void butRoomUp_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
-        }
-
-        private void butRoomDown_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
-        }
-
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
         {
             if (_editor.SelectedRoom.FlagNoLensflare == cbNoLensflare.Checked)
                 return;
 
             _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void butLocked_Click(object sender, EventArgs e)
-        {
-            butLocked.BackColorUseGeneric = !butLocked.BackColorUseGeneric;
-
-            if (_editor.SelectedRoom.Locked == !butLocked.BackColorUseGeneric)
-                return;
-
-            _editor.SelectedRoom.Locked = !butLocked.BackColorUseGeneric;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }

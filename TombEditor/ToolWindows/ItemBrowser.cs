@@ -1,8 +1,6 @@
 ﻿using DarkUI.Docking;
-using DarkUI.Forms;
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -19,6 +17,7 @@ namespace TombEditor.ToolWindows
         public ItemBrowser()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -79,27 +78,19 @@ namespace TombEditor.ToolWindows
                 StaticInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
                 panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * 0.5f).ToWinFormsColor();
             }
+
+            // Update tooltip texts
+            if(obj is Editor.ConfigurationChangedEvent)
+            {
+                if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+            }
         }
 
         private void butSearch_Click(object sender, EventArgs e)
         {
             var searchPopUp = new PopUpSearch(comboItems);
             searchPopUp.Show(this);
-        }
-
-        private void butAddItem_Click(object sender, EventArgs e)
-        {
-            var currentItem = EditorActions.GetCurrentItemWithMessage();
-            if (currentItem == null)
-                return;
-
-            if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateRoom == null)
-            {
-                _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
-                return;
-            }
-
-            _editor.Action = new EditorActionPlace(false, (r, l) => ItemInstance.FromItemType(currentItem.Value));
         }
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
@@ -115,11 +106,6 @@ namespace TombEditor.ToolWindows
             panelStaticMeshColor.BackColor = colorDialog.Color;
             instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
             _editor.ObjectChange(instance, ObjectChangeType.Change);
-        }
-
-        private void butFindItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.FindItem();
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
