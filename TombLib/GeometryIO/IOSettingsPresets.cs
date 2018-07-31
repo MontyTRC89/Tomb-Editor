@@ -110,6 +110,35 @@ namespace TombLib.GeometryIO
                     UseVertexColor = true
                 }
             });
+
+            // 3ds Max
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "3ds Max FBX",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1.0f,
+                    FlipZ = true,
+                    FlipUV_V = true,
+                    InvertFaces = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
+
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "3ds Max OBJ",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1.0f,
+                    FlipZ = true, 
+                    FlipUV_V = true,
+                    InvertFaces = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
         }
     }
 }
