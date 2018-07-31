@@ -101,7 +101,7 @@ namespace TombEditor.Forms
         private void butOK_Click(object sender, EventArgs e)
         {
             _editor.Configuration.Window_HotkeySets = _currConfig;
-            _editor.ConfigurationChange();
+            _editor.ConfigurationChange(true);
             Close();
         }
 

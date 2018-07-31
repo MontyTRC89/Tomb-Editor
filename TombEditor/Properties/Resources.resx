@@ -436,4 +436,7 @@
   <data name="general_ArrowUp_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_general\general_ArrowUp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="actions_DrawCardinalDirections_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_DrawCardinalDirections-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

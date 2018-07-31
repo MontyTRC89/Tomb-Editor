@@ -197,7 +197,7 @@ namespace TombEditor.Forms
             if (obj is Editor.HasUnsavedChangesChangedEvent)
                 saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
-            // Reload window layout if the configuration changed
+            // Reload window layout and keyboard shortcuts if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var @event = (Editor.ConfigurationChangedEvent)obj;
@@ -207,7 +207,8 @@ namespace TombEditor.Forms
                     @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
 
-                GenerateMenusRecursive(menuStrip.Items, true);
+                if(@event.UpdateKeyboardShortcuts)
+                    GenerateMenusRecursive(menuStrip.Items, true);
             }
 
             // Update texture controls
