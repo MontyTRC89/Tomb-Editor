@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombEditor.Forms;
+using TombEditor.Controls;
 using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -1092,6 +1093,104 @@ namespace TombEditor
             AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate (CommandArgs args)
             {
                 args.Editor.Quit();
+            });
+
+            AddCommand("DrawPortals", "Draw portals", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowPortals = !args.Editor.Configuration.Rendering3D_ShowPortals;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawHorizon", "Draw horizon", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowHorizon = !args.Editor.Configuration.Rendering3D_ShowHorizon;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawRoomNames", "Draw room names", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowRoomNames = !args.Editor.Configuration.Rendering3D_ShowRoomNames;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawIllegalSlopes", "Draw illegal slopes", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowIllegalSlopes = !args.Editor.Configuration.Rendering3D_ShowIllegalSlopes;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawMoveables", "Draw moveables", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowMoveables = !args.Editor.Configuration.Rendering3D_ShowMoveables;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawStatics", "Draw statics", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowStatics = !args.Editor.Configuration.Rendering3D_ShowStatics;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawImportedGeometry", "Draw imported geometry", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowImportedGeometry = !args.Editor.Configuration.Rendering3D_ShowImportedGeometry;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawOtherObjects", "Draw other objects", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowOtherObjects = !args.Editor.Configuration.Rendering3D_ShowOtherObjects;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawSlideDirections", "Draw slide directions", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowSlideDirections = !args.Editor.Configuration.Rendering3D_ShowSlideDirections;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DisableGeometryPicking", "Disable geometry picking", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_DisablePickingForImportedGeometry = !args.Editor.Configuration.Rendering3D_DisablePickingForImportedGeometry;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawAllRooms", "Draw all rooms", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowAllRooms = !args.Editor.Configuration.Rendering3D_ShowAllRooms;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawCardinalDirections", "Draw cardinal directions", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowCardinalDirections = !args.Editor.Configuration.Rendering3D_ShowCardinalDirections;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("ToggleFlipMap", "Toggle flip map", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom.Alternated)
+                {
+                    if (args.Editor.SelectedRoom.AlternateRoom != null && args.Editor.SelectedRoom != args.Editor.SelectedRoom.AlternateRoom)
+                        args.Editor.SelectedRoom = args.Editor.SelectedRoom.AlternateRoom;
+                    else if (args.Editor.SelectedRoom.AlternateBaseRoom != null && args.Editor.SelectedRoom != args.Editor.SelectedRoom.AlternateBaseRoom)
+                        args.Editor.SelectedRoom = args.Editor.SelectedRoom.AlternateBaseRoom;
+                }
+            });
+
+            AddCommand("ToggleNoOpacity", "Toggle no opacity", CommandType.Textures, delegate (CommandArgs args)
+            {
+                EditorActions.SetPortalOpacity(PortalOpacity.None, args.Window);
+            });
+
+            AddCommand("ToggleOpacity", "Textured and solid ('Toggle Opacity 1')", CommandType.Textures, delegate (CommandArgs args)
+            {
+                EditorActions.SetPortalOpacity(PortalOpacity.SolidFaces, args.Window);
+            });
+
+            AddCommand("ToggleOpacity2", "Textured and traversable ('Toggle Opacity 2')", CommandType.Textures, delegate (CommandArgs args)
+            {
+                EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, args.Window);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();
