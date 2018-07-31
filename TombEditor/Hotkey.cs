@@ -326,21 +326,32 @@ namespace TombEditor
             this["TextureFloor"] = new SortedSet<Hotkey> { Keys.T | Keys.Control | Keys.Alt };
             this["TextureCeiling"] = new SortedSet<Hotkey> { Keys.V | Keys.Control | Keys.Alt };
             this["TextureWalls"] = new SortedSet<Hotkey> { W | Keys.Control | Keys.Alt };
-            this["FlattenFloor"] = new SortedSet<Hotkey> { Keys.E | Keys.Control | Keys.Alt };
-            this["FlattenCeiling"] = new SortedSet<Hotkey> { Keys.F | Keys.Control | Keys.Alt };
+            this["FlattenFloor"] = new SortedSet<Hotkey> { Keys.I | Keys.Control | Keys.Alt };
+            this["FlattenCeiling"] = new SortedSet<Hotkey> { Keys.J | Keys.Control | Keys.Alt };
             this["GridWallsIn3"] = new SortedSet<Hotkey> { Keys.D3 | Keys.Control };
             this["GridWallsIn5"] = new SortedSet<Hotkey> { Keys.D5 | Keys.Control };
             this["QuitEditor"] = new SortedSet<Hotkey> { Keys.F4 | Keys.Alt };
-            this["RemapTexture"] = new SortedSet<Hotkey> { Keys.R | Keys.Shift | Keys.Alt };
-            this["SmoothRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Shift };
-            this["SmoothRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Shift };
-            this["SmoothRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift };
-            this["SmoothRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift };
-            this["SharpRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Alt };
-            this["SharpRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Alt };
-            this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Alt };
-            this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Alt };
+            this["RemapTexture"] = new SortedSet<Hotkey> { Keys.R | Keys.Control | Keys.Alt };
+            this["SmoothRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Alt };
+            this["SmoothRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Alt };
+            this["SmoothRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Alt };
+            this["SmoothRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Alt };
+            this["SharpRandomFloorUp"] = new SortedSet<Hotkey> { Keys.E | Keys.Control | Keys.Alt };
+            this["SharpRandomFloorDown"] = new SortedSet<Hotkey> { Keys.F | Keys.Control | Keys.Alt };
+            this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.G | Keys.Control | Keys.Alt };
+            this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.H | Keys.Control | Keys.Alt };
             this["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
+
+            // Check for conflicts
+            var hotkeyList = _list
+                .SelectMany(command => command.Value.Select(hotkey => new KeyValuePair<Hotkey, string>(hotkey, command.Key)))
+                .OrderBy(hotkeyCommand => hotkeyCommand.Key).ToList();
+            string conflicts = "";
+            for (int i = 1; i < hotkeyList.Count; ++i)
+                if (hotkeyList[i].Key.Equals(hotkeyList[i - 1].Key))
+                    conflicts += "\n'" + hotkeyList[i].Key + "': '" + hotkeyList[i].Value + "' and '" + hotkeyList[i - 1].Value + "'";
+            if (!string.IsNullOrEmpty(conflicts)) // Use normal message box here because it can handle lot's of text. (Usually won't be shown anyway)
+                MessageBox.Show("Please report this to the development team.\nThere are conflicts in the default hotkey set:" + conflicts, "Hotkey conflicts", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
