@@ -161,6 +161,7 @@ namespace TombEditor
                 string unused;
                 this[commandName] = ParseHotkeys(reader.GetAttribute("Hotkeys"), out unused);
             }
+            reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer)
