@@ -145,21 +145,6 @@ namespace TombEditor
                     EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window, args.Editor.SelectedObject);
             });
 
-            AddCommand("EditTrigger", "Edit selected trigger", CommandType.Objects, delegate (CommandArgs args)
-            {
-                if (args.Editor.SelectedRoom == null || !(args.Editor.SelectedObject is TriggerInstance))
-                    return;
-                EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
-            });
-
-
-            AddCommand("DeleteTrigger", "Delete selected trigger", CommandType.Objects, delegate (CommandArgs args)
-            {
-                if (args.Editor.SelectedRoom == null || !(args.Editor.SelectedObject is TriggerInstance))
-                    return;
-                EditorActions.DeleteObject(args.Editor.SelectedObject);
-            });
-
             AddCommand("AddTriggerWithBookmark", "Add trigger with bookmarked object", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedSectors.Valid && args.PrimaryControlFocused)
