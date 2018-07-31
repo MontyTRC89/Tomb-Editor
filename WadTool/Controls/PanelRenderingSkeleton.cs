@@ -9,6 +9,7 @@ using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
 using TombLib.Rendering;
+using TombLib.Utils;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
@@ -356,6 +357,44 @@ namespace WadTool.Controls
             // Now do a ray - triangle intersection test
             bool hit = false;
             float minDistance = float.PositiveInfinity;
+            var mesh = node.WadMesh;
+            foreach (var poly in mesh.Polys)
+            {
+                if (poly.Shape == WadPolygonShape.Quad)
+                {
+                    Vector3 p1 = mesh.VerticesPositions[poly.Index0];
+                    Vector3 p2 = mesh.VerticesPositions[poly.Index1];
+                    Vector3 p3 = mesh.VerticesPositions[poly.Index2];
+                    Vector3 p4 = mesh.VerticesPositions[poly.Index3];
+
+                    float distance;
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
+                    {
+                        minDistance = distance;
+                        hit = true;
+                    }
+
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p3, p4, out distance) && distance < minDistance)
+                    {
+                        minDistance = distance;
+                        hit = true;
+                    }
+                }
+                else
+                {
+                    Vector3 p1 = mesh.VerticesPositions[poly.Index0];
+                    Vector3 p2 = mesh.VerticesPositions[poly.Index1];
+                    Vector3 p3 = mesh.VerticesPositions[poly.Index2];
+
+                    float distance;
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
+                    {
+                        minDistance = distance;
+                        hit = true;
+                    }
+                }
+            }
+
             /*
             _wadRenderer.Dispose();
             foreach (var submesh in node.Bone.Children.Select(bone => bone.Mesh))
