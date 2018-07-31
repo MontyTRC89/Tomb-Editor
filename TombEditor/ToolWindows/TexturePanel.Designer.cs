@@ -17,6 +17,7 @@ namespace TombEditor.ToolWindows
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panelTextureTools = new System.Windows.Forms.Panel();
             this.panelTileSizeSelector = new System.Windows.Forms.Panel();
@@ -33,6 +34,7 @@ namespace TombEditor.ToolWindows
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.butDeleteTexture = new DarkUI.Controls.DarkButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelTextureTools.SuspendLayout();
             this.panelTileSizeSelector.SuspendLayout();
             this.textureSelectionPanel.SuspendLayout();
@@ -149,6 +151,7 @@ namespace TombEditor.ToolWindows
             this.butTextureSounds.Size = new System.Drawing.Size(138, 23);
             this.butTextureSounds.TabIndex = 1;
             this.butTextureSounds.Text = "Texture sounds";
+            this.toolTip.SetToolTip(this.butTextureSounds, "Edit texture sounds...");
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
             // 
             // butAnimationRanges
@@ -159,7 +162,9 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Size = new System.Drawing.Size(138, 23);
             this.butAnimationRanges.TabIndex = 0;
+            this.butAnimationRanges.Tag = "";
             this.butAnimationRanges.Text = "Animation ranges";
+            this.toolTip.SetToolTip(this.butAnimationRanges, "Edit animation ranges...");
             this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
             // 
             // textureSelectionPanel
@@ -184,6 +189,7 @@ namespace TombEditor.ToolWindows
             this.butBrowseTexture.Name = "butBrowseTexture";
             this.butBrowseTexture.Size = new System.Drawing.Size(24, 23);
             this.butBrowseTexture.TabIndex = 3;
+            this.toolTip.SetToolTip(this.butBrowseTexture, "Replace texture...");
             this.butBrowseTexture.Click += new System.EventHandler(this.butBrowseTexture_Click);
             // 
             // butAddTexture
@@ -195,7 +201,7 @@ namespace TombEditor.ToolWindows
             this.butAddTexture.Name = "butAddTexture";
             this.butAddTexture.Size = new System.Drawing.Size(24, 23);
             this.butAddTexture.TabIndex = 2;
-            this.butAddTexture.Click += new System.EventHandler(this.butAddTexture_Click);
+            this.butAddTexture.Tag = "AddTexture";
             // 
             // comboCurrentTexture
             // 
@@ -217,7 +223,14 @@ namespace TombEditor.ToolWindows
             this.butDeleteTexture.Name = "butDeleteTexture";
             this.butDeleteTexture.Size = new System.Drawing.Size(24, 23);
             this.butDeleteTexture.TabIndex = 2;
+            this.toolTip.SetToolTip(this.butDeleteTexture, "Delete texture");
             this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // TexturePanel
             // 
@@ -259,5 +272,6 @@ namespace TombEditor.ToolWindows
         private DarkUI.Controls.DarkButton butAddTexture;
         private DarkUI.Controls.DarkButton butDeleteTexture;
         private DarkUI.Controls.DarkButton butBrowseTexture;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

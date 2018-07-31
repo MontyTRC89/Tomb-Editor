@@ -15,6 +15,7 @@ namespace TombEditor.ToolWindows
         public TexturePanel()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -83,6 +84,13 @@ namespace TombEditor.ToolWindows
                     comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
                 panelTextureMap.Invalidate();
             }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+            }
         }
 
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
@@ -143,11 +151,6 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 EditorActions.RemoveTexture(this, texture);
-        }
-
-        private void butAddTexture_Click(object sender, EventArgs e)
-        {
-            EditorActions.AddTexture(this);
         }
 
         private void butBrowseTexture_Click(object sender, EventArgs e)

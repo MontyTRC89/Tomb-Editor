@@ -15,6 +15,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
             this.panelItem = new TombEditor.Controls.PanelRenderingItem();
@@ -27,6 +28,7 @@
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelRightBottom = new System.Windows.Forms.Panel();
             this.panelRight = new System.Windows.Forms.Panel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeader.SuspendLayout();
             this.panelHeaderRight.SuspendLayout();
             this.panelRightBottom.SuspendLayout();
@@ -111,6 +113,7 @@
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(24, 24);
             this.butSearch.TabIndex = 2;
+            this.toolTip.SetToolTip(this.butSearch, "Search for items");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // butAddItem
@@ -120,7 +123,7 @@
             this.butAddItem.Name = "butAddItem";
             this.butAddItem.Size = new System.Drawing.Size(24, 24);
             this.butAddItem.TabIndex = 3;
-            this.butAddItem.Click += new System.EventHandler(this.butAddItem_Click);
+            this.butAddItem.Tag = "AddItem";
             // 
             // butFindItem
             // 
@@ -131,9 +134,9 @@
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Size = new System.Drawing.Size(91, 23);
             this.butFindItem.TabIndex = 5;
+            this.butFindItem.Tag = "LocateItem";
             this.butFindItem.Text = "Locate item";
             this.butFindItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butFindItem.Click += new System.EventHandler(this.butFindItem_Click);
             // 
             // panelRightBottom
             // 
@@ -155,6 +158,12 @@
             this.panelRight.Name = "panelRight";
             this.panelRight.Size = new System.Drawing.Size(284, 200);
             this.panelRight.TabIndex = 73;
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // ItemBrowser
             // 
@@ -191,5 +200,6 @@
         private DarkUI.Controls.DarkButton butSearch;
         private System.Windows.Forms.Panel panelRightBottom;
         private System.Windows.Forms.Panel panelRight;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

@@ -14,6 +14,7 @@ namespace TombEditor.ToolWindows
         public Lighting()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -111,6 +112,13 @@ namespace TombEditor.ToolWindows
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
             }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+            }
         }
 
         private void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue) where T : struct
@@ -162,36 +170,6 @@ namespace TombEditor.ToolWindows
         {
             UpdateLight<bool>((light, value) => light.IsDynamicallyUsed == value, (light, value) => light.IsDynamicallyUsed = value,
                 light => cbLightIsDynamicallyUsed.Checked);
-        }
-
-        private void butAddPointLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point));
-        }
-
-        private void butAddShadow_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow));
-        }
-
-        private void butAddSun_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun));
-        }
-
-        private void butAddSpotLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot));
-        }
-
-        private void butAddEffectLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect));
-        }
-
-        private void butAddFogBulb_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb));
         }
 
         private static bool Compare(float firstValue, float secondValue, NumericUpDown control)

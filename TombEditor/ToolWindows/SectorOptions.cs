@@ -18,6 +18,7 @@ namespace TombEditor.ToolWindows
         public SectorOptions()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -37,141 +38,13 @@ namespace TombEditor.ToolWindows
         {
             if (obj is Editor.SelectedRoomChangedEvent)
                 panel2DGrid.Room = ((Editor.SelectedRoomChangedEvent)obj).Current;
-        }
 
-        private void butWall_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SetWall(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void butBox_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.Box);
-        }
-
-        private void butDeath_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.DeathFire);
-        }
-
-        private void butMonkey_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.Monkey);
-        }
-
-        private void butPortal_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-
-            try
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
             {
-                EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
             }
-            catch (Exception exc)
-            {
-                _editor.SendMessage("Unable to create portal: \n" + exc.Message, PopupType.Error);
-                logger.Error(exc, "Portal creation failed.");
-            }
-        }
-
-        private void butClimbPositiveZ_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveZ);
-        }
-
-        private void butClimbPositiveX_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
-        }
-
-        private void butClimbNegativeZ_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeZ);
-        }
-
-        private void butClimbNegativeX_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
-        }
-
-        private void butNotWalkableBox_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.NotWalkableFloor);
-        }
-
-        private void butFloor_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SetFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void butCeiling_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SetCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void butDiagonalFloor_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SetDiagonalFloorSplit(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void butDiagonalCeiling_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SetDiagonalCeilingSplit(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void butDiagonalWall_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SetDiagonalWall(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void butFlagBeetle_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.Beetle);
-        }
-
-        private void butFlagTriggerTriggerer_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.TriggerTriggerer);
-        }
-
-        private void butForceSolidFloor_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.ToggleForceFloorSolid(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void but_MouseEnter(object sender, EventArgs e)
@@ -205,6 +78,8 @@ namespace TombEditor.ToolWindows
                 _editor.SectorColoringManager.SetPriority(SectorColoringType.Climb);
             else if (button == butWall)
                 _editor.SectorColoringManager.SetPriority(SectorColoringType.Wall);
+            else
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
     }
 }
