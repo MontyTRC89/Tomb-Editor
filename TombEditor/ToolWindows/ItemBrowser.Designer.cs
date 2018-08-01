@@ -19,7 +19,6 @@
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
             this.panelItem = new TombEditor.Controls.PanelRenderingItem();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.panelHeader = new System.Windows.Forms.Panel();
             this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.panelHeaderRight = new System.Windows.Forms.Panel();
@@ -65,11 +64,6 @@
             this.panelItem.Name = "panelItem";
             this.panelItem.Size = new System.Drawing.Size(279, 165);
             this.panelItem.TabIndex = 62;
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
             // 
             // panelHeader
             // 
@@ -192,7 +186,6 @@
         private System.Windows.Forms.Panel panelStaticMeshColor;
         private DarkUI.Controls.DarkLabel darkLabel14;
         private Controls.PanelRenderingItem panelItem;
-        private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Panel panelHeader;
         private System.Windows.Forms.Panel panelHeaderRight;
         private DarkUI.Controls.DarkButton butAddItem;
