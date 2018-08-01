@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DarkUI.Controls;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using NLog;
@@ -371,11 +372,23 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Don't process reserved camera keys
+            if (HotkeySets.ReservedCameraKeys.Contains(keyData))
+                return true;
+
+            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
+            var activeControlType = GetFocusedControl(this).GetType().Name;
+            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
+                (activeControlType == "DarkTextBox"  ||
+                 activeControlType == "DarkComboBox" ||
+                 activeControlType == "DarkListBox"  ||
+                 activeControlType == "UpDownEdit"))
+                return true;
+
             CommandHandler.ExecuteHotkey(new CommandArgs
             {
                 Editor = _editor,
                 KeyData = keyData,
-                PrimaryControlFocused = IsFocused(MainView) || IsFocused(TexturePanel),
                 Window = this
             });
 
@@ -386,14 +399,9 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private static bool IsFocused(Control control)
+        private static Control GetFocusedControl(ContainerControl control)
         {
-            if (control.Focused)
-                return true;
-            foreach (Control controlInner in control.Controls)
-                if (IsFocused(controlInner))
-                    return true;
-            return false;
+            return (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
         }
 
         protected override void OnLostFocus(EventArgs e)
