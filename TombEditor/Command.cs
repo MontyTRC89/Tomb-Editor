@@ -1276,16 +1276,12 @@ namespace TombEditor
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)
             {
-                using (var form = new Forms.FormInputBox())
+                using (var form = new FormInputBox("Edit room's name", "Insert the name of this room:", args.Editor.SelectedRoom.Name))
                 {
-                    form.Title = "Edit room's name";
-                    form.Message = "Insert the name of this room:";
-                    form.Value = args.Editor.SelectedRoom.Name;
-
                     if (form.ShowDialog(args.Window) == DialogResult.Cancel)
                         return;
 
-                    args.Editor.SelectedRoom.Name = form.Value;
+                    args.Editor.SelectedRoom.Name = form.Result;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                     args.Editor.RoomListChange();
                 }
