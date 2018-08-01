@@ -75,7 +75,6 @@ namespace TombLib.LevelData
         public static bool IsOnCeiling(this BlockVertical vertical) => vertical == BlockVertical.Ceiling || vertical == BlockVertical.Rf;
     }
 
-
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BlockFace : byte
     {
@@ -87,6 +86,59 @@ namespace TombLib.LevelData
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28,
 
         Count
+    }
+
+    public static class BlockFaceExtensions
+    {
+        public static Direction GetDirection(this BlockFace face)
+        {
+            switch (face)
+            {
+                case BlockFace.PositiveZ_QA:
+                case BlockFace.PositiveZ_ED:
+                case BlockFace.PositiveZ_Middle:
+                case BlockFace.PositiveZ_WS:
+                case BlockFace.PositiveZ_RF:
+                    return Direction.PositiveZ;
+
+                case BlockFace.NegativeZ_QA:
+                case BlockFace.NegativeZ_ED:
+                case BlockFace.NegativeZ_Middle:
+                case BlockFace.NegativeZ_WS:
+                case BlockFace.NegativeZ_RF:
+                    return Direction.NegativeZ;
+
+                case BlockFace.NegativeX_QA:
+                case BlockFace.NegativeX_ED:
+                case BlockFace.NegativeX_Middle:
+                case BlockFace.NegativeX_WS:
+                case BlockFace.NegativeX_RF:
+                    return Direction.NegativeX;
+
+                case BlockFace.PositiveX_QA:
+                case BlockFace.PositiveX_ED:
+                case BlockFace.PositiveX_Middle:
+                case BlockFace.PositiveX_WS:
+                case BlockFace.PositiveX_RF:
+                    return Direction.PositiveX;
+
+                case BlockFace.DiagonalQA:
+                case BlockFace.DiagonalED:
+                case BlockFace.DiagonalMiddle:
+                case BlockFace.DiagonalWS:
+                case BlockFace.DiagonalRF:
+                    return Direction.Diagonal;
+
+                case BlockFace.Floor:
+                case BlockFace.FloorTriangle2:
+                case BlockFace.Ceiling:
+                case BlockFace.CeilingTriangle2:
+                    return Direction.None;
+
+                default:
+                    throw new ArgumentException();
+            }
+        }
     }
 
     public enum Direction : byte

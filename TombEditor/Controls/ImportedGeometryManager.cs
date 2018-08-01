@@ -7,6 +7,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
+using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -133,7 +135,7 @@ namespace TombEditor.Controls
             dataGridViewControls.Enabled = true;
             dataGridViewControls.CreateNewRow = delegate
             {
-                List<string> paths = LevelFileDialog.BrowseFiles(this, LevelSettings, FileSystemUtils.GetDirectoryNameTry(LevelSettings.LevelFilePath),
+                List<string> paths = LevelFileDialog.BrowseFiles(this, LevelSettings, PathC.GetDirectoryNameTry(LevelSettings.LevelFilePath),
                     "Select the 3D files that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory).ToList();
 
                 // Load imported geometries
@@ -142,9 +144,28 @@ namespace TombEditor.Controls
                 {
                     ImportedGeometryInfo info = ImportedGeometryInfo.Default;
                     info.Path = path;
-                    info.Name = FileSystemUtils.GetFileNameWithoutExtensionTry(path);
+                    info.Name = PathC.GetFileNameWithoutExtensionTry(path);
+
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                    {
+                        settingsDialog.AddPreset(IOSettingsPresets.SettingsPresets);
+                        if (settingsDialog.ShowDialog(this) == DialogResult.Cancel)
+                            continue;
+
+                        info.Scale = settingsDialog.Settings.Scale;
+                        info.SwapXY = settingsDialog.Settings.SwapXY;
+                        info.SwapXZ = settingsDialog.Settings.SwapXZ;
+                        info.SwapYZ = settingsDialog.Settings.SwapYZ;
+                        info.InvertFaces = settingsDialog.Settings.InvertFaces;
+                        info.FlipX = settingsDialog.Settings.FlipX;
+                        info.FlipY = settingsDialog.Settings.FlipY;
+                        info.FlipZ = settingsDialog.Settings.FlipZ;
+                        info.FlipUV_V = settingsDialog.Settings.FlipUV_V;
+                    }
+
                     importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                 }
+
                 LevelSettings.ImportedGeometryUpdate(importInfos);
                 LevelSettings.ImportedGeometries.AddRange(importInfos.Select(entry => entry.Key));
                 return importInfos.Select(entry => new ImportedGeometryWrapper(this, entry.Key));
@@ -243,7 +264,7 @@ namespace TombEditor.Controls
         {
             return DarkMessageBox.Show(this, "You are about to delete " + dataGridView.SelectedRows.Count +
                 " imported geometries from the list! The geometry infos will also be removed from all associated objects. " +
-                "Do you want to continue?", "Imported geometry removal", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2) != DialogResult.Yes;
+                "Do you want to continue?", "Imported geometry removal", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes;
         }
 
         // Prevent user message from appearing multiple time for multi row deletes

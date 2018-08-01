@@ -6,13 +6,14 @@
         TR2 = 2,
         TR3 = 3,
         TR4_TRNG = 4,
-        TR5 = 5
+        TR5 = 5,
+        TR5Main = 18
     }
 
     public enum WadAnimCommandType : short
     {
         SetPosition = 1,
-        JumpDistance = 2,
+        SetJumpDistance = 2,
         EmptyHands = 3,
         KillEntity = 4,
         PlaySound = 5,

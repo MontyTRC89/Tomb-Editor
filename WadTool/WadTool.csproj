@@ -386,4 +386,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
+SET ERRORLEVEL = 0</PostBuildEvent>
+  </PropertyGroup>
 </Project>

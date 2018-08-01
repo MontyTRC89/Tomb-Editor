@@ -79,6 +79,7 @@
             this.ClientSize = new System.Drawing.Size(559, 321);
             this.Controls.Add(this.panel1);
             this.FlatBorder = true;
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

@@ -99,12 +99,12 @@ namespace TombLib.Utils
             catch (ObjectDisposedException) { }
         }
 
-        public void UpdateAllFiles(IEnumerable<WatchedObj> watchedObjs, Action whileLocked)
+        public void UpdateAllFiles(IEnumerable<WatchedObj> watchedObjs, Action whileLocked = null)
         {
             // Avoid concurrent reload.
             lock (_reloadLock)
             {
-                whileLocked();
+                whileLocked?.Invoke();
 
                 // Remove old related files
                 foreach (DirectoryWatcher directoryWatcher in _directoryWatchers)
@@ -119,7 +119,7 @@ namespace TombLib.Utils
                     foreach (string file in watchedObj.Files ?? Enumerable.Empty<string>())
                         if (file != null)
                         {
-                            var directoryWatcher = GetDirectoryWatcher(FileSystemUtils.GetDirectoryNameTry(file));
+                            var directoryWatcher = GetDirectoryWatcher(PathC.GetDirectoryNameTry(file));
                             if (directoryWatcher != null)
                                 directoryWatcher._watchedObjsPerFile = AddToArray(directoryWatcher._watchedObjsPerFile,
                                     new KeyValuePair<string, WatchedObj>(file.ToLowerInvariant(), watchedObj));
@@ -371,6 +371,7 @@ namespace TombLib.Utils
                 if (!File.Exists(filePath))
                     return false;
                 // Opening the file, if it files with a specific error code we know that it's locked.
+                // If it's locked it's not worth trying to reload anything.
                 // https://stackoverflow.com/questions/1304/how-to-check-for-file-lock
                 try
                 {
@@ -385,7 +386,7 @@ namespace TombLib.Utils
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "'IsFileLocked' failed..");
+                logger.Error(exc, "'IsFileLocked' failed.");
             }
             return false;
         }

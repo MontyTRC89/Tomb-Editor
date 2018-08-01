@@ -6,8 +6,8 @@ namespace TombEditor.Controls.ContextMenus
 {
     class SelectedGeometryContextMenu : BaseContextMenu
     {
-        public SelectedGeometryContextMenu(Editor editor, Room targetRoom, RectangleInt2 targetArea)
-            : base(editor)
+        public SelectedGeometryContextMenu(Editor editor, IWin32Window owner, Room targetRoom, RectangleInt2 targetArea)
+            : base(editor, owner)
         {
             Items.Add(new ToolStripMenuItem("Add trigger", null, (o, e) =>
             {

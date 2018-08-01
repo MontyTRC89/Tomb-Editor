@@ -8,14 +8,13 @@ namespace TombEditor.Controls.ContextMenus
 {
     class BlockContextMenu : BaseContextMenu
     {
-        private readonly ToolStripMenuItem _itemPaste;
-        public BlockContextMenu(Editor editor, Room targetRoom, VectorInt2 targetBlock)
-            : base(editor)
+        public BlockContextMenu(Editor editor, IWin32Window owner, Room targetRoom, VectorInt2 targetBlock)
+            : base(editor, owner)
         {
-            Items.Add(_itemPaste = new ToolStripMenuItem("Paste", Properties.Resources.general_clipboard_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Paste object", Properties.Resources.general_clipboard_16, (o, e) =>
             {
                 EditorActions.PasteObject(targetBlock);
-            }));
+            }) { Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName) });
             Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>
@@ -23,11 +22,6 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.MoveLara(this, targetBlock);
             }));
             Items.Add(new ToolStripSeparator());
-
-            /*Items.Add(new ToolStripMenuItem("Add camera", Properties.Resources.objects_Camera_16, (o, e) =>
-            {
-                EditorActions.PlaceObject(targetRoom, targetBlock, ItemInstance.FromItemType(_editor.Action.ItemType));
-            }));*/
 
             Items.Add(new ToolStripMenuItem("Add camera", Properties.Resources.objects_Camera_16, (o, e) =>
             {
@@ -53,20 +47,6 @@ namespace TombEditor.Controls.ContextMenus
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new ImportedGeometryInstance());
             }));
-
-            ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
-            ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            ClipboardEvents.ClipboardChanged -= ClipboardEvents_ClipboardChanged;
-            base.Dispose(disposing);
-        }
-
-        private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
-        {
-            _itemPaste.Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName);
         }
     }
 }

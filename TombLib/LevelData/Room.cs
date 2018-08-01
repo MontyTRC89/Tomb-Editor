@@ -29,7 +29,8 @@ namespace TombLib.LevelData
         public event RemovedFromRoomDelegate DeletedEvent;
 
         public const short DefaultHeight = 12;
-        public const short MaxRoomDimensions = 20;
+        public const short DefaultRoomDimensions = 20;
+        public const short MaxRecommendedRoomDimensions = 31;
 
         public string Name { get; set; }
         public VectorInt3 Position { get; set; }
@@ -67,14 +68,16 @@ namespace TombLib.LevelData
             Name = name;
             Level = level;
             AmbientLight = ambientLight;
-            Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
+            Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
+            BuildGeometry();
         }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
             : this(level, sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
         { }
 
-        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight)
+        // Usually it's highly recommended to call FixupNeighborPortals afterwards, to fix neighboring portals.
+        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool useFloor = false)
         {
             int numXSectors = area.Width + 1;
             int numZSectors = area.Height + 1;
@@ -86,7 +89,7 @@ namespace TombLib.LevelData
             // Remove sector based objects if there are any
             var sectorObjects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
             foreach (var instance in sectorObjects)
-                RemoveObject(level, instance);
+                RemoveObjectAndSingularPortalAndKeepAlive(level, instance);
 
             // Build new blocks
             Block[,] newBlocks = new Block[numXSectors, numZSectors];
@@ -95,8 +98,8 @@ namespace TombLib.LevelData
                 {
                     Block oldBlock = GetBlockTry(new VectorInt2(x, z) + offset);
                     newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
-                    if (newBlocks[x, z].Type == BlockType.BorderWall)
-                        newBlocks[x, z].Type = BlockType.Wall;
+                    if (oldBlock == null || newBlocks[x, z].Type == BlockType.BorderWall)
+                        newBlocks[x, z].Type = useFloor ? BlockType.Floor : BlockType.Wall;
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         newBlocks[x, z].Type = BlockType.BorderWall;
@@ -115,31 +118,43 @@ namespace TombLib.LevelData
                 instance.Position -= new Vector3(offset.X * 1024, 0, offset.Y * 1024);
 
             // Add sector based objects again
-            RectangleInt2 newArea = new RectangleInt2(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
             foreach (var instance in sectorObjects)
-                AddObjectCutSectors(level, newArea, instance);
-
-            // Update state
-            BuildGeometry();
+                AddObjectAndSingularPortalCutSectors(level, area, instance);
         }
 
-        public Room Split(Level level, RectangleInt2 area)
+        // Usually it's highly recommended to call FixupNeighborPortals on both rooms afterwards, to fix neighboring portals.
+        public Room Split(Level level, RectangleInt2 area, Room alternateOppositeSplitRoom = null)
         {
             var newRoom = Clone(level, instance => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
             newRoom.Name = "Split from " + Name;
             newRoom.Resize(level, area);
-            List<PortalInstance> portals = Portals.ToList();
+
+            // Setup alternate rooms
+            newRoom.AlternateGroup = AlternateGroup;
+            if (alternateOppositeSplitRoom != null)
+                if (AlternateRoom != null)
+                {
+                    alternateOppositeSplitRoom.AlternateBaseRoom = newRoom;
+                    newRoom.AlternateRoom = alternateOppositeSplitRoom;
+                }
+                else if (AlternateBaseRoom != null)
+                {
+                    alternateOppositeSplitRoom.AlternateRoom = newRoom;
+                    newRoom.AlternateBaseRoom = alternateOppositeSplitRoom;
+                }
 
             // Detect if the room was split by a straight line
             // If this is the case, resize the original room
+            List<PortalInstance> portals = Portals.ToList();
             if (area.X0 == 0 && area.Y0 == 0 && area.X1 == NumXSectors - 1 && area.Y1 < NumZSectors - 1)
             {
                 Resize(level, new RectangleInt2(area.X0, area.Y1 - 1, area.X1, NumZSectors - 1));
-                AddObject(level, new PortalInstance(new RectangleInt2(area.X0 + 1, 0, area.X1 - 1, 0), PortalDirection.WallNegativeZ, newRoom));
+                AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(area.X0 + 1, 0, area.X1 - 1, 0), PortalDirection.WallNegativeZ, newRoom));
+                newRoom.AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(area.X0 + 1, newRoom.NumZSectors - 1, area.X1 - 1, newRoom.NumZSectors - 1), PortalDirection.WallPositiveZ, this));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.Z < 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
@@ -147,11 +162,12 @@ namespace TombLib.LevelData
             else if (area.X0 == 0 && area.Y0 == 0 && area.X1 < NumXSectors - 1 && area.Y1 == NumZSectors - 1)
             {
                 Resize(level, new RectangleInt2(area.X1 - 1, area.Y0, NumXSectors - 1, area.Y1));
-                AddObject(level, new PortalInstance(new RectangleInt2(0, area.Y0 + 1, 0, area.Y1 - 1), PortalDirection.WallNegativeX, newRoom));
+                AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(0, area.Y0 + 1, 0, area.Y1 - 1), PortalDirection.WallNegativeX, newRoom));
+                newRoom.AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(newRoom.NumXSectors - 1, area.Y0 + 1, newRoom.NumXSectors - 1, area.Y1 - 1), PortalDirection.WallPositiveX, this));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.X < 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
@@ -159,25 +175,27 @@ namespace TombLib.LevelData
             else if (area.X0 == 0 && area.Y0 > 0 && area.X1 == NumXSectors - 1 && area.Y1 == NumZSectors - 1)
             {
                 Resize(level, new RectangleInt2(area.X0, 0, area.X1, area.Y0 + 1));
-                AddObject(level, new PortalInstance(new RectangleInt2(area.X0 + 1, NumZSectors - 1, area.X1 - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
+                AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(area.X0 + 1, NumZSectors - 1, area.X1 - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
+                newRoom.AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(area.X0 + 1, 0, area.X1 - 1, 0), PortalDirection.WallNegativeZ, this));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
-                    if (instance.Position.Z > (NumZSectors - 2) * 1024)
+                    if (instance.Position.Z > (NumZSectors - 1) * 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
             else if (area.X0 > 0 && area.Y0 == 0 && area.X1 == NumXSectors - 1 && area.Y1 == NumZSectors - 1)
             {
                 Resize(level, new RectangleInt2(0, area.Y0, area.X0 + 1, area.Y1));
-                AddObject(level, new PortalInstance(new RectangleInt2(NumXSectors - 1, area.Y0 + 1, NumXSectors - 1, area.Y1 - 1), PortalDirection.WallPositiveX, newRoom));
+                AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(NumXSectors - 1, area.Y0 + 1, NumXSectors - 1, area.Y1 - 1), PortalDirection.WallPositiveX, newRoom));
+                newRoom.AddObjectAndSingularPortal(level, new PortalInstance(new RectangleInt2(0, area.Y0 + 1, 0, area.Y1 - 1), PortalDirection.WallNegativeX, this));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
-                    newRoom.AddObjectCutSectors(level, area, portal);
+                    newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
-                    if (instance.Position.Z > (NumXSectors - 2) * 1024)
+                    if (instance.Position.X > (NumXSectors - 1) * 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
             else
@@ -188,8 +206,16 @@ namespace TombLib.LevelData
                         Blocks[x, z].Type = BlockType.Wall;
 
                 // Move objects
-                Vector2 start = new Vector2(area.X0, area.Y0) * 1024.0f;
-                Vector2 end = new Vector2(area.X0 + 1, area.Y1 + 1) * 1024.0f;
+                Vector2 start = (area.Start + new Vector2(1, 1)) * 1024.0f;
+                Vector2 end = (area.End - new Vector2(0, 0)) * 1024.0f;
+                foreach (PortalInstance portal in portals)
+                {
+                    RemoveObjectAndSingularPortalAndKeepAlive(level, portal);
+                    RectangleInt2 validPortalArea = portal.GetValidArea(area);
+                    foreach (PortalInstance splitPortal in portal.SplitIntoRectangles(pos => !validPortalArea.Contains(pos), new VectorInt2()))
+                        AddObjectAndSingularPortal(level, splitPortal);
+                    newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
+                }
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if (instance.Position.X > start.X && instance.Position.Z > start.Y &&
                         instance.Position.X < end.X && instance.Position.Z < end.Y)
@@ -247,7 +273,7 @@ namespace TombLib.LevelData
             DeletedEvent?.Invoke(this);
         }
 
-        public bool Flipped => AlternateRoom != null || AlternateBaseRoom != null;
+        public bool Alternated => AlternateRoom != null || AlternateBaseRoom != null;
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
@@ -322,6 +348,11 @@ namespace TombLib.LevelData
         public Block GetBlock(VectorInt2 pos)
         {
             return Blocks[pos.X, pos.Y];
+        }
+
+        public void SetBlock(VectorInt2 pos, Block block)
+        {
+            Blocks[pos.X, pos.Y] = block;
         }
 
         public Block GetBlockTry(int x, int z)
@@ -767,14 +798,14 @@ namespace TombLib.LevelData
                 NumZSectors * (0.5f * 1024.0f));
         }
 
-        public byte NumXSectors
+        public int NumXSectors
         {
-            get { return (byte)Blocks.GetLength(0); }
+            get { return Blocks.GetLength(0); }
         }
 
-        public byte NumZSectors
+        public int NumZSectors
         {
-            get { return (byte)Blocks.GetLength(1); }
+            get { return Blocks.GetLength(1); }
         }
 
         public override string ToString()
@@ -834,32 +865,16 @@ namespace TombLib.LevelData
             return true;
         }
 
-        public bool AddObjectCutSectors(Level level, RectangleInt2 newArea, SectorBasedObjectInstance instance)
+        private bool AddObjectAndSingularPortalCutSectors(Level level, RectangleInt2 newArea, SectorBasedObjectInstance instance)
         {
             // Determine area
-            RectangleInt2 instanceNewAreaConstraint = newArea.Inflate(-1);
-            if (instance is PortalInstance)
-                switch (((PortalInstance)instance).Direction) // Special constraints for portals on walls
-                {
-                    case PortalDirection.WallPositiveZ:
-                        instanceNewAreaConstraint = newArea.Inflate(-1, 0);
-                        break;
-                    case PortalDirection.WallNegativeZ:
-                        instanceNewAreaConstraint = newArea.Inflate(-1, 0);
-                        break;
-                    case PortalDirection.WallPositiveX:
-                        instanceNewAreaConstraint = newArea.Inflate(0, -1);
-                        break;
-                    case PortalDirection.WallNegativeX:
-                        instanceNewAreaConstraint = newArea.Inflate(0, -1);
-                        break;
-                }
+            RectangleInt2 instanceNewAreaConstraint = instance.GetValidArea(newArea);
             if (!instance.Area.Intersects(instanceNewAreaConstraint))
                 return false;
             RectangleInt2 instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint) - newArea.Start;
 
             // Add object
-            AddObject(level, instance.Clone(instanceNewArea));
+            AddObjectAndSingularPortal(level, instance.Clone(instanceNewArea));
             return true;
         }
 
@@ -910,11 +925,11 @@ namespace TombLib.LevelData
                 {
                     addedObjects.Add(AddObjectAndSingularPortal(level, portal));
                     if (AlternateOpposite != null)
-                        addedObjects.Add(AlternateOpposite.AddObjectAndSingularPortal(level, portal.Clone()));
+                        addedObjects.Add(AlternateOpposite.AddObjectAndSingularPortal(level, (PortalInstance)portal.Clone()));
 
                     addedObjects.Add(portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal));
                     if (portal.AdjoiningRoom.AlternateOpposite != null)
-                        addedObjects.Add(portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
+                        addedObjects.Add(portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, (PortalInstance)oppositePortal.Clone()));
                 }
                 catch
                 {
@@ -933,7 +948,7 @@ namespace TombLib.LevelData
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)
         {
             List<ObjectInstance> result = new List<ObjectInstance>();
-            result.Add(RemoveObjectAndSingularPortal(level, instance));
+            result.Add(RemoveObjectAndSingularPortalAndKeepAlive(level, instance));
 
             // Delete the corresponding other portals if necessary.
             var portal = instance as PortalInstance;
@@ -968,6 +983,81 @@ namespace TombLib.LevelData
             from.RemoveObject(level, instance);
             instance.Position += from.WorldPos - WorldPos;
             AddObject(level, instance);
+        }
+
+        // Fixes portals in neighboring rooms to match those in the current room.
+        // This will preserve properties of the portals, i.e. the opacity.
+        public static void FixupNeighborPortals(Level level, IEnumerable<Room> newRooms_, IEnumerable<Room> oldRooms_, ref HashSet<Room> relevantRooms)
+        {
+            // Required base room
+            List<Room> newRooms = newRooms_.Select(room => room.AlternateBaseRoom ?? room).ToList();
+            List<Room> oldRooms = oldRooms_.Select(room => room.AlternateBaseRoom ?? room).ToList();
+
+            // Add other certainly relevant rooms
+            foreach (Room room in newRooms)
+                relevantRooms.Add(room);
+            foreach (var relevantRoom in relevantRooms.ToArray())
+                if (relevantRoom.AlternateOpposite != null)
+                    relevantRooms.Add(relevantRoom.AlternateOpposite);
+
+            // Remove old portals from those rooms
+            var oldPortals = new List<KeyValuePair<Room, PortalInstance>>();
+            foreach (Room relevantRoom in relevantRooms)
+                if (!newRooms.Contains(relevantRoom) && !newRooms.Contains(relevantRoom.AlternateOpposite))
+                    foreach (PortalInstance portal in relevantRoom.Portals.ToList())
+                        if (oldRooms.Contains(portal.AdjoiningRoom))
+                        {
+                            relevantRoom.RemoveObjectAndSingularPortalAndKeepAlive(level, portal);
+                            oldPortals.Add(new KeyValuePair<Room, PortalInstance>(relevantRoom, portal));
+                        }
+
+            // A helper function
+            Func<Room, Room, PortalInstance, PortalInstance> findBestMatch = (room, roomForWhichToFindMatch, portal) =>
+            {
+                RectangleInt2 oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area) + room.SectorPos;
+                PortalDirection oppositeDirection = PortalInstance.GetOppositeDirection(portal.Direction);
+
+                // Find portal that is closest to the needed spot
+                int bestMatchArea = 0;
+                PortalInstance bestMatch = null;
+                foreach (var oldPortal in oldPortals)
+                    if (oldPortal.Key == roomForWhichToFindMatch &&
+                        oldPortal.Value.Direction == oppositeDirection &&
+                        oldPortal.Value.Area.Intersects(oppositeArea - oldPortal.Key.SectorPos))
+                    {
+                        RectangleInt2 area = oldPortal.Value.Area.Intersect(oppositeArea - oldPortal.Key.SectorPos);
+                        int newMatchArea = (area.Width + 1) * (area.Height + 1);
+                        if (newMatchArea > bestMatchArea)
+                        {
+                            bestMatchArea = newMatchArea;
+                            bestMatch = oldPortal.Value;
+                        }
+                    }
+                if (bestMatch != null)
+                {
+                    bestMatch.AdjoiningRoom = room;
+                    return (PortalInstance)bestMatch.Clone(oppositeArea - portal.AdjoiningRoom.SectorPos);
+                }
+                return new PortalInstance(oppositeArea - portal.AdjoiningRoom.SectorPos, PortalInstance.GetOppositeDirection(portal.Direction), room);
+            };
+
+            // Add new portals where necessary
+            foreach (Room room in newRooms)
+                foreach (PortalInstance portal in room.Portals)
+                    if (!newRooms.Contains(portal.AdjoiningRoom))
+                    {
+                        relevantRooms.Add(portal.AdjoiningRoom);
+                        portal.AdjoiningRoom.AddObjectAndSingularPortal(level, findBestMatch(room, portal.AdjoiningRoom, portal));
+                        if (portal.AdjoiningRoom.AlternateOpposite != null)
+                        {
+                            relevantRooms.Add(portal.AdjoiningRoom.AlternateOpposite);
+                            portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, findBestMatch(room, portal.AdjoiningRoom.AlternateOpposite, portal));
+                        }
+                    }
+
+            // Cleanup
+            foreach (var oldPortal in oldPortals)
+                oldPortal.Value.Delete();
         }
 
         public enum RoomConnectionType

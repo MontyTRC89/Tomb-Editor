@@ -785,7 +785,7 @@ namespace TombLib.LevelData.IO
                         PrjRoom tempAlternateRoom = tempRoom._flipRoom == -1 ? new PrjRoom() : tempRooms[tempRoom._flipRoom];
 
                         var basePortalLinks = new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors];
-                        var alternatePortalLinks = room.Flipped ? new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors] : null;
+                        var alternatePortalLinks = room.Alternated ? new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors] : null;
                         List<RectangleInt2> portalAreaSuggestions = new List<RectangleInt2>();
 
                         // Collect portal data

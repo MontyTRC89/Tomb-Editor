@@ -44,8 +44,6 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public CommandHandler CommandHandler;
-
         public event Action<IEditorEvent> EditorEventRaised;
 
         public void RaiseEvent(IEditorEvent eventObj)
@@ -76,7 +74,7 @@ namespace TombEditor
                 // Validate level
                 int roomCount = value.Rooms.Count(room => room != null);
                 if (roomCount <= 0)
-                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
+                    value.Rooms[0] = new Room(value, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions,
                                               _level.Settings.DefaultAmbientLight, "Room 0");
 
                 // Reset state that was related to the old level
@@ -317,6 +315,7 @@ namespace TombEditor
         {
             public Configuration Previous { get; internal set; }
             public Configuration Current { get; internal set; }
+            public bool UpdateKeyboardShortcuts { get; internal set; } = false;
         }
         private Configuration _configuration;
         public Configuration Configuration
@@ -509,6 +508,16 @@ namespace TombEditor
                 throw new ArgumentNullException();
             RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
         }
+        public void ObjectChange(IEnumerable<ObjectInstance> objects, ObjectChangeType changeType)
+        {
+            foreach (ObjectInstance @object in objects)
+                ObjectChange(@object, changeType, @object.Room);
+        }
+        public void ObjectChange(IEnumerable<ObjectInstance> objects, ObjectChangeType changeType, Room room)
+        {
+            foreach (ObjectInstance @object in objects)
+                ObjectChange(@object, changeType, room);
+        }
 
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
@@ -559,9 +568,10 @@ namespace TombEditor
         public SectorColoringManager SectorColoringManager { get; private set; }
 
         // Notify all components that values of the configuration have changed
-        public void ConfigurationChange()
+        // FIXME: Is it a hack?
+        public void ConfigurationChange(bool updateKeyboardShortcuts = false)
         {
-            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration });
+            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration, UpdateKeyboardShortcuts = updateKeyboardShortcuts });
         }
 
         // Select a room and center the camera
@@ -639,28 +649,32 @@ namespace TombEditor
         }
 
         // Configuration
-        private LevelSettingsWatcher _levelSettingsWatcher { get; set; }
-        FileSystemWatcher configurationWatcher;
-        bool configurationIsLoadedFromFile;
-        private void ConfigurationWatcher_Changed(object sender, FileSystemEventArgs e)
+        private LevelSettingsWatcher _levelSettingsWatcher;
+        private FileSystemWatcherManager _configurationWatcher;
+        private bool _configurationIsLoadedFromFile = false;
+
+        private class ConfigurationWatchedObj : FileSystemWatcherManager.WatchedObj
         {
-            if (Path.GetFullPath(e.FullPath) == Path.GetFullPath(Configuration.FilePath))
+            public Editor Parent;
+            public override IEnumerable<string> Directories => null;
+            public override IEnumerable<string> Files => new[] { Configuration.GetDefaultPath() };
+            public override string Name => "Configuration";
+            public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => other is ConfigurationWatchedObj;
+            public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
-                Configuration configuration = Configuration;
-                if (!FileSystemUtils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
-                    logger.Warn("Unable to load configuration from '" + Path.GetFullPath(Configuration.FilePath) + "' after it changed.");
+                Configuration configuration = Configuration.Load(Configuration.GetDefaultPath());
 
                 // Update configuration
-                SynchronizationContext.Post(o =>
+                Parent.SynchronizationContext.Send(o =>
                 {
                     try
                     {
-                        configurationIsLoadedFromFile = true; // Don't save the configuration again just yet
-                        Configuration = configuration;
+                        Parent._configurationIsLoadedFromFile = true; // Don't save the configuration in a loop.
+                        Parent.Configuration = configuration;
                     }
                     finally
                     {
-                        configurationIsLoadedFromFile = false;
+                        Parent._configurationIsLoadedFromFile = false;
                     }
                 }, null);
             }
@@ -674,20 +688,7 @@ namespace TombEditor
                 Configuration previous = ((ConfigurationChangedEvent)obj).Previous;
                 Configuration current = ((ConfigurationChangedEvent)obj).Current;
 
-                if (!string.Equals(previous?.FilePath ?? "", current?.FilePath ?? "", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    configurationWatcher?.Dispose();
-                    if (!string.IsNullOrEmpty(current?.FilePath))
-                    {
-                        configurationWatcher = new FileSystemWatcher(Path.GetDirectoryName(current.FilePath), Path.GetFileName(current.FilePath));
-                        configurationWatcher.EnableRaisingEvents = true;
-                        configurationWatcher.Created += ConfigurationWatcher_Changed;
-                        configurationWatcher.Deleted += ConfigurationWatcher_Changed;
-                        configurationWatcher.Renamed += ConfigurationWatcher_Changed;
-                        configurationWatcher.Changed += ConfigurationWatcher_Changed;
-                    }
-                }
-                if (!configurationIsLoadedFromFile)
+                if (!_configurationIsLoadedFromFile)
                     current?.SaveTry();
                 if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
                     _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
@@ -710,6 +711,17 @@ namespace TombEditor
                     }
             }
 
+            // Reset notifications, when changeing between 2D and 3D mode
+            // Also reset selected sectors if wanted
+            if (obj is ModeChangedEvent)
+            {
+                var @event = (ModeChangedEvent)obj;
+                if ((@event.Previous == EditorMode.Map2D) != (@event.Current == EditorMode.Map2D))
+                    SendMessage();
+                if (Configuration.Editor_DiscardSelectionOnModeSwitch)
+                    SelectedSectors = SectorSelection.None;
+            }
+
             // Update room selection so that no deleted rooms are selected
             if (obj is RoomListChangedEvent)
             {
@@ -727,7 +739,10 @@ namespace TombEditor
 
             // Update unsaved changes state
             if (obj is IEditorEventCausesUnsavedChanges)
-                _autoSavingTimer.Enabled = _configuration.AutoSave_Enable && HasUnsavedChanges;
+            {
+                HasUnsavedChanges = true;
+                _autoSavingTimer.Enabled = _configuration.AutoSave_Enable;
+            }
 
             // Make sure an object that was removed isn't selected
             if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
@@ -846,18 +861,22 @@ namespace TombEditor
             Configuration = configuration;
             Level = level;
             SectorColoringManager = new SectorColoringManager(this);
+            _configurationWatcher = new FileSystemWatcherManager();
+            _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();
 
             EditorEventRaised += Editor_EditorEventRaised;
+            _configurationIsLoadedFromFile = true;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
+            _configurationIsLoadedFromFile = false;
         }
 
         public void Dispose()
         {
-            configurationWatcher?.Dispose();
             SectorColoringManager?.Dispose();
             _autoSavingTimer?.Dispose();
             _levelSettingsWatcher?.Dispose();
+            _configurationWatcher?.Dispose();
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)

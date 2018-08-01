@@ -3,7 +3,7 @@ using System;
 using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Forms;
-using TombLib;
+using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -18,6 +18,7 @@ namespace TombEditor.ToolWindows
         public RoomOptions()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -94,7 +95,14 @@ namespace TombEditor.ToolWindows
                     butLocked.BackColorUseGeneric = !room.Locked;
                 }
 
-                comboFlipMap.SelectedIndex = room.Flipped ? room.AlternateGroup + 1 : 0;
+                comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
+            }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
             }
         }
 
@@ -103,7 +111,7 @@ namespace TombEditor.ToolWindows
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
             if (selectedRoom == null)
             {
-                selectedRoom = new Room(_editor.Level, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
+                selectedRoom = new Room(_editor.Level, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions,
                                         _editor.Level.Settings.DefaultAmbientLight,
                                         "Room " + comboRoom.SelectedIndex);
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
@@ -120,7 +128,7 @@ namespace TombEditor.ToolWindows
             var room = _editor.SelectedRoom;
             short alternateGroupIndex = (short)(comboFlipMap.SelectedIndex - 1);
 
-            if (room.Flipped)
+            if (room.Alternated)
             {
                 if (alternateGroupIndex == -1)
                 { // Delete flipped room
@@ -285,54 +293,25 @@ namespace TombEditor.ToolWindows
         {
             Room room = _editor.SelectedRoom;
 
-            colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                room.AmbientLight = c.ToFloatColor() * 2.0f;
+                _editor.SelectedRoom.BuildGeometry();
+                _editor.RoomPropertiesChange(room);
+            }))
+            {
+                colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
 
-            panelRoomAmbientLight.BackColor = colorDialog.Color;
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
 
-            _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+                panelRoomAmbientLight.BackColor = colorDialog.Color;
+                room.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+            }
+
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
-        }
-
-        private void butCropRoom_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-        }
-
-        private void butSplitRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.SplitRoom(this);
-        }
-
-        private void butEditRoomName_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormInputBox())
-            {
-                form.Title = "Edit room's name";
-                form.Message = "Insert the name of this room:";
-                form.Value = _editor.SelectedRoom.Name;
-
-                if (form.ShowDialog(this) == DialogResult.Cancel)
-                    return;
-
-                _editor.SelectedRoom.Name = form.Value;
-                _editor.RoomPropertiesChange(_editor.SelectedRoom);
-                _editor.RoomListChange();
-            }
-        }
-
-        private void butRoomUp_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
-        }
-
-        private void butRoomDown_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
@@ -341,17 +320,6 @@ namespace TombEditor.ToolWindows
                 return;
 
             _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void butLocked_Click(object sender, EventArgs e)
-        {
-            butLocked.BackColorUseGeneric = !butLocked.BackColorUseGeneric;
-
-            if (_editor.SelectedRoom.Locked == !butLocked.BackColorUseGeneric)
-                return;
-
-            _editor.SelectedRoom.Locked = !butLocked.BackColorUseGeneric;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }

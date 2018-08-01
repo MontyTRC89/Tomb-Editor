@@ -70,8 +70,8 @@ namespace TombEditor.Controls
                 else
                 {
                     string filePath = settings.MakeAbsolute(errorWad.Path);
-                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(filePath) ?? "";
-                    if (FileSystemUtils.IsFileNotFoundException(errorWad.LoadException))
+                    string fileName = PathC.GetFileNameWithoutExtensionTry(filePath) ?? "";
+                    if (PathC.IsFileNotFoundException(errorWad.LoadException))
                         notifyMessage = "Wad file '" + fileName + "' was not found!\n";
                     else
                         notifyMessage = "Unable to load wad from file '" + fileName + "'.\n";

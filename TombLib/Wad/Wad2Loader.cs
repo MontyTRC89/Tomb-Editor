@@ -156,7 +156,7 @@ namespace TombLib.Wad
 
                 if (data == null && !string.IsNullOrEmpty(FilenameObsolete))
                 {
-                    string fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().FullName), "Sounds\\TR4\\Samples", FilenameObsolete + ".wav");
+                    string fullPath = Path.Combine(PathC.GetDirectoryNameTry(Assembly.GetEntryAssembly().Location), "Sounds\\TR4\\Samples", FilenameObsolete + ".wav");
                     data = File.ReadAllBytes(fullPath);
                 }
 
@@ -586,7 +586,7 @@ namespace TombLib.Wad
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
                         animation.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
 
-                        bool foundNewVelocitiesChunk = false;                        
+                        bool foundNewVelocitiesChunk = false;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Wad2Chunks.AnimationName)
@@ -700,12 +700,12 @@ namespace TombLib.Wad
                         {
                             float acceleration = animation.Acceleration / 65536.0f;
                             animation.EndVelocity = animation.Speed / 65536.0f;
-                            animation.StartVelocity = animation.EndVelocity - acceleration * 
+                            animation.StartVelocity = animation.EndVelocity - acceleration *
                                                       (animation.KeyFrames.Count + 1) * animation.FrameRate;
 
                             float lateralAcceleration = animation.LateralAcceleration / 65536.0f;
                             animation.EndLateralVelocity = animation.LateralSpeed / 65536.0f;
-                            animation.StartLateralVelocity = animation.EndLateralVelocity - lateralAcceleration * 
+                            animation.StartLateralVelocity = animation.EndLateralVelocity - lateralAcceleration *
                                                              (animation.KeyFrames.Count + 1) * animation.FrameRate;
                         }
 

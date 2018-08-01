@@ -87,7 +87,10 @@ namespace TombEditor.Controls
         }
 
         private void EditorEventRaised(IEditorEvent obj)
-        { }
+        {
+            if (obj is Editor.ConfigurationChangedEvent)
+                Invalidate();
+        }
 
         public void ShowTexture(TextureArea area)
         {
@@ -216,6 +219,11 @@ namespace TombEditor.Controls
             selectedTexture.TexCoord1 = texCoordStartQuantized;
             selectedTexture.TexCoord2 = new Vector2(texCoordEndQuantized.X, texCoordStartQuantized.Y);
             selectedTexture.TexCoord3 = texCoordEndQuantized;
+
+            // Avoid mirroring the texture by rectangular selections
+            if ((texCoordStartQuantized.X > texCoordEndQuantized.X) != (texCoordStartQuantized.Y > texCoordEndQuantized.Y))
+                Swap.Do(ref selectedTexture.TexCoord0, ref selectedTexture.TexCoord2);
+
             selectedTexture.Texture = VisibleTexture;
             SelectedTexture = selectedTexture;
         }
@@ -419,9 +427,18 @@ namespace TombEditor.Controls
             if (!(VisibleTexture?.IsAvailable ?? false))
                 return;
 
-            Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
-            MoveToFixedPoint(e.Location, FixedPointInWorld);
+            if (_editor.Configuration.TextureMap_MouseWheelMovesTheTextureInsteadOfZooming)
+            {
+                ViewPosition -= 440.0f * new Vector2(0.0f, e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+                LimitPosition();
+                Invalidate();
+            }
+            else
+            {
+                Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
+                ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+                MoveToFixedPoint(e.Location, FixedPointInWorld);
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -467,8 +484,8 @@ namespace TombEditor.Controls
                     notifyMessage = "Click here to load a new texture file.";
                 else
                 {
-                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
-                    if (FileSystemUtils.IsFileNotFoundException(VisibleTexture?.LoadException))
+                    string fileName = PathC.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
+                    if (PathC.IsFileNotFoundException(VisibleTexture?.LoadException))
                         notifyMessage = "Texture file '" + fileName + "' was not found!\n";
                     else
                         notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";
@@ -518,6 +535,8 @@ namespace TombEditor.Controls
 
         protected virtual void OnPaintSelection(PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+
             // Draw selection
             var selectedTexture = SelectedTexture;
             if (selectedTexture.Texture == VisibleTexture)
@@ -541,6 +560,34 @@ namespace TombEditor.Controls
                 if (DrawTriangle)
                     e.Graphics.DrawPolygon(textureSelectionPenTriangle, new[] { points[0], points[1], points[2] });
 
+                // Draw arrows on quad outlines
+                if (_editor.Configuration.TextureMap_DrawSelectionDirectionIndicators)
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        Vector2 from = new Vector2(points[i].X, points[i].Y);
+                        Vector2 to = new Vector2(points[(i + 1) % 4].X, points[(i + 1) % 4].Y);
+                        Vector2 center = (from + to) * 0.5f;
+                        Vector2 direction = Vector2.Normalize(to - from);
+                        Vector2 directionPerpendicular = new Vector2(direction.Y, -direction.X);
+
+                        Vector2[] arrowEdges = new[] {
+                            new Vector2(-6, 4),
+                            new Vector2(-6, -4),
+                            new Vector2(8, 0)
+                        };
+
+                        // Transform edges into direction (Unfortunately there is no Matrix2x2 type)
+                        PointF[] arrowEdgesTransformed = new PointF[arrowEdges.Length];
+                        for (int j = 0; j < arrowEdges.Length; ++j)
+                            arrowEdgesTransformed[j] = new PointF(
+                                center.X + Vector2.Dot(arrowEdges[j], direction),
+                                center.Y + Vector2.Dot(arrowEdges[j], directionPerpendicular));
+
+                        Brush brush = i == 0 || i == 1 ? textureSelectionPenTriangle.Brush : textureSelectionPen.Brush;
+                        e.Graphics.FillPolygon(brush, arrowEdgesTransformed);
+                    }
+
+                // Draw edges as squares
                 for (int i = 0; i < 4; ++i)
                 {
                     Brush brush = _selectedTexCoordIndex == i ? textureSelectionBrushSelection : textureSelectionPen.Brush;

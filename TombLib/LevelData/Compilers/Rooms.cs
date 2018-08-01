@@ -11,7 +11,7 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
-        private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>();
+        private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
 
         private void BuildRooms()
@@ -32,7 +32,7 @@ namespace TombLib.LevelData.Compilers
             //        _tempRooms.Add(room, trRoom);
             //});
 
-            _staticsTable = new Dictionary<StaticInstance, int>();
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var room in _roomsRemappingDictionary.Keys)
             {
@@ -82,6 +82,9 @@ namespace TombLib.LevelData.Compilers
         {
             tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
 
+            if (room.NumXSectors > Room.MaxRecommendedRoomDimensions || room.NumZSectors > Room.MaxRecommendedRoomDimensions)
+                _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + Room.MaxRecommendedRoomDimensions + " sectors per side cause trouble with rendering.");
+
             var newRoom = new tr_room
             {
                 OriginalRoom = room,
@@ -95,11 +98,11 @@ namespace TombLib.LevelData.Compilers
                     YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * 256.0f),
                     YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * 256.0f)
                 },
-                NumXSectors = room.NumXSectors,
-                NumZSectors = room.NumZSectors,
-                AlternateRoom = room.Flipped && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
-                AlternateGroup = (byte)(room.Flipped && room.AlternateRoom != null ? room.AlternateGroup : 0),
-                Flipped = room.Flipped,
+                NumXSectors = checked((ushort)room.NumXSectors),
+                NumZSectors = checked((ushort)room.NumZSectors),
+                AlternateRoom = room.Alternated && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
+                AlternateGroup = (byte)(room.Alternated && room.AlternateRoom != null ? room.AlternateGroup : 0),
+                Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
                 ReverbInfo = (byte)room.Reverberation,
@@ -407,7 +410,7 @@ namespace TombLib.LevelData.Compilers
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Intensity1 = PackColorTo16Bit(instance.Color),
+                    Intensity1 = PackColorTo16Bit(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X)),
                     Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 ? 0x0001 : instance.Ocb)
                 });
             }
@@ -933,7 +936,7 @@ namespace TombLib.LevelData.Compilers
             //   - Geometry objects should also be make use of this.
 
             // Build lookup
-            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>();
+            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>(new ReferenceEqualityComparer<Room>());
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
                 var vertexLookup = new Dictionary<tr_vertex, ushort>();

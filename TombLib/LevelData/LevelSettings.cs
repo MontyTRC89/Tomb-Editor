@@ -60,7 +60,8 @@ namespace TombLib.LevelData
         TR3 = 3,
         TR4 = 4,
         TR5 = 5,
-        TRNG = 16
+        TRNG = 16,
+        TR5Main = 18
     }
 
     /// <summary>
@@ -170,9 +171,9 @@ namespace TombLib.LevelData
                     return MakeAbsolute(GameDirectory ?? VariableCreate(VariableType.LevelDirectory), VariableType.GameDirectory);
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
-                        return FileSystemUtils.GetFileNameWithoutExtensionTry(LevelFilePath);
+                        return PathC.GetFileNameWithoutExtensionTry(LevelFilePath);
                     if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
-                        return FileSystemUtils.GetFileNameWithoutExtensionTry(Wads[0].Path);
+                        return PathC.GetFileNameWithoutExtensionTry(Wads[0].Path);
                     return "Default";
                 case VariableType.EngineVersion:
                     return GameVersion.ToString();

@@ -28,15 +28,14 @@
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butLocked = new DarkUI.Controls.DarkButton();
+            this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butRoomUp = new DarkUI.Controls.DarkButton();
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butCropRoom = new DarkUI.Controls.DarkButton();
-            this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.comboFlipMap = new DarkUI.Controls.DarkComboBox();
             this.comboReverberation = new DarkUI.Controls.DarkComboBox();
             this.comboMist = new DarkUI.Controls.DarkComboBox();
@@ -188,11 +187,6 @@
             this.darkLabel3.TabIndex = 88;
             this.darkLabel3.Text = "Ambient light";
             // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
-            // 
             // cbNoLensflare
             // 
             this.cbNoLensflare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -220,52 +214,7 @@
             this.butLocked.Name = "butLocked";
             this.butLocked.Size = new System.Drawing.Size(24, 23);
             this.butLocked.TabIndex = 2;
-            this.toolTip.SetToolTip(this.butLocked, "Lock position");
-            this.butLocked.Click += new System.EventHandler(this.butLocked_Click);
-            // 
-            // butRoomUp
-            // 
-            this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
-            this.butRoomUp.Location = new System.Drawing.Point(258, 57);
-            this.butRoomUp.Name = "butRoomUp";
-            this.butRoomUp.Size = new System.Drawing.Size(24, 23);
-            this.butRoomUp.TabIndex = 5;
-            this.toolTip.SetToolTip(this.butRoomUp, "Move room up");
-            this.butRoomUp.Click += new System.EventHandler(this.butRoomUp_Click);
-            // 
-            // butRoomDown
-            // 
-            this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
-            this.butRoomDown.Location = new System.Drawing.Point(258, 86);
-            this.butRoomDown.Name = "butRoomDown";
-            this.butRoomDown.Size = new System.Drawing.Size(24, 23);
-            this.butRoomDown.TabIndex = 6;
-            this.toolTip.SetToolTip(this.butRoomDown, "Move room down");
-            this.butRoomDown.Click += new System.EventHandler(this.butRoomDown_Click);
-            // 
-            // butEditRoomName
-            // 
-            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
-            this.butEditRoomName.Name = "butEditRoomName";
-            this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
-            this.butEditRoomName.TabIndex = 1;
-            this.toolTip.SetToolTip(this.butEditRoomName, "Edit room name");
-            this.butEditRoomName.Click += new System.EventHandler(this.butEditRoomName_Click);
-            // 
-            // butCropRoom
-            // 
-            this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(228, 57);
-            this.butCropRoom.Name = "butCropRoom";
-            this.butCropRoom.Size = new System.Drawing.Size(24, 23);
-            this.butCropRoom.TabIndex = 3;
-            this.toolTip.SetToolTip(this.butCropRoom, "Crop room");
-            this.butCropRoom.Click += new System.EventHandler(this.butCropRoom_Click);
+            this.butLocked.Tag = "LockRoom";
             // 
             // butSplitRoom
             // 
@@ -275,8 +224,47 @@
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
             this.butSplitRoom.TabIndex = 4;
-            this.toolTip.SetToolTip(this.butSplitRoom, "Split room");
-            this.butSplitRoom.Click += new System.EventHandler(this.butSplitRoom_Click);
+            this.butSplitRoom.Tag = "SplitRoom";
+            // 
+            // butRoomUp
+            // 
+            this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
+            this.butRoomUp.Location = new System.Drawing.Point(258, 57);
+            this.butRoomUp.Name = "butRoomUp";
+            this.butRoomUp.Size = new System.Drawing.Size(24, 23);
+            this.butRoomUp.TabIndex = 5;
+            this.butRoomUp.Tag = "MoveRoomUp";
+            // 
+            // butRoomDown
+            // 
+            this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
+            this.butRoomDown.Location = new System.Drawing.Point(258, 86);
+            this.butRoomDown.Name = "butRoomDown";
+            this.butRoomDown.Size = new System.Drawing.Size(24, 23);
+            this.butRoomDown.TabIndex = 6;
+            this.butRoomDown.Tag = "MoveRoomDown";
+            // 
+            // butEditRoomName
+            // 
+            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
+            this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
+            this.butEditRoomName.Name = "butEditRoomName";
+            this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
+            this.butEditRoomName.TabIndex = 1;
+            this.butEditRoomName.Tag = "EditRoomName";
+            // 
+            // butCropRoom
+            // 
+            this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
+            this.butCropRoom.Location = new System.Drawing.Point(228, 57);
+            this.butCropRoom.Name = "butCropRoom";
+            this.butCropRoom.Size = new System.Drawing.Size(24, 23);
+            this.butCropRoom.TabIndex = 3;
+            this.butCropRoom.Tag = "CropRoom";
             // 
             // comboFlipMap
             // 
@@ -319,7 +307,7 @@
             "Pipe"});
             this.comboReverberation.Location = new System.Drawing.Point(202, 168);
             this.comboReverberation.Name = "comboReverberation";
-            this.comboReverberation.Size = new System.Drawing.Size(79, 23);
+            this.comboReverberation.Size = new System.Drawing.Size(81, 23);
             this.comboReverberation.TabIndex = 18;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
@@ -462,7 +450,6 @@
         private DarkUI.Controls.DarkButton butEditRoomName;
         private DarkUI.Controls.DarkButton butCropRoom;
         private DarkUI.Controls.DarkButton butSplitRoom;
-        private System.Windows.Forms.ColorDialog colorDialog;
         private DarkUI.Controls.DarkCheckBox cbNoLensflare;
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkButton butLocked;

@@ -21,9 +21,6 @@ namespace WadTool
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [XmlIgnore]
-        public string FilePath { get; set; }
-
-        [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
         [XmlElement(nameof(Log_MinLevel))]
         public string Log_MinLevelSerialized
@@ -60,7 +57,7 @@ namespace WadTool
         public float GizmoAnimationEditor_ScaleCubeSize { get; set; } = 32.0f;
         public float GizmoAnimationEditor_LineThickness { get; set; } = 8.0f;
 
-        public bool StartUpHelp_Show { get; set; } = true;
+        public bool StartUpHelp_Show { get; set; } = false;
 
         // Do NOT use a list because the xml serliazer will append the loaded values instead of replacing them!!!
         public string[] OldWadSoundPaths3 { get; set; } = new string[]
@@ -143,17 +140,16 @@ namespace WadTool
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 Save(stream);
-            FilePath = path;
         }
 
         public void Save()
         {
-            Save(FilePath);
+            Save(GetDefaultPath());
         }
 
         public void SaveTry()
         {
-            if (!string.IsNullOrEmpty(FilePath))
+            if (!string.IsNullOrEmpty(GetDefaultPath()))
                 try
                 {
                     Save();
@@ -171,11 +167,8 @@ namespace WadTool
 
         public static Configuration Load(string filePath)
         {
-            Configuration result;
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = Load(stream);
-            result.FilePath = filePath;
-            return result;
+                return Load(stream);
         }
 
         public static Configuration Load()
@@ -189,7 +182,7 @@ namespace WadTool
             if (!File.Exists(path))
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration { FilePath = path };
+                return new Configuration();
             }
 
             try
@@ -199,7 +192,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration { FilePath = path };
+                return new Configuration();
             }
         }
     }

@@ -17,22 +17,22 @@ namespace ScriptEditor
 			List<AutocompleteItem> items = new List<AutocompleteItem>();
 
 			// Add key words to the Autocomplete list
-			foreach (var item in objects)
+			foreach (string item in objects)
 			{
 				items.Add(new AutocompleteItem(item));
 			}
 
-			foreach (var item in newCommands)
+			foreach (string item in newCommands)
 			{
 				items.Add(new AutocompleteItem(item));
 			}
 
-			foreach (var item in oldCommands)
+			foreach (string item in oldCommands)
 			{
 				items.Add(new AutocompleteItem(item));
 			}
 
-			foreach (var item in unknown)
+			foreach (string item in unknown)
 			{
 				items.Add(new AutocompleteItem(item));
 			}

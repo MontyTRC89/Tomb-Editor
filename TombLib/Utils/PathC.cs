@@ -72,5 +72,55 @@ namespace TombLib.Utils
             }
             return filename;
         }
+
+        public static bool IsFileNotFoundException(Exception exc)
+        {
+            return exc is FileNotFoundException || exc is DirectoryNotFoundException || exc is DriveNotFoundException;
+        }
+
+        public static string GetFileNameWithoutExtensionTry(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            try
+            {
+                return Path.GetFileNameWithoutExtension(path);
+            }
+            catch
+            {
+                return path;
+            }
+        }
+
+        public static string GetFileNameTry(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            try
+            {
+                return Path.GetFileName(path);
+            }
+            catch
+            {
+                return path;
+            }
+        }
+
+        public static string GetDirectoryNameTry(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            try
+            {
+                return Path.GetDirectoryName(path);
+            }
+            catch
+            {
+                return path;
+            }
+        }
     }
 }

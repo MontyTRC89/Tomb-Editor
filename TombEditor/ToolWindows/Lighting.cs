@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -14,6 +15,7 @@ namespace TombEditor.ToolWindows
         public Lighting()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -111,6 +113,13 @@ namespace TombEditor.ToolWindows
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
             }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+            }
         }
 
         private void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue) where T : struct
@@ -133,10 +142,20 @@ namespace TombEditor.ToolWindows
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 light =>
                 {
-                    colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
-                    if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                        return null;
-                    return colorDialog.Color.ToFloatColor() * 2.0f;
+                    using (var colorDialog = new RealtimeColorDialog(c =>
+                    {
+                        UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
+                        l => { return c.ToFloatColor() * 2.0f; });
+                    }))
+                    {
+                        colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
+
+                        var oldLightColor = colorDialog.Color;
+                        if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                            colorDialog.Color = oldLightColor;
+
+                        return colorDialog.Color.ToFloatColor() * 2.0f;
+                    }
                 });
         }
 
@@ -162,36 +181,6 @@ namespace TombEditor.ToolWindows
         {
             UpdateLight<bool>((light, value) => light.IsDynamicallyUsed == value, (light, value) => light.IsDynamicallyUsed = value,
                 light => cbLightIsDynamicallyUsed.Checked);
-        }
-
-        private void butAddPointLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point));
-        }
-
-        private void butAddShadow_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow));
-        }
-
-        private void butAddSun_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun));
-        }
-
-        private void butAddSpotLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot));
-        }
-
-        private void butAddEffectLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect));
-        }
-
-        private void butAddFogBulb_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb));
         }
 
         private static bool Compare(float firstValue, float secondValue, NumericUpDown control)

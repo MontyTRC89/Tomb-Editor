@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using TombLib.Utils;
 
@@ -14,7 +15,7 @@ namespace TombLib.IO
             Zlib = 1
         }
 
-        private readonly BinaryWriterEx _writer;
+        private readonly BinaryWriterFast _writer;
         private readonly Compression _compression;
         private readonly int _compressionLevel;
         private readonly Stream _baseStream;
@@ -22,7 +23,6 @@ namespace TombLib.IO
         public ChunkWriter(byte[] magicNumber, Stream stream, Compression compression = Compression.None, int compressionLevel = ZLib.DefaultCompressionLevel)
         {
             stream.Write(magicNumber, 0, magicNumber.Length);
-
             _compression = compression;
             _compressionLevel = compressionLevel;
             _baseStream = stream;
@@ -30,84 +30,117 @@ namespace TombLib.IO
             switch (compression)
             {
                 case Compression.None:
-                    _writer = new BinaryWriterEx(stream);
-                    _writer.Write(0);
+                    new BinaryWriter(stream).Write((uint)0);
+                    _writer = new BinaryWriterFast(stream);
                     break;
                 case Compression.Zlib:
-                    new BinaryWriter(stream).Write(0x80000000);
-                    _writer = new BinaryWriterEx(new MemoryStream());
-                    _baseStream = stream;
+                    new BinaryWriter(stream).Write((uint)0x80000000);
+                    _writer = new BinaryWriterFast(new MemoryStream());
                     break;
                 default:
                     throw new ArgumentException("compression");
             }
         }
 
+        public ChunkWriter(byte[] magicNumber, BinaryWriterFast fastWriter)
+        {
+            fastWriter.Write(magicNumber, 0, magicNumber.Length);
+            _writer = fastWriter;
+        }
+
         public void Dispose()
         {
-            switch (_compression)
+            if (_baseStream == null)
+                return;
+
+            try
             {
-                case Compression.Zlib:
-                    try
-                    {
-                        _writer.BaseStream.Position = 0;
+                switch (_compression)
+                {
+                    case Compression.Zlib:
                         byte[] compressedData = ZLib.CompressData(_writer.BaseStream, _compressionLevel);
                         new BinaryWriter(_baseStream).Write(compressedData.Length);
                         _baseStream.Write(compressedData, 0, compressedData.Length);
-                    }
-                    finally
-                    {
-                        _writer.Dispose();
-                    }
-                    break;
+                        break;
+                }
+            }
+            finally
+            {
+                _writer.Dispose();
             }
         }
 
-        public BinaryWriterEx Raw => _writer;
-        public Stream Stream => _writer.BaseStream;
+        public BinaryWriterFast Raw => _writer;
+
+        public struct ChunkWritingState : IDisposable
+        {
+            private ChunkWriter _chunkWriter;
+            private long _chunkSizePosition;
+            private long _previousPosition;
+            private long _maximumSize;
+
+            public ChunkWritingState(ChunkWriter chunkWriter, ChunkId chunkID, long maximumSize)
+            {
+                _chunkWriter = chunkWriter;
+
+                // Write chunk ID
+                chunkID.ToStream(chunkWriter._writer);
+
+                // Write chunk size
+                _chunkSizePosition = chunkWriter._writer.Position;
+                LEB128.Write(chunkWriter._writer, 0, maximumSize);
+
+                // Prepare for writeing chunk content
+                _previousPosition = chunkWriter._writer.Position;
+                _maximumSize = maximumSize;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Dispose()
+            {
+                // Update chunk size
+                long newPosition = _chunkWriter._writer.Position;
+                long chunkSize = newPosition - _previousPosition;
+                _chunkWriter._writer.Position = _chunkSizePosition;
+                LEB128.Write(_chunkWriter._writer, chunkSize, _maximumSize);
+                _chunkWriter._writer.Position = newPosition;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ChunkWritingState WriteChunk(ChunkId chunkID, long maximumSize = LEB128.MaximumSize4Byte) => new ChunkWritingState(this, chunkID, maximumSize);
 
         public delegate void WriteChunkDelegate();
+
         public void WriteChunk(ChunkId chunkID, WriteChunkDelegate writeChunk, long maximumSize = LEB128.MaximumSize4Byte)
         {
-            // Write chunk ID
-            chunkID.ToStream(_writer);
-
-            // Write chunk size
-            long chunkSizePosition = _writer.BaseStream.Position;
-            LEB128.Write(_writer, 0, maximumSize);
-
-            // Write chunk content
-            long previousPosition = _writer.BaseStream.Position;
-            writeChunk();
-            long newPosition = _writer.BaseStream.Position;
-
-            // Update chunk size
-            long chunkSize = newPosition - previousPosition;
-            _writer.BaseStream.Position = chunkSizePosition;
-            LEB128.Write(_writer, chunkSize, maximumSize);
-            _writer.BaseStream.Position = newPosition;
+            using (WriteChunk(chunkID, maximumSize))
+                writeChunk();
         }
 
         public void WriteChunkWithChildren(ChunkId chunkID, WriteChunkDelegate writeChunk, long maximumSize = LEB128.MaximumSize4Byte)
         {
-            WriteChunk(chunkID, () =>
+            using (WriteChunk(chunkID, maximumSize))
             {
                 writeChunk();
                 WriteChunkEnd();
-            }, maximumSize);
+            }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkEnd()
         {
             _writer.Write((byte)0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkEmpty(ChunkId chunkID)
         {
             chunkID.ToStream(_writer);
             LEB128.Write(_writer, 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkBool(ChunkId chunkID, bool value)
         {
             chunkID.ToStream(_writer);
@@ -115,6 +148,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkArrayOfBytes(ChunkId chunkID, byte[] value)
         {
             chunkID.ToStream(_writer);
@@ -122,6 +156,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkInt(ChunkId chunkID, long value)
         {
             chunkID.ToStream(_writer);
@@ -129,13 +164,7 @@ namespace TombLib.IO
             LEB128.Write(_writer, value);
         }
 
-        public void WriteChunkFloat(BinaryWriter _stream, ChunkId chunkID, float value)
-        {
-            chunkID.ToStream(_stream);
-            LEB128.Write(_stream, 4);
-            _stream.Write(value);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkFloat(ChunkId chunkID, double value)
         {
             chunkID.ToStream(_writer);
@@ -143,6 +172,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkVector2(ChunkId chunkID, Vector2 value)
         {
             chunkID.ToStream(_writer);
@@ -150,6 +180,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkVector3(ChunkId chunkID, Vector3 value)
         {
             chunkID.ToStream(_writer);
@@ -157,6 +188,7 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkVector4(ChunkId chunkID, Vector4 value)
         {
             chunkID.ToStream(_writer);
@@ -164,20 +196,13 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
-        public void WriteChunkMatrix4x4(ChunkId chunkID, Matrix4x4 value)
-        {
-            chunkID.ToStream(_writer);
-            LEB128.Write(_writer, 64);
-            _writer.Write(value);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteChunkString(ChunkId chunkID, string value)
         {
             byte[] data = Encoding.UTF8.GetBytes(value);
-
             chunkID.ToStream(_writer);
             LEB128.Write(_writer, data.Length);
-            _writer.Write(data, 0, data.Length);
+            _writer.Write(data);
         }
     }
 }

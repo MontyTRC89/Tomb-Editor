@@ -74,7 +74,7 @@ namespace TombEditor
 
                 // Show message
                 string message = "\nGo to Tools -> Level Settings -> Game Paths to set a valid executable path.";
-                if (FileSystemUtils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
+                if (PathC.IsFileNotFoundException(exc) || !File.Exists(executablePath))
                     message = "Unable to find '" + executablePath + "'. " + message;
                 else
                     message = "Unable to start '" + executablePath + "' because a " + exc.GetType().Name + " occurred (" + exc.Message + "). " + message;

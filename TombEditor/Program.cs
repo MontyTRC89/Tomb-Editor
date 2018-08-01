@@ -26,11 +26,20 @@ namespace TombEditor
             // Setup logging
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
+                // Create configuration file
                 configuration.SaveTry();
 
                 // Setup application
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                Application.ThreadException += (sender, e) =>
+                {
+                    log.HandleException(e.Exception);
+                    using (var dialog = new ThreadExceptionDialog(e.Exception))
+                        if (dialog.ShowDialog() == DialogResult.Abort)
+                            Environment.Exit(1);
+                };
                 Application.AddMessageFilter(new ControlScrollFilter());
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
@@ -42,9 +51,7 @@ namespace TombEditor
                 Editor.Instance = editor;
                 using (FormMain form = new FormMain(editor))
                 {
-                    Editor.Instance.CommandHandler = new CommandHandler(form, editor);
                     form.Show();
-                    form.GenerateMenus();
 
                     if (args.Length > 0) // Open files on start
                         if (args[0].EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
@@ -53,8 +60,6 @@ namespace TombEditor
                             EditorActions.OpenLevel(form, args[0]);
                     Application.Run(form);
                 }
-
-                configuration.SaveTry();
             }
         }
     }

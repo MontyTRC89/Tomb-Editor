@@ -42,7 +42,7 @@
             this.lstMeshes.Location = new System.Drawing.Point(13, 13);
             this.lstMeshes.MaxDragChange = 20;
             this.lstMeshes.Name = "lstMeshes";
-            this.lstMeshes.Size = new System.Drawing.Size(320, 490);
+            this.lstMeshes.Size = new System.Drawing.Size(320, 494);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
             this.lstMeshes.Click += new System.EventHandler(this.lstMeshes_Click);
@@ -54,29 +54,25 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMesh.Location = new System.Drawing.Point(339, 13);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(433, 490);
+            this.panelMesh.Size = new System.Drawing.Size(433, 494);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
             // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btCancel.Location = new System.Drawing.Point(274, 523);
             this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(113, 26);
+            this.btCancel.Size = new System.Drawing.Size(113, 30);
             this.btCancel.TabIndex = 52;
             this.btCancel.Text = "Cancel";
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
             // 
             // btOk
             // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btOk.Location = new System.Drawing.Point(393, 523);
             this.btOk.Name = "btOk";
-            this.btOk.Size = new System.Drawing.Size(113, 26);
+            this.btOk.Size = new System.Drawing.Size(113, 30);
             this.btOk.TabIndex = 53;
             this.btOk.Text = "Ok";
             this.btOk.Click += new System.EventHandler(this.btOk_Click);
@@ -85,15 +81,17 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(792, 573);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.lstMeshes);
             this.Controls.Add(this.btOk);
             this.Controls.Add(this.panelMesh);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FormMesh";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Meshes";
             this.ResumeLayout(false);
 

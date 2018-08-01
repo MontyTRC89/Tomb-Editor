@@ -143,7 +143,7 @@
             1,
             0,
             0,
-            0});
+            262144});
             this.nmScale.MousewheelSingleIncrement = true;
             this.nmScale.Name = "nmScale";
             this.nmScale.Size = new System.Drawing.Size(97, 22);
