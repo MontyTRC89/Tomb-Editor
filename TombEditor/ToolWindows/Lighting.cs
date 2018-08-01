@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -141,10 +142,21 @@ namespace TombEditor.ToolWindows
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 light =>
                 {
-                    colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
-                    if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                        return null;
-                    return colorDialog.Color.ToFloatColor() * 2.0f;
+                    using (var colorDialog = new RealtimeColorDialog(c =>
+                    {
+                        UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
+                        l => { return c.ToFloatColor() * 2.0f; });
+                    }))
+
+                    {
+                        colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
+
+                        var oldLightColor = colorDialog.Color;
+                        if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                            colorDialog.Color = oldLightColor;
+
+                        return colorDialog.Color.ToFloatColor() * 2.0f;
+                    }
                 });
         }
 

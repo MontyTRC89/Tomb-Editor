@@ -28,7 +28,6 @@
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butLocked = new DarkUI.Controls.DarkButton();
@@ -187,11 +186,6 @@
             this.darkLabel3.Size = new System.Drawing.Size(77, 13);
             this.darkLabel3.TabIndex = 88;
             this.darkLabel3.Text = "Ambient light";
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
             // 
             // cbNoLensflare
             // 
@@ -428,6 +422,7 @@
             this.Size = new System.Drawing.Size(284, 194);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -455,7 +450,6 @@
         private DarkUI.Controls.DarkButton butEditRoomName;
         private DarkUI.Controls.DarkButton butCropRoom;
         private DarkUI.Controls.DarkButton butSplitRoom;
-        private System.Windows.Forms.ColorDialog colorDialog;
         private DarkUI.Controls.DarkCheckBox cbNoLensflare;
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkButton butLocked;

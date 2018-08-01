@@ -99,6 +99,9 @@
     <Compile Include="Controls\PanelItemPreview.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\RealtimeColorDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\RenderingPanel.cs">
       <SubType>Component</SubType>
     </Compile>

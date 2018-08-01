@@ -3,7 +3,7 @@ using System;
 using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Forms;
-using TombLib;
+using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -293,13 +293,23 @@ namespace TombEditor.ToolWindows
         {
             Room room = _editor.SelectedRoom;
 
-            colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                room.AmbientLight = c.ToFloatColor() * 2.0f;
+                _editor.SelectedRoom.BuildGeometry();
+                _editor.RoomPropertiesChange(room);
+            }))
+            {
+                colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
 
-            panelRoomAmbientLight.BackColor = colorDialog.Color;
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
 
-            _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+                panelRoomAmbientLight.BackColor = colorDialog.Color;
+                room.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+            }
+
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
         }
