@@ -46,13 +46,14 @@
             // 
             // lblStaticMeshColor
             // 
-            this.darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(0, 11);
-            this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(70, 17);
-            this.darkLabel14.TabIndex = 67;
-            this.darkLabel14.Text = "Static color:";
+            this.lblStaticMeshColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStaticMeshColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblStaticMeshColor.Location = new System.Drawing.Point(0, 11);
+            this.lblStaticMeshColor.Name = "lblStaticMeshColor";
+            this.lblStaticMeshColor.Size = new System.Drawing.Size(70, 17);
+            this.lblStaticMeshColor.TabIndex = 67;
+            this.lblStaticMeshColor.Text = "Static color:";
+            this.lblStaticMeshColor.Visible = false;
             // 
             // panelItem
             // 
@@ -65,14 +66,6 @@
             this.panelItem.Name = "panelItem";
             this.panelItem.Size = new System.Drawing.Size(279, 165);
             this.panelItem.TabIndex = 62;
-            this.lblStaticMeshColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStaticMeshColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblStaticMeshColor.Location = new System.Drawing.Point(0, 11);
-            this.lblStaticMeshColor.Name = "lblStaticMeshColor";
-            this.lblStaticMeshColor.Size = new System.Drawing.Size(70, 17);
-            this.lblStaticMeshColor.TabIndex = 67;
-            this.lblStaticMeshColor.Text = "Static color:";
-            this.lblStaticMeshColor.Visible = false;
             // 
             // panelHeader
             // 
