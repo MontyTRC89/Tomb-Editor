@@ -2482,7 +2482,11 @@ namespace TombEditor
 
             // Unlock rooms
             foreach (Room room in rooms)
-                room.Locked = false;
+                if(room.Locked)
+                {
+                    room.Locked = false;
+                    _editor.RoomPropertiesChange(room);
+                }
             return true;
         }
 
