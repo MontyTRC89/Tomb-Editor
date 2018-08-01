@@ -55,6 +55,7 @@ namespace TombLib.Wad.Catalog
                 case WadGameVersion.TR4_TRNG:
                     return IsNg && numDemoData != 0 ? numDemoData : 370;
                 case WadGameVersion.TR5:
+                case WadGameVersion.TR5Main:
                     return 450;
                 default:
                     throw new ArgumentOutOfRangeException("Unknown game version.");
@@ -168,6 +169,8 @@ namespace TombLib.Wad.Catalog
                     return "Tomb Raider 4";
                 case WadGameVersion.TR5:
                     return "Tomb Raider 5";
+                case WadGameVersion.TR5Main:
+                    return "TR5Main";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -196,6 +199,8 @@ namespace TombLib.Wad.Catalog
                     version = WadGameVersion.TR4_TRNG;
                 else if (stringVersion == "TR5")
                     version = WadGameVersion.TR5;
+                else if (stringVersion == "TR5Main")
+                    version = WadGameVersion.TR5Main;
                 else
                     continue;
 

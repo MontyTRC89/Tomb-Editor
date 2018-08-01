@@ -304,6 +304,7 @@ namespace TombEditor.Forms
             comboGameVersion.Items.Add(GameVersion.TR4);
             comboGameVersion.Items.Add(GameVersion.TRNG);
             comboGameVersion.Items.Add(GameVersion.TR5);
+            comboGameVersion.Items.Add(GameVersion.TR5Main);
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
