@@ -80,6 +80,12 @@ namespace WadTool
                 if (mainSelection == null)
                 {
                     panel3D.CurrentObject = null;
+
+                    butEditAnimations.Visible = false;
+                    butEditSkeleton.Visible = false;
+                    butEditStaticModel.Visible = false;
+                    butEditSpriteSequence.Visible = false;
+                    butEditSound.Visible = false;
                 }
                 else
                 {
@@ -118,6 +124,14 @@ namespace WadTool
                             treeAnimations.Nodes.AddRange(animationsNodes);
                         }
                     }
+
+                    // Update the toolbar below the rendering area
+                    butEditAnimations.Visible = (mainSelection.Value.Id is WadMoveableId);
+                    butEditSkeleton.Visible = (mainSelection.Value.Id is WadMoveableId);
+                    butEditStaticModel.Visible = (mainSelection.Value.Id is WadStaticId);
+                    butEditSpriteSequence.Visible = (mainSelection.Value.Id is WadSpriteSequenceId);
+                    butEditSound.Visible = (mainSelection.Value.Id is WadFixedSoundInfo || 
+                                            mainSelection.Value.Id is WadAdditionalSoundInfoId);
 
                     panel3D.Invalidate();
                 }
@@ -531,6 +545,21 @@ namespace WadTool
         private void editAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.EditAnimations(_tool, this);
+        }
+
+        private void butEditStaticModel_Click(object sender, EventArgs e)
+        {
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
+
+        private void butEditSpriteSequence_Click(object sender, EventArgs e)
+        {
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
+
+        private void butEditSound_Click(object sender, EventArgs e)
+        {
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
     }
 }
