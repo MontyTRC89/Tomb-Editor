@@ -232,12 +232,6 @@
     <Compile Include="Forms\FormOperationDialog.Designer.cs">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormInputBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.Designer.cs">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormFootStepSounds.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -441,9 +435,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormOperationDialog.resx">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormInputBox.resx">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormFootStepSounds.resx">
       <DependentUpon>FormFootStepSounds.cs</DependentUpon>

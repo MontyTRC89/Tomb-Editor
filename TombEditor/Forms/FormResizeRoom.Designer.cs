@@ -152,7 +152,7 @@
             -2147483648});
             this.numericZn.MousewheelSingleIncrement = true;
             this.numericZn.Name = "numericZn";
-            this.numericZn.Size = new System.Drawing.Size(93, 20);
+            this.numericZn.Size = new System.Drawing.Size(93, 22);
             this.numericZn.TabIndex = 7;
             this.numericZn.ValueChanged += new System.EventHandler(this.numericZn_ValueChanged);
             // 
@@ -190,7 +190,7 @@
             -2147483648});
             this.numericZp.MousewheelSingleIncrement = true;
             this.numericZp.Name = "numericZp";
-            this.numericZp.Size = new System.Drawing.Size(93, 20);
+            this.numericZp.Size = new System.Drawing.Size(93, 22);
             this.numericZp.TabIndex = 1;
             this.numericZp.ValueChanged += new System.EventHandler(this.numericZp_ValueChanged);
             // 
@@ -217,7 +217,7 @@
             -2147483648});
             this.numericXp.MousewheelSingleIncrement = true;
             this.numericXp.Name = "numericXp";
-            this.numericXp.Size = new System.Drawing.Size(93, 20);
+            this.numericXp.Size = new System.Drawing.Size(93, 22);
             this.numericXp.TabIndex = 5;
             this.numericXp.ValueChanged += new System.EventHandler(this.numericXp_ValueChanged);
             // 
@@ -244,7 +244,7 @@
             -2147483648});
             this.numericXn.MousewheelSingleIncrement = true;
             this.numericXn.Name = "numericXn";
-            this.numericXn.Size = new System.Drawing.Size(93, 20);
+            this.numericXn.Size = new System.Drawing.Size(93, 22);
             this.numericXn.TabIndex = 3;
             this.numericXn.ValueChanged += new System.EventHandler(this.numericXn_ValueChanged);
             // 
@@ -325,6 +325,8 @@
             this.Controls.Add(this.cbAllowOversizedRooms);
             this.Controls.Add(this.darkLabel6);
             this.Controls.Add(this.optUseWalls);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormResizeRoom";
             this.ShowIcon = false;

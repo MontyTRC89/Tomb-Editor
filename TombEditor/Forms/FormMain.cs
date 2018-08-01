@@ -372,24 +372,25 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
-            // Also, don't process reserved camera keys.
+            // Don't process reserved camera keys
+            if (HotkeySets.ReservedCameraKeys.Contains(keyData))
+                return base.ProcessCmdKey(ref msg, keyData);
 
+            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
             var activeControlType = GetFocusedControl(this).GetType().Name;
-            if (!HotkeySets.ReservedCameraKeys.Contains(keyData) &&
-                (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
-                 (activeControlType != "DarkTextBox"  &&
-                  activeControlType != "DarkComboBox" &&
-                  activeControlType != "DarkListBox"  &&
-                  activeControlType != "UpDownEdit")))
+            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
+                (activeControlType == "DarkTextBox" ||
+                 activeControlType == "DarkComboBox" ||
+                 activeControlType == "DarkListBox" ||
+                 activeControlType == "UpDownEdit"))
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            CommandHandler.ExecuteHotkey(new CommandArgs
             {
-                CommandHandler.ExecuteHotkey(new CommandArgs
-                {
-                    Editor = _editor,
-                    KeyData = keyData,
-                    Window = this
-                });
-            }
+                Editor = _editor,
+                KeyData = keyData,
+                Window = this
+            });
 
             // Don't open menus with the alt key
             if (keyData.HasFlag(Keys.Alt))
