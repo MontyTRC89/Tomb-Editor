@@ -36,7 +36,6 @@
             this.butAddShadow = new DarkUI.Controls.DarkButton();
             this.butAddPointLight = new DarkUI.Controls.DarkButton();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.numIntensity = new DarkUI.Controls.DarkNumericUpDown();
             this.numInnerRange = new DarkUI.Controls.DarkNumericUpDown();
             this.numOuterRange = new DarkUI.Controls.DarkNumericUpDown();
@@ -287,11 +286,6 @@
             this.darkLabel5.Size = new System.Drawing.Size(55, 13);
             this.darkLabel5.TabIndex = 61;
             this.darkLabel5.Text = "Add light";
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
             // 
             // numIntensity
             // 
@@ -575,7 +569,6 @@
         private DarkUI.Controls.DarkButton butAddShadow;
         private DarkUI.Controls.DarkButton butAddPointLight;
         private DarkUI.Controls.DarkLabel darkLabel5;
-        private System.Windows.Forms.ColorDialog colorDialog;
         private DarkUI.Controls.DarkNumericUpDown numIntensity;
         private DarkUI.Controls.DarkNumericUpDown numInnerRange;
         private DarkUI.Controls.DarkNumericUpDown numOuterRange;
