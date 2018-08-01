@@ -373,7 +373,7 @@ namespace TombEditor.Forms
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // Don't process reserved camera keys
-            if (HotkeySets.ReservedCameraKeys.Contains(keyData))
+            if (Hotkey.ReservedCameraKeys.Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
 
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input

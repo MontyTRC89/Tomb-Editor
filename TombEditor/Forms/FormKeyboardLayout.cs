@@ -242,7 +242,7 @@ namespace TombEditor.Forms
             if ((_listeningKeys & Keys.KeyCode) == Keys.None)
                 return;
 
-            if (HotkeySets.ReservedCameraKeys.Contains(_listeningKeys))
+            if (Hotkey.ReservedCameraKeys.Contains(_listeningKeys))
             {
                 DarkMessageBox.Show(this, "This key is reserved for camera movement. Please define another key.", "Reserved key", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
