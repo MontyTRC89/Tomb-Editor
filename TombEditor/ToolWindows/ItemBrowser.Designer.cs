@@ -17,8 +17,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
-            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
             this.panelItem = new TombEditor.Controls.PanelRenderingItem();
+            this.lblStaticMeshColor = new DarkUI.Controls.DarkLabel();
             this.panelHeader = new System.Windows.Forms.Panel();
             this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.panelHeaderRight = new System.Windows.Forms.Panel();
@@ -41,9 +41,10 @@
             this.panelStaticMeshColor.Name = "panelStaticMeshColor";
             this.panelStaticMeshColor.Size = new System.Drawing.Size(67, 23);
             this.panelStaticMeshColor.TabIndex = 4;
+            this.panelStaticMeshColor.Visible = false;
             this.panelStaticMeshColor.Click += new System.EventHandler(this.panelStaticMeshColor_Click);
             // 
-            // darkLabel14
+            // lblStaticMeshColor
             // 
             this.darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -64,6 +65,14 @@
             this.panelItem.Name = "panelItem";
             this.panelItem.Size = new System.Drawing.Size(279, 165);
             this.panelItem.TabIndex = 62;
+            this.lblStaticMeshColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStaticMeshColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblStaticMeshColor.Location = new System.Drawing.Point(0, 11);
+            this.lblStaticMeshColor.Name = "lblStaticMeshColor";
+            this.lblStaticMeshColor.Size = new System.Drawing.Size(70, 17);
+            this.lblStaticMeshColor.TabIndex = 67;
+            this.lblStaticMeshColor.Text = "Static color:";
+            this.lblStaticMeshColor.Visible = false;
             // 
             // panelHeader
             // 
@@ -136,7 +145,7 @@
             // 
             this.panelRightBottom.Controls.Add(this.panelStaticMeshColor);
             this.panelRightBottom.Controls.Add(this.butFindItem);
-            this.panelRightBottom.Controls.Add(this.darkLabel14);
+            this.panelRightBottom.Controls.Add(this.lblStaticMeshColor);
             this.panelRightBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelRightBottom.Location = new System.Drawing.Point(0, 167);
             this.panelRightBottom.Name = "panelRightBottom";
@@ -184,7 +193,7 @@
         #endregion
         private DarkUI.Controls.DarkButton butFindItem;
         private System.Windows.Forms.Panel panelStaticMeshColor;
-        private DarkUI.Controls.DarkLabel darkLabel14;
+        private DarkUI.Controls.DarkLabel lblStaticMeshColor;
         private Controls.PanelRenderingItem panelItem;
         private System.Windows.Forms.Panel panelHeader;
         private System.Windows.Forms.Panel panelHeaderRight;

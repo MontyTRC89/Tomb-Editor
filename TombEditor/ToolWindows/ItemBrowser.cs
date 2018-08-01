@@ -124,9 +124,17 @@ namespace TombEditor.ToolWindows
             if (comboItems.SelectedItem == null)
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
+            {
+                lblStaticMeshColor.Visible = false;
+                panelStaticMeshColor.Visible = false;
                 _editor.ChosenItem = new ItemType(((WadMoveable)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
+            }
             else if (comboItems.SelectedItem is WadStatic)
+            {
+                lblStaticMeshColor.Visible = true;
+                panelStaticMeshColor.Visible = true;
                 _editor.ChosenItem = new ItemType(((WadStatic)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
+            }
         }
 
         private void comboItems_Format(object sender, ListControlConvertEventArgs e)
