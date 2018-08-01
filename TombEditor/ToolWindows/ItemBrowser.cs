@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -99,13 +100,23 @@ namespace TombEditor.ToolWindows
             if (instance == null)
                 return;
 
-            colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                panelStaticMeshColor.BackColor = c;
+                instance.Color = c.ToFloatColor() * 2.0f;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }))
+            {
+                colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
 
-            panelStaticMeshColor.BackColor = colorDialog.Color;
-            instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
-            _editor.ObjectChange(instance, ObjectChangeType.Change);
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
+
+                panelStaticMeshColor.BackColor = colorDialog.Color;
+                instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
