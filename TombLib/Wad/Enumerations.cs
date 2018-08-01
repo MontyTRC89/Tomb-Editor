@@ -6,7 +6,8 @@
         TR2 = 2,
         TR3 = 3,
         TR4_TRNG = 4,
-        TR5 = 5
+        TR5 = 5,
+        TR5Main = 18
     }
 
     public enum WadAnimCommandType : short
