@@ -68,9 +68,9 @@ namespace ScriptEditor.Resources {
         ///The MIP objects are low-resolution polygon models that will use fewer resources.
         ///Distance works by blocks, so a value of 1 shows the MIP until Lara is about 1 block away.
         ///When she gets within that range, the MIP swaps with the actual object.
-        ///A value of 2 makes it 2 blocks, 3 makes it 3 blocks, and so forth.
+        ///A value of 2 makes it 2 blocks, 3 makes it 3 blocks and so forth.
         ///
-        ///Usag [rest of string was truncated]&quot;;.
+        ///Usage [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AnimatingMIP {
             get {
@@ -92,9 +92,9 @@ namespace ScriptEditor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specifies that the script.txt file is for a demo,
-        ///therefore the resulting script.dat file will only have a title level and one playable level specified (the first one defined)
-        ///regardless of how many playable levels are defined in the script.txt file.
+        ///   Looks up a localized string similar to Specifies that the SCRIPT.txt file is for a demo,
+        ///therefore the resulting SCRIPT.dat file will only have a title level and one playable level specified (the first one defined)
+        ///regardless of how many playable levels are defined in the SCRIPT.txt file.
         ///
         ///Usage:
         ///DemoDisc = ENABLED / DISABLED.
@@ -109,7 +109,7 @@ namespace ScriptEditor.Resources {
         ///   Looks up a localized string similar to Information about the EXAMINE[1-3] collectible items.
         ///
         ///The first parameter is the number of the EXAMINE object in the wad file.
-        ///The second parameter is its name displayed in the inventory and must be identical to a string in the english.txt file.
+        ///The second parameter is its name displayed in the inventory and must be identical to a string in the ENGLISH.txt file.
         ///
         ///The {HEIGHT} parameter adjusts the height of the object viewed in the inventory.
         ///It calculates the position of the center of rotation from the top of the screen, converted in hexadecimal value.
@@ -205,7 +205,7 @@ namespace ScriptEditor.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Displays a string of text on the bottom of the screen at the start of the level.
-        ///The string must be identical to a string in the english.txt file.
+        ///The string must be identical to a string in the ENGLISH.txt file.
         ///
         ///Usage:
         ///Legend = {MESSAGE_STRING}.

@@ -91,7 +91,7 @@ namespace TombEditor.ToolWindows
         {
             EditorTool currentTool = _editor.Tool;
             currentTool.Tool = tool;
-            EditorActions.SwitchTool(currentTool);
+            _editor.Tool = currentTool;
         }
 
         private void toolSelection_Click(object sender, EventArgs e)
@@ -173,7 +173,7 @@ namespace TombEditor.ToolWindows
         {
             EditorTool currentTool = _editor.Tool;
             currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
-            EditorActions.SwitchTool(currentTool);
+            _editor.Tool = currentTool;
         }
     }
 }

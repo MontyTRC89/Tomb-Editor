@@ -99,6 +99,9 @@
     <Compile Include="Controls\PanelItemPreview.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\RealtimeColorDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\RenderingPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -164,6 +167,7 @@
     </Compile>
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
     <Compile Include="Utils\LevelFileDialog.cs" />
+    <Compile Include="Utils\WinFormsUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\AnimationTrackBar.resx">

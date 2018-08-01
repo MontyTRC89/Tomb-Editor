@@ -69,6 +69,8 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsNormalBrush = new SolidBrush(SectorColoringInfo.ColorFloor.ToWinFormsColor());
         private static readonly Brush _roomsWallBrush = new SolidBrush(SectorColoringInfo.ColorWall.ToWinFormsColor());
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
+        private static readonly Brush _roomsLockedBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Color.FromArgb(50, 20, 20, 20));
+
 
         public class DepthProbe
         {
@@ -398,12 +400,15 @@ namespace TombEditor.Controls
 
                             // Draw fill color for room
                             Brush colorBrush = _roomsNormalBrush;
+                            RectangleF roomRect = new RectangleF(posX0, posY0, posX1 - posX0, posY1 - posY0);
                             if (room.Block != null && room.Block.Type != BlockType.Floor)
                                 colorBrush = _roomsWallBrush;
                             using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))
-                                e.Graphics.FillRectangle(colorBrush2, posX0, posY0, posX1 - posX0, posY1 - posY0);
+                                e.Graphics.FillRectangle(colorBrush2, roomRect);
                             if (!CheckRoom(room.MinDepth, room.MaxDepth))
-                                e.Graphics.FillRectangle(_roomsOutsideOverdraw, posX0, posY0, posX1 - posX0, posY1 - posY0);
+                                e.Graphics.FillRectangle(_roomsOutsideOverdraw, roomRect);
+                            if(room.Room.Locked)
+                                e.Graphics.FillRectangle(_roomsLockedBrush, roomRect);
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;

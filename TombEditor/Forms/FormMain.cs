@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DarkUI.Controls;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using NLog;
@@ -10,11 +11,15 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Script;
 using TombLib.Utils;
+using System.Collections.Generic;
 
 namespace TombEditor.Forms
 {
     public partial class FormMain : DarkForm
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Editor _editor;
+
         // Dockable tool windows are placed on actual dock panel at runtime.
 
         private readonly ToolWindows.MainView MainView = new ToolWindows.MainView();
@@ -30,17 +35,14 @@ namespace TombEditor.Forms
 
         // Floating tool boxes are placed on 3D view at runtime
         private readonly ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
-
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private readonly Editor _editor;
+        private readonly Dictionary<ToolStripItem, string> _originalShortcutKeyDisplayStrings = new Dictionary<ToolStripItem, string>();
 
         public FormMain(Editor editor)
         {
             InitializeComponent();
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
-            
+
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
@@ -50,10 +52,6 @@ namespace TombEditor.Forms
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
-
-            // Hook window added/removed events.
-            dockArea.ContentAdded += ToolWindow_Added;
-            dockArea.ContentRemoved += ToolWindow_Removed;
 
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
@@ -65,12 +63,14 @@ namespace TombEditor.Forms
 
             // Restore window settings
             LoadWindowLayout(_editor.Configuration);
-
-            logger.Info("Tomb Editor is ready :)");
+            GenerateMenusRecursive(menuStrip.Items);
 
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
+
+            // Done
+            logger.Info("Tomb Editor is ready :)");
         }
 
         protected override void Dispose(bool disposing)
@@ -87,77 +87,6 @@ namespace TombEditor.Forms
             base.Dispose(disposing);
         }
 
-        public void GenerateMenus(bool onlyHotkeys = false)
-        {
-            GenerateMenusRecursive(menuStrip.Items, onlyHotkeys);
-        }
-
-        private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
-        {
-            foreach (object obj in dropDownItems)
-            {
-                ToolStripMenuItem subMenu = obj as ToolStripMenuItem;
-
-                if (subMenu != null)
-                {
-                    if (subMenu.HasDropDownItems)
-                        GenerateMenusRecursive(subMenu.DropDownItems, onlyHotkeys);
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(subMenu.Tag?.ToString()))
-                        {
-                            if(!onlyHotkeys)
-                            {
-                                var command = _editor.CommandHandler.Commands.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper());
-                                if (command != null)
-                                {
-                                    subMenu.Click += (sender, e) => { command.Command.Invoke(); };
-                                    subMenu.Text = command.FriendlyName;
-                                }
-                            }
-
-                            var firstAvailableHotkey = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper())?.Hotkeys.FirstOrDefault();
-                            if (firstAvailableHotkey != null)
-                                subMenu.ShortcutKeyDisplayString = CommandHandler.KeysToString((Keys)(firstAvailableHotkey));
-                            else
-                                subMenu.ShortcutKeyDisplayString = string.Empty;
-                        }
-                    }
-                }
-            }
-        }
-
-        private DarkDockContent FindDockContentByKey(string key)
-        {
-            switch (key)
-            {
-                case "MainView":
-                    return MainView;
-                case "TriggerList":
-                    return TriggerList;
-                case "Lighting":
-                    return Lighting;
-                case "Palette":
-                    return Palette;
-                case "ItemBrowser":
-                case "ObjectBrowser": // Deprecated name
-                    return ItemBrowser;
-                case "RoomOptions":
-                    return RoomOptions;
-                case "SectorOptions":
-                    return SectorOptions;
-                case "TexturePanel":
-                    return TexturePanel;
-                case "ObjectList":
-                    return ObjectList;
-                case "ToolPalette":
-                    return ToolPalette;
-                default:
-                    logger.Warn("Unknown tool window '" + key + "' in configuration.");
-                    return null;
-            }
-        }
-
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Gray out menu options that do not apply
@@ -171,6 +100,7 @@ namespace TombEditor.Forms
 
                 deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
                 bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
+                splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
             }
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -191,6 +121,7 @@ namespace TombEditor.Forms
                 flattenFloorToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn3ToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
+                splitSectorObjectOnSelectionToolStripMenuItem.Enabled = _editor.SelectedObject is SectorBasedObjectInstance && validSectorSelection;
             }
 
             // Update compilation statistics
@@ -258,7 +189,7 @@ namespace TombEditor.Forms
             if (obj is Editor.LevelFileNameChangedEvent || obj is Editor.HasUnsavedChangesChangedEvent)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
-                    FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
+                    PathC.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
                 Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
@@ -267,7 +198,7 @@ namespace TombEditor.Forms
             if (obj is Editor.HasUnsavedChangesChangedEvent)
                 saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
-            // Reload window layout if the configuration changed
+            // Reload window layout and keyboard shortcuts if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var @event = (Editor.ConfigurationChangedEvent)obj;
@@ -277,7 +208,8 @@ namespace TombEditor.Forms
                     @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
 
-                GenerateMenus(true);
+                if(@event.UpdateKeyboardShortcuts)
+                    GenerateMenusRecursive(menuStrip.Items, true);
             }
 
             // Update texture controls
@@ -303,6 +235,90 @@ namespace TombEditor.Forms
             // Quit editor
             if (obj is Editor.EditorQuitEvent)
                 Close();
+        }
+
+        private void GarbageCollectOoriginalShortcutKeyDisplayStrings()
+        {
+            // Clean up old _originalShortcutKeyDisplayStrings
+            foreach (var key in _originalShortcutKeyDisplayStrings.Keys.ToArray())
+                if (key.IsDisposed)
+                    _originalShortcutKeyDisplayStrings.Remove(key);
+        }
+
+        private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
+        {
+            foreach (object obj in dropDownItems)
+            {
+                ToolStripMenuItem subMenu = obj as ToolStripMenuItem;
+
+                if (subMenu != null)
+                {
+                    if (subMenu.HasDropDownItems)
+                        GenerateMenusRecursive(subMenu.DropDownItems, onlyHotkeys);
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(subMenu.Tag?.ToString()))
+                        {
+                            if (!onlyHotkeys)
+                            {
+                                var command = CommandHandler.GetCommand(subMenu.Tag.ToString());
+                                if (command != null)
+                                {
+                                    subMenu.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
+                                    subMenu.Text = command.FriendlyName;
+                                }
+                            }
+
+                            var hotkeysForCommand = _editor.Configuration.Window_HotkeySets[subMenu.Tag.ToString()];
+
+                            // Store original shortcut key display strings
+                            string baseShortcutKeyDisplayString;
+                            if (!_originalShortcutKeyDisplayStrings.TryGetValue(subMenu, out baseShortcutKeyDisplayString))
+                            {
+                                _originalShortcutKeyDisplayStrings.Add(subMenu, subMenu.ShortcutKeyDisplayString);
+                                baseShortcutKeyDisplayString = subMenu.ShortcutKeyDisplayString;
+                            }
+
+                            // Create new shortcut key display
+                            subMenu.ShortcutKeyDisplayString = string.Join(", ",
+                                new[] { baseShortcutKeyDisplayString } // Preserve existing hot keys.
+                                .Concat(hotkeysForCommand.Select(h => h.ToString())) // Add new hot keys
+                                .Where(str => !string.IsNullOrWhiteSpace(str))); // Only those which aren't empty
+                        }
+                    }
+                }
+            }
+        }
+
+        private DarkDockContent FindDockContentByKey(string key)
+        {
+            switch (key)
+            {
+                case "MainView":
+                    return MainView;
+                case "TriggerList":
+                    return TriggerList;
+                case "Lighting":
+                    return Lighting;
+                case "Palette":
+                    return Palette;
+                case "ItemBrowser":
+                case "ObjectBrowser": // Deprecated name
+                    return ItemBrowser;
+                case "RoomOptions":
+                    return RoomOptions;
+                case "SectorOptions":
+                    return SectorOptions;
+                case "TexturePanel":
+                    return TexturePanel;
+                case "ObjectList":
+                    return ObjectList;
+                case "ToolPalette":
+                    return ToolPalette;
+                default:
+                    logger.Warn("Unknown tool window '" + key + "' in configuration.");
+                    return null;
+            }
         }
 
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
@@ -356,7 +372,25 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            _editor.CommandHandler.ProcessHotkeys(keyData, IsFocused(MainView) || IsFocused(TexturePanel));
+            // Don't process reserved camera keys
+            if (Hotkey.ReservedCameraKeys.Contains(keyData))
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
+            var activeControlType = GetFocusedControl(this)?.GetType().Name;
+            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
+                (activeControlType == "DarkTextBox" ||
+                 activeControlType == "DarkComboBox" ||
+                 activeControlType == "DarkListBox" ||
+                 activeControlType == "UpDownEdit"))
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            CommandHandler.ExecuteHotkey(new CommandArgs
+            {
+                Editor = _editor,
+                KeyData = keyData,
+                Window = this
+            });
 
             // Don't open menus with the alt key
             if (keyData.HasFlag(Keys.Alt))
@@ -365,14 +399,9 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private static bool IsFocused(Control control)
+        private static Control GetFocusedControl(ContainerControl control)
         {
-            if (control.Focused)
-                return true;
-            foreach (Control controlInner in control.Controls)
-                if (IsFocused(controlInner))
-                    return true;
-            return false;
+            return (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -469,6 +498,8 @@ namespace TombEditor.Forms
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
+
+            GarbageCollectOoriginalShortcutKeyDisplayStrings();
         }
 
         private void ToolBox_Show(bool show)

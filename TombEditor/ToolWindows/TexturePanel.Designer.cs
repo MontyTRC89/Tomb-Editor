@@ -28,11 +28,11 @@ namespace TombEditor.ToolWindows
             this.butRotate = new DarkUI.Controls.DarkButton();
             this.cmbBlending = new DarkUI.Controls.DarkComboBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.textureSelectionPanel = new System.Windows.Forms.Panel();
             this.butBrowseTexture = new DarkUI.Controls.DarkButton();
+            this.butDeleteTexture = new DarkUI.Controls.DarkButton();
+            this.textureSelectionPanel = new System.Windows.Forms.Panel();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
-            this.butDeleteTexture = new DarkUI.Controls.DarkButton();
             this.panelTextureTools.SuspendLayout();
             this.textureSelectionPanel.SuspendLayout();
             this.SuspendLayout();
@@ -70,8 +70,7 @@ namespace TombEditor.ToolWindows
             this.butMirror.Name = "butMirror";
             this.butMirror.Size = new System.Drawing.Size(23, 23);
             this.butMirror.TabIndex = 11;
-            this.toolTip.SetToolTip(this.butMirror, "Mirror texture");
-            this.butMirror.Click += new System.EventHandler(this.butMirror_Click);
+            this.butMirror.Tag = "MirrorTexture";
             // 
             // butDoubleSide
             // 
@@ -82,8 +81,7 @@ namespace TombEditor.ToolWindows
             this.butDoubleSide.Name = "butDoubleSide";
             this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
             this.butDoubleSide.TabIndex = 10;
-            this.toolTip.SetToolTip(this.butDoubleSide, "Double sided");
-            this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
+            this.butDoubleSide.Tag = "SetTextureDoubleSided";
             // 
             // butTextureSounds
             // 
@@ -94,6 +92,7 @@ namespace TombEditor.ToolWindows
             this.butTextureSounds.Size = new System.Drawing.Size(138, 23);
             this.butTextureSounds.TabIndex = 1;
             this.butTextureSounds.Text = "Texture sounds";
+            this.toolTip.SetToolTip(this.butTextureSounds, "Edit texture sounds...");
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
             // 
             // cmbTileSize
@@ -120,8 +119,8 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Size = new System.Drawing.Size(137, 23);
             this.butAnimationRanges.TabIndex = 0;
+            this.butAnimationRanges.Tag = "EditAnimationRanges";
             this.butAnimationRanges.Text = "Animation ranges";
-            this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
             // 
             // butRotate
             // 
@@ -131,8 +130,7 @@ namespace TombEditor.ToolWindows
             this.butRotate.Name = "butRotate";
             this.butRotate.Size = new System.Drawing.Size(23, 23);
             this.butRotate.TabIndex = 8;
-            this.toolTip.SetToolTip(this.butRotate, "Rotate texture");
-            this.butRotate.Click += new System.EventHandler(this.butRotate_Click);
+            this.butRotate.Tag = "RotateTexture";
             // 
             // cmbBlending
             // 
@@ -152,6 +150,37 @@ namespace TombEditor.ToolWindows
             this.toolTip.SetToolTip(this.cmbBlending, "Blending mode");
             this.cmbBlending.SelectedIndexChanged += new System.EventHandler(this.cmbBlending_SelectedIndexChanged);
             // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
+            // 
+            // butBrowseTexture
+            // 
+            this.butBrowseTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butBrowseTexture.Enabled = false;
+            this.butBrowseTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butBrowseTexture.Image = global::TombEditor.Properties.Resources.general_Open_16;
+            this.butBrowseTexture.Location = new System.Drawing.Point(229, 3);
+            this.butBrowseTexture.Name = "butBrowseTexture";
+            this.butBrowseTexture.Size = new System.Drawing.Size(24, 23);
+            this.butBrowseTexture.TabIndex = 3;
+            this.toolTip.SetToolTip(this.butBrowseTexture, "Replace texture...");
+            this.butBrowseTexture.Click += new System.EventHandler(this.butBrowseTexture_Click);
+            // 
+            // butDeleteTexture
+            // 
+            this.butDeleteTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDeleteTexture.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDeleteTexture.Location = new System.Drawing.Point(258, 3);
+            this.butDeleteTexture.Name = "butDeleteTexture";
+            this.butDeleteTexture.Size = new System.Drawing.Size(24, 23);
+            this.butDeleteTexture.TabIndex = 2;
+            this.toolTip.SetToolTip(this.butDeleteTexture, "Delete texture");
+            this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
+            // 
             // textureSelectionPanel
             // 
             this.textureSelectionPanel.Controls.Add(this.butBrowseTexture);
@@ -164,18 +193,6 @@ namespace TombEditor.ToolWindows
             this.textureSelectionPanel.Size = new System.Drawing.Size(286, 28);
             this.textureSelectionPanel.TabIndex = 11;
             // 
-            // butBrowseTexture
-            // 
-            this.butBrowseTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butBrowseTexture.Enabled = false;
-            this.butBrowseTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBrowseTexture.Image = global::TombEditor.Properties.Resources.general_Open_16;
-            this.butBrowseTexture.Location = new System.Drawing.Point(229, 3);
-            this.butBrowseTexture.Name = "butBrowseTexture";
-            this.butBrowseTexture.Size = new System.Drawing.Size(24, 23);
-            this.butBrowseTexture.TabIndex = 3;
-            this.butBrowseTexture.Click += new System.EventHandler(this.butBrowseTexture_Click);
-            // 
             // butAddTexture
             // 
             this.butAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -185,7 +202,7 @@ namespace TombEditor.ToolWindows
             this.butAddTexture.Name = "butAddTexture";
             this.butAddTexture.Size = new System.Drawing.Size(24, 23);
             this.butAddTexture.TabIndex = 2;
-            this.butAddTexture.Click += new System.EventHandler(this.butAddTexture_Click);
+            this.butAddTexture.Tag = "AddTexture";
             // 
             // comboCurrentTexture
             // 
@@ -197,17 +214,6 @@ namespace TombEditor.ToolWindows
             this.comboCurrentTexture.Size = new System.Drawing.Size(192, 23);
             this.comboCurrentTexture.TabIndex = 0;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
-            // 
-            // butDeleteTexture
-            // 
-            this.butDeleteTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeleteTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDeleteTexture.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteTexture.Location = new System.Drawing.Point(258, 3);
-            this.butDeleteTexture.Name = "butDeleteTexture";
-            this.butDeleteTexture.Size = new System.Drawing.Size(24, 23);
-            this.butDeleteTexture.TabIndex = 2;
-            this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
             // 
             // TexturePanel
             // 

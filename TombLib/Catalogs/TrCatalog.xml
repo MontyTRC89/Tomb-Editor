@@ -4231,4 +4231,883 @@
             <sound id="410" name="Portal loop" fixed_by_default="true"/>
         </sounds>
     </game>
+	<game id="TR5Main">
+        <moveables>
+            <moveable id="0" name="Lara" use_body_from="8"/>
+            <moveable id="1" name="Pistol animation"/>
+            <moveable id="2" name="Uzi animation"/>
+            <moveable id="3" name="Shotgun animation"/>
+            <moveable id="4" name="Grappling gun animation"/>
+            <moveable id="5" name="HK Gun animation"/>
+            <moveable id="6" name="Revolver animation"/>
+            <moveable id="7" name="Flare animation"/>
+            <moveable id="8" name="Lara skin"/>
+            <moveable id="9" name="Lara skin joints"/>
+            <moveable id="10" name="Lara scream"/>
+            <moveable id="11" name="Lara grappling laser"/>
+            <moveable id="12" name="Lara revolver laser"/>
+            <moveable id="13" name="Lara holsters"/>
+            <moveable id="14" name="Lara holsters pistols"/>
+            <moveable id="15" name="Lara holsters uzis"/>
+            <moveable id="16" name="Lara holsters revolver"/>
+            <moveable id="17" name="Lara head1"/>
+            <moveable id="18" name="Lara head2"/>
+            <moveable id="19" name="Lara head3"/>
+            <moveable id="20" name="Lara head4"/>
+            <moveable id="21" name="Actor1 head1"/>
+            <moveable id="22" name="Actor1 head2"/>
+            <moveable id="23" name="Actor2 head1"/>
+            <moveable id="24" name="Actor2 head2"/>
+            <moveable id="25" name="Lara X-Ray"/>
+            <moveable id="26" name="Lara X-Ray 1"/>
+            <moveable id="27" name="Lara X-Ray 2"/>
+            <moveable id="28" name="Crowbar animation"/>
+            <moveable id="29" name="Torch animation"/>
+            <moveable id="30" name="Lara's hair"/>
+            <moveable id="31" name="Guard 1"/>
+            <moveable id="32" name="Frogman with harpoon (TR3)"/>
+            <moveable id="33" name="Guard 2"/>
+            <moveable id="34" name="Tribesman with ax (TR3)"/>
+            <moveable id="35" name="Guard 3"/>
+            <moveable id="36" name="Tribesman with darts (TR3)"/>
+            <moveable id="37" name="Guard 4"/>
+            <moveable id="38" name="Monk (TR2)"/>
+            <moveable id="39" name="Guard laser"/>
+            <moveable id="40" name="Eagle (TR3)"/>
+            <moveable id="41" name="Doberman"/>
+            <moveable id="42" name="Crocodile (TR4)"/>
+            <moveable id="43" name="Crow"/>
+            <moveable id="44" name="Mummy (TR4)"/>
+            <moveable id="45" name="Larson" y_adjust="0.1"/>
+            <moveable id="46" name="Small scorpion (TR4)"/>
+            <moveable id="47" name="Pierre" y_adjust="0.1"/>
+            <moveable id="48" name="Bat (TR4)" x_adjust="3"/>
+            <moveable id="49" name="Armed baddy 1"/>
+            <moveable id="50" name="Guide (TR4)"/>
+            <moveable id="51" name="Armed baddy 2"/>
+            <moveable id="52" name="Monkey (TR3)"/>
+            <moveable id="53" name="Guard 5"/>
+            <moveable id="54" name="Wraith (TR4)"/>
+            <moveable id="55" name="Guard 6"/>
+            <moveable id="56" name="Shark (TR2)"/>
+            <moveable id="57" name="Lion" y_adjust="0.075"/>
+            <moveable id="58" name="Tiger (TR3)"/>
+            <moveable id="59" name="Gladiator" y_adjust="0.1"/>
+            <moveable id="60" name="Knight Templar (TR4)"/>
+            <moveable id="61" name="Roman statue"/>
+            <moveable id="62" name="Mercenary (TR3)"/>
+            <moveable id="63" name="Small dragon" y_adjust="2"/>
+            <moveable id="64" name="T-Rex (TR2)" y_adjust="2"/>
+            <moveable id="65" name="Laser head"/>
+            <moveable id="66" name="Raptor (TR3)"/>
+            <moveable id="67" name="Cyborg" y_adjust="0.030"/>
+            <moveable id="68" name="Skeleton (TR4)"/>
+            <moveable id="69" name="VCI worker"/>
+            <moveable id="70" name="Cobra (TR3)"/>
+            <moveable id="71" name="Lighthing Guide"/>
+            <moveable id="72" name="Jungle Temple statue (TR3)"/>
+            <moveable id="73" name="Invisible ghost"/>
+            <moveable id="74" name="Pirahnas/Fish emitter (TR3)"/>
+            <moveable id="75" name="Reaper"/>
+            <moveable id="76" name="Puna Guy (TR3)"/>
+            <moveable id="77" name="Brown beast"/>
+            <moveable id="78" name="Baddy 1 (TR4)"/>
+            <moveable id="79" name="Lagoon Witch"/>
+            <moveable id="80" name="Baddy 2 (TR4)"/>
+            <moveable id="81" name="Submarine"/>
+            <moveable id="82" name="Flamethrower guy (TR3)"/>
+            <moveable id="83" name="M16 guard"/>
+            <moveable id="84" name="Wolf (TR1)"/>
+            <moveable id="85" name="Dog"/>
+            <moveable id="86" name="Bear (TR1)"/>
+            <moveable id="87" name="The chef"/>
+            <moveable id="88" name="Gorilla (TR1)" x_adjust="-1"/>
+            <moveable id="89" name="Imp"/>
+            <moveable id="90" name="Kayak (TR3)"/>
+            <moveable id="91" name="Gunship" z_adjust="3"/>
+            <moveable id="92" name="Lara kayak animations (TR3)"/>
+            <moveable id="93" name="Little bat"/>
+            <moveable id="94" name="Little rat"/>
+            <moveable id="95" name="Spider"/>
+            <moveable id="96" name="Spider generator"/>
+            <moveable id="97" name="Auto guns"/>
+            <moveable id="98" name="Electricity wires"/>
+            <moveable id="99" name="Dart"/>
+            <moveable id="100" name="Dart emitter"/>
+            <moveable id="101" name="Fast dart emitter"/>
+            <moveable id="102" name="Falling ceiling"/>
+            <moveable id="103" name="Falling block 1"/>
+            <moveable id="104" name="Falling block 2"/>
+            <moveable id="105" name="Crumbling floor"/>
+            <moveable id="106" name="Trapdoor 1"/>
+            <moveable id="107" name="Trapdoor 2"/>
+            <moveable id="108" name="Trapdoor 3"/>
+            <moveable id="109" name="Floor trapdoor 1"/>
+            <moveable id="110" name="Floor trapdoor 2"/>
+            <moveable id="111" name="Ceiling trapdoor 1"/>
+            <moveable id="112" name="Ceiling trapdoor 2"/>
+            <moveable id="113" name="Scaling trapdoor"/>
+            <moveable id="114" name="Rolling ball"/>
+            <moveable id="115" name="Rolling barrel"/>
+            <moveable id="116" name="Spiky floor"/>
+            <moveable id="117" name="Spikes"/>
+            <moveable id="118" name="Ram"/>
+            <moveable id="119" name="Rome hammer"/>
+            <moveable id="120" name="Flame"/>
+            <moveable id="121" name="Big flame"/>
+            <moveable id="122" name="Torch flame"/>
+            <moveable id="123" name="Death flame"/>
+            <moveable id="124" name="Gas fire"/>
+            <moveable id="125" name="Burning roots"/>
+            <moveable id="126" name="Rope"/>
+            <moveable id="127" name="Fire rope"/>
+            <moveable id="128" name="Pole rope"/>
+            <moveable id="129" name="Ventilator"/>
+            <moveable id="130" name="Ventilator"/>
+            <moveable id="131" name="Grappling gun target"/>
+            <moveable id="132" name="One-block platform"/>
+            <moveable id="133" name="Two-block platform"/>
+            <moveable id="134" name="Raising block"/>
+            <moveable id="135" name="Teleport (?)"/>
+            <moveable id="136" name="Headset talk point (?)"/>
+            <moveable id="137" name="Pushable 1"/>
+            <moveable id="138" name="Pushable 2"/>
+            <moveable id="139" name="Pushable 3"/>
+            <moveable id="140" name="Pushable 4"/>
+            <moveable id="141" name="Pushable 5"/>
+            <moveable id="142" name="Robot arm"/>
+            <moveable id="143" name="Death slide"/>
+            <moveable id="144" name="Rocket item"/>
+            <moveable id="145" name="Chaff flare"/>
+            <moveable id="146" name="Satchel bomb"/>
+            <moveable id="147" name="Electric fence"/>
+            <moveable id="148" name="Lift"/>
+            <moveable id="149" name="Bomb"/>
+            <moveable id="150" name="Iris lightning"/>
+            <moveable id="151" name="Monitor"/>
+            <moveable id="152" name="Security screen"/>
+            <moveable id="153" name="Motion sensors"/>
+            <moveable id="154" name="Tight rope"/>
+            <moveable id="155" name="Parallel bars"/>
+            <moveable id="156" name="X-ray controller (dummy item)"/>
+            <moveable id="157" name="Cutscene rope"/>
+            <moveable id="158" name="Flat window"/>
+            <moveable id="159" name="Generic slot 1"/>
+            <moveable id="160" name="Gas emitter"/>
+            <moveable id="161" name="Generic slot 2"/>
+            <moveable id="162" name="Moving laser"/>
+            <moveable id="163" name="Imp rock"/>
+            <moveable id="164" name="Cupboard" Ry_adjust="180"/>
+            <moveable id="165" name="Quad (TR3)"/>
+            <moveable id="166" name="Cupboard" Ry_adjust="180"/>
+            <moveable id="167" name="Lara quad animations (TR3)"/>
+            <moveable id="168" name="Cupboard" Ry_adjust="180"/>
+            <moveable id="169" name="Boat (TR2)"/>
+            <moveable id="170" name="Suitcase"/>
+            <moveable id="171" name="Lara boat animations (TR2)"/>
+            <moveable id="172" name="Puzzle 1"/>
+            <moveable id="173" name="Puzzle 2"/>
+            <moveable id="174" name="Puzzle 3"/>
+            <moveable id="175" name="Puzzle 4"/>
+            <moveable id="176" name="Puzzle 5"/>
+            <moveable id="177" name="Puzzle 6"/>
+            <moveable id="178" name="Puzzle 7"/>
+            <moveable id="179" name="Puzzle 8"/>
+            <moveable id="180" name="Puzzle 1 Combo 1"/>
+            <moveable id="181" name="Puzzle 1 Combo 2"/>
+            <moveable id="182" name="Puzzle 2 Combo 1"/>
+            <moveable id="183" name="Puzzle 2 Combo 2"/>
+            <moveable id="184" name="Puzzle 3 Combo 1"/>
+            <moveable id="185" name="Puzzle 3 Combo 2"/>
+            <moveable id="186" name="Puzzle 4 Combo 1"/>
+            <moveable id="187" name="Puzzle 4 Combo 2"/>
+            <moveable id="188" name="Puzzle 5 Combo 1"/>
+            <moveable id="189" name="Puzzle 5 Combo 2"/>
+            <moveable id="190" name="Puzzle 6 Combo 1"/>
+            <moveable id="191" name="Puzzle 6 Combo 2"/>
+            <moveable id="192" name="Puzzle 7 Combo 1"/>
+            <moveable id="193" name="Puzzle 7 Combo 2"/>
+            <moveable id="194" name="Puzzle 8 Combo 1"/>
+            <moveable id="195" name="Puzzle 8 Combo 2"/>
+            <moveable id="196" name="Key 1"/>
+            <moveable id="197" name="Key 2"/>
+            <moveable id="198" name="Key 3"/>
+            <moveable id="199" name="Key 4"/>
+            <moveable id="200" name="Key 5"/>
+            <moveable id="201" name="Key 6"/>
+            <moveable id="202" name="Key 7"/>
+            <moveable id="203" name="Key 8"/>
+            <moveable id="204" name="Key 1 Combo 1"/>
+            <moveable id="205" name="Key 1 Combo 2"/>
+            <moveable id="206" name="Key 2 Combo 1"/>
+            <moveable id="207" name="Key 2 Combo 2"/>
+            <moveable id="208" name="Key 3 Combo 1"/>
+            <moveable id="209" name="Key 3 Combo 2"/>
+            <moveable id="210" name="Key 4 Combo 1"/>
+            <moveable id="211" name="Key 4 Combo 2"/>
+            <moveable id="212" name="Key 5 Combo 1"/>
+            <moveable id="213" name="Key 5 Combo 2"/>
+            <moveable id="214" name="Key 6 Combo 1"/>
+            <moveable id="215" name="Key 6 Combo 2"/>
+            <moveable id="216" name="Key 7 Combo 1"/>
+            <moveable id="217" name="Key 7 Combo 2"/>
+            <moveable id="218" name="Key 8 Combo 1"/>
+            <moveable id="219" name="Key 8 Combo 2"/>
+            <moveable id="220" name="Pickup item 1" y_adjust="0.04"/>
+            <moveable id="221" name="Pickup item 2"/>
+            <moveable id="222" name="Pickup item 3"/>
+            <moveable id="223" name="Gold rose" y_adjust="0.1"/>
+            <moveable id="224" name="Pickup item 1 combo 1"/>
+            <moveable id="225" name="Pickup item 1 combo 2"/>
+            <moveable id="226" name="Pickup item 2 combo 1"/>
+            <moveable id="227" name="Pickup item 2 combo 2"/>
+            <moveable id="228" name="Pickup item 3 combo 1"/>
+            <moveable id="229" name="Pickup item 3 combo 2"/>
+            <moveable id="230" name="Gold rose combo 1"/>
+            <moveable id="231" name="Gold rose combo 2"/>
+            <moveable id="232" name="Examine 1"/>
+            <moveable id="233" name="Examine 2"/>
+            <moveable id="234" name="Examine 3"/>
+            <moveable id="235" name="Chloroform bottle"/>
+            <moveable id="236" name="Chloroform cloth"/>
+            <moveable id="237" name="Chloroform soaked cloth"/>
+            <moveable id="238" name="Cosh"/>
+            <moveable id="239" name="Hammer item"/>
+            <moveable id="240" name="Crowbar item"/>
+            <moveable id="241" name="Torch item" y_adjust="0.03"/>
+            <moveable id="242" name="Slot empty 1"/>
+            <moveable id="243" name="Slot empty 2"/>
+            <moveable id="244" name="Slot empty 3"/>
+            <moveable id="245" name="Slot empty 4"/>
+            <moveable id="246" name="Slot empty 5"/>
+            <moveable id="247" name="Slot empty 6"/>
+            <moveable id="248" name="Slot empty 7"/>
+            <moveable id="249" name="Slot empty 8"/>
+            <moveable id="250" name="Slot full 1"/>
+            <moveable id="251" name="Slot full 2"/>
+            <moveable id="252" name="Slot full 3"/>
+            <moveable id="253" name="Slot full 4"/>
+            <moveable id="254" name="Slot full 5"/>
+            <moveable id="255" name="Slot full 6"/>
+            <moveable id="256" name="Slot full 7"/>
+            <moveable id="257" name="Slot full 8"/>
+            <moveable id="258" name="Lock 1"/>
+            <moveable id="259" name="Lock 2"/>
+            <moveable id="260" name="Lock 3"/>
+            <moveable id="261" name="Lock 4"/>
+            <moveable id="262" name="Lock 5"/>
+            <moveable id="263" name="Lock 6"/>
+            <moveable id="264" name="Lock 7"/>
+            <moveable id="265" name="Lock 8"/>
+            <moveable id="266" name="Switch type 1"/>
+            <moveable id="267" name="Switch type 2"/>
+            <moveable id="268" name="Switch type 3"/>
+            <moveable id="269" name="Switch type 4"/>
+            <moveable id="270" name="Switch type 5"/>
+            <moveable id="271" name="Switch type 6"/>
+            <moveable id="272" name="Shoot switch 1"/>
+            <moveable id="273" name="Shoot switch 2"/>
+            <moveable id="274" name="Airlock switch"/>
+            <moveable id="275" name="Underwater switch 1"/>
+            <moveable id="276" name="Underwater switch 2"/>
+            <moveable id="277" name="Turn switch"/>
+            <moveable id="278" name="Cog switch" Rx_adjust="-90" y_adjust="0.26"/>
+            <moveable id="279" name="Lever switch"/>
+            <moveable id="280" name="Jump switch"/>
+            <moveable id="281" name="Crowbar switch"/>
+            <moveable id="282" name="Pulley"/>
+            <moveable id="283" name="Crowdove switch"/>
+            <moveable id="284" name="Door 1"/>
+            <moveable id="285" name="Frogman harpoon (TR2)"/>
+            <moveable id="286" name="Door 2"/>
+            <moveable id="287" name="Winged mummy (TR1)"/>
+            <moveable id="288" name="Door 3"/>
+            <moveable id="289" name="Mutant (TR1)"/>
+            <moveable id="290" name="Door 4"/>
+            <moveable id="291" name="Sword of Damocles (TR1)"/>
+            <moveable id="292" name="Door 5"/>
+            <moveable id="293" name="Slamming doors (TR1)"/>
+            <moveable id="294" name="Door 6"/>
+            <moveable id="295" name="Wall disk emitter (TR2)"/>
+            <moveable id="296" name="Door 7"/>
+            <moveable id="297" name="Wall disk (TR2)"/>
+            <moveable id="298" name="Door 8"/>
+            <moveable id="299" name="Tibetan bell switch (TR2)"/>
+            <moveable id="300" name="Door 9"/>
+            <moveable id="301" name="Air fan (TR2)"/>
+            <moveable id="302" name="Door 10"/>
+            <moveable id="303" name="Bounce pad (TR2)"/>
+            <moveable id="304" name="Door 11"/>
+            <moveable id="305" name="Rolling blade (TR2)"/>
+            <moveable id="306" name="Door 12"/>
+            <moveable id="307" name="Statue with blade (TR2)"/>
+            <moveable id="308" name="Door 13"/>
+            <moveable id="309" name="Wall mounted blade (TR2)"/>
+            <moveable id="310" name="Door 14"/>
+            <moveable id="311" name="Temple statue petrified (TR3)"/>
+            <moveable id="312" name="Lift doors 1"/>
+            <moveable id="313" name="Guard with stick (TR3)"/>
+            <moveable id="314" name="Lift doors 2"/>
+            <moveable id="315" name="Sophia Lee (TR3)"/>
+            <moveable id="316" name="Push-pull door 1"/>
+            <moveable id="317" name="Zipline handle (TR3)"/>
+            <moveable id="318" name="Push-pull door 2"/>
+            <moveable id="319" name="Jeep (TR4)"/>
+            <moveable id="320" name="Kick door 1"/>
+            <moveable id="321" name="Lara jeep animations (TR4)"/>
+            <moveable id="322" name="Kick door 2"/>
+            <moveable id="323" name="Baracudda"/>
+            <moveable id="324" name="Underwater door"/>
+            <moveable id="325" name="Sphinx (TR4)"/>
+            <moveable id="326" name="Double doors"/>
+            <moveable id="327" name="Demigod (TR4)"/>
+            <moveable id="328" name="Sequence door"/>
+            <moveable id="329" name="Sequence switch 1"/>
+            <moveable id="330" name="Sequence switch 2"/>
+            <moveable id="331" name="Sequence switch 3"/>
+            <moveable id="332" name="Steel door"/>
+            <moveable id="333" name="God head"/>
+            <moveable id="334" name="Pistols" y_adjust="0.1"/>
+            <moveable id="335" name="Pistol clip"/>
+            <moveable id="336" name="Uzis" y_adjust="0.025"/>
+            <moveable id="337" name="Uzi clip"/>
+            <moveable id="338" name="Shotgun"/>
+            <moveable id="339" name="Shotgun shells 1" y_adjust="0.05"/>
+            <moveable id="340" name="Shotgun shells 2" y_adjust="0.05"/>
+            <moveable id="341" name="Grappling gun" y_adjust="0.025"/>
+            <moveable id="342" name="Grappling type 1"/>
+            <moveable id="343" name="Grappling type 2"/>
+            <moveable id="344" name="Grappling type 3"/>
+            <moveable id="345" name="HK Gun" y_adjust="0.025"/>
+            <moveable id="346" name="HK ammo"/>
+            <moveable id="347" name="Revolver" y_adjust="0.050"/>
+            <moveable id="348" name="Revolver bullets" y_adjust="0.050"/>
+            <moveable id="349" name="Big Medi-Pack" y_adjust="0.1"/>
+            <moveable id="350" name="Small Medi-Pack"/>
+            <moveable id="351" name="Laser sight" y_adjust="0.05"/>
+            <moveable id="352" name="Binoculars" y_adjust="0.07"/>
+            <moveable id="353" name="Silencer"/>
+            <moveable id="354" name="Burning flare" y_adjust="0.1"/>
+            <moveable id="355" name="Flares" y_adjust="0.1"/>
+            <moveable id="356" name="Timer"/>
+            <moveable id="357" name="Inventory passport"/>
+            <moveable id="358" name="Inventory sunglasses"/>
+            <moveable id="359" name="Inventory keys"/>
+            <moveable id="360" name="Inventory headphones"/>
+            <moveable id="361" name="Inventory polaroid"/>
+            <moveable id="362" name="Memcard save"/>
+            <moveable id="363" name="Smoke emitter white"/>
+            <moveable id="364" name="Smoke emitter black"/>
+            <moveable id="365" name="Steam emitter"/>
+            <moveable id="366" name="Earthquake"/>
+            <moveable id="367" name="Bubbles"/>
+            <moveable id="368" name="Waterfall mist"/>
+            <moveable id="369" name="Gun shell"/>
+            <moveable id="370" name="Shotgun shell"/>
+            <moveable id="371" name="Gun flash"/>
+            <moveable id="372" name="Color light"/>
+            <moveable id="373" name="Blinking light"/>
+            <moveable id="374" name="Pulse light"/>
+            <moveable id="375" name="Strobe light"/>
+            <moveable id="376" name="Electrical light"/>
+            <moveable id="377" name="Lens flare"/>
+            <moveable id="378" ai="1" name="AI guard"/>
+            <moveable id="379" ai="1" name="AI ambush"/>
+            <moveable id="380" ai="1" name="AI patrol 1"/>
+            <moveable id="381" ai="1" name="AI modify"/>
+            <moveable id="382" ai="1" name="AI follow"/>
+            <moveable id="383" ai="1" name="AI patrol 2"/>
+            <moveable id="384" ai="1" name="AI X1"/>
+            <moveable id="385" ai="1" name="AI X2"/>
+            <moveable id="386" ai="1" name="Lara start position"/>
+            <moveable id="387" name="Lara position changer"/>
+            <moveable id="388" name="Elevator"/>
+            <moveable id="389" name="Raising cog"/>
+            <moveable id="390" name="Laser"/>
+            <moveable id="391" name="Steam laser"/>
+            <moveable id="392" name="Floor laser"/>
+            <moveable id="393" name="Kill all triggers"/>
+            <moveable id="394" name="Trigger triggerer"/>
+            <moveable id="395" name="High object 1"/>
+            <moveable id="396" name="High object 2"/>
+            <moveable id="397" name="Smash object 1"/>
+            <moveable id="398" name="Smash object 2"/>
+            <moveable id="399" name="Smash object 3"/>
+            <moveable id="400" name="Smash object 4"/>
+            <moveable id="401" name="Smash object 5"/>
+            <moveable id="402" name="Smash object 6"/>
+            <moveable id="403" name="Smash object 7"/>
+            <moveable id="404" name="Smash object 8"/>
+            <moveable id="405" name="Meshswap 1"/>
+            <moveable id="406" name="Meshswap 2"/>
+            <moveable id="407" name="Meshswap 3"/>
+            <moveable id="408" name="Body part"/>
+            <moveable id="409" name="Camera target"/>
+            <moveable id="410" name="Waterfall 1"/>
+            <moveable id="411" name="Waterfall 2"/>
+            <moveable id="413" name="Waterfall 3"/>
+            <moveable id="414" name="Waterfall 4"/>
+            <moveable id="415" name="Waterfall 5"/>
+            <moveable id="416" name="Animating 1"/>
+            <moveable id="417" name="Pushable dead man (TR4)"/>
+            <moveable id="418" name="Animating 2"/>
+            <moveable id="419" name="Chain (TR4)"/>
+            <moveable id="420" name="Animating 3"/>
+            <moveable id="421" name="Plough (TR4)"/>
+            <moveable id="422" name="Animating 4"/>
+            <moveable id="423" name="Stargate (TR4)"/>
+            <moveable id="424" name="Animating 5"/>
+            <moveable id="425" name="Spikeball (TR4)"/>
+            <moveable id="426" name="Animating 6"/>
+            <moveable id="427" name="Sarcophagus (TR4)"/>
+            <moveable id="428" name="Animating 7"/>
+            <moveable id="429" name="Obelisk (TR4)"/>
+            <moveable id="430" name="Animating 8"/>
+            <moveable id="431" name="Floor blade (TR4)"/>
+            <moveable id="432" name="Animating 9"/>
+            <moveable id="433" name="Ceiling blade (TR4)"/>
+            <moveable id="434" name="Animating 10"/>
+            <moveable id="435" name="Bird blade (TR4)"/>
+            <moveable id="436" name="Animating 11"/>
+            <moveable id="437" name="Spikey wall (TR3)"/>
+            <moveable id="438" name="Animating 12"/>
+            <moveable id="439" name="Spinning blade (TR2)"/>
+            <moveable id="440" name="Animating 13"/>
+            <moveable id="441" name="Animating 13_mip"/>
+            <moveable id="442" name="Animating 14"/>
+            <moveable id="443" name="Animating 14_mip"/>
+            <moveable id="444" name="Animating 15"/>
+            <moveable id="445" name="Animating 15_mip"/>
+            <moveable id="446" name="Animating 16"/>
+            <moveable id="447" name="Animating 16_mip"/>
+            <moveable id="448" name="Floor 1 flat"/>
+            <moveable id="449" name="Floor 2 flat"/>
+            <moveable id="450" name="Floor 1 slope 1"/>
+            <moveable id="451" name="Floor 2 slope 1"/>
+            <moveable id="452" name="Floor 1 slope 2"/>
+            <moveable id="453" name="Floor 2 slope 2"/>
+            <moveable id="454" name="Horizon"/>
+            <moveable id="456" name="Binoculars graphics"/>
+            <moveable id="457" name="Target graphics"/>
+            <moveable id="484" name="TR3 Tiger"/>
+        </moveables>
+        <sprite_sequences>
+            <sprite_sequence id="455" name="Sky graphics"/>
+            <sprite_sequence id="458" name="Default sprites"/>
+            <sprite_sequence id="459" name="Misc sprites"/>
+        </sprite_sequences>
+        <sounds max="450">
+            <sound id="0" name="Lara feet"/>
+            <sound id="1" name="Lara climb2"/>
+            <sound id="2" name="Lara no" fixed_by_default="true"/>
+            <sound id="3" name="Lara slipping"/>
+            <sound id="4" name="Lara land"/>
+            <sound id="5" name="Lara climb1"/>
+            <sound id="6" name="Lara holster draw" fixed_by_default="true"/>
+            <sound id="7" name="Lara holster away" fixed_by_default="true"/>
+            <sound id="8" name="Lara fire" fixed_by_default="true"/>
+            <sound id="9" name="Lara reload"/>
+            <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
+            <sound id="11" name="Push block end" fixed_by_default="true"/>
+            <sound id="12" name="Smash glass" fixed_by_default="true"/>
+            <sound id="13" name="Lara climb wall grunt"/>
+            <sound id="14" name="Hk silenced" fixed_by_default="true"/>
+            <sound id="15" name="Office door open"/>
+            <sound id="16" name="Office door clse"/>
+            <sound id="17" name="Lara wet feet"/>
+            <sound id="18" name="Lara wade"/>
+            <sound id="19" name="Smash wood"/>
+            <sound id="20" name="Lara injury nonrnd" fixed_by_default="true"/>
+            <sound id="21" name="Cricket loop"/>
+            <sound id="22" name="Philospher stone"/>
+            <sound id="23" name="Lara jump nonrnd"/>
+            <sound id="24" name="Lara knees shuffle"/>
+            <sound id="25" name="Lara hidden switch"/>
+            <sound id="26" name="Lara climb3"/>
+            <sound id="27" name="Lara bodysl"/>
+            <sound id="28" name="Lara shimmy2"/>
+            <sound id="29" name="Lara jump rnd"/>
+            <sound id="30" name="Lara fall" fixed_by_default="true"/>
+            <sound id="31" name="Lara injury rnd" fixed_by_default="true"/>
+            <sound id="32" name="Lara roll"/>
+            <sound id="33" name="Lara splash" fixed_by_default="true"/>
+            <sound id="34" name="Lara getout"/>
+            <sound id="35" name="Lara swim"/>
+            <sound id="36" name="Lara breath" fixed_by_default="true"/>
+            <sound id="37" name="Lara bubbles" fixed_by_default="true"/>
+            <sound id="38" name="Creature swim"/>
+            <sound id="39" name="Lara use key"/>
+            <sound id="40" name="Lara push2 nonrnd"/>
+            <sound id="41" name="Lara general death"/>
+            <sound id="42" name="Lara knees death"/>
+            <sound id="43" name="Lara uzi fire"/>
+            <sound id="44" name="Lara uzi stop"/>
+            <sound id="45" name="Lara shotgun"/>
+            <sound id="46" name="Lara push1"/>
+            <sound id="47" name="Lara push2 rnd"/>
+            <sound id="48" name="Lara random pushfx"/>
+            <sound id="49" name="Lara shotgun shell" fixed_by_default="true"/>
+            <sound id="50" name="Underwater door"/>
+            <sound id="51" name="Lara pull"/>
+            <sound id="52" name="Lara floating"/>
+            <sound id="53" name="Lara falldeth"/>
+            <sound id="54" name="Lara grabhand"/>
+            <sound id="55" name="Lara grabbody"/>
+            <sound id="56" name="Lara grabfeet"/>
+            <sound id="57" name="Office door squeak"/>
+            <sound id="58" name="Water laps loop"/>
+            <sound id="59" name="Water spout loop"/>
+            <sound id="60" name="Underwater" fixed_by_default="true"/>
+            <sound id="61" name="Underwater switch"/>
+            <sound id="62" name="Lara pickup"/>
+            <sound id="63" name="Pushable sound" fixed_by_default="true"/>
+            <sound id="64" name="Sniper rifle"/>
+            <sound id="65" name="Helicopter loop" fixed_by_default="true"/>
+            <sound id="66" name="Rock fall crumble" fixed_by_default="true"/>
+            <sound id="67" name="Rock fall land" fixed_by_default="true"/>
+            <sound id="68" name="Hk fire" fixed_by_default="true"/>
+            <sound id="69" name="Hk stop" fixed_by_default="true"/>
+            <sound id="70" name="Lara thud" fixed_by_default="true"/>
+            <sound id="71" name="Generic swoosh"/>
+            <sound id="72" name="Blueguard chair"/>
+            <sound id="73" name="Newbox shut"/>
+            <sound id="74" name="Blue/scien dont shoot"/>
+            <sound id="75" name="Blueguard console"/>
+            <sound id="76" name="Shower loop"/>
+            <sound id="77" name="Water loop"/>
+            <sound id="78" name="Fountain loop"/>
+            <sound id="79" name="Waterfall loop" fixed_by_default="true"/>
+            <sound id="80" name="Servo 02"/>
+            <sound id="81" name="Servo 01"/>
+            <sound id="82" name="Blueg getup hoy"/>
+            <sound id="83" name="Blueg/mafia guns"/>
+            <sound id="84" name="Blueg hit/die"/>
+            <sound id="85" name="Blueg jump"/>
+            <sound id="86" name="Blueg chair hit"/>
+            <sound id="87" name="Rich iris elec" fixed_by_default="true"/>
+            <sound id="88" name="Bio breathe out" fixed_by_default="true"/>
+            <sound id="89" name="Generic boot steps"/>
+            <sound id="90" name="Pierre guns"/>
+            <sound id="91" name="Pierre final breath"/>
+            <sound id="92" name="Pierre hit"/>
+            <sound id="93" name="Generic knees fall"/>
+            <sound id="94" name="Lion hit floor"/>
+            <sound id="95" name="Agent/hitman feet"/>
+            <sound id="96" name="*larson argghh*"/>
+            <sound id="97" name="Larson guns"/>
+            <sound id="98" name="*larson groan*"/>
+            <sound id="99" name="Agent/hitman land"/>
+            <sound id="100" name="Lion feet"/>
+            <sound id="101" name="Lion growl"/>
+            <sound id="102" name="Lion attack"/>
+            <sound id="103" name="Lion die"/>
+            <sound id="104" name="Ravenswitch exp" fixed_by_default="true"/>
+            <sound id="105" name="Explosion1" fixed_by_default="true"/>
+            <sound id="106" name="Explosion2" fixed_by_default="true"/>
+            <sound id="107" name="Earthquake loop" fixed_by_default="true"/>
+            <sound id="108" name="Menu rotate" fixed_by_default="true"/>
+            <sound id="109" name="Menu select" fixed_by_default="true"/>
+            <sound id="110" name="Menu empty" fixed_by_default="true"/>
+            <sound id="111" name="Menu choose" fixed_by_default="true"/>
+            <sound id="112" name="Tick tock"/>
+            <sound id="113" name="Menu empty" fixed_by_default="true"/>
+            <sound id="114" name="Menu combine" fixed_by_default="true"/>
+            <sound id="115" name="Menu empty" fixed_by_default="true"/>
+            <sound id="116" name="Menu medi" fixed_by_default="true"/>
+            <sound id="117" name="Lara climb walls noise"/>
+            <sound id="118" name="2guntex fall end"/>
+            <sound id="119" name="Agent/hitman jump"/>
+            <sound id="120" name="Mafia holster draw"/>
+            <sound id="121" name="Revolver" fixed_by_default="true"/>
+            <sound id="122" name="Hitman choke"/>
+            <sound id="123" name="Mafia2 die"/>
+            <sound id="124" name="Mafia2 jump up"/>
+            <sound id="125" name="Mafia2 getdown"/>
+            <sound id="126" name="Mafia2 hit"/>
+            <sound id="127" name="Lara electric loop"/>
+            <sound id="128" name="Lara electric crackles" fixed_by_default="true"/>
+            <sound id="129" name="Hangman laugh offcam" fixed_by_default="true"/>
+            <sound id="130" name="Elec light crackles"/>
+            <sound id="131" name="Loud wind loop"/>
+            <sound id="132" name="Keypad entry no"/>
+            <sound id="133" name="Keypad entry yes"/>
+            <sound id="134" name="Rich teleport" fixed_by_default="true"/>
+            <sound id="135" name="Joby puzzle hatch"/>
+            <sound id="136" name="Soft wind loop"/>
+            <sound id="137" name="Gladiator feet"/>
+            <sound id="138" name="Gladiator attack"/>
+            <sound id="139" name="Gladiator die"/>
+            <sound id="140" name="Gladiator sword"/>
+            <sound id="141" name="Gladiator shield1"/>
+            <sound id="142" name="Gladiator shield2"/>
+            <sound id="143" name="Generic body fall"/>
+            <sound id="144" name="2guntex die"/>
+            <sound id="145" name="Lara spike death"/>
+            <sound id="146" name="Lara death3"/>
+            <sound id="147" name="Rolling ball"/>
+            <sound id="148" name="Blk plat raiseandlow" fixed_by_default="true"/>
+            <sound id="149" name="2guntex fall big" fixed_by_default="true"/>
+            <sound id="150" name="Loop for small fires" fixed_by_default="true"/>
+            <sound id="151" name="Xray scan"/>
+            <sound id="152" name="R xray room lp"/>
+            <sound id="153" name="R hitech room lp"/>
+            <sound id="154" name="Joby waterfall small"/>
+            <sound id="155" name="Joby waterfall big"/>
+            <sound id="156" name="Rats 1" fixed_by_default="true"/>
+            <sound id="157" name="Bats 1" fixed_by_default="true"/>
+            <sound id="158" name="H god hammer qt"/>
+            <sound id="159" name="H god hammer med"/>
+            <sound id="160" name="H god hammer ld"/>
+            <sound id="161" name="Trapdoor open"/>
+            <sound id="162" name="Trapdoor close"/>
+            <sound id="163" name="Rich door beam" fixed_by_default="true"/>
+            <sound id="164" name="Wallsuit out"/>
+            <sound id="165" name="Autogun unfold"/>
+            <sound id="166" name="Autogun door"/>
+            <sound id="167" name="Smash rock" fixed_by_default="true"/>
+            <sound id="168" name="Smash metal" fixed_by_default="true"/>
+            <sound id="169" name="D alien"/>
+            <sound id="170" name="Rich vent impact" fixed_by_default="true"/>
+            <sound id="171" name="Switch elec swap"/>
+            <sound id="172" name="Electric wires" fixed_by_default="true"/>
+            <sound id="173" name="Lava loop"/>
+            <sound id="174" name="Dog dober growl"/>
+            <sound id="175" name="Dog howl"/>
+            <sound id="176" name="Dog attack 1"/>
+            <sound id="177" name="Dog aware"/>
+            <sound id="178" name="Dog foot 1"/>
+            <sound id="179" name="*dog jump*"/>
+            <sound id="180" name="*dog long growl*"/>
+            <sound id="181" name="Dog death"/>
+            <sound id="182" name="Thunder rumble" fixed_by_default="true"/>
+            <sound id="183" name="Hammer god pulse"/>
+            <sound id="184" name="Sword god charge"/>
+            <sound id="185" name="Sword god laser"/>
+            <sound id="186" name="Skeleton appear" fixed_by_default="true"/>
+            <sound id="187" name="Chef knife swoosh"/>
+            <sound id="188" name="Skeleton attack"/>
+            <sound id="189" name="Gen sword swoosh norm"/>
+            <sound id="190" name="Chef attack arghh"/>
+            <sound id="191" name="2guntex feet ld"/>
+            <sound id="192" name="2guntex feet qt"/>
+            <sound id="193" name="2guntex laser fire" fixed_by_default="true"/>
+            <sound id="194" name="2guntex laser firex2"/>
+            <sound id="195" name="2guntex laser start"/>
+            <sound id="196" name="2guntex laser misfire"/>
+            <sound id="197" name="2guntex hit guns" fixed_by_default="true"/>
+            <sound id="198" name="Imp die"/>
+            <sound id="199" name="Imp fall"/>
+            <sound id="200" name="Imp feet"/>
+            <sound id="201" name="Imp attack"/>
+            <sound id="202" name="Imp laugh"/>
+            <sound id="203" name="Imp runaway"/>
+            <sound id="204" name="Sgod swd die1 q"/>
+            <sound id="205" name="Sgod swd die2 vq"/>
+            <sound id="206" name="Hitman guns fire"/>
+            <sound id="207" name="Hitman guns end"/>
+            <sound id="208" name="Fire exting rico"/>
+            <sound id="209" name="Lara underwater engine" fixed_by_default="true"/>
+            <sound id="210" name="Cabinet close wood"/>
+            <sound id="211" name="Cabinet open wood"/>
+            <sound id="212" name="Sword god feet ld"/>
+            <sound id="213" name="Sword god feet qt"/>
+            <sound id="214" name="Sword god feet vqt"/>
+            <sound id="215" name="Sword god sword"/>
+            <sound id="216" name="Gen sword swoosh low"/>
+            <sound id="217" name="Sword god fall"/>
+            <sound id="218" name="Sword god hitmet" fixed_by_default="true"/>
+            <sound id="219" name="Sword god scream"/>
+            <sound id="220" name="Kitchen hob loop"/>
+            <sound id="221" name="Keypad *" fixed_by_default="true"/>
+            <sound id="222" name="Keypad #" fixed_by_default="true"/>
+            <sound id="223" name="Keypad 0" fixed_by_default="true"/>
+            <sound id="224" name="Keypad 1" fixed_by_default="true"/>
+            <sound id="225" name="Keypad 2" fixed_by_default="true"/>
+            <sound id="226" name="Keypad 3" fixed_by_default="true"/>
+            <sound id="227" name="Keypad 4" fixed_by_default="true"/>
+            <sound id="228" name="Keypad 5" fixed_by_default="true"/>
+            <sound id="229" name="Keypad 6" fixed_by_default="true"/>
+            <sound id="230" name="Keypad 7" fixed_by_default="true"/>
+            <sound id="231" name="Keypad 8" fixed_by_default="true"/>
+            <sound id="232" name="Keypad 9" fixed_by_default="true"/>
+            <sound id="233" name="Small fan"/>
+            <sound id="234" name="Klaxon" fixed_by_default="true"/>
+            <sound id="235" name="Lara crossbow" fixed_by_default="true"/>
+            <sound id="236" name="Andy floor door b"/>
+            <sound id="237" name="Andy floor door a"/>
+            <sound id="238" name="J grab open" fixed_by_default="true"/>
+            <sound id="239" name="Willowisp loop" fixed_by_default="true"/>
+            <sound id="240" name="Leap switch"/>
+            <sound id="241" name="Large switch"/>
+            <sound id="242" name="Generic heavy thud"/>
+            <sound id="243" name="Generic heavy feet"/>
+            <sound id="244" name="Swimsuit metal clash" fixed_by_default="true"/>
+            <sound id="245" name="Crow wall item drop"/>
+            <sound id="246" name="Lara sub breathe" fixed_by_default="true"/>
+            <sound id="247" name="Hitman elec short" fixed_by_default="true"/>
+            <sound id="248" name="Weld thru door loop" fixed_by_default="true"/>
+            <sound id="249" name="Imp barrel drop"/>
+            <sound id="250" name="Imp barrel roll" fixed_by_default="true"/>
+            <sound id="251" name="Imp stone hit" fixed_by_default="true"/>
+            <sound id="252" name="Pour dust insertanim"/>
+            <sound id="253" name="J grab top impact"/>
+            <sound id="254" name="Cog andy2"/>
+            <sound id="255" name="J grab impact" fixed_by_default="true"/>
+            <sound id="256" name="J grab motor c" fixed_by_default="true"/>
+            <sound id="257" name="J grab motor b lp" fixed_by_default="true"/>
+            <sound id="258" name="J grab motor a" fixed_by_default="true"/>
+            <sound id="259" name="J grab drop" fixed_by_default="true"/>
+            <sound id="260" name="J grab winch up lp" fixed_by_default="true"/>
+            <sound id="261" name="Footsteps wood cab"/>
+            <sound id="262" name="Footsteps metal cab"/>
+            <sound id="263" name="D floor metal"/>
+            <sound id="264" name="Drawers metal open"/>
+            <sound id="265" name="Drawers metal close"/>
+            <sound id="266" name="Shockwave rumb"/>
+            <sound id="267" name="Andy boat/mill 2"/>
+            <sound id="268" name="Andy boat/mill 1"/>
+            <sound id="269" name="Small stone switch"/>
+            <sound id="270" name="Tv whitenoise loop"/>
+            <sound id="271" name="Lift move" fixed_by_default="true"/>
+            <sound id="272" name="Alarm" fixed_by_default="true"/>
+            <sound id="273" name="Generic sqks low"/>
+            <sound id="274" name="Rich lower beamx"/>
+            <sound id="275" name="Rich nrg beam"/>
+            <sound id="276" name="Beetles" fixed_by_default="true"/>
+            <sound id="277" name="God head testicles" fixed_by_default="true"/>
+            <sound id="278" name="God head charge" fixed_by_default="true"/>
+            <sound id="279" name="God head blast" fixed_by_default="true"/>
+            <sound id="280" name="God head laser loops" fixed_by_default="true"/>
+            <sound id="281" name="Cogs rome" fixed_by_default="true"/>
+            <sound id="282" name="Low rumble lower"/>
+            <sound id="283" name="Gen stone door low"/>
+            <sound id="284" name="Generic sqks nonrnd"/>
+            <sound id="285" name="Underwater fan on"/>
+            <sound id="286" name="Sub controlroom loop"/>
+            <sound id="287" name="D manhole metal"/>
+            <sound id="288" name="Footsteps mud" fixed_by_default="true"/>
+            <sound id="289" name="Footsteps ice" fixed_by_default="true"/>
+            <sound id="290" name="Footsteps gravel" fixed_by_default="true"/>
+            <sound id="291" name="Footsteps sand and grass" fixed_by_default="true"/>
+            <sound id="292" name="Footsteps wood" fixed_by_default="true"/>
+            <sound id="293" name="Footsteps snow" fixed_by_default="true"/>
+            <sound id="294" name="Footsteps metal" fixed_by_default="true"/>
+            <sound id="295" name="Tightrope creak"/>
+            <sound id="296" name="Tightrope walk"/>
+            <sound id="297" name="Drawers wood clse"/>
+            <sound id="298" name="Drawers wood open"/>
+            <sound id="299" name="Swampy attack"/>
+            <sound id="300" name="Bell"/>
+            <sound id="301" name="Joby2 grill 2a"/>
+            <sound id="302" name="Hiss loop small"/>
+            <sound id="303" name="Joby2 crane end"/>
+            <sound id="304" name="Generator hum loop"/>
+            <sound id="305" name="Computer beepies"/>
+            <sound id="306" name="Modem loop"/>
+            <sound id="307" name="Aircon loop"/>
+            <sound id="308" name="Gen stone door"/>
+            <sound id="309" name="Low rumble"/>
+            <sound id="310" name="Searcher"/>
+            <sound id="311" name="Stair snap 01"/>
+            <sound id="312" name="Rich gen loop"/>
+            <sound id="313" name="Zoom view whirr" fixed_by_default="true"/>
+            <sound id="314" name="Rich vent stress"/>
+            <sound id="315" name="Industry ambience loop"/>
+            <sound id="316" name="D swipecard sfx"/>
+            <sound id="317" name="Rich target rise"/>
+            <sound id="318" name="Stair banister bend"/>
+            <sound id="319" name="Joby2 grill 1"/>
+            <sound id="320" name="Joby2 grill 3"/>
+            <sound id="321" name="D lara locker c"/>
+            <sound id="322" name="D lara locker o"/>
+            <sound id="323" name="Stone scrape fast" fixed_by_default="true"/>
+            <sound id="324" name="Joby2 grill 2"/>
+            <sound id="325" name="Lift doors" fixed_by_default="true"/>
+            <sound id="326" name="Lara crowbar item"/>
+            <sound id="327" name="Joby2 crane"/>
+            <sound id="328" name="Generic sqks rnd"/>
+            <sound id="329" name="D slidedoor joby"/>
+            <sound id="330" name="D firedoor joby"/>
+            <sound id="331" name="D metal cls p1"/>
+            <sound id="332" name="D metal cls p2"/>
+            <sound id="333" name="D scifi close"/>
+            <sound id="334" name="D scifi open"/>
+            <sound id="335" name="Teeth spikes" fixed_by_default="true"/>
+            <sound id="336" name="Bat ram creak1"/>
+            <sound id="337" name="Lara lever part1"/>
+            <sound id="338" name="Lara lever part2"/>
+            <sound id="339" name="Lara pole squeaks"/>
+            <sound id="340" name="Lara ropedown loop" fixed_by_default="true"/>
+            <sound id="341" name="D metal open"/>
+            <sound id="342" name="Lara pulley"/>
+            <sound id="343" name="D metal open push"/>
+            <sound id="344" name="D metal kickopen" fixed_by_default="true"/>
+            <sound id="345" name="Lara use object"/>
+            <sound id="346" name="D gate big metal"/>
+            <sound id="347" name="D motor whirr"/>
+            <sound id="348" name="Lara no french" fixed_by_default="true"/>
+            <sound id="349" name="Lara no japanese" fixed_by_default="true"/>
+            <sound id="350" name="Lara crow wrench"/>
+            <sound id="351" name="Lara rope creak" fixed_by_default="true"/>
+            <sound id="352" name="Lara trope fall" fixed_by_default="true"/>
+            <sound id="353" name="D metal cage cls2"/>
+            <sound id="354" name="D metal cage cls1"/>
+            <sound id="355" name="Generic stone grind"/>
+            <sound id="356" name="D stonemetal main"/>
+            <sound id="357" name="D portcullis up"/>
+            <sound id="358" name="D portcullis down"/>
+            <sound id="359" name="D wooden gate creak"/>
+            <sound id="360" name="D padlock break"/>
+            <sound id="361" name="D big thud gen 2" fixed_by_default="true"/>
+            <sound id="362" name="D big thud gen 1"/>
+            <sound id="363" name="D double bang"/>
+            <sound id="364" name="D double creak"/>
+            <sound id="365" name="D crowbar wood"/>
+            <sound id="366" name="D metal lockup crow"/>
+            <sound id="367" name="D metal lockup open"/>
+            <sound id="368" name="D metal cage open" fixed_by_default="true"/>
+            <sound id="369" name="Small click switch"/>
+            <sound id="370" name="Werewolf feet f"/>
+            <sound id="371" name="Werewolf feet b"/>
+            <sound id="372" name="Werewolf attack1"/>
+            <sound id="373" name="Werewolf attack2"/>
+            <sound id="374" name="Werewolf drop"/>
+            <sound id="375" name="Werewolf die"/>
+            <sound id="376" name="Werewolf jump"/>
+            <sound id="377" name="Swat die"/>
+            <sound id="378" name="Andy wheel"/>
+            <sound id="379" name="Barn door normal"/>
+            <sound id="380" name="Barn door slam"/>
+            <sound id="381" name="Ratchet 3shot"/>
+            <sound id="382" name="Andy waterwheel"/>
+            <sound id="383" name="Andy insidemill"/>
+            <sound id="384" name="Andrea coin puzz"/>
+            <sound id="385" name="Mini-sub loop" fixed_by_default="true"/>
+            <sound id="386" name="Lift brake squeal"/>
+            <sound id="387" name="Ratsplash" fixed_by_default="true"/>
+            <sound id="388" name="Snore in"/>
+            <sound id="389" name="Snore out"/>
+            <sound id="390" name="D small vent o/c"/>
+            <sound id="391" name="Rich hologram"/>
+            <sound id="392" name="Hiss loop big" fixed_by_default="true"/>
+            <sound id="393" name="Lift move knacked" fixed_by_default="true"/>
+            <sound id="394" name="Lift hit floor1" fixed_by_default="true"/>
+            <sound id="395" name="Lift hit floor2" fixed_by_default="true"/>
+            <sound id="396" name="Lazer loop"/>
+            <sound id="397" name="Underwater explosion" fixed_by_default="true"/>
+            <sound id="398" name="Underwater torpedo" fixed_by_default="true"/>
+            <sound id="399" name="Teleport crackles" fixed_by_default="true"/>
+            <sound id="400" name="Teleport flash" fixed_by_default="true"/>
+            <sound id="401" name="Lara underwater hit" fixed_by_default="true"/>
+            <sound id="402" name="Ravestick" fixed_by_default="true"/>
+            <sound id="403" name="Underwater chaff" fixed_by_default="true"/>
+            <sound id="404" name="Fishtank water"/>
+            <sound id="405" name="2guntex stair fall"/>
+            <sound id="406" name="Ggod breathe in"/>
+            <sound id="407" name="Ggod breathe out"/>
+            <sound id="408" name="Ggod fire"/>
+            <sound id="409" name="Ggod attack"/>
+            <sound id="410" name="Portal loop" fixed_by_default="true"/>
+        </sounds>
+    </game>
 </xml>

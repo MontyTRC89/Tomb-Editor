@@ -26,7 +26,7 @@ namespace TombLib.Forms
                             switch (MessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +
                         " could not be loaded: " + (dialogDescription.Texture.LoadException?.Message ?? "null") + ". \n" +
                         "Do you want to load a substituting file now?", "Open project",
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
+                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
                             {
                                 case DialogResult.Yes:
                                     dialogDescription.Texture.SetPath(dialogDescription.Settings,
@@ -51,7 +51,7 @@ namespace TombLib.Forms
                             switch (MessageBox.Show(owner, "The objects file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Wad.Path) +
                             " could not be loaded: " + (dialogDescription.Wad.LoadException?.Message ?? "null") + ". \n" +
                             "Do you want to load a substituting file now?", "Open project",
-                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
                             {
                                 case DialogResult.Yes:
                                     dialogDescription.Wad.SetPath(dialogDescription.Settings,

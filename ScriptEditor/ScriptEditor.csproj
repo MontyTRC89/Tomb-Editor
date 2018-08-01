@@ -51,6 +51,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocompleteItems.cs" />
+    <Compile Include="Bookmarks.cs" />
+    <Compile Include="ClipboardMethods.cs" />
+    <Compile Include="Forms\FormReindentRules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormReindentRules.Designer.cs">
+      <DependentUpon>FormReindentRules.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +95,7 @@
     <Compile Include="Controls\ReferenceBrowser.Designer.cs">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="ObjectBrowser.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,14 +118,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommandToolTips.resx</DependentUpon>
     </Compile>
-    <Compile Include="SyntaxColors.cs" />
+    <Compile Include="SyntaxHighlighting.cs" />
     <Compile Include="SyntaxKeyWords.cs" />
-    <Compile Include="SyntaxTidy.cs" />
+    <Compile Include="SyntaxTidying.cs" />
+    <Compile Include="ToolTips.cs" />
+    <Compile Include="UndoRedoHandling.cs" />
+    <Compile Include="VisibleSpaces.cs" />
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormReindentRules.resx">
+      <DependentUpon>FormReindentRules.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSelectPaths.resx">
       <DependentUpon>FormSelectPaths.cs</DependentUpon>

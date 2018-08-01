@@ -298,5 +298,65 @@ namespace ScriptEditor.Properties {
                 this["DocMapVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PreEqualSpace {
+            get {
+                return ((bool)(this["PreEqualSpace"]));
+            }
+            set {
+                this["PreEqualSpace"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PostEqualSpace {
+            get {
+                return ((bool)(this["PostEqualSpace"]));
+            }
+            set {
+                this["PostEqualSpace"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PreCommaSpace {
+            get {
+                return ((bool)(this["PreCommaSpace"]));
+            }
+            set {
+                this["PreCommaSpace"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PostCommaSpace {
+            get {
+                return ((bool)(this["PostCommaSpace"]));
+            }
+            set {
+                this["PostCommaSpace"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ReduceSpaces {
+            get {
+                return ((bool)(this["ReduceSpaces"]));
+            }
+            set {
+                this["ReduceSpaces"] = value;
+            }
+        }
     }
 }

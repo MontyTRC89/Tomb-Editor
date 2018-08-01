@@ -27,25 +27,6 @@ namespace TombLib.IO
             return new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
         }
 
-        public Matrix4x4 ReadMatrix()
-        {
-            return new Matrix4x4(
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-        }
-
-        public BoundingSphere ReadBoundingSphere()
-        {
-            return new BoundingSphere(ReadVector3(), ReadSingle());
-        }
-
-        public BoundingBox ReadBoundingBox()
-        {
-            return new BoundingBox(ReadVector3(), ReadVector3());
-        }
-
         public void ReadBlock<T>(out T output)
         {
             int sizeOfT;

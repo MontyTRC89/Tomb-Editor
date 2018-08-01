@@ -392,8 +392,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.Flipped ||
-                                         currentRoom.Flipped))
+                                        (dec_currentRoom.Alternated ||
+                                         currentRoom.Alternated))
                                     {
                                         break;
                                     }
@@ -446,8 +446,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.Flipped ||
-                                         currentRoom.Flipped))
+                                        (dec_currentRoom.Alternated ||
+                                         currentRoom.Alternated))
                                     {
                                         break;
                                     }
@@ -500,8 +500,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.Flipped ||
-                                         currentRoom.Flipped))
+                                        (dec_currentRoom.Alternated ||
+                                         currentRoom.Alternated))
                                     {
                                         break;
                                     }
@@ -554,8 +554,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.Flipped ||
-                                         currentRoom.Flipped))
+                                        (dec_currentRoom.Alternated ||
+                                         currentRoom.Alternated))
                                     {
                                         break;
                                     }

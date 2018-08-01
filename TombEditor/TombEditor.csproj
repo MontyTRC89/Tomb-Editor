@@ -114,6 +114,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\FormResizeRoom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormResizeRoom.Designer.cs">
+      <DependentUpon>FormResizeRoom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
@@ -145,7 +155,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EditorAction.cs" />
-    <Compile Include="EditorCommands.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="Forms\FormKeyboardLayout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -221,12 +231,6 @@
     </Compile>
     <Compile Include="Forms\FormOperationDialog.Designer.cs">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.Designer.cs">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormFootStepSounds.cs">
       <SubType>Form</SubType>
@@ -382,6 +386,9 @@
     <EmbeddedResource Include="Forms\FormPreviewWad.resx">
       <DependentUpon>FormPreviewWad.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormResizeRoom.resx">
+      <DependentUpon>FormResizeRoom.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormTextureRemap.resx">
       <DependentUpon>FormTextureRemap.cs</DependentUpon>
     </EmbeddedResource>
@@ -428,9 +435,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormOperationDialog.resx">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormInputBox.resx">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormFootStepSounds.resx">
       <DependentUpon>FormFootStepSounds.cs</DependentUpon>
@@ -536,8 +540,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>del "$(TargetDir)TombEditorConfiguration.xml"
+SET ERRORLEVEL = 0</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -548,6 +552,10 @@
     <Error Condition="!Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
   </Target>
   <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

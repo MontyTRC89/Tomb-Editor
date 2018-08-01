@@ -73,6 +73,7 @@ namespace TombEditor.Forms
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.textureMap);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormFootStepSounds";
             this.ShowIcon = false;

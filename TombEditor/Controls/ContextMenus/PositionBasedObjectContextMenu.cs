@@ -5,8 +5,8 @@ namespace TombEditor.Controls.ContextMenus
 {
     class PositionBasedObjectContextMenu : BaseContextMenu
     {
-        public PositionBasedObjectContextMenu(Editor editor, PositionBasedObjectInstance targetObject)
-            : base(editor)
+        public PositionBasedObjectContextMenu(Editor editor, IWin32Window owner, PositionBasedObjectInstance targetObject)
+            : base(editor, owner)
         {
             if (targetObject is IHasScriptID)
             {

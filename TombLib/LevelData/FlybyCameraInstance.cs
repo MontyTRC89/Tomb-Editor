@@ -50,7 +50,7 @@ namespace TombLib.LevelData
             set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
 
-        public override bool CopyToFlipRooms => false;
+        public override bool CopyToAlternateRooms => false;
 
         public override string ToString()
         {

@@ -145,9 +145,9 @@ namespace TombLib.LevelData
                         {
                             var portal = Blocks[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (room.Flipped && room.AlternateBaseRoom != null)
+                            if (room.Alternated && room.AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                                if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -180,9 +180,9 @@ namespace TombLib.LevelData
                         {
                             var portal = Blocks[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (room.Flipped && room.AlternateBaseRoom != null)
+                            if (room.Alternated && room.AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                                if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -214,9 +214,9 @@ namespace TombLib.LevelData
                         {
                             var portal = Blocks[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (room.Flipped && room.AlternateBaseRoom != null)
+                            if (room.Alternated && room.AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                                if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -248,9 +248,9 @@ namespace TombLib.LevelData
                         {
                             var portal = Blocks[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (room.Flipped && room.AlternateBaseRoom != null)
+                            if (room.Alternated && room.AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                                if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -292,6 +292,9 @@ namespace TombLib.LevelData
                         var tempEditorUV = VertexEditorUVs[i + 2];
                         VertexEditorUVs[i + 2] = VertexEditorUVs[i];
                         VertexEditorUVs[i] = tempEditorUV;
+                        TextureArea textureArea = TriangleTextureAreas[i / 3];
+                        Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
+                        TriangleTextureAreas[i / 3] = textureArea;
                     }
                 }
             }
@@ -525,9 +528,9 @@ namespace TombLib.LevelData
                         // Get the adjoining room of the portal
                         var portal = b.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (room.Flipped && room.AlternateBaseRoom != null)
+                        if (room.Alternated && room.AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                            if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
@@ -662,9 +665,9 @@ namespace TombLib.LevelData
                         // Get the adjoining room of the portal
                         var portal = b.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (room.Flipped && room.AlternateBaseRoom != null)
+                        if (room.Alternated && room.AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                            if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
@@ -799,9 +802,9 @@ namespace TombLib.LevelData
                         // Get the adjoining room of the portal
                         var portal = b.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (room.Flipped && room.AlternateBaseRoom != null)
+                        if (room.Alternated && room.AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                            if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
@@ -1134,9 +1137,9 @@ namespace TombLib.LevelData
                         // Get the adjoining room of the portal
                         var portal = b.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (room.Flipped && room.AlternateBaseRoom != null)
+                        if (room.Alternated && room.AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
+                            if (adjoiningRoom.Alternated && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 

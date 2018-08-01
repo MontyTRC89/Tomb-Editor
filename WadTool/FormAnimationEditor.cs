@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
@@ -383,7 +381,7 @@ namespace WadTool
         {
             using (var form = new FormInputBox("Add (n) frames", "How many frames do you want to add to current animation?", "1"))
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK)
                 {
                     int framesCount = 0;
                     if (!int.TryParse(form.Result, out framesCount) || framesCount <= 0)
@@ -1074,7 +1072,7 @@ namespace WadTool
             {
                 using (var form = new FormStateChangesEditor(_selectedNode.WadAnimation.StateChanges))
                 {
-                    if (form.ShowDialog() != DialogResult.OK)
+                    if (form.ShowDialog(this) != DialogResult.OK)
                         return;
 
                     // Add the new state changes
@@ -1208,7 +1206,7 @@ namespace WadTool
             {
                 using (var form = new FormAnimCommandsEditor(_tool, _selectedNode.WadAnimation.AnimCommands))
                 {
-                    if (form.ShowDialog() != DialogResult.OK)
+                    if (form.ShowDialog(this) != DialogResult.OK)
                         return;
 
                     // Add the new state changes
@@ -1225,7 +1223,7 @@ namespace WadTool
             if (_selectedNode == null)
                 return;
 
-            if (saveFileDialogExport.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialogExport.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             var animationToSave = SaveAnimationChanges(_selectedNode);
@@ -1243,7 +1241,7 @@ namespace WadTool
             if (_selectedNode == null)
                 return;
 
-            if (openFileDialogImport.ShowDialog() == DialogResult.Cancel)
+            if (openFileDialogImport.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             var animation = WadActions.ImportAnimationFromXml(_wad, openFileDialogImport.FileName);

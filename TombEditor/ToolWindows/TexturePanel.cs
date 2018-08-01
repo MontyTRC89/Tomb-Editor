@@ -16,6 +16,7 @@ namespace TombEditor.ToolWindows
         public TexturePanel()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -111,6 +112,13 @@ namespace TombEditor.ToolWindows
                     comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
                 panelTextureMap.Invalidate();
             }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+            }
         }
 
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
@@ -136,21 +144,6 @@ namespace TombEditor.ToolWindows
                     form.ShowDialog(this);
         }
 
-        private void butAnimationRanges_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormAnimatedTextures(_editor, comboCurrentTexture.SelectedItem as LevelTexture))
-                form.ShowDialog(this);
-        }
-
-        private void butDoubleSide_Click(object sender, EventArgs e)
-        {
-            if(panelTextureMap.VisibleTexture?.IsAvailable ?? false)
-            {
-                butDoubleSide.BackColorUseGeneric = !butDoubleSide.BackColorUseGeneric;
-                SwitchDoubleSide();
-            }
-        }
-
         private void cmbTileSize_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch(cmbTileSize.SelectedIndex)
@@ -174,21 +167,6 @@ namespace TombEditor.ToolWindows
         private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)
         {
             SwitchBlendMode();
-        }
-
-        private void butRotate_Click(object sender, EventArgs e)
-        {
-            EditorActions.RotateSelectedTexture();
-        }
-
-        private void butMirror_Click(object sender, EventArgs e)
-        {
-            EditorActions.MirrorSelectedTexture();
-        }
-
-        private void butNoTexture_Click(object sender, EventArgs e)
-        {
-            _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
         }
 
         private void SwitchBlendMode()
@@ -231,11 +209,6 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 EditorActions.RemoveTexture(this, texture);
-        }
-
-        private void butAddTexture_Click(object sender, EventArgs e)
-        {
-            EditorActions.AddTexture(this);
         }
 
         private void butBrowseTexture_Click(object sender, EventArgs e)

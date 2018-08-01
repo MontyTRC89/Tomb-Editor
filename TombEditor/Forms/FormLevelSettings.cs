@@ -15,6 +15,7 @@ using TombLib.Utils;
 using DarkUI.Controls;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace TombEditor.Forms
 {
@@ -303,6 +304,7 @@ namespace TombEditor.Forms
             comboGameVersion.Items.Add(GameVersion.TR4);
             comboGameVersion.Items.Add(GameVersion.TRNG);
             comboGameVersion.Items.Add(GameVersion.TR5);
+            comboGameVersion.Items.Add(GameVersion.TR5Main);
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
@@ -372,9 +374,9 @@ namespace TombEditor.Forms
             string gameLevelFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameLevelFilePath);
             string gameExecutableFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameExecutableFilePath);
 
-            levelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
+            levelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
-            gameLevelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
+            gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
 
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
@@ -761,7 +763,13 @@ namespace TombEditor.Forms
             // Load objects concurrently
             ReferencedWadWrapper[] results = new ReferencedWadWrapper[paths.Count];
             var synchronizedDialog = new GraphicalDialogHandler(this);
-            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)));
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)))))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
             return results;
         }
 

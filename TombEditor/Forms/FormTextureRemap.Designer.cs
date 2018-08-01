@@ -278,11 +278,13 @@
             this.Controls.Add(this.cbRestrictToSelectedRooms);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormTextureRemap";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Texture remapping assistant";
             this.sourcePanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);

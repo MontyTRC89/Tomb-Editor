@@ -38,11 +38,11 @@
 			this.commentColorDialog = new System.Windows.Forms.ColorDialog();
 			this.commentColorLabel = new DarkUI.Controls.DarkLabel();
 			this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+			this.reindentRulesButton = new DarkUI.Controls.DarkButton();
 			this.toolTipCheck = new DarkUI.Controls.DarkCheckBox();
 			this.wordWrapCheck = new DarkUI.Controls.DarkCheckBox();
 			this.showNumbersCheck = new DarkUI.Controls.DarkCheckBox();
 			this.reindentCheck = new DarkUI.Controls.DarkCheckBox();
-			this.showSpacesCheck = new DarkUI.Controls.DarkCheckBox();
 			this.showToolbarCheck = new DarkUI.Controls.DarkCheckBox();
 			this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
 			this.oldColorButton = new DarkUI.Controls.DarkButton();
@@ -57,6 +57,7 @@
 			this.headerColorLabel = new DarkUI.Controls.DarkLabel();
 			this.valuesColorLabel = new DarkUI.Controls.DarkLabel();
 			this.referencesColorLabel = new DarkUI.Controls.DarkLabel();
+			this.showSpacesCheck = new DarkUI.Controls.DarkCheckBox();
 			this.fontFaceCombo = new DarkUI.Controls.DarkComboBox();
 			this.faceLabel = new DarkUI.Controls.DarkLabel();
 			this.fontSizeNumeric = new DarkUI.Controls.DarkNumericUpDown();
@@ -91,11 +92,12 @@
 			// 
 			this.autocompleteCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.autocompleteCheck.AutoSize = true;
-			this.autocompleteCheck.Location = new System.Drawing.Point(6, 283);
+			this.autocompleteCheck.Location = new System.Drawing.Point(6, 165);
+			this.autocompleteCheck.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
 			this.autocompleteCheck.Name = "autocompleteCheck";
-			this.autocompleteCheck.Size = new System.Drawing.Size(127, 17);
+			this.autocompleteCheck.Size = new System.Drawing.Size(126, 17);
 			this.autocompleteCheck.TabIndex = 13;
-			this.autocompleteCheck.Text = "Enable Autocomplete";
+			this.autocompleteCheck.Text = "Enable autocomplete";
 			this.autocompleteCheck.CheckedChanged += new System.EventHandler(this.autocompleteCheck_CheckedChanged);
 			// 
 			// autosaveCombo
@@ -138,11 +140,11 @@
 			// closeBracketsCheck
 			// 
 			this.closeBracketsCheck.AutoSize = true;
-			this.closeBracketsCheck.Location = new System.Drawing.Point(6, 183);
+			this.closeBracketsCheck.Location = new System.Drawing.Point(6, 333);
 			this.closeBracketsCheck.Name = "closeBracketsCheck";
-			this.closeBracketsCheck.Size = new System.Drawing.Size(133, 17);
+			this.closeBracketsCheck.Size = new System.Drawing.Size(132, 17);
 			this.closeBracketsCheck.TabIndex = 9;
-			this.closeBracketsCheck.Text = "Auto close [ ] Brackets";
+			this.closeBracketsCheck.Text = "Auto close [ ] brackets";
 			// 
 			// commentColorButton
 			// 
@@ -176,17 +178,18 @@
 			this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.darkGroupBox1.Controls.Add(this.reindentRulesButton);
 			this.darkGroupBox1.Controls.Add(this.toolTipCheck);
 			this.darkGroupBox1.Controls.Add(this.autocompleteCheck);
 			this.darkGroupBox1.Controls.Add(this.wordWrapCheck);
 			this.darkGroupBox1.Controls.Add(this.showNumbersCheck);
 			this.darkGroupBox1.Controls.Add(this.reindentCheck);
-			this.darkGroupBox1.Controls.Add(this.closeBracketsCheck);
-			this.darkGroupBox1.Controls.Add(this.showSpacesCheck);
 			this.darkGroupBox1.Controls.Add(this.showToolbarCheck);
 			this.darkGroupBox1.Controls.Add(this.darkGroupBox2);
+			this.darkGroupBox1.Controls.Add(this.closeBracketsCheck);
 			this.darkGroupBox1.Controls.Add(this.autosaveCombo);
 			this.darkGroupBox1.Controls.Add(this.autoSaveLabel);
+			this.darkGroupBox1.Controls.Add(this.showSpacesCheck);
 			this.darkGroupBox1.Controls.Add(this.fontFaceCombo);
 			this.darkGroupBox1.Controls.Add(this.faceLabel);
 			this.darkGroupBox1.Controls.Add(this.fontSizeNumeric);
@@ -197,64 +200,66 @@
 			this.darkGroupBox1.TabIndex = 2;
 			this.darkGroupBox1.TabStop = false;
 			// 
+			// reindentRulesButton
+			// 
+			this.reindentRulesButton.Location = new System.Drawing.Point(6, 392);
+			this.reindentRulesButton.Name = "reindentRulesButton";
+			this.reindentRulesButton.Size = new System.Drawing.Size(150, 23);
+			this.reindentRulesButton.TabIndex = 16;
+			this.reindentRulesButton.Text = "Reindent rules...";
+			this.reindentRulesButton.Click += new System.EventHandler(this.reindentRulesButton_Click);
+			// 
 			// toolTipCheck
 			// 
 			this.toolTipCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.toolTipCheck.AutoSize = true;
-			this.toolTipCheck.Location = new System.Drawing.Point(6, 307);
+			this.toolTipCheck.Location = new System.Drawing.Point(6, 188);
 			this.toolTipCheck.Name = "toolTipCheck";
-			this.toolTipCheck.Size = new System.Drawing.Size(97, 17);
+			this.toolTipCheck.Size = new System.Drawing.Size(95, 17);
 			this.toolTipCheck.TabIndex = 15;
-			this.toolTipCheck.Text = "Show ToolTips";
+			this.toolTipCheck.Text = "Enable tooltips";
 			this.toolTipCheck.CheckedChanged += new System.EventHandler(this.toolTipCheck_CheckedChanged);
 			// 
 			// wordWrapCheck
 			// 
 			this.wordWrapCheck.AutoSize = true;
-			this.wordWrapCheck.Location = new System.Drawing.Point(6, 231);
+			this.wordWrapCheck.Location = new System.Drawing.Point(6, 310);
+			this.wordWrapCheck.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
 			this.wordWrapCheck.Name = "wordWrapCheck";
-			this.wordWrapCheck.Size = new System.Drawing.Size(81, 17);
+			this.wordWrapCheck.Size = new System.Drawing.Size(78, 17);
 			this.wordWrapCheck.TabIndex = 12;
-			this.wordWrapCheck.Text = "Word Wrap";
+			this.wordWrapCheck.Text = "Word wrap";
 			// 
 			// showNumbersCheck
 			// 
 			this.showNumbersCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.showNumbersCheck.AutoSize = true;
-			this.showNumbersCheck.Location = new System.Drawing.Point(6, 389);
+			this.showNumbersCheck.Location = new System.Drawing.Point(6, 249);
 			this.showNumbersCheck.Name = "showNumbersCheck";
-			this.showNumbersCheck.Size = new System.Drawing.Size(121, 17);
+			this.showNumbersCheck.Size = new System.Drawing.Size(115, 17);
 			this.showNumbersCheck.TabIndex = 11;
-			this.showNumbersCheck.Text = "Show Line Numbers";
+			this.showNumbersCheck.Text = "Show line numbers";
 			// 
 			// reindentCheck
 			// 
 			this.reindentCheck.AutoSize = true;
-			this.reindentCheck.Location = new System.Drawing.Point(6, 159);
+			this.reindentCheck.Location = new System.Drawing.Point(6, 369);
+			this.reindentCheck.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
 			this.reindentCheck.Name = "reindentCheck";
-			this.reindentCheck.Size = new System.Drawing.Size(112, 17);
+			this.reindentCheck.Size = new System.Drawing.Size(110, 17);
 			this.reindentCheck.TabIndex = 10;
-			this.reindentCheck.Text = "Reindent on Save";
-			// 
-			// showSpacesCheck
-			// 
-			this.showSpacesCheck.AutoSize = true;
-			this.showSpacesCheck.Location = new System.Drawing.Point(6, 207);
-			this.showSpacesCheck.Name = "showSpacesCheck";
-			this.showSpacesCheck.Size = new System.Drawing.Size(92, 17);
-			this.showSpacesCheck.TabIndex = 8;
-			this.showSpacesCheck.Text = "Show Spaces";
-			this.showSpacesCheck.CheckedChanged += new System.EventHandler(this.showSpacesCheck_CheckedChanged);
+			this.reindentCheck.Text = "Reindent on save";
 			// 
 			// showToolbarCheck
 			// 
 			this.showToolbarCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.showToolbarCheck.AutoSize = true;
-			this.showToolbarCheck.Location = new System.Drawing.Point(6, 365);
+			this.showToolbarCheck.Location = new System.Drawing.Point(6, 226);
+			this.showToolbarCheck.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
 			this.showToolbarCheck.Name = "showToolbarCheck";
-			this.showToolbarCheck.Size = new System.Drawing.Size(92, 17);
+			this.showToolbarCheck.Size = new System.Drawing.Size(88, 17);
 			this.showToolbarCheck.TabIndex = 7;
-			this.showToolbarCheck.Text = "Show Toolbar";
+			this.showToolbarCheck.Text = "Show toolbar";
 			// 
 			// darkGroupBox2
 			// 
@@ -300,9 +305,9 @@
 			this.oldColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.oldColorLabel.Location = new System.Drawing.Point(6, 296);
 			this.oldColorLabel.Name = "oldColorLabel";
-			this.oldColorLabel.Size = new System.Drawing.Size(80, 13);
+			this.oldColorLabel.Size = new System.Drawing.Size(107, 13);
 			this.oldColorLabel.TabIndex = 24;
-			this.oldColorLabel.Text = "Old commands:";
+			this.oldColorLabel.Text = "Standard commands:";
 			// 
 			// unknownColorButton
 			// 
@@ -377,9 +382,9 @@
 			this.newColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.newColorLabel.Location = new System.Drawing.Point(6, 242);
 			this.newColorLabel.Name = "newColorLabel";
-			this.newColorLabel.Size = new System.Drawing.Size(86, 13);
+			this.newColorLabel.Size = new System.Drawing.Size(95, 13);
 			this.newColorLabel.TabIndex = 16;
-			this.newColorLabel.Text = "New commands:";
+			this.newColorLabel.Text = "TRNG commands:";
 			// 
 			// headerColorLabel
 			// 
@@ -414,6 +419,16 @@
 			this.referencesColorLabel.TabIndex = 13;
 			this.referencesColorLabel.Text = "References:";
 			// 
+			// showSpacesCheck
+			// 
+			this.showSpacesCheck.AutoSize = true;
+			this.showSpacesCheck.Location = new System.Drawing.Point(6, 272);
+			this.showSpacesCheck.Name = "showSpacesCheck";
+			this.showSpacesCheck.Size = new System.Drawing.Size(90, 17);
+			this.showSpacesCheck.TabIndex = 8;
+			this.showSpacesCheck.Text = "Show spaces";
+			this.showSpacesCheck.CheckedChanged += new System.EventHandler(this.showSpacesCheck_CheckedChanged);
+			// 
 			// fontFaceCombo
 			// 
 			this.fontFaceCombo.FormattingEnabled = true;
@@ -433,9 +448,9 @@
 			this.faceLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.faceLabel.Location = new System.Drawing.Point(6, 63);
 			this.faceLabel.Name = "faceLabel";
-			this.faceLabel.Size = new System.Drawing.Size(58, 13);
+			this.faceLabel.Size = new System.Drawing.Size(55, 13);
 			this.faceLabel.TabIndex = 2;
-			this.faceLabel.Text = "Font Face:";
+			this.faceLabel.Text = "Font face:";
 			// 
 			// fontSizeNumeric
 			// 
@@ -473,9 +488,9 @@
 			this.sizeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.sizeLabel.Location = new System.Drawing.Point(6, 16);
 			this.sizeLabel.Name = "sizeLabel";
-			this.sizeLabel.Size = new System.Drawing.Size(54, 13);
+			this.sizeLabel.Size = new System.Drawing.Size(52, 13);
 			this.sizeLabel.TabIndex = 0;
-			this.sizeLabel.Text = "Font Size:";
+			this.sizeLabel.Text = "Font size:";
 			// 
 			// darkGroupBox3
 			// 
@@ -556,7 +571,7 @@
 			this.Name = "FormSettings";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "FormSettings";
+			this.Text = "Settings";
 			this.darkGroupBox1.ResumeLayout(false);
 			this.darkGroupBox1.PerformLayout();
 			this.darkGroupBox2.ResumeLayout(false);
@@ -577,6 +592,7 @@
 		private DarkUI.Controls.DarkButton newColorButton;
 		private DarkUI.Controls.DarkButton oldColorButton;
 		private DarkUI.Controls.DarkButton refColorButton;
+		private DarkUI.Controls.DarkButton reindentRulesButton;
 		private DarkUI.Controls.DarkButton resetDefaultButton;
 		private DarkUI.Controls.DarkButton unknownColorButton;
 		private DarkUI.Controls.DarkButton valueColorButton;

@@ -64,6 +64,13 @@ namespace TombLib.LevelData
             Reload(settings);
         }
 
+        public void Assign(ReferencedWad other)
+        {
+            Path = other.Path;
+            Wad = other.Wad;
+            LoadException = other.LoadException;
+        }
+
         public ReferencedWad Clone() => (ReferencedWad)MemberwiseClone(); // Don't copy the data pointer
         object ICloneable.Clone() => Clone();
     }

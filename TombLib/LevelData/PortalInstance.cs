@@ -194,16 +194,6 @@ namespace TombLib.LevelData
             }
         }
 
-        public bool ContainsPoint(VectorInt2 point)
-        {
-            return ContainsPoint(point.X, point.Y);
-        }
-
-        public bool ContainsPoint(int x, int z)
-        {
-            return x >= Area.X0 && z >= Area.Y0 && x <= Area.X0 + Area.Width && z <= Area.Y0 + Area.Height;
-        }
-
         public override void RemoveFromRoom(Level level, Room room)
         {
             base.RemoveFromRoom(level, room);
@@ -226,6 +216,23 @@ namespace TombLib.LevelData
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].WallPortal = null;
                     break;
+            }
+        }
+
+        public override RectangleInt2 GetValidArea(RectangleInt2 newLocalRoomArea)
+        {
+            switch (Direction) // Special constraints for portals on walls
+            {
+                case PortalDirection.WallPositiveZ:
+                    return newLocalRoomArea.Inflate(-1, 0);
+                case PortalDirection.WallNegativeZ:
+                    return newLocalRoomArea.Inflate(-1, 0);
+                case PortalDirection.WallPositiveX:
+                    return newLocalRoomArea.Inflate(0, -1);
+                case PortalDirection.WallNegativeX:
+                    return newLocalRoomArea.Inflate(0, -1);
+                default:
+                    return newLocalRoomArea.Inflate(-1, -1);
             }
         }
 

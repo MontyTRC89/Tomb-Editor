@@ -288,7 +288,7 @@ namespace WadTool
             {
                 using (var form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
                 {
-                    if (form.ShowDialog() != DialogResult.OK)
+                    if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
                     tool.WadChanged(tool.MainSelection.Value.WadArea);
                 }
@@ -387,7 +387,7 @@ namespace WadTool
                 // Save sound names
                 foreach (var cmd in animation.AnimCommands)
                     if (cmd.Type == WadAnimCommandType.PlaySound)
-                        cmd.SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
+                        cmd.XmlSerializer_SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
 
                 // Serialize the animation to XML
                 var xmlSerializer = new XmlSerializer(typeof(WadAnimation));
@@ -466,7 +466,7 @@ namespace WadTool
                     {
                         // Try to get a sound with the same name
                         foreach (var soundInfo in wad.SoundInfosUnique)
-                            if (soundInfo.Name == cmd.SoundInfoName)
+                            if (soundInfo.Name == cmd.XmlSerializer_SoundInfoName)
                             {
                                 cmd.SoundInfo = soundInfo;
                                 break;
@@ -498,6 +498,30 @@ namespace WadTool
             {
                 logger.Warn(exc, "'ImportAnimation' failed.");
                 return null;
+            }
+        }
+
+        public static void EditAnimations(WadToolClass tool, IWin32Window owner)
+        {
+            var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
+            using (var form = new FormAnimationEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                tool.SelectedObjectEdited();
+            }
+        }
+
+        public static void EditSkeletion(WadToolClass tool, IWin32Window owner)
+        {
+            var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
+            using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                tool.SelectedObjectEdited();
             }
         }
     }

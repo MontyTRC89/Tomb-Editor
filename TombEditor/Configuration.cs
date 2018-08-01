@@ -20,9 +20,6 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [XmlIgnore]
-        public string FilePath { get; set; }
-
-        [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
         [XmlElement(nameof(Log_MinLevel))]
         public string Log_MinLevelSerialized
@@ -37,6 +34,7 @@ namespace TombEditor
         public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
         public bool Editor_AutoSwitchSectorColoringInfo { get; set; } = true;
+        public bool Editor_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
@@ -61,7 +59,19 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
+        public bool Rendering3D_DisablePickingForImportedGeometry { get; set; } = false;
+        public bool Rendering3D_ShowPortals { get; set; } = false;
+        public bool Rendering3D_ShowHorizon { get; set; } = false;
+        public bool Rendering3D_ShowAllRooms { get; set; } = false;
+        public bool Rendering3D_ShowIllegalSlopes { get; set; } = false;
+        public bool Rendering3D_ShowMoveables { get; set; } = true;
+        public bool Rendering3D_ShowStatics { get; set; } = true;
+        public bool Rendering3D_ShowImportedGeometry { get; set; } = true;
+        public bool Rendering3D_ShowOtherObjects { get; set; } = true;
+        public bool Rendering3D_ShowSlideDirections { get; set; } = false;
         public bool Rendering3D_ShowFPS { get; set; } = false;
+        public bool Rendering3D_ShowRoomNames { get; set; } = false;
+        public bool Rendering3D_ShowCardinalDirections { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public int Rendering3D_FontSize { get; set; } = 24;
         public bool Rendering3D_FontIsBold { get; set; } = true;
@@ -73,7 +83,7 @@ namespace TombEditor
         public float Map2D_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
-        public bool Map2D_ShowFirstTimeHint { get; set; } = true;
+        public int Map2D_ShowTimes { get; set; } = 0;
 
         public float TextureMap_NavigationMinZoom { get; set; } = 0.02f;
         public float TextureMap_NavigationMaxZoom { get; set; } = 2000.0f;
@@ -83,6 +93,8 @@ namespace TombEditor
         public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
         public float TextureMap_DefaultTileSelectionSize { get; set; } = 64.0f;
+        public bool TextureMap_DrawSelectionDirectionIndicators { get; set; } = true;
+        public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
 
         public EditorToolType Tool_DefaultGeometry { get; set; } = EditorToolType.Selection;
         public EditorToolType Tool_DefaultFaceEdit { get; set; } = EditorToolType.Brush;
@@ -93,11 +105,6 @@ namespace TombEditor
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
         public float Gizmo_LineThickness { get; set; } = 45.0f;
 
-        public Point Window_Position { get; set; } = new Point(32, 32);
-        public Size Window_Size { get; set; } = Window_SizeDefault;
-        public bool Window_Maximized { get; set; } = true;
-        public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
-
         public bool AutoSave_Enable { get; set; } = true;
         public int AutoSave_TimeInSeconds { get; set; } = 500;
         public string AutoSave_DateTimeFormat { get; set; } = "yyyy-MM-dd HH-mm";
@@ -106,8 +113,11 @@ namespace TombEditor
         public bool AutoSave_NamePutDateFirst { get; set; } = true;
         public string AutoSave_NameSeparator { get; set; } = " ";
 
-        public List<HotkeySet> Keyboard_Hotkeys { get; set; }
-
+        public HotkeySets Window_HotkeySets { get; set; } = new HotkeySets();
+        public Point Window_Position { get; set; } = new Point(32, 32);
+        public Size Window_Size { get; set; } = Window_SizeDefault;
+        public bool Window_Maximized { get; set; } = true;
+        public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
         {
@@ -225,17 +235,16 @@ namespace TombEditor
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 Save(stream);
-            FilePath = path;
         }
 
         public void Save()
         {
-            Save(FilePath);
+            Save(GetDefaultPath());
         }
 
         public void SaveTry()
         {
-            if (!string.IsNullOrEmpty(FilePath))
+            if (!string.IsNullOrEmpty(GetDefaultPath()))
                 try
                 {
                     Save();
@@ -254,11 +263,8 @@ namespace TombEditor
 
         public static Configuration Load(string filePath)
         {
-            Configuration result;
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = Load(stream);
-            result.FilePath = filePath;
-            return result;
+                return Load(stream);
         }
 
         public static Configuration Load()
@@ -272,7 +278,7 @@ namespace TombEditor
             if (!File.Exists(path))
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys() };
+                return new Configuration();
             }
 
             try
@@ -282,7 +288,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys() };
+                return new Configuration();
             }
         }
     }

@@ -118,7 +118,6 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +145,7 @@
     <Compile Include="Graphics\SharpDxConversions.cs" />
     <Compile Include="Graphics\Submesh.cs" />
     <Compile Include="Graphics\WadRenderer.cs" />
+    <Compile Include="IO\BinaryWriterFast.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
     <Compile Include="LevelData\BumpMappingInfo.cs" />
@@ -240,7 +240,6 @@
     <Compile Include="Utils\DictionaryWhere.cs" />
     <Compile Include="Utils\DictionarySelect.cs" />
     <Compile Include="Utils\FileFormat.cs" />
-    <Compile Include="Utils\FileSystemUtils.cs" />
     <Compile Include="Utils\FileSystemWatcherManager.cs" />
     <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\IDialogDescription.cs" />
@@ -263,10 +262,10 @@
     <Compile Include="Utils\PolygonFunctions.cs" />
     <Compile Include="Utils\RectTransformation.cs" />
     <Compile Include="Utils\RectPacker.cs" />
+    <Compile Include="Utils\ReferenceEqualityComparer.cs" />
     <Compile Include="Utils\Swap.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Utils\RectPackerTree.cs" />
-    <Compile Include="Utils\WinFormsUtils.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
@@ -323,6 +322,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(ProjectDir)obj/$(ConfigurationName)/version.txt">
+      <LogicalName>version</LogicalName>
+      <Visible>false</Visible>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Catalogs\TrCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -339,6 +344,19 @@
   </Target>
   <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>REM Create a file at "$(ProjectDir)obj/$(ConfigurationName)/version.txt" that contains information about the git version.
+git describe --tags --long --dirty &gt; "$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
+set /p HEAD=&lt;"$(SolutionDir).git/HEAD"
+set /p COMMIT_HASH=&lt;"$(SolutionDir).git/%25HEAD:~5%25"
+set /p GIT_DESCRIBE=&lt;"$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
+(
+echo Head: %25HEAD:~5%25
+echo Commit-Hash: %25COMMIT_HASH%25
+echo Git-Describe: %25GIT_DESCRIBE%25
+)&gt;"$(ProjectDir)obj/$(ConfigurationName)/version.txt"
+SET ERRORLEVEL = 0</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

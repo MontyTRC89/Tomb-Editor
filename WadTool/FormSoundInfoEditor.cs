@@ -26,8 +26,8 @@ namespace WadTool
 
         public WadSoundInfo SoundInfo
         {
-            get { return soundInfoEditor1.SoundInfo; }
-            set { soundInfoEditor1.SoundInfo = value; }
+            get { return soundInfoEditor.SoundInfo; }
+            set { soundInfoEditor.SoundInfo = value; }
         }
     }
 }
