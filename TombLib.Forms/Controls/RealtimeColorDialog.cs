@@ -48,15 +48,16 @@ namespace TombLib.Controls
 
                 if (childWindows.Count == 6) // In case MS changes color dialog in further Windows versions
                 {
-                    GetWindowText(childWindows[3], str, str.Capacity);
-                    var red = Int32.Parse(str.ToString());
-                    GetWindowText(childWindows[4], str, str.Capacity);
-                    var green = Int32.Parse(str.ToString());
-                    GetWindowText(childWindows[5], str, str.Capacity);
-                    var blue = Int32.Parse(str.ToString());
+                    int[] colours = new int[3];
+
+                    for(int i = 0; i < 3; i++)
+                    {
+                        GetWindowText(childWindows[i+3], str, str.Capacity);
+                        colours[i] = Int32.Parse(str.ToString());
+                    }
 
                     // Prevent endless updates of color unless real RGB color is changed
-                    var currentColor = Color.FromArgb(red, green, blue);
+                    var currentColor = Color.FromArgb(colours[0], colours[1], colours[2]);
                     if(currentColor != _previousColor)
                     {
                         _previousColor = currentColor;
