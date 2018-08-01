@@ -96,6 +96,10 @@
             this.contextMenuMoveableItem = new DarkUI.Controls.DarkContextMenu();
             this.editSkeletonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.butEditStaticModel = new DarkUI.Controls.DarkButton();
+            this.butEditSpriteSequence = new DarkUI.Controls.DarkButton();
+            this.butEditSound = new DarkUI.Controls.DarkButton();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -113,6 +117,7 @@
             this.panel4.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.contextMenuMoveableItem.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
@@ -122,7 +127,7 @@
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 725);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1008, 24);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(1244, 24);
             this.darkStatusStrip1.TabIndex = 1;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -139,7 +144,7 @@
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
             this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.darkMenuStrip1.Size = new System.Drawing.Size(1008, 24);
+            this.darkMenuStrip1.Size = new System.Drawing.Size(1244, 24);
             this.darkMenuStrip1.TabIndex = 2;
             this.darkMenuStrip1.Text = "darkMenuStrip1";
             // 
@@ -328,7 +333,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 
@@ -456,7 +461,7 @@
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 24);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(1008, 28);
+            this.darkToolStrip1.Size = new System.Drawing.Size(1244, 28);
             this.darkToolStrip1.TabIndex = 3;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
@@ -544,7 +549,7 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(6, 4);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(247, 19);
+            this.darkLabel2.Size = new System.Drawing.Size(308, 19);
             this.darkLabel2.TabIndex = 6;
             this.darkLabel2.Text = "Source WAD - Wad2 - Level";
             this.darkLabel2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -556,7 +561,7 @@
             this.scrollbarAnimations.Location = new System.Drawing.Point(0, 399);
             this.scrollbarAnimations.Name = "scrollbarAnimations";
             this.scrollbarAnimations.ScrollOrientation = DarkUI.Controls.DarkScrollOrientation.Horizontal;
-            this.scrollbarAnimations.Size = new System.Drawing.Size(466, 12);
+            this.scrollbarAnimations.Size = new System.Drawing.Size(579, 12);
             this.scrollbarAnimations.TabIndex = 20;
             this.scrollbarAnimations.Text = "darkScrollBar1";
             // 
@@ -576,7 +581,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 445);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1220, 445);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // panel2
@@ -586,10 +591,10 @@
             this.panel2.Controls.Add(this.butAddObject);
             this.panel2.Controls.Add(this.butAddObjectToDifferentSlot);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(727, 0);
+            this.panel2.Location = new System.Drawing.Point(902, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(257, 445);
+            this.panel2.Size = new System.Drawing.Size(318, 445);
             this.panel2.TabIndex = 11;
             // 
             // treeSourceWad
@@ -599,7 +604,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeSourceWad.Location = new System.Drawing.Point(6, 26);
             this.treeSourceWad.Name = "treeSourceWad";
-            this.treeSourceWad.Size = new System.Drawing.Size(247, 388);
+            this.treeSourceWad.Size = new System.Drawing.Size(308, 388);
             this.treeSourceWad.TabIndex = 8;
             this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
             this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
@@ -609,7 +614,7 @@
             // 
             this.butAddObject.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddObject.Image = global::WadTool.Properties.Resources.angle_left_16;
-            this.butAddObject.Location = new System.Drawing.Point(-8, 419);
+            this.butAddObject.Location = new System.Drawing.Point(53, 419);
             this.butAddObject.Name = "butAddObject";
             this.butAddObject.Size = new System.Drawing.Size(90, 23);
             this.butAddObject.TabIndex = 10;
@@ -621,7 +626,7 @@
             // 
             this.butAddObjectToDifferentSlot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddObjectToDifferentSlot.Image = global::WadTool.Properties.Resources.angle_left_16;
-            this.butAddObjectToDifferentSlot.Location = new System.Drawing.Point(88, 419);
+            this.butAddObjectToDifferentSlot.Location = new System.Drawing.Point(149, 419);
             this.butAddObjectToDifferentSlot.Name = "butAddObjectToDifferentSlot";
             this.butAddObjectToDifferentSlot.Size = new System.Drawing.Size(167, 23);
             this.butAddObjectToDifferentSlot.TabIndex = 11;
@@ -640,7 +645,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(255, 445);
+            this.panel1.Size = new System.Drawing.Size(317, 445);
             this.panel1.TabIndex = 10;
             // 
             // treeDestWad
@@ -650,7 +655,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeDestWad.Location = new System.Drawing.Point(0, 26);
             this.treeDestWad.Name = "treeDestWad";
-            this.treeDestWad.Size = new System.Drawing.Size(251, 385);
+            this.treeDestWad.Size = new System.Drawing.Size(313, 385);
             this.treeDestWad.TabIndex = 7;
             this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
             this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
@@ -676,7 +681,7 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(2, 4);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(247, 19);
+            this.darkLabel1.Size = new System.Drawing.Size(309, 19);
             this.darkLabel1.TabIndex = 6;
             this.darkLabel1.Text = "Destination WAD - Wad2";
             this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -707,13 +712,14 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.flowLayoutPanel3);
             this.panel3.Controls.Add(this.scrollbarAnimations);
             this.panel3.Controls.Add(this.panel3D);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(255, 0);
+            this.panel3.Location = new System.Drawing.Point(317, 0);
             this.panel3.Margin = new System.Windows.Forms.Padding(0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(472, 445);
+            this.panel3.Size = new System.Drawing.Size(585, 445);
             this.panel3.TabIndex = 12;
             // 
             // panel3D
@@ -725,17 +731,19 @@
             this.panel3D.Location = new System.Drawing.Point(4, 30);
             this.panel3D.Margin = new System.Windows.Forms.Padding(0);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(461, 366);
+            this.panel3D.Size = new System.Drawing.Size(574, 366);
             this.panel3D.TabIndex = 9;
             // 
             // butEditSkeleton
             // 
             this.butEditSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditSkeleton.Location = new System.Drawing.Point(587, 25);
+            this.butEditSkeleton.Image = global::WadTool.Properties.Resources.skeleton_16;
+            this.butEditSkeleton.Location = new System.Drawing.Point(118, 3);
             this.butEditSkeleton.Name = "butEditSkeleton";
-            this.butEditSkeleton.Size = new System.Drawing.Size(134, 23);
+            this.butEditSkeleton.Size = new System.Drawing.Size(98, 23);
             this.butEditSkeleton.TabIndex = 23;
             this.butEditSkeleton.Text = "Edit skeleton";
+            this.butEditSkeleton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butEditSkeleton.Click += new System.EventHandler(this.butEditSkeleton_Click);
             // 
             // splitContainer1
@@ -753,11 +761,9 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.butEditAnimations);
-            this.splitContainer1.Panel2.Controls.Add(this.butEditSkeleton);
             this.splitContainer1.Panel2.Controls.Add(this.splitSeam);
             this.splitContainer1.Panel2.Controls.Add(this.groupSelectedMoveable);
-            this.splitContainer1.Size = new System.Drawing.Size(984, 670);
+            this.splitContainer1.Size = new System.Drawing.Size(1220, 670);
             this.splitContainer1.SplitterDistance = 448;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 23;
@@ -765,11 +771,13 @@
             // butEditAnimations
             // 
             this.butEditAnimations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditAnimations.Location = new System.Drawing.Point(586, 54);
+            this.butEditAnimations.Image = global::WadTool.Properties.Resources.play_16;
+            this.butEditAnimations.Location = new System.Drawing.Point(3, 3);
             this.butEditAnimations.Name = "butEditAnimations";
-            this.butEditAnimations.Size = new System.Drawing.Size(134, 23);
+            this.butEditAnimations.Size = new System.Drawing.Size(109, 23);
             this.butEditAnimations.TabIndex = 24;
             this.butEditAnimations.Text = "Edit animations";
+            this.butEditAnimations.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butEditAnimations.Click += new System.EventHandler(this.butEditAnimations_Click);
             // 
             // splitSeam
@@ -779,7 +787,7 @@
             this.splitSeam.BackColor = System.Drawing.Color.Gray;
             this.splitSeam.Location = new System.Drawing.Point(0, 0);
             this.splitSeam.Name = "splitSeam";
-            this.splitSeam.Size = new System.Drawing.Size(984, 2);
+            this.splitSeam.Size = new System.Drawing.Size(1220, 2);
             this.splitSeam.TabIndex = 22;
             // 
             // groupSelectedMoveable
@@ -790,7 +798,7 @@
             this.groupSelectedMoveable.Controls.Add(this.tableLayoutPanel2);
             this.groupSelectedMoveable.Location = new System.Drawing.Point(0, 8);
             this.groupSelectedMoveable.Name = "groupSelectedMoveable";
-            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 268);
+            this.groupSelectedMoveable.Size = new System.Drawing.Size(817, 270);
             this.groupSelectedMoveable.TabIndex = 21;
             this.groupSelectedMoveable.TabStop = false;
             this.groupSelectedMoveable.Text = "Selected moveable:";
@@ -809,7 +817,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 241);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(806, 243);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel5
@@ -818,10 +826,10 @@
             this.panel5.Controls.Add(this.darkLabel4);
             this.panel5.Controls.Add(this.treeAnimations);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(285, 0);
+            this.panel5.Location = new System.Drawing.Point(403, 0);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(285, 241);
+            this.panel5.Size = new System.Drawing.Size(403, 243);
             this.panel5.TabIndex = 1;
             // 
             // flowLayoutPanel2
@@ -831,9 +839,9 @@
             this.flowLayoutPanel2.Controls.Add(this.butPlayAnimation);
             this.flowLayoutPanel2.Controls.Add(this.butStop);
             this.flowLayoutPanel2.Controls.Add(this.darkButton2);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 200);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 202);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(285, 41);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(403, 41);
             this.flowLayoutPanel2.TabIndex = 21;
             // 
             // butPlayAnimation
@@ -888,7 +896,7 @@
             this.treeAnimations.Location = new System.Drawing.Point(3, 22);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(279, 175);
+            this.treeAnimations.Size = new System.Drawing.Size(397, 177);
             this.treeAnimations.TabIndex = 20;
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
@@ -902,7 +910,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(282, 241);
+            this.panel4.Size = new System.Drawing.Size(400, 243);
             this.panel4.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -911,9 +919,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.butPlaySound);
             this.flowLayoutPanel1.Controls.Add(this.butRenameSound);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 200);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 202);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(282, 41);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(400, 41);
             this.flowLayoutPanel1.TabIndex = 22;
             // 
             // butPlaySound
@@ -946,7 +954,7 @@
             this.treeSounds.Location = new System.Drawing.Point(6, 22);
             this.treeSounds.MaxDragChange = 20;
             this.treeSounds.Name = "treeSounds";
-            this.treeSounds.Size = new System.Drawing.Size(273, 175);
+            this.treeSounds.Size = new System.Drawing.Size(391, 177);
             this.treeSounds.TabIndex = 16;
             this.treeSounds.Text = "darkTreeView1";
             // 
@@ -994,11 +1002,57 @@
             this.editAnimationsToolStripMenuItem.Text = "Edit animations";
             this.editAnimationsToolStripMenuItem.Click += new System.EventHandler(this.editAnimationsToolStripMenuItem_Click);
             // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.butEditAnimations);
+            this.flowLayoutPanel3.Controls.Add(this.butEditSkeleton);
+            this.flowLayoutPanel3.Controls.Add(this.butEditStaticModel);
+            this.flowLayoutPanel3.Controls.Add(this.butEditSpriteSequence);
+            this.flowLayoutPanel3.Controls.Add(this.butEditSound);
+            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 417);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(585, 28);
+            this.flowLayoutPanel3.TabIndex = 21;
+            // 
+            // butEditStaticModel
+            // 
+            this.butEditStaticModel.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butEditStaticModel.Location = new System.Drawing.Point(222, 3);
+            this.butEditStaticModel.Name = "butEditStaticModel";
+            this.butEditStaticModel.Size = new System.Drawing.Size(114, 23);
+            this.butEditStaticModel.TabIndex = 25;
+            this.butEditStaticModel.Text = "Edit static model";
+            this.butEditStaticModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditStaticModel.Click += new System.EventHandler(this.butEditStaticModel_Click);
+            // 
+            // butEditSpriteSequence
+            // 
+            this.butEditSpriteSequence.Image = global::WadTool.Properties.Resources.movie_projector_16;
+            this.butEditSpriteSequence.Location = new System.Drawing.Point(342, 3);
+            this.butEditSpriteSequence.Name = "butEditSpriteSequence";
+            this.butEditSpriteSequence.Size = new System.Drawing.Size(101, 23);
+            this.butEditSpriteSequence.TabIndex = 26;
+            this.butEditSpriteSequence.Text = "Edit sequence";
+            this.butEditSpriteSequence.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditSpriteSequence.Click += new System.EventHandler(this.butEditSpriteSequence_Click);
+            // 
+            // butEditSound
+            // 
+            this.butEditSound.Image = global::WadTool.Properties.Resources.volume_up_16;
+            this.butEditSound.Location = new System.Drawing.Point(449, 3);
+            this.butEditSound.Name = "butEditSound";
+            this.butEditSound.Size = new System.Drawing.Size(86, 23);
+            this.butEditSound.TabIndex = 27;
+            this.butEditSound.Text = "Edit sound";
+            this.butEditSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditSound.Click += new System.EventHandler(this.butEditSound_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 749);
+            this.ClientSize = new System.Drawing.Size(1244, 749);
             this.Controls.Add(this.darkToolStrip1);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
@@ -1032,6 +1086,7 @@
             this.panel4.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.contextMenuMoveableItem.ResumeLayout(false);
+            this.flowLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1117,6 +1172,10 @@
         private DarkUI.Controls.DarkContextMenu contextMenuMoveableItem;
         private System.Windows.Forms.ToolStripMenuItem editSkeletonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editAnimationsToolStripMenuItem;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private DarkUI.Controls.DarkButton butEditStaticModel;
+        private DarkUI.Controls.DarkButton butEditSpriteSequence;
+        private DarkUI.Controls.DarkButton butEditSound;
     }
 }
 
