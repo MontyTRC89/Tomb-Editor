@@ -307,7 +307,7 @@
             "Pipe"});
             this.comboReverberation.Location = new System.Drawing.Point(202, 168);
             this.comboReverberation.Name = "comboReverberation";
-            this.comboReverberation.Size = new System.Drawing.Size(79, 23);
+            this.comboReverberation.Size = new System.Drawing.Size(81, 23);
             this.comboReverberation.TabIndex = 18;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
