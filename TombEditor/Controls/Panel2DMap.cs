@@ -76,6 +76,8 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(180, 20, 200, 200));
         private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));
         private static readonly Brush _roomsNormalBelowBrush = new SolidBrush(Color.FromArgb(180, 85, 85, 85));
+        private static readonly Brush _roomsLockedBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Color.FromArgb(50, 20, 20, 20));
+
         private static readonly SolidBrush _roomsSelectedBrush = new SolidBrush(Color.FromArgb(180, 230, 20, 20));
         private static readonly Brush _roomsMovedBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(185, 255, 255, 255));
@@ -130,6 +132,7 @@ namespace TombEditor.Controls
             if (obj is Editor.SelectedRoomsChangedEvent ||
                 obj is Editor.RoomGeometryChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
+                obj is Editor.RoomPropertiesChangedEvent ||
                 obj is Editor.RoomListChangedEvent)
             {
                 if (_editor.Mode == EditorMode.Map2D)
@@ -726,6 +729,9 @@ namespace TombEditor.Controls
                         brush = _roomsNormalAboveBrush;
                     using (var brush2 = GetRoomBrush(room, brush))
                         e.Graphics.FillRectangles(brush2, rectangles.ToArray());
+                    if(room.Locked)
+                        e.Graphics.FillRectangles(_roomsLockedBrush, rectangles.ToArray());
+
                 }
             }
 
