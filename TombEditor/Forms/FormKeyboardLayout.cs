@@ -245,6 +245,7 @@ namespace TombEditor.Forms
             if (Hotkey.ReservedCameraKeys.Contains(_listeningKeys))
             {
                 DarkMessageBox.Show(this, "This key is reserved for camera movement. Please define another key.", "Reserved key", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StopListening();
                 return;
             }
 
