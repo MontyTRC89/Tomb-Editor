@@ -147,7 +147,6 @@ namespace TombEditor.ToolWindows
                         UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
                         l => { return c.ToFloatColor() * 2.0f; });
                     }))
-
                     {
                         colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
 
