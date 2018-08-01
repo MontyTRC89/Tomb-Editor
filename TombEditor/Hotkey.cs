@@ -34,7 +34,7 @@ namespace TombEditor
             { Keys.Decimal, "NumPadDecimal" },
             { Keys.Scroll, "ScrollLock" },
             { Keys.Oemtilde, "~" },
-            { Keys.OemQuestion, "?" },
+            { Keys.OemQuestion, "/" },
             { Keys.Oemplus, "Plus" },
             { Keys.OemMinus, "Minus" },
             { Keys.Oemcomma, "Comma" },
