@@ -377,7 +377,7 @@ namespace TombEditor.Forms
                 return base.ProcessCmdKey(ref msg, keyData);
 
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input
-            var activeControlType = GetFocusedControl(this).GetType().Name;
+            var activeControlType = GetFocusedControl(this)?.GetType().Name;
             if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
                 (activeControlType == "DarkTextBox" ||
                  activeControlType == "DarkComboBox" ||
