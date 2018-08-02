@@ -2620,6 +2620,8 @@ namespace TombEditor
             if (DarkMessageBox.Show(owner, "Are you sure to DELETE the texture " + textureToDelete +
                 "? Everything using the texture will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
+            if(_editor.SelectedTexture.Texture == textureToDelete)
+                _editor.SelectedTexture = new TextureArea { Texture = null };
             _editor.Level.Settings.Textures.Remove(textureToDelete);
             _editor.Level.RemoveTextures(texture => texture == textureToDelete);
             _editor.LoadedTexturesChange();
