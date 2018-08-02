@@ -47,6 +47,48 @@ namespace TombLib.LevelData
             return result;
         }
 
+        public int GetLowestRoomGroupPoint(HashSet<Room> roomGroup)
+        {
+            int lowestPoint = int.MaxValue;
+
+            foreach (Room room in roomGroup)
+            {
+                if (lowestPoint > room.Position.Y + room.GetLowestCorner())
+                    lowestPoint = room.Position.Y + room.GetLowestCorner();
+            }
+            return lowestPoint;
+        }
+
+        public int GetHighestRoomGroupPoint(HashSet<Room> roomGroup)
+        {
+            int highestPoint = int.MinValue;
+
+            foreach (Room room in roomGroup)
+            {
+                if (highestPoint < room.Position.Y + room.GetHighestCorner())
+                    highestPoint = room.Position.Y + room.GetHighestCorner();
+            }
+            return highestPoint;
+        }
+
+        public Room GetNearbyRoomBelow(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
+        {
+            var roomsOutsideGroup = roomsToCheck.Where(r => !roomGroup.Contains(r) && r != null).ToList();
+            if (roomsOutsideGroup.Count() == 0 || roomsOutsideGroup == null)
+                return null;
+            else
+                return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetHighestCorner() + tolerance && height >= r.Position.Y + r.GetHighestCorner() - tolerance));
+        }
+
+        public Room GetNearbyRoomAbove(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
+        {
+            var roomsOutsideGroup = roomsToCheck.Where(r => !roomGroup.Contains(r) && r != null).ToList();
+            if (roomsOutsideGroup.Count() == 0 || roomsOutsideGroup == null)
+                return null;
+            else
+                return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetLowestCorner() + tolerance && height >= r.Position.Y + r.GetLowestCorner() - tolerance));
+        }
+
         public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)
         {
             var triggers = new List<TriggerInstance>();
