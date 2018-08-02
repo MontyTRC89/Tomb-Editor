@@ -160,11 +160,12 @@ namespace TombLib.Graphics
             for (int j = 0; j < mov.Animations.Count; j++)
                 model.Animations.Add(Animation.FromWad2(bones, mov.Animations[j]));
 
-            // Prepare data by loading the first animation and uploading data to the GPU
+            // Prepare data by loading the first valid animation and uploading data to the GPU
             model.BuildHierarchy();
-            if (model.Animations.Count > 0 && model.Animations[0].KeyFrames.Count > 0)
-                model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
 
+
+            if (model.Animations.Count > 0)
+                model.BuildAnimationPose(model.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0)?.KeyFrames[0]);
             model.UpdateBuffers();
 
             return model;
