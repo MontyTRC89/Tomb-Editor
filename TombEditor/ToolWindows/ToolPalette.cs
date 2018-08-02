@@ -44,6 +44,12 @@ namespace TombEditor.ToolWindows
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
 
+            if (obj is Editor.SelectedTexturesChangedEvent || obj is InitEvent)
+            {
+                toolEraser.Checked = _editor.SelectedTexture.Texture == null;
+                toolInvisibility.Checked = _editor.SelectedTexture.Texture is TextureInvisible;
+            }
+
             if (obj is Editor.ModeChangedEvent || obj is InitEvent)
             {
                 EditorMode mode = _editor.Mode;
@@ -51,7 +57,10 @@ namespace TombEditor.ToolWindows
 
                 toolFill.Visible         = !geometryMode;
                 toolGroup.Visible        = !geometryMode;
+                toolEraser.Visible       = !geometryMode;
+                toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible      = !geometryMode;
+                toolSeparator2.Visible   = !geometryMode;
                 toolFlatten.Visible      =  geometryMode;
                 toolShovel.Visible       =  geometryMode;
                 toolSmooth.Visible       =  geometryMode;
@@ -152,6 +161,16 @@ namespace TombEditor.ToolWindows
         private void toolTerrain_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.Terrain);
+        }
+
+        private void toolInvisibility_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
+        }
+
+        private void toolEraser_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedTexture = new TextureArea { Texture = null };
         }
 
         private void toolUVFixer_Click(object sender, EventArgs e)
