@@ -162,6 +162,7 @@
             this.butPortal.Name = "butPortal";
             this.butPortal.Size = new System.Drawing.Size(24, 24);
             this.butPortal.TabIndex = 6;
+            this.butPortal.Tag = "AddPortal";
             this.butPortal.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butFlagTriggerTriggerer
