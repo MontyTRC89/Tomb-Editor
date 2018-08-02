@@ -43,13 +43,14 @@ namespace TombEditor.ToolWindows
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
             {
-                LevelTexture toSelect = ((Editor.SelectedTexturesChangedEvent)obj).Current.Texture as LevelTexture;
+                var e = (Editor.SelectedTexturesChangedEvent)obj;
+
+                LevelTexture toSelect = e.Current.Texture as LevelTexture;
                 if (toSelect != null)
                     comboCurrentTexture.SelectedItem = toSelect;
-                panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
-                
-                SwitchBlendMode();
-                SwitchDoubleSide();
+                panelTextureMap.SelectedTexture = e.Current;
+
+                UpdateTextureControls(e.Current);
             }
 
             // Center texture on texture map
@@ -166,11 +167,6 @@ namespace TombEditor.ToolWindows
 
         private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SwitchBlendMode();
-        }
-
-        private void SwitchBlendMode()
-        {
             var selectedTexture = _editor.SelectedTexture;
             switch (cmbBlending.SelectedIndex)
             {
@@ -197,11 +193,32 @@ namespace TombEditor.ToolWindows
             _editor.SelectedTexture = selectedTexture;
         }
 
-        private void SwitchDoubleSide()
+        private void UpdateTextureControls(TextureArea texture)
         {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.DoubleSided = !butDoubleSide.BackColorUseGeneric;
-            _editor.SelectedTexture = selectedTexture;
+            butDoubleSide.BackColorUseGeneric = !texture.DoubleSided;
+
+            switch (texture.BlendMode)
+            {
+                case BlendMode.Normal:
+                default:
+                    cmbBlending.SelectedIndex = 0;
+                    break;
+                case BlendMode.Additive:
+                    cmbBlending.SelectedIndex = 1;
+                    break;
+                case BlendMode.Subtract:
+                    cmbBlending.SelectedIndex = 2;
+                    break;
+                case BlendMode.Exclude:
+                    cmbBlending.SelectedIndex = 3;
+                    break;
+                case BlendMode.Screen:
+                    cmbBlending.SelectedIndex = 4;
+                    break;
+                case BlendMode.Lighten:
+                    cmbBlending.SelectedIndex = 5;
+                    break;
+            };
         }
 
         private void butDeleteTexture_Click(object sender, EventArgs e)

@@ -173,10 +173,18 @@ namespace TombEditor
             AddCommand("SetTextureBlendMode", "Set blending mode", CommandType.Textures, delegate (CommandArgs args)
             {
                 var texture = args.Editor.SelectedTexture;
-                if (texture.BlendMode == BlendMode.Additive)
-                    texture.BlendMode = BlendMode.Normal;
-                else
+                if (texture.BlendMode == BlendMode.Normal)
                     texture.BlendMode = BlendMode.Additive;
+                else if (texture.BlendMode == BlendMode.Additive)
+                    texture.BlendMode = BlendMode.Subtract;
+                else if (texture.BlendMode == BlendMode.Subtract)
+                    texture.BlendMode = BlendMode.Exclude;
+                else if (texture.BlendMode == BlendMode.Exclude)
+                    texture.BlendMode = BlendMode.Screen;
+                else if (texture.BlendMode == BlendMode.Screen)
+                    texture.BlendMode = BlendMode.Lighten;
+                else if (texture.BlendMode == BlendMode.Lighten)
+                    texture.BlendMode = BlendMode.Normal;
                 args.Editor.SelectedTexture = texture;
             });
 
