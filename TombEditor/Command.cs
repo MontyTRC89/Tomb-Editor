@@ -152,7 +152,7 @@ namespace TombEditor
 
             AddCommand("AddPortal", "Add portal", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     try
                     {
                         EditorActions.AddPortal(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window);
