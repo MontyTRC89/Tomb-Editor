@@ -470,7 +470,7 @@ namespace TombEditor.Forms
             bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
 
-            currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5);
+            currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5 || _levelSettings.GameVersion == GameVersion.TR5Main);
             GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
             lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
             lblLaraType.Visible = currentVersionToCheck;
