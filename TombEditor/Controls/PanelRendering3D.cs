@@ -123,9 +123,14 @@ namespace TombEditor.Controls
                         DrawSlideDirections = ShowSlideDirections,
                         HighlightSelection = _toolHandler.Dragged,
                         ProbeAttributesThroughPortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals,
-                        SelectionArea = _editor.SelectedSectors.Area,
-                        SelectionArrow = _editor.SelectedSectors.Arrow
                     };
+
+                    if(_editor.SelectedRoom == room)
+                    {
+                        sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
+                        sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
+                    }
+
                     return Device.CreateDrawingRoom(
                          new RenderingDrawingRoom.Description
                          {
