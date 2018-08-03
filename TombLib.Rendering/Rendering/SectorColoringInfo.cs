@@ -68,7 +68,7 @@ namespace TombLib.Rendering
 
         public List<SectorColoringType> CurrentPriority = Enum.GetValues(typeof(SectorColoringType)).Cast<SectorColoringType>().ToList();
         public List<SectorColoringType> PreviousPriority = Enum.GetValues(typeof(SectorColoringType)).Cast<SectorColoringType>().ToList();
-        public float TransistionValue = 0.0f;
+        public float TransitionValue = 0.0f;
 
         private static readonly List<SectorColoringShape> _allShapes = Enum.GetValues(typeof(SectorColoringShape)).Cast<SectorColoringShape>().ToList();
 
@@ -204,18 +204,18 @@ namespace TombLib.Rendering
 
                 if (colors == null)
                     colors = new List<SectorColoringInfoColor>();
-                colors.Add(new SectorColoringInfoColor() { Color = Vector4.Lerp(prevColor.Value, currColor.Value, TransistionValue), Shape = shapesToList[i] });
+                colors.Add(new SectorColoringInfoColor() { Color = Vector4.Lerp(prevColor.Value, currColor.Value, TransitionValue), Shape = shapesToList[i] });
             }
             return colors;
         }
 
-        public bool SetPriority(SectorColoringType type, bool instantanous = true)
+        public bool SetPriority(SectorColoringType type, bool fast = true)
         {
             if (!CurrentPriority.Contains(type) || CurrentPriority.First() == type)
                 return false;
             PreviousPriority = CurrentPriority;
             CurrentPriority = new[] { type }.Concat(PreviousPriority.Where(c => c != type)).ToList();
-            TransistionValue = instantanous ? 1.0f : 0.0f;
+            TransitionValue = fast ? 1.0f : 0.0f;
             return true;
         }
     };
