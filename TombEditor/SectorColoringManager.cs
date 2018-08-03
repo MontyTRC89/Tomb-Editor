@@ -35,10 +35,10 @@ namespace TombEditor
 
         private void UpdateTransitionAnimation(object sender, EventArgs e)
         {
-            ColoringInfo.TransistionValue += _transitionSpeed;
-            if (ColoringInfo.TransistionValue >= 1.0f)
+            ColoringInfo.TransitionValue += _transitionSpeed;
+            if (ColoringInfo.TransitionValue >= 1.0f)
             {
-                ColoringInfo.TransistionValue = 1.0f;
+                ColoringInfo.TransitionValue = 1.0f;
                 _transitionAnimator.Stop();
             }
 
