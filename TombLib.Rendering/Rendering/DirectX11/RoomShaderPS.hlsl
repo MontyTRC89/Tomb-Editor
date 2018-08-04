@@ -4,6 +4,7 @@ cbuffer WorldData
     float RoomGridLineWidth;
 	bool RoomGridForce;
 	bool RoomDisableVertexColors;
+	bool ShowExtraBlendingModes;
 };
 
 struct PixelInputType
@@ -42,8 +43,40 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		result.xyz *= input.Color.w; // Turn into premultiplied alpha
 
-		if (input.BlendMode >= 2)
-			result.w = 0.0f; // Additive blending
+		if (input.BlendMode >= 2) // Alpha-blended modes
+		{
+			if (ShowExtraBlendingModes && input.BlendMode != 2)
+			{
+				// Checkerboard pattern
+				float2 sineUV = sin(input.EditorUv * 8.0f * 3.14f);
+				float2 distUV = fwidth(sineUV);
+				float2 smoothUV = smoothstep(-distUV, distUV, sineUV);
+				smoothUV = 2.0f * smoothUV - 1.0f;
+				float cbColor = 0.5f * smoothUV.x * smoothUV.y + 0.5;
+				
+				switch (input.BlendMode)
+				{
+					case 5: // Subtractive
+						result.xyz *= 1.0f - cbColor * 0.5f;
+						result.w = cbColor * 0.8f;
+						break;
+					case 8: // Exclusive
+						result.xyz = abs(cbColor - result.xyz);
+						result.w = (1.0f - cbColor) * 0.5f;
+						break;
+					case 9: // Screen
+						result.xyz *= 1.0f - cbColor * 0.2f;
+						result.w = cbColor * 0.5f;
+						break;
+					case 10: // Darken
+						result.xyz *= 1.0f - cbColor * 0.2f;
+						result.w = cbColor * 0.8f;
+						break;
+				}
+			}
+			else
+				result.w = 0.0f;
+		}
     }
     else
     { // Geometric view

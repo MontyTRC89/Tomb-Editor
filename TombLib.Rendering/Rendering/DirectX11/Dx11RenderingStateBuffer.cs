@@ -20,6 +20,8 @@ namespace TombLib.Rendering.DirectX11
             public int RoomGridForce;
             [FieldOffset(72)]
             public int RoomDisableVertexColors;
+            [FieldOffset(76)]
+            public int ShowExtraBlendingModes;
         };
         public static readonly int Size = ((Marshal.SizeOf(typeof(ConstantBufferLayout)) + 15) / 16) * 16;
 
@@ -45,6 +47,7 @@ namespace TombLib.Rendering.DirectX11
             Buffer.RoomGridLineWidth = State.RoomGridLineWidth;
             Buffer.RoomGridForce = State.RoomGridForce ? 1 : 0;
             Buffer.RoomDisableVertexColors = State.RoomDisableVertexColors ? 1 : 0;
+            Buffer.ShowExtraBlendingModes = State.ShowExtraBlendingModes ? 1 : 0;
             Context.UpdateSubresource(ref Buffer, ConstantBuffer);
         }
     }

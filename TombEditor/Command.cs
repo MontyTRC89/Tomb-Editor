@@ -1208,6 +1208,12 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("DrawExtraBlendingModes", "Draw extra blending modes", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowExtraBlendingModes = !args.Editor.Configuration.Rendering3D_ShowExtraBlendingModes;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DisableGeometryPicking", "Disable geometry picking", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_DisablePickingForImportedGeometry = !args.Editor.Configuration.Rendering3D_DisablePickingForImportedGeometry;
