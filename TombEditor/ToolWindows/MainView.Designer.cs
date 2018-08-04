@@ -59,6 +59,7 @@
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.butDrawExtraBlendingModes = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,6 +80,7 @@
             this.butDrawHorizon,
             this.butDrawRoomNames,
             this.butDrawCardinalDirections,
+            this.butDrawExtraBlendingModes,
             this.butDrawIllegalSlopes,
             this.butDrawSlideDirections,
             this.butDisableGeometryPicking,
@@ -593,6 +595,17 @@
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
+            // butDrawExtraBlendingModes
+            // 
+            this.butDrawExtraBlendingModes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawExtraBlendingModes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawExtraBlendingModes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawExtraBlendingModes.Image = global::TombEditor.Properties.Resources.texture_Transparent_1_16;
+            this.butDrawExtraBlendingModes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawExtraBlendingModes.Name = "butDrawExtraBlendingModes";
+            this.butDrawExtraBlendingModes.Size = new System.Drawing.Size(23, 25);
+            this.butDrawExtraBlendingModes.Tag = "DrawExtraBlendingModes";
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -656,5 +669,6 @@
         private System.Windows.Forms.ToolStripButton butDisableGeometryPicking;
         private System.Windows.Forms.ToolStripMenuItem butDrawAllRooms;
         private System.Windows.Forms.ToolStripButton butDrawCardinalDirections;
+        private System.Windows.Forms.ToolStripButton butDrawExtraBlendingModes;
     }
 }

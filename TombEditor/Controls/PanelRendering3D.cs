@@ -56,6 +56,8 @@ namespace TombEditor.Controls
         public bool ShowSlideDirections { get { return _drawSlideDirections; } set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DisablePickingForImportedGeometry { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowExtraBlendingModes { get; set; }
 
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
 
@@ -1918,6 +1920,7 @@ namespace TombEditor.Controls
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             _renderingStateBuffer.Set(new RenderingState
             {
+                ShowExtraBlendingModes = ShowExtraBlendingModes,
                 RoomGridForce = _editor.Mode == EditorMode.Geometry,
                 RoomDisableVertexColors = _editor.Mode == EditorMode.FaceEdit,
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,

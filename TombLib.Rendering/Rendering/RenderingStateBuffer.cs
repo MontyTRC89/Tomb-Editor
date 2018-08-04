@@ -9,6 +9,7 @@ namespace TombLib.Rendering
         public float RoomGridLineWidth = 10.0f;
         public bool RoomGridForce = false;
         public bool RoomDisableVertexColors = false;
+        public bool ShowExtraBlendingModes = true;
     }
     public abstract class RenderingStateBuffer : IDisposable
     {
