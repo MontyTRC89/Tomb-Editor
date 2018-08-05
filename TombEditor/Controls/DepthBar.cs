@@ -540,7 +540,7 @@ namespace TombEditor.Controls
             Vector2 probePos = groupIndex == DepthProbes.Count ? cursorPos : DepthProbes[groupIndex].Position;
             bool shouldCheckRoomsToMove = groupIndex == DepthProbes.Count && _roomsToMove != null;
 
-            // Iterate over all rooms under the curser and add them to the room sequences
+            // Iterate over all rooms under the cursor and add them to the room sequences
             IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList(room =>
             {
                 Vector2 roomLocal = probePos - room.SectorPos;
