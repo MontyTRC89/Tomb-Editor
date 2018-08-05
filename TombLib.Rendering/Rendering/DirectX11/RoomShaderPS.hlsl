@@ -65,12 +65,12 @@ float4 main(PixelInputType input) : SV_TARGET
 						result.w = (1.0f - cbColor) * 0.5f;
 						break;
 					case 9: // Screen
+						result.xyz *= 1.0f - cbColor * 0.3f;
+						result.w = cbColor * 0.8f;
+						break;
+					case 10: // Lighten
 						result.xyz *= 1.0f - cbColor * 0.2f;
 						result.w = cbColor * 0.5f;
-						break;
-					case 10: // Darken
-						result.xyz *= 1.0f - cbColor * 0.2f;
-						result.w = cbColor * 0.8f;
 						break;
 				}
 			}
