@@ -23,7 +23,6 @@
             this.toolBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.toolBox.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolBox.Location = new System.Drawing.Point(0, 16);
-            this.toolBox.Margin = new System.Windows.Forms.Padding(0);
             this.toolBox.Name = "toolBox";
             this.toolBox.Size = new System.Drawing.Size(26, 431);
             this.toolBox.TabIndex = 0;
