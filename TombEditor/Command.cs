@@ -565,12 +565,12 @@ namespace TombEditor
 
             AddCommand("RotateTexture", "Rotate selected texture", CommandType.Textures, delegate (CommandArgs args)
             {
-                EditorActions.RotateSelectedTexture();
+                args.Editor.SelectedTexture = EditorActions.RotateTexture(args.Editor.SelectedTexture);
             });
 
             AddCommand("MirrorTexture", "Mirror selected texture", CommandType.Textures, delegate (CommandArgs args)
             {
-                EditorActions.MirrorSelectedTexture();
+                args.Editor.SelectedTexture = EditorActions.MirrorTexture(args.Editor.SelectedTexture);
             });
 
             AddCommand("NewLevel", "New level", CommandType.File, delegate (CommandArgs args)
