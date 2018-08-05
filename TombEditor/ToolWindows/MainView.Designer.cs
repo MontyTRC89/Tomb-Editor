@@ -26,6 +26,7 @@
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
             this.butDrawCardinalDirections = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
@@ -95,10 +96,11 @@
             this.butOpacityNone,
             this.butOpacitySolidFaces,
             this.butOpacityTraversableFaces,
-            this.toolStripSeparator4,
+            this.toolStripSeparator2,
             this.butTextureFloor,
             this.butTextureCeiling,
             this.butTextureWalls,
+            this.toolStripSeparator4,
             this.butAddCamera,
             this.butAddFlybyCamera,
             this.butAddSink,
@@ -222,6 +224,14 @@
             this.butDrawCardinalDirections.Name = "butDrawCardinalDirections";
             this.butDrawCardinalDirections.Size = new System.Drawing.Size(23, 25);
             this.butDrawCardinalDirections.Tag = "DrawCardinalDirections";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
             // 
             // butDrawIllegalSlopes
             // 
@@ -670,5 +680,6 @@
         private System.Windows.Forms.ToolStripMenuItem butDrawAllRooms;
         private System.Windows.Forms.ToolStripButton butDrawCardinalDirections;
         private System.Windows.Forms.ToolStripButton butDrawExtraBlendingModes;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
