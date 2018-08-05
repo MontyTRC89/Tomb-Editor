@@ -292,8 +292,8 @@ namespace TombEditor.Controls
             if (obj is Editor.ActionChangedEvent)
             {
                 IEditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
-                bool hasCrossCurser = currentAction is EditorActionPlace || currentAction is EditorActionRelocateCamera;
-                Cursor = hasCrossCurser ? Cursors.Cross : Cursors.Arrow;
+                bool hasCrossCursor = currentAction is EditorActionPlace || currentAction is EditorActionRelocateCamera;
+                Cursor = hasCrossCursor ? Cursors.Cross : Cursors.Arrow;
             }
 
             // Center camera

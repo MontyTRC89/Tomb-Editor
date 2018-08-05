@@ -321,8 +321,8 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
-                    // Move view with mouse curser
-                    // Mouse curser is a fixed point
+                    // Move view with mouse cursor
+                    // Mouse cursor is a fixed point
                     _viewMoveMouseTexCoord = FromVisualCoord(e.Location);
                     break;
             }
@@ -383,8 +383,8 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
-                    // Move view with mouse curser
-                    // Mouse curser is a fixed point
+                    // Move view with mouse cursor
+                    // Mouse cursor is a fixed point
                     if (_viewMoveMouseTexCoord.HasValue)
                         if (ModifierKeys.HasFlag(Keys.Control))
                         { // Zoom

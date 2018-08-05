@@ -275,8 +275,8 @@ namespace TombEditor.Controls
                 case MouseButtons.Right:
                     _startMousePosition = e.Location;
 
-                    // Move view with mouse curser
-                    // Mouse curser is a fixed point
+                    // Move view with mouse cursor
+                    // Mouse cursor is a fixed point
                     _viewMoveMouseWorldCoord = clickPos;
                     break;
 
