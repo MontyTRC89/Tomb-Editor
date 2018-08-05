@@ -47,27 +47,27 @@
             // cbNoPathfinding
             // 
             this.cbNoPathfinding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbNoPathfinding.AutoCheck = false;
             this.cbNoPathfinding.AutoSize = true;
             this.cbNoPathfinding.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbNoPathfinding.Location = new System.Drawing.Point(105, 127);
             this.cbNoPathfinding.Name = "cbNoPathfinding";
             this.cbNoPathfinding.Size = new System.Drawing.Size(106, 17);
             this.cbNoPathfinding.TabIndex = 12;
+            this.cbNoPathfinding.Tag = "SetRoomNoPathfinding";
             this.cbNoPathfinding.Text = "No pathfinding";
-            this.toolTip.SetToolTip(this.cbNoPathfinding, "Disable zones and boxes generation");
-            this.cbNoPathfinding.CheckedChanged += new System.EventHandler(this.cbNoPathfinding_CheckedChanged);
             // 
             // cbHorizon
             // 
             this.cbHorizon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbHorizon.AutoCheck = false;
             this.cbHorizon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbHorizon.Location = new System.Drawing.Point(105, 81);
             this.cbHorizon.Name = "cbHorizon";
             this.cbHorizon.Size = new System.Drawing.Size(58, 17);
             this.cbHorizon.TabIndex = 10;
+            this.cbHorizon.Tag = "SetRoomSkybox";
             this.cbHorizon.Text = "Skybox";
-            this.toolTip.SetToolTip(this.cbHorizon, "Skybox is visible");
-            this.cbHorizon.CheckedChanged += new System.EventHandler(this.cbHorizon_CheckedChanged);
             // 
             // darkLabel19
             // 
@@ -119,39 +119,39 @@
             // cbFlagOutside
             // 
             this.cbFlagOutside.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbFlagOutside.AutoCheck = false;
             this.cbFlagOutside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFlagOutside.Location = new System.Drawing.Point(177, 81);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(50, 17);
             this.cbFlagOutside.TabIndex = 14;
+            this.cbFlagOutside.Tag = "SetRoomOutside";
             this.cbFlagOutside.Text = "Wind";
-            this.toolTip.SetToolTip(this.cbFlagOutside, "Affects particles and Lara\'s hair");
-            this.cbFlagOutside.CheckedChanged += new System.EventHandler(this.cbFlagOutside_CheckedChanged);
             // 
             // cbFlagCold
             // 
             this.cbFlagCold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbFlagCold.AutoCheck = false;
             this.cbFlagCold.AutoSize = true;
             this.cbFlagCold.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFlagCold.Location = new System.Drawing.Point(177, 58);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 13;
+            this.cbFlagCold.Tag = "SetRoomCold";
             this.cbFlagCold.Text = "Cold";
-            this.toolTip.SetToolTip(this.cbFlagCold, "Room affects cold value (NGLE-only)");
-            this.cbFlagCold.CheckedChanged += new System.EventHandler(this.cbFlagCold_CheckedChanged);
             // 
             // cbFlagDamage
             // 
             this.cbFlagDamage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbFlagDamage.AutoCheck = false;
             this.cbFlagDamage.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFlagDamage.Location = new System.Drawing.Point(105, 58);
             this.cbFlagDamage.Name = "cbFlagDamage";
             this.cbFlagDamage.Size = new System.Drawing.Size(60, 17);
             this.cbFlagDamage.TabIndex = 9;
+            this.cbFlagDamage.Tag = "SetRoomDamage";
             this.cbFlagDamage.Text = "Damage";
-            this.toolTip.SetToolTip(this.cbFlagDamage, "Room causes damage (NGLE-only)");
-            this.cbFlagDamage.CheckedChanged += new System.EventHandler(this.cbFlagDamage_CheckedChanged);
             // 
             // darkLabel15
             // 
@@ -190,14 +190,14 @@
             // cbNoLensflare
             // 
             this.cbNoLensflare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbNoLensflare.AutoCheck = false;
             this.cbNoLensflare.AutoSize = true;
             this.cbNoLensflare.Location = new System.Drawing.Point(105, 104);
             this.cbNoLensflare.Name = "cbNoLensflare";
             this.cbNoLensflare.Size = new System.Drawing.Size(88, 17);
             this.cbNoLensflare.TabIndex = 11;
+            this.cbNoLensflare.Tag = "SetRoomNoLensflare";
             this.cbNoLensflare.Text = "No lensflare";
-            this.toolTip.SetToolTip(this.cbNoLensflare, "Disable global lensflare");
-            this.cbNoLensflare.CheckedChanged += new System.EventHandler(this.cbNoLensflare_CheckedChanged);
             // 
             // toolTip
             // 

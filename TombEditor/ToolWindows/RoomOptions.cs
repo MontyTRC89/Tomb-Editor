@@ -18,7 +18,7 @@ namespace TombEditor.ToolWindows
         public RoomOptions()
         {
             InitializeComponent();
-            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
+            CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -102,7 +102,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
-                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+                    CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
         }
 
@@ -158,51 +158,6 @@ namespace TombEditor.ToolWindows
             // Update combo box even if nothing changed internally
             // to correct invalid user input
             EditorEventRaised(new Editor.RoomPropertiesChangedEvent { Room = room });
-        }
-
-        private void cbFlagDamage_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagDamage == cbFlagDamage.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagDamage = cbFlagDamage.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbFlagCold_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagCold == cbFlagCold.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagCold = cbFlagCold.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbFlagOutside_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagOutside == cbFlagOutside.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagOutside = cbFlagOutside.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbHorizon_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagHorizon == cbHorizon.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagHorizon = cbHorizon.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbNoPathfinding_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagExcludeFromPathFinding == cbNoPathfinding.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagExcludeFromPathFinding = cbNoPathfinding.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
@@ -312,15 +267,6 @@ namespace TombEditor.ToolWindows
 
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
-        }
-
-        private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagNoLensflare == cbNoLensflare.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
 }
