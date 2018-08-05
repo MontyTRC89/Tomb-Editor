@@ -57,9 +57,8 @@
             this.toolStrip.AutoSize = false;
             this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStrip.CanOverflow = false;
-            this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
@@ -85,7 +84,7 @@
             this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.toolStrip.Padding = new System.Windows.Forms.Padding(0);
             this.toolStrip.Size = new System.Drawing.Size(28, 428);
             this.toolStrip.TabIndex = 3;
             // 
@@ -334,7 +333,7 @@
             this.Controls.Add(this.toolStrip);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolBox";
-            this.Size = new System.Drawing.Size(26, 428);
+            this.Size = new System.Drawing.Size(28, 428);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
