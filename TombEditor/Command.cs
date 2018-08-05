@@ -72,25 +72,25 @@ namespace TombEditor
             return Enumerable.Repeat(control, 1).Union(control.Controls.OfType<Control>().SelectMany(AllSubControls));
         }
 
-        public static void AssignCommandsToButtons(Editor editor, Control parent, ToolTip toolTip = null, bool onlyToolTips = false)
+        public static void AssignCommandsToControls(Editor editor, Control parent, ToolTip toolTip = null, bool onlyToolTips = false)
         {
-            var buttons = AllSubControls(parent).OfType<DarkButton>().ToList();
-            foreach (var button in buttons)
+            var controls = AllSubControls(parent).Where(c => c is DarkButton || c is DarkCheckBox).ToList();
+            foreach (var control in controls)
             {
-                if (!string.IsNullOrEmpty(button.Tag?.ToString()))
+                if (!string.IsNullOrEmpty(control.Tag?.ToString()))
                 {
-                    var command = GetCommand(button.Tag.ToString());
+                    var command = GetCommand(control.Tag.ToString());
 
                     if (command != null)
                     {
-                        var hotkeyLabel = string.Join(", ", editor.Configuration.Window_HotkeySets[button.Tag.ToString()]);
+                        var hotkeyLabel = string.Join(", ", editor.Configuration.Window_HotkeySets[control.Tag.ToString()]);
                         var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
 
                         if(!onlyToolTips)
-                            button.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
+                            control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
 
                         if (toolTip != null && !string.IsNullOrEmpty(label))
-                            toolTip.SetToolTip(button, label);
+                            toolTip.SetToolTip(control, label);
                     }
                 }
             }
@@ -1418,6 +1418,60 @@ namespace TombEditor
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
                 EditorActions.ToggleForceFloorSolid(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("SetRoomOutside", "Set to outside", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if(args.Editor.SelectedRoom != null )
+                {
+                    args.Editor.SelectedRoom.FlagOutside = !args.Editor.SelectedRoom.FlagOutside;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                }
+            });
+
+            AddCommand("SetRoomSkybox", "Set skybox", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                {
+                    args.Editor.SelectedRoom.FlagHorizon = !args.Editor.SelectedRoom.FlagHorizon;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                }
+            });
+
+            AddCommand("SetRoomNoLensflare", "Disable global lensflare", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                {
+                    args.Editor.SelectedRoom.FlagNoLensflare = !args.Editor.SelectedRoom.FlagNoLensflare;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                }
+            });
+
+            AddCommand("SetRoomNoPathfinding", "Exclude from pathfinding", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                {
+                    args.Editor.SelectedRoom.FlagExcludeFromPathFinding = !args.Editor.SelectedRoom.FlagExcludeFromPathFinding;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                }
+            });
+
+            AddCommand("SetRoomCold", "Set room to cold (TRNG only)", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                {
+                    args.Editor.SelectedRoom.FlagCold = !args.Editor.SelectedRoom.FlagCold;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                }
+            });
+
+            AddCommand("SetRoomDamage", "Set room to damage (TRNG only)", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                {
+                    args.Editor.SelectedRoom.FlagDamage = !args.Editor.SelectedRoom.FlagDamage;
+                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                }
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

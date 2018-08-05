@@ -18,7 +18,7 @@ namespace TombEditor.ToolWindows
         public SectorOptions()
         {
             InitializeComponent();
-            CommandHandler.AssignCommandsToButtons(Editor.Instance, this, toolTip);
+            CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -43,7 +43,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
-                    CommandHandler.AssignCommandsToButtons(_editor, this, toolTip, true);
+                    CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
         }
 
