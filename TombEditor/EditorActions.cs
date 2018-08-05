@@ -740,48 +740,61 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
+        public static TextureArea RotateTexture(TextureArea texture)
         {
-            Block blocks = room.GetBlock(pos);
-            TextureArea textureArea = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Triangle)
+            TextureArea newTexture = texture;
+
+            if (newTexture.TextureIsRectangle)
             {
-                Vector2 tempTexCoord = textureArea.TexCoord2;
-                textureArea.TexCoord2 = textureArea.TexCoord1;
-                textureArea.TexCoord1 = textureArea.TexCoord0;
-                textureArea.TexCoord0 = tempTexCoord;
-                textureArea.TexCoord3 = textureArea.TexCoord2;
+                Vector2 tempTexCoord = newTexture.TexCoord3;
+                newTexture.TexCoord3 = newTexture.TexCoord2;
+                newTexture.TexCoord2 = newTexture.TexCoord1;
+                newTexture.TexCoord1 = newTexture.TexCoord0;
+                newTexture.TexCoord0 = tempTexCoord;
             }
             else
             {
-                Vector2 tempTexCoord = textureArea.TexCoord3;
-                textureArea.TexCoord3 = textureArea.TexCoord2;
-                textureArea.TexCoord2 = textureArea.TexCoord1;
-                textureArea.TexCoord1 = textureArea.TexCoord0;
-                textureArea.TexCoord0 = tempTexCoord;
+                Vector2 tempTexCoord = newTexture.TexCoord2;
+                newTexture.TexCoord2 = newTexture.TexCoord1;
+                newTexture.TexCoord1 = newTexture.TexCoord0;
+                newTexture.TexCoord0 = tempTexCoord;
+                newTexture.TexCoord3 = newTexture.TexCoord2;
             }
-            blocks.SetFaceTexture(face, textureArea);
 
+            return newTexture;
+        }
+
+        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
+        {
+            Block blocks = room.GetBlock(pos);
+            blocks.SetFaceTexture(face, RotateTexture(blocks.GetFaceTexture(face)));
             // Update state
             room.BuildGeometry();
             _editor.RoomTextureChange(room);
         }
 
-        public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
+        public static TextureArea MirrorTexture(TextureArea texture)
         {
-            Block blocks = room.GetBlock(pos);
-            TextureArea textureArea = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Triangle)
+            TextureArea newTexture = texture;
+
+            if (newTexture.TextureIsRectangle)
             {
-                Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
-                textureArea.TexCoord3 = textureArea.TexCoord2;
+                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord1);
+                Swap.Do(ref newTexture.TexCoord2, ref newTexture.TexCoord3);
             }
             else
             {
-                Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord1);
-                Swap.Do(ref textureArea.TexCoord2, ref textureArea.TexCoord3);
+                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord2);
+                newTexture.TexCoord3 = newTexture.TexCoord2;
             }
-            blocks.SetFaceTexture(face, textureArea);
+
+            return newTexture;
+        }
+
+        public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
+        {
+            Block blocks = room.GetBlock(pos);
+            blocks.SetFaceTexture(face, MirrorTexture(blocks.GetFaceTexture(face)));
 
             // Update state
             room.BuildGeometry();
@@ -794,25 +807,6 @@ namespace TombEditor
             if (area == null || area.TextureIsInvisble || area.Texture == null)
                 return;
             _editor.SelectTextureAndCenterView(area);
-        }
-
-        public static void RotateSelectedTexture()
-        {
-            TextureArea textureArea = _editor.SelectedTexture;
-            Vector2 texCoordTemp = textureArea.TexCoord3;
-            textureArea.TexCoord3 = textureArea.TexCoord2;
-            textureArea.TexCoord2 = textureArea.TexCoord1;
-            textureArea.TexCoord1 = textureArea.TexCoord0;
-            textureArea.TexCoord0 = texCoordTemp;
-            _editor.SelectedTexture = textureArea;
-        }
-
-        public static void MirrorSelectedTexture()
-        {
-            TextureArea textureArea = _editor.SelectedTexture;
-            Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord3);
-            Swap.Do(ref textureArea.TexCoord1, ref textureArea.TexCoord2);
-            _editor.SelectedTexture = textureArea;
         }
 
         private static bool ApplyTextureAutomaticallyNoUpdated(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
