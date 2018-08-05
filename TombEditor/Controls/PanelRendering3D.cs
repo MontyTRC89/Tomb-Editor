@@ -1551,9 +1551,9 @@ namespace TombEditor.Controls
                 if (mesh.Vertices.Count == 0)
                     continue;
 
-                Matrix4x4 world = Matrix4x4.CreateScale(20.0f) *
+                Matrix4x4 world = Matrix4x4.CreateScale(128.0f) *
                                   model.AnimationTransforms[i] *
-                                  Matrix4x4.CreateTranslation(_editor.SelectedRoom.GetLocalCenter() + _editor.SelectedRoom.WorldPos);
+                                  Matrix4x4.CreateTranslation(Camera.GetPosition());
 
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
 
