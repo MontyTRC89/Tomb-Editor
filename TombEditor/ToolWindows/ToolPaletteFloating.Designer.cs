@@ -35,7 +35,6 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.toolBox);
             this.GripSize = 10;
-            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolPaletteFloating";
             this.Size = new System.Drawing.Size(28, 447);
             this.ResumeLayout(false);

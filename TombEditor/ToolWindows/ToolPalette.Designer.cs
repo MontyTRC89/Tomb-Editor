@@ -34,11 +34,13 @@
             // toolBox
             // 
             this.toolBox.AutoSize = true;
+            this.toolBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.toolBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolBox.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolBox.Location = new System.Drawing.Point(0, 25);
             this.toolBox.Name = "toolBox";
-            this.toolBox.Size = new System.Drawing.Size(436, 204);
+            this.toolBox.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.toolBox.Size = new System.Drawing.Size(398, 27);
             this.toolBox.TabIndex = 0;
             this.toolBox.SizeChanged += new System.EventHandler(this.toolBox_SizeChanged);
             // 
@@ -53,7 +55,7 @@
             this.MinimumSize = new System.Drawing.Size(28, 52);
             this.Name = "ToolPalette";
             this.SerializationKey = "ToolPalette";
-            this.Size = new System.Drawing.Size(436, 229);
+            this.Size = new System.Drawing.Size(398, 52);
             this.ResumeLayout(false);
             this.PerformLayout();
 
