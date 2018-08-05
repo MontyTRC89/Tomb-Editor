@@ -215,7 +215,7 @@ namespace TombEditor
             Keys Q = Keys.Q;
             Keys A = Keys.A;
             Keys W = Keys.W;
-            //Keys Y = Keys.Y;
+            Keys Y = Keys.Y;
             Keys Z = Keys.Z;
 
             if (layout == KeyboardLayout.Azerty)
@@ -227,7 +227,7 @@ namespace TombEditor
             }
             else if (layout == KeyboardLayout.Qwertz)
             {
-                //Y = Keys.Z;
+                Y = Keys.Z;
                 Z = Keys.Y;
             }
 
@@ -292,8 +292,8 @@ namespace TombEditor
             this["RaiseRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.R | Keys.Alt | Keys.Shift };
             this["LowerRF1ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt };
             this["LowerRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt | Keys.Shift };
-            this["RaiseYH1Click"] = new SortedSet<Hotkey> { Keys.Y };
-            this["RaiseYH4Click"] = new SortedSet<Hotkey> { Keys.Y | Keys.Shift };
+            this["RaiseYH1Click"] = new SortedSet<Hotkey> { Y };
+            this["RaiseYH4Click"] = new SortedSet<Hotkey> { Y | Keys.Shift };
             this["LowerYH1Click"] = new SortedSet<Hotkey> { Keys.H };
             this["LowerYH4Click"] = new SortedSet<Hotkey> { Keys.H | Keys.Shift };
             this["RaiseUJ1Click"] = new SortedSet<Hotkey> { Keys.U };
