@@ -13,8 +13,6 @@ namespace TombEditor.ToolWindows
     {
         private readonly Editor _editor;
 
-        private class InitEvent : IEditorEvent { }
-
         public RoomOptions()
         {
             InitializeComponent();
@@ -22,7 +20,7 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-            EditorEventRaised(new InitEvent());
+            EditorEventRaised(new Editor.InitEvent());
         }
 
         protected override void Dispose(bool disposing)
@@ -37,7 +35,7 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the room list
-            if (obj is InitEvent || obj is Editor.RoomListChangedEvent)
+            if (obj is Editor.InitEvent || obj is Editor.RoomListChangedEvent)
             {
                 // Adjust the amount of entries in the combo list
                 while (comboRoom.Items.Count > _editor.Level.Rooms.GetLength(0))
@@ -54,11 +52,11 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the room property controls
-            if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
+            if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 Room room = _editor.SelectedRoom;
-                if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent)
+                if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 // Update the state of other controls
