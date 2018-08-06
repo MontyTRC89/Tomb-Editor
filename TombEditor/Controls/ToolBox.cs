@@ -28,8 +28,6 @@ namespace TombEditor.Controls
             }
         }
 
-        private class InitEvent : IEditorEvent { }
-
         private readonly Editor _editor;
 
         public ToolBox()
@@ -40,13 +38,13 @@ namespace TombEditor.Controls
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
-                EditorEventRaised(new InitEvent());
+                EditorEventRaised(new Editor.InitEvent());
             }
         }
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.ToolChangedEvent || obj is InitEvent)
+            if (obj is Editor.ToolChangedEvent || obj is Editor.InitEvent)
             {
                 EditorTool currentTool = _editor.Tool;
 
@@ -69,13 +67,13 @@ namespace TombEditor.Controls
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
 
-            if (obj is Editor.SelectedTexturesChangedEvent || obj is InitEvent)
+            if (obj is Editor.SelectedTexturesChangedEvent || obj is Editor.InitEvent)
             {
                 toolEraser.Checked = _editor.SelectedTexture.Texture == null;
                 toolInvisibility.Checked = _editor.SelectedTexture.Texture is TextureInvisible;
             }
 
-            if (obj is Editor.ModeChangedEvent || obj is InitEvent)
+            if (obj is Editor.ModeChangedEvent || obj is Editor.InitEvent)
             {
                 EditorMode mode = _editor.Mode;
                 bool geometryMode = mode == EditorMode.Geometry;

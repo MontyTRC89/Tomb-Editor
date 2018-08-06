@@ -18,8 +18,7 @@ namespace TombEditor.Forms
     public partial class FormAnimatedTextures : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private class InitEvent : IEditorEvent { }
+        
         private class TransparentBindingList<T> : BindingList<T>
         {
             public TransparentBindingList(IList<T> list) : base(list) { }
@@ -106,7 +105,7 @@ namespace TombEditor.Forms
             }
 
             // Init state
-            _editor_EditorEventRaised(new InitEvent());
+            _editor_EditorEventRaised(new Editor.InitEvent());
             if (comboAnimatedTextureSets.Items.Count > 0)
                 comboAnimatedTextureSets.SelectedIndex = 0;
 
@@ -131,7 +130,7 @@ namespace TombEditor.Forms
         private void _editor_EditorEventRaised(IEditorEvent obj)
         {
             // Update texture combo box
-            if (obj is InitEvent || obj is Editor.LoadedTexturesChangedEvent || obj is Editor.LevelChangedEvent)
+            if (obj is Editor.InitEvent || obj is Editor.LoadedTexturesChangedEvent || obj is Editor.LevelChangedEvent)
             {
                 comboCurrentTexture.Items.Clear();
                 comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
@@ -144,7 +143,7 @@ namespace TombEditor.Forms
             }
 
             // Update animated texture set combo box
-            if (obj is InitEvent || obj is Editor.AnimatedTexturesChanged)
+            if (obj is Editor.InitEvent || obj is Editor.AnimatedTexturesChanged)
             {
                 while (comboAnimatedTextureSets.Items.Count > _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.RemoveAt(comboAnimatedTextureSets.Items.Count - 1);
@@ -159,7 +158,7 @@ namespace TombEditor.Forms
             }
 
             // Update display animated texture setup
-            if (obj is InitEvent || obj is Editor.AnimatedTexturesChanged)
+            if (obj is Editor.InitEvent || obj is Editor.AnimatedTexturesChanged)
                 UpdateCurrentAnimationDisplay();
 
             // Invalidate texture view

@@ -563,6 +563,8 @@ namespace TombEditor
             RaiseEvent(new EditorQuitEvent());
         }
 
+        public class InitEvent : IEditorEvent { }
+
 
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }
