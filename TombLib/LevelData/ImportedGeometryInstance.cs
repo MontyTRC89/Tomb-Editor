@@ -72,6 +72,9 @@ namespace TombLib.LevelData
 
         public bool MeshNameMatchesFilter(string meshName)
         {
+            // Filter check should be done only if imported geometry has a filter
+            if (MeshFilter == null || MeshFilter == "") return true;
+
             return (meshName.ToLower() == MeshFilter.ToLower());
         }
     }

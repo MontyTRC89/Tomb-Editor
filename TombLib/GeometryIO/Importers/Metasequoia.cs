@@ -195,6 +195,11 @@ namespace TombLib.GeometryIO.Importers
                                 }
                                 line = reader.ReadLine().Trim();
                             }
+                            else if (tokens[0] == "vertexattr")
+                            {
+                                // section to ignore
+                                IgnoreChunk(reader);
+                            }
                             else if (tokens[0] == "}")
                                 break;
                         }
@@ -205,7 +210,7 @@ namespace TombLib.GeometryIO.Importers
             }
 
             return model;
-        }
+         }
 
         private static float ParseFloatCultureInvariant(string num)
         {
