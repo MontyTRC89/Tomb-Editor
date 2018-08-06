@@ -156,9 +156,9 @@ namespace TombLib.GeometryIO.Exporters
 
         private static uint GetColor(Vector4 color)
         {
-            var r = (byte)((int)(color.X * 128.0f) & 0xFF);
-            var g = (byte)((int)(color.Y * 128.0f) & 0xFF);
-            var b = (byte)((int)(color.Z * 128.0f) & 0xFF);
+            var r = (byte)((int)(color.X * 256.0f) & 0xFF);
+            var g = (byte)((int)(color.Y * 256.0f) & 0xFF);
+            var b = (byte)((int)(color.Z * 256.0f) & 0xFF);
 
             return (uint)(0xFF000000 + r + (g << 8) + (b << 16));
         }
