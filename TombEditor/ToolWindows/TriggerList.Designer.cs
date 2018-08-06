@@ -46,6 +46,7 @@
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
             this.butAddTrigger.TabIndex = 1;
             this.butAddTrigger.Tag = "AddTrigger";
+            this.butAddTrigger.MouseEnter += new System.EventHandler(this.butAddTrigger_MouseEnter);
             // 
             // butEditTrigger
             // 

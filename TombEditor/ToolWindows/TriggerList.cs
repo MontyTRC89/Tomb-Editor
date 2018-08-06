@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TombLib.LevelData;
+using TombLib.Rendering;
 
 namespace TombEditor.ToolWindows
 {
@@ -107,6 +108,12 @@ namespace TombEditor.ToolWindows
                 if (instance != null)
                     EditorActions.EditObject(instance, this);
             }
+        }
+
+        private void butAddTrigger_MouseEnter(object sender, EventArgs e)
+        {
+            if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
     }
 }
