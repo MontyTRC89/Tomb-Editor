@@ -10,6 +10,65 @@ namespace TombLib.GeometryIO
         {
             SettingsPresets = new List<IOGeometrySettingsPreset>();
 
+            // Metasequoia
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Metasequoia MQO Scale 1",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1.0f,
+                    FlipZ = true,
+                    InvertFaces = false,
+                    FlipUV_V = false,
+                    PremultiplyUV = true,
+                    WrapUV = true,
+                    UseVertexColor = true
+                }
+            });
+
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Metasequoia MQO Scale 1024",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1024.0f,
+                    FlipZ = true,
+                    InvertFaces = false,
+                    FlipUV_V = false,
+                    PremultiplyUV = true,
+                    WrapUV = true,
+                    UseVertexColor = true
+                }
+            });
+
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Metasequoia OBJ",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1024.0f,
+                    FlipZ = true,
+                    InvertFaces = true,
+                    FlipUV_V = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
+
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Metasequoia PLY",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1024.0f,
+                    SwapYZ = true,
+                    FlipZ = false,
+                    FlipUV_V = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
+
             // Generic
             SettingsPresets.Add(new IOGeometrySettingsPreset
             {
@@ -64,50 +123,6 @@ namespace TombLib.GeometryIO
                     FlipUV_V = true,
                     PremultiplyUV = true,
                     WrapUV = true
-                }
-            });
-
-            // Metasequoia
-            SettingsPresets.Add(new IOGeometrySettingsPreset
-            {
-                Name = "Metasequoia OBJ",
-                Settings = new IOGeometrySettings
-                {
-                    Scale = 1024.0f,
-                    FlipZ = true,
-                    InvertFaces = true,
-                    FlipUV_V = true,
-                    PremultiplyUV = true,
-                    WrapUV = true
-                }
-            });
-
-            SettingsPresets.Add(new IOGeometrySettingsPreset
-            {
-                Name = "Metasequoia PLY",
-                Settings = new IOGeometrySettings
-                {
-                    Scale = 1024.0f,
-                    SwapYZ = true,
-                    FlipZ = false,
-                    FlipUV_V = true,
-                    PremultiplyUV = true,
-                    WrapUV = true
-                }
-            });
-
-            SettingsPresets.Add(new IOGeometrySettingsPreset
-            {
-                Name = "Metasequoia MQO",
-                Settings = new IOGeometrySettings
-                {
-                    Scale = 1024.0f,
-                    FlipZ = true,
-                    InvertFaces = false,
-                    FlipUV_V = false,
-                    PremultiplyUV = true,
-                    WrapUV = true,
-                    UseVertexColor = true
                 }
             });
 

@@ -265,6 +265,12 @@ namespace TombLib.LevelData.Compilers
                                     Attributes = 0
                                 };
 
+                                // Check for maximum vertices reached
+                                if (roomVertices.Count >= 65536)
+                                {
+                                    throw new Exception("Room '" + room.Name + "' has too many vertices! Try to remove some imported geometry objects.");
+                                }
+
                                 roomVertices.Add(trVertex);
                             }
 
