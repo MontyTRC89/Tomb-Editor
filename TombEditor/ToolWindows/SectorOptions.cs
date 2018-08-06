@@ -1,11 +1,7 @@
-﻿using DarkUI.Controls;
-using DarkUI.Docking;
-using DarkUI.Forms;
+﻿using DarkUI.Docking;
 using NLog;
 using System;
 using System.Windows.Forms;
-using TombLib.Forms;
-using TombLib.LevelData;
 using TombLib.Rendering;
 
 namespace TombEditor.ToolWindows
