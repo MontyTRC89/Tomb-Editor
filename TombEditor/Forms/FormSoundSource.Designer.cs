@@ -91,7 +91,7 @@
             // 
             // butOK
             // 
-            this.butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Location = new System.Drawing.Point(440, 496);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
@@ -101,7 +101,7 @@
             // 
             // butCancel
             // 
-            this.butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(526, 496);
             this.butCancel.Name = "butCancel";
@@ -200,7 +200,6 @@
             this.Controls.Add(this.optionPlaySoundFromWadGroupBox);
             this.Controls.Add(this.optionPlayCustomSoundGroupBox);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(400, 200);
             this.Name = "FormSoundSource";

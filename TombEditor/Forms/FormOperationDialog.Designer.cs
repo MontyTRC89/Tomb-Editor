@@ -112,7 +112,6 @@ namespace TombEditor.Forms
             this.Controls.Add(this.pbStato);
             this.Controls.Add(this.lstLog);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormOperationDialog";
             this.ShowIcon = false;
