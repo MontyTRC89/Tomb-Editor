@@ -28,7 +28,7 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
     output.UV = input.UV;
-    output.Color = Color * input.Shade.x;
+    output.Color.xyz = Color.xyz * input.Shade.x;
     return output;
 }
 

@@ -12,6 +12,50 @@ namespace TombEditor
 {
     public struct Hotkey : IEquatable<Hotkey>, IComparable<Hotkey>
     {
+        public static List<Keys> ReservedCameraKeys = new List<Keys>
+        {
+            Keys.Up,
+            Keys.Down,
+            Keys.Left,
+            Keys.Right,
+            Keys.PageDown,
+            Keys.PageUp
+        };
+
+        // Remap weird ToString mappings for certain characters
+        public static Dictionary<Keys, string> FriendlyKeyNameTable = new Dictionary<Keys, string>
+        {
+            { Keys.PageDown, "PageDown" },
+            { Keys.Return, "Enter" },
+            { Keys.Add, "NumPadPlus" },
+            { Keys.Subtract, "NumPadMinus" },
+            { Keys.Multiply, "NumPadMultiply" },
+            { Keys.Divide, "NumPadDivide" },
+            { Keys.Decimal, "NumPadDecimal" },
+            { Keys.Scroll, "ScrollLock" },
+            { Keys.Oemtilde, "~" },
+            { Keys.OemQuestion, "/" },
+            { Keys.Oemplus, "Plus" },
+            { Keys.OemMinus, "Minus" },
+            { Keys.Oemcomma, "Comma" },
+            { Keys.OemPeriod, "Period" },
+            { Keys.OemOpenBrackets, "[" },
+            { Keys.Oem1, ";" },
+            { Keys.Oem5, "\\" },
+            { Keys.Oem6, "]" },
+            { Keys.Oem7, "'" },
+            { Keys.D0, "0" },
+            { Keys.D1, "1" },
+            { Keys.D2, "2" },
+            { Keys.D3, "3" },
+            { Keys.D4, "4" },
+            { Keys.D5, "5" },
+            { Keys.D6, "6" },
+            { Keys.D7, "7" },
+            { Keys.D8, "8" },
+            { Keys.D9, "9" }
+        };
+
         public Keys Keys { get; set; }
 
         public Keys MainKey
@@ -22,39 +66,12 @@ namespace TombEditor
 
         public override string ToString()
         {
-            // We could use KeysConverter but it has some weirness.
-            // For example it will
-
             string result = "";
             result += (Keys & Keys.Control) != Keys.None ? "Ctrl+" : "";
             result += (Keys & Keys.Shift) != Keys.None ? "Shift+" : "";
             result += (Keys & Keys.Alt) != Keys.None ? "Alt+" : "";
 
-            // Microsoft has weird ToString mappings for certain characters. Here is a switch to fix it.
-            // Currently only PageDown and numeric values are fixed.
-            switch (MainKey)
-            {
-                case Keys.None:
-                    break;
-                case Keys.PageDown:
-                    result += "PageDown";
-                    break;
-                case Keys.D0:
-                case Keys.D1:
-                case Keys.D2:
-                case Keys.D3:
-                case Keys.D4:
-                case Keys.D5:
-                case Keys.D6:
-                case Keys.D7:
-                case Keys.D8:
-                case Keys.D9:
-                    result += MainKey.ToString().Substring(1); // Remove the 'D'
-                    break;
-                default:
-                    result += MainKey.ToString();
-                    break;
-            }
+            result += FriendlyKeyNameTable.ContainsKey(MainKey) ? FriendlyKeyNameTable[MainKey] : MainKey.ToString();
             return result;
         }
 
@@ -71,12 +88,8 @@ namespace TombEditor
                     result.Keys |= Keys.Shift;
                 else if (keyName.Equals("Alt", StringComparison.InvariantCultureIgnoreCase))
                     result.Keys |= Keys.Alt;
-                else if (keyName.Length == 1 && (ushort)keyName[0] >= (ushort)'0' && (ushort)keyName[0] <= (ushort)'9')
-                    result.MainKey = (Keys)((uint)(Keys.D0) + ((ushort)keyName[0] - (ushort)'0'));
-                else if (keyName.Equals("PageDown", StringComparison.InvariantCultureIgnoreCase))
-                    result.MainKey = Keys.PageDown;
                 else
-                    result.MainKey = (Keys)Enum.Parse(typeof(Keys), keyName, true);
+                    result.MainKey = FriendlyKeyNameTable.ContainsValue(keyName) ? FriendlyKeyNameTable.First(n => n.Value == keyName).Key : (Keys)Enum.Parse(typeof(Keys), keyName, true);
             }
             return result;
         }
@@ -94,8 +107,6 @@ namespace TombEditor
 
     public class HotkeySets : IXmlSerializable, ICloneable, IEnumerable<KeyValuePair<string, SortedSet<Hotkey>>>
     {
-        public static List<Keys> ReservedCameraKeys = new List<Keys> { Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp };
-
         private readonly SortedList<string, SortedSet<Hotkey>> _list = new SortedList<string, SortedSet<Hotkey>>(StringComparer.InvariantCultureIgnoreCase);
 
         public HotkeySets()
@@ -161,6 +172,7 @@ namespace TombEditor
                 string unused;
                 this[commandName] = ParseHotkeys(reader.GetAttribute("Hotkeys"), out unused);
             }
+            reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer)
@@ -203,7 +215,7 @@ namespace TombEditor
             Keys Q = Keys.Q;
             Keys A = Keys.A;
             Keys W = Keys.W;
-            //Keys Y = Keys.Y;
+            Keys Y = Keys.Y;
             Keys Z = Keys.Z;
 
             if (layout == KeyboardLayout.Azerty)
@@ -215,7 +227,7 @@ namespace TombEditor
             }
             else if (layout == KeyboardLayout.Qwertz)
             {
-                //Y = Keys.Z;
+                Y = Keys.Z;
                 Z = Keys.Y;
             }
 
@@ -280,8 +292,8 @@ namespace TombEditor
             this["RaiseRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.R | Keys.Alt | Keys.Shift };
             this["LowerRF1ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt };
             this["LowerRF4ClickSmooth"] = new SortedSet<Hotkey> { Keys.F | Keys.Alt | Keys.Shift };
-            this["RaiseYH1Click"] = new SortedSet<Hotkey> { Keys.Y };
-            this["RaiseYH4Click"] = new SortedSet<Hotkey> { Keys.Y | Keys.Shift };
+            this["RaiseYH1Click"] = new SortedSet<Hotkey> { Y };
+            this["RaiseYH4Click"] = new SortedSet<Hotkey> { Y | Keys.Shift };
             this["LowerYH1Click"] = new SortedSet<Hotkey> { Keys.H };
             this["LowerYH4Click"] = new SortedSet<Hotkey> { Keys.H | Keys.Shift };
             this["RaiseUJ1Click"] = new SortedSet<Hotkey> { Keys.U };
@@ -325,21 +337,32 @@ namespace TombEditor
             this["TextureFloor"] = new SortedSet<Hotkey> { Keys.T | Keys.Control | Keys.Alt };
             this["TextureCeiling"] = new SortedSet<Hotkey> { Keys.V | Keys.Control | Keys.Alt };
             this["TextureWalls"] = new SortedSet<Hotkey> { W | Keys.Control | Keys.Alt };
-            this["FlattenFloor"] = new SortedSet<Hotkey> { Keys.E | Keys.Control | Keys.Alt };
-            this["FlattenCeiling"] = new SortedSet<Hotkey> { Keys.F | Keys.Control | Keys.Alt };
+            this["FlattenFloor"] = new SortedSet<Hotkey> { Keys.I | Keys.Control | Keys.Alt };
+            this["FlattenCeiling"] = new SortedSet<Hotkey> { Keys.J | Keys.Control | Keys.Alt };
             this["GridWallsIn3"] = new SortedSet<Hotkey> { Keys.D3 | Keys.Control };
             this["GridWallsIn5"] = new SortedSet<Hotkey> { Keys.D5 | Keys.Control };
             this["QuitEditor"] = new SortedSet<Hotkey> { Keys.F4 | Keys.Alt };
-            this["RemapTexture"] = new SortedSet<Hotkey> { Keys.R | Keys.Shift | Keys.Alt };
-            this["SmoothRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Shift };
-            this["SmoothRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Shift };
-            this["SmoothRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift };
-            this["SmoothRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift };
-            this["SharpRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Alt };
-            this["SharpRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Alt };
-            this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Alt };
-            this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Alt };
+            this["RemapTexture"] = new SortedSet<Hotkey> { Keys.R | Keys.Control | Keys.Alt };
+            this["SmoothRandomFloorUp"] = new SortedSet<Hotkey> { Keys.A | Keys.Control | Keys.Alt };
+            this["SmoothRandomFloorDown"] = new SortedSet<Hotkey> { Keys.B | Keys.Control | Keys.Alt };
+            this["SmoothRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Alt };
+            this["SmoothRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Alt };
+            this["SharpRandomFloorUp"] = new SortedSet<Hotkey> { Keys.E | Keys.Control | Keys.Alt };
+            this["SharpRandomFloorDown"] = new SortedSet<Hotkey> { Keys.F | Keys.Control | Keys.Alt };
+            this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.G | Keys.Control | Keys.Alt };
+            this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.H | Keys.Control | Keys.Alt };
             this["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
+
+            // Check for conflicts
+            var hotkeyList = _list
+                .SelectMany(command => command.Value.Select(hotkey => new KeyValuePair<Hotkey, string>(hotkey, command.Key)))
+                .OrderBy(hotkeyCommand => hotkeyCommand.Key).ToList();
+            string conflicts = "";
+            for (int i = 1; i < hotkeyList.Count; ++i)
+                if (hotkeyList[i].Key.Equals(hotkeyList[i - 1].Key))
+                    conflicts += "\n'" + hotkeyList[i].Key + "': '" + hotkeyList[i].Value + "' and '" + hotkeyList[i - 1].Value + "'";
+            if (!string.IsNullOrEmpty(conflicts)) // Use normal message box here because it can handle lot's of text. (Usually won't be shown anyway)
+                MessageBox.Show("Please report this to the development team.\nThere are conflicts in the default hotkey set:" + conflicts, "Hotkey conflicts", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

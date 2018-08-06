@@ -79,7 +79,7 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(4, 9);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(732, 35);
+            this.darkLabel1.Size = new System.Drawing.Size(732, 30);
             this.darkLabel1.TabIndex = 2;
             this.darkLabel1.Text = "Select a model from the following list or add a new one by pressing \'Create from " +
     "file\'.\r\nPress \'Assign\' afterwards to assign the loaded file to this imported geo" +
@@ -155,6 +155,7 @@
             this.Controls.Add(this.butAssign);
             this.Controls.Add(this.importedGeometryManager);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormImportedGeometry";
             this.ShowIcon = false;

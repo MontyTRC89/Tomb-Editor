@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DarkUI.Controls;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using NLog;
@@ -198,7 +199,7 @@ namespace TombEditor.Forms
             if (obj is Editor.HasUnsavedChangesChangedEvent)
                 saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
-            // Reload window layout if the configuration changed
+            // Reload window layout and keyboard shortcuts if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var @event = (Editor.ConfigurationChangedEvent)obj;
@@ -208,7 +209,8 @@ namespace TombEditor.Forms
                     @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
 
-                GenerateMenusRecursive(menuStrip.Items, true);
+                if(@event.UpdateKeyboardShortcuts)
+                    GenerateMenusRecursive(menuStrip.Items, true);
             }
 
             // Update texture controls
@@ -371,11 +373,23 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Don't process reserved camera keys
+            if (Hotkey.ReservedCameraKeys.Contains(keyData))
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
+            var activeControlType = GetFocusedControl(this)?.GetType().Name;
+            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
+                (activeControlType == "DarkTextBox" ||
+                 activeControlType == "DarkComboBox" ||
+                 activeControlType == "DarkListBox" ||
+                 activeControlType == "UpDownEdit"))
+                return base.ProcessCmdKey(ref msg, keyData);
+
             CommandHandler.ExecuteHotkey(new CommandArgs
             {
                 Editor = _editor,
                 KeyData = keyData,
-                PrimaryControlFocused = IsFocused(MainView) || IsFocused(TexturePanel),
                 Window = this
             });
 
@@ -386,14 +400,9 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private static bool IsFocused(Control control)
+        private static Control GetFocusedControl(ContainerControl control)
         {
-            if (control.Focused)
-                return true;
-            foreach (Control controlInner in control.Controls)
-                if (IsFocused(controlInner))
-                    return true;
-            return false;
+            return (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
         }
 
         protected override void OnLostFocus(EventArgs e)

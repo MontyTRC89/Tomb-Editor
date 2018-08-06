@@ -15,6 +15,7 @@ using TombLib.Utils;
 using DarkUI.Controls;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace TombEditor.Forms
 {
@@ -303,6 +304,7 @@ namespace TombEditor.Forms
             comboGameVersion.Items.Add(GameVersion.TR4);
             comboGameVersion.Items.Add(GameVersion.TRNG);
             comboGameVersion.Items.Add(GameVersion.TR5);
+            comboGameVersion.Items.Add(GameVersion.TR5Main);
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
@@ -468,7 +470,7 @@ namespace TombEditor.Forms
             bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
 
-            currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5);
+            currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5 || _levelSettings.GameVersion == GameVersion.TR5Main);
             GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
             lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
             lblLaraType.Visible = currentVersionToCheck;
@@ -761,7 +763,13 @@ namespace TombEditor.Forms
             // Load objects concurrently
             ReferencedWadWrapper[] results = new ReferencedWadWrapper[paths.Count];
             var synchronizedDialog = new GraphicalDialogHandler(this);
-            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)));
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)))))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
             return results;
         }
 

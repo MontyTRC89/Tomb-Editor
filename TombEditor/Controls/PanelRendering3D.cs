@@ -26,23 +26,23 @@ namespace TombEditor.Controls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-
-
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawPortals { get; set; }
+        public bool ShowPortals { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawRoomNames { get; set; }
+        public bool ShowRoomNames { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawHorizon { get; set; }
+        public bool ShowCardinalDirections { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowHorizon { get; set; }
         private bool _drawIllegalSlopes = false;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawIllegalSlopes { get { return _drawIllegalSlopes; } set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms.Clear(); } }
+        public bool ShowIllegalSlopes { get { return _drawIllegalSlopes; } set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms.Clear(); } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowMoveables { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawAllRooms { get; set; } = false;
+        public bool ShowAllRooms { get; set; } = false;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowStatics { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -53,9 +53,11 @@ namespace TombEditor.Controls
         public bool ShowOtherObjects { get; set; } = true;
         private bool _drawSlideDirections = false;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawSlideDirections { get { return _drawSlideDirections; } set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); } }
+        public bool ShowSlideDirections { get { return _drawSlideDirections; } set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DisablePickingForImportedGeometry { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowExtraBlendingModes { get; set; }
 
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
 
@@ -119,13 +121,18 @@ namespace TombEditor.Controls
                     var sectorTextures = new SectorTextureDefault
                     {
                         ColoringInfo = _editor.SectorColoringManager.ColoringInfo,
-                        DrawIllegalSlopes = DrawIllegalSlopes,
-                        DrawSlideDirections = DrawSlideDirections,
+                        DrawIllegalSlopes = ShowIllegalSlopes,
+                        DrawSlideDirections = ShowSlideDirections,
                         HighlightSelection = _toolHandler.Dragged,
                         ProbeAttributesThroughPortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals,
-                        SelectionArea = _editor.SelectedSectors.Area,
-                        SelectionArrow = _editor.SelectedSectors.Arrow
                     };
+
+                    if(_editor.SelectedRoom == room)
+                    {
+                        sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
+                        sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
+                    }
+
                     return Device.CreateDrawingRoom(
                          new RenderingDrawingRoom.Description
                          {
@@ -260,9 +267,8 @@ namespace TombEditor.Controls
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||
-                obj is Editor.ConfigurationChangedEvent) // "ProbeAttributesThroughPortals"
-                _renderingCachedRooms.Clear();
-            if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
+                obj is Editor.ConfigurationChangedEvent ||
+                obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
                 _renderingCachedRooms.Clear();
 
             // Update drawing
@@ -286,8 +292,8 @@ namespace TombEditor.Controls
             if (obj is Editor.ActionChangedEvent)
             {
                 IEditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
-                bool hasCrossCurser = currentAction is EditorActionPlace || currentAction is EditorActionRelocateCamera;
-                Cursor = hasCrossCurser ? Cursors.Cross : Cursors.Arrow;
+                bool hasCrossCursor = currentAction is EditorActionPlace || currentAction is EditorActionRelocateCamera;
+                Cursor = hasCrossCursor ? Cursors.Cross : Cursors.Arrow;
             }
 
             // Center camera
@@ -1110,7 +1116,7 @@ namespace TombEditor.Controls
 
         private void DrawDebugLines(Matrix4x4 viewProjection)
         {
-            if (!_drawFlybyPath && !_drawHeightLine && !((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && DrawPortals))
+            if (!_drawFlybyPath && !_drawHeightLine && !((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && ShowPortals))
                 return;
 
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -1138,7 +1144,7 @@ namespace TombEditor.Controls
                 _legacyDevice.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
             }
 
-            if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && DrawPortals)
+            if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && ShowPortals)
             {
                 // Draw room bounding box
                 _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
@@ -1555,9 +1561,9 @@ namespace TombEditor.Controls
                 if (mesh.Vertices.Count == 0)
                     continue;
 
-                Matrix4x4 world = Matrix4x4.CreateScale(20.0f) *
+                Matrix4x4 world = Matrix4x4.CreateScale(128.0f) *
                                   model.AnimationTransforms[i] *
-                                  Matrix4x4.CreateTranslation(_editor.SelectedRoom.GetLocalCenter() + _editor.SelectedRoom.WorldPos);
+                                  Matrix4x4.CreateTranslation(Camera.GetPosition());
 
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
 
@@ -1815,9 +1821,9 @@ namespace TombEditor.Controls
 
         private List<Room> CollectRoomsToDraw(Room baseRoom)
         {
-            if (DrawAllRooms)
+            if (ShowAllRooms)
                 return _editor.Level.Rooms.Where(room => room != null && room.AlternateBaseRoom == null).ToList();
-            else if (!DrawPortals)
+            else if (!ShowPortals)
                 return new List<Room>(new[] { baseRoom });
 
             // New iterative version of the function
@@ -1924,6 +1930,7 @@ namespace TombEditor.Controls
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             _renderingStateBuffer.Set(new RenderingState
             {
+                ShowExtraBlendingModes = ShowExtraBlendingModes,
                 RoomGridForce = _editor.Mode == EditorMode.Geometry,
                 RoomDisableVertexColors = _editor.Mode == EditorMode.FaceEdit,
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
@@ -1960,7 +1967,7 @@ namespace TombEditor.Controls
             staticsToDraw.Sort(comparer);
 
             // Draw room names
-            if (DrawRoomNames)
+            if (ShowRoomNames)
             {
                 Size size = ClientSize;
                 for (int i = 0; i < roomsToDraw.Length; i++)
@@ -1973,6 +1980,7 @@ namespace TombEditor.Controls
             }
 
             // Draw North, South, East and West
+            if (ShowCardinalDirections)
             {
                 string[] messages = { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
                 Vector3[] positions = new Vector3[4]
@@ -1995,7 +2003,7 @@ namespace TombEditor.Controls
             }
 
             // Draw skybox
-            if (DrawHorizon)
+            if (ShowHorizon)
                 DrawSkybox(viewProjection);
 
             // Draw rooms

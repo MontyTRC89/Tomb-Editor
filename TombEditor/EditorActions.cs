@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Forms;
@@ -739,48 +740,61 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
+        public static TextureArea RotateTexture(TextureArea texture)
         {
-            Block blocks = room.GetBlock(pos);
-            TextureArea textureArea = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Triangle)
+            TextureArea newTexture = texture;
+
+            if (newTexture.TextureIsRectangle)
             {
-                Vector2 tempTexCoord = textureArea.TexCoord2;
-                textureArea.TexCoord2 = textureArea.TexCoord1;
-                textureArea.TexCoord1 = textureArea.TexCoord0;
-                textureArea.TexCoord0 = tempTexCoord;
-                textureArea.TexCoord3 = textureArea.TexCoord2;
+                Vector2 tempTexCoord = newTexture.TexCoord3;
+                newTexture.TexCoord3 = newTexture.TexCoord2;
+                newTexture.TexCoord2 = newTexture.TexCoord1;
+                newTexture.TexCoord1 = newTexture.TexCoord0;
+                newTexture.TexCoord0 = tempTexCoord;
             }
             else
             {
-                Vector2 tempTexCoord = textureArea.TexCoord3;
-                textureArea.TexCoord3 = textureArea.TexCoord2;
-                textureArea.TexCoord2 = textureArea.TexCoord1;
-                textureArea.TexCoord1 = textureArea.TexCoord0;
-                textureArea.TexCoord0 = tempTexCoord;
+                Vector2 tempTexCoord = newTexture.TexCoord2;
+                newTexture.TexCoord2 = newTexture.TexCoord1;
+                newTexture.TexCoord1 = newTexture.TexCoord0;
+                newTexture.TexCoord0 = tempTexCoord;
+                newTexture.TexCoord3 = newTexture.TexCoord2;
             }
-            blocks.SetFaceTexture(face, textureArea);
 
+            return newTexture;
+        }
+
+        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
+        {
+            Block blocks = room.GetBlock(pos);
+            blocks.SetFaceTexture(face, RotateTexture(blocks.GetFaceTexture(face)));
             // Update state
             room.BuildGeometry();
             _editor.RoomTextureChange(room);
         }
 
-        public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
+        public static TextureArea MirrorTexture(TextureArea texture)
         {
-            Block blocks = room.GetBlock(pos);
-            TextureArea textureArea = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Triangle)
+            TextureArea newTexture = texture;
+
+            if (newTexture.TextureIsRectangle)
             {
-                Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
-                textureArea.TexCoord3 = textureArea.TexCoord2;
+                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord1);
+                Swap.Do(ref newTexture.TexCoord2, ref newTexture.TexCoord3);
             }
             else
             {
-                Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord1);
-                Swap.Do(ref textureArea.TexCoord2, ref textureArea.TexCoord3);
+                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord2);
+                newTexture.TexCoord3 = newTexture.TexCoord2;
             }
-            blocks.SetFaceTexture(face, textureArea);
+
+            return newTexture;
+        }
+
+        public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
+        {
+            Block blocks = room.GetBlock(pos);
+            blocks.SetFaceTexture(face, MirrorTexture(blocks.GetFaceTexture(face)));
 
             // Update state
             room.BuildGeometry();
@@ -795,24 +809,6 @@ namespace TombEditor
             _editor.SelectTextureAndCenterView(area);
         }
 
-        public static void RotateSelectedTexture()
-        {
-            TextureArea textureArea = _editor.SelectedTexture;
-            Vector2 texCoordTemp = textureArea.TexCoord3;
-            textureArea.TexCoord3 = textureArea.TexCoord2;
-            textureArea.TexCoord2 = textureArea.TexCoord1;
-            textureArea.TexCoord1 = textureArea.TexCoord0;
-            textureArea.TexCoord0 = texCoordTemp;
-            _editor.SelectedTexture = textureArea;
-        }
-
-        public static void MirrorSelectedTexture()
-        {
-            TextureArea textureArea = _editor.SelectedTexture;
-            Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
-            _editor.SelectedTexture = textureArea;
-        }
-
         private static bool ApplyTextureAutomaticallyNoUpdated(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             Block block = room.GetBlock(pos);
@@ -824,80 +820,37 @@ namespace TombEditor
                 switch (face)
                 {
                     case BlockFace.Floor:
-                        if (!block.Floor.IsQuad)
+                    case BlockFace.Ceiling:
+                        BlockSurface surface = face == BlockFace.Floor ? block.Floor : block.Ceiling;
+                        if (surface.IsQuad)
+                            break;
+                        if (surface.SplitDirectionIsXEqualsZ)
                         {
-                            if (block.Floor.SplitDirectionIsXEqualsZ)
-                            {
-                                Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                                processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
-                            else
-                            {
-                                processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                                processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                            }
+                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                        }
+                        else
+                        {
+                            processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                            processedTexture.TexCoord2 = processedTexture.TexCoord3;
                         }
                         break;
 
                     case BlockFace.FloorTriangle2:
-                        if (block.Floor.IsQuad)
-                            break;
-                        else
-                        {
-                            if (block.Floor.SplitDirectionIsXEqualsZ)
-                                processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                            else
-                            {
-                                processedTexture.TexCoord2 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord0;
-                                processedTexture.TexCoord0 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
-                        }
-                        break;
-
-
-                    case BlockFace.Ceiling:
-                        if (block.Ceiling.IsQuad)
-                        {
-                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord1);
-                            Swap.Do(ref processedTexture.TexCoord2, ref processedTexture.TexCoord3);
-                            break;
-                        }
-                        else
-                        {
-                            if (block.Ceiling.SplitDirectionIsXEqualsZ)
-                            {
-                                Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                                processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
-                            else
-                            {
-                                processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                                processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                            }
-                        }
-                        break;
-
-
                     case BlockFace.CeilingTriangle2:
-                        if (!block.Ceiling.IsQuad)
+                        BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
+                        if (surface2.IsQuad)
+                            break;
+                        if (surface2.SplitDirectionIsXEqualsZ)
+                            processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                        else
                         {
-                            if (block.Ceiling.SplitDirectionIsXEqualsZ)
-                            {
-                                processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                            }
-                            else
-                            {
-                                processedTexture.TexCoord2 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord0;
-                                processedTexture.TexCoord0 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
+                            processedTexture.TexCoord2 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord0;
+                            processedTexture.TexCoord0 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
                         }
                         break;
 
@@ -2481,7 +2434,11 @@ namespace TombEditor
 
             // Unlock rooms
             foreach (Room room in rooms)
-                room.Locked = false;
+                if (room.Locked)
+                {
+                    room.Locked = false;
+                    _editor.RoomPropertiesChange(room);
+                }
             return true;
         }
 
@@ -2615,6 +2572,8 @@ namespace TombEditor
             if (DarkMessageBox.Show(owner, "Are you sure to DELETE the texture " + textureToDelete +
                 "? Everything using the texture will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
+            if (_editor.SelectedTexture.Texture == textureToDelete)
+                _editor.SelectedTexture = new TextureArea { Texture = null };
             _editor.Level.Settings.Textures.Remove(textureToDelete);
             _editor.Level.RemoveTextures(texture => texture == textureToDelete);
             _editor.LoadedTexturesChange();
@@ -2631,7 +2590,13 @@ namespace TombEditor
             // Load objects (*.wad files) concurrently
             ReferencedWad[] results = new ReferencedWad[paths.Count];
             GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
-            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler));
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler))))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
 
             // Open GUI for objects (*.wad files) that couldn't be loaded
             for (int i = 0; i < results.Length; ++i)

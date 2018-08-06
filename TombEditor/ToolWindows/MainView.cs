@@ -3,6 +3,7 @@ using DarkUI.Docking;
 using System;
 using System.Numerics;
 using System.Windows.Forms;
+using TombEditor.Controls;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -25,6 +26,9 @@ namespace TombEditor.ToolWindows
 
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
+
+            RefreshControls(_editor.Configuration);
+            GenerateToolStripCommands(toolStrip.Items);
         }
 
         public void InitializeRendering(RenderingDevice device)
@@ -86,6 +90,14 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    GenerateToolStripCommands(toolStrip.Items, true);
+
+                RefreshControls(((Editor.ConfigurationChangedEvent)obj).Current);
+            }
+            
             // Gray out menu options that do not apply
             if (obj is Editor.SelectedObjectChangedEvent)
             {
@@ -93,9 +105,6 @@ namespace TombEditor.ToolWindows
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
-
-            if (obj is Editor.ModeChangedEvent)
-                ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -109,6 +118,8 @@ namespace TombEditor.ToolWindows
             // Update editor mode
             if (obj is Editor.ModeChangedEvent)
             {
+                ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
+
                 EditorMode mode = ((Editor.ModeChangedEvent)obj).Current;
                 butCenterCamera.Enabled = mode != EditorMode.Map2D;
                 but2D.Checked = mode == EditorMode.Map2D;
@@ -118,8 +129,10 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
-                butDoubleSided.Enabled = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting;
-                butAdditiveBlending.Enabled = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting;
+
+                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
+                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
+                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
@@ -128,14 +141,6 @@ namespace TombEditor.ToolWindows
             {
                 butFlipMap.Enabled = _editor.SelectedRoom.Alternated;
                 butFlipMap.Checked = _editor.SelectedRoom.AlternateBaseRoom != null;
-            }
-
-            // Update texture properties
-            if (obj is Editor.SelectedTexturesChangedEvent)
-            {
-                var e = (Editor.SelectedTexturesChangedEvent)obj;
-                butAdditiveBlending.Checked = e.Current.BlendMode == BlendMode.Additive;
-                butDoubleSided.Checked = e.Current.DoubleSided;
             }
 
             // Update portal opacity controls
@@ -178,232 +183,74 @@ namespace TombEditor.ToolWindows
         {
             butPaste.Enabled = _editor.Mode != EditorMode.Map2D && Clipboard.ContainsData(typeof(ObjectClipboardData).FullName);
         }
-
-        // Opens editor's 3D view
-        private void but3D_Click(object sender, EventArgs e)
+        
+        private void RefreshControls(Configuration settings)
         {
-            _editor.Mode = EditorMode.Geometry;
-        }
+            if (!settings.Rendering3D_ShowStatics && panel3D.ShowStatics)
+                if (_editor.SelectedObject is StaticInstance) _editor.SelectedObject = null;
 
-        // Opens editor's 2D view
-        private void but2D_Click(object sender, EventArgs e)
-        {
-            _editor.Mode = EditorMode.Map2D;
-        }
+            if (!settings.Rendering3D_ShowMoveables && panel3D.ShowMoveables)
+                if (_editor.SelectedObject is MoveableInstance) _editor.SelectedObject = null;
 
-        private void butFaceEdit_Click(object sender, EventArgs e)
-        {
-            _editor.Mode = EditorMode.FaceEdit;
-        }
+            if ((!settings.Rendering3D_ShowImportedGeometry && panel3D.ShowImportedGeometry) ||
+                (!settings.Rendering3D_DisablePickingForImportedGeometry && panel3D.DisablePickingForImportedGeometry))
+                if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
 
-        private void butLightingMode_Click(object sender, EventArgs e)
-        {
-            _editor.Mode = EditorMode.Lighting;
-        }
-
-        private void butCenterCamera_Click(object sender, EventArgs e)
-        {
-            _editor.ResetCamera();
-        }
-
-        private void butOpacityNone_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetPortalOpacity(PortalOpacity.None, this);
-        }
-
-        private void butOpacitySolidFaces_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetPortalOpacity(PortalOpacity.SolidFaces, this);
-        }
-
-        private void butOpacityTraversableFaces_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, this);
-        }
-
-        private void butTextureFloor_Click(object sender, EventArgs e)
-        {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
-        }
-
-        private void butTextureCeiling_Click(object sender, EventArgs e)
-        {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
-        }
-
-        private void butTextureWalls_Click(object sender, EventArgs e)
-        {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
-        }
-
-        private void butAdditiveBlending_Click(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.BlendMode = butAdditiveBlending.Checked ? BlendMode.Additive : BlendMode.Normal;
-            _editor.SelectedTexture = selectedTexture;
-        }
-
-        private void butDoubleSided_Click(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.DoubleSided = butDoubleSided.Checked;
-            _editor.SelectedTexture = selectedTexture;
-        }
-
-        private void butAddCamera_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
-        }
-
-        private void butAddFlybyCamera_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
-        }
-
-        private void butAddSoundSource_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
-        }
-
-        private void butAddSink_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
-        }
-
-        private void butAddImportedGeometry_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
-        }
-
-        private void butCompileLevel_Click(object sender, EventArgs e)
-        {
-            EditorActions.BuildLevel(false, this);
-        }
-
-        private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
-        {
-            EditorActions.BuildLevelAndPlay(this);
-        }
-
-        private void butFlipMap_Click(object sender, EventArgs e)
-        {
-            butFlipMap.Checked = !butFlipMap.Checked;
-
-            if (butFlipMap.Checked)
-            {
-                if (_editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateRoom != null)
-                    _editor.SelectedRoom = _editor.SelectedRoom.AlternateRoom;
-            }
-            else
-            {
-                if (_editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateBaseRoom != null)
-                    _editor.SelectedRoom = _editor.SelectedRoom.AlternateBaseRoom;
-            }
-        }
-
-        private void butCopy_Click(object sender, EventArgs e)
-        {
-            EditorActions.TryCopyObject(_editor.SelectedObject, ParentForm);
-        }
-
-        private void butStamp_Click(object sender, EventArgs e)
-        {
-            EditorActions.TryStampObject(_editor.SelectedObject, ParentForm);
-        }
-
-        private void butPaste_Click(object sender, EventArgs e)
-        {
-            ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
-            if (data == null)
-                _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
-            else
-                _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
-        }
-
-        private void butDrawPortals_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawPortals = !panel3D.DrawPortals;
-            butDrawPortals.Checked = panel3D.DrawPortals;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawHorizon_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawHorizon = !panel3D.DrawHorizon;
-            butDrawHorizon.Checked = panel3D.DrawHorizon;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawRoomNames_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawRoomNames = !panel3D.DrawRoomNames;
-            butDrawRoomNames.Checked = panel3D.DrawRoomNames;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawIllegalSlopes_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawIllegalSlopes = !panel3D.DrawIllegalSlopes;
-            butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawMoveables_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowMoveables = !panel3D.ShowMoveables;
-            butDrawMoveables.Checked = panel3D.ShowMoveables;
-            if (_editor.SelectedObject is MoveableInstance) _editor.SelectedObject = null;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawStatics_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowStatics = !panel3D.ShowStatics;
-            butDrawStatics.Checked = panel3D.ShowStatics;
-            if (_editor.SelectedObject is StaticInstance) _editor.SelectedObject = null;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawImportedGeometry_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
-            butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
-            if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawOther_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
-            butDrawOther.Checked = panel3D.ShowOtherObjects;
-            if (_editor.SelectedObject is LightInstance ||
-                _editor.SelectedObject is CameraInstance ||
-                _editor.SelectedObject is FlybyCameraInstance ||
-                _editor.SelectedObject is SinkInstance ||
-                _editor.SelectedObject is SoundSourceInstance)
+            if (!settings.Rendering3D_ShowOtherObjects && panel3D.ShowOtherObjects)
+                if (_editor.SelectedObject is LightInstance ||
+                    _editor.SelectedObject is CameraInstance ||
+                    _editor.SelectedObject is FlybyCameraInstance ||
+                    _editor.SelectedObject is SinkInstance ||
+                    _editor.SelectedObject is SoundSourceInstance)
                     _editor.SelectedObject = null;
+
+            panel3D.ShowPortals = butDrawPortals.Checked = settings.Rendering3D_ShowPortals;
+            panel3D.ShowHorizon = butDrawHorizon.Checked = settings.Rendering3D_ShowHorizon;
+            panel3D.ShowAllRooms = butDrawAllRooms.Checked = settings.Rendering3D_ShowAllRooms;
+            panel3D.ShowRoomNames = butDrawRoomNames.Checked = settings.Rendering3D_ShowRoomNames;
+            panel3D.ShowCardinalDirections = butDrawCardinalDirections.Checked = settings.Rendering3D_ShowCardinalDirections;
+            panel3D.ShowIllegalSlopes = butDrawIllegalSlopes.Checked = settings.Rendering3D_ShowIllegalSlopes;
+            panel3D.ShowMoveables = butDrawMoveables.Checked = settings.Rendering3D_ShowMoveables;
+            panel3D.ShowStatics = butDrawStatics.Checked = settings.Rendering3D_ShowStatics;
+            panel3D.ShowImportedGeometry = butDrawImportedGeometry.Checked = settings.Rendering3D_ShowImportedGeometry;
+            panel3D.ShowOtherObjects = butDrawOther.Checked = settings.Rendering3D_ShowOtherObjects;
+            panel3D.ShowSlideDirections = butDrawSlideDirections.Checked = settings.Rendering3D_ShowSlideDirections;
+            panel3D.ShowExtraBlendingModes = butDrawExtraBlendingModes.Checked = settings.Rendering3D_ShowExtraBlendingModes;
+            panel3D.DisablePickingForImportedGeometry = butDisableGeometryPicking.Checked = settings.Rendering3D_DisablePickingForImportedGeometry;
+
             panel3D.Invalidate();
         }
 
-        private void butDrawSlideDirections_Click(object sender, EventArgs e)
+        private void GenerateToolStripCommands(ToolStripItemCollection items, bool onlyLabels = false)
         {
-            panel3D.DrawSlideDirections = !panel3D.DrawSlideDirections;
-            butDrawSlideDirections.Checked = panel3D.DrawSlideDirections;
-            panel3D.Invalidate();
-        }
+            foreach (object obj in items)
+            {
+                ToolStripDropDownButton subMenu = obj as ToolStripDropDownButton;
 
-        private void butDisableGeometryPicking_Click(object sender, EventArgs e)
-        {
-            panel3D.DisablePickingForImportedGeometry = !panel3D.DisablePickingForImportedGeometry;
-            butDisableGeometryPicking.Checked = panel3D.DisablePickingForImportedGeometry;
-            if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
-            panel3D.Invalidate();
-        }
+                if (subMenu != null && subMenu.HasDropDownItems)
+                    GenerateToolStripCommands(subMenu.DropDownItems, onlyLabels);
+                else
+                {
+                    var control = obj as ToolStripItem;
+                    if (!string.IsNullOrEmpty(control.Tag?.ToString()))
+                    {
+                        var command = CommandHandler.GetCommand(control.Tag.ToString());
+                        if (command != null)
+                        {
+                            if (!onlyLabels)
+                                control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
 
-        private void drawAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawAllRooms = !panel3D.DrawAllRooms;
-            panel3D.Invalidate();
+                            var hotkeyLabel = string.Join(", ", _editor.Configuration.Window_HotkeySets[control.Tag.ToString()]);
+                            var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
+
+                            if (control is ToolStripMenuItem)
+                                control.Text = label;
+                            else
+                                control.ToolTipText = label;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -14,6 +14,10 @@ namespace TombLib.LevelData.Compilers.Util
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public int NumNonBumpedTiles = 0;
+        public int NumBumpedTilesLevel1 = 0;
+        public int NumBumpedTilesLevel2 = 0;
+
         [Flags]
         public enum ResultFlags : byte
         {
@@ -144,6 +148,7 @@ namespace TombLib.LevelData.Compilers.Util
         {
             firstTexCoordToEmit = 0;
             ushort result = isUsedInRoomMesh ? (ushort)0x8000 : (ushort)0;
+
             if (isTriangular)
             {
                 texture.TexCoord0 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord0);
@@ -256,6 +261,16 @@ namespace TombLib.LevelData.Compilers.Util
                 }
             }
             return result;
+        }
+
+        private int GetPageOffset(ushort flags)
+        {
+            if ((flags & 0x0800) != 0)
+                return NumNonBumpedTiles;
+            else if ((flags & 0x1000) != 0)
+                return NumNonBumpedTiles + NumBumpedTilesLevel1;
+            else
+                return 0;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -415,8 +430,12 @@ namespace TombLib.LevelData.Compilers.Util
             byte firstTexCoordToEmit;
             ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, textureSpaceIdentifier,
                 _textureAllocator.GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
-            return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit,
-                Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None) };
+            return new Result
+            {
+                ObjectTextureIndex = objTexIndex,
+                FirstVertexIndexToEmit = firstTexCoordToEmit,
+                Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None)
+            };
         }
 
         protected virtual void OnPackingTextures(IProgressReporter progressReporter)

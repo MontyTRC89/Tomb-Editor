@@ -45,8 +45,8 @@
             this.butAddTrigger.Name = "butAddTrigger";
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
             this.butAddTrigger.TabIndex = 1;
-            this.toolTip.SetToolTip(this.butAddTrigger, "Add trigger (Shift to use bookmarked object)");
-            this.butAddTrigger.Click += new System.EventHandler(this.butAddTrigger_Click);
+            this.butAddTrigger.Tag = "AddTrigger";
+            this.butAddTrigger.MouseEnter += new System.EventHandler(this.butAddTrigger_MouseEnter);
             // 
             // butEditTrigger
             // 

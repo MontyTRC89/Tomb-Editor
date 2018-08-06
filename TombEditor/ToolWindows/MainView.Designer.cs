@@ -25,6 +25,8 @@
             this.butDrawPortals = new System.Windows.Forms.ToolStripButton();
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
+            this.butDrawCardinalDirections = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
@@ -33,7 +35,7 @@
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
-            this.drawAllRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawAllRooms = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,19 +50,17 @@
             this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
             this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
-            this.butAdditiveBlending = new System.Windows.Forms.ToolStripButton();
-            this.butDoubleSided = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.butAddCamera = new System.Windows.Forms.ToolStripButton();
             this.butAddFlybyCamera = new System.Windows.Forms.ToolStripButton();
             this.butAddSink = new System.Windows.Forms.ToolStripButton();
             this.butAddSoundSource = new System.Windows.Forms.ToolStripButton();
             this.butAddImportedGeometry = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
+            this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.butDrawExtraBlendingModes = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,6 +80,8 @@
             this.butDrawPortals,
             this.butDrawHorizon,
             this.butDrawRoomNames,
+            this.butDrawCardinalDirections,
+            this.butDrawExtraBlendingModes,
             this.butDrawIllegalSlopes,
             this.butDrawSlideDirections,
             this.butDisableGeometryPicking,
@@ -94,21 +96,19 @@
             this.butOpacityNone,
             this.butOpacitySolidFaces,
             this.butOpacityTraversableFaces,
-            this.toolStripSeparator4,
+            this.toolStripSeparator2,
             this.butTextureFloor,
             this.butTextureCeiling,
             this.butTextureWalls,
-            this.butAdditiveBlending,
-            this.butDoubleSided,
-            this.toolStripSeparator2,
+            this.toolStripSeparator4,
             this.butAddCamera,
             this.butAddFlybyCamera,
             this.butAddSink,
             this.butAddSoundSource,
             this.butAddImportedGeometry,
             this.toolStripSeparator7,
-            this.butCompileLevelAndPlay,
-            this.butCompileLevel});
+            this.butCompileLevel,
+            this.butCompileLevelAndPlay});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -125,7 +125,7 @@
             this.but2D.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.but2D.Name = "but2D";
             this.but2D.Size = new System.Drawing.Size(23, 25);
-            this.but2D.Click += new System.EventHandler(this.but2D_Click);
+            this.but2D.Tag = "Switch2DMode";
             // 
             // but3D
             // 
@@ -138,8 +138,7 @@
             this.but3D.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.but3D.Name = "but3D";
             this.but3D.Size = new System.Drawing.Size(23, 25);
-            this.but3D.ToolTipText = "Geometry mode (F2)";
-            this.but3D.Click += new System.EventHandler(this.but3D_Click);
+            this.but3D.Tag = "SwitchGeometryMode";
             // 
             // butFaceEdit
             // 
@@ -150,8 +149,7 @@
             this.butFaceEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butFaceEdit.Name = "butFaceEdit";
             this.butFaceEdit.Size = new System.Drawing.Size(23, 25);
-            this.butFaceEdit.ToolTipText = "Face edit (F3)";
-            this.butFaceEdit.Click += new System.EventHandler(this.butFaceEdit_Click);
+            this.butFaceEdit.Tag = "SwitchFaceEditMode";
             // 
             // butLightingMode
             // 
@@ -162,8 +160,7 @@
             this.butLightingMode.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butLightingMode.Name = "butLightingMode";
             this.butLightingMode.Size = new System.Drawing.Size(23, 25);
-            this.butLightingMode.ToolTipText = "Lighting mode (F4)";
-            this.butLightingMode.Click += new System.EventHandler(this.butLightingMode_Click);
+            this.butLightingMode.Tag = "SwitchLightingMode";
             // 
             // toolStripSeparator3
             // 
@@ -182,8 +179,7 @@
             this.butCenterCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCenterCamera.Name = "butCenterCamera";
             this.butCenterCamera.Size = new System.Drawing.Size(23, 25);
-            this.butCenterCamera.ToolTipText = "Center 3D camera (F6)";
-            this.butCenterCamera.Click += new System.EventHandler(this.butCenterCamera_Click);
+            this.butCenterCamera.Tag = "ResetCamera";
             // 
             // butDrawPortals
             // 
@@ -194,8 +190,7 @@
             this.butDrawPortals.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawPortals.Name = "butDrawPortals";
             this.butDrawPortals.Size = new System.Drawing.Size(23, 25);
-            this.butDrawPortals.ToolTipText = "Draw portals";
-            this.butDrawPortals.Click += new System.EventHandler(this.butDrawPortals_Click);
+            this.butDrawPortals.Tag = "DrawPortals";
             // 
             // butDrawHorizon
             // 
@@ -206,8 +201,7 @@
             this.butDrawHorizon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawHorizon.Name = "butDrawHorizon";
             this.butDrawHorizon.Size = new System.Drawing.Size(23, 25);
-            this.butDrawHorizon.ToolTipText = "Draw horizon";
-            this.butDrawHorizon.Click += new System.EventHandler(this.butDrawHorizon_Click);
+            this.butDrawHorizon.Tag = "DrawHorizon";
             // 
             // butDrawRoomNames
             // 
@@ -218,8 +212,26 @@
             this.butDrawRoomNames.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawRoomNames.Name = "butDrawRoomNames";
             this.butDrawRoomNames.Size = new System.Drawing.Size(23, 25);
-            this.butDrawRoomNames.ToolTipText = "Draw room names";
-            this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
+            this.butDrawRoomNames.Tag = "DrawRoomNames";
+            // 
+            // butDrawCardinalDirections
+            // 
+            this.butDrawCardinalDirections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawCardinalDirections.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawCardinalDirections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawCardinalDirections.Image = global::TombEditor.Properties.Resources.actions_DrawCardinalDirections_16;
+            this.butDrawCardinalDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawCardinalDirections.Name = "butDrawCardinalDirections";
+            this.butDrawCardinalDirections.Size = new System.Drawing.Size(23, 25);
+            this.butDrawCardinalDirections.Tag = "DrawCardinalDirections";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
             // 
             // butDrawIllegalSlopes
             // 
@@ -230,8 +242,7 @@
             this.butDrawIllegalSlopes.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawIllegalSlopes.Name = "butDrawIllegalSlopes";
             this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 25);
-            this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
-            this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
+            this.butDrawIllegalSlopes.Tag = "DrawIllegalSlopes";
             // 
             // butDrawSlideDirections
             // 
@@ -243,8 +254,7 @@
             this.butDrawSlideDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawSlideDirections.Name = "butDrawSlideDirections";
             this.butDrawSlideDirections.Size = new System.Drawing.Size(23, 25);
-            this.butDrawSlideDirections.ToolTipText = "Draw slide directions";
-            this.butDrawSlideDirections.Click += new System.EventHandler(this.butDrawSlideDirections_Click);
+            this.butDrawSlideDirections.Tag = "DrawSlideDirections";
             // 
             // butDisableGeometryPicking
             // 
@@ -255,8 +265,7 @@
             this.butDisableGeometryPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDisableGeometryPicking.Name = "butDisableGeometryPicking";
             this.butDisableGeometryPicking.Size = new System.Drawing.Size(23, 25);
-            this.butDisableGeometryPicking.ToolTipText = "Disable custom geometry picking";
-            this.butDisableGeometryPicking.Click += new System.EventHandler(this.butDisableGeometryPicking_Click);
+            this.butDisableGeometryPicking.Tag = "DisableGeometryPicking";
             // 
             // dropDownDrawObjects
             // 
@@ -267,13 +276,12 @@
             this.butDrawStatics,
             this.butDrawImportedGeometry,
             this.butDrawOther,
-            this.drawAllRoomsToolStripMenuItem});
+            this.butDrawAllRooms});
             this.dropDownDrawObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dropDownDrawObjects.Image = global::TombEditor.Properties.Resources.actions_DrawObjects_16;
             this.dropDownDrawObjects.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dropDownDrawObjects.Name = "dropDownDrawObjects";
             this.dropDownDrawObjects.Size = new System.Drawing.Size(29, 25);
-            this.dropDownDrawObjects.ToolTipText = "Draw objects";
             // 
             // butDrawMoveables
             // 
@@ -283,9 +291,9 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(207, 22);
-            this.butDrawMoveables.Text = "Draw moveables";
-            this.butDrawMoveables.Click += new System.EventHandler(this.butDrawMoveables_Click);
+            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
+            this.butDrawMoveables.Tag = "DrawMoveables";
+            this.butDrawMoveables.Text = "DrawMoveables";
             // 
             // butDrawStatics
             // 
@@ -295,9 +303,9 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(207, 22);
-            this.butDrawStatics.Text = "Draw statics";
-            this.butDrawStatics.Click += new System.EventHandler(this.butDrawStatics_Click);
+            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
+            this.butDrawStatics.Tag = "DrawStatics";
+            this.butDrawStatics.Text = "DrawStatics";
             // 
             // butDrawImportedGeometry
             // 
@@ -307,9 +315,9 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(207, 22);
-            this.butDrawImportedGeometry.Text = "Draw imported geometry";
-            this.butDrawImportedGeometry.Click += new System.EventHandler(this.butDrawImportedGeometry_Click);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
+            this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
+            this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
             // butDrawOther
             // 
@@ -319,19 +327,19 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(207, 22);
-            this.butDrawOther.Text = "Draw other objects";
-            this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
+            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
+            this.butDrawOther.Tag = "DrawOtherObjects";
+            this.butDrawOther.Text = "DrawOtherObjects";
             // 
-            // drawAllRoomsToolStripMenuItem
+            // butDrawAllRooms
             // 
-            this.drawAllRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.drawAllRoomsToolStripMenuItem.CheckOnClick = true;
-            this.drawAllRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.drawAllRoomsToolStripMenuItem.Name = "drawAllRoomsToolStripMenuItem";
-            this.drawAllRoomsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-            this.drawAllRoomsToolStripMenuItem.Text = "Draw all rooms";
-            this.drawAllRoomsToolStripMenuItem.Click += new System.EventHandler(this.drawAllRoomsToolStripMenuItem_Click);
+            this.butDrawAllRooms.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawAllRooms.CheckOnClick = true;
+            this.butDrawAllRooms.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawAllRooms.Name = "butDrawAllRooms";
+            this.butDrawAllRooms.Size = new System.Drawing.Size(202, 22);
+            this.butDrawAllRooms.Tag = "DrawAllRooms";
+            this.butDrawAllRooms.Text = "DrawAllRooms";
             // 
             // toolStripSeparator1
             // 
@@ -345,13 +353,13 @@
             // 
             this.butFlipMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butFlipMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butFlipMap.Enabled = false;
             this.butFlipMap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butFlipMap.Image = global::TombEditor.Properties.Resources.general_copy_link_16;
             this.butFlipMap.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butFlipMap.Name = "butFlipMap";
             this.butFlipMap.Size = new System.Drawing.Size(23, 25);
-            this.butFlipMap.ToolTipText = "Flip map";
-            this.butFlipMap.Click += new System.EventHandler(this.butFlipMap_Click);
+            this.butFlipMap.Tag = "ToggleFlipMap";
             // 
             // toolStripSeparator6
             // 
@@ -371,8 +379,7 @@
             this.butCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCopy.Name = "butCopy";
             this.butCopy.Size = new System.Drawing.Size(23, 25);
-            this.butCopy.ToolTipText = "Copy (Ctrl+C)";
-            this.butCopy.Click += new System.EventHandler(this.butCopy_Click);
+            this.butCopy.Tag = "Copy";
             // 
             // butPaste
             // 
@@ -383,8 +390,7 @@
             this.butPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butPaste.Name = "butPaste";
             this.butPaste.Size = new System.Drawing.Size(23, 25);
-            this.butPaste.ToolTipText = "Paste (Ctrl+V)";
-            this.butPaste.Click += new System.EventHandler(this.butPaste_Click);
+            this.butPaste.Tag = "Paste";
             // 
             // butStamp
             // 
@@ -396,8 +402,7 @@
             this.butStamp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butStamp.Name = "butStamp";
             this.butStamp.Size = new System.Drawing.Size(23, 25);
-            this.butStamp.ToolTipText = "Stamp (Ctrl+B)";
-            this.butStamp.Click += new System.EventHandler(this.butStamp_Click);
+            this.butStamp.Tag = "StampObject";
             // 
             // toolStripSeparator5
             // 
@@ -418,8 +423,7 @@
             this.butOpacityNone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butOpacityNone.Name = "butOpacityNone";
             this.butOpacityNone.Size = new System.Drawing.Size(23, 25);
-            this.butOpacityNone.ToolTipText = "Clear (\'No Toggle Opacity\')";
-            this.butOpacityNone.Click += new System.EventHandler(this.butOpacityNone_Click);
+            this.butOpacityNone.Tag = "ToggleNoOpacity";
             // 
             // butOpacitySolidFaces
             // 
@@ -433,8 +437,7 @@
             this.butOpacitySolidFaces.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butOpacitySolidFaces.Name = "butOpacitySolidFaces";
             this.butOpacitySolidFaces.Size = new System.Drawing.Size(23, 25);
-            this.butOpacitySolidFaces.ToolTipText = "Textured and solid (\'Toggle Opacity 1\')";
-            this.butOpacitySolidFaces.Click += new System.EventHandler(this.butOpacitySolidFaces_Click);
+            this.butOpacitySolidFaces.Tag = "ToggleOpacity";
             // 
             // butOpacityTraversableFaces
             // 
@@ -447,8 +450,7 @@
             this.butOpacityTraversableFaces.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butOpacityTraversableFaces.Name = "butOpacityTraversableFaces";
             this.butOpacityTraversableFaces.Size = new System.Drawing.Size(23, 25);
-            this.butOpacityTraversableFaces.ToolTipText = "Textured and traversable (\'Toggle Opacity 2\')";
-            this.butOpacityTraversableFaces.Click += new System.EventHandler(this.butOpacityTraversableFaces_Click);
+            this.butOpacityTraversableFaces.Tag = "ToggleOpacity2";
             // 
             // toolStripSeparator4
             // 
@@ -468,8 +470,7 @@
             this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureFloor.Name = "butTextureFloor";
             this.butTextureFloor.Size = new System.Drawing.Size(23, 25);
-            this.butTextureFloor.ToolTipText = "Texture all floor (Ctrl+Alt+T)";
-            this.butTextureFloor.Click += new System.EventHandler(this.butTextureFloor_Click);
+            this.butTextureFloor.Tag = "TextureFloor";
             // 
             // butTextureCeiling
             // 
@@ -481,8 +482,7 @@
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureCeiling.Name = "butTextureCeiling";
             this.butTextureCeiling.Size = new System.Drawing.Size(23, 25);
-            this.butTextureCeiling.ToolTipText = "Texture all ceiling (Ctrl+Alt+V)";
-            this.butTextureCeiling.Click += new System.EventHandler(this.butTextureCeiling_Click);
+            this.butTextureCeiling.Tag = "TextureCeiling";
             // 
             // butTextureWalls
             // 
@@ -494,44 +494,7 @@
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureWalls.Name = "butTextureWalls";
             this.butTextureWalls.Size = new System.Drawing.Size(23, 25);
-            this.butTextureWalls.ToolTipText = "Texture all walls (Ctrl+Alt+U)";
-            this.butTextureWalls.Click += new System.EventHandler(this.butTextureWalls_Click);
-            // 
-            // butAdditiveBlending
-            // 
-            this.butAdditiveBlending.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butAdditiveBlending.CheckOnClick = true;
-            this.butAdditiveBlending.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butAdditiveBlending.Enabled = false;
-            this.butAdditiveBlending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butAdditiveBlending.Image = global::TombEditor.Properties.Resources.texture_Transparent_1_16;
-            this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butAdditiveBlending.Name = "butAdditiveBlending";
-            this.butAdditiveBlending.Size = new System.Drawing.Size(23, 25);
-            this.butAdditiveBlending.ToolTipText = "Additive blending";
-            this.butAdditiveBlending.Click += new System.EventHandler(this.butAdditiveBlending_Click);
-            // 
-            // butDoubleSided
-            // 
-            this.butDoubleSided.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDoubleSided.CheckOnClick = true;
-            this.butDoubleSided.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDoubleSided.Enabled = false;
-            this.butDoubleSided.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDoubleSided.Image = global::TombEditor.Properties.Resources.texture_DoubleSided_1_16;
-            this.butDoubleSided.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDoubleSided.Name = "butDoubleSided";
-            this.butDoubleSided.Size = new System.Drawing.Size(23, 25);
-            this.butDoubleSided.ToolTipText = "Double-sided texture";
-            this.butDoubleSided.Click += new System.EventHandler(this.butDoubleSided_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            this.butTextureWalls.Tag = "TextureWalls";
             // 
             // butAddCamera
             // 
@@ -542,8 +505,7 @@
             this.butAddCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddCamera.Name = "butAddCamera";
             this.butAddCamera.Size = new System.Drawing.Size(23, 25);
-            this.butAddCamera.ToolTipText = "Add camera";
-            this.butAddCamera.Click += new System.EventHandler(this.butAddCamera_Click);
+            this.butAddCamera.Tag = "AddCamera";
             // 
             // butAddFlybyCamera
             // 
@@ -554,8 +516,7 @@
             this.butAddFlybyCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddFlybyCamera.Name = "butAddFlybyCamera";
             this.butAddFlybyCamera.Size = new System.Drawing.Size(23, 25);
-            this.butAddFlybyCamera.ToolTipText = "Add fly-by camera";
-            this.butAddFlybyCamera.Click += new System.EventHandler(this.butAddFlybyCamera_Click);
+            this.butAddFlybyCamera.Tag = "AddFlybyCamera";
             // 
             // butAddSink
             // 
@@ -566,8 +527,7 @@
             this.butAddSink.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddSink.Name = "butAddSink";
             this.butAddSink.Size = new System.Drawing.Size(23, 25);
-            this.butAddSink.ToolTipText = "Add sink";
-            this.butAddSink.Click += new System.EventHandler(this.butAddSink_Click);
+            this.butAddSink.Tag = "AddSink";
             // 
             // butAddSoundSource
             // 
@@ -578,8 +538,7 @@
             this.butAddSoundSource.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddSoundSource.Name = "butAddSoundSource";
             this.butAddSoundSource.Size = new System.Drawing.Size(23, 25);
-            this.butAddSoundSource.ToolTipText = "Add sound source";
-            this.butAddSoundSource.Click += new System.EventHandler(this.butAddSoundSource_Click);
+            this.butAddSoundSource.Tag = "AddSoundSource";
             // 
             // butAddImportedGeometry
             // 
@@ -590,8 +549,7 @@
             this.butAddImportedGeometry.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddImportedGeometry.Name = "butAddImportedGeometry";
             this.butAddImportedGeometry.Size = new System.Drawing.Size(23, 25);
-            this.butAddImportedGeometry.ToolTipText = "Add imported geometry";
-            this.butAddImportedGeometry.Click += new System.EventHandler(this.butAddImportedGeometry_Click);
+            this.butAddImportedGeometry.Tag = "AddImportedGeometry";
             // 
             // toolStripSeparator7
             // 
@@ -600,18 +558,6 @@
             this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butCompileLevelAndPlay
-            // 
-            this.butCompileLevelAndPlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butCompileLevelAndPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butCompileLevelAndPlay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butCompileLevelAndPlay.Image = global::TombEditor.Properties.Resources.actions_play_16;
-            this.butCompileLevelAndPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butCompileLevelAndPlay.Name = "butCompileLevelAndPlay";
-            this.butCompileLevelAndPlay.Size = new System.Drawing.Size(23, 25);
-            this.butCompileLevelAndPlay.ToolTipText = "Build level & play (F5)";
-            this.butCompileLevelAndPlay.Click += new System.EventHandler(this.butCompileLevelAndPlay_Click);
             // 
             // butCompileLevel
             // 
@@ -622,8 +568,18 @@
             this.butCompileLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileLevel.Name = "butCompileLevel";
             this.butCompileLevel.Size = new System.Drawing.Size(23, 25);
-            this.butCompileLevel.ToolTipText = "Build level (Shift+F5)";
-            this.butCompileLevel.Click += new System.EventHandler(this.butCompileLevel_Click);
+            this.butCompileLevel.Tag = "BuildLevel";
+            // 
+            // butCompileLevelAndPlay
+            // 
+            this.butCompileLevelAndPlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butCompileLevelAndPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butCompileLevelAndPlay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butCompileLevelAndPlay.Image = global::TombEditor.Properties.Resources.actions_play_16;
+            this.butCompileLevelAndPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butCompileLevelAndPlay.Name = "butCompileLevelAndPlay";
+            this.butCompileLevelAndPlay.Size = new System.Drawing.Size(23, 25);
+            this.butCompileLevelAndPlay.Tag = "BuildAndPlay";
             // 
             // panel3D
             // 
@@ -648,6 +604,17 @@
             this.panel2DMap.Size = new System.Drawing.Size(833, 255);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
+            // 
+            // butDrawExtraBlendingModes
+            // 
+            this.butDrawExtraBlendingModes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawExtraBlendingModes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawExtraBlendingModes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawExtraBlendingModes.Image = global::TombEditor.Properties.Resources.texture_Transparent_1_16;
+            this.butDrawExtraBlendingModes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawExtraBlendingModes.Name = "butDrawExtraBlendingModes";
+            this.butDrawExtraBlendingModes.Size = new System.Drawing.Size(23, 25);
+            this.butDrawExtraBlendingModes.Tag = "DrawExtraBlendingModes";
             // 
             // MainView
             // 
@@ -687,9 +654,6 @@
         private System.Windows.Forms.ToolStripButton butTextureFloor;
         private System.Windows.Forms.ToolStripButton butTextureCeiling;
         private System.Windows.Forms.ToolStripButton butTextureWalls;
-        private System.Windows.Forms.ToolStripButton butAdditiveBlending;
-        private System.Windows.Forms.ToolStripButton butDoubleSided;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton butAddCamera;
         private System.Windows.Forms.ToolStripButton butAddFlybyCamera;
         private System.Windows.Forms.ToolStripButton butAddSoundSource;
@@ -713,6 +677,9 @@
         private System.Windows.Forms.ToolStripMenuItem butDrawOther;
         private System.Windows.Forms.ToolStripButton butDrawSlideDirections;
         private System.Windows.Forms.ToolStripButton butDisableGeometryPicking;
-        private System.Windows.Forms.ToolStripMenuItem drawAllRoomsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem butDrawAllRooms;
+        private System.Windows.Forms.ToolStripButton butDrawCardinalDirections;
+        private System.Windows.Forms.ToolStripButton butDrawExtraBlendingModes;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }

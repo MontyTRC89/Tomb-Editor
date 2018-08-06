@@ -119,6 +119,7 @@ namespace TombLib.LevelData.Compilers
                     WriteLevelTr4();
                     break;
                 case GameVersion.TR5:
+                case GameVersion.TR5Main:
                     WriteLevelTr5();
                     break;
                 default:

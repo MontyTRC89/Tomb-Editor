@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Utils;        // FIXME OLD
 using TombEditor.Forms;
 using TombLib.LevelData;
 
@@ -15,6 +16,7 @@ namespace TombEditor.ToolWindows
         public TexturePanel()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -23,16 +25,8 @@ namespace TombEditor.ToolWindows
             panelTextureMap.SelectedTextureChanged += delegate
             { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
-            // Setup tile size options
-            if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 64.0f)
-                rbTileSize64.Checked = true;
-            else if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 128.0f)
-                rbTileSize128.Checked = true;
-            else if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 256.0f)
-                rbTileSize256.Checked = true;
-            else
-                rbTileSize32.Checked = true;
-            panelTextureMap.TileSelectionSize = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
+            cmbBlending.SelectedIndex = 0;
+            cmbTileSize.SelectedIndex = 1;
         }
 
         protected override void Dispose(bool disposing)
@@ -49,17 +43,52 @@ namespace TombEditor.ToolWindows
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
             {
-                LevelTexture toSelect = ((Editor.SelectedTexturesChangedEvent)obj).Current.Texture as LevelTexture;
+                var e = (Editor.SelectedTexturesChangedEvent)obj;
+
+                LevelTexture toSelect = e.Current.Texture as LevelTexture;
                 if (toSelect != null)
                     comboCurrentTexture.SelectedItem = toSelect;
-                panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
+                panelTextureMap.SelectedTexture = e.Current;
+
+                UpdateTextureControls(e.Current);
             }
 
             // Center texture on texture map
             if (obj is Editor.SelectTextureAndCenterViewEvent)
             {
-                comboCurrentTexture.SelectedItem = ((Editor.SelectTextureAndCenterViewEvent)obj).Texture.Texture as LevelTexture;
+                var newTexture = ((Editor.SelectTextureAndCenterViewEvent)obj).Texture;
+                comboCurrentTexture.SelectedItem = newTexture.Texture as LevelTexture;
                 panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
+
+                if (newTexture.Texture is LevelTexture)
+                {
+                    butDoubleSide.BackColorUseGeneric = !newTexture.DoubleSided;
+
+                    switch (newTexture.BlendMode)
+                    {
+                        case BlendMode.Normal:
+                        default:
+                            cmbBlending.SelectedIndex = 0;
+                            break;
+                        case BlendMode.Additive:
+                            cmbBlending.SelectedIndex = 1;
+                            break;
+                        case BlendMode.Subtract:
+                            cmbBlending.SelectedIndex = 2;
+                            break;
+                        case BlendMode.Exclude:
+                            cmbBlending.SelectedIndex = 3;
+                            break;
+                        case BlendMode.Screen:
+                            cmbBlending.SelectedIndex = 4;
+                            break;
+                        case BlendMode.Lighten:
+                            cmbBlending.SelectedIndex = 5;
+                            break;
+                    };
+
+                    panelTextureMap.ShowTexture(newTexture);
+                }
             }
 
             // Reset texture map
@@ -69,6 +98,7 @@ namespace TombEditor.ToolWindows
                 comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
                 comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
             }
+            
             if (obj is Editor.LoadedTexturesChangedEvent)
             {
                 // Populate current texture combo box
@@ -82,6 +112,13 @@ namespace TombEditor.ToolWindows
                 if (((Editor.LoadedTexturesChangedEvent)obj).NewToSelect != null)
                     comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
                 panelTextureMap.Invalidate();
+            }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
         }
 
@@ -108,34 +145,80 @@ namespace TombEditor.ToolWindows
                     form.ShowDialog(this);
         }
 
-        private void butAnimationRanges_Click(object sender, EventArgs e)
+        private void cmbTileSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (var form = new FormAnimatedTextures(_editor, comboCurrentTexture.SelectedItem as LevelTexture))
-                form.ShowDialog(this);
+            switch(cmbTileSize.SelectedIndex)
+            {
+                case 0:
+                    panelTextureMap.TileSelectionSize = 32.0f;
+                    break;
+                default:
+                case 1:
+                    panelTextureMap.TileSelectionSize = 64.0f;
+                    break;
+                case 2:
+                    panelTextureMap.TileSelectionSize = 128.0f;
+                    break;
+                case 3:
+                    panelTextureMap.TileSelectionSize = 256.0f;
+                    break;
+            }
         }
 
-        private void rbTileSize32_CheckedChanged(object sender, EventArgs e)
+        private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (rbTileSize32.Checked)
-                panelTextureMap.TileSelectionSize = 32.0f;
+            var selectedTexture = _editor.SelectedTexture;
+            switch (cmbBlending.SelectedIndex)
+            {
+                default:
+                case 0:
+                    selectedTexture.BlendMode = BlendMode.Normal;
+                    break;
+                case 1:
+                    selectedTexture.BlendMode = BlendMode.Additive;
+                    break;
+                case 2:
+                    selectedTexture.BlendMode = BlendMode.Subtract;
+                    break;
+                case 3:
+                    selectedTexture.BlendMode = BlendMode.Exclude;
+                    break;
+                case 4:
+                    selectedTexture.BlendMode = BlendMode.Screen;
+                    break;
+                case 5:
+                    selectedTexture.BlendMode = BlendMode.Lighten;
+                    break;
+            }
+            _editor.SelectedTexture = selectedTexture;
         }
 
-        private void rbTileSize64_CheckedChanged(object sender, EventArgs e)
+        private void UpdateTextureControls(TextureArea texture)
         {
-            if (rbTileSize64.Checked)
-                panelTextureMap.TileSelectionSize = 64.0f;
-        }
+            butDoubleSide.BackColorUseGeneric = !texture.DoubleSided;
 
-        private void rbTileSize128_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rbTileSize128.Checked)
-                panelTextureMap.TileSelectionSize = 128.0f;
-        }
-
-        private void rbTileSize256_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rbTileSize256.Checked)
-                panelTextureMap.TileSelectionSize = 256.0f;
+            switch (texture.BlendMode)
+            {
+                case BlendMode.Normal:
+                default:
+                    cmbBlending.SelectedIndex = 0;
+                    break;
+                case BlendMode.Additive:
+                    cmbBlending.SelectedIndex = 1;
+                    break;
+                case BlendMode.Subtract:
+                    cmbBlending.SelectedIndex = 2;
+                    break;
+                case BlendMode.Exclude:
+                    cmbBlending.SelectedIndex = 3;
+                    break;
+                case BlendMode.Screen:
+                    cmbBlending.SelectedIndex = 4;
+                    break;
+                case BlendMode.Lighten:
+                    cmbBlending.SelectedIndex = 5;
+                    break;
+            };
         }
 
         private void butDeleteTexture_Click(object sender, EventArgs e)
@@ -143,11 +226,6 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 EditorActions.RemoveTexture(this, texture);
-        }
-
-        private void butAddTexture_Click(object sender, EventArgs e)
-        {
-            EditorActions.AddTexture(this);
         }
 
         private void butBrowseTexture_Click(object sender, EventArgs e)

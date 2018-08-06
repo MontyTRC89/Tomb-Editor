@@ -500,5 +500,29 @@ namespace WadTool
                 return null;
             }
         }
+
+        public static void EditAnimations(WadToolClass tool, IWin32Window owner)
+        {
+            var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
+            using (var form = new FormAnimationEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                tool.SelectedObjectEdited();
+            }
+        }
+
+        public static void EditSkeletion(WadToolClass tool, IWin32Window owner)
+        {
+            var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
+            using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                tool.SelectedObjectEdited();
+            }
+        }
     }
 }

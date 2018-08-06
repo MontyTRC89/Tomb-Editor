@@ -60,7 +60,8 @@ namespace TombLib.LevelData
         TR3 = 3,
         TR4 = 4,
         TR5 = 5,
-        TRNG = 16
+        TRNG = 16,
+        TR5Main = 18
     }
 
     /// <summary>

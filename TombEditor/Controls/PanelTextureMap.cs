@@ -321,8 +321,8 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
-                    // Move view with mouse curser
-                    // Mouse curser is a fixed point
+                    // Move view with mouse cursor
+                    // Mouse cursor is a fixed point
                     _viewMoveMouseTexCoord = FromVisualCoord(e.Location);
                     break;
             }
@@ -383,8 +383,8 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
-                    // Move view with mouse curser
-                    // Mouse curser is a fixed point
+                    // Move view with mouse cursor
+                    // Mouse cursor is a fixed point
                     if (_viewMoveMouseTexCoord.HasValue)
                         if (ModifierKeys.HasFlag(Keys.Control))
                         { // Zoom
@@ -672,7 +672,7 @@ namespace TombEditor.Controls
                 value.TexCoord1 = Vector2.Max(Vector2.Min(value.TexCoord1, VisibleTexture.Image.Size - new Vector2(0.5f)), new Vector2(0.5f));
                 value.TexCoord2 = Vector2.Max(Vector2.Min(value.TexCoord2, VisibleTexture.Image.Size - new Vector2(0.5f)), new Vector2(0.5f));
                 value.TexCoord3 = Vector2.Max(Vector2.Min(value.TexCoord3, VisibleTexture.Image.Size - new Vector2(0.5f)), new Vector2(0.5f));
-
+                
                 if (_selectedTexture == value)
                     return;
                 _selectedTexture = value;

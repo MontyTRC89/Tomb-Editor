@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TombLib.LevelData;
+using TombLib.Rendering;
 
 namespace TombEditor.ToolWindows
 {
@@ -13,6 +14,7 @@ namespace TombEditor.ToolWindows
         public TriggerList()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -67,13 +69,13 @@ namespace TombEditor.ToolWindows
                 var trigger = _editor.SelectedObject as TriggerInstance;
                 lstTriggers.SelectedItem = trigger != null && lstTriggers.Items.Contains(trigger) ? trigger : null;
             }
-        }
 
-        private void butAddTrigger_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
+            }
         }
 
         private void butEditTrigger_Click(object sender, EventArgs e)
@@ -106,6 +108,12 @@ namespace TombEditor.ToolWindows
                 if (instance != null)
                     EditorActions.EditObject(instance, this);
             }
+        }
+
+        private void butAddTrigger_MouseEnter(object sender, EventArgs e)
+        {
+            if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
     }
 }

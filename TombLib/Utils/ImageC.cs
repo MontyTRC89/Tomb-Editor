@@ -126,6 +126,45 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
+        public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int [,] kernel)
+        {
+            ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);
+            oldImage.CopyFrom(0, 0, this, xStart, yStart, width, height);
+
+            int kernel_width = kernel.GetUpperBound(0) + 1;
+            int kernel_height = kernel.GetUpperBound(1) + 1;
+
+            for (int x = 0, xReal = xStart; x < width; x++, xReal++)
+                for (int y = 0, yReal = yStart; y < height; y++, yReal++)
+                {
+                    int r = 0, g = 0, b = 0;
+                    for (int dx = 0; dx < kernel_width; dx++)
+                        for (int dy = 0; dy < kernel_height; dy++)
+                        {
+                            int sourceX = MathC.Clamp(x + dx - 1, 0, width - 1);
+                            int sourceY = MathC.Clamp(y + dy - 1, 0, height - 1);
+                            ColorC clr = oldImage.GetPixel(sourceX, sourceY);
+                            r += (int)clr.R * kernel[dx, dy];
+                            g += (int)clr.G * kernel[dx, dy];
+                            b += (int)clr.B * kernel[dx, dy];
+                        }
+                    r = MathC.Clamp((int)(127 + r / weight), 0, 255);
+                    g = MathC.Clamp((int)(127 + g / weight), 0, 255);
+                    b = MathC.Clamp((int)(127 + b / weight), 0, 255);
+                    SetPixel(xReal, yReal, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
+                }
+        }
+
+        public void Emboss(int xStart, int yStart, int width, int height, int weight, int size)
+        {
+            size = MathC.Clamp(size, 2, 8);
+            int[,] kernel = new int[size, size];
+            kernel[0, 0] = -1;
+            kernel[size - 1, size - 1] = 1;
+
+            ApplyKernel(xStart, yStart, width, height, weight, kernel);
+        }
+
         public VectorInt2 Size => new VectorInt2(Width, Height);
 
         public int DataSize => Width * Height * PixelSize;

@@ -48,10 +48,11 @@ namespace TombLib.Utils
         AlphaTest = 1,
         Additive = 2,
         NoZTest = 4,
-        Wireframe = 6 /*,
-        AlphaTest = 100*/
-        // By using FLEP, more BlendMode mode indices can be assigned meaning.
-        // We probably want support for those in the future.
+        Subtract = 5,
+        Wireframe = 6,
+        Exclude = 8,
+        Screen = 9,
+        Lighten = 10
     }
 
     public struct TextureArea : IEquatable<TextureArea>
@@ -84,6 +85,7 @@ namespace TombLib.Utils
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
         public override int GetHashCode() => base.GetHashCode();
 
+        public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
         public bool TextureIsRectangle => (TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length();
 
@@ -110,6 +112,7 @@ namespace TombLib.Utils
                 return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
             }
         }
+        
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
             get

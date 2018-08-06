@@ -46,7 +46,7 @@ namespace TombEditor.Forms
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(317, 26);
             this.butOk.TabIndex = 1;
-            this.butOk.Text = "Ok";
+            this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 

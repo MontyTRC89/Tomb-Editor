@@ -24,6 +24,7 @@ namespace TombEditor.Controls
         public event Func<IWin32Window> GetParent;
         public event Action<IEnumerable<Room>> SelectedRoom;
 
+        private const int _snappingMargin = 4;
         private const float _marginX = 10.0f;
         private const float _marginYUp = 32.0f;
         private const float _marginYDown = 32.0f;
@@ -41,6 +42,7 @@ namespace TombEditor.Controls
         private float _selectedLimit0 { get; set; } = MinDepth;
         private float _selectedLimit1 { get; set; } = MaxDepth;
         private Room _roomMouseClicked;
+        private int _groupMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private float _roomMouseOffset; // Relative depth difference to where it was clicked.
         private float _barMouseOffset;
@@ -69,6 +71,8 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsNormalBrush = new SolidBrush(SectorColoringInfo.ColorFloor.ToWinFormsColor());
         private static readonly Brush _roomsWallBrush = new SolidBrush(SectorColoringInfo.ColorWall.ToWinFormsColor());
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
+        private static readonly Brush _roomsLockedBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Color.FromArgb(50, 20, 20, 20));
+
 
         public class DepthProbe
         {
@@ -166,6 +170,8 @@ namespace TombEditor.Controls
                             RectangleF groupArea = groupGetArea(barArea, groupIndex);
                             if (groupArea.Contains(e.Location))
                             {
+                                _groupMouseClicked = groupIndex;
+
                                 float mouseDepth = FromVisualY(barArea, e.Y);
                                 List<List<RelevantRoom>> roomSequences = groupBuildRoomSequences(level, clickPos, groupIndex);
                                 float sequenceWidth = groupArea.Width / roomSequences.Count;
@@ -271,10 +277,57 @@ namespace TombEditor.Controls
                         maxHeight = Math.Min(maxHeight, roomUpperLimit);
                         minHeight = Math.Max(minHeight, roomLowerLimit);
                     }
+
                     destinationHeight = Math.Max(Math.Min(destinationHeight, maxHeight), minHeight);
+                    int delta = (int)(Math.Ceiling(destinationHeight) - _roomMouseClicked.Position.Y);
+
+                    // Snapping
+                    if(Control.ModifierKeys.HasFlag(Keys.Alt))
+                    {
+                        HashSet<Room> roomsInGroup = new HashSet<Room>();
+                        List<List<RelevantRoom>> roomSequences = groupBuildRoomSequences(level, Vector2.Zero, _groupMouseClicked);
+
+                        for (int i = 0; i < roomSequences.Count; ++i)
+                            for (int j = 0; j < roomSequences[i].Count; ++j)
+                                roomsInGroup.Add(roomSequences[i][j].Room);
+
+                        int highestGroupPoint = level.GetHighestRoomGroupPoint(_roomsToMove);
+                        int lowestGroupPoint = level.GetLowestRoomGroupPoint(_roomsToMove);
+
+                        Room nearbyRoom = level.GetNearbyRoomBelow(_roomsToMove, roomsInGroup, lowestGroupPoint, _snappingMargin);
+
+                        if (nearbyRoom != null)
+                        {
+                            if (Math.Abs(delta) <= _snappingMargin)
+                            {
+                                int newDelta = -(lowestGroupPoint - (nearbyRoom.Position.Y + nearbyRoom.GetHighestCorner()));
+                                if (newDelta + highestGroupPoint > MaxDepth)
+                                    break; // Do not push room out of bounds
+                                delta = newDelta;
+                            }
+                            else if (Math.Abs(delta) <= _snappingMargin + 1)
+                                break; // Noise reduction
+                        }
+                        else
+                        {
+                            nearbyRoom = level.GetNearbyRoomAbove(_roomsToMove, roomsInGroup, highestGroupPoint, 5);
+                            if (nearbyRoom != null)
+                            {
+                                if (Math.Abs(delta) <= _snappingMargin)
+                                {
+                                    int newDelta = ((nearbyRoom.Position.Y + nearbyRoom.GetLowestCorner()) - highestGroupPoint);
+                                    if (newDelta + lowestGroupPoint < MinDepth)
+                                        break; // Do not push room out of bounds
+                                    delta = newDelta;
+                                }
+                                else if (Math.Abs(delta) <= _snappingMargin + 1)
+                                    break; // Noise reduction
+                            }
+                        }
+                    }
 
                     // do movement
-                    EditorActions.MoveRooms(new VectorInt3(0, (int)Math.Round(destinationHeight - _roomMouseClicked.Position.Y), 0), _roomsToMove);
+                    EditorActions.MoveRooms(new VectorInt3(0, delta, 0), _roomsToMove);
                     break;
             }
         }
@@ -398,12 +451,15 @@ namespace TombEditor.Controls
 
                             // Draw fill color for room
                             Brush colorBrush = _roomsNormalBrush;
+                            RectangleF roomRect = new RectangleF(posX0, posY0, posX1 - posX0, posY1 - posY0);
                             if (room.Block != null && room.Block.Type != BlockType.Floor)
                                 colorBrush = _roomsWallBrush;
                             using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))
-                                e.Graphics.FillRectangle(colorBrush2, posX0, posY0, posX1 - posX0, posY1 - posY0);
+                                e.Graphics.FillRectangle(colorBrush2, roomRect);
                             if (!CheckRoom(room.MinDepth, room.MaxDepth))
-                                e.Graphics.FillRectangle(_roomsOutsideOverdraw, posX0, posY0, posX1 - posX0, posY1 - posY0);
+                                e.Graphics.FillRectangle(_roomsOutsideOverdraw, roomRect);
+                            if(room.Room.Locked)
+                                e.Graphics.FillRectangle(_roomsLockedBrush, roomRect);
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;
@@ -484,7 +540,7 @@ namespace TombEditor.Controls
             Vector2 probePos = groupIndex == DepthProbes.Count ? cursorPos : DepthProbes[groupIndex].Position;
             bool shouldCheckRoomsToMove = groupIndex == DepthProbes.Count && _roomsToMove != null;
 
-            // Iterate over all rooms under the curser and add them to the room sequences
+            // Iterate over all rooms under the cursor and add them to the room sequences
             IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList(room =>
             {
                 Vector2 roomLocal = probePos - room.SectorPos;

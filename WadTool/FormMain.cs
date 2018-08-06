@@ -80,6 +80,12 @@ namespace WadTool
                 if (mainSelection == null)
                 {
                     panel3D.CurrentObject = null;
+
+                    butEditAnimations.Visible = false;
+                    butEditSkeleton.Visible = false;
+                    butEditStaticModel.Visible = false;
+                    butEditSpriteSequence.Visible = false;
+                    butEditSound.Visible = false;
                 }
                 else
                 {
@@ -119,6 +125,14 @@ namespace WadTool
                         }
                     }
 
+                    // Update the toolbar below the rendering area
+                    butEditAnimations.Visible = (mainSelection.Value.Id is WadMoveableId);
+                    butEditSkeleton.Visible = (mainSelection.Value.Id is WadMoveableId);
+                    butEditStaticModel.Visible = (mainSelection.Value.Id is WadStaticId);
+                    butEditSpriteSequence.Visible = (mainSelection.Value.Id is WadSpriteSequenceId);
+                    butEditSound.Visible = (mainSelection.Value.Id is WadFixedSoundInfo || 
+                                            mainSelection.Value.Id is WadAdditionalSoundInfoId);
+
                     panel3D.Invalidate();
                 }
 
@@ -142,6 +156,12 @@ namespace WadTool
             IWadObjectId currentSelection = treeDestWad.SelectedWadObjectIds.FirstOrDefault();
             if (currentSelection != null)
                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Destination, Id = currentSelection };
+
+            // Update context menu
+            if (currentSelection is WadMoveableId)
+                treeDestWad.ContextMenuStrip = contextMenuMoveableItem;
+            else
+                treeDestWad.ContextMenuStrip = null;
         }
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
@@ -497,33 +517,49 @@ namespace WadTool
             StopAnimation();
         }
 
-        private void soundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
+        private void destinationSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.ShowSoundOverview(_tool, this, WadArea.Destination);
         }
 
-        private void darkButton1_Click(object sender, EventArgs e)
+        private void sourceSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            using (var form = new FormSkeletonEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
-            {
-                if (form.ShowDialog(this) != DialogResult.OK)
-                    return;
-                _tool.SelectedObjectEdited();
-            }
+            WadActions.ShowSoundOverview(_tool, this, WadArea.Source);
         }
 
-        private void darkButton3_Click(object sender, EventArgs e)
+        private void butEditSkeleton_Click(object sender, EventArgs e)
         {
-            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            using (var form = new FormAnimationEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
-            {
-                if (form.ShowDialog(this) != DialogResult.OK)
-                    return;
-                _tool.SelectedObjectEdited();
-            }
+            WadActions.EditSkeletion(_tool, this);
+        }
+
+        private void butEditAnimations_Click(object sender, EventArgs e)
+        {
+            WadActions.EditAnimations(_tool, this);
+        }
+
+        private void editSkeletonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.EditSkeletion(_tool, this);
+        }
+
+        private void editAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.EditAnimations(_tool, this);
+        }
+
+        private void butEditStaticModel_Click(object sender, EventArgs e)
+        {
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
+
+        private void butEditSpriteSequence_Click(object sender, EventArgs e)
+        {
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
+
+        private void butEditSound_Click(object sender, EventArgs e)
+        {
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
     }
 }

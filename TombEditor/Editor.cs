@@ -315,6 +315,7 @@ namespace TombEditor
         {
             public Configuration Previous { get; internal set; }
             public Configuration Current { get; internal set; }
+            public bool UpdateKeyboardShortcuts { get; internal set; } = false;
         }
         private Configuration _configuration;
         public Configuration Configuration
@@ -562,14 +563,17 @@ namespace TombEditor
             RaiseEvent(new EditorQuitEvent());
         }
 
+        public class InitEvent : IEditorEvent { }
+
 
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }
 
         // Notify all components that values of the configuration have changed
-        public void ConfigurationChange()
+        // FIXME: Is it a hack?
+        public void ConfigurationChange(bool updateKeyboardShortcuts = false)
         {
-            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration });
+            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration, UpdateKeyboardShortcuts = updateKeyboardShortcuts });
         }
 
         // Select a room and center the camera

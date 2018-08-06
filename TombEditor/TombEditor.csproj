@@ -118,6 +118,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EditorLevelSnapshot.cs" />
+    <Compile Include="Controls\ToolBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ToolBox.Designer.cs">
+      <DependentUpon>ToolBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormResizeRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,12 +238,6 @@
     </Compile>
     <Compile Include="Forms\FormOperationDialog.Designer.cs">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.Designer.cs">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormFootStepSounds.cs">
       <SubType>Form</SubType>
@@ -385,6 +385,9 @@
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ToolBox.resx">
+      <DependentUpon>ToolBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
       <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
     </EmbeddedResource>
@@ -443,9 +446,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormOperationDialog.resx">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormInputBox.resx">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormFootStepSounds.resx">
       <DependentUpon>FormFootStepSounds.cs</DependentUpon>
@@ -551,7 +551,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del "$(TargetDir)TombEditorConfiguration.xml"</PostBuildEvent>
+    <PostBuildEvent>del "$(TargetDir)TombEditorConfiguration.xml"
+SET ERRORLEVEL = 0</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

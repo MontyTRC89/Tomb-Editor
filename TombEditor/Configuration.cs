@@ -59,7 +59,20 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
+        public bool Rendering3D_DisablePickingForImportedGeometry { get; set; } = false;
+        public bool Rendering3D_ShowPortals { get; set; } = false;
+        public bool Rendering3D_ShowHorizon { get; set; } = false;
+        public bool Rendering3D_ShowAllRooms { get; set; } = false;
+        public bool Rendering3D_ShowIllegalSlopes { get; set; } = false;
+        public bool Rendering3D_ShowMoveables { get; set; } = true;
+        public bool Rendering3D_ShowStatics { get; set; } = true;
+        public bool Rendering3D_ShowImportedGeometry { get; set; } = true;
+        public bool Rendering3D_ShowOtherObjects { get; set; } = true;
+        public bool Rendering3D_ShowSlideDirections { get; set; } = false;
         public bool Rendering3D_ShowFPS { get; set; } = false;
+        public bool Rendering3D_ShowRoomNames { get; set; } = false;
+        public bool Rendering3D_ShowCardinalDirections { get; set; } = true;
+        public bool Rendering3D_ShowExtraBlendingModes { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public int Rendering3D_FontSize { get; set; } = 24;
         public bool Rendering3D_FontIsBold { get; set; } = true;
@@ -180,7 +193,7 @@ namespace TombEditor
                             Contents = new List<string> { "TexturePanel" },
                             VisibleContent = "TexturePanel",
                             Order = 0,
-                            Size = new Size(284,700)
+                            Size = new Size(286,700)
                         }
                     }
                 },

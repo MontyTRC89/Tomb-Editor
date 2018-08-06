@@ -3,7 +3,7 @@ using System;
 using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Forms;
-using TombLib;
+using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -13,15 +13,14 @@ namespace TombEditor.ToolWindows
     {
         private readonly Editor _editor;
 
-        private class InitEvent : IEditorEvent { }
-
         public RoomOptions()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-            EditorEventRaised(new InitEvent());
+            EditorEventRaised(new Editor.InitEvent());
         }
 
         protected override void Dispose(bool disposing)
@@ -36,7 +35,7 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the room list
-            if (obj is InitEvent || obj is Editor.RoomListChangedEvent)
+            if (obj is Editor.InitEvent || obj is Editor.RoomListChangedEvent)
             {
                 // Adjust the amount of entries in the combo list
                 while (comboRoom.Items.Count > _editor.Level.Rooms.GetLength(0))
@@ -53,11 +52,11 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the room property controls
-            if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
+            if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 Room room = _editor.SelectedRoom;
-                if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent)
+                if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 // Update the state of other controls
@@ -95,6 +94,13 @@ namespace TombEditor.ToolWindows
                 }
 
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
+            }
+
+            // Update tooltip texts
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
         }
 
@@ -150,51 +156,6 @@ namespace TombEditor.ToolWindows
             // Update combo box even if nothing changed internally
             // to correct invalid user input
             EditorEventRaised(new Editor.RoomPropertiesChangedEvent { Room = room });
-        }
-
-        private void cbFlagDamage_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagDamage == cbFlagDamage.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagDamage = cbFlagDamage.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbFlagCold_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagCold == cbFlagCold.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagCold = cbFlagCold.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbFlagOutside_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagOutside == cbFlagOutside.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagOutside = cbFlagOutside.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbHorizon_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagHorizon == cbHorizon.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagHorizon = cbHorizon.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbNoPathfinding_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagExcludeFromPathFinding == cbNoPathfinding.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagExcludeFromPathFinding = cbNoPathfinding.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
@@ -285,72 +246,25 @@ namespace TombEditor.ToolWindows
         {
             Room room = _editor.SelectedRoom;
 
-            colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                room.AmbientLight = c.ToFloatColor() * 2.0f;
+                _editor.SelectedRoom.BuildGeometry();
+                _editor.RoomPropertiesChange(room);
+            }))
+            {
+                colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
 
-            panelRoomAmbientLight.BackColor = colorDialog.Color;
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
 
-            _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+                panelRoomAmbientLight.BackColor = colorDialog.Color;
+                room.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+            }
+
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
-        }
-
-        private void butCropRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-        }
-
-        private void butSplitRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.SplitRoom(this);
-        }
-
-        private void butEditRoomName_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormInputBox())
-            {
-                form.Title = "Edit room's name";
-                form.Message = "Insert the name of this room:";
-                form.Value = _editor.SelectedRoom.Name;
-
-                if (form.ShowDialog(this) == DialogResult.Cancel)
-                    return;
-
-                _editor.SelectedRoom.Name = form.Value;
-                _editor.RoomPropertiesChange(_editor.SelectedRoom);
-                _editor.RoomListChange();
-            }
-        }
-
-        private void butRoomUp_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
-        }
-
-        private void butRoomDown_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
-        }
-
-        private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom.FlagNoLensflare == cbNoLensflare.Checked)
-                return;
-
-            _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void butLocked_Click(object sender, EventArgs e)
-        {
-            butLocked.BackColorUseGeneric = !butLocked.BackColorUseGeneric;
-
-            if (_editor.SelectedRoom.Locked == !butLocked.BackColorUseGeneric)
-                return;
-
-            _editor.SelectedRoom.Locked = !butLocked.BackColorUseGeneric;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
 }

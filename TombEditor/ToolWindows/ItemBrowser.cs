@@ -1,9 +1,8 @@
 ﻿using DarkUI.Docking;
-using DarkUI.Forms;
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -19,6 +18,7 @@ namespace TombEditor.ToolWindows
         public ItemBrowser()
         {
             InitializeComponent();
+            CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -79,6 +79,13 @@ namespace TombEditor.ToolWindows
                 StaticInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
                 panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * 0.5f).ToWinFormsColor();
             }
+
+            // Update tooltip texts
+            if(obj is Editor.ConfigurationChangedEvent)
+            {
+                if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
+            }
         }
 
         private void butSearch_Click(object sender, EventArgs e)
@@ -87,39 +94,29 @@ namespace TombEditor.ToolWindows
             searchPopUp.Show(this);
         }
 
-        private void butAddItem_Click(object sender, EventArgs e)
-        {
-            var currentItem = EditorActions.GetCurrentItemWithMessage();
-            if (currentItem == null)
-                return;
-
-            if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Alternated && _editor.SelectedRoom.AlternateRoom == null)
-            {
-                _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
-                return;
-            }
-
-            _editor.Action = new EditorActionPlace(false, (r, l) => ItemInstance.FromItemType(currentItem.Value));
-        }
-
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
         {
             var instance = _editor.SelectedObject as StaticInstance;
             if (instance == null)
                 return;
 
-            colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                panelStaticMeshColor.BackColor = c;
+                instance.Color = c.ToFloatColor() * 2.0f;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }))
+            {
+                colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
 
-            panelStaticMeshColor.BackColor = colorDialog.Color;
-            instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
-            _editor.ObjectChange(instance, ObjectChangeType.Change);
-        }
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
 
-        private void butFindItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.FindItem();
+                panelStaticMeshColor.BackColor = colorDialog.Color;
+                instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
@@ -127,9 +124,17 @@ namespace TombEditor.ToolWindows
             if (comboItems.SelectedItem == null)
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
+            {
+                lblStaticMeshColor.Visible = false;
+                panelStaticMeshColor.Visible = false;
                 _editor.ChosenItem = new ItemType(((WadMoveable)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
+            }
             else if (comboItems.SelectedItem is WadStatic)
+            {
+                lblStaticMeshColor.Visible = true;
+                panelStaticMeshColor.Visible = true;
                 _editor.ChosenItem = new ItemType(((WadStatic)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
+            }
         }
 
         private void comboItems_Format(object sender, ListControlConvertEventArgs e)
