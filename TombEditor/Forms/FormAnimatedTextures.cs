@@ -375,9 +375,9 @@ namespace TombEditor.Forms
                 g.DrawImage(image, new Point(0, _lastY * 2));
 
                 _lastY += selectedSet.UvRotate;
-                if (_lastY == 64 && selectedSet.Fps > 0)
+                if (_lastY >= 64 && selectedSet.UvRotate > 0)
                     _lastY = 0;
-                if (_lastY == 0 && selectedSet.Fps < 0)
+                if (_lastY <= 0 && selectedSet.UvRotate < 0)
                     _lastY = 64;
             }
             else
