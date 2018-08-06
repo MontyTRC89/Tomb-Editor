@@ -138,6 +138,38 @@ namespace TombLib.LevelData.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr3_room_light
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public tr_color Color;
+        public ushort Intensity;
+        public ushort Fade;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr2_room_light
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public ushort Intensity1;
+        public ushort Intensity2;
+        public uint Fade1;
+        public uint Fade2;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr2_room_vertex
+    {
+        public tr_vertex Vertex;
+        public int Lighting;
+        public ushort Attributes;
+        public int Lighting2;
+    }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_room_vertex : IEquatable<tr_room_vertex>
     {
         public tr_vertex Position;
@@ -191,7 +223,77 @@ namespace TombLib.LevelData.Compilers
         public ushort ObjectID;
     }
 
-    public class tr_room
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr2_room_staticmesh
+    {
+        public uint X;
+        public uint Y;
+        public uint Z;
+        public ushort Rotation;
+        public ushort Intensity1;
+        public ushort Intensity2;
+        public ushort MeshID;
+    };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr3_room_staticmesh
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public ushort Rotation;
+        public ushort Color;
+        public ushort Unused;
+        public ushort MeshID;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr3_room
+    {
+        public tr_room_info Info;
+
+        public uint NumDataWords;
+        public List<tr_room_portal> Portals;
+        public ushort NumZSectors;
+        public ushort NumXSectors;
+        public tr_room_sector[] Sectors;
+        public short AmbientIntensity1;
+        public short AmbientIntensity2;
+        public List<tr3_room_light> Lights;
+        public List<tr3_room_staticmesh> StaticMeshes;
+        public short AlternateRoom;
+        public short Flags;
+        public byte WaterScheme;
+        public byte ReverbInfo;
+        public byte Filler;
+
+    }
+
+
+
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr2_room
+    {
+        public tr_room_info Info;
+
+        public uint NumDataWords;
+        public List<tr_room_portal> Portals;
+        public ushort NumZSectors;
+        public ushort NumXSectors;
+        public tr_room_sector[] Sectors;
+        public short AmbientIntensity1;
+        public short AmbientIntensity2;
+        public short LightMode;
+        public List<tr2_room_light> Lights;
+        public List<tr2_room_staticmesh> StaticMeshes;
+        public short AlternateRoom;
+        public short Flags;
+    }
+
+
+
+        public class tr_room
     {
         public tr_room_info Info;
         public uint NumDataWords;
@@ -902,6 +1004,27 @@ namespace TombLib.LevelData.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr3_animation
+    {
+        public uint FrameOffset;
+        public byte FrameRate;
+        public byte FrameSize;
+        public ushort StateID;
+        public int Speed;
+        public int Accel;
+        public ushort FrameStart;
+        public ushort FrameEnd;
+        public ushort NextAnimation;
+        public ushort NextFrame;
+        public ushort NumStateChanges;
+        public ushort StateChangeOffset;
+        public ushort NumAnimCommands;
+        public ushort AnimCommand;
+    }
+
+
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_animation
     {
         public uint FrameOffset;
@@ -1003,6 +1126,23 @@ namespace TombLib.LevelData.Compilers
         public ushort GroundZone4_Alternate;
         public ushort FlyZone_Alternate;
     }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr2_zone
+    {
+
+        public ushort GroundZone1_Normal;
+        public ushort GroundZone2_Normal;
+        public ushort GroundZone3_Normal;
+        public ushort GroundZone4_Normal;
+        public ushort FlyZone_Normal;
+        public ushort GroundZone1_Alternate;
+        public ushort GroundZone2_Alternate;
+        public ushort GroundZone3_Alternate;
+        public ushort GroundZone4_Alternate;
+        public ushort FlyZone_Alternate;
+    }
+
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_sound_source
