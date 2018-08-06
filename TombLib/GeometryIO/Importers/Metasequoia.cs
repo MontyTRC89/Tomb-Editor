@@ -179,6 +179,14 @@ namespace TombLib.GeometryIO.Importers
                                             mesh.Colors.Add(color);
                                         }
                                     }
+                                    else
+                                    {
+                                        for (var k = 0; k < numVerticesInFace; k++)
+                                        {
+                                            var color = ApplyColorTransform(new Vector4() );
+                                            mesh.Colors.Add(color);
+                                        }
+                                    }
 
                                     // Material index
                                     var stringMaterialIndex = GetSubBlock(line, "M");
@@ -241,9 +249,9 @@ namespace TombLib.GeometryIO.Importers
             var g = (float)((color >> 8) & 0xFF);
             var b = (float)((color >> 16) & 0xFF);
 
-            r /= 128.0f;
-            g /= 128.0f;
-            b /= 128.0f;
+            r /= 256.0f;
+            g /= 256.0f;
+            b /= 256.0f;
 
             return new Vector4(r, g, b, 1.0f);
         }

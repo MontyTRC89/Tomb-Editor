@@ -93,6 +93,8 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
         {
+            if (texture.Area.X0 < 0 || texture.Area.Y0 < 0 || texture.Area.X1 < 0 || texture.Area.Y1 < 0)
+                throw new ArgumentOutOfRangeException("Negative texture coordinates found! Please check your imported geometry and try the Unwrap setting while importing");
             if (!new Rectangle2(new Vector2(), texture.Texture.Image.Size).Contains(texture.Area))
                 throw new ArgumentOutOfRangeException(nameof(texture.Area));
             if (texture.Area.Width > 256 || texture.Area.Height > 256)

@@ -55,8 +55,16 @@ namespace TombLib.GeometryIO
             }
             if (_settings.WrapUV)
             {
-                uv.X -= uv.X > 1.0f ? (float)Math.Floor(uv.X) : 0.0f;
-                uv.Y -= uv.Y > 1.0f ? (float)Math.Floor(uv.Y) : 0.0f;
+                if (uv.X > 1.0f)
+                    uv.X -= (float)Math.Floor(uv.X);
+                else if (uv.X < 0.0f)
+                    uv.X += -(float)Math.Floor(uv.X);
+
+                if (uv.Y > 1.0f)
+                    uv.Y -= (float)Math.Floor(uv.Y);
+                else if (uv.Y < 0.0f)
+                    uv.Y += -(float)Math.Floor(uv.Y);
+
             }
             if (_settings.PremultiplyUV)
             {
@@ -69,6 +77,7 @@ namespace TombLib.GeometryIO
         protected Vector4 ApplyColorTransform(Vector4 color)
         {
             return color;
+            //return new Vector4(color.X / 2.0f, color.Y / 2.0f, color.Z / 2.0f, color.W);
         }
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
