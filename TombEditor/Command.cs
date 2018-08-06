@@ -565,12 +565,21 @@ namespace TombEditor
 
             AddCommand("RotateTexture", "Rotate selected texture", CommandType.Textures, delegate (CommandArgs args)
             {
-                args.Editor.SelectedTexture = EditorActions.RotateTexture(args.Editor.SelectedTexture);
+                TextureArea newTexture = args.Editor.SelectedTexture;
+                Vector2 tempTexCoord = newTexture.TexCoord3;
+                newTexture.TexCoord3 = newTexture.TexCoord2;
+                newTexture.TexCoord2 = newTexture.TexCoord1;
+                newTexture.TexCoord1 = newTexture.TexCoord0;
+                newTexture.TexCoord0 = tempTexCoord;
+                args.Editor.SelectedTexture = newTexture;
             });
 
             AddCommand("MirrorTexture", "Mirror selected texture", CommandType.Textures, delegate (CommandArgs args)
             {
-                args.Editor.SelectedTexture = EditorActions.MirrorTexture(args.Editor.SelectedTexture);
+                TextureArea newTexture = args.Editor.SelectedTexture;
+                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord3);
+                Swap.Do(ref newTexture.TexCoord1, ref newTexture.TexCoord2);
+                args.Editor.SelectedTexture = newTexture;
             });
 
             AddCommand("NewLevel", "New level", CommandType.File, delegate (CommandArgs args)
@@ -947,7 +956,7 @@ namespace TombEditor
                 EditorActions.TexturizeAll(args.Editor.SelectedRoom, args.Editor.SelectedSectors, emptyTexture, BlockFaceType.Ceiling);
                 EditorActions.TexturizeAll(args.Editor.SelectedRoom, args.Editor.SelectedSectors, emptyTexture, BlockFaceType.Wall);
             });
-            
+
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
                 using (FormAnimatedTextures form = new FormAnimatedTextures(args.Editor, null))

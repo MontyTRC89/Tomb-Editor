@@ -87,7 +87,6 @@ namespace TombLib.Utils
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
-        public bool TextureIsRectangle => (TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length();
 
         public bool TriangleCoordsOutOfBounds
         {
@@ -112,7 +111,7 @@ namespace TombLib.Utils
                 return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
             }
         }
-        
+
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
             get
