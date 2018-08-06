@@ -820,80 +820,37 @@ namespace TombEditor
                 switch (face)
                 {
                     case BlockFace.Floor:
-                        if (!block.Floor.IsQuad)
+                    case BlockFace.Ceiling:
+                        BlockSurface surface = face == BlockFace.Floor ? block.Floor : block.Ceiling;
+                        if (surface.IsQuad)
+                            break;
+                        if (surface.SplitDirectionIsXEqualsZ)
                         {
-                            if (block.Floor.SplitDirectionIsXEqualsZ)
-                            {
-                                Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                                processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
-                            else
-                            {
-                                processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                                processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                            }
+                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                        }
+                        else
+                        {
+                            processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                            processedTexture.TexCoord2 = processedTexture.TexCoord3;
                         }
                         break;
 
                     case BlockFace.FloorTriangle2:
-                        if (block.Floor.IsQuad)
-                            break;
-                        else
-                        {
-                            if (block.Floor.SplitDirectionIsXEqualsZ)
-                                processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                            else
-                            {
-                                processedTexture.TexCoord2 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord0;
-                                processedTexture.TexCoord0 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
-                        }
-                        break;
-
-
-                    case BlockFace.Ceiling:
-                        if (block.Ceiling.IsQuad)
-                        {
-                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord1);
-                            Swap.Do(ref processedTexture.TexCoord2, ref processedTexture.TexCoord3);
-                            break;
-                        }
-                        else
-                        {
-                            if (block.Ceiling.SplitDirectionIsXEqualsZ)
-                            {
-                                Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                                processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
-                            else
-                            {
-                                processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                                processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                            }
-                        }
-                        break;
-
-
                     case BlockFace.CeilingTriangle2:
-                        if (!block.Ceiling.IsQuad)
+                        BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
+                        if (surface2.IsQuad)
+                            break;
+                        if (surface2.SplitDirectionIsXEqualsZ)
+                            processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                        else
                         {
-                            if (block.Ceiling.SplitDirectionIsXEqualsZ)
-                            {
-                                processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                            }
-                            else
-                            {
-                                processedTexture.TexCoord2 = processedTexture.TexCoord1;
-                                processedTexture.TexCoord1 = processedTexture.TexCoord0;
-                                processedTexture.TexCoord0 = processedTexture.TexCoord3;
-                                processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                            }
+                            processedTexture.TexCoord2 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord0;
+                            processedTexture.TexCoord0 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
                         }
                         break;
 
@@ -2477,7 +2434,7 @@ namespace TombEditor
 
             // Unlock rooms
             foreach (Room room in rooms)
-                if(room.Locked)
+                if (room.Locked)
                 {
                     room.Locked = false;
                     _editor.RoomPropertiesChange(room);
@@ -2615,7 +2572,7 @@ namespace TombEditor
             if (DarkMessageBox.Show(owner, "Are you sure to DELETE the texture " + textureToDelete +
                 "? Everything using the texture will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-            if(_editor.SelectedTexture.Texture == textureToDelete)
+            if (_editor.SelectedTexture.Texture == textureToDelete)
                 _editor.SelectedTexture = new TextureArea { Texture = null };
             _editor.Level.Settings.Textures.Remove(textureToDelete);
             _editor.Level.RemoveTextures(texture => texture == textureToDelete);
