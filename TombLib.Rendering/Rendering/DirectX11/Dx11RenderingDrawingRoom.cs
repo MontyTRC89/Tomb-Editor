@@ -184,6 +184,7 @@ namespace TombLib.Rendering.DirectX11
                     new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvwAndBlendModes - data)),
                     new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)editorUVAndSectorTexture - data))
                 };
+                VertexBuffer.SetDebugName("Room " + (description.Room.Name ?? ""));
             }
             TextureAllocator.GarbageCollectionCollectEvent.Add(GarbageCollectTexture);
         }

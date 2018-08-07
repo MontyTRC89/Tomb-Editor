@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using TombLib.Utils;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Format = SharpDX.DXGI.Format;
@@ -51,6 +52,13 @@ namespace TombLib.Rendering.DirectX11
 #endif
 
             Device = new Device(DriverType.Hardware, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
+#if DEBUG
+            using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
+            {
+                DeviceInfoQueue.SetBreakOnSeverity(MessageSeverity.Warning, true);
+            }
+#endif
+
             Context = Device.ImmediateContext;
             TestShader = new Dx11PipelineState(this, "TestShader", new InputElement[]
             {
@@ -293,6 +301,16 @@ namespace TombLib.Rendering.DirectX11
         public override RenderingStateBuffer CreateStateBuffer()
         {
             return new Dx11RenderingStateBuffer(this);
+        }
+    }
+
+    public static class Dx11RenderingDeviceDebugging
+    {
+        public static unsafe void SetDebugName(this DeviceChild child, string debugName)
+        {
+            byte[] debugNameBytes = Encoding.ASCII.GetBytes(debugName);
+            fixed (byte* debugNameBytesPtr = debugNameBytes)
+                child.SetPrivateData(CommonGuid.DebugObjectName, debugNameBytes.Length, new IntPtr(debugNameBytesPtr));
         }
     }
 }
