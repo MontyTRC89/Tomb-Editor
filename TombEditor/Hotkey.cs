@@ -14,6 +14,10 @@ namespace TombEditor
 {
     public struct Hotkey : IEquatable<Hotkey>, IComparable<Hotkey>
     {
+        private const uint MAPVK_VK_TO_CHAR = 2;
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
         public static List<Keys> ReservedCameraKeys = new List<Keys>
         {
             Keys.Up,
@@ -82,7 +86,7 @@ namespace TombEditor
         public static Hotkey FromString(string str)
         {
             Hotkey result = new Hotkey();
-            string[] keyNames = str.Split(new char[] { '+', ' ', '-', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] keyNames = str.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string keyName in keyNames)
             {
                 if (keyName.Equals("Ctrl", StringComparison.InvariantCultureIgnoreCase) ||
@@ -121,13 +125,8 @@ namespace TombEditor
                     return key.ToString();
             }
 
-            uint result = MapVirtualKeyEx((uint)key, MAPVK_VK_TO_CHAR, IntPtr.Zero);
-            return ((char)(ushort)result).ToString();
+            return ((char)(ushort)MapVirtualKey((uint)key, MAPVK_VK_TO_CHAR)).ToString();
         }
-
-        private const uint MAPVK_VK_TO_CHAR = 2;
-        [DllImport("user32.dll")]
-        private static extern uint MapVirtualKeyEx(uint uCode, uint uMapType, IntPtr dwhkl);
     }
 
     public class HotkeySets : IXmlSerializable, ICloneable, IEnumerable<KeyValuePair<string, SortedSet<Hotkey>>>
@@ -219,7 +218,7 @@ namespace TombEditor
         public static SortedSet<Hotkey> ParseHotkeys(string str, out string errorMessage)
         {
             SortedSet<Hotkey> hotkeys = new SortedSet<Hotkey>();
-            string[] keyGroups = str.Split(',');
+            string[] keyGroups = str.Split(new[] { ", " }, StringSplitOptions.None);
             foreach (string keyGroup in keyGroups)
                 if (!string.IsNullOrWhiteSpace(keyGroup))
                     try
