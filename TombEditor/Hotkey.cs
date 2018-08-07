@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -33,17 +35,19 @@ namespace TombEditor
             { Keys.Divide, "NumPadDivide" },
             { Keys.Decimal, "NumPadDecimal" },
             { Keys.Scroll, "ScrollLock" },
-            { Keys.Oemtilde, "~" },
-            { Keys.OemQuestion, "/" },
-            { Keys.Oemplus, "Plus" },
-            { Keys.OemMinus, "Minus" },
-            { Keys.Oemcomma, "Comma" },
-            { Keys.OemPeriod, "Period" },
-            { Keys.OemOpenBrackets, "[" },
-            { Keys.Oem1, ";" },
-            { Keys.Oem5, "\\" },
-            { Keys.Oem6, "]" },
-            { Keys.Oem7, "'" },
+            { Keys.Oemtilde, GetOemKeyName(Keys.Oemtilde) },
+            { Keys.OemQuestion, GetOemKeyName(Keys.OemQuestion) },
+            { Keys.Oemplus, GetOemKeyName(Keys.Oemplus) },
+            { Keys.OemMinus, GetOemKeyName(Keys.OemMinus) },
+            { Keys.Oemcomma, GetOemKeyName(Keys.Oemcomma) },
+            { Keys.OemPeriod, GetOemKeyName(Keys.OemPeriod) },
+            { Keys.OemOpenBrackets, GetOemKeyName(Keys.OemOpenBrackets) },
+            { Keys.OemCloseBrackets, GetOemKeyName(Keys.OemCloseBrackets) },
+            { Keys.Oem1, GetOemKeyName(Keys.Oem1) },
+            { Keys.Oem5, GetOemKeyName(Keys.Oem5) },
+            { Keys.Oem7, GetOemKeyName(Keys.Oem7) },
+            { Keys.Oem8, GetOemKeyName(Keys.Oem8) },
+            { Keys.OemBackslash, GetOemKeyName(Keys.OemBackslash) },
             { Keys.D0, "0" },
             { Keys.D1, "1" },
             { Keys.D2, "2" },
@@ -103,6 +107,27 @@ namespace TombEditor
         {
             return ((uint)Keys).CompareTo((uint)other.Keys);
         }
+
+        private static string GetOemKeyName(Keys key)
+        {
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.Win32NT:
+                case PlatformID.WinCE:
+                    break;
+                default:
+                    return key.ToString();
+            }
+
+            uint result = MapVirtualKeyEx((uint)key, MAPVK_VK_TO_CHAR, IntPtr.Zero);
+            return ((char)(ushort)result).ToString();
+        }
+
+        private const uint MAPVK_VK_TO_CHAR = 2;
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKeyEx(uint uCode, uint uMapType, IntPtr dwhkl);
     }
 
     public class HotkeySets : IXmlSerializable, ICloneable, IEnumerable<KeyValuePair<string, SortedSet<Hotkey>>>
