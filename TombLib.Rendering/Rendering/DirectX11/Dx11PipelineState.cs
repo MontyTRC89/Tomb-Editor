@@ -23,10 +23,12 @@ namespace TombLib.Rendering.DirectX11
 				byte[] VertexShaderBytes = new byte[VertexShaderStream.Length];
 				VertexShaderStream.Read(VertexShaderBytes, 0, VertexShaderBytes.Length);
 				VertexShader = new VertexShader(device.Device, VertexShaderBytes);
+                VertexShader.SetDebugName(shaderName);
 
-				// Input layout
-				InputLayout = new InputLayout(device.Device, VertexShaderBytes, inputElements);
-			}
+                // Input layout
+                InputLayout = new InputLayout(device.Device, VertexShaderBytes, inputElements);
+                InputLayout.SetDebugName(shaderName);
+            }
 
 			// Pixel shader
 			using (Stream PixelShaderStream = ThisAssembly.GetManifestResourceStream("DxShaders." + shaderName + "PS"))
@@ -36,7 +38,8 @@ namespace TombLib.Rendering.DirectX11
 				byte[] PixelShaderBytes = new byte[PixelShaderStream.Length];
 				PixelShaderStream.Read(PixelShaderBytes, 0, PixelShaderBytes.Length);
 				PixelShader = new PixelShader(device.Device, PixelShaderBytes);
-			}
+                PixelShader.SetDebugName(shaderName);
+            }
         }
 
         public void Apply(DeviceContext context)
