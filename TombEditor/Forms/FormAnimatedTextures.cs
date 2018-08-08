@@ -12,11 +12,26 @@ using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
+using TombLib;
 
 namespace TombEditor.Forms
 {
     public partial class FormAnimatedTextures : DarkForm
     {
+        private enum ProceduralAnimationType
+        {
+            HorizontalStretch,
+            VerticalStretch,
+            DiagonalStretch1,
+            DiagonalStretch2,
+            HorizontalSkew,
+            VerticalSkew,
+            LeftSpin,
+            RightSpin,
+            LeftRotation,
+            RightRotation
+        }
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
         private class TransparentBindingList<T> : BindingList<T>
@@ -58,7 +73,7 @@ namespace TombEditor.Forms
         private AnimatedTextureFrame _previewCurrentFrame;
         private int _previewCurrentRepeatTimes;
         private const float _previewFps = 15;
-        private const float _maxLegacyFrames = 16;
+        private const int _maxLegacyFrames = 16;
         private int _lastY;
 
         private readonly bool _isNg;
@@ -185,17 +200,26 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        private AnimatedTextureSet GetOrAddCurrentSet()
+        {
+            var currentSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (currentSet == null)
+                currentSet = NewSet();
+            return currentSet;
+        }
+
+        private AnimatedTextureSet NewSet()
+        {
+            var newSet = new AnimatedTextureSet();
+            _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
+            _editor.AnimatedTexturesChange();
+            comboAnimatedTextureSets.SelectedItem = newSet;
+            return newSet;
+        }
+
         private void AddFrame()
         {
-            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if (selectedSet == null)
-            {
-                selectedSet = new AnimatedTextureSet();
-                _editor.Level.Settings.AnimatedTextureSets.Add(selectedSet);
-                _editor.AnimatedTexturesChange();
-                comboAnimatedTextureSets.SelectedItem = selectedSet;
-            }
-
+            var selectedSet = GetOrAddCurrentSet();
             var frame = GetSelectedAnimatedTextureFrame();
             if (frame != null)
             {
@@ -388,10 +412,7 @@ namespace TombEditor.Forms
 
         private void butAnimatedTextureSetNew_Click(object sender, EventArgs e)
         {
-            var newSet = new AnimatedTextureSet();
-            _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
-            _editor.AnimatedTexturesChange();
-            comboAnimatedTextureSets.SelectedItem = newSet;
+            NewSet();
         }
 
         private void butAnimatedTextureSetDelete_Click(object sender, EventArgs e)
@@ -468,6 +489,61 @@ namespace TombEditor.Forms
                 TexCoord2 = textureArea.TexCoord2,
                 TexCoord3 = textureArea.TexCoord3
             };
+        }
+
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true)
+        {
+            TextureArea textureArea = textureMap.SelectedTexture;
+            if (!(textureArea.Texture is LevelTexture))
+            {
+                DarkMessageBox.Show(this, "Please select texture region!", "Invalid texture selection", MessageBoxIcon.Error);
+                return false;
+            }
+
+            var newSet = new AnimatedTextureSet();
+
+            AnimatedTextureFrame referenceFrame = new AnimatedTextureFrame
+            {
+                Texture = (LevelTexture)textureArea.Texture,
+                TexCoord0 = textureArea.TexCoord0,
+                TexCoord1 = textureArea.TexCoord1,
+                TexCoord2 = textureArea.TexCoord2,
+                TexCoord3 = textureArea.TexCoord3
+            };
+
+            for (int i = 0; i < resultingFrameCount; i++)
+            {
+                switch(type)
+                {
+                    default:
+                    case ProceduralAnimationType.HorizontalStretch:
+                        {
+                            var center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord3, 0.5f);
+                            var center2 = Vector2.Lerp(referenceFrame.TexCoord1, referenceFrame.TexCoord2, 0.5f);
+                            resultingFrameCount -= resultingFrameCount % 2;
+                            var midFrame = resultingFrameCount / 2;
+
+
+                            float weight = (Math.Abs(i - midFrame) / (float)midFrame) * effectStrength;
+                            weight = (float)MathC.SmoothStep(effectStrength * 0.8, effectStrength * 0.1, weight);
+
+                            newSet.Frames.Add(new AnimatedTextureFrame
+                            {
+                                Texture = referenceFrame.Texture,
+                                TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight),
+                                TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, center1, weight),
+                                TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, center2, weight),
+                                TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight)
+                            });
+                        }
+                        break;
+                }
+            }
+
+            _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
+            _editor.AnimatedTexturesChange();
+            comboAnimatedTextureSets.SelectedItem = newSet;
+            return true;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -774,6 +850,11 @@ namespace TombEditor.Forms
             Point screenPointLeft = comboCurrentTexture.PointToScreen(new Point(0, 0));
             Rectangle screenPointRight = Screen.GetBounds(comboCurrentTexture.PointToScreen(new Point(0, comboCurrentTexture.Width)));
             comboCurrentTexture.DropDownWidth = screenPointRight.Right - screenPointLeft.X - 15; // Margin
+        }
+
+        private void butGenerateProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation(ProceduralAnimationType.HorizontalStretch, 16, 0.8f);
         }
     }
 }
