@@ -22,18 +22,15 @@ namespace TombEditor.Forms
         {
             HorizontalStretch,
             VerticalStretch,
-            DiagonalStretch1,
-            DiagonalStretch2,
+            DiagonalStretch,
+            Scale,
             HorizontalSkew,
             VerticalSkew,
-            LeftSpin,
-            RightSpin,
-            LeftRotation,
-            RightRotation,
+            Spin,
+            Rotate,
             HorizontalPan,
             VerticalPan,
-            DiagonalPan1,
-            DiagonalPan2,
+            DiagonalPan,
             Twitch
         }
 
@@ -499,149 +496,126 @@ namespace TombEditor.Forms
             };
         }
 
-        private bool GenerateProceduralAnimation(ProceduralAnimationType type, uint resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, uint smoothSteps = 1)
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, bool applyToSelected = false)
         {
-            effectStrength = (float)MathC.Clamp(effectStrength, 0.0, 1.0);
+            // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
+            // because for scale/stretch types, visible effect opposes mathematical function.
 
-            TextureArea textureArea = textureMap.SelectedTexture;
-            if (!(textureArea.Texture is LevelTexture))
+            effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -32.0, 32.0);
+
+            // Fill reference array or use selection
+
+            AnimatedTextureSet targetSet;
+            if (applyToSelected)
             {
-                DarkMessageBox.Show(this, "Please select texture region!", "Invalid texture selection", MessageBoxIcon.Error);
-                return false;
+                targetSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+                resultingFrameCount = targetSet.Frames.Count;
             }
-
-            var newSet = new AnimatedTextureSet();
-            AnimatedTextureFrame referenceFrame = new AnimatedTextureFrame
+            else
             {
-                Texture = (LevelTexture)textureArea.Texture,
-                TexCoord0 = textureArea.TexCoord0,
-                TexCoord1 = textureArea.TexCoord1,
-                TexCoord2 = textureArea.TexCoord2,
-                TexCoord3 = textureArea.TexCoord3
-            };
+                if (!(textureMap.SelectedTexture.Texture is LevelTexture))
+                {
+                    DarkMessageBox.Show(this, "Please select texture region!", "Invalid texture selection", MessageBoxIcon.Error);
+                    return false;
+                }
 
-            // Prepare data
+                targetSet = new AnimatedTextureSet();
 
-            Vector2 center1 = new Vector2();
-            Vector2 center2 = new Vector2();
-            float radius = 0.0f;
-            uint midFrame = resultingFrameCount / 2;
-
-            switch (type)
-            {
-                case ProceduralAnimationType.HorizontalStretch:
-                case ProceduralAnimationType.DiagonalStretch2:
-                    center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord3, 0.5f);
-                    center2 = Vector2.Lerp(referenceFrame.TexCoord1, referenceFrame.TexCoord2, 0.5f);
-                    break;
-                case ProceduralAnimationType.VerticalStretch:
-                case ProceduralAnimationType.DiagonalStretch1:
-                    center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord1, 0.5f);
-                    center2 = Vector2.Lerp(referenceFrame.TexCoord2, referenceFrame.TexCoord3, 0.5f);
-                    break;
-                case ProceduralAnimationType.LeftRotation:
-                case ProceduralAnimationType.RightRotation:
-                case ProceduralAnimationType.LeftSpin:
-                case ProceduralAnimationType.RightSpin:
+                for (int i = 0; i < resultingFrameCount; i++)
+                    targetSet.Frames.Add(new AnimatedTextureFrame
                     {
-                        var d0 = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1);
-                        var d1 = Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord2);
-                        var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
-                        var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
-
-                        if (d0 != d1 || d1 != d2 || d2 != d3 || d3 != d0 ||
-                            Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
-                            Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
-                            return false; // Rectangle invalid
-                    }
-                    center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord2, 0.5f);
-                    radius = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1) * 0.5f;
-                    break;
+                        Texture = (LevelTexture)textureMap.SelectedTexture.Texture,
+                        TexCoord0 = textureMap.SelectedTexture.TexCoord0,
+                        TexCoord1 = textureMap.SelectedTexture.TexCoord1,
+                        TexCoord2 = textureMap.SelectedTexture.TexCoord2,
+                        TexCoord3 = textureMap.SelectedTexture.TexCoord3
+                    });
             }
+
+            if (targetSet == null || resultingFrameCount <= 0)
+                return false;
 
             // Process frames
 
             for (int i = 0; i < resultingFrameCount; i++)
             {
-                AnimatedTextureFrame currentFrame = null;
+                int midFrame = loop ? resultingFrameCount / 2 : resultingFrameCount;
+                float bias = Math.Abs(i - midFrame) / (float)midFrame;
+                float weight = (smooth ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
 
-                switch(type)
+                switch (type)
                 {
                     case ProceduralAnimationType.HorizontalStretch:
-                    case ProceduralAnimationType.DiagonalStretch1:
-                        {
-                            float bias = (Math.Abs(i - midFrame) / (float)midFrame);
-                            float weight = (float)MathC.SmoothStep(0.0, 1.0, bias, smoothSteps) * effectStrength;
-                                
-                            currentFrame = new AnimatedTextureFrame
-                            {
-                                Texture = referenceFrame.Texture,
-                                TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight),
-                                TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, center1, weight),
-                                TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, center2, weight),
-                                TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight)
-                            };
-                        }
-                        break;
                     case ProceduralAnimationType.VerticalStretch:
-                    case ProceduralAnimationType.DiagonalStretch2:
+                    case ProceduralAnimationType.DiagonalStretch:
+                    case ProceduralAnimationType.Scale:
                         {
-                            float bias = (Math.Abs(i - midFrame) / (float)midFrame);
-                            float weight = (float)MathC.SmoothStep(0.0, 1.0, bias, smoothSteps) * effectStrength;
+                            // Reverse effect strength for negative numbers for proper UV positioning
 
-                            currentFrame = new AnimatedTextureFrame
+                            if (effectStrength < 0)
+                                weight = Math.Abs(effectStrength) + weight;
+
+                            // 0 = horizontal pass, 0 = vertical pass. Diagonal stretch and scale types use both.
+
+                            bool[] passes = new bool[2]
                             {
-                                Texture = referenceFrame.Texture,
-                                TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight),
-                                TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, center1, weight),
-                                TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight),
-                                TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, center2, weight)
+                                type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.DiagonalStretch || type == ProceduralAnimationType.Scale,
+                                type == ProceduralAnimationType.VerticalStretch   || type == ProceduralAnimationType.DiagonalStretch || type == ProceduralAnimationType.Scale
                             };
+
+                            bool diagonalType = type == ProceduralAnimationType.DiagonalStretch;
+
+                            for (int p = 0; p < 2; p++)
+                            {
+                                if (passes[p])
+                                {
+                                    var referenceFrame = targetSet.Frames[i].Clone();
+                                    var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 && !diagonalType ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), 0.5f);
+                                    var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 && !diagonalType ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), 0.5f);
+
+                                    targetSet.Frames[i].TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight);
+                                    targetSet.Frames[i].TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, (p == 0 ? center2 : center1), weight);
+                                    targetSet.Frames[i].TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight);
+                                    targetSet.Frames[i].TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, (p == 0 ? center1 : center2), weight);
+                                }
+                            }
                         }
                         break;
-                    case ProceduralAnimationType.RightRotation:
-                    case ProceduralAnimationType.LeftRotation:
-                    case ProceduralAnimationType.LeftSpin:
-                    case ProceduralAnimationType.RightSpin:
+
+                    case ProceduralAnimationType.Spin:
                         {
-                            double currAngle = 0.0f;
+                            double currAngle = 2 * Math.PI * weight;
 
-                            switch(type)
-                            {
-                                case ProceduralAnimationType.LeftRotation:
-                                    currAngle = ((2 * Math.PI) / resultingFrameCount) * i;
-                                    break;
-                                case ProceduralAnimationType.RightRotation:
-                                    currAngle = ((2 * Math.PI) / resultingFrameCount) * (resultingFrameCount - i);
-                                    break;
-                                case ProceduralAnimationType.RightSpin:
-                                case ProceduralAnimationType.LeftSpin:
-                                    float bias = (Math.Abs(i - midFrame) / (float)midFrame);
-                                    if (type == ProceduralAnimationType.RightSpin)
-                                        bias = -bias;
-                                    float weight = (float)MathC.SmoothStep(0.0, 1.0, Math.Abs(bias), smoothSteps) * effectStrength;
-                                    currAngle = weight * (2 * Math.PI);
-                                    break;
+                            var referenceFrame = targetSet.Frames[i].Clone();
+                            var center = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord2, 0.5f);
+                            var radius = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1) * 0.5f;
 
-                            }
-                            currentFrame = new AnimatedTextureFrame
-                            {
-                                Texture = referenceFrame.Texture,
-                                TexCoord0 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle), center1.Y + radius * (float)Math.Sin(currAngle)),
-                                TexCoord1 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center1.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2)),
-                                TexCoord2 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle + Math.PI), center1.Y + radius * (float)Math.Sin(currAngle + Math.PI)),
-                                TexCoord3 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle + Math.PI * 1.5f), center1.Y + radius * (float)Math.Sin(currAngle + Math.PI * 1.5f))
-                            };
+                            var d0 = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1);
+                            var d1 = Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord2);
+                            var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
+                            var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
+
+                            if (d0 != d1 || d1 != d2 || d2 != d3 || d3 != d0 ||
+                                Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
+                                Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
+                                // Frame is invalid, bypass it (if existing) or return false (if new)
+                                if (applyToSelected)
+                                    continue;
+                                else
+                                    return false;
+
+                            targetSet.Frames[i].TexCoord0 = new Vector2(center.X + radius * (float)Math.Cos(currAngle), center.Y + radius * (float)Math.Sin(currAngle));
+                            targetSet.Frames[i].TexCoord1 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2));
+                            targetSet.Frames[i].TexCoord2 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI), center.Y + radius * (float)Math.Sin(currAngle + Math.PI));
+                            targetSet.Frames[i].TexCoord3 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + radius * (float)Math.Sin(currAngle + Math.PI * 1.5f));
                         }
                         break;
                 }
-
-                newSet.Frames.Add(currentFrame);
             }
 
-            _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
+            if(!applyToSelected) _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
             _editor.AnimatedTexturesChange();
-            comboAnimatedTextureSets.SelectedItem = newSet;
+            if (!applyToSelected) comboAnimatedTextureSets.SelectedItem = targetSet;
             return true;
         }
 
@@ -957,7 +931,7 @@ namespace TombEditor.Forms
 
         private void butGenerateProcAnim_Click(object sender, EventArgs e)
         {
-            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (uint)numFrames.Value, (float)numStrength.Value / 100.0f, (uint)numSmooth.Value);
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, cbApplyToSelected.Checked);
         }
     }
 }

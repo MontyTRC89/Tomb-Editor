@@ -25,8 +25,8 @@ namespace TombEditor.Forms
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.numSmooth = new DarkUI.Controls.DarkNumericUpDown();
-            this.lblSmooth = new DarkUI.Controls.DarkLabel();
+            this.cbSmooth = new DarkUI.Controls.DarkCheckBox();
+            this.cbLoop = new DarkUI.Controls.DarkCheckBox();
             this.numFrames = new DarkUI.Controls.DarkNumericUpDown();
             this.lblFrames = new DarkUI.Controls.DarkLabel();
             this.lblProgress = new DarkUI.Controls.DarkLabel();
@@ -65,7 +65,6 @@ namespace TombEditor.Forms
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numSmooth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFrames)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStrength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).BeginInit();
@@ -212,8 +211,8 @@ namespace TombEditor.Forms
             this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Controls.Add(this.numSmooth);
-            this.panel3.Controls.Add(this.lblSmooth);
+            this.panel3.Controls.Add(this.cbSmooth);
+            this.panel3.Controls.Add(this.cbLoop);
             this.panel3.Controls.Add(this.numFrames);
             this.panel3.Controls.Add(this.lblFrames);
             this.panel3.Controls.Add(this.lblProgress);
@@ -227,39 +226,25 @@ namespace TombEditor.Forms
             this.panel3.Size = new System.Drawing.Size(379, 81);
             this.panel3.TabIndex = 20;
             // 
-            // numSmooth
+            // cbSmooth
             // 
-            this.numSmooth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numSmooth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numSmooth.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numSmooth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numSmooth.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numSmooth.Location = new System.Drawing.Point(312, 22);
-            this.numSmooth.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.numSmooth.MousewheelSingleIncrement = true;
-            this.numSmooth.Name = "numSmooth";
-            this.numSmooth.Size = new System.Drawing.Size(60, 23);
-            this.numSmooth.TabIndex = 17;
-            this.warningToolTip.SetToolTip(this.numSmooth, "Amount of smoothing steps on animation in/out");
+            this.cbSmooth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbSmooth.Location = new System.Drawing.Point(61, 55);
+            this.cbSmooth.Name = "cbSmooth";
+            this.cbSmooth.Size = new System.Drawing.Size(68, 17);
+            this.cbSmooth.TabIndex = 19;
+            this.cbSmooth.Text = "Smooth";
             // 
-            // lblSmooth
+            // cbLoop
             // 
-            this.lblSmooth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSmooth.AutoSize = true;
-            this.lblSmooth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblSmooth.Location = new System.Drawing.Point(311, 6);
-            this.lblSmooth.Name = "lblSmooth";
-            this.lblSmooth.Size = new System.Drawing.Size(50, 13);
-            this.lblSmooth.TabIndex = 16;
-            this.lblSmooth.Text = "Smooth:";
+            this.cbLoop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbLoop.Location = new System.Drawing.Point(5, 55);
+            this.cbLoop.Name = "cbLoop";
+            this.cbLoop.Size = new System.Drawing.Size(55, 17);
+            this.cbLoop.TabIndex = 18;
+            this.cbLoop.Text = "Loop";
             // 
             // numFrames
             // 
@@ -272,7 +257,7 @@ namespace TombEditor.Forms
             0,
             0,
             65536});
-            this.numFrames.Location = new System.Drawing.Point(246, 22);
+            this.numFrames.Location = new System.Drawing.Point(303, 22);
             this.numFrames.Maximum = new decimal(new int[] {
             512,
             0,
@@ -285,7 +270,7 @@ namespace TombEditor.Forms
             0});
             this.numFrames.MousewheelSingleIncrement = true;
             this.numFrames.Name = "numFrames";
-            this.numFrames.Size = new System.Drawing.Size(60, 23);
+            this.numFrames.Size = new System.Drawing.Size(69, 23);
             this.numFrames.TabIndex = 15;
             this.warningToolTip.SetToolTip(this.numFrames, "Amount of resulting animation frames");
             this.numFrames.Value = new decimal(new int[] {
@@ -299,7 +284,7 @@ namespace TombEditor.Forms
             this.lblFrames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFrames.AutoSize = true;
             this.lblFrames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblFrames.Location = new System.Drawing.Point(245, 6);
+            this.lblFrames.Location = new System.Drawing.Point(302, 6);
             this.lblFrames.Name = "lblFrames";
             this.lblFrames.Size = new System.Drawing.Size(46, 13);
             this.lblFrames.TabIndex = 14;
@@ -310,11 +295,11 @@ namespace TombEditor.Forms
             this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProgress.AutoSize = true;
             this.lblProgress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblProgress.Location = new System.Drawing.Point(162, 6);
+            this.lblProgress.Location = new System.Drawing.Point(219, 6);
             this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(67, 13);
+            this.lblProgress.Size = new System.Drawing.Size(48, 13);
             this.lblProgress.TabIndex = 12;
-            this.lblProgress.Text = "% Strength:";
+            this.lblProgress.Text = "Percent:";
             // 
             // lblAnimatorName
             // 
@@ -337,7 +322,12 @@ namespace TombEditor.Forms
             0,
             0,
             65536});
-            this.numStrength.Location = new System.Drawing.Point(165, 22);
+            this.numStrength.Location = new System.Drawing.Point(222, 22);
+            this.numStrength.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
             this.numStrength.Minimum = new decimal(new int[] {
             100,
             0,
@@ -349,7 +339,7 @@ namespace TombEditor.Forms
             this.numStrength.TabIndex = 10;
             this.warningToolTip.SetToolTip(this.numStrength, "Effect progress or strength");
             this.numStrength.Value = new decimal(new int[] {
-            1,
+            100,
             0,
             0,
             0});
@@ -358,18 +348,18 @@ namespace TombEditor.Forms
             // 
             this.cbApplyToSelected.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbApplyToSelected.Location = new System.Drawing.Point(5, 55);
+            this.cbApplyToSelected.Location = new System.Drawing.Point(132, 55);
             this.cbApplyToSelected.Name = "cbApplyToSelected";
-            this.cbApplyToSelected.Size = new System.Drawing.Size(281, 17);
+            this.cbApplyToSelected.Size = new System.Drawing.Size(138, 17);
             this.cbApplyToSelected.TabIndex = 9;
-            this.cbApplyToSelected.Text = "Apply to existing sequence frame selection";
+            this.cbApplyToSelected.Text = "Create from selection";
             // 
             // butGenerateProcAnim
             // 
             this.butGenerateProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butGenerateProcAnim.Location = new System.Drawing.Point(292, 51);
+            this.butGenerateProcAnim.Location = new System.Drawing.Point(303, 51);
             this.butGenerateProcAnim.Name = "butGenerateProcAnim";
-            this.butGenerateProcAnim.Size = new System.Drawing.Size(80, 23);
+            this.butGenerateProcAnim.Size = new System.Drawing.Size(69, 23);
             this.butGenerateProcAnim.TabIndex = 8;
             this.butGenerateProcAnim.Tag = "";
             this.butGenerateProcAnim.Text = "Generate";
@@ -380,24 +370,21 @@ namespace TombEditor.Forms
             this.comboProcPresets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboProcPresets.Items.AddRange(new object[] {
-            "Stretch ↔",
-            "Stretch ↕",
-            "Stretch ↖",
-            "Stretch ↗",
-            "Skew ↔",
-            "Skew ↕",
-            "Spin ←",
-            "Spin →",
-            "Rotate ←",
-            "Rotate →",
-            "Pan ↔",
-            "Pan ↕",
-            "Pan ↖",
-            "Pan ↗",
+            "Stretch horizontal",
+            "Stretch vertical",
+            "Stretch diagonal",
+            "Scale",
+            "Skew horizontal",
+            "Skew vertical",
+            "Spin",
+            "Rotate",
+            "Pan horizontal",
+            "Pan vertical",
+            "Pan diagonal",
             "Twitch"});
             this.comboProcPresets.Location = new System.Drawing.Point(5, 22);
             this.comboProcPresets.Name = "comboProcPresets";
-            this.comboProcPresets.Size = new System.Drawing.Size(154, 23);
+            this.comboProcPresets.Size = new System.Drawing.Size(211, 23);
             this.comboProcPresets.TabIndex = 7;
             this.warningToolTip.SetToolTip(this.comboProcPresets, "Animation type");
             // 
@@ -706,7 +693,6 @@ namespace TombEditor.Forms
             this.panel1.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numSmooth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFrames)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStrength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).EndInit();
@@ -763,7 +749,7 @@ namespace TombEditor.Forms
         private DarkLabel lblProgress;
         private DarkNumericUpDown numFrames;
         private DarkLabel lblFrames;
-        private DarkNumericUpDown numSmooth;
-        private DarkLabel lblSmooth;
+        private DarkCheckBox cbSmooth;
+        private DarkCheckBox cbLoop;
     }
 }

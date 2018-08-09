@@ -60,6 +60,7 @@ namespace TombLib.LevelData
     public class AnimatedTextureSet : ICloneable, IEquatable<AnimatedTextureSet>
     {
         public AnimatedTextureAnimationType AnimationType { get; set; }
+        public string Name { get; set; }
         public sbyte Fps { get; set; }
         public sbyte UvRotate { get; set; }
 
@@ -92,7 +93,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Set (" + Frames.Count + " frames)";
+            return (string.IsNullOrEmpty(Name) ? "Set" : Name) + " (" + Frames.Count + " frames)";
         }
     }
 }
