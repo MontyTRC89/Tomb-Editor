@@ -239,13 +239,12 @@ namespace TombLib
         }
 
         // Code taken from XnaGeometry library, Copyright В© 2006 The Mono.Xna Team (MIT License)
-        public static double SmoothStep(double value1, double value2, double amount)
+        public static double SmoothStep(double value1, double value2, double amount, uint passes = 1)
         {
-            // It is expected that 0 < amount < 1
-            // If amount < 0, return value1
-            // If amount > 1, return value2
-            double result = Clamp(amount, 0f, 1f);
-            result = Hermite(value1, 0f, value2, 0f, result);
+            amount = Clamp(amount, 0f, 1f);
+            double result = amount;
+            for (uint i = 0; i < passes; i++)
+                result = Hermite(value1, 0f, value2, 0f, result);
             return result;
         }
 

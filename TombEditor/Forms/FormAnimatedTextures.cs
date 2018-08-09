@@ -29,7 +29,12 @@ namespace TombEditor.Forms
             LeftSpin,
             RightSpin,
             LeftRotation,
-            RightRotation
+            RightRotation,
+            HorizontalPan,
+            VerticalPan,
+            DiagonalPan1,
+            DiagonalPan2,
+            Twitch
         }
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -115,7 +120,7 @@ namespace TombEditor.Forms
             }
             else
             {
-                labelHeaderNgSettings.Visible = false;
+                lblHeaderNgSettings.Visible = false;
                 settingsPanelNG.Visible = false;
             }
 
@@ -123,6 +128,9 @@ namespace TombEditor.Forms
             _editor_EditorEventRaised(new Editor.InitEvent());
             if (comboAnimatedTextureSets.Items.Count > 0)
                 comboAnimatedTextureSets.SelectedIndex = 0;
+
+            comboProcPresets.SelectedIndex = 0;
+            numFrames.Value = _maxLegacyFrames;
 
             // Setup texture map
             if (_editor.SelectedTexture.TextureIsInvisble)
@@ -491,8 +499,10 @@ namespace TombEditor.Forms
             };
         }
 
-        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true)
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, uint resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, uint smoothSteps = 1)
         {
+            effectStrength = (float)MathC.Clamp(effectStrength, 0.0, 1.0);
+
             TextureArea textureArea = textureMap.SelectedTexture;
             if (!(textureArea.Texture is LevelTexture))
             {
@@ -501,7 +511,6 @@ namespace TombEditor.Forms
             }
 
             var newSet = new AnimatedTextureSet();
-
             AnimatedTextureFrame referenceFrame = new AnimatedTextureFrame
             {
                 Texture = (LevelTexture)textureArea.Texture,
@@ -511,33 +520,123 @@ namespace TombEditor.Forms
                 TexCoord3 = textureArea.TexCoord3
             };
 
+            // Prepare data
+
+            Vector2 center1 = new Vector2();
+            Vector2 center2 = new Vector2();
+            float radius = 0.0f;
+            uint midFrame = resultingFrameCount / 2;
+
+            switch (type)
+            {
+                case ProceduralAnimationType.HorizontalStretch:
+                case ProceduralAnimationType.DiagonalStretch2:
+                    center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord3, 0.5f);
+                    center2 = Vector2.Lerp(referenceFrame.TexCoord1, referenceFrame.TexCoord2, 0.5f);
+                    break;
+                case ProceduralAnimationType.VerticalStretch:
+                case ProceduralAnimationType.DiagonalStretch1:
+                    center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord1, 0.5f);
+                    center2 = Vector2.Lerp(referenceFrame.TexCoord2, referenceFrame.TexCoord3, 0.5f);
+                    break;
+                case ProceduralAnimationType.LeftRotation:
+                case ProceduralAnimationType.RightRotation:
+                case ProceduralAnimationType.LeftSpin:
+                case ProceduralAnimationType.RightSpin:
+                    {
+                        var d0 = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1);
+                        var d1 = Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord2);
+                        var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
+                        var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
+
+                        if (d0 != d1 || d1 != d2 || d2 != d3 || d3 != d0 ||
+                            Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
+                            Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
+                            return false; // Rectangle invalid
+                    }
+                    center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord2, 0.5f);
+                    radius = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1) * 0.5f;
+                    break;
+            }
+
+            // Process frames
+
             for (int i = 0; i < resultingFrameCount; i++)
             {
+                AnimatedTextureFrame currentFrame = null;
+
                 switch(type)
                 {
-                    default:
                     case ProceduralAnimationType.HorizontalStretch:
+                    case ProceduralAnimationType.DiagonalStretch1:
                         {
-                            var center1 = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord3, 0.5f);
-                            var center2 = Vector2.Lerp(referenceFrame.TexCoord1, referenceFrame.TexCoord2, 0.5f);
-                            resultingFrameCount -= resultingFrameCount % 2;
-                            var midFrame = resultingFrameCount / 2;
-
-
-                            float weight = (Math.Abs(i - midFrame) / (float)midFrame) * effectStrength;
-                            weight = (float)MathC.SmoothStep(effectStrength * 0.8, effectStrength * 0.1, weight);
-
-                            newSet.Frames.Add(new AnimatedTextureFrame
+                            float bias = (Math.Abs(i - midFrame) / (float)midFrame);
+                            float weight = (float)MathC.SmoothStep(0.0, 1.0, bias, smoothSteps) * effectStrength;
+                                
+                            currentFrame = new AnimatedTextureFrame
                             {
                                 Texture = referenceFrame.Texture,
                                 TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight),
                                 TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, center1, weight),
                                 TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, center2, weight),
                                 TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight)
-                            });
+                            };
+                        }
+                        break;
+                    case ProceduralAnimationType.VerticalStretch:
+                    case ProceduralAnimationType.DiagonalStretch2:
+                        {
+                            float bias = (Math.Abs(i - midFrame) / (float)midFrame);
+                            float weight = (float)MathC.SmoothStep(0.0, 1.0, bias, smoothSteps) * effectStrength;
+
+                            currentFrame = new AnimatedTextureFrame
+                            {
+                                Texture = referenceFrame.Texture,
+                                TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight),
+                                TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, center1, weight),
+                                TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight),
+                                TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, center2, weight)
+                            };
+                        }
+                        break;
+                    case ProceduralAnimationType.RightRotation:
+                    case ProceduralAnimationType.LeftRotation:
+                    case ProceduralAnimationType.LeftSpin:
+                    case ProceduralAnimationType.RightSpin:
+                        {
+                            double currAngle = 0.0f;
+
+                            switch(type)
+                            {
+                                case ProceduralAnimationType.LeftRotation:
+                                    currAngle = ((2 * Math.PI) / resultingFrameCount) * i;
+                                    break;
+                                case ProceduralAnimationType.RightRotation:
+                                    currAngle = ((2 * Math.PI) / resultingFrameCount) * (resultingFrameCount - i);
+                                    break;
+                                case ProceduralAnimationType.RightSpin:
+                                case ProceduralAnimationType.LeftSpin:
+                                    float bias = (Math.Abs(i - midFrame) / (float)midFrame);
+                                    if (type == ProceduralAnimationType.RightSpin)
+                                        bias = -bias;
+                                    float weight = (float)MathC.SmoothStep(0.0, 1.0, Math.Abs(bias), smoothSteps) * effectStrength;
+                                    currAngle = weight * (2 * Math.PI);
+                                    break;
+
+                            }
+                            currentFrame = new AnimatedTextureFrame
+                            {
+                                Texture = referenceFrame.Texture,
+                                TexCoord0 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle), center1.Y + radius * (float)Math.Sin(currAngle)),
+                                TexCoord1 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center1.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2)),
+                                TexCoord2 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle + Math.PI), center1.Y + radius * (float)Math.Sin(currAngle + Math.PI)),
+                                TexCoord3 = new Vector2(center1.X + radius * (float)Math.Cos(currAngle + Math.PI * 1.5f), center1.Y + radius * (float)Math.Sin(currAngle + Math.PI * 1.5f))
+                            };
                         }
                         break;
                 }
+
+                newSet.Frames.Add(currentFrame);
             }
 
             _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
@@ -661,7 +760,10 @@ namespace TombEditor.Forms
                 };
 
                 if (textureMap.SelectedTexture != textureToShow)
+                {
                     textureMap.ShowTexture(textureToShow);
+                    _editor.SelectedTexture = textureToShow;
+                }
             }
         }
 
@@ -670,8 +772,8 @@ namespace TombEditor.Forms
             protected override float MaxTextureSize => float.PositiveInfinity;
             protected override bool DrawTriangle => false;
 
-            private static readonly Pen outlinePen = new Pen(Color.Silver, 2);
-            private static readonly Pen activeOutlinePen = new Pen(Color.Violet, 2);
+            private static readonly Pen outlinePen = new Pen(Color.FromArgb(200, 192, 192, 192), 2);
+            private static readonly Pen activeOutlinePen = new Pen(Color.FromArgb(200, 238, 82, 238), 2);
             private static readonly Brush textBrush = new SolidBrush(Color.Violet);
             private static readonly Brush textShadowBrush = new SolidBrush(Color.Black);
             private static readonly Font textFont = new Font("Segoe UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -736,6 +838,7 @@ namespace TombEditor.Forms
                                 e.Graphics.DrawString(counterString, textFont, textBrush, textArea, textFormat);
                             }
                         }
+                        e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                         e.Graphics.DrawPolygon(current ? activeOutlinePen : outlinePen, edges);
                     }
                 }
@@ -769,9 +872,9 @@ namespace TombEditor.Forms
             switch (effect)
             {
                 case AnimatedTextureAnimationType.Frames:
-                    labelFps.Visible = true;
+                    lblFps.Visible = true;
                     comboFps.Visible = true;
-                    labelUvRotate.Visible = false;
+                    lblUvRotate.Visible = false;
                     comboUvRotate.Visible = false;
 
                     comboFps.Items.Clear();
@@ -785,18 +888,18 @@ namespace TombEditor.Forms
                     break;
 
                 case AnimatedTextureAnimationType.PFrames:
-                    labelFps.Visible = false;
+                    lblFps.Visible = false;
                     comboFps.Visible = false;
-                    labelUvRotate.Visible = false;
+                    lblUvRotate.Visible = false;
                     comboUvRotate.Visible = false;
                     break;
 
                 case AnimatedTextureAnimationType.FullRotate:
                 case AnimatedTextureAnimationType.HalfRotate:
                 case AnimatedTextureAnimationType.RiverRotate:
-                    labelFps.Visible = true;
+                    lblFps.Visible = true;
                     comboFps.Visible = true;
-                    labelUvRotate.Visible = true;
+                    lblUvRotate.Visible = true;
                     comboUvRotate.Visible = true;
 
                     comboFps.Items.Clear();
@@ -854,7 +957,7 @@ namespace TombEditor.Forms
 
         private void butGenerateProcAnim_Click(object sender, EventArgs e)
         {
-            GenerateProceduralAnimation(ProceduralAnimationType.HorizontalStretch, 16, 0.8f);
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (uint)numFrames.Value, (float)numStrength.Value / 100.0f, (uint)numSmooth.Value);
         }
     }
 }
