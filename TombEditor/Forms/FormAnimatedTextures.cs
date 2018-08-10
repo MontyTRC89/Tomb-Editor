@@ -23,13 +23,15 @@ namespace TombEditor.Forms
         {
             HorizontalStretch,
             VerticalStretch,
-            DiagonalStretch,
             Scale,
-            HorizontalSkew,
-            VerticalSkew,
+            HorizontalSkew1,
+            HorizontalSkew2,
+            VerticalSkew1,
+            VerticalSkew2,
             Spin,
             HorizontalPan,
-            VerticalPan
+            VerticalPan,
+            Shake
         }
 
         private enum AnimGenerationType
@@ -577,6 +579,8 @@ namespace TombEditor.Forms
 
             // Process frames
 
+            var rnd = new Random(); // Used for shake
+
             for (int i = 0; i < resultingFrameCount; i++)
             {
                 var referenceFrame = targetSet.Frames[i].Clone();
@@ -586,40 +590,55 @@ namespace TombEditor.Forms
 
                 switch (type)
                 {
-                    case ProceduralAnimationType.HorizontalSkew:
-                    case ProceduralAnimationType.VerticalSkew:
+                    case ProceduralAnimationType.HorizontalSkew1:
+                    case ProceduralAnimationType.HorizontalSkew2:
+                    case ProceduralAnimationType.VerticalSkew1:
+                    case ProceduralAnimationType.VerticalSkew2:
                         {
+                            bool otherDirection = (int)type % 2 == 0;
+
+                            if(effectStrength < 0.0f)
+                                weight = 1.0f + weight;
+                            if (otherDirection)
+                                weight = 1.0f - weight;
+
                             int[] index = new int[2];
                             Vector2[] coord1 = new Vector2[2];
                             Vector2[] coord2 = new Vector2[2];
 
-                            if (effectStrength > 0)
+                            if (otherDirection)
                             {
                                 index[0] = 0;
                                 index[1] = 2;
                             }
                             else
                             {
-                                index[0] = 3;
-                                index[1] = 1;
-                                weight = 1.0f + weight;
+                                index[0] = 1;
+                                index[1] = 3;
                             }
 
-                            if (type == ProceduralAnimationType.HorizontalSkew)
+                            if (type == ProceduralAnimationType.HorizontalSkew2)
                             {
-                                coord1[0] = referenceFrame.TexCoord0;
-                                coord1[1] = referenceFrame.TexCoord2;
                                 coord2[0] = referenceFrame.TexCoord3;
                                 coord2[1] = referenceFrame.TexCoord1;
                             }
                             else
                             {
-                                coord1[0] = referenceFrame.TexCoord2;
-                                coord1[1] = referenceFrame.TexCoord0;
                                 coord2[0] = referenceFrame.TexCoord1;
                                 coord2[1] = referenceFrame.TexCoord3;
                             }
-                            
+
+                            if(type == ProceduralAnimationType.HorizontalSkew1)
+                            {
+                                coord1[0] = referenceFrame.TexCoord2;
+                                coord1[1] = referenceFrame.TexCoord0;
+                            }
+                            else
+                            {
+                                coord1[0] = referenceFrame.TexCoord0;
+                                coord1[1] = referenceFrame.TexCoord2;
+                            }
+
                             for (int c = 0; c < 2; c++)
                             {
                                 var result = Vector2.Lerp(coord1[c], coord2[c], weight);
@@ -645,12 +664,8 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.HorizontalStretch:
                     case ProceduralAnimationType.VerticalStretch:
-                    case ProceduralAnimationType.DiagonalStretch:
                     case ProceduralAnimationType.Scale:
                         {
-                            bool diagonalType = type == ProceduralAnimationType.DiagonalStretch;
-                            float midPoint = diagonalType ? (effectStrength > 0 ? 1.0f : 0.0f) : 0.5f;
-
                             // Reverse effect strength for negative numbers for proper UV positioning
 
                             if (effectStrength < 0)
@@ -660,16 +675,15 @@ namespace TombEditor.Forms
 
                             bool[] passes = new bool[2]
                             {
-                                type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.Scale || diagonalType,
-                                type == ProceduralAnimationType.VerticalStretch   || type == ProceduralAnimationType.Scale || diagonalType
+                                type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.Scale,
+                                type == ProceduralAnimationType.VerticalStretch   || type == ProceduralAnimationType.Scale
                             };
 
                             for (int p = 0; p < 2; p++)
-                            {
                                 if (passes[p])
                                 {
-                                    var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), midPoint);
-                                    var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), midPoint);
+                                    var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), 0.5f);
+                                    var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), 0.5f);
                                     
                                     targetSet.Frames[i].TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight);
                                     targetSet.Frames[i].TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, (p == 0 ? center2 : center1), weight);
@@ -679,7 +693,6 @@ namespace TombEditor.Forms
                                     if(p == 0)
                                         referenceFrame = targetSet.Frames[i].Clone(); // Reassign reference after first pass
                                 }
-                            }
                         }
                         break;
 
@@ -723,6 +736,20 @@ namespace TombEditor.Forms
                             targetSet.Frames[i].TexCoord1 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist1);
                             targetSet.Frames[i].TexCoord2 += horizontal ? new Vector2(dist1, 0) : new Vector2(0, dist2);
                             targetSet.Frames[i].TexCoord3 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist2);
+                        }
+                        break;
+
+                    case ProceduralAnimationType.Shake:
+                        {
+                            int rndStrength = (int)effectStrength * 16;
+                            float xRnd = rnd.Next(-rndStrength, rndStrength);
+                            float yRnd = rnd.Next(-rndStrength, rndStrength);
+                            Vector2 rndAdd = new Vector2(xRnd, yRnd);
+
+                            targetSet.Frames[i].TexCoord0 += rndAdd;
+                            targetSet.Frames[i].TexCoord1 += rndAdd;
+                            targetSet.Frames[i].TexCoord2 += rndAdd;
+                            targetSet.Frames[i].TexCoord3 += rndAdd;
                         }
                         break;
                 }

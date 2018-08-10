@@ -589,13 +589,15 @@ namespace TombEditor.Forms
             this.comboProcPresets.Items.AddRange(new object[] {
             "Stretch horizontal",
             "Stretch vertical",
-            "Stretch diagonal",
             "Scale",
-            "Skew horizontal",
-            "Skew vertical",
+            "Skew horizontal ↖",
+            "Skew horizontal ↗",
+            "Skew vertical ↖",
+            "Skew vertical ↗",
             "Spin",
             "Pan horizontal",
-            "Pan vertical"});
+            "Pan vertical",
+            "Shake"});
             this.comboProcPresets.Location = new System.Drawing.Point(5, 22);
             this.comboProcPresets.Name = "comboProcPresets";
             this.comboProcPresets.Size = new System.Drawing.Size(173, 23);
