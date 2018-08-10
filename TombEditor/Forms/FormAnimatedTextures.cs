@@ -32,6 +32,14 @@ namespace TombEditor.Forms
             VerticalPan
         }
 
+        private enum AnimGenerationType
+        {
+            Add,
+            Clone,
+            Merge,
+            Replace
+        }
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly PopUpInfo popup = new PopUpInfo();
 
@@ -442,7 +450,9 @@ namespace TombEditor.Forms
             settingsPanelNG.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
+            butEditSetName.Enabled = enable;
             butCloneProcAnim.Enabled = enable;
+            butMergeProcAnim.Enabled = enable;
             butReplaceProcAnim.Enabled = enable;
 
             if (enable)
@@ -498,7 +508,7 @@ namespace TombEditor.Forms
             };
         }
 
-        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, int creationBehaviour = 0)
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.Add)
         {
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
@@ -508,27 +518,32 @@ namespace TombEditor.Forms
             // Make new set, copy or replace current one
             // CreationBehaviour = 0 means we're creating new array, 1 = copying current and modifying a copy, 2 = replacing current
 
-            AnimatedTextureSet targetSet;
-            if (creationBehaviour >= 1 && comboAnimatedTextureSets.SelectedItem != null)
+            AnimatedTextureSet targetSet = null;
+            if (genType >= AnimGenerationType.Clone && comboAnimatedTextureSets.SelectedItem != null)
             {
-                targetSet = creationBehaviour == 1 ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
+                targetSet = genType == AnimGenerationType.Clone ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
                 resultingFrameCount = targetSet.Frames.Count;
 
                 // Only generate new name if we clone current set
 
-                if (creationBehaviour == 1 && string.IsNullOrEmpty(targetSet.Name))
+                if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
                     targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
+
+                if (genType == AnimGenerationType.Replace)
+                    targetSet.Frames.Clear();
             }
-            else // New set
+
+            // New set
+            if(genType == AnimGenerationType.Add || genType == AnimGenerationType.Replace)
             {
                 if (!(textureMap.SelectedTexture.Texture is LevelTexture))
                 {
-
                     popup.ShowInfo(this.textureMap, "Please select texture region!");
                     return false;
                 }
 
-                targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
+                if (genType == AnimGenerationType.Add)
+                    targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
 
                 for (int i = 0; i < resultingFrameCount; i++)
                     targetSet.Frames.Add(new AnimatedTextureFrame
@@ -541,7 +556,9 @@ namespace TombEditor.Forms
                     });
             }
 
-            if(creationBehaviour < 2)
+            // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
+
+            if(genType != AnimGenerationType.Add)
             {
                 int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
                 if (foundPostfixPos != -1)
@@ -705,7 +722,7 @@ namespace TombEditor.Forms
                 }
             }
 
-            if(creationBehaviour < 2)
+            if(genType < AnimGenerationType.Merge)
             {
                 if (!_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
                 {
@@ -1030,14 +1047,12 @@ namespace TombEditor.Forms
             comboCurrentTexture.DropDownWidth = screenPointRight.Right - screenPointLeft.X - 15; // Margin
         }
 
-        private void butGenerateProcAnim_Click(object sender, EventArgs e)
-        {
-            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 0);
-        }
-
         private void butEditSetName_Click(object sender, EventArgs e)
         {
             var currentSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+
+            if (currentSet == null)
+                return;
 
             using (var form = new FormInputBox("Edit set name", "Insert the name of this animation set:", currentSet.Name))
             {
@@ -1049,14 +1064,24 @@ namespace TombEditor.Forms
             }
         }
 
+        private void butGenerateProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 0);
+        }
+
         private void butCloneProcAnim_Click(object sender, EventArgs e)
         {
-            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 1);
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Clone);
+        }
+
+        private void butMergeProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Merge);
         }
 
         private void butReplaceProcAnim_Click(object sender, EventArgs e)
         {
-            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 2);
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Replace);
         }
     }
 }

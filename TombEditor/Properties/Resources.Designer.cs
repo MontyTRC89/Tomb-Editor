@@ -173,6 +173,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_Merge_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_Merge_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_NewRoomDown_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_NewRoomDown_16", resourceCulture);

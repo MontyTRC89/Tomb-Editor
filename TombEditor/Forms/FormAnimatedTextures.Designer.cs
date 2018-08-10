@@ -26,7 +26,7 @@ namespace TombEditor.Forms
             this.butEditSetName = new DarkUI.Controls.DarkButton();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.butReplaceProcAnim = new DarkUI.Controls.DarkButton();
+            this.butMergeProcAnim = new DarkUI.Controls.DarkButton();
             this.butCloneProcAnim = new DarkUI.Controls.DarkButton();
             this.cbSmooth = new DarkUI.Controls.DarkCheckBox();
             this.cbLoop = new DarkUI.Controls.DarkCheckBox();
@@ -63,6 +63,7 @@ namespace TombEditor.Forms
             this.texturesDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butReplaceProcAnim = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -226,6 +227,7 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.butReplaceProcAnim);
+            this.panel3.Controls.Add(this.butMergeProcAnim);
             this.panel3.Controls.Add(this.butCloneProcAnim);
             this.panel3.Controls.Add(this.cbSmooth);
             this.panel3.Controls.Add(this.cbLoop);
@@ -241,27 +243,27 @@ namespace TombEditor.Forms
             this.panel3.Size = new System.Drawing.Size(379, 81);
             this.panel3.TabIndex = 20;
             // 
-            // butReplaceProcAnim
+            // butMergeProcAnim
             // 
-            this.butReplaceProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butReplaceProcAnim.Location = new System.Drawing.Point(318, 51);
-            this.butReplaceProcAnim.Name = "butReplaceProcAnim";
-            this.butReplaceProcAnim.Size = new System.Drawing.Size(54, 23);
-            this.butReplaceProcAnim.TabIndex = 21;
-            this.butReplaceProcAnim.Tag = "";
-            this.butReplaceProcAnim.Text = "Merge";
-            this.toolTip.SetToolTip(this.butReplaceProcAnim, "Transform and replace current animation");
-            this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
+            this.butMergeProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butMergeProcAnim.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
+            this.butMergeProcAnim.Location = new System.Drawing.Point(320, 51);
+            this.butMergeProcAnim.Name = "butMergeProcAnim";
+            this.butMergeProcAnim.Size = new System.Drawing.Size(23, 23);
+            this.butMergeProcAnim.TabIndex = 21;
+            this.butMergeProcAnim.Tag = "";
+            this.toolTip.SetToolTip(this.butMergeProcAnim, "Transform and replace current animation");
+            this.butMergeProcAnim.Click += new System.EventHandler(this.butMergeProcAnim_Click);
             // 
             // butCloneProcAnim
             // 
             this.butCloneProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCloneProcAnim.Location = new System.Drawing.Point(258, 51);
+            this.butCloneProcAnim.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butCloneProcAnim.Location = new System.Drawing.Point(291, 51);
             this.butCloneProcAnim.Name = "butCloneProcAnim";
-            this.butCloneProcAnim.Size = new System.Drawing.Size(54, 23);
+            this.butCloneProcAnim.Size = new System.Drawing.Size(23, 23);
             this.butCloneProcAnim.TabIndex = 20;
             this.butCloneProcAnim.Tag = "";
-            this.butCloneProcAnim.Text = "Clone";
             this.toolTip.SetToolTip(this.butCloneProcAnim, "Clone and transform current animation");
             this.butCloneProcAnim.Click += new System.EventHandler(this.butCloneProcAnim_Click);
             // 
@@ -381,12 +383,12 @@ namespace TombEditor.Forms
             // butGenerateProcAnim
             // 
             this.butGenerateProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butGenerateProcAnim.Location = new System.Drawing.Point(198, 51);
+            this.butGenerateProcAnim.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butGenerateProcAnim.Location = new System.Drawing.Point(262, 51);
             this.butGenerateProcAnim.Name = "butGenerateProcAnim";
-            this.butGenerateProcAnim.Size = new System.Drawing.Size(54, 23);
+            this.butGenerateProcAnim.Size = new System.Drawing.Size(23, 23);
             this.butGenerateProcAnim.TabIndex = 8;
             this.butGenerateProcAnim.Tag = "";
-            this.butGenerateProcAnim.Text = "New";
             this.toolTip.SetToolTip(this.butGenerateProcAnim, "Generate new animation");
             this.butGenerateProcAnim.Click += new System.EventHandler(this.butGenerateProcAnim_Click);
             // 
@@ -692,6 +694,18 @@ namespace TombEditor.Forms
             this.toolTip.InitialDelay = 100;
             this.toolTip.ReshowDelay = 20;
             // 
+            // butReplaceProcAnim
+            // 
+            this.butReplaceProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceProcAnim.Image = global::TombEditor.Properties.Resources.general_redo_16;
+            this.butReplaceProcAnim.Location = new System.Drawing.Point(349, 51);
+            this.butReplaceProcAnim.Name = "butReplaceProcAnim";
+            this.butReplaceProcAnim.Size = new System.Drawing.Size(23, 23);
+            this.butReplaceProcAnim.TabIndex = 22;
+            this.butReplaceProcAnim.Tag = "";
+            this.toolTip.SetToolTip(this.butReplaceProcAnim, "Generate new animation");
+            this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
+            // 
             // FormAnimatedTextures
             // 
             this.AcceptButton = this.butOk;
@@ -772,8 +786,9 @@ namespace TombEditor.Forms
         private DarkCheckBox cbSmooth;
         private DarkCheckBox cbLoop;
         private DarkButton butEditSetName;
-        private DarkButton butReplaceProcAnim;
+        private DarkButton butMergeProcAnim;
         private DarkButton butCloneProcAnim;
         private DarkLabel label1;
+        private DarkButton butReplaceProcAnim;
     }
 }
