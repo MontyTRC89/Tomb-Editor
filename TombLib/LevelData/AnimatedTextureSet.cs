@@ -81,7 +81,8 @@ namespace TombLib.LevelData
             return new AnimatedTextureSet { Frames = Frames.ConvertAll(frame => frame.Clone()),
                                             AnimationType = AnimationType,
                                             Fps = Fps,
-                                            UvRotate = UvRotate
+                                            UvRotate = UvRotate,
+                                            Name = Name
                                           };
         }
         object ICloneable.Clone() => Clone();
@@ -93,7 +94,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return (string.IsNullOrEmpty(Name) ? "Set" : Name) + " (" + Frames.Count + " frames)";
+            return (string.IsNullOrEmpty(Name) ? "Set (" + Frames.Count + " frames)" : Name);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace TombEditor.Forms
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.textureMap = new TombEditor.Forms.FormAnimatedTextures.PanelTextureMapForAnimations();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.butEditSetName = new DarkUI.Controls.DarkButton();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.cbSmooth = new DarkUI.Controls.DarkCheckBox();
@@ -60,7 +61,7 @@ namespace TombEditor.Forms
             this.previewImage = new System.Windows.Forms.PictureBox();
             this.texturesDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.warningToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -89,7 +90,7 @@ namespace TombEditor.Forms
             this.comboAnimatedTextureSets.ItemHeight = 18;
             this.comboAnimatedTextureSets.Location = new System.Drawing.Point(88, 5);
             this.comboAnimatedTextureSets.Name = "comboAnimatedTextureSets";
-            this.comboAnimatedTextureSets.Size = new System.Drawing.Size(378, 24);
+            this.comboAnimatedTextureSets.Size = new System.Drawing.Size(349, 24);
             this.comboAnimatedTextureSets.TabIndex = 1;
             this.comboAnimatedTextureSets.SelectedIndexChanged += new System.EventHandler(this.comboAnimatedTextureSets_SelectedIndexChanged);
             // 
@@ -99,7 +100,7 @@ namespace TombEditor.Forms
             this.butAnimatedTextureSetDelete.Enabled = false;
             this.butAnimatedTextureSetDelete.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butAnimatedTextureSetDelete.ImagePadding = 3;
-            this.butAnimatedTextureSetDelete.Location = new System.Drawing.Point(500, 5);
+            this.butAnimatedTextureSetDelete.Location = new System.Drawing.Point(501, 5);
             this.butAnimatedTextureSetDelete.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.butAnimatedTextureSetDelete.Name = "butAnimatedTextureSetDelete";
             this.butAnimatedTextureSetDelete.Size = new System.Drawing.Size(24, 24);
@@ -111,7 +112,7 @@ namespace TombEditor.Forms
             this.butAnimatedTextureSetNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butAnimatedTextureSetNew.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAnimatedTextureSetNew.ImagePadding = 4;
-            this.butAnimatedTextureSetNew.Location = new System.Drawing.Point(471, 5);
+            this.butAnimatedTextureSetNew.Location = new System.Drawing.Point(472, 5);
             this.butAnimatedTextureSetNew.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.butAnimatedTextureSetNew.Name = "butAnimatedTextureSetNew";
             this.butAnimatedTextureSetNew.Size = new System.Drawing.Size(24, 24);
@@ -172,6 +173,7 @@ namespace TombEditor.Forms
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.butEditSetName);
             this.panel1.Controls.Add(this.lblProcAnim);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.butUpdate);
@@ -194,6 +196,17 @@ namespace TombEditor.Forms
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(525, 613);
             this.panel1.TabIndex = 0;
+            // 
+            // butEditSetName
+            // 
+            this.butEditSetName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditSetName.Image = global::TombEditor.Properties.Resources.general_edit_16;
+            this.butEditSetName.Location = new System.Drawing.Point(443, 5);
+            this.butEditSetName.Name = "butEditSetName";
+            this.butEditSetName.Size = new System.Drawing.Size(24, 24);
+            this.butEditSetName.TabIndex = 22;
+            this.butEditSetName.Tag = "EditRoomName";
+            this.butEditSetName.Click += new System.EventHandler(this.butEditSetName_Click);
             // 
             // lblProcAnim
             // 
@@ -235,6 +248,7 @@ namespace TombEditor.Forms
             this.cbSmooth.Size = new System.Drawing.Size(68, 17);
             this.cbSmooth.TabIndex = 19;
             this.cbSmooth.Text = "Smooth";
+            this.toolTip.SetToolTip(this.cbSmooth, "Ease-in and ease-out animation");
             // 
             // cbLoop
             // 
@@ -245,6 +259,7 @@ namespace TombEditor.Forms
             this.cbLoop.Size = new System.Drawing.Size(55, 17);
             this.cbLoop.TabIndex = 18;
             this.cbLoop.Text = "Loop";
+            this.toolTip.SetToolTip(this.cbLoop, "Make animation symmetric");
             // 
             // numFrames
             // 
@@ -272,7 +287,7 @@ namespace TombEditor.Forms
             this.numFrames.Name = "numFrames";
             this.numFrames.Size = new System.Drawing.Size(69, 23);
             this.numFrames.TabIndex = 15;
-            this.warningToolTip.SetToolTip(this.numFrames, "Amount of resulting animation frames");
+            this.toolTip.SetToolTip(this.numFrames, "Amount of resulting animation frames");
             this.numFrames.Value = new decimal(new int[] {
             1,
             0,
@@ -297,9 +312,9 @@ namespace TombEditor.Forms
             this.lblProgress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblProgress.Location = new System.Drawing.Point(219, 6);
             this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(48, 13);
+            this.lblProgress.Size = new System.Drawing.Size(66, 13);
             this.lblProgress.TabIndex = 12;
-            this.lblProgress.Text = "Percent:";
+            this.lblProgress.Text = "Progress %:";
             // 
             // lblAnimatorName
             // 
@@ -337,7 +352,7 @@ namespace TombEditor.Forms
             this.numStrength.Name = "numStrength";
             this.numStrength.Size = new System.Drawing.Size(75, 23);
             this.numStrength.TabIndex = 10;
-            this.warningToolTip.SetToolTip(this.numStrength, "Effect progress or strength");
+            this.toolTip.SetToolTip(this.numStrength, "Effect progress or strength");
             this.numStrength.Value = new decimal(new int[] {
             100,
             0,
@@ -352,7 +367,8 @@ namespace TombEditor.Forms
             this.cbApplyToSelected.Name = "cbApplyToSelected";
             this.cbApplyToSelected.Size = new System.Drawing.Size(138, 17);
             this.cbApplyToSelected.TabIndex = 9;
-            this.cbApplyToSelected.Text = "Create from selection";
+            this.cbApplyToSelected.Text = "Create from current set";
+            this.toolTip.SetToolTip(this.cbApplyToSelected, "Use current set as reference");
             // 
             // butGenerateProcAnim
             // 
@@ -386,7 +402,7 @@ namespace TombEditor.Forms
             this.comboProcPresets.Name = "comboProcPresets";
             this.comboProcPresets.Size = new System.Drawing.Size(211, 23);
             this.comboProcPresets.TabIndex = 7;
-            this.warningToolTip.SetToolTip(this.comboProcPresets, "Animation type");
+            this.toolTip.SetToolTip(this.comboProcPresets, "Animation type");
             // 
             // butUpdate
             // 
@@ -435,7 +451,7 @@ namespace TombEditor.Forms
             this.previewProgressBar.Location = new System.Drawing.Point(390, 587);
             this.previewProgressBar.Maximum = 0;
             this.previewProgressBar.Name = "previewProgressBar";
-            this.previewProgressBar.Size = new System.Drawing.Size(134, 23);
+            this.previewProgressBar.Size = new System.Drawing.Size(135, 23);
             this.previewProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.previewProgressBar.TabIndex = 18;
             this.previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.XOfN;
@@ -663,12 +679,12 @@ namespace TombEditor.Forms
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
-            // warningToolTip
+            // toolTip
             // 
-            this.warningToolTip.AutomaticDelay = 100;
-            this.warningToolTip.AutoPopDelay = 30000;
-            this.warningToolTip.InitialDelay = 100;
-            this.warningToolTip.ReshowDelay = 20;
+            this.toolTip.AutomaticDelay = 100;
+            this.toolTip.AutoPopDelay = 30000;
+            this.toolTip.InitialDelay = 100;
+            this.toolTip.ReshowDelay = 20;
             // 
             // FormAnimatedTextures
             // 
@@ -730,7 +746,7 @@ namespace TombEditor.Forms
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord2;
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord3;
         private DarkButton butUpdate;
-        private ToolTip warningToolTip;
+        private ToolTip toolTip;
         private System.ComponentModel.IContainer components;
         private DarkLabel lblUvRotate;
         private DarkComboBox comboUvRotate;
@@ -751,5 +767,6 @@ namespace TombEditor.Forms
         private DarkLabel lblFrames;
         private DarkCheckBox cbSmooth;
         private DarkCheckBox cbLoop;
+        private DarkButton butEditSetName;
     }
 }

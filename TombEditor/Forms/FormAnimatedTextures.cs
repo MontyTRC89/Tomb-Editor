@@ -13,6 +13,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 using TombLib;
+using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
@@ -311,7 +312,7 @@ namespace TombEditor.Forms
                     frameCount += frame.Repeat;
 
             if (tooManyFramesWarning.Visible = frameCount > _maxLegacyFrames)
-                warningToolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
+                toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
 
             if (_isNg)
             {
@@ -941,6 +942,20 @@ namespace TombEditor.Forms
         private void butGenerateProcAnim_Click(object sender, EventArgs e)
         {
             GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, cbApplyToSelected.Checked);
+        }
+
+        private void butEditSetName_Click(object sender, EventArgs e)
+        {
+            var currentSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+
+            using (var form = new FormInputBox("Edit set name", "Insert the name of this animation set:", currentSet.Name))
+            {
+                if (form.ShowDialog(this) == DialogResult.Cancel)
+                    return;
+
+                currentSet.Name = form.Result;
+                _editor.AnimatedTexturesChange();
+            }
         }
     }
 }
