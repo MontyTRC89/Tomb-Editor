@@ -441,7 +441,8 @@ namespace TombEditor.Forms
             settingsPanelNG.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
-            cbApplyToSelected.Enabled = enable;
+            butCloneProcAnim.Enabled = enable;
+            butReplaceProcAnim.Enabled = enable;
 
             if (enable)
             {
@@ -496,25 +497,28 @@ namespace TombEditor.Forms
             };
         }
 
-        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, bool createFromSelection = false)
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, int creationBehaviour = 0)
         {
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
 
             effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
 
-            // Fill reference array or use selection
+            // Make new set, copy or replace current one
+            // CreationBehaviour = 0 means we're creating new array, 1 = copying current and modifying a copy, 2 = replacing current
 
             AnimatedTextureSet targetSet;
-            if (createFromSelection && comboAnimatedTextureSets.SelectedItem != null)
+            if (creationBehaviour >= 1 && comboAnimatedTextureSets.SelectedItem != null)
             {
-                targetSet = (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone();
+                targetSet = creationBehaviour == 1 ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
                 resultingFrameCount = targetSet.Frames.Count;
 
-                if (string.IsNullOrEmpty(targetSet.Name))
+                // Only generate new name if we clone current set
+
+                if (creationBehaviour == 1 && string.IsNullOrEmpty(targetSet.Name))
                     targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
             }
-            else
+            else // New set
             {
                 if (!(textureMap.SelectedTexture.Texture is LevelTexture))
                 {
@@ -535,10 +539,13 @@ namespace TombEditor.Forms
                     });
             }
 
-            int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
-            if (foundPostfixPos != -1)
-                targetSet.Name = targetSet.Name.Substring(0, foundPostfixPos);
-            targetSet.Name += animNameCombineString + comboProcPresets.SelectedItem.ToString() + " effect)";
+            if(creationBehaviour < 2)
+            {
+                int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
+                if (foundPostfixPos != -1)
+                    targetSet.Name = targetSet.Name.Substring(0, foundPostfixPos);
+                targetSet.Name += animNameCombineString + comboProcPresets.SelectedItem.ToString() + " effect)";
+            }
 
             if (targetSet == null || resultingFrameCount <= 0)
                 return false;
@@ -667,7 +674,7 @@ namespace TombEditor.Forms
                                 Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
                                 Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
                                 // Frame is invalid, bypass it (if existing) or return false (if new)
-                                if (createFromSelection)
+                                if (creationBehaviour != 0)
                                     continue;
                                 else
                                     return false;
@@ -696,13 +703,18 @@ namespace TombEditor.Forms
                 }
             }
 
-            if(!_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
+            if(creationBehaviour < 2)
             {
-                _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
-                _editor.AnimatedTexturesChange();
+                if (!_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
+                {
+                    _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
+                    _editor.AnimatedTexturesChange();
+                    comboAnimatedTextureSets.SelectedItem = targetSet;
+                }
             }
+            else
+                _editor.AnimatedTexturesChange();
 
-            comboAnimatedTextureSets.SelectedItem = targetSet;
             return true;
         }
 
@@ -1018,7 +1030,7 @@ namespace TombEditor.Forms
 
         private void butGenerateProcAnim_Click(object sender, EventArgs e)
         {
-            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, cbApplyToSelected.Checked);
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 0);
         }
 
         private void butEditSetName_Click(object sender, EventArgs e)
@@ -1033,6 +1045,16 @@ namespace TombEditor.Forms
                 currentSet.Name = form.Result;
                 _editor.AnimatedTexturesChange();
             }
+        }
+
+        private void butCloneProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 1);
+        }
+
+        private void butReplaceProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 2);
         }
     }
 }
