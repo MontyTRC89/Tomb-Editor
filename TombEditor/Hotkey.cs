@@ -78,8 +78,8 @@ namespace TombEditor
             result += (Keys & Keys.Control) != Keys.None ? "Ctrl+" : "";
             result += (Keys & Keys.Shift) != Keys.None ? "Shift+" : "";
             result += (Keys & Keys.Alt) != Keys.None ? "Alt+" : "";
-
-            result += FriendlyKeyNameTable.ContainsKey(MainKey) ? FriendlyKeyNameTable[MainKey] : MainKey.ToString();
+            if(MainKey != Keys.None)
+                result += FriendlyKeyNameTable.ContainsKey(MainKey) ? FriendlyKeyNameTable[MainKey] : MainKey.ToString();
             return result;
         }
 
