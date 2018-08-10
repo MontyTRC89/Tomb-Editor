@@ -338,11 +338,6 @@ namespace TombEditor.Forms
             0,
             65536});
             this.numStrength.Location = new System.Drawing.Point(222, 22);
-            this.numStrength.Maximum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
             this.numStrength.Minimum = new decimal(new int[] {
             100,
             0,
@@ -393,11 +388,8 @@ namespace TombEditor.Forms
             "Skew horizontal",
             "Skew vertical",
             "Spin",
-            "Rotate",
             "Pan horizontal",
-            "Pan vertical",
-            "Pan diagonal",
-            "Twitch"});
+            "Pan vertical"});
             this.comboProcPresets.Location = new System.Drawing.Point(5, 22);
             this.comboProcPresets.Name = "comboProcPresets";
             this.comboProcPresets.Size = new System.Drawing.Size(211, 23);

@@ -28,11 +28,8 @@ namespace TombEditor.Forms
             HorizontalSkew,
             VerticalSkew,
             Spin,
-            Rotate,
             HorizontalPan,
-            VerticalPan,
-            DiagonalPan,
-            Twitch
+            VerticalPan
         }
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -77,6 +74,7 @@ namespace TombEditor.Forms
         private int _previewCurrentRepeatTimes;
         private const float _previewFps = 15;
         private const int _maxLegacyFrames = 16;
+        private const string animNameCombineString = " (with ";
         private int _lastY;
 
         private readonly bool _isNg;
@@ -443,6 +441,7 @@ namespace TombEditor.Forms
             settingsPanelNG.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
+            cbApplyToSelected.Enabled = enable;
 
             if (enable)
             {
@@ -502,12 +501,12 @@ namespace TombEditor.Forms
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
 
-            effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -32.0, 32.0);
+            effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
 
             // Fill reference array or use selection
 
             AnimatedTextureSet targetSet;
-            if (createFromSelection)
+            if (createFromSelection && comboAnimatedTextureSets.SelectedItem != null)
             {
                 targetSet = (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone();
                 resultingFrameCount = targetSet.Frames.Count;
@@ -536,7 +535,10 @@ namespace TombEditor.Forms
                     });
             }
 
-            targetSet.Name += " (with " + comboProcPresets.SelectedItem.ToString() + " effect)";
+            int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
+            if (foundPostfixPos != -1)
+                targetSet.Name = targetSet.Name.Substring(0, foundPostfixPos);
+            targetSet.Name += animNameCombineString + comboProcPresets.SelectedItem.ToString() + " effect)";
 
             if (targetSet == null || resultingFrameCount <= 0)
                 return false;
@@ -545,17 +547,78 @@ namespace TombEditor.Forms
 
             for (int i = 0; i < resultingFrameCount; i++)
             {
+                var referenceFrame = targetSet.Frames[i].Clone();
                 int midFrame = loop ? resultingFrameCount / 2 : resultingFrameCount;
                 float bias = Math.Abs(i - midFrame) / (float)midFrame;
                 float weight = (smooth ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
 
                 switch (type)
                 {
+                    case ProceduralAnimationType.HorizontalSkew:
+                    case ProceduralAnimationType.VerticalSkew:
+                        {
+                            int[] index = new int[2];
+                            Vector2[] coord1 = new Vector2[2];
+                            Vector2[] coord2 = new Vector2[2];
+
+                            if (effectStrength > 0)
+                            {
+                                index[0] = 0;
+                                index[1] = 2;
+                            }
+                            else
+                            {
+                                index[0] = 3;
+                                index[1] = 1;
+                                weight = 1.0f + weight;
+                            }
+
+                            if (type == ProceduralAnimationType.HorizontalSkew)
+                            {
+                                coord1[0] = referenceFrame.TexCoord0;
+                                coord1[1] = referenceFrame.TexCoord2;
+                                coord2[0] = referenceFrame.TexCoord3;
+                                coord2[1] = referenceFrame.TexCoord1;
+                            }
+                            else
+                            {
+                                coord1[0] = referenceFrame.TexCoord2;
+                                coord1[1] = referenceFrame.TexCoord0;
+                                coord2[0] = referenceFrame.TexCoord1;
+                                coord2[1] = referenceFrame.TexCoord3;
+                            }
+                            
+                            for (int c = 0; c < 2; c++)
+                            {
+                                var result = Vector2.Lerp(coord1[c], coord2[c], weight);
+
+                                switch (index[c])
+                                {
+                                    case 0:
+                                        targetSet.Frames[i].TexCoord0 = result;
+                                        break;
+                                    case 1:
+                                        targetSet.Frames[i].TexCoord1 = result;
+                                        break;
+                                    case 2:
+                                        targetSet.Frames[i].TexCoord2 = result;
+                                        break;
+                                    case 3:
+                                        targetSet.Frames[i].TexCoord3 = result;
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+
                     case ProceduralAnimationType.HorizontalStretch:
                     case ProceduralAnimationType.VerticalStretch:
                     case ProceduralAnimationType.DiagonalStretch:
                     case ProceduralAnimationType.Scale:
                         {
+                            bool diagonalType = type == ProceduralAnimationType.DiagonalStretch;
+                            float midPoint = diagonalType ? (effectStrength > 0 ? 1.0f : 0.0f) : 0.5f;
+
                             // Reverse effect strength for negative numbers for proper UV positioning
 
                             if (effectStrength < 0)
@@ -565,24 +628,24 @@ namespace TombEditor.Forms
 
                             bool[] passes = new bool[2]
                             {
-                                type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.DiagonalStretch || type == ProceduralAnimationType.Scale,
-                                type == ProceduralAnimationType.VerticalStretch   || type == ProceduralAnimationType.DiagonalStretch || type == ProceduralAnimationType.Scale
+                                type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.Scale || diagonalType,
+                                type == ProceduralAnimationType.VerticalStretch   || type == ProceduralAnimationType.Scale || diagonalType
                             };
-
-                            bool diagonalType = type == ProceduralAnimationType.DiagonalStretch;
 
                             for (int p = 0; p < 2; p++)
                             {
                                 if (passes[p])
                                 {
-                                    var referenceFrame = targetSet.Frames[i].Clone();
-                                    var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 && !diagonalType ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), 0.5f);
-                                    var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 && !diagonalType ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), 0.5f);
-
+                                    var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), midPoint);
+                                    var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), midPoint);
+                                    
                                     targetSet.Frames[i].TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight);
                                     targetSet.Frames[i].TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, (p == 0 ? center2 : center1), weight);
                                     targetSet.Frames[i].TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight);
                                     targetSet.Frames[i].TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, (p == 0 ? center1 : center2), weight);
+
+                                    if(p == 0)
+                                        referenceFrame = targetSet.Frames[i].Clone(); // Reassign reference after first pass
                                 }
                             }
                         }
@@ -592,7 +655,6 @@ namespace TombEditor.Forms
                         {
                             double currAngle = 2 * Math.PI * weight;
 
-                            var referenceFrame = targetSet.Frames[i].Clone();
                             var center = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord2, 0.5f);
                             var radius = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1) * 0.5f;
 
@@ -601,7 +663,7 @@ namespace TombEditor.Forms
                             var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
                             var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
 
-                            if (d0 != d1 || d1 != d2 || d2 != d3 || d3 != d0 ||
+                            if (!MathC.NearEqual(d0, d1) || !MathC.NearEqual(d1, d2) || !MathC.NearEqual(d2, d3) || !MathC.NearEqual(d3, d0) ||
                                 Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
                                 Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
                                 // Frame is invalid, bypass it (if existing) or return false (if new)
@@ -614,6 +676,21 @@ namespace TombEditor.Forms
                             targetSet.Frames[i].TexCoord1 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2));
                             targetSet.Frames[i].TexCoord2 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI), center.Y + radius * (float)Math.Sin(currAngle + Math.PI));
                             targetSet.Frames[i].TexCoord3 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + radius * (float)Math.Sin(currAngle + Math.PI * 1.5f));
+                        }
+                        break;
+
+                    case ProceduralAnimationType.HorizontalPan:
+                    case ProceduralAnimationType.VerticalPan:
+                        {
+                            bool horizontal = type == ProceduralAnimationType.HorizontalPan;
+
+                            var dist1 = Vector2.Distance(referenceFrame.TexCoord0, horizontal ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1) * weight;
+                            var dist2 = Vector2.Distance(referenceFrame.TexCoord1, horizontal ? referenceFrame.TexCoord2 : referenceFrame.TexCoord0) * weight;
+
+                            targetSet.Frames[i].TexCoord0 += horizontal ? new Vector2(dist1, 0) : new Vector2(0, dist1);
+                            targetSet.Frames[i].TexCoord1 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist1);
+                            targetSet.Frames[i].TexCoord2 += horizontal ? new Vector2(dist1, 0) : new Vector2(0, dist2);
+                            targetSet.Frames[i].TexCoord3 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist2);
                         }
                         break;
                 }
