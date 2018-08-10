@@ -741,7 +741,7 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.Shake:
                         {
-                            int rndStrength = (int)effectStrength * 16;
+                            int rndStrength = (int)(effectStrength * 16.0f);
                             float xRnd = rnd.Next(-rndStrength, rndStrength);
                             float yRnd = rnd.Next(-rndStrength, rndStrength);
                             Vector2 rndAdd = new Vector2(xRnd, yRnd);
