@@ -18,6 +18,7 @@ namespace TombEditor.Forms
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
+            this.textureMap = new TombEditor.Forms.FormAnimatedTextures.PanelTextureMapForAnimations();
             this.panel1 = new System.Windows.Forms.Panel();
             this.butEditSetName = new DarkUI.Controls.DarkButton();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
@@ -106,6 +107,7 @@ namespace TombEditor.Forms
             // panel2
             // 
             this.panel2.Controls.Add(this.comboCurrentTexture);
+            this.panel2.Controls.Add(this.textureMap);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(490, 3);
             this.panel2.Name = "panel2";
@@ -123,6 +125,18 @@ namespace TombEditor.Forms
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.DropDown += new System.EventHandler(this.comboCurrentTexture_DropDown);
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
+            // 
+            // textureMap
+            // 
+            this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textureMap.Location = new System.Drawing.Point(4, 32);
+            this.textureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
+            this.textureMap.Name = "textureMap";
+            this.textureMap.Size = new System.Drawing.Size(359, 578);
+            this.textureMap.TabIndex = 0;
+            this.textureMap.DoubleClick += new System.EventHandler(this.textureMap_DoubleClick);
             // 
             // panel1
             // 
