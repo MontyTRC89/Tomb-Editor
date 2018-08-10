@@ -325,7 +325,7 @@ namespace TombEditor.Forms
                     frameCount += frame.Repeat;
 
             if (tooManyFramesWarning.Visible = _editor.Level.Settings.GameVersion == GameVersion.TRNG && frameCount > _maxLegacyFrames)
-                toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
+                toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "!\nThis will cause crash in TRNG!");
 
             if (_isNg)
             {
