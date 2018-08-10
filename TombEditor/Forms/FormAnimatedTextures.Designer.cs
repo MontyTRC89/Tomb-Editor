@@ -23,6 +23,7 @@ namespace TombEditor.Forms
             this.butEditSetName = new DarkUI.Controls.DarkButton();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.butAddProcAnim = new DarkUI.Controls.DarkButton();
             this.butReplaceProcAnim = new DarkUI.Controls.DarkButton();
             this.butMergeProcAnim = new DarkUI.Controls.DarkButton();
             this.butCloneProcAnim = new DarkUI.Controls.DarkButton();
@@ -64,7 +65,6 @@ namespace TombEditor.Forms
             this.comboAnimatedTextureSets = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.butAddProcAnim = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -208,6 +208,18 @@ namespace TombEditor.Forms
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(335, 81);
             this.panel3.TabIndex = 20;
+            // 
+            // butAddProcAnim
+            // 
+            this.butAddProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddProcAnim.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butAddProcAnim.Location = new System.Drawing.Point(218, 51);
+            this.butAddProcAnim.Name = "butAddProcAnim";
+            this.butAddProcAnim.Size = new System.Drawing.Size(23, 23);
+            this.butAddProcAnim.TabIndex = 23;
+            this.butAddProcAnim.Tag = "";
+            this.toolTip.SetToolTip(this.butAddProcAnim, "Generate and add frames after current sequence frame");
+            this.butAddProcAnim.Click += new System.EventHandler(this.butAddProcAnim_Click);
             // 
             // butReplaceProcAnim
             // 
@@ -447,7 +459,7 @@ namespace TombEditor.Forms
             // texturesDataGridView
             // 
             this.texturesDataGridView.AllowUserToAddRows = false;
-            this.texturesDataGridView.AllowUserToOrderColumns = true;
+            this.texturesDataGridView.AllowUserToPasteCells = false;
             this.texturesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -709,18 +721,6 @@ namespace TombEditor.Forms
             this.toolTip.AutoPopDelay = 30000;
             this.toolTip.InitialDelay = 100;
             this.toolTip.ReshowDelay = 20;
-            // 
-            // butAddProcAnim
-            // 
-            this.butAddProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddProcAnim.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
-            this.butAddProcAnim.Location = new System.Drawing.Point(218, 51);
-            this.butAddProcAnim.Name = "butAddProcAnim";
-            this.butAddProcAnim.Size = new System.Drawing.Size(23, 23);
-            this.butAddProcAnim.TabIndex = 23;
-            this.butAddProcAnim.Tag = "";
-            this.toolTip.SetToolTip(this.butAddProcAnim, "Generate and add frames after current sequence frame");
-            this.butAddProcAnim.Click += new System.EventHandler(this.butAddProcAnim_Click);
             // 
             // FormAnimatedTextures
             // 
