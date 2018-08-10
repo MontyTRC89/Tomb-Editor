@@ -26,6 +26,8 @@ namespace TombEditor.Forms
             this.butEditSetName = new DarkUI.Controls.DarkButton();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.butReplaceProcAnim = new DarkUI.Controls.DarkButton();
+            this.butCloneProcAnim = new DarkUI.Controls.DarkButton();
             this.cbSmooth = new DarkUI.Controls.DarkCheckBox();
             this.cbLoop = new DarkUI.Controls.DarkCheckBox();
             this.numFrames = new DarkUI.Controls.DarkNumericUpDown();
@@ -36,6 +38,7 @@ namespace TombEditor.Forms
             this.butGenerateProcAnim = new DarkUI.Controls.DarkButton();
             this.comboProcPresets = new DarkUI.Controls.DarkComboBox();
             this.butUpdate = new DarkUI.Controls.DarkButton();
+            this.label1 = new DarkUI.Controls.DarkLabel();
             this.tooManyFramesWarning = new DarkUI.Controls.DarkLabel();
             this.previewProgressBar = new DarkUI.Controls.DarkProgressBar();
             this.texturesDataGridView = new DarkUI.Controls.DarkDataGridView();
@@ -60,9 +63,6 @@ namespace TombEditor.Forms
             this.texturesDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.butCloneProcAnim = new DarkUI.Controls.DarkButton();
-            this.butReplaceProcAnim = new DarkUI.Controls.DarkButton();
-            this.label1 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -241,21 +241,41 @@ namespace TombEditor.Forms
             this.panel3.Size = new System.Drawing.Size(379, 81);
             this.panel3.TabIndex = 20;
             // 
+            // butReplaceProcAnim
+            // 
+            this.butReplaceProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceProcAnim.Location = new System.Drawing.Point(318, 51);
+            this.butReplaceProcAnim.Name = "butReplaceProcAnim";
+            this.butReplaceProcAnim.Size = new System.Drawing.Size(54, 23);
+            this.butReplaceProcAnim.TabIndex = 21;
+            this.butReplaceProcAnim.Tag = "";
+            this.butReplaceProcAnim.Text = "Replace";
+            this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
+            // 
+            // butCloneProcAnim
+            // 
+            this.butCloneProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCloneProcAnim.Location = new System.Drawing.Point(258, 51);
+            this.butCloneProcAnim.Name = "butCloneProcAnim";
+            this.butCloneProcAnim.Size = new System.Drawing.Size(54, 23);
+            this.butCloneProcAnim.TabIndex = 20;
+            this.butCloneProcAnim.Tag = "";
+            this.butCloneProcAnim.Text = "Clone";
+            this.butCloneProcAnim.Click += new System.EventHandler(this.butCloneProcAnim_Click);
+            // 
             // cbSmooth
             // 
             this.cbSmooth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSmooth.Location = new System.Drawing.Point(61, 55);
             this.cbSmooth.Name = "cbSmooth";
-            this.cbSmooth.Size = new System.Drawing.Size(68, 17);
+            this.cbSmooth.Size = new System.Drawing.Size(131, 17);
             this.cbSmooth.TabIndex = 19;
             this.cbSmooth.Text = "Smooth";
             this.toolTip.SetToolTip(this.cbSmooth, "Ease-in and ease-out animation");
             // 
             // cbLoop
             // 
-            this.cbLoop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cbLoop.Location = new System.Drawing.Point(5, 55);
             this.cbLoop.Name = "cbLoop";
             this.cbLoop.Size = new System.Drawing.Size(55, 17);
@@ -399,6 +419,18 @@ namespace TombEditor.Forms
             this.butUpdate.Size = new System.Drawing.Size(24, 24);
             this.butUpdate.TabIndex = 2;
             this.butUpdate.Click += new System.EventHandler(this.butUpdate_Click);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.label1.Location = new System.Drawing.Point(1, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(517, 15);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Frames";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // tooManyFramesWarning
             // 
@@ -656,40 +688,6 @@ namespace TombEditor.Forms
             this.toolTip.AutoPopDelay = 30000;
             this.toolTip.InitialDelay = 100;
             this.toolTip.ReshowDelay = 20;
-            // 
-            // butCloneProcAnim
-            // 
-            this.butCloneProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCloneProcAnim.Location = new System.Drawing.Point(258, 51);
-            this.butCloneProcAnim.Name = "butCloneProcAnim";
-            this.butCloneProcAnim.Size = new System.Drawing.Size(54, 23);
-            this.butCloneProcAnim.TabIndex = 20;
-            this.butCloneProcAnim.Tag = "";
-            this.butCloneProcAnim.Text = "Clone";
-            this.butCloneProcAnim.Click += new System.EventHandler(this.butCloneProcAnim_Click);
-            // 
-            // butReplaceProcAnim
-            // 
-            this.butReplaceProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butReplaceProcAnim.Location = new System.Drawing.Point(318, 51);
-            this.butReplaceProcAnim.Name = "butReplaceProcAnim";
-            this.butReplaceProcAnim.Size = new System.Drawing.Size(54, 23);
-            this.butReplaceProcAnim.TabIndex = 21;
-            this.butReplaceProcAnim.Tag = "";
-            this.butReplaceProcAnim.Text = "Replace";
-            this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(1, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(517, 15);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Frames";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // FormAnimatedTextures
             // 
