@@ -250,6 +250,7 @@ namespace TombEditor.Forms
             this.butReplaceProcAnim.TabIndex = 21;
             this.butReplaceProcAnim.Tag = "";
             this.butReplaceProcAnim.Text = "Replace";
+            this.toolTip.SetToolTip(this.butReplaceProcAnim, "Transform and replace current animation");
             this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
             // 
             // butCloneProcAnim
@@ -261,6 +262,7 @@ namespace TombEditor.Forms
             this.butCloneProcAnim.TabIndex = 20;
             this.butCloneProcAnim.Tag = "";
             this.butCloneProcAnim.Text = "Clone";
+            this.toolTip.SetToolTip(this.butCloneProcAnim, "Clone and transform current animation");
             this.butCloneProcAnim.Click += new System.EventHandler(this.butCloneProcAnim_Click);
             // 
             // cbSmooth
@@ -385,6 +387,7 @@ namespace TombEditor.Forms
             this.butGenerateProcAnim.TabIndex = 8;
             this.butGenerateProcAnim.Tag = "";
             this.butGenerateProcAnim.Text = "New";
+            this.toolTip.SetToolTip(this.butGenerateProcAnim, "Generate new animation");
             this.butGenerateProcAnim.Click += new System.EventHandler(this.butGenerateProcAnim_Click);
             // 
             // comboProcPresets
