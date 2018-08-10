@@ -181,7 +181,10 @@ namespace TombEditor.Forms
                 while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.Add(_editor.Level.Settings.AnimatedTextureSets[comboAnimatedTextureSets.Items.Count]);
                 if (comboAnimatedTextureSets.SelectedItem == null)
-                    comboAnimatedTextureSets.Text = "";
+                    if (comboAnimatedTextureSets.Items.Count > 0)
+                        comboAnimatedTextureSets.SelectedIndex = comboAnimatedTextureSets.Items.Count - 1;
+                    else
+                        comboAnimatedTextureSets.Text = "";
                 comboAnimatedTextureSets.Invalidate();
             }
 
@@ -522,8 +525,7 @@ namespace TombEditor.Forms
             if (genType >= AnimGenerationType.Clone && comboAnimatedTextureSets.SelectedItem != null)
             {
                 targetSet = genType == AnimGenerationType.Clone ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
-                resultingFrameCount = targetSet.Frames.Count;
-
+                
                 // Only generate new name if we clone current set
 
                 if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
@@ -556,9 +558,13 @@ namespace TombEditor.Forms
                     });
             }
 
+            // Actualize frame count, cause it may change in regard of generation type
+
+            resultingFrameCount = targetSet.Frames.Count;
+
             // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
 
-            if(genType != AnimGenerationType.Add)
+            if (genType != AnimGenerationType.Add)
             {
                 int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
                 if (foundPostfixPos != -1)
@@ -689,10 +695,10 @@ namespace TombEditor.Forms
                             var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
                             var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
 
+                            // If any frame is invalid, return false
                             if (!MathC.NearEqual(d0, d1) || !MathC.NearEqual(d1, d2) || !MathC.NearEqual(d2, d3) || !MathC.NearEqual(d3, d0) ||
                                 Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
                                 Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
-                            // Frame is invalid, bypass it (if existing) or return false (if new)
                             {
                                 popup.ShowError(this.textureMap, "Spin function is available only for square seleciton!");
                                 return false;

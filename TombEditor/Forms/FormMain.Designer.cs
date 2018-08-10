@@ -37,7 +37,6 @@
             this.mirrorRoomsOnXAxisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mirrorRoomsOnZAxisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mergeRoomsHorizontallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,10 +128,11 @@
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cropRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cropRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mergeRoomsHorizontallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.applyCurrentAmbientLightToAllRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -407,16 +407,6 @@
             this.toolStripMenuSeparator5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuSeparator5.Name = "toolStripMenuSeparator5";
             this.toolStripMenuSeparator5.Size = new System.Drawing.Size(240, 6);
-            // 
-            // mergeRoomsHorizontallyToolStripMenuItem
-            // 
-            this.mergeRoomsHorizontallyToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.mergeRoomsHorizontallyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.mergeRoomsHorizontallyToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
-            this.mergeRoomsHorizontallyToolStripMenuItem.Name = "mergeRoomsHorizontallyToolStripMenuItem";
-            this.mergeRoomsHorizontallyToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.mergeRoomsHorizontallyToolStripMenuItem.Tag = "MergeRoomsHorizontally";
-            this.mergeRoomsHorizontallyToolStripMenuItem.Text = "MergeRoomsHorizontally";
             // 
             // toolStripMenuItem1
             // 
@@ -1323,26 +1313,6 @@
             this.duplicateRoomsToolStripMenuItem.Tag = "DuplicateRooms";
             this.duplicateRoomsToolStripMenuItem.Text = "DuplicateRooms";
             // 
-            // splitRoomToolStripMenuItem
-            // 
-            this.splitRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.splitRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.splitRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_split_files_16;
-            this.splitRoomToolStripMenuItem.Name = "splitRoomToolStripMenuItem";
-            this.splitRoomToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.splitRoomToolStripMenuItem.Tag = "SplitRoom";
-            this.splitRoomToolStripMenuItem.Text = "SplitRoom";
-            // 
-            // cropRoomToolStripMenuItem
-            // 
-            this.cropRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.cropRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.cropRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_crop_16;
-            this.cropRoomToolStripMenuItem.Name = "cropRoomToolStripMenuItem";
-            this.cropRoomToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.cropRoomToolStripMenuItem.Tag = "CropRoom";
-            this.cropRoomToolStripMenuItem.Text = "CropRoom";
-            // 
             // newRoomUpToolStripMenuItem
             // 
             this.newRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1362,6 +1332,36 @@
             this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.newRoomDownToolStripMenuItem.Tag = "NewRoomDown";
             this.newRoomDownToolStripMenuItem.Text = "NewRoomDown";
+            // 
+            // cropRoomToolStripMenuItem
+            // 
+            this.cropRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cropRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cropRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_crop_16;
+            this.cropRoomToolStripMenuItem.Name = "cropRoomToolStripMenuItem";
+            this.cropRoomToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.cropRoomToolStripMenuItem.Tag = "CropRoom";
+            this.cropRoomToolStripMenuItem.Text = "CropRoom";
+            // 
+            // splitRoomToolStripMenuItem
+            // 
+            this.splitRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.splitRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.splitRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_Split_16;
+            this.splitRoomToolStripMenuItem.Name = "splitRoomToolStripMenuItem";
+            this.splitRoomToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.splitRoomToolStripMenuItem.Tag = "SplitRoom";
+            this.splitRoomToolStripMenuItem.Text = "SplitRoom";
+            // 
+            // mergeRoomsHorizontallyToolStripMenuItem
+            // 
+            this.mergeRoomsHorizontallyToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.mergeRoomsHorizontallyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.mergeRoomsHorizontallyToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
+            this.mergeRoomsHorizontallyToolStripMenuItem.Name = "mergeRoomsHorizontallyToolStripMenuItem";
+            this.mergeRoomsHorizontallyToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.mergeRoomsHorizontallyToolStripMenuItem.Tag = "MergeRoomsHorizontally";
+            this.mergeRoomsHorizontallyToolStripMenuItem.Text = "MergeRoomsHorizontally";
             // 
             // exportRoomToolStripMenuItem
             // 

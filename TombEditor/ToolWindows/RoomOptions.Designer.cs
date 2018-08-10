@@ -219,7 +219,7 @@
             // butSplitRoom
             // 
             this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.general_split_files_16;
+            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.actions_Split_16;
             this.butSplitRoom.Location = new System.Drawing.Point(228, 86);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 23);

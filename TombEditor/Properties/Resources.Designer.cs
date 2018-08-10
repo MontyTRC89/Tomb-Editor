@@ -213,6 +213,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_refresh_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_refresh_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_rubber_stamp_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_rubber_stamp_16", resourceCulture);
@@ -226,6 +236,16 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap actions_Slide_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_Slide_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap actions_Split_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_Split_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -446,16 +466,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap general_settings_16 {
             get {
                 object obj = ResourceManager.GetObject("general_settings_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap general_split_files_16 {
-            get {
-                object obj = ResourceManager.GetObject("general_split_files_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
