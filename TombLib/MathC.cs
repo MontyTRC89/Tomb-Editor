@@ -58,6 +58,12 @@ namespace TombLib
             return value < min ? min : value > max ? max : value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Clamp(double value, double min, double max)
+        {
+            return value < min ? min : value > max ? max : value;
+        }
+
         /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.
         /// See remarks.
@@ -230,6 +236,35 @@ namespace TombLib
             double yaw = Math.Atan2(siny, cosy);
 
             return new Vector3((float)pitch, (float)yaw, (float)roll);
+        }
+
+        // Code taken from XnaGeometry library, Copyright В© 2006 The Mono.Xna Team (MIT License)
+        public static double SmoothStep(double value1, double value2, double amount)
+        {
+            amount = Clamp(amount, 0f, 1f);
+            double result = Hermite(value1, 0f, value2, 0f, amount);
+            return result;
+        }
+
+        // Code taken from XnaGeometry library, Copyright В© 2006 The Mono.Xna Team (MIT License)
+        public static double Hermite(double value1, double tangent1, double value2, double tangent2, double amount)
+        {
+            // All transformed to double not to lose precission
+            // Otherwise, for high numbers of param:amount the result is NaN instead of Infinity
+            double v1 = value1, v2 = value2, t1 = tangent1, t2 = tangent2, s = amount, result;
+            double sCubed = s * s * s;
+            double sSquared = s * s;
+
+            if (amount == 0f)
+                result = value1;
+            else if (amount == 1f)
+                result = value2;
+            else
+                result = (2 * v1 - 2 * v2 + t2 + t1) * sCubed +
+                    (3 * v2 - 3 * v1 - 2 * t1 - t2) * sSquared +
+                    t1 * s +
+                    v1;
+            return (double)result;
         }
     }
 }

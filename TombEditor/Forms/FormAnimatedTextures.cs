@@ -12,13 +12,39 @@ using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
+using TombLib;
+using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
     public partial class FormAnimatedTextures : DarkForm
     {
+        private enum ProceduralAnimationType
+        {
+            HorizontalStretch,
+            VerticalStretch,
+            Scale,
+            HorizontalSkew1,
+            HorizontalSkew2,
+            VerticalSkew1,
+            VerticalSkew2,
+            Spin,
+            HorizontalPan,
+            VerticalPan,
+            Shake
+        }
+
+        private enum AnimGenerationType
+        {
+            Add,
+            Clone,
+            Merge,
+            Replace
+        }
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+        private readonly PopUpInfo popup = new PopUpInfo();
+
         private class TransparentBindingList<T> : BindingList<T>
         {
             public TransparentBindingList(IList<T> list) : base(list) { }
@@ -58,7 +84,8 @@ namespace TombEditor.Forms
         private AnimatedTextureFrame _previewCurrentFrame;
         private int _previewCurrentRepeatTimes;
         private const float _previewFps = 15;
-        private const float _maxLegacyFrames = 16;
+        private const int _maxLegacyFrames = 16;
+        private const string animNameCombineString = " (with ";
         private int _lastY;
 
         private readonly bool _isNg;
@@ -100,7 +127,7 @@ namespace TombEditor.Forms
             }
             else
             {
-                labelHeaderNgSettings.Visible = false;
+                lblHeaderNgSettings.Visible = false;
                 settingsPanelNG.Visible = false;
             }
 
@@ -108,6 +135,9 @@ namespace TombEditor.Forms
             _editor_EditorEventRaised(new Editor.InitEvent());
             if (comboAnimatedTextureSets.Items.Count > 0)
                 comboAnimatedTextureSets.SelectedIndex = 0;
+
+            comboProcPresets.SelectedIndex = 0;
+            numFrames.Value = _maxLegacyFrames;
 
             // Setup texture map
             if (_editor.SelectedTexture.TextureIsInvisble)
@@ -153,7 +183,10 @@ namespace TombEditor.Forms
                 while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.Add(_editor.Level.Settings.AnimatedTextureSets[comboAnimatedTextureSets.Items.Count]);
                 if (comboAnimatedTextureSets.SelectedItem == null)
-                    comboAnimatedTextureSets.Text = "";
+                    if (comboAnimatedTextureSets.Items.Count > 0)
+                        comboAnimatedTextureSets.SelectedIndex = comboAnimatedTextureSets.Items.Count - 1;
+                    else
+                        comboAnimatedTextureSets.Text = "";
                 comboAnimatedTextureSets.Invalidate();
             }
 
@@ -185,17 +218,26 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        private AnimatedTextureSet GetOrAddCurrentSet()
+        {
+            var currentSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (currentSet == null)
+                currentSet = NewSet();
+            return currentSet;
+        }
+
+        private AnimatedTextureSet NewSet()
+        {
+            var newSet = new AnimatedTextureSet() { Name = "Animation #" + _editor.Level.Settings.AnimatedTextureSets.Count };
+            _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
+            _editor.AnimatedTexturesChange();
+            comboAnimatedTextureSets.SelectedItem = newSet;
+            return newSet;
+        }
+
         private void AddFrame()
         {
-            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if (selectedSet == null)
-            {
-                selectedSet = new AnimatedTextureSet();
-                _editor.Level.Settings.AnimatedTextureSets.Add(selectedSet);
-                _editor.AnimatedTexturesChange();
-                comboAnimatedTextureSets.SelectedItem = selectedSet;
-            }
-
+            var selectedSet = GetOrAddCurrentSet();
             var frame = GetSelectedAnimatedTextureFrame();
             if (frame != null)
             {
@@ -281,8 +323,8 @@ namespace TombEditor.Forms
                 foreach (AnimatedTextureFrame frame in currentSet.Frames)
                     frameCount += frame.Repeat;
 
-            if (tooManyFramesWarning.Visible = frameCount > _maxLegacyFrames)
-                warningToolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
+            if (tooManyFramesWarning.Visible = _editor.Level.Settings.GameVersion == GameVersion.TRNG && frameCount > _maxLegacyFrames)
+                toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
 
             if (_isNg)
             {
@@ -388,10 +430,7 @@ namespace TombEditor.Forms
 
         private void butAnimatedTextureSetNew_Click(object sender, EventArgs e)
         {
-            var newSet = new AnimatedTextureSet();
-            _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
-            _editor.AnimatedTexturesChange();
-            comboAnimatedTextureSets.SelectedItem = newSet;
+            NewSet();
         }
 
         private void butAnimatedTextureSetDelete_Click(object sender, EventArgs e)
@@ -416,6 +455,10 @@ namespace TombEditor.Forms
             settingsPanelNG.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
+            butEditSetName.Enabled = enable;
+            butCloneProcAnim.Enabled = enable;
+            butMergeProcAnim.Enabled = enable;
+            butReplaceProcAnim.Enabled = enable;
 
             if (enable)
             {
@@ -456,7 +499,7 @@ namespace TombEditor.Forms
             TextureArea textureArea = textureMap.SelectedTexture;
             if (!(textureArea.Texture is LevelTexture))
             {
-                DarkMessageBox.Show(this, "No valid texture region selected", "Invalid texture selection", MessageBoxIcon.Error);
+                popup.ShowError(this.textureMap, "No valid texture region selected", "Invalid selection");
                 return null;
             }
 
@@ -468,6 +511,263 @@ namespace TombEditor.Forms
                 TexCoord2 = textureArea.TexCoord2,
                 TexCoord3 = textureArea.TexCoord3
             };
+        }
+
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.Add)
+        {
+            // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
+            // because for scale/stretch types, visible effect opposes mathematical function.
+
+            effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
+
+            // Make new set, copy or replace current one
+            // CreationBehaviour = 0 means we're creating new array, 1 = copying current and modifying a copy, 2 = replacing current
+
+            AnimatedTextureSet targetSet = null;
+            if (genType >= AnimGenerationType.Clone && comboAnimatedTextureSets.SelectedItem != null)
+            {
+                targetSet = genType == AnimGenerationType.Clone ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
+                
+                // Only generate new name if we clone current set
+
+                if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
+                    targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
+
+                if (genType == AnimGenerationType.Replace)
+                    targetSet.Frames.Clear();
+            }
+
+            // New set
+            if(genType == AnimGenerationType.Add || genType == AnimGenerationType.Replace)
+            {
+                if (!(textureMap.SelectedTexture.Texture is LevelTexture))
+                {
+                    popup.ShowInfo(this.textureMap, "Please select texture region!");
+                    return false;
+                }
+
+                if (genType == AnimGenerationType.Add)
+                    targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
+
+                for (int i = 0; i < resultingFrameCount; i++)
+                    targetSet.Frames.Add(new AnimatedTextureFrame
+                    {
+                        Texture = (LevelTexture)textureMap.SelectedTexture.Texture,
+                        TexCoord0 = textureMap.SelectedTexture.TexCoord0,
+                        TexCoord1 = textureMap.SelectedTexture.TexCoord1,
+                        TexCoord2 = textureMap.SelectedTexture.TexCoord2,
+                        TexCoord3 = textureMap.SelectedTexture.TexCoord3
+                    });
+            }
+
+            // Actualize frame count, cause it may change in regard of generation type
+
+            resultingFrameCount = targetSet.Frames.Count;
+
+            // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
+
+            if (genType != AnimGenerationType.Add)
+            {
+                int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
+                if (foundPostfixPos != -1)
+                    targetSet.Name = targetSet.Name.Substring(0, foundPostfixPos);
+                targetSet.Name += animNameCombineString + comboProcPresets.SelectedItem.ToString() + " effect)";
+            }
+
+            if (targetSet == null || resultingFrameCount <= 0)
+                return false;
+
+            // Process frames
+
+            var rnd = new Random(); // Used for shake
+
+            for (int i = 0; i < resultingFrameCount; i++)
+            {
+                var referenceFrame = targetSet.Frames[i].Clone();
+                int midFrame = loop ? resultingFrameCount / 2 : resultingFrameCount;
+                float bias = Math.Abs(i - midFrame) / (float)midFrame;
+                float weight = (smooth ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
+
+                switch (type)
+                {
+                    case ProceduralAnimationType.HorizontalSkew1:
+                    case ProceduralAnimationType.HorizontalSkew2:
+                    case ProceduralAnimationType.VerticalSkew1:
+                    case ProceduralAnimationType.VerticalSkew2:
+                        {
+                            bool otherDirection = (int)type % 2 == 0;
+
+                            if(effectStrength < 0.0f)
+                                weight = 1.0f + weight;
+                            if (otherDirection)
+                                weight = 1.0f - weight;
+
+                            int[] index = new int[2];
+                            Vector2[] coord1 = new Vector2[2];
+                            Vector2[] coord2 = new Vector2[2];
+
+                            if (otherDirection)
+                            {
+                                index[0] = 0;
+                                index[1] = 2;
+                            }
+                            else
+                            {
+                                index[0] = 1;
+                                index[1] = 3;
+                            }
+
+                            if (type == ProceduralAnimationType.HorizontalSkew2)
+                            {
+                                coord2[0] = referenceFrame.TexCoord3;
+                                coord2[1] = referenceFrame.TexCoord1;
+                            }
+                            else
+                            {
+                                coord2[0] = referenceFrame.TexCoord1;
+                                coord2[1] = referenceFrame.TexCoord3;
+                            }
+
+                            if(type == ProceduralAnimationType.HorizontalSkew1)
+                            {
+                                coord1[0] = referenceFrame.TexCoord2;
+                                coord1[1] = referenceFrame.TexCoord0;
+                            }
+                            else
+                            {
+                                coord1[0] = referenceFrame.TexCoord0;
+                                coord1[1] = referenceFrame.TexCoord2;
+                            }
+
+                            for (int c = 0; c < 2; c++)
+                            {
+                                var result = Vector2.Lerp(coord1[c], coord2[c], weight);
+
+                                switch (index[c])
+                                {
+                                    case 0:
+                                        targetSet.Frames[i].TexCoord0 = result;
+                                        break;
+                                    case 1:
+                                        targetSet.Frames[i].TexCoord1 = result;
+                                        break;
+                                    case 2:
+                                        targetSet.Frames[i].TexCoord2 = result;
+                                        break;
+                                    case 3:
+                                        targetSet.Frames[i].TexCoord3 = result;
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+
+                    case ProceduralAnimationType.HorizontalStretch:
+                    case ProceduralAnimationType.VerticalStretch:
+                    case ProceduralAnimationType.Scale:
+                        {
+                            // Reverse effect strength for negative numbers for proper UV positioning
+
+                            if (effectStrength < 0)
+                                weight = Math.Abs(effectStrength) + weight;
+
+                            // 0 = horizontal pass, 0 = vertical pass. Diagonal stretch and scale types use both.
+
+                            bool[] passes = new bool[2]
+                            {
+                                type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.Scale,
+                                type == ProceduralAnimationType.VerticalStretch   || type == ProceduralAnimationType.Scale
+                            };
+
+                            for (int p = 0; p < 2; p++)
+                                if (passes[p])
+                                {
+                                    var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), 0.5f);
+                                    var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), 0.5f);
+                                    
+                                    targetSet.Frames[i].TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight);
+                                    targetSet.Frames[i].TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, (p == 0 ? center2 : center1), weight);
+                                    targetSet.Frames[i].TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight);
+                                    targetSet.Frames[i].TexCoord3 = Vector2.Lerp(referenceFrame.TexCoord3, (p == 0 ? center1 : center2), weight);
+
+                                    if(p == 0)
+                                        referenceFrame = targetSet.Frames[i].Clone(); // Reassign reference after first pass
+                                }
+                        }
+                        break;
+
+                    case ProceduralAnimationType.Spin:
+                        {
+                            double currAngle = 2 * Math.PI * weight;
+
+                            var center = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord2, 0.5f);
+                            var radius = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1) * 0.5f;
+
+                            var d0 = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1);
+                            var d1 = Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord2);
+                            var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
+                            var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
+
+                            // If any frame is invalid, return false
+                            if (!MathC.NearEqual(d0, d1) || !MathC.NearEqual(d1, d2) || !MathC.NearEqual(d2, d3) || !MathC.NearEqual(d3, d0) ||
+                                Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
+                                Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
+                            {
+                                popup.ShowError(this.textureMap, "Spin function is available only for square seleciton!");
+                                return false;
+                            }
+
+                            targetSet.Frames[i].TexCoord0 = new Vector2(center.X + radius * (float)Math.Cos(currAngle), center.Y + radius * (float)Math.Sin(currAngle));
+                            targetSet.Frames[i].TexCoord1 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2));
+                            targetSet.Frames[i].TexCoord2 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI), center.Y + radius * (float)Math.Sin(currAngle + Math.PI));
+                            targetSet.Frames[i].TexCoord3 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + radius * (float)Math.Sin(currAngle + Math.PI * 1.5f));
+                        }
+                        break;
+
+                    case ProceduralAnimationType.HorizontalPan:
+                    case ProceduralAnimationType.VerticalPan:
+                        {
+                            bool horizontal = type == ProceduralAnimationType.HorizontalPan;
+
+                            var dist1 = Vector2.Distance(referenceFrame.TexCoord0, horizontal ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1) * weight;
+                            var dist2 = Vector2.Distance(referenceFrame.TexCoord1, horizontal ? referenceFrame.TexCoord2 : referenceFrame.TexCoord0) * weight;
+
+                            targetSet.Frames[i].TexCoord0 += horizontal ? new Vector2(dist1, 0) : new Vector2(0, dist1);
+                            targetSet.Frames[i].TexCoord1 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist1);
+                            targetSet.Frames[i].TexCoord2 += horizontal ? new Vector2(dist1, 0) : new Vector2(0, dist2);
+                            targetSet.Frames[i].TexCoord3 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist2);
+                        }
+                        break;
+
+                    case ProceduralAnimationType.Shake:
+                        {
+                            int rndStrength = (int)(effectStrength * 16.0f);
+                            float xRnd = rnd.Next(-rndStrength, rndStrength);
+                            float yRnd = rnd.Next(-rndStrength, rndStrength);
+                            Vector2 rndAdd = new Vector2(xRnd, yRnd);
+
+                            targetSet.Frames[i].TexCoord0 += rndAdd;
+                            targetSet.Frames[i].TexCoord1 += rndAdd;
+                            targetSet.Frames[i].TexCoord2 += rndAdd;
+                            targetSet.Frames[i].TexCoord3 += rndAdd;
+                        }
+                        break;
+                }
+            }
+
+            if(genType < AnimGenerationType.Merge)
+            {
+                if (!_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
+                {
+                    _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
+                    _editor.AnimatedTexturesChange();
+                    comboAnimatedTextureSets.SelectedItem = targetSet;
+                }
+            }
+            else
+                _editor.AnimatedTexturesChange();
+
+            return true;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -585,7 +885,10 @@ namespace TombEditor.Forms
                 };
 
                 if (textureMap.SelectedTexture != textureToShow)
+                {
                     textureMap.ShowTexture(textureToShow);
+                    _editor.SelectedTexture = textureToShow;
+                }
             }
         }
 
@@ -594,8 +897,8 @@ namespace TombEditor.Forms
             protected override float MaxTextureSize => float.PositiveInfinity;
             protected override bool DrawTriangle => false;
 
-            private static readonly Pen outlinePen = new Pen(Color.Silver, 2);
-            private static readonly Pen activeOutlinePen = new Pen(Color.Violet, 2);
+            private static readonly Pen outlinePen = new Pen(Color.FromArgb(80, 192, 192, 192), 2);
+            private static readonly Pen activeOutlinePen = new Pen(Color.FromArgb(200, 238, 82, 238), 2);
             private static readonly Brush textBrush = new SolidBrush(Color.Violet);
             private static readonly Brush textShadowBrush = new SolidBrush(Color.Black);
             private static readonly Font textFont = new Font("Segoe UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -660,6 +963,7 @@ namespace TombEditor.Forms
                                 e.Graphics.DrawString(counterString, textFont, textBrush, textArea, textFormat);
                             }
                         }
+                        e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                         e.Graphics.DrawPolygon(current ? activeOutlinePen : outlinePen, edges);
                     }
                 }
@@ -693,9 +997,9 @@ namespace TombEditor.Forms
             switch (effect)
             {
                 case AnimatedTextureAnimationType.Frames:
-                    labelFps.Visible = true;
+                    lblFps.Visible = true;
                     comboFps.Visible = true;
-                    labelUvRotate.Visible = false;
+                    lblUvRotate.Visible = false;
                     comboUvRotate.Visible = false;
 
                     comboFps.Items.Clear();
@@ -709,18 +1013,18 @@ namespace TombEditor.Forms
                     break;
 
                 case AnimatedTextureAnimationType.PFrames:
-                    labelFps.Visible = false;
+                    lblFps.Visible = false;
                     comboFps.Visible = false;
-                    labelUvRotate.Visible = false;
+                    lblUvRotate.Visible = false;
                     comboUvRotate.Visible = false;
                     break;
 
                 case AnimatedTextureAnimationType.FullRotate:
                 case AnimatedTextureAnimationType.HalfRotate:
                 case AnimatedTextureAnimationType.RiverRotate:
-                    labelFps.Visible = true;
+                    lblFps.Visible = true;
                     comboFps.Visible = true;
-                    labelUvRotate.Visible = true;
+                    lblUvRotate.Visible = true;
                     comboUvRotate.Visible = true;
 
                     comboFps.Items.Clear();
@@ -774,6 +1078,43 @@ namespace TombEditor.Forms
             Point screenPointLeft = comboCurrentTexture.PointToScreen(new Point(0, 0));
             Rectangle screenPointRight = Screen.GetBounds(comboCurrentTexture.PointToScreen(new Point(0, comboCurrentTexture.Width)));
             comboCurrentTexture.DropDownWidth = screenPointRight.Right - screenPointLeft.X - 15; // Margin
+        }
+
+        private void butEditSetName_Click(object sender, EventArgs e)
+        {
+            var currentSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+
+            if (currentSet == null)
+                return;
+
+            using (var form = new FormInputBox("Edit set name", "Insert the name of this animation set:", currentSet.Name))
+            {
+                if (form.ShowDialog(this) == DialogResult.Cancel)
+                    return;
+
+                currentSet.Name = form.Result;
+                _editor.AnimatedTexturesChange();
+            }
+        }
+
+        private void butGenerateProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 0);
+        }
+
+        private void butCloneProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Clone);
+        }
+
+        private void butMergeProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Merge);
+        }
+
+        private void butReplaceProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Replace);
         }
     }
 }

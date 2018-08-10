@@ -26,7 +26,7 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.CropRoom(targetRoom, targetArea, this);
             }));
 
-            Items.Add(new ToolStripMenuItem("Split room", Properties.Resources.general_split_files_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Split room", Properties.Resources.actions_Split_16, (o, e) =>
             {
                 EditorActions.SplitRoom(this);
             }));
