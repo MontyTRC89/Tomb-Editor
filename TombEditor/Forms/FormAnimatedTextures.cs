@@ -36,10 +36,11 @@ namespace TombEditor.Forms
 
         private enum AnimGenerationType
         {
-            Add,
+            New,
             Clone,
             Merge,
-            Replace
+            Replace,
+            AddFrames
         }
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -459,6 +460,7 @@ namespace TombEditor.Forms
             butCloneProcAnim.Enabled = enable;
             butMergeProcAnim.Enabled = enable;
             butReplaceProcAnim.Enabled = enable;
+            butAddProcAnim.Enabled = enable;
 
             if (enable)
             {
@@ -513,18 +515,19 @@ namespace TombEditor.Forms
             };
         }
 
-        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.Add)
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.New)
         {
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
 
             effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
 
-            // Make new set, copy or replace current one
-            // CreationBehaviour = 0 means we're creating new array, 1 = copying current and modifying a copy, 2 = replacing current
+            int startIndex = genType == AnimGenerationType.AddFrames ? texturesDataGridView.CurrentRow.Index + 1 : 0;
+
+            // Make new set or clone current one
 
             AnimatedTextureSet targetSet = null;
-            if (genType >= AnimGenerationType.Clone && comboAnimatedTextureSets.SelectedItem != null)
+            if (genType != AnimGenerationType.New && comboAnimatedTextureSets.SelectedItem != null)
             {
                 targetSet = genType == AnimGenerationType.Clone ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
                 
@@ -536,9 +539,8 @@ namespace TombEditor.Forms
                 if (genType == AnimGenerationType.Replace)
                     targetSet.Frames.Clear();
             }
-
-            // New set
-            if(genType == AnimGenerationType.Add || genType == AnimGenerationType.Replace)
+            
+            if(genType == AnimGenerationType.New || genType == AnimGenerationType.Replace || genType == AnimGenerationType.AddFrames)
             {
                 if (!(textureMap.SelectedTexture.Texture is LevelTexture))
                 {
@@ -546,28 +548,37 @@ namespace TombEditor.Forms
                     return false;
                 }
 
-                if (genType == AnimGenerationType.Add)
+                if (genType == AnimGenerationType.New)
                     targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
 
                 for (int i = 0; i < resultingFrameCount; i++)
-                    targetSet.Frames.Add(new AnimatedTextureFrame
+                {
+                    var dummyFrame = new AnimatedTextureFrame
                     {
                         Texture = (LevelTexture)textureMap.SelectedTexture.Texture,
                         TexCoord0 = textureMap.SelectedTexture.TexCoord0,
                         TexCoord1 = textureMap.SelectedTexture.TexCoord1,
                         TexCoord2 = textureMap.SelectedTexture.TexCoord2,
                         TexCoord3 = textureMap.SelectedTexture.TexCoord3
-                    });
+                    };
+
+                    if (genType != AnimGenerationType.AddFrames)
+                        targetSet.Frames.Add(dummyFrame);
+                    else
+                        targetSet.Frames.Insert(startIndex, dummyFrame);
+                }
+
             }
 
             // Actualize frame count, cause it may change in regard of generation type
+            if (genType != AnimGenerationType.AddFrames)
+                resultingFrameCount = targetSet.Frames.Count;
 
-            resultingFrameCount = targetSet.Frames.Count;
             bool realAnim = resultingFrameCount > 1; // Used to bypass smooth and loop
 
             // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
 
-            if (genType != AnimGenerationType.Add)
+            if (genType != AnimGenerationType.New)
             {
                 int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
                 if (foundPostfixPos != -1)
@@ -582,11 +593,11 @@ namespace TombEditor.Forms
 
             var rnd = new Random(); // Used for shake
 
-            for (int i = 0; i < resultingFrameCount; i++)
+            for (int cnt = 0, i = startIndex; cnt < resultingFrameCount; cnt++, i++)
             {
                 var referenceFrame = targetSet.Frames[i].Clone();
                 int midFrame = loop && realAnim ? resultingFrameCount / 2 : resultingFrameCount;
-                float bias = Math.Abs(i - midFrame) / (float)midFrame;
+                float bias = Math.Abs(cnt - midFrame) / (float)midFrame;
                 float weight = (smooth && realAnim ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
 
                 switch (type)
@@ -729,9 +740,10 @@ namespace TombEditor.Forms
                     case ProceduralAnimationType.VerticalPan:
                         {
                             bool horizontal = type == ProceduralAnimationType.HorizontalPan;
+                            var multiplier = Math.Sign(effectStrength) * (Math.Abs(weight) - 1.0f); // Start from center
 
-                            var dist1 = Vector2.Distance(referenceFrame.TexCoord0, horizontal ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1) * weight;
-                            var dist2 = Vector2.Distance(referenceFrame.TexCoord1, horizontal ? referenceFrame.TexCoord2 : referenceFrame.TexCoord0) * weight;
+                            var dist1 = Vector2.Distance(referenceFrame.TexCoord0, horizontal ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1) * multiplier;
+                            var dist2 = Vector2.Distance(referenceFrame.TexCoord1, horizontal ? referenceFrame.TexCoord2 : referenceFrame.TexCoord0) * multiplier;
 
                             targetSet.Frames[i].TexCoord0 += horizontal ? new Vector2(dist1, 0) : new Vector2(0, dist1);
                             targetSet.Frames[i].TexCoord1 += horizontal ? new Vector2(dist2, 0) : new Vector2(0, dist1);
@@ -742,7 +754,7 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.Shake:
                         {
-                            int rndStrength = (int)(effectStrength * 16.0f);
+                            int rndStrength = (int)(Math.Abs(effectStrength - weight) * 16.0f); // Negative shake doesn't make sense
                             float xRnd = rnd.Next(-rndStrength, rndStrength);
                             float yRnd = rnd.Next(-rndStrength, rndStrength);
                             Vector2 rndAdd = new Vector2(xRnd, yRnd);
@@ -1100,7 +1112,7 @@ namespace TombEditor.Forms
 
         private void butGenerateProcAnim_Click(object sender, EventArgs e)
         {
-            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, 0);
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.New);
         }
 
         private void butCloneProcAnim_Click(object sender, EventArgs e)
@@ -1116,6 +1128,11 @@ namespace TombEditor.Forms
         private void butReplaceProcAnim_Click(object sender, EventArgs e)
         {
             GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.Replace);
+        }
+
+        private void butAddProcAnim_Click(object sender, EventArgs e)
+        {
+            GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.AddFrames);
         }
     }
 }
