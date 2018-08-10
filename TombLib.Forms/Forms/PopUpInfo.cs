@@ -165,6 +165,14 @@ namespace TombLib.Forms
 
         private void UpdateTimer(object sender, EventArgs e)
         {
+            if (_parent.Disposing || _parent.IsDisposed)
+            {
+                _animTimer.Stop();
+                _animTimer.Tick -= UpdateTimer;
+                Close();
+                return;
+            }
+
             _animProgress += 0.1f;
             _animProgress = (float)Math.Round(_animProgress, 1, MidpointRounding.AwayFromZero);
 

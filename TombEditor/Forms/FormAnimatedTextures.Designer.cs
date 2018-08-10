@@ -249,7 +249,7 @@ namespace TombEditor.Forms
             this.butReplaceProcAnim.Size = new System.Drawing.Size(54, 23);
             this.butReplaceProcAnim.TabIndex = 21;
             this.butReplaceProcAnim.Tag = "";
-            this.butReplaceProcAnim.Text = "Replace";
+            this.butReplaceProcAnim.Text = "Merge";
             this.toolTip.SetToolTip(this.butReplaceProcAnim, "Transform and replace current animation");
             this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
             // 

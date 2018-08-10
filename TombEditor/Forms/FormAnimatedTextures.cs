@@ -33,7 +33,8 @@ namespace TombEditor.Forms
         }
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+        private readonly PopUpInfo popup = new PopUpInfo();
+
         private class TransparentBindingList<T> : BindingList<T>
         {
             public TransparentBindingList(IList<T> list) : base(list) { }
@@ -309,7 +310,7 @@ namespace TombEditor.Forms
                 foreach (AnimatedTextureFrame frame in currentSet.Frames)
                     frameCount += frame.Repeat;
 
-            if (tooManyFramesWarning.Visible = frameCount > _maxLegacyFrames)
+            if (tooManyFramesWarning.Visible = _editor.Level.Settings.GameVersion == GameVersion.TRNG && frameCount > _maxLegacyFrames)
                 toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
 
             if (_isNg)
@@ -483,7 +484,7 @@ namespace TombEditor.Forms
             TextureArea textureArea = textureMap.SelectedTexture;
             if (!(textureArea.Texture is LevelTexture))
             {
-                DarkMessageBox.Show(this, "No valid texture region selected", "Invalid texture selection", MessageBoxIcon.Error);
+                popup.ShowError(this.textureMap, "No valid texture region selected", "Invalid selection");
                 return null;
             }
 
@@ -522,7 +523,8 @@ namespace TombEditor.Forms
             {
                 if (!(textureMap.SelectedTexture.Texture is LevelTexture))
                 {
-                    DarkMessageBox.Show(this, "Please select texture region!", "Invalid texture selection", MessageBoxIcon.Error);
+
+                    popup.ShowInfo(this.textureMap, "Please select texture region!");
                     return false;
                 }
 
@@ -673,11 +675,11 @@ namespace TombEditor.Forms
                             if (!MathC.NearEqual(d0, d1) || !MathC.NearEqual(d1, d2) || !MathC.NearEqual(d2, d3) || !MathC.NearEqual(d3, d0) ||
                                 Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
                                 Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
-                                // Frame is invalid, bypass it (if existing) or return false (if new)
-                                if (creationBehaviour != 0)
-                                    continue;
-                                else
-                                    return false;
+                            // Frame is invalid, bypass it (if existing) or return false (if new)
+                            {
+                                popup.ShowError(this.textureMap, "Spin function is available only for square seleciton!");
+                                return false;
+                            }
 
                             targetSet.Frames[i].TexCoord0 = new Vector2(center.X + radius * (float)Math.Cos(currAngle), center.Y + radius * (float)Math.Sin(currAngle));
                             targetSet.Frames[i].TexCoord1 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2));
@@ -845,7 +847,7 @@ namespace TombEditor.Forms
             protected override float MaxTextureSize => float.PositiveInfinity;
             protected override bool DrawTriangle => false;
 
-            private static readonly Pen outlinePen = new Pen(Color.FromArgb(200, 192, 192, 192), 2);
+            private static readonly Pen outlinePen = new Pen(Color.FromArgb(80, 192, 192, 192), 2);
             private static readonly Pen activeOutlinePen = new Pen(Color.FromArgb(200, 238, 82, 238), 2);
             private static readonly Brush textBrush = new SolidBrush(Color.Violet);
             private static readonly Brush textShadowBrush = new SolidBrush(Color.Black);
