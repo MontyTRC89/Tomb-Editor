@@ -563,6 +563,7 @@ namespace TombEditor.Forms
             // Actualize frame count, cause it may change in regard of generation type
 
             resultingFrameCount = targetSet.Frames.Count;
+            bool realAnim = resultingFrameCount > 1; // Used to bypass smooth and loop
 
             // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
 
@@ -584,9 +585,9 @@ namespace TombEditor.Forms
             for (int i = 0; i < resultingFrameCount; i++)
             {
                 var referenceFrame = targetSet.Frames[i].Clone();
-                int midFrame = loop ? resultingFrameCount / 2 : resultingFrameCount;
+                int midFrame = loop && realAnim ? resultingFrameCount / 2 : resultingFrameCount;
                 float bias = Math.Abs(i - midFrame) / (float)midFrame;
-                float weight = (smooth ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
+                float weight = (smooth && realAnim ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
 
                 switch (type)
                 {
