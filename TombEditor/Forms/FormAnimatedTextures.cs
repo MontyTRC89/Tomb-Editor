@@ -501,7 +501,7 @@ namespace TombEditor.Forms
             TextureArea textureArea = textureMap.SelectedTexture;
             if (!(textureArea.Texture is LevelTexture))
             {
-                popup.ShowError(this.textureMap, "No valid texture region selected", "Invalid selection");
+                popup.ShowError(textureMap, "No valid texture region selected", "Invalid selection");
                 return null;
             }
 
@@ -519,37 +519,50 @@ namespace TombEditor.Forms
         {
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
-
             effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
 
+            // Starting index is 0 for any type except AddFrames, where we're inserting frames at selection point.
             int startIndex = genType == AnimGenerationType.AddFrames ? texturesDataGridView.CurrentRow.Index + 1 : 0;
 
-            // Make new set or clone current one
-
             AnimatedTextureSet targetSet = null;
-            if (genType != AnimGenerationType.New && comboAnimatedTextureSets.SelectedItem != null)
-            {
-                targetSet = genType == AnimGenerationType.Clone ? (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone() : (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet);
-                
-                // Only generate new name if we clone current set
 
-                if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
-                    targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
+            // Initialize any type which involves existing set
+            if (genType != AnimGenerationType.New)
+            {
+                if (comboAnimatedTextureSets.SelectedItem == null || !(comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet))
+                {
+                    popup.ShowError(textureMap, "No valid animation selected!");
+                    return false;
+                }
+
+                targetSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+
+                if (genType == AnimGenerationType.Clone)
+                {
+                    targetSet = targetSet.Clone(); // Make a copy and use it for clone type
+
+                    // Only generate new name if we clone current set
+                    if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
+                        targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
+                }
 
                 if (genType == AnimGenerationType.Replace)
                     targetSet.Frames.Clear();
             }
+            else
+                targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
             
-            if(genType == AnimGenerationType.New || genType == AnimGenerationType.Replace || genType == AnimGenerationType.AddFrames)
+            if (genType == AnimGenerationType.New ||
+                genType == AnimGenerationType.Replace ||
+                genType == AnimGenerationType.AddFrames)
             {
                 if (!(textureMap.SelectedTexture.Texture is LevelTexture))
                 {
-                    popup.ShowInfo(this.textureMap, "Please select texture region!");
+                    popup.ShowInfo(textureMap, "Please select texture region!");
                     return false;
                 }
 
-                if (genType == AnimGenerationType.New)
-                    targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
+                // Generate dummy reference frames and insert them into set
 
                 for (int i = 0; i < resultingFrameCount; i++)
                 {
@@ -567,17 +580,22 @@ namespace TombEditor.Forms
                     else
                         targetSet.Frames.Insert(startIndex, dummyFrame);
                 }
-
             }
 
             // Actualize frame count, cause it may change in regard of generation type
             if (genType != AnimGenerationType.AddFrames)
                 resultingFrameCount = targetSet.Frames.Count;
 
-            bool realAnim = resultingFrameCount > 1; // Used to bypass smooth and loop
+            if (resultingFrameCount <= 0)
+            {
+                popup.ShowError(textureMap, "Selected animation has no frames!");
+                return false;
+            }
+
+            // Used to bypass smooth and loop, which doesn't make sense with single-frame anims
+            bool realAnim = resultingFrameCount > 1; 
 
             // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
-
             if (genType != AnimGenerationType.New)
             {
                 int foundPostfixPos = targetSet.Name.IndexOf(animNameCombineString);
@@ -586,21 +604,19 @@ namespace TombEditor.Forms
                 targetSet.Name += animNameCombineString + comboProcPresets.SelectedItem.ToString() + " effect)";
             }
 
-            if (targetSet == null || resultingFrameCount <= 0)
-                return false;
+            var rnd = new Random(); // Needed for shake procedure
 
-            // Process frames
-
-            var rnd = new Random(); // Used for shake
+            // For shake procedure, smooth makes no sense without loop and vice versa.
             if (type == ProceduralAnimationType.Shake && smooth)
                 loop = true;
 
+            // Process frames
 
             for (int cnt = 0, i = startIndex; cnt < resultingFrameCount; cnt++, i++)
             {
                 var referenceFrame = targetSet.Frames[i].Clone();
-                int midFrame = loop && realAnim ? resultingFrameCount / 2 : resultingFrameCount;
-                float bias = Math.Abs(cnt - midFrame) / (float)midFrame;
+                float midFrame = loop && realAnim ? resultingFrameCount / 2.0f : resultingFrameCount;
+                float bias = Math.Abs(cnt - midFrame) / midFrame;
                 float weight = (smooth && realAnim ? (float)MathC.SmoothStep(0.0, 1.0, bias) : bias) * effectStrength;
 
                 switch (type)
@@ -612,6 +628,7 @@ namespace TombEditor.Forms
                         {
                             bool otherDirection = (int)type % 2 == 0;
 
+                            // Invert skew angle in regard of strength sign and direction
                             if(effectStrength < 0.0f)
                                 weight = 1.0f + weight;
                             if (otherDirection)
@@ -657,21 +674,12 @@ namespace TombEditor.Forms
                             for (int c = 0; c < 2; c++)
                             {
                                 var result = Vector2.Lerp(coord1[c], coord2[c], weight);
-
                                 switch (index[c])
                                 {
-                                    case 0:
-                                        targetSet.Frames[i].TexCoord0 = result;
-                                        break;
-                                    case 1:
-                                        targetSet.Frames[i].TexCoord1 = result;
-                                        break;
-                                    case 2:
-                                        targetSet.Frames[i].TexCoord2 = result;
-                                        break;
-                                    case 3:
-                                        targetSet.Frames[i].TexCoord3 = result;
-                                        break;
+                                    case 0: targetSet.Frames[i].TexCoord0 = result; break;
+                                    case 1: targetSet.Frames[i].TexCoord1 = result; break;
+                                    case 2: targetSet.Frames[i].TexCoord2 = result; break;
+                                    case 3: targetSet.Frames[i].TexCoord3 = result; break;
                                 }
                             }
                         }
@@ -682,12 +690,10 @@ namespace TombEditor.Forms
                     case ProceduralAnimationType.Scale:
                         {
                             // Reverse effect strength for negative numbers for proper UV positioning
-
                             if (effectStrength < 0)
                                 weight = Math.Abs(effectStrength) + weight;
 
-                            // 0 = horizontal pass, 0 = vertical pass. Diagonal stretch and scale types use both.
-
+                            // 0 = horizontal pass, 1 = vertical pass. Scale type uses both.
                             bool[] passes = new bool[2]
                             {
                                 type == ProceduralAnimationType.HorizontalStretch || type == ProceduralAnimationType.Scale,
@@ -725,10 +731,9 @@ namespace TombEditor.Forms
 
                             // If any frame is invalid, return false
                             if (!MathC.NearEqual(d0, d1) || !MathC.NearEqual(d1, d2) || !MathC.NearEqual(d2, d3) || !MathC.NearEqual(d3, d0) ||
-                                Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
-                                Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
+                                Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) != Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
                             {
-                                popup.ShowError(this.textureMap, "Spin function is available only for square seleciton!");
+                                popup.ShowError(textureMap, "Spin function is available only for square seleciton!");
                                 return false;
                             }
 
@@ -743,7 +748,7 @@ namespace TombEditor.Forms
                     case ProceduralAnimationType.VerticalPan:
                         {
                             bool horizontal = type == ProceduralAnimationType.HorizontalPan;
-                            var multiplier = Math.Sign(effectStrength) * (Math.Abs(weight) - 1.0f); // Start from center
+                            var multiplier = -Math.Sign(effectStrength) * (Math.Abs(weight) - 1.0f); // Start from origin
 
                             var dist1 = Vector2.Distance(referenceFrame.TexCoord0, horizontal ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1) * multiplier;
                             var dist2 = Vector2.Distance(referenceFrame.TexCoord1, horizontal ? referenceFrame.TexCoord2 : referenceFrame.TexCoord0) * multiplier;
@@ -757,7 +762,10 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.Shake:
                         {
-                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : 1.0f) * 16.0f); // Negative shake doesn't make sense
+                            // Shake strength is constant in case effect is non-symmetric (looped).
+                            // Negative shake doesn't make sense, so we apply Abs() onto effect strength.
+                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : 1.0f) * 16.0f); 
+
                             float xRnd = rnd.Next(-rndStrength, rndStrength);
                             float yRnd = rnd.Next(-rndStrength, rndStrength);
                             Vector2 rndAdd = new Vector2(xRnd, yRnd);
@@ -771,9 +779,16 @@ namespace TombEditor.Forms
                 }
             }
 
+            // Add new set to level for types which create new animation, otherwise just send change event.
             if(genType < AnimGenerationType.Merge)
             {
-                if (!_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
+                if (_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
+                {
+                    popup.ShowInfo(textureMap, "Animation with same properties already exists.");
+                    comboAnimatedTextureSets.SelectedItem = targetSet;
+                    return false;
+                }
+                else
                 {
                     _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
                     _editor.AnimatedTexturesChange();
