@@ -215,7 +215,7 @@ namespace TombEditor.Forms
 
         private AnimatedTextureSet NewSet()
         {
-            var newSet = new AnimatedTextureSet();
+            var newSet = new AnimatedTextureSet() { Name = "Animation #" + _editor.Level.Settings.AnimatedTextureSets.Count };
             _editor.Level.Settings.AnimatedTextureSets.Add(newSet);
             _editor.AnimatedTexturesChange();
             comboAnimatedTextureSets.SelectedItem = newSet;
@@ -496,7 +496,7 @@ namespace TombEditor.Forms
             };
         }
 
-        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, bool applyToSelected = false)
+        private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, bool createFromSelection = false)
         {
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
@@ -506,10 +506,13 @@ namespace TombEditor.Forms
             // Fill reference array or use selection
 
             AnimatedTextureSet targetSet;
-            if (applyToSelected)
+            if (createFromSelection)
             {
-                targetSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+                targetSet = (comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet).Clone();
                 resultingFrameCount = targetSet.Frames.Count;
+
+                if (string.IsNullOrEmpty(targetSet.Name))
+                    targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
             }
             else
             {
@@ -519,7 +522,7 @@ namespace TombEditor.Forms
                     return false;
                 }
 
-                targetSet = new AnimatedTextureSet();
+                targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
 
                 for (int i = 0; i < resultingFrameCount; i++)
                     targetSet.Frames.Add(new AnimatedTextureFrame
@@ -531,6 +534,8 @@ namespace TombEditor.Forms
                         TexCoord3 = textureMap.SelectedTexture.TexCoord3
                     });
             }
+
+            targetSet.Name += " (with " + comboProcPresets.SelectedItem.ToString() + " effect)";
 
             if (targetSet == null || resultingFrameCount <= 0)
                 return false;
@@ -599,7 +604,7 @@ namespace TombEditor.Forms
                                 Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) !=
                                 Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
                                 // Frame is invalid, bypass it (if existing) or return false (if new)
-                                if (applyToSelected)
+                                if (createFromSelection)
                                     continue;
                                 else
                                     return false;
@@ -613,9 +618,13 @@ namespace TombEditor.Forms
                 }
             }
 
-            if(!applyToSelected) _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
-            _editor.AnimatedTexturesChange();
-            if (!applyToSelected) comboAnimatedTextureSets.SelectedItem = targetSet;
+            if(!_editor.Level.Settings.AnimatedTextureSets.Contains(targetSet))
+            {
+                _editor.Level.Settings.AnimatedTextureSets.Add(targetSet);
+                _editor.AnimatedTexturesChange();
+            }
+
+            comboAnimatedTextureSets.SelectedItem = targetSet;
             return true;
         }
 
