@@ -592,6 +592,9 @@ namespace TombEditor.Forms
             // Process frames
 
             var rnd = new Random(); // Used for shake
+            if (type == ProceduralAnimationType.Shake && smooth)
+                loop = true;
+
 
             for (int cnt = 0, i = startIndex; cnt < resultingFrameCount; cnt++, i++)
             {
@@ -754,7 +757,7 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.Shake:
                         {
-                            int rndStrength = (int)(Math.Abs(effectStrength - weight) * 16.0f); // Negative shake doesn't make sense
+                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : 1.0f) * 16.0f); // Negative shake doesn't make sense
                             float xRnd = rnd.Next(-rndStrength, rndStrength);
                             float yRnd = rnd.Next(-rndStrength, rndStrength);
                             Vector2 rndAdd = new Vector2(xRnd, yRnd);
