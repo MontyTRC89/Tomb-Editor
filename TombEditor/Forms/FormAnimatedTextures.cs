@@ -631,9 +631,11 @@ namespace TombEditor.Forms
                             bool otherDirection = (int)type % 2 == 0;
 
                             // Invert skew angle in regard of strength sign and direction
-                            if(effectStrength < 0.0f)
-                                weight = 1.0f + weight;
-                            if (otherDirection)
+                            if (effectStrength > 0.0f)
+                                weight = effectStrength - weight;
+                            else
+                                weight = Math.Abs(weight);
+                            if (!otherDirection)
                                 weight = 1.0f - weight;
 
                             int[] index = new int[2];
