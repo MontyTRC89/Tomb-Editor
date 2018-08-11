@@ -1941,6 +1941,7 @@ namespace TombEditor.Controls
             for (int i = 0; i < roomsToDraw.Length; ++i)
                 roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(Camera.GetPosition(), roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
             Array.Sort(roomsToDrawDistanceSquared, roomsToDraw);
+            Array.Reverse(roomsToDraw);
 
             // Collect objects to draw
             List<MoveableInstance> moveablesToDraw = new List<MoveableInstance>();
