@@ -750,7 +750,7 @@ namespace TombEditor.Forms
                     case ProceduralAnimationType.VerticalPan:
                         {
                             bool horizontal = type == ProceduralAnimationType.HorizontalPan;
-                            var multiplier = -Math.Sign(effectStrength) * (Math.Abs(weight) - 1.0f); // Start from origin
+                            var multiplier = -Math.Sign(effectStrength) * (Math.Abs(weight) - Math.Abs(effectStrength)); // Start from origin
 
                             var dist1 = Vector2.Distance(referenceFrame.TexCoord0, horizontal ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1) * multiplier;
                             var dist2 = Vector2.Distance(referenceFrame.TexCoord1, horizontal ? referenceFrame.TexCoord2 : referenceFrame.TexCoord0) * multiplier;
