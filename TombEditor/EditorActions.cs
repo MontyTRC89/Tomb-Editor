@@ -1834,12 +1834,12 @@ namespace TombEditor
                     for (int y = neighborArea.Y0; y <= neighborArea.Y1 + 1; ++y)
                         for (int x = neighborArea.X0; x <= neighborArea.X1 + 1; ++x)
                         {
-                            neighborFloorLevel = room.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + room.Position.Y).Concat(new int[] { floorLevel }).Min();
-                            neighborCeilingLevel = room.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + room.Position.Y).Concat(new int[] { ceilingLevel }).Max();
+                            neighborFloorLevel = neighborRoom.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + neighborRoom.Position.Y).Concat(new int[] { neighborFloorLevel }).Min();
+                            neighborCeilingLevel = neighborRoom.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + neighborRoom.Position.Y).Concat(new int[] { neighborCeilingLevel }).Max();
                             if (neighborRoom.AlternateOpposite != null)
                             {
-                                neighborFloorLevel = neighborRoom.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + neighborRoom.Position.Y).Concat(new int[] { neighborFloorLevel }).Min();
-                                neighborCeilingLevel = neighborRoom.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + neighborRoom.Position.Y).Concat(new int[] { neighborCeilingLevel }).Max();
+                                neighborFloorLevel = neighborRoom.AlternateOpposite.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + neighborRoom.AlternateOpposite.Position.Y).Concat(new int[] { neighborFloorLevel }).Min();
+                                neighborCeilingLevel = neighborRoom.AlternateOpposite.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + neighborRoom.AlternateOpposite.Position.Y).Concat(new int[] { neighborCeilingLevel }).Max();
                             }
                         }
                     if (neighborFloorLevel == int.MaxValue || neighborCeilingLevel == int.MinValue)
@@ -1853,12 +1853,12 @@ namespace TombEditor
                     {
                         if (Math.Abs(neighborCeilingLevel - floorLevel) <
                             Math.Abs(neighborFloorLevel - ceilingLevel))
-                        { // Consider ceiling portal
-                            candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Ceiling, neighborRoom));
-                        }
-                        else
                         { // Consider floor portal
                             candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Floor, neighborRoom));
+                        }
+                        else
+                        { // Consider ceiling portal
+                            candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Ceiling, neighborRoom));
                         }
                     }
                     if (area.Width == 0 && area.X0 == 0)
