@@ -290,7 +290,7 @@ namespace TombEditor.Forms
             65536});
             this.numFrames.Location = new System.Drawing.Point(261, 22);
             this.numFrames.Maximum = new decimal(new int[] {
-            512,
+            32767,
             0,
             0,
             0});
