@@ -128,8 +128,8 @@ namespace TombEditor.Forms
             // 
             // textureMap
             // 
-            this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textureMap.Location = new System.Drawing.Point(4, 32);
             this.textureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
@@ -213,7 +213,7 @@ namespace TombEditor.Forms
             // 
             this.butAddProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddProcAnim.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
-            this.butAddProcAnim.Location = new System.Drawing.Point(218, 51);
+            this.butAddProcAnim.Location = new System.Drawing.Point(276, 51);
             this.butAddProcAnim.Name = "butAddProcAnim";
             this.butAddProcAnim.Size = new System.Drawing.Size(23, 23);
             this.butAddProcAnim.TabIndex = 23;
@@ -237,7 +237,7 @@ namespace TombEditor.Forms
             // 
             this.butMergeProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butMergeProcAnim.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
-            this.butMergeProcAnim.Location = new System.Drawing.Point(276, 51);
+            this.butMergeProcAnim.Location = new System.Drawing.Point(247, 51);
             this.butMergeProcAnim.Name = "butMergeProcAnim";
             this.butMergeProcAnim.Size = new System.Drawing.Size(23, 23);
             this.butMergeProcAnim.TabIndex = 21;
@@ -249,7 +249,7 @@ namespace TombEditor.Forms
             // 
             this.butCloneProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCloneProcAnim.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butCloneProcAnim.Location = new System.Drawing.Point(247, 51);
+            this.butCloneProcAnim.Location = new System.Drawing.Point(218, 51);
             this.butCloneProcAnim.Name = "butCloneProcAnim";
             this.butCloneProcAnim.Size = new System.Drawing.Size(23, 23);
             this.butCloneProcAnim.TabIndex = 20;
