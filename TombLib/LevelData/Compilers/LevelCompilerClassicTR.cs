@@ -116,7 +116,7 @@ namespace TombLib.LevelData.Compilers
                     break;
                 case GameVersion.TR4:
                 case GameVersion.TRNG:
-                    WriteLevelTr4();
+                    WriteLevelTr4(_level.Settings.GameVersion == GameVersion.TRNG);
                     break;
                 case GameVersion.TR5:
                 case GameVersion.TR5Main:
