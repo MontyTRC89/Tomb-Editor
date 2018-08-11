@@ -520,10 +520,8 @@ namespace TombEditor.Forms
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
             effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
-
-            // Starting index is 0 for any type except AddFrames, where we're inserting frames at selection point.
-            int startIndex = genType == AnimGenerationType.AddFrames ? texturesDataGridView.CurrentRow.Index + 1 : 0;
-
+            
+            int startIndex = 0;
             AnimatedTextureSet targetSet = null;
 
             // Initialize any type which involves existing set
@@ -545,8 +543,12 @@ namespace TombEditor.Forms
                     if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
                         targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
                 }
-
-                if (genType == AnimGenerationType.Replace)
+                else if (genType == AnimGenerationType.AddFrames)
+                {
+                    if (targetSet.Frames.Count > 0)
+                        startIndex = texturesDataGridView.CurrentRow.Index + 1; // Insert frames at selection point
+                }
+                else if (genType == AnimGenerationType.Replace)
                     targetSet.Frames.Clear();
             }
             else
@@ -797,6 +799,11 @@ namespace TombEditor.Forms
             }
             else
                 _editor.AnimatedTexturesChange();
+
+            // Point to last generated frame
+            int rowIndex = startIndex + resultingFrameCount - 1;
+            texturesDataGridView.CurrentCell = texturesDataGridView.Rows[rowIndex].Cells[0];
+            texturesDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
 
             return true;
         }
