@@ -764,7 +764,7 @@ namespace TombEditor.Forms
                         {
                             // Shake strength is constant in case effect is non-symmetric (looped).
                             // Negative shake doesn't make sense, so we apply Abs() onto effect strength.
-                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : 1.0f) * 16.0f); 
+                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : effectStrength) * 16.0f); 
 
                             float xRnd = rnd.Next(-rndStrength, rndStrength);
                             float yRnd = rnd.Next(-rndStrength, rndStrength);
