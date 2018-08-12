@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -7,6 +8,16 @@ namespace TombLib
     public static class MathC
     {
         public const float ZeroTolerance = 1e-6f; // Value a 8x higher than 1.19209290E-07F
+
+        public class VectorLengthComparer : IComparer<Vector4>
+        {
+            public int Compare(Vector4 x, Vector4 y)
+            {
+                if (x == y) return 1;
+                else if (x.Length() > y.Length()) return 1;
+                else return 0;
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static VectorInt2 To2(this VectorInt3 vec) => new VectorInt2(vec.X, vec.Y);

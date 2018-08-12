@@ -100,8 +100,7 @@ namespace TombEditor.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
-
-
+        
         public PanelRendering3D()
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -1937,10 +1936,22 @@ namespace TombEditor.Controls
 
             // Collect rooms to draw
             Room[] roomsToDraw = CollectRoomsToDraw(_editor.SelectedRoom).ToArray();
-            float[] roomsToDrawDistanceSquared = new float[roomsToDraw.Length];
+            Vector4[] roomsToDrawDistanceSquared = new Vector4[roomsToDraw.Length];
             for (int i = 0; i < roomsToDraw.Length; ++i)
-                roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(Camera.GetPosition(), roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
-            Array.Sort(roomsToDrawDistanceSquared, roomsToDraw);
+            {
+                Vector3 camPosition = Camera.GetPosition();
+                float midY = roomsToDraw[i].WorldPos.Y + (roomsToDraw[i].GetLowestCorner() + roomsToDraw[i].GetHighestCorner()) * (0.5f * 256.0f);
+                float farX = roomsToDraw[i].WorldPos.X + roomsToDraw[i].NumXSectors * 1024.0f;
+                float farZ = roomsToDraw[i].WorldPos.Z + roomsToDraw[i].NumZSectors * 1024.0f;
+
+                roomsToDrawDistanceSquared[i] = new Vector4(
+                    Vector3.DistanceSquared(camPosition, new Vector3(roomsToDraw[i].WorldPos.X, midY, roomsToDraw[i].WorldPos.Z)),
+                    Vector3.DistanceSquared(camPosition, new Vector3(farX, midY, roomsToDraw[i].WorldPos.Z)),
+                    Vector3.DistanceSquared(camPosition, new Vector3(roomsToDraw[i].WorldPos.X, midY, farZ)),
+                    Vector3.DistanceSquared(camPosition, new Vector3(farX, midY, farZ)));
+            }
+            
+            Array.Sort(roomsToDrawDistanceSquared, roomsToDraw, new MathC.VectorLengthComparer());
             Array.Reverse(roomsToDraw);
 
             // Collect objects to draw
