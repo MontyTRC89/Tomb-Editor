@@ -58,7 +58,7 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(18, "Building font & sky textures");
 
-            var image = ImageC.CreateNew(256, _level.Settings.GameVersion == GameVersion.TR5 ? 768 : 512);
+            var image = ImageC.CreateNew(256, _level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main ? 768 : 512);
 
             if (_level.Settings.GameVersion == GameVersion.TR5)
             {

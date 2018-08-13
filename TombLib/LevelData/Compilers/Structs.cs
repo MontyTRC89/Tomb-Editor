@@ -930,7 +930,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write(Speed);
             writer.Write(Accel);
             if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
-                level.Settings.GameVersion == GameVersion.TR5)
+                level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
             {
                 writer.Write(SpeedLateral);
                 writer.Write(AccelLateral);

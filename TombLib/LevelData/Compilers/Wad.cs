@@ -199,7 +199,8 @@ namespace TombLib.LevelData.Compilers
                                 false, //_level.Settings.GameVersion == GameVersion.TR1,
                                 _level.Settings.GameVersion == GameVersion.TR4 ||
                                 _level.Settings.GameVersion == GameVersion.TRNG ||
-                                _level.Settings.GameVersion == GameVersion.TR5);
+                                _level.Settings.GameVersion == GameVersion.TR5 ||
+                                _level.Settings.GameVersion != GameVersion.TR5Main);
                     }
 
                     // Figure out padding of the frames

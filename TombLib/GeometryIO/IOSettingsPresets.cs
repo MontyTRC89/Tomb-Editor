@@ -43,6 +43,21 @@ namespace TombLib.GeometryIO
 
             SettingsPresets.Add(new IOGeometrySettingsPreset
             {
+                Name = "Metasequoia MQO Scale 1/1024",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1.0f / 1024.0f,
+                    FlipZ = true,
+                    InvertFaces = false,
+                    FlipUV_V = false,
+                    PremultiplyUV = true,
+                    WrapUV = true,
+                    UseVertexColor = true
+                }
+            });
+
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
                 Name = "Metasequoia OBJ",
                 Settings = new IOGeometrySettings
                 {
