@@ -134,6 +134,7 @@ namespace TombLib.LevelData.Compilers.Util
                     soundMapSize = 2048;
                     break;
                 case GameVersion.TR5:
+                case GameVersion.TR5Main:
                     soundMapSize = 450; // TODO Check if this supports a dynamically sized sound map.
                     break;
                 default:
@@ -170,6 +171,7 @@ namespace TombLib.LevelData.Compilers.Util
                     break;
 
                 case GameVersion.TR5:
+                case GameVersion.TR5Main:
                     if (_soundMap.Count != 450)
                         throw new Exception("Internal error occurred: Sound map was not set to 450.");
                     writer.Write((ushort)0); // Num demo data
@@ -230,7 +232,7 @@ namespace TombLib.LevelData.Compilers.Util
         public void WriteSoundData(BinaryWriter writer)
         {
             writer.Write((uint)_samples.Count); // Write sample count
-            if (_gameVersion == GameVersion.TR5)
+            if (_gameVersion == GameVersion.TR5 || _gameVersion == GameVersion.TR5Main)
             { // We have to compress the samples first
               // TR5 uses compressed MS-ADPCM samples
                 byte[][] compressedSamples = new byte[_samples.Count][];

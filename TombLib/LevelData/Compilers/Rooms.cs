@@ -417,7 +417,7 @@ namespace TombLib.LevelData.Compilers
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Intensity1 = PackColorTo16Bit(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X)),
-                    Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 ? 0x0001 : instance.Ocb)
+                    Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main ? 0x0001 : instance.Ocb)
                 });
             }
 
@@ -466,7 +466,7 @@ namespace TombLib.LevelData.Compilers
             {
                 // If target game is <= TR4 then ignore all special lights and fog bulbs
                 if (!(_level.Settings.GameVersion == GameVersion.TR4 || _level.Settings.GameVersion == GameVersion.TRNG ||
-                      _level.Settings.GameVersion == GameVersion.TR5) &&
+                      _level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main) &&
                       (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
                     continue;
 

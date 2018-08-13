@@ -231,6 +231,8 @@ namespace TombLib.LevelData
                         return Wad.WadGameVersion.TR4_TRNG;
                     case GameVersion.TR5:
                         return Wad.WadGameVersion.TR5;
+                    case GameVersion.TR5Main:
+                        return Wad.WadGameVersion.TR5Main;
                     default:
                         throw new NotSupportedException("Not supported game version.");
                 }

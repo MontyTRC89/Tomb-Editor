@@ -655,7 +655,7 @@ namespace TombLib.LevelData.Compilers.Util
                 stream.Write(Tile);
 
                 if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
-                                    level.Settings.GameVersion == GameVersion.TR5)
+                                    level.Settings.GameVersion == GameVersion.TR5|| level.Settings.GameVersion == GameVersion.TR5Main)
                     stream.Write(objectTexture.NewFlags);
 
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord0X, ref objectTexture.TexCoord0Y);
@@ -672,7 +672,7 @@ namespace TombLib.LevelData.Compilers.Util
                 stream.Write(objectTexture.TexCoord3X);
                 stream.Write(objectTexture.TexCoord3Y);
 
-                if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG || level.Settings.GameVersion == GameVersion.TR5)
+                if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG || level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
                 {
                     stream.Write((uint)0);
                     stream.Write((uint)0);
@@ -680,7 +680,7 @@ namespace TombLib.LevelData.Compilers.Util
                     stream.Write((uint)0);
                 }
 
-                if (level.Settings.GameVersion == GameVersion.TR5)
+                if (level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
                     stream.Write((ushort)0);
             }
         }
