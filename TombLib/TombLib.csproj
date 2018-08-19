@@ -138,6 +138,7 @@
     <Compile Include="GeometryIO\IOPolygon.cs" />
     <Compile Include="GeometryIO\IOSettingsPresets.cs" />
     <Compile Include="GeometryIO\IOSubmesh.cs" />
+    <Compile Include="GeometryIO\IOVertex.cs" />
     <Compile Include="Graphics\AnimationNode.cs" />
     <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\ObjectMesh.cs" />

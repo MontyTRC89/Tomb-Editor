@@ -88,8 +88,7 @@ namespace TombLib.GeometryIO
 
         protected Vector4 ApplyColorTransform(Vector4 color)
         {
-            return color;
-            //return new Vector4(color.X / 2.0f, color.Y / 2.0f, color.Z / 2.0f, color.W);
+            return new Vector4(color.X / 2.0f, color.Y / 2.0f, color.Z / 2.0f, color.W);
         }
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()

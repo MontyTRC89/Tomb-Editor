@@ -106,31 +106,12 @@ namespace WadTool
                     panel3D.AnimationIndex = 0;
                     panel3D.KeyFrameIndex = 0;
 
-                    // Update animations list
-                    if (mainSelection.Value.Id is WadMoveableId)
-                    {
-                        var moveableId = (WadMoveableId)mainSelection.Value.Id;
-                        var moveable = wad.Moveables.TryGetOrDefault(moveableId);
-                        treeAnimations.Nodes.Clear();
-                        if (moveable != null)
-                        {
-                            var animationsNodes = new List<DarkTreeNode>();
-                            for (int i = 0; i < moveable.Animations.Count; i++)
-                            {
-                                var nodeAnimation = new DarkTreeNode(moveable.Animations[i].Name);
-                                nodeAnimation.Tag = i;
-                                animationsNodes.Add(nodeAnimation);
-                            }
-                            treeAnimations.Nodes.AddRange(animationsNodes);
-                        }
-                    }
-
                     // Update the toolbar below the rendering area
                     butEditAnimations.Visible = (mainSelection.Value.Id is WadMoveableId);
                     butEditSkeleton.Visible = (mainSelection.Value.Id is WadMoveableId);
                     butEditStaticModel.Visible = (mainSelection.Value.Id is WadStaticId);
                     butEditSpriteSequence.Visible = (mainSelection.Value.Id is WadSpriteSequenceId);
-                    butEditSound.Visible = (mainSelection.Value.Id is WadFixedSoundInfo || 
+                    butEditSound.Visible = (mainSelection.Value.Id is WadFixedSoundInfo ||
                                             mainSelection.Value.Id is WadAdditionalSoundInfoId);
 
                     panel3D.Invalidate();
@@ -152,7 +133,6 @@ namespace WadTool
 
         private void treeDestWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-            StopAnimation();
             IWadObjectId currentSelection = treeDestWad.SelectedWadObjectIds.FirstOrDefault();
             if (currentSelection != null)
                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Destination, Id = currentSelection };
@@ -166,7 +146,6 @@ namespace WadTool
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-            StopAnimation();
             IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
             if (currentSelection != null)
                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
@@ -174,25 +153,21 @@ namespace WadTool
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
         private void butOpenDestWad_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.LoadWadOpenFileDialog(_tool, this, false);
         }
 
         private void butAddObject_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
         }
 
@@ -205,7 +180,6 @@ namespace WadTool
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            StopAnimation();
             foreach (IWadObjectId id in treeDestWad.SelectedWadObjectIds)
                 _tool.DestinationWad.Remove(id);
             _tool.MainSelection = null;
@@ -214,99 +188,32 @@ namespace WadTool
 
         private void butSave_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.SaveWad(_tool, this, _tool.DestinationWad, false);
         }
 
         private void butSaveAs_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.SaveWad(_tool, this, _tool.DestinationWad, true);
         }
 
         private void saveWad2AsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             butSaveAs_Click(null, null);
         }
 
         private void butAddObjectToDifferentSlot_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), true);
-        }
-
-        private void butPlaySound_Click(object sender, EventArgs e)
-        {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            // Get the selected sound
-            if (treeSounds.SelectedNodes.Count == 0)
-                return;
-            var node = treeSounds.SelectedNodes[0];
-            if (node.Tag == null || !(node.Tag is WadSample))
-                return;
-
-            var currentSample = (WadSample)node.Tag;
-            WadSoundPlayer.PlaySample(currentSample);
-        }
-
-        private void StopAnimation()
-        {
-            timerPlayAnimation.Stop();
-            _playAnimation = false;
-            butPlayAnimation.Enabled = true;
-            butStop.Enabled = false;
         }
 
         private void butNewWad_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CreateNewWad(_tool, this);
         }
 
         private void butChangeSlot_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.ChangeSlot(_tool, this);
-        }
-
-        private void lstAnimations_Click(object sender, EventArgs e)
-        {
-            Wad2 wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            var moveable = wad.Moveables[moveableId];
-            if (moveable == null)
-                return;
-
-            // Get selected animation
-            if (treeAnimations.SelectedNodes.Count == 0)
-                return;
-            var node = treeAnimations.SelectedNodes[0];
-            int animationIndex = (int)node.Tag;
-            var animation = moveable.Animations[animationIndex];
-
-            // Reset scrollbar
-            scrollbarAnimations.Value = 0;
-            scrollbarAnimations.Maximum = animation.RealNumberOfFrames - 1;
-
-            // Reset panel 3D
-            panel3D.AnimationIndex = animationIndex;
-            panel3D.KeyFrameIndex = 0;
-
-            if (_playAnimation)
-            {
-                int frameRate = Math.Max(animation.FrameRate, (short)1);
-                timerPlayAnimation.Stop();
-                timerPlayAnimation.Interval = 1000 / 30 / frameRate;
-                timerPlayAnimation.Start();
-            }
-
-            panel3D.Refresh();
         }
 
         private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
@@ -322,25 +229,21 @@ namespace WadTool
 
         private void newWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CreateNewWad(_tool, this);
         }
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
         {
-            StopAnimation();
             switch (e.KeyCode)
             {
                 case Keys.Delete:
@@ -351,30 +254,26 @@ namespace WadTool
 
         private void treeSourceWad_KeyDown(object sender, KeyEventArgs e)
         {
-            StopAnimation();
+
         }
 
         private void newMoveableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CreateObject(_tool, this, new WadMoveable(new WadMoveableId()));
         }
 
         private void newStaticToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CreateObject(_tool, this, new WadStatic(new WadStaticId()));
         }
 
         private void newSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
         }
 
         private void newFixedSoundInfoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
             WadActions.CreateObject(_tool, this, new WadFixedSoundInfo(new WadFixedSoundInfoId()));
         }
 
@@ -421,100 +320,19 @@ namespace WadTool
                 form.ShowDialog(this);
         }
 
-        private void timerPlayAnimation_Tick(object sender, EventArgs e)
-        {
-            if (_playAnimation)
-            {
-                // Get selected moveable
-                var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-                var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-                var moveable = wad.Moveables[moveableId];
-                if (moveable == null || moveable.Animations.Count == 0)
-                {
-                    _playAnimation = false;
-                    return;
-                }
-
-                // Get selected animation
-                if (treeAnimations.SelectedNodes.Count == 0)
-                    return;
-                var node = treeAnimations.SelectedNodes[0];
-                var animationIndex = (int)node.Tag;
-                if (animationIndex >= moveable.Animations.Count)
-                {
-                    _playAnimation = false;
-                    return;
-                }
-                var animation = moveable.Animations[animationIndex];
-
-                // Update animation
-                if (panel3D.KeyFrameIndex >= animation.RealNumberOfFrames)
-                    panel3D.KeyFrameIndex = 0;
-                else
-                    panel3D.KeyFrameIndex++;
-                panel3D.Refresh();
-            }
-        }
-
-        private void butPlayAnimation_Click(object sender, EventArgs e)
-        {
-            // Get selected moveable
-            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            var moveable = wad.Moveables[moveableId];
-            if (moveable == null || moveable.Animations.Count == 0)
-            {
-                _playAnimation = false;
-                return;
-            }
-
-            // Get selected animation
-            if (treeAnimations.SelectedNodes.Count == 0)
-                return;
-            var node = treeAnimations.SelectedNodes[0];
-            var animationIndex = (int)node.Tag;
-            if (animationIndex >= moveable.Animations.Count)
-            {
-                _playAnimation = false;
-                return;
-            }
-            var animation = moveable.Animations[animationIndex];
-
-            panel3D.AnimationIndex = animationIndex;
-            panel3D.KeyFrameIndex = 0;
-
-            // Start animation
-            _playAnimation = true;
-            int frameRate = Math.Max(animation.FrameRate, (short)1);
-            timerPlayAnimation.Stop();
-            timerPlayAnimation.Interval = 1000 / 30 / frameRate;
-            timerPlayAnimation.Start();
-
-            butPlayAnimation.Enabled = false;
-            butStop.Enabled = true;
-        }
-
-        private void butStop_Click(object sender, EventArgs e)
-        {
-            _playAnimation = false;
-            timerPlayAnimation.Stop();
-            butStop.Enabled = false;
-            butPlayAnimation.Enabled = true;
-        }
-
         private void butEditItem_Click(object sender, EventArgs e)
         {
-            StopAnimation();
+
         }
 
         private void butRenameAnimation_Click(object sender, EventArgs e)
         {
-            StopAnimation();
+
         }
 
         private void butRenameSound_Click(object sender, EventArgs e)
         {
-            StopAnimation();
+
         }
 
         private void destinationSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)

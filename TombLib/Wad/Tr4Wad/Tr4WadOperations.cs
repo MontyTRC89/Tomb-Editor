@@ -644,8 +644,9 @@ namespace TombLib.Wad.Tr4Wad
 
                             // HACK: In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
-                            if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
-                                newFrame = 0;
+                            //if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
+                            //   newFrame = 0;
+                            // NOTICE: code temporary disabled
 
                             animDispatch.NextFrame = newFrame;
                         }
