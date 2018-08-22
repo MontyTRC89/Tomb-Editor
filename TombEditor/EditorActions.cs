@@ -798,64 +798,127 @@ namespace TombEditor
         private static bool ApplyTextureAutomaticallyNoUpdated(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             Block block = room.GetBlock(pos);
+
+            if (!_editor.Tool.TextureUVFixer)
+                return block.SetFaceTexture(face, texture);
+
             TextureArea processedTexture = texture;
-            if (_editor.Tool.TextureUVFixer)
+            switch (face)
             {
-                switch (face)
-                {
-                    case BlockFace.Floor:
-                    case BlockFace.Ceiling:
-                        BlockSurface surface = face == BlockFace.Floor ? block.Floor : block.Ceiling;
-                        if (surface.IsQuad)
-                            break;
-                        if (surface.SplitDirectionIsXEqualsZ)
-                        {
-                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                        }
-                        else
-                        {
-                            processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                            processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                            processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                        }
+                case BlockFace.Floor:
+                case BlockFace.Ceiling:
+                    BlockSurface surface = face == BlockFace.Floor ? block.Floor : block.Ceiling;
+                    if (surface.IsQuad)
                         break;
+                    if (surface.SplitDirectionIsXEqualsZ)
+                    {
+                        Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                        processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                        processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                    }
+                    else
+                    {
+                        processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                        processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                        processedTexture.TexCoord2 = processedTexture.TexCoord3;
+                    }
+                    break;
 
-                    case BlockFace.FloorTriangle2:
-                    case BlockFace.CeilingTriangle2:
-                        BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
-                        if (surface2.IsQuad)
-                            break;
-                        if (surface2.SplitDirectionIsXEqualsZ)
-                            processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                        else
-                        {
-                            processedTexture.TexCoord2 = processedTexture.TexCoord1;
-                            processedTexture.TexCoord1 = processedTexture.TexCoord0;
-                            processedTexture.TexCoord0 = processedTexture.TexCoord3;
-                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
-                        }
+                case BlockFace.FloorTriangle2:
+                case BlockFace.CeilingTriangle2:
+                    BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
+                    if (surface2.IsQuad)
                         break;
+                    if (surface2.SplitDirectionIsXEqualsZ)
+                        processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                    else
+                    {
+                        processedTexture.TexCoord2 = processedTexture.TexCoord1;
+                        processedTexture.TexCoord1 = processedTexture.TexCoord0;
+                        processedTexture.TexCoord0 = processedTexture.TexCoord3;
+                        processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                    }
+                    break;
 
-                    default:
-                        if (room.RoomGeometry != null)
+                default:
+                    if (room.RoomGeometry != null)
+                    {
+                        // get current face
+                        VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new SectorInfo(pos.X, pos.Y, face)];
+                        if (vertexRange.Count == 6)
                         {
-                            // get current face
-                            VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new SectorInfo(pos.X, pos.Y, face)];
-                            if (vertexRange.Count == 6)
+                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
+                            Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
+                            Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p3 = room.RoomGeometry.VertexPositions[vertexRange.Start + 3];
+
+                            float maxUp = Math.Max(p0.Y, p1.Y);
+                            float minDown = Math.Min(p2.Y, p3.Y);
+
+                            float difference = maxUp - minDown;
+
+                            float delta0 = (minDown - p3.Y) / difference;
+                            float delta1 = (maxUp - p0.Y) / difference;
+                            float delta2 = (maxUp - p1.Y) / difference;
+                            float delta3 = (minDown - p2.Y) / difference;
+
+                            if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                             {
-                                Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
-                                Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
-                                Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
-                                Vector3 p3 = room.RoomGeometry.VertexPositions[vertexRange.Start + 3];
+                                processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+                            }
+                            else
+                            {
+                                processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
+                                processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
+                                processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
+                                processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
+                            }
+                        }
+                        else
+                        {
+                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
+                            Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
 
-                                float maxUp = Math.Max(p0.Y, p1.Y);
-                                float minDown = Math.Min(p2.Y, p3.Y);
+                            float maxUp = Math.Max(Math.Max(p0.Y, p1.Y), p2.Y);
+                            float minDown = Math.Min(Math.Min(p0.Y, p1.Y), p2.Y);
+                            float difference = maxUp - minDown;
 
-                                float difference = maxUp - minDown;
+                            if (p0.X == p2.X && p0.Z == p2.Z)
+                            {
+                                float delta0 = (minDown - p2.Y) / difference;
+                                float delta1 = (maxUp - p0.Y) / difference;
+                                float delta2 = (maxUp - p1.Y) / difference;
+                                float delta3 = (minDown - p1.Y) / difference;
 
-                                float delta0 = (minDown - p3.Y) / difference;
+                                if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
+                                {
+                                    processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                    processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                    processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                    processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+                                }
+                                else
+                                {
+                                    processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
+                                    processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
+                                    processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
+                                    processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
+                                }
+
+                                processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                                processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                                processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                                processedTexture.TexCoord2 = processedTexture.TexCoord3;
+
+                            }
+                            else
+                            {
+
+                                float delta0 = (minDown - p0.Y) / difference;
                                 float delta1 = (maxUp - p0.Y) / difference;
                                 float delta2 = (maxUp - p1.Y) / difference;
                                 float delta3 = (minDown - p2.Y) / difference;
@@ -874,80 +937,18 @@ namespace TombEditor
                                     processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
                                     processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
                                 }
-                            }
-                            else
-                            {
-                                Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
-                                Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
-                                Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
 
-                                float maxUp = Math.Max(Math.Max(p0.Y, p1.Y), p2.Y);
-                                float minDown = Math.Min(Math.Min(p0.Y, p1.Y), p2.Y);
-                                float difference = maxUp - minDown;
+                                processedTexture.TexCoord0 = processedTexture.TexCoord3;
 
-                                if (p0.X == p2.X && p0.Z == p2.Z)
-                                {
-                                    float delta0 = (minDown - p2.Y) / difference;
-                                    float delta1 = (maxUp - p0.Y) / difference;
-                                    float delta2 = (maxUp - p1.Y) / difference;
-                                    float delta3 = (minDown - p1.Y) / difference;
-
-                                    if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
-                                    {
-                                        processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
-                                        processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
-                                        processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
-                                        processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
-                                    }
-                                    else
-                                    {
-                                        processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
-                                        processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
-                                        processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
-                                        processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
-                                    }
-
-                                    processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                                    processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                    processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                                    processedTexture.TexCoord2 = processedTexture.TexCoord3;
-
-                                }
-                                else
-                                {
-
-                                    float delta0 = (minDown - p0.Y) / difference;
-                                    float delta1 = (maxUp - p0.Y) / difference;
-                                    float delta2 = (maxUp - p1.Y) / difference;
-                                    float delta3 = (minDown - p2.Y) / difference;
-
-                                    if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
-                                    {
-                                        processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
-                                        processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
-                                        processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
-                                        processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
-                                    }
-                                    else
-                                    {
-                                        processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
-                                        processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
-                                        processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
-                                        processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
-                                    }
-
-                                    processedTexture.TexCoord0 = processedTexture.TexCoord3;
-
-                                    Vector2 tempTexCoord = processedTexture.TexCoord2;
-                                    processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                                    processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                                    processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                    processedTexture.TexCoord1 = tempTexCoord;
-                                }
+                                Vector2 tempTexCoord = processedTexture.TexCoord2;
+                                processedTexture.TexCoord2 = processedTexture.TexCoord3;
+                                processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                                processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                                processedTexture.TexCoord1 = tempTexCoord;
                             }
                         }
-                        break;
-                }
+                    }
+                    break;
             }
             return block.SetFaceTexture(face, processedTexture);
         }
