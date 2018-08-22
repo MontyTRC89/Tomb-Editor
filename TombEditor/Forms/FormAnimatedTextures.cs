@@ -723,28 +723,25 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.Spin:
                         {
-                            double currAngle = 2 * Math.PI * weight;
+                            double currAngle = (2 * Math.PI) * weight;
 
-                            var center = Vector2.Lerp(referenceFrame.TexCoord0, referenceFrame.TexCoord2, 0.5f);
-                            var radius = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1) * 0.5f;
+                            var cross1 = Vector3.Cross(new Vector3(referenceFrame.TexCoord0.X, referenceFrame.TexCoord0.Y, 1),
+                                                       new Vector3(referenceFrame.TexCoord2.X, referenceFrame.TexCoord2.Y, 1));
+                            var cross2 = Vector3.Cross(new Vector3(referenceFrame.TexCoord1.X, referenceFrame.TexCoord1.Y, 1),
+                                                       new Vector3(referenceFrame.TexCoord3.X, referenceFrame.TexCoord3.Y, 1));
 
-                            var d0 = Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord1);
-                            var d1 = Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord2);
-                            var d2 = Vector2.Distance(referenceFrame.TexCoord2, referenceFrame.TexCoord3);
-                            var d3 = Vector2.Distance(referenceFrame.TexCoord3, referenceFrame.TexCoord0);
+                            var intersection = Vector3.Cross(cross1, cross2);
+                            var center = new Vector2(intersection.X / intersection.Z, intersection.Y / intersection.Z);
 
-                            // If any frame is invalid, return false
-                            if (!MathC.NearEqual(d0, d1) || !MathC.NearEqual(d1, d2) || !MathC.NearEqual(d2, d3) || !MathC.NearEqual(d3, d0) ||
-                                Vector2.Distance(referenceFrame.TexCoord0, referenceFrame.TexCoord2) != Vector2.Distance(referenceFrame.TexCoord1, referenceFrame.TexCoord3))
-                            {
-                                popup.ShowError(textureMap, "Spin function is available only for square seleciton!");
-                                return false;
-                            }
+                            float r0 = Vector2.Distance(center, referenceFrame.TexCoord0);
+                            float r1 = Vector2.Distance(center, referenceFrame.TexCoord1);
+                            float r2 = Vector2.Distance(center, referenceFrame.TexCoord2);
+                            float r3 = Vector2.Distance(center, referenceFrame.TexCoord3);
 
-                            targetSet.Frames[i].TexCoord0 = new Vector2(center.X + radius * (float)Math.Cos(currAngle), center.Y + radius * (float)Math.Sin(currAngle));
-                            targetSet.Frames[i].TexCoord1 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + radius * (float)Math.Sin(currAngle + Math.PI / 2));
-                            targetSet.Frames[i].TexCoord2 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI), center.Y + radius * (float)Math.Sin(currAngle + Math.PI));
-                            targetSet.Frames[i].TexCoord3 = new Vector2(center.X + radius * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + radius * (float)Math.Sin(currAngle + Math.PI * 1.5f));
+                            targetSet.Frames[i].TexCoord0 = new Vector2(center.X + r0 * (float)Math.Cos(currAngle), center.Y + r0 * (float)Math.Sin(currAngle));
+                            targetSet.Frames[i].TexCoord1 = new Vector2(center.X + r1 * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + r1 * (float)Math.Sin(currAngle + Math.PI / 2));
+                            targetSet.Frames[i].TexCoord2 = new Vector2(center.X + r2 * (float)Math.Cos(currAngle + Math.PI), center.Y + r2 * (float)Math.Sin(currAngle + Math.PI));
+                            targetSet.Frames[i].TexCoord3 = new Vector2(center.X + r3 * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + r3 * (float)Math.Sin(currAngle + Math.PI * 1.5f));
                         }
                         break;
 
