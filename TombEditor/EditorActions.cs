@@ -840,6 +840,20 @@ namespace TombEditor
                     break;
 
                 default:
+                    if (room.RoomGeometry != null)
+                    {
+                        // get current face
+                        VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new SectorInfo(pos.X, pos.Y, face)];
+                        if (room.RoomGeometry.IsQuad(vertexRange.Start/3))
+                        {
+                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
                     // This kind of correspondence is really fragile, I am not sure what to do, -TRTombLevBauer
                     /*if (room.RoomGeometry != null)
                     {

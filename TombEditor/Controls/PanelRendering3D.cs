@@ -1215,7 +1215,7 @@ namespace TombEditor.Controls
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                     }
 
                     model = Matrix4x4.CreateScale(light.OuterRange * 2.0f) * light.ObjectMatrix;
@@ -1223,7 +1223,7 @@ namespace TombEditor.Controls
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                     solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                 }
                 else if (light.Type == LightType.Spot)
                 {
