@@ -54,7 +54,7 @@ namespace TombLib.Controls
                 int newIndex = DataGridView.EditableRowCollection.Add(newRow);
                 DataGridView.Rows[newIndex].Selected = true;
             }
-            if (startIndex > 0)
+            if (startIndex > 0 && DataGridView.EditableRowCollection.Count > startIndex)
                 DataGridView.FirstDisplayedScrollingRowIndex = startIndex;
         }
 
