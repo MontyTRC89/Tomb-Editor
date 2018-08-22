@@ -844,31 +844,22 @@ namespace TombEditor
                     {
                         // get current face
                         VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new SectorInfo(pos.X, pos.Y, face)];
-                        if (room.RoomGeometry.IsQuad(vertexRange.Start/3))
+                        if (vertexRange.Count == 6)
                         {
-                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
+                            Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
+                            Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p3 = room.RoomGeometry.VertexPositions[vertexRange.Start + 3];
 
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                    // This kind of correspondence is really fragile, I am not sure what to do, -TRTombLevBauer
-                    /*if (room.RoomGeometry != null)
-                    {
-                        VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new VertexRangeKey(pos.X, pos.Y, face)];
-                        if (indices.Count == 4)
-                        {
-                            float maxUp = Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y);
-                            float minDown = Math.Min(vertices[indices[3]].Position.Y, vertices[indices[2]].Position.Y);
+                            float maxUp = Math.Max(p0.Y, p1.Y);
+                            float minDown = Math.Min(p2.Y, p3.Y);
 
                             float difference = maxUp - minDown;
 
-                            float delta0 = (minDown - vertices[indices[3]].Position.Y) / difference;
-                            float delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
-                            float delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                            float delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
+                            float delta0 = (minDown - p3.Y) / difference;
+                            float delta1 = (maxUp - p0.Y) / difference;
+                            float delta2 = (maxUp - p1.Y) / difference;
+                            float delta3 = (minDown - p2.Y) / difference;
 
                             if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                             {
@@ -887,16 +878,20 @@ namespace TombEditor
                         }
                         else
                         {
-                            float maxUp = Math.Max(Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
-                            float minDown = Math.Min(Math.Min(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
+                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
+                            Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
+
+                            float maxUp = Math.Max(Math.Max(p0.Y, p1.Y), p2.Y);
+                            float minDown = Math.Min(Math.Min(p0.Y, p1.Y), p2.Y);
                             float difference = maxUp - minDown;
 
-                            if (vertices[indices[0]].Position.X == vertices[indices[2]].Position.X && vertices[indices[0]].Position.Z == vertices[indices[2]].Position.Z)
+                            if (p0.X == p2.X && p0.Z == p2.Z)
                             {
-                                float delta0 = (minDown - vertices[indices[2]].Position.Y) / difference;
-                                float delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
-                                float delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                                float delta3 = (minDown - vertices[indices[1]].Position.Y) / difference;
+                                float delta0 = (minDown - p2.Y) / difference;
+                                float delta1 = (maxUp - p0.Y) / difference;
+                                float delta2 = (maxUp - p1.Y) / difference;
+                                float delta3 = (minDown - p1.Y) / difference;
 
                                 if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                                 {
@@ -921,10 +916,11 @@ namespace TombEditor
                             }
                             else
                             {
-                                float delta0 = (minDown - vertices[indices[0]].Position.Y) / difference;
-                                float delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
-                                float delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                                float delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
+
+                                float delta0 = (minDown - p0.Y) / difference;
+                                float delta1 = (maxUp - p0.Y) / difference;
+                                float delta2 = (maxUp - p1.Y) / difference;
+                                float delta3 = (minDown - p2.Y) / difference;
 
                                 if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                                 {
@@ -950,7 +946,7 @@ namespace TombEditor
                                 processedTexture.TexCoord1 = tempTexCoord;
                             }
                         }
-                    }*/
+                    }
                     break;
             }
             return block.SetFaceTexture(face, processedTexture);
