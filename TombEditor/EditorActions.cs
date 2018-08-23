@@ -2793,33 +2793,35 @@ namespace TombEditor
 
         public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
-            string filePath = _editor.Level.Settings.LevelFilePath;
+            string fileName = _editor.Level.Settings.LevelFilePath;
 
             // Show save dialog if necessary
-            if (askForPath || string.IsNullOrEmpty(filePath))
-                filePath = LevelFileDialog.BrowseFile(owner, null, filePath, "Save level", LevelSettings.FileFormatsLevel, null, true);
-            if (string.IsNullOrEmpty(filePath))
+            if (askForPath || string.IsNullOrEmpty(fileName))
+                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Save level", LevelSettings.FileFormatsLevel, null, true);
+            if (string.IsNullOrEmpty(fileName))
                 return false;
 
             // Save level
             try
             {
-                Prj2Writer.SaveToPrj2(filePath, _editor.Level);
+                Prj2Writer.SaveToPrj2(fileName, _editor.Level);
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Unable to save to \"" + filePath + "\".");
+                logger.Error(exc, "Unable to save to \"" + fileName + "\".");
                 _editor.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
                 return false;
             }
 
             // Update state
-            _editor.HasUnsavedChanges = false;
-            if (_editor.Level.Settings.LevelFilePath != filePath)
+            if (_editor.Level.Settings.LevelFilePath != fileName)
             {
-                _editor.Level.Settings.LevelFilePath = filePath;
+                AddProjectToRecent(fileName);
+                _editor.Level.Settings.LevelFilePath = fileName;
                 _editor.LevelFileNameChange();
             }
+            _editor.HasUnsavedChanges = false;
+
             return true;
         }
 
@@ -3115,9 +3117,43 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to open \"" + fileName + "\"");
-                _editor.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, PopupType.Error);
+
+                if(exc is FileNotFoundException)
+                {
+                    RemoveProjectFromRecent(fileName);
+                    _editor.SendMessage("Project file not found!", PopupType.Warning);
+                    _editor.LevelFileNameChange();  // Updates recent files on the main form
+                }
+                else
+                    _editor.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. \nException: " + exc.Message, PopupType.Error);
             }
-            _editor.Level = newLevel;
+
+            if (newLevel != null)
+            {
+                _editor.Level = newLevel;
+                AddProjectToRecent(fileName);
+                _editor.HasUnsavedChanges = false;
+            }
+        }
+
+        private static void AddProjectToRecent(string fileName)
+        {
+            if (Properties.Settings.Default.RecentProjects == null)
+                Properties.Settings.Default.RecentProjects = new List<string>();
+
+            Properties.Settings.Default.RecentProjects.RemoveAll(s => s == fileName);
+            Properties.Settings.Default.RecentProjects.Insert(0, fileName);
+
+            if (Properties.Settings.Default.RecentProjects.Count > 10)
+                Properties.Settings.Default.RecentProjects.RemoveRange(10, Properties.Settings.Default.RecentProjects.Count - 10);
+
+            Properties.Settings.Default.Save();
+        }
+
+        private static void RemoveProjectFromRecent(string fileName)
+        {
+            Properties.Settings.Default.RecentProjects.RemoveAll(s => s == fileName);
+            Properties.Settings.Default.Save();
         }
 
         public static void OpenLevelPrj(IWin32Window owner, string fileName = null)
@@ -3129,7 +3165,6 @@ namespace TombEditor
                 fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, null, false);
             if (string.IsNullOrEmpty(fileName))
                 return;
-
 
             Level newLevel = null;
             using (var form = new FormOperationDialog("Import PRJ", false, progressReporter =>

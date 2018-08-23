@@ -69,6 +69,9 @@ namespace TombEditor.Forms
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
+            // Add recently opened projects
+            RefreshRecentProjectsList();
+
             // Done
             logger.Info("Tomb Editor is ready :)");
         }
@@ -232,9 +235,37 @@ namespace TombEditor.Forms
                 bookmarkRestoreObjectToolStripMenuItem.Enabled = @event.Current != null;
             }
 
+            if (obj is Editor.LevelFileNameChangedEvent)
+                RefreshRecentProjectsList();
+
             // Quit editor
             if (obj is Editor.EditorQuitEvent)
                 Close();
+        }
+
+        private void RefreshRecentProjectsList()
+        {
+            openRecentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0)
+                foreach(var fileName in Properties.Settings.Default.RecentProjects)
+                {
+                    if (fileName == _editor.Level.Settings.LevelFilePath)   // Skip currently loaded level
+                        continue;
+
+                    var item = new ToolStripMenuItem() { Name = fileName, Text = fileName };
+                    item.Click += (s, e) => EditorActions.OpenLevel(this, ((ToolStripMenuItem)s).Text);
+                    openRecentToolStripMenuItem.DropDownItems.Add(item);
+                }
+
+            // Add "Clear recent files" option
+            openRecentToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            var item2 = new ToolStripMenuItem() { Name = "clearRecentMenuItem", Text = "Clear recent file list" };
+            item2.Click += (s, e) => { Properties.Settings.Default.RecentProjects.Clear(); RefreshRecentProjectsList(); Properties.Settings.Default.Save(); };
+            openRecentToolStripMenuItem.DropDownItems.Add(item2);
+
+            // Disable menu item, if list is empty
+            openRecentToolStripMenuItem.Enabled = openRecentToolStripMenuItem.DropDownItems.Count > 2;
         }
 
         private void GarbageCollectOoriginalShortcutKeyDisplayStrings()
