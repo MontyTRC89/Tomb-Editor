@@ -161,7 +161,7 @@ namespace TombEditor.ToolWindows
             this.butBrowseTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butBrowseTexture.Enabled = false;
             this.butBrowseTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBrowseTexture.Image = global::TombEditor.Properties.Resources.general_Open_16;
+            this.butBrowseTexture.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
             this.butBrowseTexture.Location = new System.Drawing.Point(229, 3);
             this.butBrowseTexture.Name = "butBrowseTexture";
             this.butBrowseTexture.Size = new System.Drawing.Size(24, 23);
