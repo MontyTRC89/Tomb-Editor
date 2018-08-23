@@ -695,7 +695,7 @@ namespace TombEditor.Forms
                         {
                             // Reverse effect strength for negative numbers for proper UV positioning
                             if (effectStrength < 0)
-                                weight = Math.Abs(effectStrength) + weight;
+                                weight += Math.Abs(effectStrength);
 
                             // 0 = horizontal pass, 1 = vertical pass. Scale type uses both.
                             bool[] passes = new bool[2]
@@ -723,7 +723,9 @@ namespace TombEditor.Forms
 
                     case ProceduralAnimationType.Spin:
                         {
-                            double currAngle = (2 * Math.PI) * weight;
+                            // Invert weight and shift angle to start from the beginning
+                            weight = effectStrength - weight;
+                            double currAngle = ((2 * Math.PI) * weight) - Math.PI * 0.25;
 
                             var cross1 = Vector3.Cross(new Vector3(referenceFrame.TexCoord0.X, referenceFrame.TexCoord0.Y, 1),
                                                        new Vector3(referenceFrame.TexCoord2.X, referenceFrame.TexCoord2.Y, 1));
@@ -738,10 +740,10 @@ namespace TombEditor.Forms
                             float r2 = Vector2.Distance(center, referenceFrame.TexCoord2);
                             float r3 = Vector2.Distance(center, referenceFrame.TexCoord3);
 
-                            targetSet.Frames[i].TexCoord0 = new Vector2(center.X + r0 * (float)Math.Cos(currAngle), center.Y + r0 * (float)Math.Sin(currAngle));
-                            targetSet.Frames[i].TexCoord1 = new Vector2(center.X + r1 * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + r1 * (float)Math.Sin(currAngle + Math.PI / 2));
-                            targetSet.Frames[i].TexCoord2 = new Vector2(center.X + r2 * (float)Math.Cos(currAngle + Math.PI), center.Y + r2 * (float)Math.Sin(currAngle + Math.PI));
-                            targetSet.Frames[i].TexCoord3 = new Vector2(center.X + r3 * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + r3 * (float)Math.Sin(currAngle + Math.PI * 1.5f));
+                            targetSet.Frames[i].TexCoord0 = new Vector2(center.X + r0 * (float)Math.Cos(currAngle + Math.PI), center.Y + r0 * (float)Math.Sin(currAngle + Math.PI));
+                            targetSet.Frames[i].TexCoord1 = new Vector2(center.X + r1 * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + r1 * (float)Math.Sin(currAngle + Math.PI * 1.5f));
+                            targetSet.Frames[i].TexCoord2 = new Vector2(center.X + r2 * (float)Math.Cos(currAngle), center.Y + r2 * (float)Math.Sin(currAngle));
+                            targetSet.Frames[i].TexCoord3 = new Vector2(center.X + r3 * (float)Math.Cos(currAngle + Math.PI / 2), center.Y + r3 * (float)Math.Sin(currAngle + Math.PI / 2));
                         }
                         break;
 
