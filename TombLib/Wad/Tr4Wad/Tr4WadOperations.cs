@@ -445,38 +445,54 @@ namespace TombLib.Wad.Tr4Wad
 
                 wad_animation oldAnimation = oldWad.Animations[j + oldMoveable.AnimationIndex];
                 WadAnimation newAnimation = new WadAnimation();
-                newAnimation.Acceleration = oldAnimation.Accel;
-                newAnimation.Speed = oldAnimation.Speed;
-                newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
-                newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
                 newAnimation.FrameRate = oldAnimation.FrameDuration;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.AnimationIndex);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
-                newAnimation.StateId = oldAnimation.StateId;
                 newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
                 newAnimation.Name = "Animation " + j;
 
-                for (int k = 0; k < oldAnimation.NumStateChanges; k++)
+                // Bypass assigning speed/accel/state and state changes with dispatches for gun anims
+                // as they have garbage data in it.
+
+                if(moveableIndex > 0 && moveableIndex < 7)
                 {
-                    WadStateChange sc = new WadStateChange();
-                    wad_state_change wadSc = oldWad.Changes[(int)oldAnimation.ChangesIndex + k];
-                    sc.StateId = (ushort)wadSc.StateId;
-
-                    for (int n = 0; n < wadSc.NumDispatches; n++)
-                    {
-                        WadAnimDispatch ad = new WadAnimDispatch();
-                        wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
-
-                        ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
-                        ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
-                        ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.AnimationIndex) % numAnimations);
-                        ad.NextFrame = (ushort)wadAd.NextFrame;
-
-                        sc.Dispatches.Add(ad);
-                    }
-
-                    newAnimation.StateChanges.Add(sc);
+                    newAnimation.Acceleration = 0;
+                    newAnimation.Speed = 0;
+                    newAnimation.LateralSpeed = 0;
+                    newAnimation.LateralAcceleration = 0;
+                    newAnimation.StateId = 0;
                 }
+                else
+                {
+                    newAnimation.Acceleration = oldAnimation.Accel;
+                    newAnimation.Speed = oldAnimation.Speed;
+                    newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
+                    newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
+                    newAnimation.StateId = oldAnimation.StateId;
+
+                    for (int k = 0; k < oldAnimation.NumStateChanges; k++)
+                    {
+                        WadStateChange sc = new WadStateChange();
+                        wad_state_change wadSc = oldWad.Changes[(int)oldAnimation.ChangesIndex + k];
+                        sc.StateId = (ushort)wadSc.StateId;
+
+                        for (int n = 0; n < wadSc.NumDispatches; n++)
+                        {
+                            WadAnimDispatch ad = new WadAnimDispatch();
+                            wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
+
+                            ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
+                            ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
+                            ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.AnimationIndex) % numAnimations);
+                            ad.NextFrame = (ushort)wadAd.NextFrame;
+
+                            sc.Dispatches.Add(ad);
+                        }
+
+                        newAnimation.StateChanges.Add(sc);
+                    }
+                }
+
 
                 if (oldAnimation.NumCommands < oldWad.Commands.Count)
                 {
@@ -643,10 +659,9 @@ namespace TombLib.Wad.Tr4Wad
                             ushort newFrame = (ushort)(animDispatch.NextFrame % frameBases[newMoveable.Animations[animDispatch.NextAnimation]]);
 
                             // HACK: In some cases dispatches have invalid NextFrame.
-                            // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
-                            //if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
-                            //   newFrame = 0;
-                            // NOTICE: code temporary disabled
+                            // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to max frame number.
+                            if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
+                               newFrame = (ushort)(newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames - 1);
 
                             animDispatch.NextFrame = newFrame;
                         }
