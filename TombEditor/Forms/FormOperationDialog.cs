@@ -103,7 +103,7 @@ namespace TombEditor.Forms
             if (!(bool)Invoke((Func<bool>)delegate
             {
                 if (progress.HasValue)
-                    pbStato.SetProgressNoAnimation((int)Math.Round(progress.Value, 0));
+                    pbStato.Value = (int)Math.Round(progress.Value, 0);
 
                 if (!string.IsNullOrEmpty(message))
                 {

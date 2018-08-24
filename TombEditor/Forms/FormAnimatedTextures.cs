@@ -388,7 +388,7 @@ namespace TombEditor.Forms
             // Update view
             previewProgressBar.Minimum = 0;
             previewProgressBar.Maximum = frameCount - 1;
-            previewProgressBar.SetProgressNoAnimation(frameIndex);
+            previewProgressBar.Value = frameIndex;
             previewImage.Image = _imageCache[new CachedImageInfo
             {
                 _image = _previewCurrentFrame.Texture.Image,
