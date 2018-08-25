@@ -445,54 +445,38 @@ namespace TombLib.Wad.Tr4Wad
 
                 wad_animation oldAnimation = oldWad.Animations[j + oldMoveable.AnimationIndex];
                 WadAnimation newAnimation = new WadAnimation();
+                newAnimation.StateId = oldAnimation.StateId;
+                newAnimation.Acceleration = oldAnimation.Accel;
+                newAnimation.Speed = oldAnimation.Speed;
+                newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
+                newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
                 newAnimation.FrameRate = oldAnimation.FrameDuration;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.AnimationIndex);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
                 newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
                 newAnimation.Name = "Animation " + j;
 
-                // Bypass assigning speed/accel/state and state changes with dispatches for gun anims
-                // as they have garbage data in it.
-
-                if(moveableIndex > 0 && moveableIndex < 7)
+                for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
-                    newAnimation.Acceleration = 0;
-                    newAnimation.Speed = 0;
-                    newAnimation.LateralSpeed = 0;
-                    newAnimation.LateralAcceleration = 0;
-                    newAnimation.StateId = 0;
-                }
-                else
-                {
-                    newAnimation.Acceleration = oldAnimation.Accel;
-                    newAnimation.Speed = oldAnimation.Speed;
-                    newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
-                    newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
-                    newAnimation.StateId = oldAnimation.StateId;
+                    WadStateChange sc = new WadStateChange();
+                    wad_state_change wadSc = oldWad.Changes[(int)oldAnimation.ChangesIndex + k];
+                    sc.StateId = (ushort)wadSc.StateId;
 
-                    for (int k = 0; k < oldAnimation.NumStateChanges; k++)
+                    for (int n = 0; n < wadSc.NumDispatches; n++)
                     {
-                        WadStateChange sc = new WadStateChange();
-                        wad_state_change wadSc = oldWad.Changes[(int)oldAnimation.ChangesIndex + k];
-                        sc.StateId = (ushort)wadSc.StateId;
+                        WadAnimDispatch ad = new WadAnimDispatch();
+                        wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
 
-                        for (int n = 0; n < wadSc.NumDispatches; n++)
-                        {
-                            WadAnimDispatch ad = new WadAnimDispatch();
-                            wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
+                        ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
+                        ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
+                        ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.AnimationIndex) % numAnimations);
+                        ad.NextFrame = (ushort)wadAd.NextFrame;
 
-                            ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
-                            ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
-                            ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.AnimationIndex) % numAnimations);
-                            ad.NextFrame = (ushort)wadAd.NextFrame;
-
-                            sc.Dispatches.Add(ad);
-                        }
-
-                        newAnimation.StateChanges.Add(sc);
+                        sc.Dispatches.Add(ad);
                     }
-                }
 
+                    newAnimation.StateChanges.Add(sc);
+                }
 
                 if (oldAnimation.NumCommands < oldWad.Commands.Count)
                 {
