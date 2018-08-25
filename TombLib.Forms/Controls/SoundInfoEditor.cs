@@ -207,7 +207,7 @@ namespace TombLib.Controls
         {
             float secondsPerPixel = 0.1f / request.Item3;
             ImageC image = WadSoundPlayer.DrawWaveformForSample(request.Item1,
-                new VectorInt2(request.Item2.Width, request.Item2.Height), 0, secondsPerPixel, new ColorC(0, 0, 128));
+                new VectorInt2(request.Item2.Width, request.Item2.Height), 0, secondsPerPixel, new ColorC(140, 140, 210));
             return image.ToBitmap();
         }
 
@@ -295,8 +295,7 @@ namespace TombLib.Controls
         private void comboSampleRateTextBox_TextChanged(object sender, EventArgs e)
         {
             bool ok = CheckSampleRate(comboSampleRateTextBox.Text);
-            comboSampleRateTextBox.BackColor = comboSampleRateLabel.BackColor =
-                comboSampleRate.BackColor = ok ? Colors.LightBackground : Color.DarkRed;
+            comboSampleRateTextBox.BackColor = comboSampleRate.BackColor = ok ? Colors.LightBackground : Color.DarkRed;
             comboSampleRate.Text = comboSampleRateTextBox.Text;
         }
 
@@ -367,15 +366,32 @@ namespace TombLib.Controls
         public bool HasName
         {
             get { return tbName.Visible; }
-            set
-            {
-                tbName.Visible = value;
-                tbNameLabel.Visible = value;
-            }
+            set { tbName.Enabled = value; }
         }
 
         protected void OnSoundInfoChanged(object sender, EventArgs e)
         {
+            if(sender is DarkComboBox)
+            {
+                // Update play type hint
+
+                switch (((DarkComboBox)sender).SelectedIndex)
+                {
+                    case 0:
+                        lblModeTooltip.Text = "Normal mode, sample plays once and can be called many times";
+                        break;
+                    case 1:
+                        lblModeTooltip.Text = "The sound sound will be ignored until the current one is stopped";
+                        break;
+                    case 2:
+                        lblModeTooltip.Text = "The sound will be replayed from the beginning if triggered again";
+                        break;
+                    case 3:
+                        lblModeTooltip.Text = "The sound will seamlessly loop until stopped by engine event";
+                        break;
+                }
+            }
+
             if (!_soundInfoCurrentlyChanging)
                 SoundInfoChanged?.Invoke(this, e);
         }

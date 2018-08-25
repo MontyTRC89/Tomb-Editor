@@ -30,7 +30,6 @@ namespace TombLib.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportTr4WadDialog));
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
@@ -41,7 +40,7 @@ namespace TombLib.Forms
             this.columnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.lstPaths = new DarkUI.Controls.DarkListBox(this.components);
+            this.lstPaths = new DarkUI.Controls.DarkListBox();
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusSamples = new System.Windows.Forms.ToolStripStatusLabel();
@@ -55,7 +54,7 @@ namespace TombLib.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(570, 480);
+            this.butCancel.Location = new System.Drawing.Point(570, 475);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 3;
@@ -65,7 +64,7 @@ namespace TombLib.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(484, 480);
+            this.butOK.Location = new System.Drawing.Point(484, 475);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 2;
@@ -81,10 +80,11 @@ namespace TombLib.Forms
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(12, 9);
             this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Padding = new System.Windows.Forms.Padding(4);
             this.darkLabel1.Size = new System.Drawing.Size(532, 55);
             this.darkLabel1.TabIndex = 4;
             this.darkLabel1.Text = resources.GetString("darkLabel1.Text");
-            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // dgvSamples
             // 
@@ -158,7 +158,7 @@ namespace TombLib.Forms
             this.lstPaths.ItemHeight = 18;
             this.lstPaths.Location = new System.Drawing.Point(12, 386);
             this.lstPaths.Name = "lstPaths";
-            this.lstPaths.Size = new System.Drawing.Size(638, 88);
+            this.lstPaths.Size = new System.Drawing.Size(638, 83);
             this.lstPaths.TabIndex = 11;
             this.lstPaths.Click += new System.EventHandler(this.lstPaths_Click);
             this.lstPaths.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstPaths_KeyDown);
@@ -169,10 +169,10 @@ namespace TombLib.Forms
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusSamples});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 507);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 505);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(662, 26);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(662, 28);
             this.darkStatusStrip1.TabIndex = 12;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -184,7 +184,7 @@ namespace TombLib.Forms
             // butReloadSamples
             // 
             this.butReloadSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butReloadSamples.Image = global::TombLib.Properties.Resources.general_redo_16;
+            this.butReloadSamples.Image = global::TombLib.Properties.Resources.actions_refresh_16;
             this.butReloadSamples.Location = new System.Drawing.Point(550, 10);
             this.butReloadSamples.Name = "butReloadSamples";
             this.butReloadSamples.Size = new System.Drawing.Size(100, 54);
@@ -199,7 +199,7 @@ namespace TombLib.Forms
             this.butDeletePath.Enabled = false;
             this.butDeletePath.Image = global::TombLib.Properties.Resources.general_trash_16;
             this.butDeletePath.ImagePadding = 8;
-            this.butDeletePath.Location = new System.Drawing.Point(118, 480);
+            this.butDeletePath.Location = new System.Drawing.Point(118, 475);
             this.butDeletePath.Name = "butDeletePath";
             this.butDeletePath.Size = new System.Drawing.Size(100, 23);
             this.butDeletePath.TabIndex = 7;
@@ -212,7 +212,7 @@ namespace TombLib.Forms
             this.butAddPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butAddPath.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butAddPath.ImagePadding = 12;
-            this.butAddPath.Location = new System.Drawing.Point(12, 480);
+            this.butAddPath.Location = new System.Drawing.Point(12, 475);
             this.butAddPath.Name = "butAddPath";
             this.butAddPath.Size = new System.Drawing.Size(100, 23);
             this.butAddPath.TabIndex = 6;
