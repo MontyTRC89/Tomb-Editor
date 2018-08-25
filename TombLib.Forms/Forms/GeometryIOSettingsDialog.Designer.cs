@@ -52,7 +52,7 @@
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
-            this.butOK.Text = "Ok";
+            this.butOK.Text = "OK";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
             // butCancel
