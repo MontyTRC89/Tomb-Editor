@@ -70,9 +70,9 @@ namespace TombLib.Forms
         {
             if (!_dialogInfo.FindTr4Samples())
             {
-                var result = DarkMessageBox.Show(this, "Warning: some samples are still missing. " + Environment.NewLine +
+                var result = DarkMessageBox.Show(this, "Some samples are still missing. " + Environment.NewLine +
                                                  "If you continue, you'll have to fix them manually with sound manager. " + Environment.NewLine +
-                                                 "Do you want to continue and ignore missing files? You can also abort the importing process",
+                                                 "Do you want to continue and ignore missing files? You can also abort the importing process.",
                                                  "Missing samples",
                                                  MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 switch (result)

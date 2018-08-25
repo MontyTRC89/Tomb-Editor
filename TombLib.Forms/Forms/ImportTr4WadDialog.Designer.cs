@@ -30,6 +30,7 @@ namespace TombLib.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportTr4WadDialog));
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
@@ -40,7 +41,7 @@ namespace TombLib.Forms
             this.columnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.lstPaths = new DarkUI.Controls.DarkListBox();
+            this.lstPaths = new DarkUI.Controls.DarkListBox(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusSamples = new System.Windows.Forms.ToolStripStatusLabel();
@@ -68,7 +69,7 @@ namespace TombLib.Forms
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 2;
-            this.butOK.Text = "Ok";
+            this.butOK.Text = "OK";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
             // darkLabel1
@@ -185,9 +186,9 @@ namespace TombLib.Forms
             // 
             this.butReloadSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butReloadSamples.Image = global::TombLib.Properties.Resources.actions_refresh_16;
-            this.butReloadSamples.Location = new System.Drawing.Point(550, 10);
+            this.butReloadSamples.Location = new System.Drawing.Point(550, 9);
             this.butReloadSamples.Name = "butReloadSamples";
-            this.butReloadSamples.Size = new System.Drawing.Size(100, 54);
+            this.butReloadSamples.Size = new System.Drawing.Size(100, 55);
             this.butReloadSamples.TabIndex = 10;
             this.butReloadSamples.Text = "Reload samples";
             this.butReloadSamples.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -198,7 +199,6 @@ namespace TombLib.Forms
             this.butDeletePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDeletePath.Enabled = false;
             this.butDeletePath.Image = global::TombLib.Properties.Resources.general_trash_16;
-            this.butDeletePath.ImagePadding = 8;
             this.butDeletePath.Location = new System.Drawing.Point(118, 475);
             this.butDeletePath.Name = "butDeletePath";
             this.butDeletePath.Size = new System.Drawing.Size(100, 23);
@@ -211,7 +211,6 @@ namespace TombLib.Forms
             // 
             this.butAddPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butAddPath.Image = global::TombLib.Properties.Resources.general_plus_math_16;
-            this.butAddPath.ImagePadding = 12;
             this.butAddPath.Location = new System.Drawing.Point(12, 475);
             this.butAddPath.Name = "butAddPath";
             this.butAddPath.Size = new System.Drawing.Size(100, 23);
@@ -222,8 +221,10 @@ namespace TombLib.Forms
             // 
             // ImportTr4WadDialog
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(662, 533);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.lstPaths);
