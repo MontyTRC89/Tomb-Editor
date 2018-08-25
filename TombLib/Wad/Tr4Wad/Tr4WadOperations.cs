@@ -602,11 +602,11 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 // New velocities
-                float acceleration = oldAnimation.Accel / 65536.0f;
-                newAnimation.EndVelocity = oldAnimation.Speed / 65536.0f;
+                float acceleration = newAnimation.Acceleration / 65536.0f;
+                newAnimation.EndVelocity = newAnimation.Speed / 65536.0f;
 
-                float lateralAcceleration = oldAnimation.AccelLateral / 65536.0f;
-                newAnimation.EndLateralVelocity = oldAnimation.SpeedLateral / 65536.0f;
+                float lateralAcceleration = newAnimation.LateralAcceleration / 65536.0f;
+                newAnimation.EndLateralVelocity = newAnimation.LateralSpeed / 65536.0f;
 
                 if (newAnimation.KeyFrames.Count != 0 && newAnimation.FrameRate != 0)
                 {
@@ -639,7 +639,11 @@ namespace TombLib.Wad.Tr4Wad
 
                 // HACK: this fixes some invalid NextFrame values
                 if (frameBases[newMoveable.Animations[animation.NextAnimation]] != 0)
-                    animation.NextFrame %= frameBases[newMoveable.Animations[animation.NextAnimation]];
+                {
+                    animation.NextFrame -= frameBases[newMoveable.Animations[animation.NextAnimation]];
+                    if(animation.NextFrame > newMoveable.Animations[animation.NextAnimation].RealNumberOfFrames)
+                        animation.NextFrame = newMoveable.Animations[animation.NextAnimation].RealNumberOfFrames;
+                }
 
                 foreach (var stateChange in animation.StateChanges)
                     for (int j = 0; j < stateChange.Dispatches.Count; ++j)
@@ -661,7 +665,10 @@ namespace TombLib.Wad.Tr4Wad
                             // HACK: In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to max frame number.
                             if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
-                               newFrame = (ushort)(newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames);
+                            {
+                                logger.Warn("Animation " + i + " has wrong anim dispatch " + j + " refering to nonexistent frame " + newFrame + ", corrected to max. frame");
+                                newFrame = (ushort)(newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames);
+                            }
 
                             animDispatch.NextFrame = newFrame;
                         }
