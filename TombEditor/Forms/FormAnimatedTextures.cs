@@ -517,6 +517,12 @@ namespace TombEditor.Forms
 
         private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.New)
         {
+            if (!(textureMap.SelectedTexture.Texture is LevelTexture))
+            {
+                popup.ShowInfo(textureMap, "Please select texture region!");
+                return false;
+            }
+
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
             effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
@@ -558,12 +564,6 @@ namespace TombEditor.Forms
                 genType == AnimGenerationType.Replace ||
                 genType == AnimGenerationType.AddFrames)
             {
-                if (!(textureMap.SelectedTexture.Texture is LevelTexture))
-                {
-                    popup.ShowInfo(textureMap, "Please select texture region!");
-                    return false;
-                }
-
                 // Generate dummy reference frames and insert them into set
 
                 for (int i = 0; i < resultingFrameCount; i++)
