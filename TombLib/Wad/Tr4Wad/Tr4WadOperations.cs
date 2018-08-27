@@ -341,7 +341,7 @@ namespace TombLib.Wad.Tr4Wad
         {
             wad_moveable oldMoveable = oldWad.Moveables[moveableIndex];
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
-            var frameBases = new Dictionary<WadAnimation, ushort>();
+            var frameBases = new Dictionary<WadAnimation, ushort[]>();
 
             // Load meshes
             var meshes = new List<WadMesh>();
@@ -600,7 +600,12 @@ namespace TombLib.Wad.Tr4Wad
                                                         (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
                 }
 
-                frameBases.Add(newAnimation, oldAnimation.FrameStart);
+                // Deduce real maximum frame number, based on interpolation and keyframes.
+                // We need to refer this value in NextFrame-related fixes (below) because of epic WadMerger bug,
+                // which incorrectly calculates NextFrame and "steals" last frame from every custom animation.
+                ushort maxFrameCount = (ushort)((newAnimation.FrameRate == 1 || numFrames < 2) ? numFrames - 1 : ((numFrames - 1) * newAnimation.FrameRate) - 1);
+
+                frameBases.Add(newAnimation, new ushort[] { oldAnimation.FrameStart, maxFrameCount });
                 newMoveable.Animations.Add(newAnimation);
             }
 
@@ -622,11 +627,11 @@ namespace TombLib.Wad.Tr4Wad
                 var animation = newMoveable.Animations[i];
 
                 // HACK: this fixes some invalid NextFrame values
-                if (frameBases[newMoveable.Animations[animation.NextAnimation]] != 0)
+                if (frameBases[newMoveable.Animations[animation.NextAnimation]][0] != 0)
                 {
-                    animation.NextFrame -= frameBases[newMoveable.Animations[animation.NextAnimation]];
-                    if(animation.NextFrame > newMoveable.Animations[animation.NextAnimation].RealNumberOfFrames)
-                        animation.NextFrame = newMoveable.Animations[animation.NextAnimation].RealNumberOfFrames;
+                    animation.NextFrame -= frameBases[newMoveable.Animations[animation.NextAnimation]][0];
+                    if (animation.NextFrame > frameBases[newMoveable.Animations[animation.NextAnimation]][1])
+                        animation.NextFrame = frameBases[newMoveable.Animations[animation.NextAnimation]][1];
                 }
 
                 foreach (var stateChange in animation.StateChanges)
@@ -642,19 +647,13 @@ namespace TombLib.Wad.Tr4Wad
                             continue;
                         }
 
-                        if (frameBases[newMoveable.Animations[animDispatch.NextAnimation]] != 0)
+                        if (frameBases[newMoveable.Animations[animDispatch.NextAnimation]][0] != 0)
                         {
-                            ushort newFrame = (ushort)(animDispatch.NextFrame % frameBases[newMoveable.Animations[animDispatch.NextAnimation]]);
-
                             // HACK: In some cases dispatches have invalid NextFrame.
-                            // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to max frame number.
-                            if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
-                            {
-                                logger.Warn("Animation " + i + " has wrong anim dispatch " + j + " refering to nonexistent frame " + newFrame + ", corrected to " + newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames);
-                                newFrame = (ushort)(newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames);
-                            }
-
-                            animDispatch.NextFrame = newFrame;
+                            // From tests it seems that's ok to make NextFrame equal to max frame number.
+                            animDispatch.NextFrame -= frameBases[newMoveable.Animations[animDispatch.NextAnimation]][0];
+                            if (animDispatch.NextFrame > frameBases[newMoveable.Animations[animDispatch.NextAnimation]][1])
+                                animDispatch.NextFrame = frameBases[newMoveable.Animations[animDispatch.NextAnimation]][1];
                         }
                         stateChange.Dispatches[j] = animDispatch;
                     }
