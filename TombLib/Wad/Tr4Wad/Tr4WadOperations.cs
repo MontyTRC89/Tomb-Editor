@@ -453,8 +453,12 @@ namespace TombLib.Wad.Tr4Wad
                 newAnimation.FrameRate = oldAnimation.FrameDuration;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.AnimationIndex);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
-                newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
                 newAnimation.Name = "Animation " + j;
+
+                // Fix wadmerger bug with inverted frame start/end on 0-frame anims
+                ushort newFrameStart = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameStart : oldAnimation.FrameEnd;
+                ushort newFrameEnd   = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameEnd : oldAnimation.FrameStart;
+                newAnimation.RealNumberOfFrames = (ushort)(newFrameEnd - newFrameStart + 1);
 
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
@@ -467,8 +471,8 @@ namespace TombLib.Wad.Tr4Wad
                         WadAnimDispatch ad = new WadAnimDispatch();
                         wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
 
-                        ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
-                        ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
+                        ad.InFrame = (ushort)(wadAd.Low - newFrameStart);
+                        ad.OutFrame = (ushort)(wadAd.High - newFrameStart);
                         ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.AnimationIndex) % numAnimations);
                         ad.NextFrame = (ushort)wadAd.NextFrame;
 
@@ -514,7 +518,7 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
 
                             case 5:
-                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - newFrameStart);
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
 
@@ -536,7 +540,7 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
 
                             case 6:
-                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - newFrameStart);
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
@@ -603,9 +607,13 @@ namespace TombLib.Wad.Tr4Wad
                 // Deduce real maximum frame number, based on interpolation and keyframes.
                 // We need to refer this value in NextFrame-related fixes (below) because of epic WadMerger bug,
                 // which incorrectly calculates NextFrame and "steals" last frame from every custom animation.
-                ushort maxFrameCount = (ushort)((newAnimation.FrameRate == 1 || numFrames < 2) ? numFrames - 1 : ((numFrames - 1) * newAnimation.FrameRate) - 1);
+                ushort maxFrameCount = (ushort)((newAnimation.FrameRate == 1 || numFrames < 2) ? numFrames : ((numFrames - 1) * newAnimation.FrameRate + 1));
 
-                frameBases.Add(newAnimation, new ushort[] { oldAnimation.FrameStart, maxFrameCount });
+                // Also correct animation out-point
+                if (newAnimation.RealNumberOfFrames > maxFrameCount)
+                    newAnimation.RealNumberOfFrames = maxFrameCount;
+
+                frameBases.Add(newAnimation, new ushort[] { newFrameStart, (ushort)(maxFrameCount - 1) });
                 newMoveable.Animations.Add(newAnimation);
             }
 
