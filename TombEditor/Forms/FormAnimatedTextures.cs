@@ -517,9 +517,10 @@ namespace TombEditor.Forms
 
         private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.New)
         {
-            if (!(textureMap.SelectedTexture.Texture is LevelTexture))
+            TextureArea textureArea = textureMap.SelectedTexture;
+            if (!(textureArea.Texture is LevelTexture))
             {
-                popup.ShowInfo(textureMap, "Please select texture region!");
+                popup.ShowError(textureMap, "No valid texture region selected", "Invalid selection");
                 return false;
             }
 
@@ -570,11 +571,11 @@ namespace TombEditor.Forms
                 {
                     var dummyFrame = new AnimatedTextureFrame
                     {
-                        Texture = (LevelTexture)textureMap.SelectedTexture.Texture,
-                        TexCoord0 = textureMap.SelectedTexture.TexCoord0,
-                        TexCoord1 = textureMap.SelectedTexture.TexCoord1,
-                        TexCoord2 = textureMap.SelectedTexture.TexCoord2,
-                        TexCoord3 = textureMap.SelectedTexture.TexCoord3
+                        Texture = (LevelTexture)textureArea.Texture,
+                        TexCoord0 = textureArea.TexCoord0,
+                        TexCoord1 = textureArea.TexCoord1,
+                        TexCoord2 = textureArea.TexCoord2,
+                        TexCoord3 = textureArea.TexCoord3
                     };
 
                     if (genType != AnimGenerationType.AddFrames)
