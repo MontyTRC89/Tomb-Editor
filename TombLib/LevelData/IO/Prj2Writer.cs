@@ -177,6 +177,7 @@ namespace TombLib.LevelData.IO
                     foreach (AnimatedTextureSet set in settings.AnimatedTextureSets)
                         using (var chunkAnimatedTextureSet = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSet))
                         {
+                            chunkIO.WriteChunkString(Prj2Chunks.AnimatedTextureSetName, set.Name ?? "");
                             using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrames))
                             {
                                 using (var chunkAnimatedTextureSetExtraInfo = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSetExtraInfo))

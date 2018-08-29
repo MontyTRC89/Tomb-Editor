@@ -741,6 +741,9 @@ namespace TombEditor.Forms
                             float r2 = Vector2.Distance(center, referenceFrame.TexCoord2);
                             float r3 = Vector2.Distance(center, referenceFrame.TexCoord3);
 
+                            if (float.IsNaN(r1) || float.IsNaN(r2) || float.IsNaN(r3) || float.IsNaN(r0))
+                                continue;
+
                             targetSet.Frames[i].TexCoord0 = new Vector2(center.X + r0 * (float)Math.Cos(currAngle + Math.PI), center.Y + r0 * (float)Math.Sin(currAngle + Math.PI));
                             targetSet.Frames[i].TexCoord1 = new Vector2(center.X + r1 * (float)Math.Cos(currAngle + Math.PI * 1.5f), center.Y + r1 * (float)Math.Sin(currAngle + Math.PI * 1.5f));
                             targetSet.Frames[i].TexCoord2 = new Vector2(center.X + r2 * (float)Math.Cos(currAngle), center.Y + r2 * (float)Math.Sin(currAngle));
