@@ -320,7 +320,9 @@ namespace TombLib.LevelData.IO
                         var set = new AnimatedTextureSet();
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Prj2Chunks.AnimatedTextureSetExtraInfo)
+                            if (id3 == Prj2Chunks.AnimatedTextureSetName)
+                                set.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetExtraInfo)
                             {
                                 set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
                                 set.Fps = LEB128.ReadSByte(chunkIO.Raw);
