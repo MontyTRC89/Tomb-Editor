@@ -39,6 +39,8 @@ namespace TombEditor
             { Keys.Divide, "NumPadDivide" },
             { Keys.Decimal, "NumPadDecimal" },
             { Keys.Scroll, "ScrollLock" },
+            { Keys.Back, "Backspace" },
+            { Keys.Capital, "CapsLock" },
             { Keys.Oemtilde, GetOemKeyName(Keys.Oemtilde) },
             { Keys.OemQuestion, GetOemKeyName(Keys.OemQuestion) },
             { Keys.Oemplus, GetOemKeyName(Keys.Oemplus) },
