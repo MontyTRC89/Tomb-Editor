@@ -42,6 +42,8 @@
             this.comboReflection = new DarkUI.Controls.DarkComboBox();
             this.comboRoomType = new DarkUI.Controls.DarkComboBox();
             this.comboRoom = new DarkUI.Controls.DarkComboBox();
+            this.butDublicateRoom = new DarkUI.Controls.DarkButton();
+            this.butDeleteRoom = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // cbNoPathfinding
@@ -220,7 +222,7 @@
             // 
             this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.actions_Split_16;
-            this.butSplitRoom.Location = new System.Drawing.Point(228, 86);
+            this.butSplitRoom.Location = new System.Drawing.Point(228, 115);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
             this.butSplitRoom.TabIndex = 4;
@@ -230,7 +232,7 @@
             // 
             this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
-            this.butRoomUp.Location = new System.Drawing.Point(258, 57);
+            this.butRoomUp.Location = new System.Drawing.Point(258, 86);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Size = new System.Drawing.Size(24, 23);
             this.butRoomUp.TabIndex = 5;
@@ -240,7 +242,7 @@
             // 
             this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
-            this.butRoomDown.Location = new System.Drawing.Point(258, 86);
+            this.butRoomDown.Location = new System.Drawing.Point(258, 115);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(24, 23);
             this.butRoomDown.TabIndex = 6;
@@ -260,7 +262,7 @@
             // 
             this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(228, 57);
+            this.butCropRoom.Location = new System.Drawing.Point(228, 86);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Size = new System.Drawing.Size(24, 23);
             this.butCropRoom.TabIndex = 3;
@@ -385,10 +387,32 @@
             this.comboRoom.TabIndex = 0;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
+            // butDublicateRoom
+            // 
+            this.butDublicateRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDublicateRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butDublicateRoom.Location = new System.Drawing.Point(228, 57);
+            this.butDublicateRoom.Name = "butDublicateRoom";
+            this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
+            this.butDublicateRoom.TabIndex = 104;
+            this.butDublicateRoom.Tag = "DuplicateRooms";
+            // 
+            // butDeleteRoom
+            // 
+            this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDeleteRoom.Location = new System.Drawing.Point(258, 57);
+            this.butDeleteRoom.Name = "butDeleteRoom";
+            this.butDeleteRoom.Size = new System.Drawing.Size(24, 23);
+            this.butDeleteRoom.TabIndex = 105;
+            this.butDeleteRoom.Tag = "DeleteRooms";
+            // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.butDeleteRoom);
+            this.Controls.Add(this.butDublicateRoom);
             this.Controls.Add(this.butLocked);
             this.Controls.Add(this.cbNoLensflare);
             this.Controls.Add(this.cbNoPathfinding);
@@ -453,5 +477,7 @@
         private DarkUI.Controls.DarkCheckBox cbNoLensflare;
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkButton butLocked;
+        private DarkUI.Controls.DarkButton butDublicateRoom;
+        private DarkUI.Controls.DarkButton butDeleteRoom;
     }
 }
