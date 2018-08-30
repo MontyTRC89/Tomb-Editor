@@ -955,6 +955,12 @@ namespace TombEditor
 
         public static bool ApplyTextureAutomatically(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
+            if (face >= BlockFace.Ceiling)
+            {
+                Swap.Do(ref texture.TexCoord0, ref texture.TexCoord3);
+                Swap.Do(ref texture.TexCoord1, ref texture.TexCoord2);
+            }
+
             var textureApplied = ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
             if (textureApplied)
             {
@@ -1185,6 +1191,12 @@ namespace TombEditor
 
         public static void TexturizeGroup(Room room, SectorSelection selection, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
         {
+            if (pickedFace >= BlockFace.Ceiling)
+            {
+                Swap.Do(ref texture.TexCoord0, ref texture.TexCoord3);
+                Swap.Do(ref texture.TexCoord1, ref texture.TexCoord2);
+            }
+
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
 
             if (pickedFace < BlockFace.Floor)
