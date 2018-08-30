@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib.Controls;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -265,6 +266,12 @@ namespace TombEditor.ToolWindows
 
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
+        }
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(comboRoom);
+            searchPopUp.Show(this);
         }
     }
 }

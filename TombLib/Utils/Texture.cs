@@ -161,6 +161,12 @@ namespace TombLib.Utils
             }
         }
 
+        public void Mirror()
+        {
+            Swap.Do(ref TexCoord0, ref TexCoord3);
+            Swap.Do(ref TexCoord1, ref TexCoord2);
+        }
+
         private static float CalculateArea(Vector2 texCoord0, Vector2 texCoord1)
         {
             return (texCoord1.X - texCoord0.X) * (texCoord1.Y + texCoord0.Y);

@@ -30,6 +30,7 @@
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butSearch = new DarkUI.Controls.DarkButton();
             this.butLocked = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butRoomUp = new DarkUI.Controls.DarkButton();
@@ -207,6 +208,17 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(198, 28);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 106;
+            this.toolTip.SetToolTip(this.butSearch, "Search for items");
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
             // butLocked
             // 
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -383,7 +395,7 @@
             this.comboRoom.IntegralHeight = false;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
-            this.comboRoom.Size = new System.Drawing.Size(219, 23);
+            this.comboRoom.Size = new System.Drawing.Size(193, 23);
             this.comboRoom.TabIndex = 0;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
@@ -411,6 +423,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.butDeleteRoom);
             this.Controls.Add(this.butDublicateRoom);
             this.Controls.Add(this.butLocked);
@@ -479,5 +492,6 @@
         private DarkUI.Controls.DarkButton butLocked;
         private DarkUI.Controls.DarkButton butDublicateRoom;
         private DarkUI.Controls.DarkButton butDeleteRoom;
+        private DarkUI.Controls.DarkButton butSearch;
     }
 }

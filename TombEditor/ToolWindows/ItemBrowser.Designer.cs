@@ -44,17 +44,6 @@
             this.panelStaticMeshColor.Visible = false;
             this.panelStaticMeshColor.Click += new System.EventHandler(this.panelStaticMeshColor_Click);
             // 
-            // lblStaticMeshColor
-            // 
-            this.lblStaticMeshColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStaticMeshColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblStaticMeshColor.Location = new System.Drawing.Point(0, 11);
-            this.lblStaticMeshColor.Name = "lblStaticMeshColor";
-            this.lblStaticMeshColor.Size = new System.Drawing.Size(70, 17);
-            this.lblStaticMeshColor.TabIndex = 67;
-            this.lblStaticMeshColor.Text = "Static color:";
-            this.lblStaticMeshColor.Visible = false;
-            // 
             // panelItem
             // 
             this.panelItem.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -66,6 +55,17 @@
             this.panelItem.Name = "panelItem";
             this.panelItem.Size = new System.Drawing.Size(279, 165);
             this.panelItem.TabIndex = 62;
+            // 
+            // lblStaticMeshColor
+            // 
+            this.lblStaticMeshColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStaticMeshColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblStaticMeshColor.Location = new System.Drawing.Point(0, 11);
+            this.lblStaticMeshColor.Name = "lblStaticMeshColor";
+            this.lblStaticMeshColor.Size = new System.Drawing.Size(70, 17);
+            this.lblStaticMeshColor.TabIndex = 67;
+            this.lblStaticMeshColor.Text = "Static color:";
+            this.lblStaticMeshColor.Visible = false;
             // 
             // panelHeader
             // 
@@ -87,7 +87,7 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(3, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(221, 24);
+            this.comboItems.Size = new System.Drawing.Size(224, 24);
             this.comboItems.TabIndex = 1;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             this.comboItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.comboItems_Format);

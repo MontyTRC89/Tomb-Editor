@@ -89,11 +89,11 @@ namespace TombLib.Controls
             // butView
             // 
             this.butView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butView.Image = global::TombLib.Properties.Resources.general_target_16;
-            this.butView.Location = new System.Drawing.Point(292, 0);
+            this.butView.Location = new System.Drawing.Point(264, 0);
             this.butView.Name = "butView";
-            this.butView.Size = new System.Drawing.Size(23, 23);
+            this.butView.Size = new System.Drawing.Size(51, 23);
             this.butView.TabIndex = 4;
+            this.butView.Text = "Locate";
             this.butView.Visible = false;
             this.butView.Click += new System.EventHandler(this.butView_Click);
             // 
@@ -115,7 +115,7 @@ namespace TombLib.Controls
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(264, 0);
+            this.butSearch.Location = new System.Drawing.Point(235, 0);
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(24, 23);
             this.butSearch.TabIndex = 3;
@@ -131,7 +131,7 @@ namespace TombLib.Controls
             this.combo.IntegralHeight = false;
             this.combo.Location = new System.Drawing.Point(0, 0);
             this.combo.Name = "combo";
-            this.combo.Size = new System.Drawing.Size(259, 23);
+            this.combo.Size = new System.Drawing.Size(233, 23);
             this.combo.TabIndex = 0;
             this.combo.TabStop = false;
             this.combo.Visible = false;
