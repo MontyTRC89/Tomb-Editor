@@ -9953,11 +9953,8 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="41" V="Trigger. (Camera) Activate &lt;#&gt;Camera or fixed camera with (E)Timer value">
-      <Timer>
-        <CamerasInLevel />
-      </Timer>
       <Target>
-        <MoveablesInLevel />
+        <CamerasInLevel />
       </Target>
       <Extra>
         <LinearModel Start="0" End="126">
@@ -9972,9 +9969,6 @@
       </Target>
     </Subtrigger>
     <Subtrigger K="43" V="Trigger. (Moveable) Activate &lt;#&gt;Object with (E)Timer value">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -9992,9 +9986,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="44" V="Trigger. (Moveable) Untrigger &lt;#&gt;Object with (E)Timer value">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10012,11 +10003,8 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="45" V="Trigger. (FlyBy) (E)Activate or Untrigger the &lt;#&gt;FlyBy camera sequence">
-      <Timer>
-        <FlybyCamerasInLevel />
-      </Timer>
       <Target>
-        <MoveablesInLevel />
+        <FlybyCamerasInLevel />
       </Target>
       <Extra>
         <FixedEnumeration>
@@ -10026,25 +10014,16 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="46" V="Trigger. (Sink) Activate the &lt;#&gt;Sink">
-      <Timer>
-        <SinksInLevel />
-      </Timer>
       <Target>
-        <MoveablesInLevel />
+        <SinksInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="47" V="Disable. Disable all continuos actions on &lt;#&gt;Moveable">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="48" V="Effect. Add to &lt;#&gt;Enemy the (E)AddEffect from script.txt">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10056,9 +10035,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="49" V="Effect. Remove from &lt;#&gt;Enemy the (E)AddEffect from script.txt">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10070,9 +10046,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="50" V="Enemy. Mesh. Set for &lt;#&gt;enemy the (E)mesh as invisible">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10084,9 +10057,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="51" V="Enemy. Mesh. Set for &lt;#&gt;enemy the (E)mesh as visible">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10098,9 +10068,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="52" V="Enemy. Timer. Show the trigger count-down for &lt;#&gt;enemy using (E)format">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10116,9 +10083,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="53" V="Enemy. Mesh. Set for &lt;#&gt;enmey the (E)transparecy level">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10130,17 +10094,11 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="54" V="Variables. Set the index of &lt;#&gt;moveable as Selected Item">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="55" V="Variables. Save the position of &lt;#&gt;Moveable from (E)Store Variable (x,y,z,room)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10166,9 +10124,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="56" V="Variables. Move &lt;#&gt;Moveable to position saved from (E)Store Variable">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10194,9 +10149,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="57" V="Variables. Move &lt;#&gt;Moveable to position saved from (E)Store Variable (center)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10222,9 +10174,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="58" V="Enemy. Freeze. Freeze &lt;#&gt;Enemy for (E)Seconds">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10241,9 +10190,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="59" V="Enemy. Freeze. Remove freeze for &lt;#&gt;Enemy in (E)way">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10257,33 +10203,21 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="60" V="Enemy. Save the coordinates and facing of &lt;#&gt;Moveable in savegame">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="61" V="Collision. Disable the collisions of &lt;#&gt;Moveable">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="62" V="Collision. Enable newly the collisions of &lt;#&gt;Moveable">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="63" V="Move. Move up &lt;#&gt;animating for (E)units (one sector = 1024)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10295,9 +10229,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="64" V="Move. Move down &lt;#&gt;animating for (E)units (one sector = 1024)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10309,9 +10240,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="65" V="Move. Move to -X direction (west) &lt;#&gt;animating for (E)units (one sector = 1024)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10323,9 +10251,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="66" V="Move. Move to +Z direction (north) &lt;#&gt;animating for (E)units (one sector = 1024)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10337,9 +10262,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="67" V="Move. Move to +X direction (east) &lt;#&gt;animating for (E)units (one sector = 1024)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10351,9 +10273,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="68" V="Move. Move to -Z direction (south) &lt;#&gt;animating for (E)units (one sector = 1024)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10365,9 +10284,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="69" V="Enemy. (Physics) OVER Mode. Attract to -X direction (west) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10379,9 +10295,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="70" V="Enemy. (Physics) OVER Mode. Attract to +X direction (east) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10398,9 +10311,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="72" V="Enemy. (Physics) OVER Mode. Attract to -Z direction (south) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10412,9 +10322,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="73" V="Enemy. (Physics) PAD Mode. Attract to -X direction (west) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10426,9 +10333,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="74" V="Enemy. (Physics) PAD Mode. Attract to +X direction (east) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10440,9 +10344,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="75" V="Enemy. (Physics) PAD Mode. Attract to +Z direction (north) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10454,9 +10355,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="76" V="Enemy. (Physics) PAD Mode. Attract to -Z direction (south) &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10468,25 +10366,16 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="77" V="Trigger. (Tight-Rope) Disable &lt;#&gt;Tight-Rope">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="78" V="Trigger. (Tight-Rope) Enable newly &lt;#&gt;Tight-Rope (previously disabled)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="79" V="Enemy. (OCB) Change the OCB value of &lt;#&gt;Moveable with (E)Big Number value">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10498,9 +10387,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="80" V="Turn. Turn &lt;#&gt;Animating around the center at -X direction (west) (E)Distance in circular way">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10512,9 +10398,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="81" V="Turn. Stop circular turning for &lt;#&gt;Animating item in (E)way">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10532,9 +10415,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="82" V="Effect. Apply on the &lt;#&gt;Moveable the (E)preset effect">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10548,11 +10428,8 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="83" V="Statics. Apply on &lt;#&gt;static the (E)Add Effect from script file">
-      <Timer>
-        <StaticsInLevel />
-      </Timer>
       <Target>
-        <MoveablesInLevel />
+        <StaticsInLevel />
       </Target>
       <Extra>
         <LinearModel Start="1" End="126">
@@ -10562,11 +10439,8 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="84" V="Statics. Remove from &lt;#&gt;static the (E)Add Effect of script file">
-      <Timer>
-        <StaticsInLevel />
-      </Timer>
       <Target>
-        <MoveablesInLevel />
+        <StaticsInLevel />
       </Target>
       <Extra>
         <LinearModel Start="1" End="126">
@@ -10576,17 +10450,11 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="85" V="Turn. Resume circular turning of &lt;#&gt;Animating previously put in Pause">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="86" V="Cutscene. Change &lt;#&gt;Moveable to (E)Actor status">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10602,9 +10470,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="87" V="Cutscene. Give to &lt;#&gt;Moveable the (E)Leading or Extra Actor role">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10616,9 +10481,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="88" V="Cutscene. Set for actor &lt;#&gt;Moveable the (E)Basic collision status">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10630,9 +10492,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="89" V="Creature. Force for &lt;#&gt;Moveable the (E)Frame of current animation">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10644,9 +10503,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="90" V="Creature. Force for &lt;#&gt;Moveable the (E)State-id">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10658,9 +10514,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="91" V="Cutscene. Speech. Apply (E)Speech Parameters for &lt;#&gt;Moveable">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10672,9 +10525,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="92" V="Enemy. Mesh. Flip (E)Mesh of &lt;#&gt;Moveable">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10686,9 +10536,6 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="93" V="Move. Update room for &lt;#&gt;Animating with (E)units of Y displacement">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10713,17 +10560,11 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="94" V="Trigger. Set &lt;#&gt;Moveable as ACTIVE item (item that you'll move or animate)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
     <Subtrigger K="95" V="Trigger. Remove &lt;#&gt;Moveable from active item list (you'll not move or animate it)">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
       <Target>
         <MoveablesInLevel />
       </Target>

@@ -792,6 +792,7 @@ namespace TombEditor
             var area = room.GetBlock(pos).GetFaceTexture(face);
             if (area == null || area.TextureIsInvisble || area.Texture == null)
                 return;
+            if(face >= BlockFace.Ceiling) area.Mirror();
             _editor.SelectTextureAndCenterView(area);
         }
 
@@ -955,12 +956,7 @@ namespace TombEditor
 
         public static bool ApplyTextureAutomatically(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
-            if (face >= BlockFace.Ceiling)
-            {
-                Swap.Do(ref texture.TexCoord0, ref texture.TexCoord3);
-                Swap.Do(ref texture.TexCoord1, ref texture.TexCoord2);
-            }
-
+            if (face >= BlockFace.Ceiling) texture.Mirror();
             var textureApplied = ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
             if (textureApplied)
             {
@@ -1191,12 +1187,7 @@ namespace TombEditor
 
         public static void TexturizeGroup(Room room, SectorSelection selection, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
         {
-            if (pickedFace >= BlockFace.Ceiling)
-            {
-                Swap.Do(ref texture.TexCoord0, ref texture.TexCoord3);
-                Swap.Do(ref texture.TexCoord1, ref texture.TexCoord2);
-            }
-
+            if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
 
             if (pickedFace < BlockFace.Floor)
