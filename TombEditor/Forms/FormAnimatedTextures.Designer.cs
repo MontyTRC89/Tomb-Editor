@@ -79,7 +79,7 @@ namespace TombEditor.Forms
             // darkLabel1
             // 
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(1, 8);
+            this.darkLabel1.Location = new System.Drawing.Point(2, 5);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(82, 17);
             this.darkLabel1.TabIndex = 0;
