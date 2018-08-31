@@ -43,8 +43,6 @@ namespace TombEditor.Forms
             MaximumSize = new Size(32000, Size.Height);
             MinimumSize = new Size(611 + (Size.Height - ClientSize.Height), Size.Height);
 
-            UpdateDialog();
-
             // Set values
             cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_trigger.CodeBits & (1 << 1)) != 0;
@@ -171,21 +169,25 @@ namespace TombEditor.Forms
             {
                 tbScript.Text = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger);
                 tbScript.Enabled = true;
+                butCopyToClipboard.Enabled = true;
             }
             catch (NgParameterInfo.ExceptionScriptNotSupported)
             {
                 tbScript.Text = "Not supported";
                 tbScript.Enabled = false;
+                butCopyToClipboard.Enabled = false;
             }
             catch (NgParameterInfo.ExceptionScriptIdMissing)
             {
                 tbScript.Text = "Click to generate";
                 tbScript.Enabled = false;
+                butCopyToClipboard.Enabled = false;
             }
             catch (Exception exc)
             {
                 tbScript.Text = "Check all fields";
                 tbScript.Enabled = false;
+                butCopyToClipboard.Enabled = false;
                 logger.Debug(exc, "\"ExportToScriptTrigger\" failed.");
             }
         }
@@ -199,15 +201,16 @@ namespace TombEditor.Forms
 
         private void butCopyToClipboard_Click(object sender, EventArgs e)
         {
-            AllocateNewScriptIds();
-            UpdateExportToTrigger();
             Clipboard.SetText(tbScript.Text);
         }
 
         private void scriptExportPanel_Click(object sender, EventArgs e)
         {
-            AllocateNewScriptIds();
-            UpdateExportToTrigger();
+            if (tbScript.Enabled == false)
+            {
+                AllocateNewScriptIds();
+                UpdateExportToTrigger();
+            }
         }
 
         private void cbRawMode_CheckedChanged(object sender, EventArgs e)
