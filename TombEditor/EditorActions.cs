@@ -2460,6 +2460,12 @@ namespace TombEditor
 
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
 
+            if(!Directory.Exists(fileName))
+            {
+                _editor.SendMessage("Specified folder for level file does not exist.\nPlease specify different folder in level settings.", PopupType.Error);
+                return false;
+            }
+
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone,
                 progressReporter =>
                 {

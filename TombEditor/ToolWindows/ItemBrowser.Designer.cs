@@ -87,7 +87,7 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(3, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(224, 24);
+            this.comboItems.Size = new System.Drawing.Size(227, 24);
             this.comboItems.TabIndex = 1;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             this.comboItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.comboItems_Format);
