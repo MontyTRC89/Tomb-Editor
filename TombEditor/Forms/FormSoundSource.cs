@@ -54,6 +54,7 @@ namespace TombEditor.Forms
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            WadSoundPlayer.StopSample();
             Close();
         }
 
@@ -65,6 +66,7 @@ namespace TombEditor.Forms
                 _soundSource.EmbeddedSoundInfo = soundInfoEditor.SoundInfo == WadSoundInfo.Empty ? null : soundInfoEditor.SoundInfo;
 
             DialogResult = DialogResult.OK;
+            WadSoundPlayer.StopSample();
             Close();
         }
 
