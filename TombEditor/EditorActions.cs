@@ -2550,7 +2550,7 @@ namespace TombEditor
         {
             var settings = _editor.Level.Settings;
             string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Path, "Load a texture", LevelTexture.FileExtensions, VariableType.LevelDirectory, false);
-            if (path == toReplace?.Path)
+            if (String.IsNullOrEmpty(path) || path == toReplace?.Path)
                 return;
 
             toReplace.SetPath(_editor.Level.Settings, path);
