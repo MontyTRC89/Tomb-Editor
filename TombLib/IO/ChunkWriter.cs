@@ -45,6 +45,7 @@ namespace TombLib.IO
         public ChunkWriter(byte[] magicNumber, BinaryWriterFast fastWriter)
         {
             fastWriter.Write(magicNumber, 0, magicNumber.Length);
+            fastWriter.Write(BitConverter.GetBytes(0), 0, 4);    // @FIXME: where is the compression handling, as above?
             _writer = fastWriter;
         }
 

@@ -217,7 +217,7 @@
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 23);
             this.butSearch.TabIndex = 106;
-            this.toolTip.SetToolTip(this.butSearch, "Search for items");
+            this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // butLocked
