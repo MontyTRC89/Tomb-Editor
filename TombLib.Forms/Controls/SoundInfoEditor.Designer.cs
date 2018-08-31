@@ -492,7 +492,7 @@
             // tbNameLabel
             // 
             this.tbNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbNameLabel.Location = new System.Drawing.Point(0, 2);
+            this.tbNameLabel.Location = new System.Drawing.Point(-3, 2);
             this.tbNameLabel.Name = "tbNameLabel";
             this.tbNameLabel.Size = new System.Drawing.Size(42, 13);
             this.tbNameLabel.TabIndex = 0;
