@@ -20,16 +20,14 @@
             this.panelItem = new TombEditor.Controls.PanelRenderingItem();
             this.lblStaticMeshColor = new DarkUI.Controls.DarkLabel();
             this.panelHeader = new System.Windows.Forms.Panel();
-            this.comboItems = new DarkUI.Controls.DarkComboBox();
-            this.panelHeaderRight = new System.Windows.Forms.Panel();
-            this.butSearch = new DarkUI.Controls.DarkButton();
             this.butAddItem = new DarkUI.Controls.DarkButton();
+            this.butSearch = new DarkUI.Controls.DarkButton();
+            this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelRightBottom = new System.Windows.Forms.Panel();
             this.panelRight = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeader.SuspendLayout();
-            this.panelHeaderRight.SuspendLayout();
             this.panelRightBottom.SuspendLayout();
             this.panelRight.SuspendLayout();
             this.SuspendLayout();
@@ -69,14 +67,36 @@
             // 
             // panelHeader
             // 
+            this.panelHeader.Controls.Add(this.butAddItem);
+            this.panelHeader.Controls.Add(this.butSearch);
             this.panelHeader.Controls.Add(this.comboItems);
-            this.panelHeader.Controls.Add(this.panelHeaderRight);
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelHeader.Location = new System.Drawing.Point(0, 25);
             this.panelHeader.Name = "panelHeader";
             this.panelHeader.Padding = new System.Windows.Forms.Padding(1, 2, 0, 0);
             this.panelHeader.Size = new System.Drawing.Size(284, 27);
             this.panelHeader.TabIndex = 72;
+            // 
+            // butAddItem
+            // 
+            this.butAddItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butAddItem.Location = new System.Drawing.Point(258, 2);
+            this.butAddItem.Name = "butAddItem";
+            this.butAddItem.Size = new System.Drawing.Size(24, 24);
+            this.butAddItem.TabIndex = 3;
+            this.butAddItem.Tag = "AddItem";
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(228, 2);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(24, 24);
+            this.butSearch.TabIndex = 2;
+            this.toolTip.SetToolTip(this.butSearch, "Search for items");
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // comboItems
             // 
@@ -87,39 +107,10 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(3, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(227, 24);
+            this.comboItems.Size = new System.Drawing.Size(226, 24);
             this.comboItems.TabIndex = 1;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             this.comboItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.comboItems_Format);
-            // 
-            // panelHeaderRight
-            // 
-            this.panelHeaderRight.Controls.Add(this.butSearch);
-            this.panelHeaderRight.Controls.Add(this.butAddItem);
-            this.panelHeaderRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelHeaderRight.Location = new System.Drawing.Point(222, 2);
-            this.panelHeaderRight.Name = "panelHeaderRight";
-            this.panelHeaderRight.Size = new System.Drawing.Size(62, 25);
-            this.panelHeaderRight.TabIndex = 76;
-            // 
-            // butSearch
-            // 
-            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(7, 0);
-            this.butSearch.Name = "butSearch";
-            this.butSearch.Size = new System.Drawing.Size(24, 24);
-            this.butSearch.TabIndex = 2;
-            this.toolTip.SetToolTip(this.butSearch, "Search for items");
-            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
-            // 
-            // butAddItem
-            // 
-            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
-            this.butAddItem.Location = new System.Drawing.Point(36, 0);
-            this.butAddItem.Name = "butAddItem";
-            this.butAddItem.Size = new System.Drawing.Size(24, 24);
-            this.butAddItem.TabIndex = 3;
-            this.butAddItem.Tag = "AddItem";
             // 
             // butFindItem
             // 
@@ -175,7 +166,6 @@
             this.SerializationKey = "ItemBrowser";
             this.Size = new System.Drawing.Size(284, 252);
             this.panelHeader.ResumeLayout(false);
-            this.panelHeaderRight.ResumeLayout(false);
             this.panelRightBottom.ResumeLayout(false);
             this.panelRight.ResumeLayout(false);
             this.panelRight.PerformLayout();
@@ -189,7 +179,6 @@
         private DarkUI.Controls.DarkLabel lblStaticMeshColor;
         private Controls.PanelRenderingItem panelItem;
         private System.Windows.Forms.Panel panelHeader;
-        private System.Windows.Forms.Panel panelHeaderRight;
         private DarkUI.Controls.DarkButton butAddItem;
         private DarkUI.Controls.DarkComboBox comboItems;
         private DarkUI.Controls.DarkButton butSearch;
