@@ -63,7 +63,7 @@ namespace TombEditor.Forms
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(9, 17);
+            this.label1.Location = new System.Drawing.Point(9, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 0;
@@ -73,7 +73,7 @@ namespace TombEditor.Forms
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label2.Location = new System.Drawing.Point(9, 43);
+            this.label2.Location = new System.Drawing.Point(9, 42);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 2;
@@ -83,7 +83,7 @@ namespace TombEditor.Forms
             // 
             this.labelTarget.AutoSize = true;
             this.labelTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelTarget.Location = new System.Drawing.Point(9, 69);
+            this.labelTarget.Location = new System.Drawing.Point(9, 68);
             this.labelTarget.Name = "labelTarget";
             this.labelTarget.Size = new System.Drawing.Size(57, 13);
             this.labelTarget.TabIndex = 4;
@@ -93,7 +93,7 @@ namespace TombEditor.Forms
             // 
             this.labelTimer.AutoSize = true;
             this.labelTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelTimer.Location = new System.Drawing.Point(9, 95);
+            this.labelTimer.Location = new System.Drawing.Point(9, 94);
             this.labelTimer.Name = "labelTimer";
             this.labelTimer.Size = new System.Drawing.Size(55, 13);
             this.labelTimer.TabIndex = 6;
@@ -186,7 +186,7 @@ namespace TombEditor.Forms
             // 
             this.labelExtra.AutoSize = true;
             this.labelExtra.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelExtra.Location = new System.Drawing.Point(9, 121);
+            this.labelExtra.Location = new System.Drawing.Point(9, 120);
             this.labelExtra.Name = "labelExtra";
             this.labelExtra.Size = new System.Drawing.Size(50, 13);
             this.labelExtra.TabIndex = 71;

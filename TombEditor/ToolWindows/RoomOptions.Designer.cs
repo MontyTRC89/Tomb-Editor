@@ -214,6 +214,7 @@
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
             this.butSearch.Location = new System.Drawing.Point(198, 28);
             this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 23);
             this.butSearch.TabIndex = 106;
             this.toolTip.SetToolTip(this.butSearch, "Search for items");
