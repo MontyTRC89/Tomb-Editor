@@ -191,9 +191,17 @@ namespace TombLib.Controls
                             }
                             combo.DataSource = listOfThings;
                         }
-                        combo.SelectedItem = listOfThings.FirstOrDefault(item => item.Equals(Parameter)) ?? Parameter;
+                        combo.SelectedItem = listOfThings.FirstOrDefault(item => item.Equals(Parameter)) ?? null;
                         if (combo.SelectedItem == null)
-                            combo.Text = "";
+                        {
+                            if (listOfThings?.Count() > 0)
+                            {
+                                Parameter = listOfThings.First();
+                                return; // Update will finish recursively
+                            }
+                            else
+                                combo.Text = "";
+                        }
                         combo.Visible = true;
                         butSearch.Visible = true;
                         numericUpDown.Visible = false;
