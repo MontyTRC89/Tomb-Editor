@@ -376,7 +376,7 @@ namespace TombEditor.Forms
 
             levelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
-            gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
+            gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) && !string.IsNullOrEmpty(Path.GetExtension(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
 
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
