@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
@@ -679,6 +680,8 @@ namespace TombEditor
                 }
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
+            else if (instance is LightInstance)
+                EditLightColor(owner);
         }
 
         public static void PasteObject(VectorInt2 pos)
@@ -2447,6 +2450,43 @@ namespace TombEditor
             Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => room.RoomGeometry?.Relight(room));
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
+        }
+
+        public static void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue) where T : struct
+        {
+            var light = _editor.SelectedObject as LightInstance;
+            if (light == null)
+                return;
+
+            T? newValue = getGuiValue(light);
+            if (!newValue.HasValue || compareEquals(light, newValue.Value))
+                return;
+
+            setLightValue(light, newValue.Value);
+            light.Room.RoomGeometry?.Relight(light.Room);
+            _editor.ObjectChange(light, ObjectChangeType.Change);
+        }
+
+        public static void EditLightColor(IWin32Window owner)
+        {
+            UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
+                light =>
+                {
+                    using (var colorDialog = new RealtimeColorDialog(c =>
+                    {
+                        UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
+                        l => { return c.ToFloatColor() * 2.0f; });
+                    }))
+                    {
+                        colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
+
+                        var oldLightColor = colorDialog.Color;
+                        if (colorDialog.ShowDialog(owner) != DialogResult.OK)
+                            colorDialog.Color = oldLightColor;
+
+                        return colorDialog.Color.ToFloatColor() * 2.0f;
+                    }
+                });
         }
 
         public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
