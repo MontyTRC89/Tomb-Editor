@@ -131,7 +131,7 @@ namespace TombLib.Controls
             this.combo.IntegralHeight = false;
             this.combo.Location = new System.Drawing.Point(0, 0);
             this.combo.Name = "combo";
-            this.combo.Size = new System.Drawing.Size(233, 23);
+            this.combo.Size = new System.Drawing.Size(236, 23);
             this.combo.TabIndex = 0;
             this.combo.TabStop = false;
             this.combo.Visible = false;

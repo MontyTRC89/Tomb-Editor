@@ -395,7 +395,7 @@
             this.comboRoom.IntegralHeight = false;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
-            this.comboRoom.Size = new System.Drawing.Size(193, 23);
+            this.comboRoom.Size = new System.Drawing.Size(196, 23);
             this.comboRoom.TabIndex = 0;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 

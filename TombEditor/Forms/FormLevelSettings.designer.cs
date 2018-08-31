@@ -358,7 +358,7 @@
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(439, 17);
             this.darkLabel2.TabIndex = 1;
-            this.darkLabel2.Text = "Target folder for the built *.tr4 file:";
+            this.darkLabel2.Text = "Target folder and filename for level file:";
             // 
             // panel2
             // 
