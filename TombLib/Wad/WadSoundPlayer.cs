@@ -15,6 +15,7 @@ namespace TombLib.Wad
     public static class WadSoundPlayer
     {
         private static Random _rng = new Random();
+        private static WasapiOut _channel = null;
 
         public static void PlaySoundInfo(WadSoundInfo soundInfo)
         {
@@ -83,15 +84,18 @@ namespace TombLib.Wad
                     LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples
                 };
 
+                // Clean previous preview
+                StopSample(); 
+
                 // Play
-                var output = disposables.AddAndReturn(new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, latencyInMilliseconds));
-                output.Init(sampleStream);
-                output.PlaybackStopped += (s, e) =>
+                _channel = disposables.AddAndReturn(new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, latencyInMilliseconds));
+                _channel.Init(sampleStream);
+                _channel.PlaybackStopped += (s, e) =>
                 {
                     foreach (IDisposable disposable in disposables)
                         disposable.Dispose();
                 };
-                output.Play();
+                _channel.Play();
             }
             catch
             {
@@ -99,6 +103,16 @@ namespace TombLib.Wad
                 foreach (IDisposable disposable in disposables)
                     disposable.Dispose();
                 throw;
+            }
+        }
+
+        public static void StopSample()
+        {
+            if (_channel != null)
+            {
+                _channel.Stop();
+                _channel.Dispose();
+                _channel = null;
             }
         }
 
