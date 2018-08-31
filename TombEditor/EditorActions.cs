@@ -1316,6 +1316,7 @@ namespace TombEditor
 
         public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, BlockFaceType type)
         {
+            if (type == BlockFaceType.Ceiling) texture.Mirror();
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
 
             for (int x = area.X0; x <= area.X1; x++)
