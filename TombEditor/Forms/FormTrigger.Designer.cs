@@ -47,15 +47,16 @@ namespace TombEditor.Forms
             this.labelExtra = new DarkUI.Controls.DarkLabel();
             this.tbScript = new DarkUI.Controls.DarkTextBox();
             this.labelScript = new DarkUI.Controls.DarkLabel();
-            this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.scriptExportPanel = new System.Windows.Forms.Panel();
+            this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
+            this.butCopyWithComments = new DarkUI.Controls.DarkButton();
+            this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
             this.paramTriggerType = new TombLib.Controls.TriggerParameterControl();
             this.paramTargetType = new TombLib.Controls.TriggerParameterControl();
             this.paramExtra = new TombLib.Controls.TriggerParameterControl();
             this.paramTimer = new TombLib.Controls.TriggerParameterControl();
             this.paramTarget = new TombLib.Controls.TriggerParameterControl();
-            this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
             this.scriptExportPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -195,10 +196,10 @@ namespace TombEditor.Forms
             // tbScript
             // 
             this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.Location = new System.Drawing.Point(42, 0);
+            this.tbScript.Location = new System.Drawing.Point(48, 0);
             this.tbScript.Name = "tbScript";
             this.tbScript.ReadOnly = true;
-            this.tbScript.Size = new System.Drawing.Size(181, 22);
+            this.tbScript.Size = new System.Drawing.Size(167, 22);
             this.tbScript.TabIndex = 13;
             // 
             // labelScript
@@ -211,27 +212,51 @@ namespace TombEditor.Forms
             this.labelScript.TabIndex = 75;
             this.labelScript.Text = "Script:";
             // 
+            // scriptExportPanel
+            // 
+            this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scriptExportPanel.Controls.Add(this.butCopyWithComments);
+            this.scriptExportPanel.Controls.Add(this.tbScript);
+            this.scriptExportPanel.Controls.Add(this.labelScript);
+            this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
+            this.scriptExportPanel.Location = new System.Drawing.Point(398, 148);
+            this.scriptExportPanel.Name = "scriptExportPanel";
+            this.scriptExportPanel.Size = new System.Drawing.Size(271, 25);
+            this.scriptExportPanel.TabIndex = 78;
+            // 
+            // cbRawMode
+            // 
+            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbRawMode.AutoSize = true;
+            this.cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbRawMode.Location = new System.Drawing.Point(474, 176);
+            this.cbRawMode.Name = "cbRawMode";
+            this.cbRawMode.Size = new System.Drawing.Size(196, 17);
+            this.cbRawMode.TabIndex = 14;
+            this.cbRawMode.Text = "Raw mode (show numeric values)";
+            this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
+            // 
+            // butCopyWithComments
+            // 
+            this.butCopyWithComments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCopyWithComments.Image = global::TombEditor.Properties.Resources.general_copy_comments_16;
+            this.butCopyWithComments.Location = new System.Drawing.Point(249, 0);
+            this.butCopyWithComments.Name = "butCopyWithComments";
+            this.butCopyWithComments.Size = new System.Drawing.Size(22, 22);
+            this.butCopyWithComments.TabIndex = 76;
+            this.toolTip.SetToolTip(this.butCopyWithComments, "Copy to clipboard with comments");
+            this.butCopyWithComments.Click += new System.EventHandler(this.butCopyWithComments_Click);
+            // 
             // butCopyToClipboard
             // 
             this.butCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyToClipboard.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butCopyToClipboard.Location = new System.Drawing.Point(227, 0);
+            this.butCopyToClipboard.Location = new System.Drawing.Point(221, 0);
             this.butCopyToClipboard.Name = "butCopyToClipboard";
             this.butCopyToClipboard.Size = new System.Drawing.Size(22, 22);
             this.butCopyToClipboard.TabIndex = 12;
             this.toolTip.SetToolTip(this.butCopyToClipboard, "Copy to clipboard");
             this.butCopyToClipboard.Click += new System.EventHandler(this.butCopyToClipboard_Click);
-            // 
-            // scriptExportPanel
-            // 
-            this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.scriptExportPanel.Controls.Add(this.tbScript);
-            this.scriptExportPanel.Controls.Add(this.labelScript);
-            this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
-            this.scriptExportPanel.Location = new System.Drawing.Point(420, 148);
-            this.scriptExportPanel.Name = "scriptExportPanel";
-            this.scriptExportPanel.Size = new System.Drawing.Size(249, 25);
-            this.scriptExportPanel.TabIndex = 78;
             // 
             // paramTriggerType
             // 
@@ -292,18 +317,6 @@ namespace TombEditor.Forms
             this.paramTarget.Size = new System.Drawing.Size(587, 23);
             this.paramTarget.TabIndex = 3;
             this.paramTarget.ParameterChanged += new System.EventHandler(this.paramTarget_ParameterChanged);
-            // 
-            // cbRawMode
-            // 
-            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRawMode.AutoSize = true;
-            this.cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbRawMode.Location = new System.Drawing.Point(474, 176);
-            this.cbRawMode.Name = "cbRawMode";
-            this.cbRawMode.Size = new System.Drawing.Size(196, 17);
-            this.cbRawMode.TabIndex = 14;
-            this.cbRawMode.Text = "Raw mode (show numeric values)";
-            this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
             // 
             // FormTrigger
             // 
@@ -374,5 +387,6 @@ namespace TombEditor.Forms
         private TombLib.Controls.TriggerParameterControl paramTargetType;
         private TombLib.Controls.TriggerParameterControl paramTriggerType;
         private DarkCheckBox cbRawMode;
+        private DarkButton butCopyWithComments;
     }
 }

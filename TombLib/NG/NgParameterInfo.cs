@@ -306,10 +306,12 @@ namespace TombLib.NG
             else
                 throw new Exception("Trigger parameter of invalid type!");
         }
-        public static string ExportToScriptTrigger(Level level, TriggerInstance trigger)
+        public static string ExportToScriptTrigger(Level level, TriggerInstance trigger, bool withComment = false)
         {
             checked
             {
+                string result = null;
+
                 switch (trigger.TriggerType)
                 {
                     case TriggerType.ConditionNg:
@@ -325,9 +327,9 @@ namespace TombLib.NG
                             if (!conditionTrigger.Extra.IsEmpty)
                                 secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
-                            string result = trigger.Target is ObjectInstance ? "$9000," : "$8000,";
+                            result = trigger.Target is ObjectInstance ? "$9000," : "$8000,";
                             result += firstValue + ",$" + secondValue.ToString("X4");
-                            return result;
+                            break;
                         }
                     default:
                         switch (trigger.TargetType)
@@ -345,8 +347,8 @@ namespace TombLib.NG
                                     if (!flipeffectTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
-                                    string result = "$2000," + firstValue + ",$" + secondValue.ToString("X4");
-                                    return result;
+                                    result = "$2000," + firstValue + ",$" + secondValue.ToString("X4");
+                                    break;
                                 }
 
                             case TriggerTargetType.ActionNg:
@@ -362,12 +364,22 @@ namespace TombLib.NG
                                     if (!actionTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
-                                    string result = "$5000," + firstValue + ",$" + secondValue.ToString("X4");
-                                    return result;
+                                    result = "$5000," + firstValue + ",$" + secondValue.ToString("X4");
+                                    break;
                                 }
                         }
                         break;
                 }
+
+                if(!string.IsNullOrEmpty(result))
+                    return (withComment ? 
+                            "; "       + trigger.TriggerType + " for " + trigger.TargetType +
+                            "\n; <#> " + trigger.Target +
+                            "\n; <&> " + trigger.Timer  +
+                            (trigger.Extra == null ? "" : "\n; <E> " + trigger.Extra) +
+                            "\n; Copy next line to your script: \n\n"
+                        : "")
+                        + result;
             }
             throw new ExceptionScriptNotSupported();
         }

@@ -168,26 +168,34 @@ namespace TombEditor.Forms
             try
             {
                 tbScript.Text = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger);
+                tbScript.Tag  = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, true);
                 tbScript.Enabled = true;
                 butCopyToClipboard.Enabled = true;
+                butCopyWithComments.Enabled = true;
             }
             catch (NgParameterInfo.ExceptionScriptNotSupported)
             {
                 tbScript.Text = "Not supported";
+                tbScript.Tag = null;
                 tbScript.Enabled = false;
                 butCopyToClipboard.Enabled = false;
+                butCopyWithComments.Enabled = false;
             }
             catch (NgParameterInfo.ExceptionScriptIdMissing)
             {
                 tbScript.Text = "Click to generate";
+                tbScript.Tag = null;
                 tbScript.Enabled = false;
                 butCopyToClipboard.Enabled = false;
+                butCopyWithComments.Enabled = false;
             }
             catch (Exception exc)
             {
                 tbScript.Text = "Check all fields";
+                tbScript.Tag = null;
                 tbScript.Enabled = false;
                 butCopyToClipboard.Enabled = false;
+                butCopyWithComments.Enabled = false;
                 logger.Debug(exc, "\"ExportToScriptTrigger\" failed.");
             }
         }
@@ -201,7 +209,15 @@ namespace TombEditor.Forms
 
         private void butCopyToClipboard_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(tbScript.Text);
+            if(!string.IsNullOrEmpty(tbScript.Text))
+                Clipboard.SetText(tbScript.Text);
+        }
+
+        private void butCopyWithComments_Click(object sender, EventArgs e)
+        {
+            var commentString = tbScript.Tag as string;
+            if (!string.IsNullOrEmpty(commentString))
+                Clipboard.SetText(commentString);
         }
 
         private void scriptExportPanel_Click(object sender, EventArgs e)
