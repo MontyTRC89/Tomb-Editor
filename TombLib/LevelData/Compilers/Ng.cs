@@ -15,11 +15,12 @@ namespace TombLib.LevelData.Compilers
             writer.Write(ngleStartSignature);
 
             // Write chunks
-            // WriteNgChunkExtraRoomFlags(writer);
+            WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkStaticsTable(writer);
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
+            WriteNgChunkUnknown(writer);
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
@@ -160,6 +161,13 @@ namespace TombLib.LevelData.Compilers
             writer.Write(buffer);
         }
 
+        //@FIXME: UNKNOWN TRNG CHUNK!
+        private void WriteNgChunkUnknown(BinaryWriter writer)
+        {
+            var buffer = new byte[] { 0x03, 0x00, 0x17, 0x80, 0x00, 0x00 };
+            writer.Write(buffer);
+        }
+
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
             var buffer = new byte[] { 0x03, 0x00, 0x48, 0x80, 0x00, 0x00 };
@@ -195,7 +203,7 @@ namespace TombLib.LevelData.Compilers
                     else if (instance is SinkInstance && _sinkTable.ContainsKey(instance as SinkInstance))
                         writer.Write((short)_sinkTable[instance as SinkInstance]);
                     else if (instance is FlybyCameraInstance && _flybyTable.ContainsKey(instance as FlybyCameraInstance))
-                        writer.Write((short)_flybyTable[instance as FlybyCameraInstance]);
+                        writer.Write((short)(instance as FlybyCameraInstance).Sequence);
                     else if (instance is SoundSourceInstance && _soundSourcesTable.ContainsKey(instance as SoundSourceInstance))
                         writer.Write((short)_soundSourcesTable[instance as SoundSourceInstance]);
                     else
