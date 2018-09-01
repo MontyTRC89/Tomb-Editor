@@ -20,7 +20,7 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
-            WriteNgChunkUnknown(writer);
+            WriteNgChunkTexPartial(writer);
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
@@ -162,7 +162,7 @@ namespace TombLib.LevelData.Compilers
         }
 
         //@FIXME: UNKNOWN TRNG CHUNK!
-        private void WriteNgChunkUnknown(BinaryWriter writer)
+        private void WriteNgChunkTexPartial(BinaryWriter writer)
         {
             var buffer = new byte[] { 0x03, 0x00, 0x17, 0x80, 0x00, 0x00 };
             writer.Write(buffer);
