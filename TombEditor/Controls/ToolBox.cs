@@ -53,6 +53,7 @@ namespace TombEditor.Controls
                 toolPencil.Checked = currentTool.Tool == EditorToolType.Pencil;
                 toolFill.Checked = currentTool.Tool == EditorToolType.Fill;
                 toolGroup.Checked = currentTool.Tool == EditorToolType.Group;
+                toolPaint2x2.Checked = currentTool.Tool == EditorToolType.Paint2x2;
                 toolShovel.Checked = currentTool.Tool == EditorToolType.Shovel;
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
@@ -80,7 +81,7 @@ namespace TombEditor.Controls
 
                 toolFill.Visible = !geometryMode;
                 toolGroup.Visible = !geometryMode;
-                toolPaint4x4.Visible = !geometryMode;
+                toolPaint2x2.Visible = !geometryMode;
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
@@ -187,9 +188,9 @@ namespace TombEditor.Controls
             SwitchTool(EditorToolType.Terrain);
         }
 
-        private void tooPaint4x4_Click(object sender, EventArgs e)
+        private void tooPaint2x2_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorToolType.Paint4x4);
+            SwitchTool(EditorToolType.Paint2x2);
         }
 
         private void toolInvisibility_Click(object sender, EventArgs e)
@@ -207,6 +208,11 @@ namespace TombEditor.Controls
             EditorTool currentTool = _editor.Tool;
             currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
             _editor.Tool = currentTool;
+        }
+
+        private void tooPaint4x4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using TombLib;
+using TombLib.LevelData;
 using TombLib.Rendering;
 
 namespace TombEditor
@@ -11,7 +12,7 @@ namespace TombEditor
     public enum EditorToolType
     {
         None, Selection, Brush, Pencil,
-        Fill, Group, Paint4x4,
+        Fill, Group, Paint2x2,
         Shovel, Smooth, Flatten,
         Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain // Do not modify enum order after drag tool!
     }
@@ -90,6 +91,12 @@ namespace TombEditor
         }
 
         public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
+        
+        public void ClampToRoom(Room r)
+        {
+            Start = new VectorInt2(MathC.Clamp(Start.X, 0, r.NumXSectors-1), MathC.Clamp(Start.Y, 0, r.NumZSectors-1));
+            End   = new VectorInt2(MathC.Clamp(End.X,   0, r.NumXSectors-1), MathC.Clamp(End.Y,   0, r.NumZSectors-1));
+        }
 
         public SectorSelection ChangeArrows(ArrowType Arrow)
         {

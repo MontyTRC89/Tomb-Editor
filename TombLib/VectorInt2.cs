@@ -28,6 +28,7 @@ namespace TombLib
         public static bool operator !=(VectorInt2 first, VectorInt2 second) => first.X != second.X || first.Y != second.Y;
         public static implicit operator Vector2(VectorInt2 value) => new Vector2(value.X, value.Y);
         public static explicit operator VectorInt2(Vector2 value) => FromRounded(value);
+        public static VectorInt2 One => new VectorInt2(1, 1);
 
         public static VectorInt2 FromRounded(Vector2 value) => new VectorInt2(
             (int)Math.Min(Math.Max(Math.Round(value.X), int.MinValue), int.MaxValue),

@@ -417,7 +417,7 @@ namespace TombEditor.Controls
                         case EditorMode.Lighting:
                         case EditorMode.FaceEdit:
                             // Do texturing
-                            if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.Paint4x4)
+                            if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.Paint2x2)
                             {
                                 if (ModifierKeys.HasFlag(Keys.Control))
                                 {
@@ -431,7 +431,7 @@ namespace TombEditor.Controls
                                 }
                             }
 
-                            if (_editor.Tool.Tool != EditorToolType.Paint4x4 && ModifierKeys.HasFlag(Keys.Alt))
+                            if (ModifierKeys.HasFlag(Keys.Alt))
                             {
                                 EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                             }
@@ -449,14 +449,16 @@ namespace TombEditor.Controls
                                         break;
 
                                     case EditorToolType.Group:
-                                    case EditorToolType.Paint4x4:
+                                    case EditorToolType.Paint2x2:
                                         if (_editor.SelectedSectors.Valid)
-                                            EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
-                                        if(_editor.Tool.Tool == EditorToolType.Paint4x4)
-                                        {
-                                            _toolHandler.Engage(e.X, e.Y, newBlockPicking);
-                                            return;
-                                        }
+                                            EditorActions.TexturizeGroup(_editor.SelectedRoom, 
+                                                _editor.SelectedSectors, 
+                                                _editor.SelectedTexture, 
+                                                newBlockPicking.Face, 
+                                                ModifierKeys.HasFlag(Keys.Control), 
+                                                ModifierKeys.HasFlag(Keys.Shift));
+                                        if(_editor.Tool.Tool == EditorToolType.Paint2x2)
+                                           _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
                                         break;
 
                                     case EditorToolType.Brush:
@@ -714,28 +716,24 @@ namespace TombEditor.Controls
                                         _editor.SelectedSectors == SectorSelection.None)
                                         redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                 }
-                                else if (_editor.Tool.Tool == EditorToolType.Paint4x4 && _toolHandler.Engaged)
+                                else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                                 {
-                                    if (newBlockPicking != null)
+                                    var point = new VectorInt2
+                                        ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % 2)) % 2)),
+                                            (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % 2)) % 2)));
+                                    var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One };
+                                    newSelection.ClampToRoom(_editor.SelectedRoom);
+
+                                    if (_editor.SelectedSectors != newSelection)
                                     {
-                                        var stepX = (_toolHandler.ReferencePicking.Pos.X % 2) + 1;
-                                        var stepY = (_toolHandler.ReferencePicking.Pos.Y % 2) + 1;
-
-                                        var newX = pos.X - (pos.X % stepX);
-                                        var newY = pos.Y - (pos.Y % stepY);
-
-                                        var newSelection = new SectorSelection
-                                        {
-                                            Start = new VectorInt2(newX, newY),
-                                            End = new VectorInt2(newX+1, newY+1)
-                                        };
-
-                                        if (_editor.SelectedSectors != newSelection)
-                                        {
-                                            _editor.SelectedSectors = newSelection;
-                                            EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, _toolHandler.ReferencePicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
-                                            redrawWindow = true;
-                                        }
+                                        _editor.SelectedSectors = newSelection;
+                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, 
+                                            _editor.SelectedSectors,
+                                            _editor.SelectedTexture, 
+                                            _toolHandler.ReferencePicking.Face, 
+                                            ModifierKeys.HasFlag(Keys.Control), 
+                                            ModifierKeys.HasFlag(Keys.Shift));
+                                        redrawWindow = true;
                                     }
                                 }
                             }
@@ -743,7 +741,7 @@ namespace TombEditor.Controls
                     }
                     break;
                 default:
-                    if(_editor.Mode == EditorMode.FaceEdit && _editor.Tool.Tool == EditorToolType.Paint4x4)
+                    if(_editor.Mode == EditorMode.FaceEdit && _editor.Tool.Tool == EditorToolType.Paint2x2)
                     {
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null)
@@ -752,8 +750,9 @@ namespace TombEditor.Controls
                             var newSelection = new SectorSelection
                             {
                                 Start = new VectorInt2(pos.X, pos.Y),
-                                End = new VectorInt2(pos.X+1, pos.Y+1)
+                                  End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One
                             };
+                            newSelection.ClampToRoom(_editor.SelectedRoom);
 
                             if (_editor.SelectedSectors != newSelection)
                             {
@@ -892,7 +891,10 @@ namespace TombEditor.Controls
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
+            {
                 e.Effect = DragDropEffects.Move;
+                Parent.Cursor = Cursors.Arrow;
+            }
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
             else
@@ -2578,7 +2580,7 @@ namespace TombEditor.Controls
                 }
             }
 
-            public void Engage(int refX, int refY, PickingResultBlock refPicking)
+            public void Engage(int refX, int refY, PickingResultBlock refPicking, bool relocatePicking = true)
             {
                 if (!Engaged)
                 {
@@ -2587,7 +2589,10 @@ namespace TombEditor.Controls
                     _newPosition = _referencePosition;
                     ReferencePicking = refPicking;
                     _referenceRoom = _parent._editor.SelectedRoom;
-                    RelocatePicking();
+
+                    // Relocate picking may be not needed for texture operations (e.g. wall 4x4 painting)
+                    if(relocatePicking)
+                        RelocatePicking();
 
                     // Initialize data structures
                     PrepareActionGrid();
