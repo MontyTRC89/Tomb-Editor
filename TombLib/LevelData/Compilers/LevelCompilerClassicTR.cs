@@ -253,6 +253,23 @@ namespace TombLib.LevelData.Compilers
             }
             _flyByCameras.Sort(new ComparerFlyBy());
 
+            // Check camera dublicates
+            int lastSeq   = -1;
+            int lastIndex = -1;
+
+            for (int i = 0; i < _flyByCameras.Count; i++)
+            {
+                if(_flyByCameras[i].Sequence != lastSeq)
+                {
+                    lastSeq = _flyByCameras[i].Sequence;
+                    lastIndex = -1;
+                }
+
+                if (_flyByCameras[i].Index == lastIndex && _flyByCameras[i].Sequence == lastSeq)
+                    _progressReporter.ReportWarn("Warning: flyby sequence " + _flyByCameras[i].Sequence + " has dublicated camera with ID " + lastIndex);
+                lastIndex = _flyByCameras[i].Index;
+            }
+
             ReportProgress(45, "    Number of cameras: " + _cameraTable.Count);
             ReportProgress(45, "    Number of flyby cameras: " + _flyByCameras.Count);
             ReportProgress(45, "    Number of sinks: " + _sinkTable.Count);

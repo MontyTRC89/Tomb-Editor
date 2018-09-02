@@ -203,7 +203,7 @@ namespace TombLib.LevelData.Compilers
                     else if (instance is SinkInstance && _sinkTable.ContainsKey(instance as SinkInstance))
                         writer.Write((short)_sinkTable[instance as SinkInstance]);
                     else if (instance is FlybyCameraInstance && _flybyTable.ContainsKey(instance as FlybyCameraInstance))
-                        writer.Write((short)_flybyTable[instance as FlybyCameraInstance]);
+                        writer.Write((short)((instance as FlybyCameraInstance).Sequence));
                     else if (instance is SoundSourceInstance && _soundSourcesTable.ContainsKey(instance as SoundSourceInstance))
                         writer.Write((short)_soundSourcesTable[instance as SoundSourceInstance]);
                     else

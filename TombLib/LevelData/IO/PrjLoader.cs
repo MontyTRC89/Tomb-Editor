@@ -89,7 +89,7 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
+        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true)
         {
             var level = new Level();
 
@@ -590,9 +590,9 @@ namespace TombLib.LevelData.IO
                                 {
                                     ScriptId = unchecked((ushort)objectsThings2[j]),
                                     Timer = objTimer,
-                                    Sequence = (byte)((objSlot & 0xe000) >> 13),
-                                    Number = (byte)((objSlot & 0x1f00) >> 8),
-                                    Fov = (short)(objSlot & 0x00ff),
+                                    Sequence = (byte)(remapFlybyBitmask ? ((objSlot & 0xF000) >> 12) : ((objSlot & 0xE000) >> 13)),
+                                    Number = (byte)(remapFlybyBitmask ? ((objSlot & 0x0F00) >> 8) : ((objSlot & 0x1F00) >> 8)),
+                                    Fov = (short)(objSlot & 0x00FF),
                                     Roll = objRoll,
                                     Speed = objSpeed / 655.0f,
                                     Position = position,
