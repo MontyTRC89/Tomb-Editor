@@ -80,6 +80,7 @@ namespace TombEditor.Controls
 
                 toolFill.Visible = !geometryMode;
                 toolGroup.Visible = !geometryMode;
+                toolPaint4x4.Visible = !geometryMode;
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
@@ -184,6 +185,11 @@ namespace TombEditor.Controls
         private void toolTerrain_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.Terrain);
+        }
+
+        private void tooPaint4x4_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Paint4x4);
         }
 
         private void toolInvisibility_Click(object sender, EventArgs e)
