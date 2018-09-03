@@ -1123,6 +1123,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap toolbox_Paint2x2_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_Paint2x2_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap toolbox_Pencil_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_Pencil_16", resourceCulture);

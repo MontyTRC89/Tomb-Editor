@@ -53,6 +53,7 @@ namespace TombEditor.Controls
                 toolPencil.Checked = currentTool.Tool == EditorToolType.Pencil;
                 toolFill.Checked = currentTool.Tool == EditorToolType.Fill;
                 toolGroup.Checked = currentTool.Tool == EditorToolType.Group;
+                toolPaint2x2.Checked = currentTool.Tool == EditorToolType.Paint2x2;
                 toolShovel.Checked = currentTool.Tool == EditorToolType.Shovel;
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
@@ -80,6 +81,7 @@ namespace TombEditor.Controls
 
                 toolFill.Visible = !geometryMode;
                 toolGroup.Visible = !geometryMode;
+                toolPaint2x2.Visible = !geometryMode;
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
@@ -98,16 +100,12 @@ namespace TombEditor.Controls
                 toolStrip.AutoSize = true;
                 AutoSize = true;
                 toolStrip.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting || mode == EditorMode.Geometry;
-
-                // Select classic winroomedit controls by default
-                SwitchTool(mode == EditorMode.FaceEdit || mode == EditorMode.Lighting ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
         }
 
         private void SwitchTool(EditorToolType tool)
         {
-            EditorTool currentTool = _editor.Tool;
-            currentTool.Tool = tool;
+            EditorTool currentTool = new EditorTool() { Tool = tool, TextureUVFixer = _editor.Tool.TextureUVFixer };
             _editor.Tool = currentTool;
         }
 
@@ -186,6 +184,11 @@ namespace TombEditor.Controls
             SwitchTool(EditorToolType.Terrain);
         }
 
+        private void tooPaint2x2_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Paint2x2);
+        }
+
         private void toolInvisibility_Click(object sender, EventArgs e)
         {
             _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
@@ -198,9 +201,13 @@ namespace TombEditor.Controls
 
         private void toolUVFixer_Click(object sender, EventArgs e)
         {
-            EditorTool currentTool = _editor.Tool;
-            currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
+            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, WasUsed = _editor.Tool.WasUsed, TextureUVFixer = !_editor.Tool.TextureUVFixer };
             _editor.Tool = currentTool;
+        }
+
+        private void tooPaint4x4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

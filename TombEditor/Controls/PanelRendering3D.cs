@@ -417,7 +417,7 @@ namespace TombEditor.Controls
                         case EditorMode.Lighting:
                         case EditorMode.FaceEdit:
                             // Do texturing
-                            if (_editor.Tool.Tool != EditorToolType.Group)
+                            if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.Paint2x2)
                             {
                                 if (ModifierKeys.HasFlag(Keys.Control))
                                 {
@@ -449,8 +449,16 @@ namespace TombEditor.Controls
                                         break;
 
                                     case EditorToolType.Group:
+                                    case EditorToolType.Paint2x2:
                                         if (_editor.SelectedSectors.Valid)
-                                            EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
+                                            EditorActions.TexturizeGroup(_editor.SelectedRoom, 
+                                                _editor.SelectedSectors, 
+                                                _editor.SelectedTexture, 
+                                                newBlockPicking.Face, 
+                                                ModifierKeys.HasFlag(Keys.Control), 
+                                                ModifierKeys.HasFlag(Keys.Shift));
+                                        if(_editor.Tool.Tool == EditorToolType.Paint2x2)
+                                           _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
                                         break;
 
                                     case EditorToolType.Brush:
@@ -585,7 +593,7 @@ namespace TombEditor.Controls
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y, _editor.Tool.Tool == EditorToolType.Drag);
                         if (dragValue.HasValue)
                         {
-                            BlockVertical subdivisionToEdit = _toolHandler.ReferenceIsFloor ?
+                            BlockVertical subdivisionToEdit = _toolHandler.ReferencePicking.BelongsToFloor ?
                                 (ModifierKeys.HasFlag(Keys.Control) ? BlockVertical.Ed : BlockVertical.Floor) :
                                 (ModifierKeys.HasFlag(Keys.Control) ? BlockVertical.Rf : BlockVertical.Ceiling);
 
@@ -660,14 +668,14 @@ namespace TombEditor.Controls
                                             case EditorToolType.Flatten:
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 {
-                                                    if (belongsToFloor && _toolHandler.ReferenceIsFloor)
+                                                    if (belongsToFloor && _toolHandler.ReferencePicking.BelongsToFloor)
                                                     {
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(edge, _toolHandler.ReferenceBlock.Floor.Min);
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(BlockVertical.Ed, edge, Math.Min(
                                                             Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp)),
                                                             Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZn))));
                                                     }
-                                                    else if (!belongsToFloor && !_toolHandler.ReferenceIsFloor)
+                                                    else if (!belongsToFloor && !_toolHandler.ReferencePicking.BelongsToFloor)
                                                     {
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceBlock.Ceiling.Min);
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(BlockVertical.Rf, edge, Math.Min(
@@ -708,6 +716,49 @@ namespace TombEditor.Controls
                                         _editor.SelectedSectors == SectorSelection.None)
                                         redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                 }
+                                else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
+                                {
+                                    var point = new VectorInt2
+                                        ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % 2)) % 2)),
+                                            (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % 2)) % 2)));
+                                    var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One };
+                                    newSelection.ClampToRoom(_editor.SelectedRoom);
+
+                                    if (_editor.SelectedSectors != newSelection)
+                                    {
+                                        _editor.SelectedSectors = newSelection;
+                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, 
+                                            _editor.SelectedSectors,
+                                            _editor.SelectedTexture, 
+                                            _toolHandler.ReferencePicking.Face, 
+                                            ModifierKeys.HasFlag(Keys.Control), 
+                                            ModifierKeys.HasFlag(Keys.Shift));
+                                        redrawWindow = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    if(_editor.Mode == EditorMode.FaceEdit && _editor.Tool.Tool == EditorToolType.Paint2x2)
+                    {
+                        PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
+                        if (newBlockPicking != null)
+                        {
+                            VectorInt2 pos = newBlockPicking.Pos;
+                            var newSelection = new SectorSelection
+                            {
+                                Start = new VectorInt2(pos.X, pos.Y),
+                                  End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One
+                            };
+                            newSelection.ClampToRoom(_editor.SelectedRoom);
+
+                            if (_editor.SelectedSectors != newSelection)
+                            {
+                                _editor.Tool.WasUsed = true;
+                                _editor.SelectedSectors = newSelection;
+                                redrawWindow = true;
                             }
                         }
                     }
@@ -841,7 +892,10 @@ namespace TombEditor.Controls
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
+            {
                 e.Effect = DragDropEffects.Move;
+                Parent.Cursor = Cursors.Arrow;
+            }
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
             else
@@ -2237,7 +2291,6 @@ namespace TombEditor.Controls
 
             private readonly PanelRendering3D _parent;
             private ReferenceCell[,] _actionGrid;
-            private PickingResultBlock _referencePicking;
             private Point _referencePosition;
             private Point _newPosition;
             private Room _referenceRoom;
@@ -2247,49 +2300,50 @@ namespace TombEditor.Controls
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
-            public Block ReferenceBlock => _referenceRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
-            public bool ReferenceIsFloor => _referencePicking.BelongsToFloor;
-            public bool ReferenceIsDiagonalStep => _referencePicking.BelongsToFloor ? ReferenceBlock.Floor.DiagonalSplit != DiagonalSplit.None : ReferenceBlock.Ceiling.DiagonalSplit != DiagonalSplit.None;
+
+            public PickingResultBlock ReferencePicking { get; private set; }
+            public Block ReferenceBlock => _referenceRoom.GetBlockTry(ReferencePicking.Pos.X, ReferencePicking.Pos.Y);
+            public bool ReferenceIsDiagonalStep => ReferencePicking.BelongsToFloor ? ReferenceBlock.Floor.DiagonalSplit != DiagonalSplit.None : ReferenceBlock.Ceiling.DiagonalSplit != DiagonalSplit.None;
             public bool ReferenceIsOppositeDiagonalStep
             {
                 get
                 {
                     if (ReferenceIsDiagonalStep)
                     {
-                        if (_referencePicking.BelongsToFloor)
+                        if (ReferencePicking.BelongsToFloor)
                         {
                             switch (ReferenceBlock.Floor.DiagonalSplit)
                             {
                                 case DiagonalSplit.XnZp:
-                                    if (_referencePicking.Face == BlockFace.FloorTriangle2 ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_QA ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_ED ||
-                                        _referencePicking.Face == BlockFace.PositiveX_QA ||
-                                        _referencePicking.Face == BlockFace.PositiveX_ED)
+                                    if (ReferencePicking.Face == BlockFace.FloorTriangle2 ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_QA ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_ED ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_ED)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZn:
-                                    if (_referencePicking.Face == BlockFace.Floor ||
-                                        _referencePicking.Face == BlockFace.NegativeX_QA ||
-                                        _referencePicking.Face == BlockFace.NegativeX_ED ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_QA ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_ED)
+                                    if (ReferencePicking.Face == BlockFace.Floor ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_QA ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_ED ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_ED)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZp:
-                                    if (_referencePicking.Face == BlockFace.FloorTriangle2 ||
-                                        _referencePicking.Face == BlockFace.NegativeX_QA ||
-                                        _referencePicking.Face == BlockFace.NegativeX_ED ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_QA ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_ED)
+                                    if (ReferencePicking.Face == BlockFace.FloorTriangle2 ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_QA ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_ED ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_QA ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_ED)
                                         return true;
                                     break;
                                 case DiagonalSplit.XnZn:
-                                    if (_referencePicking.Face == BlockFace.Floor ||
-                                        _referencePicking.Face == BlockFace.PositiveX_QA ||
-                                        _referencePicking.Face == BlockFace.PositiveX_ED ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_QA ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_ED)
+                                    if (ReferencePicking.Face == BlockFace.Floor ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_ED ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_ED)
                                         return true;
                                     break;
                             }
@@ -2299,35 +2353,35 @@ namespace TombEditor.Controls
                             switch (ReferenceBlock.Ceiling.DiagonalSplit)
                             {
                                 case DiagonalSplit.XnZp:
-                                    if (_referencePicking.Face == BlockFace.CeilingTriangle2 ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_WS ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_RF ||
-                                        _referencePicking.Face == BlockFace.PositiveX_WS ||
-                                        _referencePicking.Face == BlockFace.PositiveX_RF)
+                                    if (ReferencePicking.Face == BlockFace.CeilingTriangle2 ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_WS ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_RF ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_RF)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZn:
-                                    if (_referencePicking.Face == BlockFace.Ceiling ||
-                                        _referencePicking.Face == BlockFace.NegativeX_WS ||
-                                        _referencePicking.Face == BlockFace.NegativeX_RF ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_WS ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_RF)
+                                    if (ReferencePicking.Face == BlockFace.Ceiling ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_WS ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_RF ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_RF)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZp:
-                                    if (_referencePicking.Face == BlockFace.CeilingTriangle2 ||
-                                        _referencePicking.Face == BlockFace.NegativeX_WS ||
-                                        _referencePicking.Face == BlockFace.NegativeX_RF ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_WS ||
-                                        _referencePicking.Face == BlockFace.NegativeZ_RF)
+                                    if (ReferencePicking.Face == BlockFace.CeilingTriangle2 ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_WS ||
+                                        ReferencePicking.Face == BlockFace.NegativeX_RF ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_WS ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_RF)
                                         return true;
                                     break;
                                 case DiagonalSplit.XnZn:
-                                    if (_referencePicking.Face == BlockFace.Ceiling ||
-                                        _referencePicking.Face == BlockFace.PositiveX_WS ||
-                                        _referencePicking.Face == BlockFace.PositiveX_RF ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_WS ||
-                                        _referencePicking.Face == BlockFace.PositiveZ_RF)
+                                    if (ReferencePicking.Face == BlockFace.Ceiling ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_RF ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_RF)
                                         return true;
                                     break;
                             }
@@ -2351,7 +2405,7 @@ namespace TombEditor.Controls
                     {
                         _actionGrid[x, z] = new ReferenceCell();
                         for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
-                            if (_referencePicking.BelongsToFloor)
+                            if (ReferencePicking.BelongsToFloor)
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = _referenceRoom.Blocks[x, z].Floor.GetHeight(edge);
                                 _actionGrid[x, z].Heights[1, (int)edge] = _referenceRoom.Blocks[x, z].GetHeight(BlockVertical.Ed, edge);
@@ -2440,44 +2494,44 @@ namespace TombEditor.Controls
                 // for these cases if diagonal step was raised above limit and swapped.
                 // Also, we relocate middle face pickings for walls to nearest floor or ceiling face.
 
-                if (_referencePicking.Face == BlockFace.DiagonalED ||
-                    _referencePicking.Face == BlockFace.DiagonalQA)
+                if (ReferencePicking.Face == BlockFace.DiagonalED ||
+                    ReferencePicking.Face == BlockFace.DiagonalQA)
                 {
                     switch (ReferenceBlock.Floor.DiagonalSplit)
                     {
                         case DiagonalSplit.XnZp:
                         case DiagonalSplit.XpZp:
-                            _referencePicking.Face = BlockFace.Floor;
+                            ReferencePicking.Face = BlockFace.Floor;
                             break;
                         case DiagonalSplit.XpZn:
                         case DiagonalSplit.XnZn:
-                            _referencePicking.Face = BlockFace.FloorTriangle2;
+                            ReferencePicking.Face = BlockFace.FloorTriangle2;
                             break;
                     }
                 }
-                else if (_referencePicking.Face == BlockFace.DiagonalWS ||
-                         _referencePicking.Face == BlockFace.DiagonalRF)
+                else if (ReferencePicking.Face == BlockFace.DiagonalWS ||
+                         ReferencePicking.Face == BlockFace.DiagonalRF)
                 {
                     switch (ReferenceBlock.Ceiling.DiagonalSplit)
                     {
                         case DiagonalSplit.XnZp:
                         case DiagonalSplit.XpZp:
-                            _referencePicking.Face = BlockFace.Ceiling;
+                            ReferencePicking.Face = BlockFace.Ceiling;
                             break;
                         case DiagonalSplit.XpZn:
                         case DiagonalSplit.XnZn:
-                            _referencePicking.Face = BlockFace.CeilingTriangle2;
+                            ReferencePicking.Face = BlockFace.CeilingTriangle2;
                             break;
                     }
                 }
-                else if (_referencePicking.Face == BlockFace.NegativeX_Middle ||
-                         _referencePicking.Face == BlockFace.NegativeZ_Middle ||
-                         _referencePicking.Face == BlockFace.PositiveX_Middle ||
-                         _referencePicking.Face == BlockFace.PositiveZ_Middle ||
-                         _referencePicking.Face == BlockFace.DiagonalMiddle)
+                else if (ReferencePicking.Face == BlockFace.NegativeX_Middle ||
+                         ReferencePicking.Face == BlockFace.NegativeZ_Middle ||
+                         ReferencePicking.Face == BlockFace.PositiveX_Middle ||
+                         ReferencePicking.Face == BlockFace.PositiveZ_Middle ||
+                         ReferencePicking.Face == BlockFace.DiagonalMiddle)
                 {
                     Direction direction;
-                    switch (_referencePicking.Face)
+                    switch (ReferencePicking.Face)
                     {
                         case BlockFace.NegativeX_Middle:
                             direction = Direction.NegativeX;
@@ -2496,19 +2550,19 @@ namespace TombEditor.Controls
                             break;
                     }
 
-                    var face = EditorActions.GetFaces(_referenceRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First(item => item.Key == _referencePicking.Face);
+                    var face = EditorActions.GetFaces(_referenceRoom, ReferencePicking.Pos, direction, BlockFaceType.Wall).First(item => item.Key == ReferencePicking.Face);
 
-                    if (face.Value[0] - _referencePicking.VerticalCoord > _referencePicking.VerticalCoord - face.Value[1])
+                    if (face.Value[0] - ReferencePicking.VerticalCoord > ReferencePicking.VerticalCoord - face.Value[1])
                         switch (ReferenceBlock.Floor.DiagonalSplit)
                         {
                             default:
                             case DiagonalSplit.XnZp:
                             case DiagonalSplit.XpZp:
-                                _referencePicking.Face = BlockFace.Floor;
+                                ReferencePicking.Face = BlockFace.Floor;
                                 break;
                             case DiagonalSplit.XpZn:
                             case DiagonalSplit.XnZn:
-                                _referencePicking.Face = BlockFace.FloorTriangle2;
+                                ReferencePicking.Face = BlockFace.FloorTriangle2;
                                 break;
                         }
                     else
@@ -2517,26 +2571,29 @@ namespace TombEditor.Controls
                             default:
                             case DiagonalSplit.XnZp:
                             case DiagonalSplit.XpZp:
-                                _referencePicking.Face = BlockFace.Ceiling;
+                                ReferencePicking.Face = BlockFace.Ceiling;
                                 break;
                             case DiagonalSplit.XpZn:
                             case DiagonalSplit.XnZn:
-                                _referencePicking.Face = BlockFace.CeilingTriangle2;
+                                ReferencePicking.Face = BlockFace.CeilingTriangle2;
                                 break;
                         }
                 }
             }
 
-            public void Engage(int refX, int refY, PickingResultBlock refPicking)
+            public void Engage(int refX, int refY, PickingResultBlock refPicking, bool relocatePicking = true)
             {
                 if (!Engaged)
                 {
                     Engaged = true;
                     _referencePosition = new Point((int)(refX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(refY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
                     _newPosition = _referencePosition;
-                    _referencePicking = refPicking;
+                    ReferencePicking = refPicking;
                     _referenceRoom = _parent._editor.SelectedRoom;
-                    RelocatePicking();
+
+                    // Relocate picking may be not needed for texture operations (e.g. wall 4x4 painting)
+                    if(relocatePicking)
+                        RelocatePicking();
 
                     // Initialize data structures
                     PrepareActionGrid();
@@ -2600,7 +2657,7 @@ namespace TombEditor.Controls
                     {
                         for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
                         {
-                            if (_referencePicking.BelongsToFloor)
+                            if (ReferencePicking.BelongsToFloor)
                             {
                                 _referenceRoom.Blocks[x, z].Floor.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
                                 _referenceRoom.Blocks[x, z].SetHeight(BlockVertical.Ed, edge, _actionGrid[x, z].Heights[1, (int)edge]);

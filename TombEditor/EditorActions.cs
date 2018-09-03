@@ -1195,8 +1195,8 @@ namespace TombEditor
 
             if (pickedFace < BlockFace.Floor)
             {
-                int xSubs = subdivideWalls == true ? area.X1 - area.X0 : 0;
-                int zSubs = subdivideWalls == true ? area.Y1 - area.Y0 : 0;
+                int xSubs = subdivideWalls ? 0 : area.X1 - area.X0;
+                int zSubs = subdivideWalls ? 0 : area.Y1 - area.Y0;
 
                 for (int x = area.X0, iterX = 0; x <= area.X1; x++, iterX++)
                     for (int z = area.Y0, iterZ = 0; z <= area.Y1; z++, iterZ++)
@@ -3439,10 +3439,10 @@ namespace TombEditor
         public static void SwitchToolOrdered(int toolIndex)
         {
             if (_editor.Mode == EditorMode.Map2D || toolIndex > (int)EditorToolType.Terrain ||
-                _editor.Mode != EditorMode.Geometry && toolIndex > 5)
+                _editor.Mode != EditorMode.Geometry && toolIndex > 6)
                 return;
 
-            EditorTool currentTool = _editor.Tool;
+            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = _editor.Tool.TextureUVFixer };
 
             switch (toolIndex)
             {
@@ -3468,16 +3468,22 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry)
                         currentTool.Tool = EditorToolType.Flatten;
                     else
-                        currentTool.Tool = EditorToolType.Group;
+                        currentTool.Tool = EditorToolType.Paint2x2;
                     break;
                 case 5:
                     if (_editor.Mode == EditorMode.Geometry)
                         currentTool.Tool = EditorToolType.Smooth;
                     else
+                        currentTool.Tool = EditorToolType.Group;
+                    break;
+                case 6:
+                    if(_editor.Mode == EditorMode.Geometry)
+                        currentTool.Tool = EditorToolType.Drag;
+                    else
                         currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
                     break;
                 default:
-                    currentTool.Tool = (EditorToolType)(toolIndex + 3);
+                    currentTool.Tool = (EditorToolType)(toolIndex + 4);
                     break;
             }
             _editor.Tool = currentTool;
