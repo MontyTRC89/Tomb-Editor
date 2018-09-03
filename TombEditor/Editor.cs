@@ -160,6 +160,11 @@ namespace TombEditor
                 var previous = _mode;
                 _mode = value;
 
+                if (Mode == EditorMode.Geometry)
+                    Tool = _lastGeometryTool;
+                else
+                    Tool = _lastFaceEditTool;
+
                 RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
             }
         }
@@ -177,11 +182,19 @@ namespace TombEditor
             {
                 if (value == _tool)
                     return;
+
+                if (Mode == EditorMode.Geometry)
+                    _lastGeometryTool = value;
+                else
+                    _lastFaceEditTool = value;
+
                 var previous = _tool;
                 _tool = value;
                 RaiseEvent(new ToolChangedEvent { Previous = previous, Current = value });
             }
         }
+        private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true };
+        private EditorTool _lastGeometryTool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
 
         public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {

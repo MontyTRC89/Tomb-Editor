@@ -100,9 +100,6 @@ namespace TombEditor.Controls
                 toolStrip.AutoSize = true;
                 AutoSize = true;
                 toolStrip.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting || mode == EditorMode.Geometry;
-
-                // Select classic winroomedit controls by default
-                SwitchTool(mode == EditorMode.FaceEdit || mode == EditorMode.Lighting ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
         }
 
