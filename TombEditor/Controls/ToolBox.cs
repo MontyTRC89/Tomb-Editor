@@ -105,8 +105,7 @@ namespace TombEditor.Controls
 
         private void SwitchTool(EditorToolType tool)
         {
-            EditorTool currentTool = _editor.Tool;
-            currentTool.Tool = tool;
+            EditorTool currentTool = new EditorTool() { Tool = tool, TextureUVFixer = _editor.Tool.TextureUVFixer };
             _editor.Tool = currentTool;
         }
 
@@ -202,8 +201,7 @@ namespace TombEditor.Controls
 
         private void toolUVFixer_Click(object sender, EventArgs e)
         {
-            EditorTool currentTool = _editor.Tool;
-            currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
+            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, WasUsed = _editor.Tool.WasUsed, TextureUVFixer = !_editor.Tool.TextureUVFixer };
             _editor.Tool = currentTool;
         }
 

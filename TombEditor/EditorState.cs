@@ -17,10 +17,11 @@ namespace TombEditor
         Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain // Do not modify enum order after drag tool!
     }
 
-    public struct EditorTool
+    public class EditorTool
     {
         public EditorToolType Tool { get; set; }
         public bool TextureUVFixer { get; set; }
+        public bool WasUsed { get; set; }
 
         public static bool operator == (EditorTool first, EditorTool second)
         {

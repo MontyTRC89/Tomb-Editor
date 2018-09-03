@@ -164,6 +164,7 @@ namespace TombEditor
                     Tool = _lastGeometryTool;
                 else
                     Tool = _lastFaceEditTool;
+                Tool.WasUsed = false;
 
                 RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
             }
@@ -187,6 +188,8 @@ namespace TombEditor
                     _lastGeometryTool = value;
                 else
                     _lastFaceEditTool = value;
+                if (_tool.Tool == EditorToolType.Paint2x2 && _tool.WasUsed)
+                    SelectedSectors = SectorSelection.None;
 
                 var previous = _tool;
                 _tool = value;

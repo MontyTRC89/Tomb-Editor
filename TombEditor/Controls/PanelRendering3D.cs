@@ -756,6 +756,7 @@ namespace TombEditor.Controls
 
                             if (_editor.SelectedSectors != newSelection)
                             {
+                                _editor.Tool.WasUsed = true;
                                 _editor.SelectedSectors = newSelection;
                                 redrawWindow = true;
                             }
