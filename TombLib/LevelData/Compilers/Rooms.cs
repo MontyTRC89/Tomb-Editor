@@ -128,6 +128,8 @@ namespace TombLib.LevelData.Compilers
                 newRoom.Flags |= 0x0020;
             if (room.FlagNoLensflare)
                 newRoom.Flags |= 0x0080;
+            if (room.FlagCold)
+                newRoom.Flags |= 0x0100;
             if (room.SnowLevel > 0)
                 newRoom.Flags |= 0x0400;
             if (room.RainLevel > 0)
