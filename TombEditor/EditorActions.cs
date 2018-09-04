@@ -2090,7 +2090,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void CreateRoomAboveOrBelow(Room room, SectorSelection selection, Func<Room, int> GetYOffset, short newRoomHeight)
+        public static void CreateRoomAboveOrBelow(Room room, SectorSelection selection, Func<Room, int> GetYOffset, short newRoomHeight, bool switchRoom = true)
         {
             var clampedSelection = selection.ClampToRoom(room, true);
             if (!clampedSelection.HasValue)
@@ -2126,10 +2126,14 @@ namespace TombEditor
 
             // Build the geometry of the new room
             Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
-
-            // Update the UI
-            if (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite)
+            
+            if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
                 _editor.SelectedRoom = newRoom; //Don't center
+            else
+            {
+                _editor.RoomSectorPropertiesChange(room);
+                _editor.RoomSectorPropertiesChange(newRoom);
+            }
         }
 
 
