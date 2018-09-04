@@ -98,6 +98,25 @@ namespace TombEditor
             result.Arrow = Arrow;
             return result;
         }
+
+        public SectorSelection? ClampToRoom(Room r, bool excludeBorderWalls = true)
+        {
+            int c = 0; // How many blocks to cut from compared area zone perimeter
+
+            if(excludeBorderWalls)
+            {
+                if (((Start.X == 0 || Start.X == r.NumXSectors - 1) && Area.Size.X == 0) ||
+                    ((Start.Y == 0 || Start.Y == r.NumZSectors - 1) && Area.Size.Y == 0))
+                    return null;
+                c = 1; // Cut border walls from comparison
+            }
+
+            return new SectorSelection()
+            {
+                Start = new VectorInt2(MathC.Clamp(Start.X, c, r.NumXSectors - (1 + c)), MathC.Clamp(Start.Y, c, r.NumZSectors - (1 + c))),
+                End = new VectorInt2(MathC.Clamp(End.X, c, r.NumXSectors - (1 + c)), MathC.Clamp(End.Y, c, r.NumZSectors - (1 + c)))
+            };
+        }
     }
 
     public struct TextureSelection
