@@ -85,10 +85,10 @@ namespace TombLib.Rendering.DirectX11
                                     (((uint)(result.Color.Z * 255)) << 23);
                             }
                             // Highlight dragged sectors
-                            if (result.Selection == SelectionType.Highlight)
+                            if (result.Highlighted)
                                 lastSectorTexture |= 0x10;
                             // Indicate selected textured faces
-                            else if (result.Selection == SelectionType.Selected && roomGeometry.TriangleTextureAreas[i].Texture != null)
+                            if (result.Selected && roomGeometry.TriangleTextureAreas[i].Texture != null)
                                 lastSectorTexture |= 0x40;
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;

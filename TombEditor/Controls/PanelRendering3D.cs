@@ -122,12 +122,12 @@ namespace TombEditor.Controls
                         ColoringInfo = _editor.SectorColoringManager.ColoringInfo,
                         DrawIllegalSlopes = ShowIllegalSlopes,
                         DrawSlideDirections = ShowSlideDirections,
-                        HighlightSelection = _toolHandler.Dragged,
                         ProbeAttributesThroughPortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals,
                     };
 
                     if(_editor.SelectedRoom == room)
                     {
+                        sectorTextures.HighlightArea = _editor.HighlightedSectors.Area;
                         sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
                         sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
                     }
@@ -257,7 +257,8 @@ namespace TombEditor.Controls
             // Update rooms
             if (obj is IEditorRoomChangedEvent)
                 _renderingCachedRooms.Remove(((IEditorRoomChangedEvent)obj).Room);
-            if (obj is Editor.SelectedSectorsChangedEvent)
+            if (obj is Editor.SelectedSectorsChangedEvent || 
+                obj is Editor.HighlightedSectorChangedEvent)
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
             if (obj is Editor.SelectedRoomChangedEvent)
                 _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
@@ -277,6 +278,7 @@ namespace TombEditor.Controls
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
                 obj is Editor.ConfigurationChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.HighlightedSectorChangedEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.ModeChangedEvent ||
                 obj is Editor.LoadedWadsChangedEvent ||
@@ -435,6 +437,17 @@ namespace TombEditor.Controls
                             {
                                 EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                             }
+                            else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
+                            {
+                                EditorActions.TexturizeGroup(_editor.SelectedRoom,
+                                    _editor.HighlightedSectors,
+                                    _editor.SelectedSectors,
+                                    _editor.SelectedTexture,
+                                    newBlockPicking.Face,
+                                    ModifierKeys.HasFlag(Keys.Control),
+                                    !ModifierKeys.HasFlag(Keys.Shift));
+                                _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
+                            }
                             else if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None)
                             {
                                 switch (_editor.Tool.Tool)
@@ -449,16 +462,14 @@ namespace TombEditor.Controls
                                         break;
 
                                     case EditorToolType.Group:
-                                    case EditorToolType.Paint2x2:
                                         if (_editor.SelectedSectors.Valid)
-                                            EditorActions.TexturizeGroup(_editor.SelectedRoom, 
-                                                _editor.SelectedSectors, 
-                                                _editor.SelectedTexture, 
-                                                newBlockPicking.Face, 
-                                                ModifierKeys.HasFlag(Keys.Control), 
-                                                ModifierKeys.HasFlag(Keys.Shift));
-                                        if(_editor.Tool.Tool == EditorToolType.Paint2x2)
-                                           _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
+                                            EditorActions.TexturizeGroup(_editor.SelectedRoom,
+                                                _editor.SelectedSectors,
+                                                _editor.SelectedSectors,
+                                                _editor.SelectedTexture,
+                                                newBlockPicking.Face,
+                                                ModifierKeys.HasFlag(Keys.Control),
+                                                !ModifierKeys.HasFlag(Keys.Shift));
                                         break;
 
                                     case EditorToolType.Brush:
@@ -722,17 +733,17 @@ namespace TombEditor.Controls
                                         ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % 2)) % 2)),
                                             (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % 2)) % 2)));
                                     var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One };
-                                    newSelection.ClampToRoom(_editor.SelectedRoom);
 
-                                    if (_editor.SelectedSectors != newSelection)
+                                    if (_editor.HighlightedSectors != newSelection)
                                     {
-                                        _editor.SelectedSectors = newSelection;
+                                        _editor.HighlightedSectors = newSelection;
                                         EditorActions.TexturizeGroup(_editor.SelectedRoom, 
+                                            _editor.HighlightedSectors,
                                             _editor.SelectedSectors,
                                             _editor.SelectedTexture, 
                                             _toolHandler.ReferencePicking.Face, 
                                             ModifierKeys.HasFlag(Keys.Control), 
-                                            ModifierKeys.HasFlag(Keys.Shift));
+                                            !ModifierKeys.HasFlag(Keys.Shift));
                                         redrawWindow = true;
                                     }
                                 }
@@ -741,7 +752,7 @@ namespace TombEditor.Controls
                     }
                     break;
                 default:
-                    if(_editor.Mode == EditorMode.FaceEdit && _editor.Tool.Tool == EditorToolType.Paint2x2)
+                    if(_editor.Tool.Tool == EditorToolType.Paint2x2)
                     {
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null)
@@ -752,15 +763,16 @@ namespace TombEditor.Controls
                                 Start = new VectorInt2(pos.X, pos.Y),
                                   End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One
                             };
-                            newSelection.ClampToRoom(_editor.SelectedRoom);
 
-                            if (_editor.SelectedSectors != newSelection)
+                            if (_editor.HighlightedSectors != newSelection)
                             {
-                                _editor.Tool.WasUsed = true;
-                                _editor.SelectedSectors = newSelection;
+                                _editor.HighlightedSectors = newSelection;
                                 redrawWindow = true;
                             }
                         }
+                        else
+                            if (_editor.HighlightedSectors != SectorSelection.None)
+                            _editor.HighlightedSectors = SectorSelection.None;
                     }
                     break;
             }
@@ -2615,6 +2627,7 @@ namespace TombEditor.Controls
                 {
                     Engaged = false;
                     Dragged = false;
+                    _parent._editor.HighlightedSectors = SectorSelection.None;
                     _parent._renderingCachedRooms.Remove(_referenceRoom); // To update highlight state
                 }
             }
@@ -2643,6 +2656,7 @@ namespace TombEditor.Controls
                         delta = new Point(_referencePosition.X - newPosition.X, _referencePosition.Y - newPosition.Y);
                     _newPosition = newPosition;
                     Dragged = true;
+                    _parent._editor.HighlightedSectors = _parent._editor.SelectedSectors;
                     _parent._renderingCachedRooms.Remove(_referenceRoom); // To update highlight state
                     return delta;
                 }

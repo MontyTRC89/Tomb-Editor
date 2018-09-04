@@ -94,8 +94,6 @@ float4 main(PixelInputType input) : SV_TARGET
 					((input.EditorSectorTexture >> 15) & 0xff) * (1.0f / 255.0f),
 					((input.EditorSectorTexture >> 23) & 0xff) * (1.0f / 255.0f),
 					1.0f);
-			if (input.EditorSectorTexture & 0x10) // Highlight?
-				result.xyz += 0.2f;
 		}
 	}
 
@@ -104,6 +102,9 @@ float4 main(PixelInputType input) : SV_TARGET
 		result.x += 0.1f * result.w;
 		drawOutline = 2;
 	}
+    
+    if (input.EditorSectorTexture & 0x10) // Highlight?
+        result.xyz = saturate(result.xyz + 0.2f);
 
 	if (drawOutline > 0)
 	{	// Draw outline

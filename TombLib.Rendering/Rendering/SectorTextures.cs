@@ -48,7 +48,8 @@ namespace TombLib.Rendering
     {
         public Vector4 Color;
         public SectorTexture SectorTexture;
-        public SelectionType Selection;
+        public bool Selected;
+        public bool Highlighted;
     }
 
     public class SectorTextureDefault
@@ -56,8 +57,8 @@ namespace TombLib.Rendering
         public static SectorTextureDefault Default { get; } = new SectorTextureDefault();
         public SectorColoringInfo ColoringInfo = SectorColoringInfo.Default;
         public RectangleInt2 SelectionArea = new RectangleInt2(-1, -1, -1, -1);
+        public RectangleInt2 HighlightArea = new RectangleInt2(-1, -1, -1, -1);
         public ArrowType SelectionArrow = ArrowType.EntireFace;
-        public bool HighlightSelection = false;
         public bool ProbeAttributesThroughPortals = true;
         public bool DrawIllegalSlopes = true;
         public bool DrawSlideDirections = true;
@@ -446,7 +447,8 @@ namespace TombLib.Rendering
             {
                 Color = Color,
                 SectorTexture = SectorTexture,
-                Selection = (SelectionArea.Contains(new VectorInt2(x, z)) ? (HighlightSelection ? SelectionType.Highlight : SelectionType.Selected) : SelectionType.None)
+                Selected = (SelectionArea.Contains(new VectorInt2(x, z))),
+                Highlighted = (HighlightArea.Contains(new VectorInt2(x, z)))
             };
         }
     }

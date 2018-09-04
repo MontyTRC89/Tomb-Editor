@@ -159,13 +159,6 @@ namespace TombEditor
                     return;
                 var previous = _mode;
                 _mode = value;
-
-                if (Mode == EditorMode.Geometry)
-                    Tool = _lastGeometryTool;
-                else
-                    Tool = _lastFaceEditTool;
-                Tool.WasUsed = false;
-
                 RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
             }
         }
@@ -183,21 +176,13 @@ namespace TombEditor
             {
                 if (value == _tool)
                     return;
-
-                if (Mode == EditorMode.Geometry)
-                    _lastGeometryTool = value;
-                else
-                    _lastFaceEditTool = value;
-                if (_tool.Tool == EditorToolType.Paint2x2 && _tool.WasUsed)
-                    SelectedSectors = SectorSelection.None;
-
                 var previous = _tool;
                 _tool = value;
                 RaiseEvent(new ToolChangedEvent { Previous = previous, Current = value });
             }
         }
-        private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true };
         private EditorTool _lastGeometryTool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
+        private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true };
 
         public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {
@@ -305,6 +290,25 @@ namespace TombEditor
                 var previous = _selectedSectors;
                 _selectedSectors = value;
                 RaiseEvent(new SelectedSectorsChangedEvent { Previous = previous, Current = value });
+            }
+        }
+
+        public class HighlightedSectorChangedEvent : IEditorPropertyChangedEvent
+        {
+            public SectorSelection Previous { get; internal set; }
+            public SectorSelection Current { get; internal set; }
+        }
+        private SectorSelection _highlightedSectors = SectorSelection.None;
+        public SectorSelection HighlightedSectors
+        {
+            get { return _highlightedSectors; }
+            set
+            {
+                if (value == _highlightedSectors)
+                    return;
+                var previous = _highlightedSectors;
+                _highlightedSectors = value;
+                RaiseEvent(new HighlightedSectorChangedEvent { Previous = previous, Current = value });
             }
         }
 
@@ -730,7 +734,7 @@ namespace TombEditor
             }
 
             // Reset notifications, when changeing between 2D and 3D mode
-            // Also reset selected sectors if wanted
+            // Also reset selected sectors if wanted and restore last tool for desired mode
             if (obj is ModeChangedEvent)
             {
                 var @event = (ModeChangedEvent)obj;
@@ -738,7 +742,27 @@ namespace TombEditor
                     SendMessage();
                 if (Configuration.Editor_DiscardSelectionOnModeSwitch)
                     SelectedSectors = SectorSelection.None;
+
+                if (@event.Current == EditorMode.Geometry)
+                    Tool = _lastGeometryTool;
+                else
+                    Tool = _lastFaceEditTool;
             }
+
+            // Backup last used tool for next mode
+            if(obj is ToolChangedEvent)
+            {
+                var @event = (ToolChangedEvent)obj;
+                if (Mode == EditorMode.Geometry)
+                    _lastGeometryTool = @event.Current;
+                else
+                    _lastFaceEditTool = @event.Current;
+            }
+
+            // Reset highlight, because otherwise it will stuck until _toolHandler.Disengage() is
+            // explicitly called
+            if (obj is ModeChangedEvent || obj is ToolChangedEvent)
+                HighlightedSectors = SectorSelection.None;
 
             // Update room selection so that no deleted rooms are selected
             if (obj is RoomListChangedEvent)
