@@ -971,6 +971,10 @@ namespace TombEditor
 
         public static Dictionary<BlockFace, float[]> GetFaces(Room room, VectorInt2 pos, Direction direction, BlockFaceType section)
         {
+            var block = room.GetBlockTry(pos.X, pos.Y);
+            if (block == null)
+                return null;
+
             bool sectionIsWall = room.GetBlockTry(pos.X, pos.Y).IsAnyWall;
 
             Dictionary<BlockFace, float[]> segments = new Dictionary<BlockFace, float[]>();
@@ -1085,6 +1089,8 @@ namespace TombEditor
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
                     var segments = GetFaces(room, new VectorInt2(x, z), direction, type);
+                    if (segments == null)
+                        continue;
 
                     foreach (var segment in segments)
                     {
@@ -1188,10 +1194,10 @@ namespace TombEditor
             }
         }
 
-        public static void TexturizeGroup(Room room, SectorSelection selection, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
+        public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, BlockFace pickedFace, bool subdivideWalls, bool unifyHeight)
         {
             if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
-            RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
+            RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
 
             if (pickedFace < BlockFace.Floor)
             {
@@ -1200,6 +1206,10 @@ namespace TombEditor
 
                 for (int x = area.X0, iterX = 0; x <= area.X1; x++, iterX++)
                     for (int z = area.Y0, iterZ = 0; z <= area.Y1; z++, iterZ++)
+                    {
+                        if (room.CoordinateInvalid(x, z) || (workArea != SectorSelection.None && !workArea.Area.Contains(new VectorInt2(x, z))))
+                            continue;
+
                         switch (pickedFace)
                         {
                             case BlockFace.NegativeX_QA:
@@ -1272,6 +1282,7 @@ namespace TombEditor
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
                                 break;
                         }
+                    }
             }
             else
             {
@@ -1284,6 +1295,9 @@ namespace TombEditor
 
                     for (int z = area.Y0, z1 = 0; z <= area.Y1; z++, z1++)
                     {
+                        if (room.CoordinateInvalid(x, z) || (workArea != SectorSelection.None && !workArea.Area.Contains(new VectorInt2(x, z))))
+                            continue;
+
                         TextureArea currentTexture = texture;
                         Vector2 currentZ = verticalUVStride * z1;
 

@@ -21,7 +21,6 @@ namespace TombEditor
     {
         public EditorToolType Tool { get; set; }
         public bool TextureUVFixer { get; set; }
-        public bool WasUsed { get; set; }
 
         public static bool operator == (EditorTool first, EditorTool second)
         {
@@ -92,12 +91,6 @@ namespace TombEditor
         }
 
         public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
-        
-        public void ClampToRoom(Room r)
-        {
-            Start = new VectorInt2(MathC.Clamp(Start.X, 0, r.NumXSectors-1), MathC.Clamp(Start.Y, 0, r.NumZSectors-1));
-            End   = new VectorInt2(MathC.Clamp(End.X,   0, r.NumXSectors-1), MathC.Clamp(End.Y,   0, r.NumZSectors-1));
-        }
 
         public SectorSelection ChangeArrows(ArrowType Arrow)
         {

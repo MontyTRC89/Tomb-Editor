@@ -1148,16 +1148,6 @@ namespace TombEditor
                 EditorActions.SwitchToolOrdered(12);
             });
 
-            AddCommand("SwitchTool14", "Switch tool 14", CommandType.General, delegate (CommandArgs args)
-            {
-                EditorActions.SwitchToolOrdered(13);
-            });
-
-            AddCommand("SwitchTool15", "Switch tool 15", CommandType.General, delegate (CommandArgs args)
-            {
-                EditorActions.SwitchToolOrdered(14);
-            });
-
             AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate (CommandArgs args)
             {
                 args.Editor.Quit();
