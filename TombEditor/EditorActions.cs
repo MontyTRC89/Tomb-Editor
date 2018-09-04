@@ -2090,12 +2090,35 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void CreateRoomAboveOrBelow(Room room, Func<Room, int> GetYOffset, short newRoomHeight)
+        public static void CreateRoomAboveOrBelow(Room room, SectorSelection selection, Func<Room, int> GetYOffset, short newRoomHeight)
         {
+            var clampedSelection = selection.ClampToRoom(room, true);
+            if (!clampedSelection.HasValue)
+                return; // We're inside border walls
+
+            int roomSizeX = room.NumXSectors;
+            int roomSizeZ = room.NumZSectors;
+            int roomPosX = 0;
+            int roomPosZ = 0;
+
+            if (!SectorSelection.IsEmpty(selection))
+            {
+                if(!selection.Valid)
+                {
+                    _editor.SendMessage("Selection is invalid. Can't create new room.", PopupType.Error);
+                    return;
+                }
+
+                roomSizeX = clampedSelection.Value.Area.Size.X  + 3;
+                roomSizeZ = clampedSelection.Value.Area.Size.Y  + 3;
+                roomPosX  = clampedSelection.Value.Area.Start.X - 1;
+                roomPosZ  = clampedSelection.Value.Area.Start.Y - 1;
+            }
+            
             // Create room
-            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, _editor.Level.Settings.DefaultAmbientLight,
+            var newRoom = new Room(_editor.Level, roomSizeX, roomSizeZ, _editor.Level.Settings.DefaultAmbientLight,
                                    "", newRoomHeight);
-            newRoom.Position = room.Position + new VectorInt3(0, GetYOffset(newRoom), 0);
+            newRoom.Position = room.Position + new VectorInt3(roomPosX, GetYOffset(newRoom), roomPosZ);
             newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
             newRoom.AddObject(_editor.Level, new PortalInstance(newRoom.LocalArea.Inflate(-1), newRoom.Position.Y < room.Position.Y ? PortalDirection.Ceiling : PortalDirection.Floor, room));
             _editor.Level.AssignRoomToFree(newRoom);

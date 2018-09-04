@@ -765,12 +765,12 @@ namespace TombEditor
 
             AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, room => room.GetHighestCorner(), 12);
+                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, args.Editor.SelectedSectors, room => room.GetHighestCorner(), 12);
             });
 
             AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
+                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, args.Editor.SelectedSectors, room => room.GetLowestCorner() - 12, 12);
             });
 
             AddCommand("MergeRoomsHorizontally", "Merge rooms horizontally", CommandType.Rooms, delegate (CommandArgs args)
