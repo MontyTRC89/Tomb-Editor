@@ -50,6 +50,7 @@
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
+            this.toolPortalDigger = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +69,7 @@
             this.toolPencil,
             this.toolFlatten,
             this.toolSmooth,
+            this.toolPortalDigger,
             this.toolFill,
             this.toolPaint2x2,
             this.toolGroup,
@@ -87,7 +89,7 @@
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.toolStrip.Size = new System.Drawing.Size(28, 449);
+            this.toolStrip.Size = new System.Drawing.Size(28, 460);
             this.toolStrip.TabIndex = 3;
             // 
             // toolSelection
@@ -358,6 +360,19 @@
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
             // 
+            // toolPortalDigger
+            // 
+            this.toolPortalDigger.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolPortalDigger.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolPortalDigger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolPortalDigger.Image = global::TombEditor.Properties.Resources.toolbox_PortalDigger;
+            this.toolPortalDigger.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolPortalDigger.Margin = new System.Windows.Forms.Padding(1);
+            this.toolPortalDigger.Name = "toolPortalDigger";
+            this.toolPortalDigger.Size = new System.Drawing.Size(23, 20);
+            this.toolPortalDigger.ToolTipText = "Portal Digger";
+            this.toolPortalDigger.Click += new System.EventHandler(this.toolPortalDigger_Click);
+            // 
             // ToolBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -366,7 +381,7 @@
             this.Controls.Add(this.toolStrip);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolBox";
-            this.Size = new System.Drawing.Size(28, 449);
+            this.Size = new System.Drawing.Size(28, 460);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -397,5 +412,6 @@
         private System.Windows.Forms.ToolStripSeparator toolSeparator2;
         private System.Windows.Forms.ToolStripButton toolUVFixer;
         private System.Windows.Forms.ToolStripButton toolPaint2x2;
+        private System.Windows.Forms.ToolStripButton toolPortalDigger;
     }
 }

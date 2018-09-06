@@ -471,7 +471,7 @@ namespace TombLib.LevelData
             SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
         }
 
-        public void Raise(BlockVertical vertical, bool diagonalStep, int increment)
+        public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false)
         {
             var split = vertical == BlockVertical.Floor || vertical == BlockVertical.Ed ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
             if (diagonalStep)
@@ -520,19 +520,19 @@ namespace TombLib.LevelData
                     split == DiagonalSplit.XpZp && GetHeight(vertical, BlockEdge.XnZn) == GetHeight(vertical, BlockEdge.XnZp) && stepIsLimited)
                 {
                     if (IsAnyWall && autoSwitch)
-                        Raise(vertical, !diagonalStep, increment);
+                        Raise(vertical, increment, !diagonalStep);
                     else
                     {
                         if (autoSwitch)
                         {
                             Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
-                            Raise(vertical, !diagonalStep, increment);
+                            Raise(vertical, increment, !diagonalStep);
                         }
                         return;
                     }
                 }
             }
-            Raise(vertical, diagonalStep, increment);
+            Raise(vertical, increment, diagonalStep);
         }
 
         public enum FaceShape

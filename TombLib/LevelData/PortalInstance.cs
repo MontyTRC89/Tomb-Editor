@@ -163,7 +163,7 @@ namespace TombLib.LevelData
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].FloorPortal != null)
-                                throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("Floor portal overlaps another (" + room.Blocks[x, z].FloorPortal.Area + ")");
 
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
@@ -174,7 +174,7 @@ namespace TombLib.LevelData
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].CeilingPortal != null)
-                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].CeilingPortal + "'!");
+                                throw new ApplicationException("Ceiling portal overlaps another (" + room.Blocks[x, z].CeilingPortal.Area + ")");
 
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
@@ -185,7 +185,7 @@ namespace TombLib.LevelData
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].WallPortal != null)
-                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].WallPortal + "'!");
+                                throw new ApplicationException("Wall portal overlaps another (" + room.Blocks[x, z].WallPortal.Area + ")");
 
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)

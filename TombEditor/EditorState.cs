@@ -14,7 +14,7 @@ namespace TombEditor
         None, Selection, Brush, Pencil,
         Fill, Group, Paint2x2,
         Shovel, Smooth, Flatten,
-        Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain // Do not modify enum order after drag tool!
+        Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain, PortalDigger // Do not modify enum order after drag tool!
     }
 
     public class EditorTool

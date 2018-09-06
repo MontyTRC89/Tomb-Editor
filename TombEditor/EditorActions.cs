@@ -187,7 +187,7 @@ namespace TombEditor
                             if (vertical == BlockVertical.Floor || vertical == BlockVertical.Ceiling)
                                 block.RaiseStepWise(vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                             else
-                                block.Raise(vertical, false, increment);
+                                block.Raise(vertical, increment, false);
                         }
                         else
                         {
@@ -393,7 +393,7 @@ namespace TombEditor
 
                     if (stepped)
                     {
-                        room.Blocks[w, h].Raise(vertical, false, (int)currentHeight);
+                        room.Blocks[w, h].Raise(vertical, (int)currentHeight, false);
                         room.Blocks[w, h].FixHeights();
                     }
                     else
@@ -2090,11 +2090,11 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void CreateRoomAboveOrBelow(Room room, SectorSelection selection, Func<Room, int> GetYOffset, short newRoomHeight, bool switchRoom = true)
+        public static Room CreateRoomAboveOrBelow(Room room, SectorSelection selection, Func<Room, int> GetYOffset, short newRoomHeight, bool switchRoom = true)
         {
             var clampedSelection = selection.ClampToRoom(room, true);
             if (!clampedSelection.HasValue)
-                return; // We're inside border walls
+                return null; // We're inside border walls
 
             int roomSizeX = room.NumXSectors;
             int roomSizeZ = room.NumZSectors;
@@ -2106,7 +2106,7 @@ namespace TombEditor
                 if(!selection.Valid)
                 {
                     _editor.SendMessage("Selection is invalid. Can't create new room.", PopupType.Error);
-                    return;
+                    return null;
                 }
 
                 roomSizeX = clampedSelection.Value.Area.Size.X  + 3;
@@ -2134,6 +2134,8 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
                 _editor.RoomSectorPropertiesChange(newRoom);
             }
+
+            return newRoom;
         }
 
 

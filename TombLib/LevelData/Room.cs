@@ -77,7 +77,7 @@ namespace TombLib.LevelData
         { }
 
         // Usually it's highly recommended to call FixupNeighborPortals afterwards, to fix neighboring portals.
-        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool useFloor = false)
+        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool? useFloor = false)
         {
             int numXSectors = area.Width + 1;
             int numZSectors = area.Height + 1;
@@ -98,8 +98,13 @@ namespace TombLib.LevelData
                 {
                     Block oldBlock = GetBlockTry(new VectorInt2(x, z) + offset);
                     newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
-                    if (oldBlock == null || newBlocks[x, z].Type == BlockType.BorderWall)
-                        newBlocks[x, z].Type = useFloor ? BlockType.Floor : BlockType.Wall;
+                    if (oldBlock == null || (useFloor.HasValue && newBlocks[x, z].Type == BlockType.BorderWall))
+                        newBlocks[x, z].Type = useFloor.Value ? BlockType.Floor : BlockType.Wall;
+                    else
+                    {
+                        oldBlock.Raise(BlockVertical.Floor, floor);
+                        oldBlock.Raise(BlockVertical.Ceiling, ceiling);
+                    }
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         newBlocks[x, z].Type = BlockType.BorderWall;
