@@ -98,13 +98,16 @@ namespace TombLib.LevelData
                 {
                     Block oldBlock = GetBlockTry(new VectorInt2(x, z) + offset);
                     newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
+
                     if (oldBlock == null || (useFloor.HasValue && newBlocks[x, z].Type == BlockType.BorderWall))
-                        newBlocks[x, z].Type = useFloor.Value ? BlockType.Floor : BlockType.Wall;
-                    else
+                        newBlocks[x, z].Type = !useFloor.HasValue || useFloor.Value ? BlockType.Floor : BlockType.Wall;
+                    
+                    if(!useFloor.HasValue)
                     {
                         oldBlock.Raise(BlockVertical.Floor, floor);
                         oldBlock.Raise(BlockVertical.Ceiling, ceiling);
                     }
+
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         newBlocks[x, z].Type = BlockType.BorderWall;

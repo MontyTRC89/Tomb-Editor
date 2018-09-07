@@ -80,6 +80,23 @@ namespace TombLib.LevelData
             return text;
         }
 
+        public static PortalDirection GetDirection(Direction direction)
+        {
+            switch (direction)
+            {
+                case LevelData.Direction.NegativeX:
+                    return PortalDirection.WallNegativeX;
+                case LevelData.Direction.PositiveX:
+                    return PortalDirection.WallPositiveX;
+                case LevelData.Direction.NegativeZ:
+                    return PortalDirection.WallNegativeZ;
+                case LevelData.Direction.PositiveZ:
+                    return PortalDirection.WallPositiveZ;
+                default:
+                    return PortalDirection.Floor;
+            }
+        }
+
         public static PortalDirection GetOppositeDirection(PortalDirection direction)
         {
             switch (direction)

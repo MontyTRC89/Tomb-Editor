@@ -332,6 +332,20 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
+        public int TranslateCameraMouseMovement(Point value, bool horizontal = false)
+        {
+            if (Camera.RotationY < Math.PI * (1.0 / 4.0))
+                return horizontal ? value.X : value.Y;
+            else if (Camera.RotationY < Math.PI * (3.0 / 4.0))
+                return horizontal ? value.Y : -value.X;
+            else if (Camera.RotationY < Math.PI * (5.0 / 4.0))
+                return horizontal ? -value.X : -value.Y;
+            else if (Camera.RotationY < Math.PI * (7.0 / 4.0))
+                return horizontal ? -value.Y : value.X;
+            else
+                return horizontal ? value.X : value.Y;
+        }
+
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
             base.OnPreviewKeyDown(e);
@@ -420,23 +434,36 @@ namespace TombEditor.Controls
                             {
                                 Room newRoom = null;
 
-                                if (newBlockPicking.BelongsToFloor)
-                                    newRoom = EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom,
+                                if(newBlockPicking.IsVerticalPlane)
+                                {
+                                    newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
-                                        room => room.GetLowestCorner(_editor.SelectedSectors.Area) - 4,
-                                        4);
+                                        PortalInstance.GetOppositeDirection(PortalInstance.GetDirection(BlockFaceExtensions.GetDirection(newBlockPicking.Face))),
+                                        1, !ModifierKeys.HasFlag(Keys.Control));
+                                }
+                                else if (newBlockPicking.BelongsToFloor)
+                                {
+                                    newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
+                                        _editor.SelectedSectors,
+                                        PortalDirection.Floor, 
+                                        4, !ModifierKeys.HasFlag(Keys.Control));
+                                }
                                 else if (newBlockPicking.BelongsToCeiling)
-                                    newRoom = EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom,
+                                {
+                                    newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
-                                        room => room.GetHighestCorner(_editor.SelectedSectors.Area),
-                                        4, false);
-                                else
-                                    _editor.SendMessage("non implemented");
+                                        PortalDirection.Ceiling, 
+                                        4, !ModifierKeys.HasFlag(Keys.Control));
+                                }
 
                                 if(newRoom != null)
                                 {
-                                    _editor.HighlightedSectors = new SectorSelection() { Area = newRoom.LocalArea };
+                                    if(!ModifierKeys.HasFlag(Keys.Control))
+                                        _editor.HighlightedSectors = new SectorSelection() { Area = newRoom.LocalArea };
                                     _toolHandler.Engage(e.X, e.Y, newBlockPicking, false, newRoom);
+
+                                    if (!ShowPortals && !ShowAllRooms)
+                                        _editor.SendMessage("Parent is invisible.\nTurn on Draw Doors mode.", TombLib.Forms.PopupType.Info);
                                 }
                                 return;
                             }
@@ -627,21 +654,73 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.Tool.Tool >= EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection)
                     {
-                        var dragValue = _toolHandler.UpdateDragState(e.X, e.Y, true, _editor.Tool.Tool != EditorToolType.PortalDigger);
+                        var dragValue = _toolHandler.UpdateDragState(e.X, e.Y,
+                            _editor.Tool.Tool == EditorToolType.Drag || _editor.Tool.Tool == EditorToolType.PortalDigger, 
+                            _editor.Tool.Tool != EditorToolType.PortalDigger);
+
                         if (dragValue.HasValue)
                         {
                             if (_editor.Tool.Tool == EditorToolType.PortalDigger)
                             {
+                                VectorInt3 move = VectorInt3.Zero;
+                                VectorInt2 drag = VectorInt2.Zero;
+                                Point invertedDragValue = new Point(dragValue.Value.X, -dragValue.Value.Y);
                                 var currRoom = _toolHandler.ReferenceRoom;
+                                RectangleInt2 resizeArea = new RectangleInt2(currRoom.LocalArea.Start, currRoom.LocalArea.End);
+                                short[] resizeHeight = { (short)currRoom.GetLowestCorner(), (short)currRoom.GetHighestCorner() };
+                                PortalDirection portalDirection;
+                                int verticalPrecision = ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4;
 
-                                if (_toolHandler.ReferencePicking.BelongsToFloor)
-                                {
-                                    currRoom.Resize(_editor.Level, currRoom.LocalArea, 0, (short)(-dragValue.Value.Y), null);
-                                    EditorActions.MoveRooms(new VectorInt3(0, dragValue.Value.Y, 0), currRoom.Versions);
-                                }
+                                if (_toolHandler.ReferencePicking.IsVerticalPlane)
+                                    portalDirection = PortalInstance.GetOppositeDirection
+                                                     (PortalInstance.GetDirection
+                                                     (BlockFaceExtensions.GetDirection(_toolHandler.ReferencePicking.Face)));
                                 else
                                 {
-                                    //currRoom.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
+                                    portalDirection = _toolHandler.ReferencePicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling;
+                                    move = new VectorInt3(0, dragValue.Value.Y * verticalPrecision, 0);
+                                }
+
+                                switch(portalDirection)
+                                {
+                                    case PortalDirection.Floor:
+                                        resizeHeight[0] = 0;
+                                        resizeHeight[1] = (short)(-dragValue.Value.Y * verticalPrecision);
+                                        break;
+
+                                    case PortalDirection.Ceiling:
+                                        resizeHeight[0] = (short)(-dragValue.Value.Y * verticalPrecision);
+                                        resizeHeight[1] = 0;
+                                        break;
+
+                                    case PortalDirection.WallNegativeX:
+                                    case PortalDirection.WallPositiveX:
+                                        drag = new VectorInt2(TranslateCameraMouseMovement(invertedDragValue, true), 0);
+                                        if (portalDirection == PortalDirection.WallNegativeX)
+                                            resizeArea.Start += drag;
+                                        else
+                                            resizeArea.End += drag;
+                                        break;
+
+                                    case PortalDirection.WallNegativeZ:
+                                    case PortalDirection.WallPositiveZ:
+                                        drag = new VectorInt2(0, TranslateCameraMouseMovement(invertedDragValue, false));
+                                        if (portalDirection == PortalDirection.WallNegativeZ)
+                                            resizeArea.Start += drag;
+                                        else
+                                            resizeArea.End += drag;
+                                        break;
+                                }
+
+                                // Only resize if any dimension is bigger than 3 and less than 32
+                                if(resizeArea.Size.X > 1 && resizeArea.Size.Y > 1 && resizeArea.Size.X < 32 && resizeArea.Size.Y < 32)
+                                {
+                                    bool? operateOnFloor = null;
+                                    if (_toolHandler.ReferencePicking.IsVerticalPlane) operateOnFloor = true;
+                                    currRoom.Resize(_editor.Level, resizeArea, resizeHeight[0], resizeHeight[1], operateOnFloor);
+                                    EditorActions.MoveRooms(move, currRoom.Versions);
+                                    if(_toolHandler.ReferenceRoom == _editor.SelectedRoom)
+                                        _editor.HighlightedSectors = new SectorSelection() { Area = resizeArea };
                                 }
                             }
                             else if (_editor.SelectedSectors.Valid)
