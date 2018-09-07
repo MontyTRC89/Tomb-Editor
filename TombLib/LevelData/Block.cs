@@ -201,6 +201,14 @@ namespace TombLib.LevelData
             }
         }
 
+        public void SetHeight(int value)
+        {
+            SetHeight(BlockEdge.XnZn, value);
+            SetHeight(BlockEdge.XnZp, value);
+            SetHeight(BlockEdge.XpZn, value);
+            SetHeight(BlockEdge.XpZp, value);
+        }
+
         public static bool IsQuad2(int hXnZp, int hXpZp, int hXpZn, int hXnZn)
         {
             return hXpZp - hXpZn == hXnZp - hXnZn &&

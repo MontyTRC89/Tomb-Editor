@@ -105,7 +105,9 @@ namespace TombLib.LevelData
                     if(!useFloor.HasValue)
                     {
                         oldBlock.Raise(BlockVertical.Floor, floor);
+                        oldBlock.Raise(BlockVertical.Ed, floor);
                         oldBlock.Raise(BlockVertical.Ceiling, ceiling);
+                        oldBlock.Raise(BlockVertical.Rf, ceiling);
                     }
 
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)

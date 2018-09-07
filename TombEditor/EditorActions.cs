@@ -2186,6 +2186,20 @@ namespace TombEditor
                                                              clampedSelection.Value.Area.Start.Y - 1);
                     portalArea = new RectangleInt2(1, 1, roomSizeX - 2, roomSizeZ - 2);
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
+
+                    // Reset parent floor or ceiling to adjoin new portal
+                    var refHeight = direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) : room.GetHighestCorner(selection.Area);
+                    for (int x = selection.Area.X0; x <= selection.Area.X1; x++)
+                        for (int z = selection.Area.Y0; z <= selection.Area.Y1; z++)
+                        {
+                            if (room.Blocks[x, z].Type == BlockType.Floor)
+                            {
+                                if (direction == PortalDirection.Floor)
+                                    room.Blocks[x, z].Floor.SetHeight(refHeight);
+                                else
+                                    room.Blocks[x, z].Ceiling.SetHeight(refHeight);
+                            }
+                        }
                     break;
             }
 

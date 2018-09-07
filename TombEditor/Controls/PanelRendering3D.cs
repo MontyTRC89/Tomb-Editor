@@ -441,19 +441,12 @@ namespace TombEditor.Controls
                                         PortalInstance.GetOppositeDirection(PortalInstance.GetDirection(BlockFaceExtensions.GetDirection(newBlockPicking.Face))),
                                         1, !ModifierKeys.HasFlag(Keys.Control));
                                 }
-                                else if (newBlockPicking.BelongsToFloor)
+                                else
                                 {
                                     newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
-                                        PortalDirection.Floor, 
-                                        4, !ModifierKeys.HasFlag(Keys.Control));
-                                }
-                                else if (newBlockPicking.BelongsToCeiling)
-                                {
-                                    newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
-                                        _editor.SelectedSectors,
-                                        PortalDirection.Ceiling, 
-                                        4, !ModifierKeys.HasFlag(Keys.Control));
+                                        newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, 
+                                        (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control));
                                 }
 
                                 if(newRoom != null)
@@ -684,13 +677,10 @@ namespace TombEditor.Controls
                                 switch(portalDirection)
                                 {
                                     case PortalDirection.Floor:
-                                        resizeHeight[0] = 0;
-                                        resizeHeight[1] = (short)(-dragValue.Value.Y * verticalPrecision);
-                                        break;
-
                                     case PortalDirection.Ceiling:
-                                        resizeHeight[0] = (short)(-dragValue.Value.Y * verticalPrecision);
-                                        resizeHeight[1] = 0;
+                                        var newHeight = (-dragValue.Value.Y * verticalPrecision);
+                                        resizeHeight[0] = (short)(portalDirection == PortalDirection.Floor ? 0 : newHeight);
+                                        resizeHeight[1] = (short)(portalDirection == PortalDirection.Floor ? newHeight : 0);
                                         break;
 
                                     case PortalDirection.WallNegativeX:
