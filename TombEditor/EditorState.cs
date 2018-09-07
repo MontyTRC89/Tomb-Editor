@@ -92,6 +92,7 @@ namespace TombEditor
         }
 
         public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
+        public bool ValidOrNone => Valid || this == None;
 
         public SectorSelection ChangeArrows(ArrowType Arrow)
         {

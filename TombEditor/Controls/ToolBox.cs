@@ -86,7 +86,6 @@ namespace TombEditor.Controls
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
-                toolSeparator2.Visible = !geometryMode;
                 toolFlatten.Visible = geometryMode;
                 toolShovel.Visible = geometryMode;
                 toolSmooth.Visible = geometryMode;

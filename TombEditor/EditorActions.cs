@@ -2188,18 +2188,7 @@ namespace TombEditor
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
-                    var refHeight = direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) : room.GetHighestCorner(selection.Area);
-                    for (int x = selection.Area.X0; x <= selection.Area.X1; x++)
-                        for (int z = selection.Area.Y0; z <= selection.Area.Y1; z++)
-                        {
-                            if (room.Blocks[x, z].Type == BlockType.Floor)
-                            {
-                                if (direction == PortalDirection.Floor)
-                                    room.Blocks[x, z].Floor.SetHeight(refHeight);
-                                else
-                                    room.Blocks[x, z].Ceiling.SetHeight(refHeight);
-                            }
-                        }
+                    FlattenRoomArea(room, selection.Area);
                     break;
             }
 
@@ -2224,6 +2213,28 @@ namespace TombEditor
             }
 
             return newRoom;
+        }
+
+        public static void FlattenRoomArea(Room room, RectangleInt2 area, int? height = null, bool ceiling = false, bool includeWalls = false, bool rebuild = false)
+        {
+            if (!height.HasValue)
+                height = ceiling ? room.GetHighestCorner(area) : room.GetLowestCorner(area);
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type == BlockType.Wall))
+                    {
+                        
+                        if (ceiling && room.Blocks[x, z].CeilingPortal == null)
+                            room.Blocks[x, z].Ceiling.SetHeight(height.Value);
+                        else if(!ceiling && room.Blocks[x, z].FloorPortal == null)
+                            room.Blocks[x, z].Floor.SetHeight(height.Value);
+                    }
+                }
+
+            if(rebuild)
+                SmartBuildGeometry(room, area);
         }
 
         public static void MergeRoomsHorizontally(IEnumerable<Room> rooms, IWin32Window owner)

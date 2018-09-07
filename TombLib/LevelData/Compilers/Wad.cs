@@ -116,7 +116,11 @@ namespace TombLib.LevelData.Compilers
             foreach (var poly in oldMesh.Polys)
             {
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
-                lightingEffect |= (ushort)(poly.ShineStrength << 1);
+                if(poly.ShineStrength > 0)
+                {
+                    lightingEffect |= 0x02;
+                    lightingEffect |= (ushort)(poly.ShineStrength << 2);
+                }
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {

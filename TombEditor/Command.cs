@@ -1498,6 +1498,18 @@ namespace TombEditor
                 }
             });
 
+            AddCommand("FlattenFloorToMin", "Flatten floor area to minimum", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, false, false, true);
+            });
+
+            AddCommand("FlattenCeilingToMin", "Flatten ceiling area to minimum", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, false, true);
+            });
+
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
