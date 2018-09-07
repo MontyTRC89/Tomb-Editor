@@ -201,6 +201,14 @@ namespace TombLib.LevelData
             }
         }
 
+        public void SetHeight(int value)
+        {
+            SetHeight(BlockEdge.XnZn, value);
+            SetHeight(BlockEdge.XnZp, value);
+            SetHeight(BlockEdge.XpZn, value);
+            SetHeight(BlockEdge.XpZp, value);
+        }
+
         public static bool IsQuad2(int hXnZp, int hXpZp, int hXpZn, int hXnZn)
         {
             return hXpZp - hXpZn == hXnZp - hXnZn &&
@@ -367,7 +375,7 @@ namespace TombLib.LevelData
         {
             Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
             _ed[0] = _ed[1] = _ed[2] = _ed[3] = (short)floor;
-            _rf[0] = _rf[0] = _rf[2] = _rf[3] = (short)ceiling;
+            _rf[0] = _rf[1] = _rf[2] = _rf[3] = (short)ceiling;
             Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
         }
 
@@ -468,10 +476,11 @@ namespace TombLib.LevelData
 
         public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment)
         {
-            SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
+            if(increment != 0)
+                SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
         }
 
-        public void Raise(BlockVertical vertical, bool diagonalStep, int increment)
+        public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false)
         {
             var split = vertical == BlockVertical.Floor || vertical == BlockVertical.Ed ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
             if (diagonalStep)
@@ -520,19 +529,19 @@ namespace TombLib.LevelData
                     split == DiagonalSplit.XpZp && GetHeight(vertical, BlockEdge.XnZn) == GetHeight(vertical, BlockEdge.XnZp) && stepIsLimited)
                 {
                     if (IsAnyWall && autoSwitch)
-                        Raise(vertical, !diagonalStep, increment);
+                        Raise(vertical, increment, !diagonalStep);
                     else
                     {
                         if (autoSwitch)
                         {
                             Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
-                            Raise(vertical, !diagonalStep, increment);
+                            Raise(vertical, increment, !diagonalStep);
                         }
                         return;
                     }
                 }
             }
-            Raise(vertical, diagonalStep, increment);
+            Raise(vertical, increment, diagonalStep);
         }
 
         public enum FaceShape

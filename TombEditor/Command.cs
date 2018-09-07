@@ -265,25 +265,25 @@ namespace TombEditor
             AddCommand("MoveRoomLeft", "Move room left", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(1, 0, 0), args.Editor.SelectedRoom.Versions);
+                    EditorActions.MoveRooms(new VectorInt3(-1, 0, 0), args.Editor.SelectedRoom.Versions);
             });
 
             AddCommand("MoveRoomRight", "Move room right", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(-1, 0, 0), args.Editor.SelectedRoom.Versions);
+                    EditorActions.MoveRooms(new VectorInt3(1, 0, 0), args.Editor.SelectedRoom.Versions);
             });
 
             AddCommand("MoveRoomForward", "Move room forward", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 0, -1), args.Editor.SelectedRoom.Versions);
+                    EditorActions.MoveRooms(new VectorInt3(0, 0, 1), args.Editor.SelectedRoom.Versions);
             });
 
             AddCommand("MoveRoomBack", "Move room back", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 0, 1), args.Editor.SelectedRoom.Versions);
+                    EditorActions.MoveRooms(new VectorInt3(0, 0, -1), args.Editor.SelectedRoom.Versions);
             });
 
             AddCommand("MoveRoomUp", "Move room up", CommandType.Rooms, delegate (CommandArgs args)
@@ -765,12 +765,32 @@ namespace TombEditor
 
             AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, args.Editor.SelectedSectors, room => room.GetHighestCorner(), 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, 12);
             });
 
             AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateRoomAboveOrBelow(args.Editor.SelectedRoom, args.Editor.SelectedSectors, room => room.GetLowestCorner() - 12, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, 12);
+            });
+
+            AddCommand("NewRoomLeft", "New room left", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeX, 12);
+            });
+
+            AddCommand("NewRoomRight", "New room right", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveX, 12);
+            });
+
+            AddCommand("NewRoomFront", "New room front", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveZ, 12);
+            });
+
+            AddCommand("NewRoomBack", "New room back", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeZ, 12);
             });
 
             AddCommand("MergeRoomsHorizontally", "Merge rooms horizontally", CommandType.Rooms, delegate (CommandArgs args)
@@ -1148,6 +1168,11 @@ namespace TombEditor
                 EditorActions.SwitchToolOrdered(12);
             });
 
+            AddCommand("SwitchTool14", "Switch tool 14", CommandType.General, delegate (CommandArgs args)
+            {
+                EditorActions.SwitchToolOrdered(13);
+            });
+
             AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate (CommandArgs args)
             {
                 args.Editor.Quit();
@@ -1471,6 +1496,18 @@ namespace TombEditor
                     args.Editor.SelectedRoom.FlagDamage = !args.Editor.SelectedRoom.FlagDamage;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
+            });
+
+            AddCommand("FlattenFloorToMin", "Flatten floor area to minimum", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, false, false, true);
+            });
+
+            AddCommand("FlattenCeilingToMin", "Flatten ceiling area to minimum", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, false, true);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

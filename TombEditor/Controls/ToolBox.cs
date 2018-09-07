@@ -64,6 +64,7 @@ namespace TombEditor.Controls
                 toolBowl.Checked = currentTool.Tool == EditorToolType.Bowl;
                 toolPyramid.Checked = currentTool.Tool == EditorToolType.Pyramid;
                 toolTerrain.Checked = currentTool.Tool == EditorToolType.Terrain;
+                toolPortalDigger.Checked = currentTool.Tool == EditorToolType.PortalDigger;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -85,7 +86,6 @@ namespace TombEditor.Controls
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
-                toolSeparator2.Visible = !geometryMode;
                 toolFlatten.Visible = geometryMode;
                 toolShovel.Visible = geometryMode;
                 toolSmooth.Visible = geometryMode;
@@ -96,6 +96,7 @@ namespace TombEditor.Controls
                 toolBowl.Visible = geometryMode;
                 toolPyramid.Visible = geometryMode;
                 toolTerrain.Visible = geometryMode;
+                toolPortalDigger.Visible = geometryMode;
 
                 toolStrip.AutoSize = true;
                 AutoSize = true;
@@ -188,6 +189,11 @@ namespace TombEditor.Controls
         {
             SwitchTool(EditorToolType.Paint2x2);
         }
+        
+        private void toolPortalDigger_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.PortalDigger);
+        }
 
         private void toolInvisibility_Click(object sender, EventArgs e)
         {
@@ -203,11 +209,6 @@ namespace TombEditor.Controls
         {
             EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = !_editor.Tool.TextureUVFixer };
             _editor.Tool = currentTool;
-        }
-
-        private void tooPaint4x4_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
