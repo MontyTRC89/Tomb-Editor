@@ -671,6 +671,10 @@ namespace TombLib.LevelData.Compilers
                 xInRoom = x - room.Position.X;
                 zInRoom = z - room.Position.Z;
 
+                // HACK: this is a very ultra rare case, I adopt a conservative approach here
+                if (xInRoom < 0 || zInRoom < 0 || xInRoom >= room.NumXSectors || zInRoom >= room.NumZSectors)
+                    return false;
+
                 block = room.Blocks[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
