@@ -2094,6 +2094,12 @@ namespace TombEditor
                 return null;
             }
 
+            if(room.IsAnyPortal(direction, clampedSelection.Value.Area))
+            {
+                _editor.SendMessage("Can't create adjoining room. \nSelection contains existing portals.", PopupType.Error);
+                return null;
+            }
+
             int roomSizeX, roomSizeY, roomSizeZ;
             VectorInt3 roomPos;
             RectangleInt2 portalArea;
