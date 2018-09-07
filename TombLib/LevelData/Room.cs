@@ -714,6 +714,21 @@ namespace TombLib.LevelData
             return slopeIsIllegal;
         }
 
+        public bool CornerSelected(RectangleInt2 area)
+        {
+            // Check if one of the four corner is selected
+            var cornerSelected = false;
+            if (area.X0 == 0 && area.Y0 == 0 || area.X1 == 0 && area.Y1 == 0)
+                cornerSelected = true;
+            if (area.X0 == 0 && area.Y0 == NumZSectors - 1 || area.X1 == 0 && area.Y1 == NumZSectors - 1)
+                cornerSelected = true;
+            if (area.X0 == NumXSectors - 1 && area.Y0 == 0 || area.X1 == NumXSectors - 1 && area.Y1 == 0)
+                cornerSelected = true;
+            if (area.X0 == NumXSectors - 1 && area.Y0 == NumZSectors - 1 || area.X1 == NumXSectors - 1 && area.Y1 == NumZSectors - 1)
+                cornerSelected = true;
+            return cornerSelected;
+        }
+
         public bool IsFaceDefined(int x, int z, BlockFace face)
         {
             return RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face)).Count != 0;

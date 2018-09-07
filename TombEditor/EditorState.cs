@@ -100,22 +100,28 @@ namespace TombEditor
             return result;
         }
 
-        public SectorSelection? ClampToRoom(Room r, bool excludeBorderWalls = true)
+        public SectorSelection? ClampToRoom(Room r, Direction? excludeBorderWallsDirection = Direction.None)
         {
-            int c = 0; // How many blocks to cut from compared area zone perimeter
-
-            if(excludeBorderWalls)
+            int[] c = new int[2] { 0, 0 }; // How many blocks to cut from compared area zone perimeter
+            bool excludeAll = !excludeBorderWallsDirection.HasValue;
+            
+            if(excludeAll || excludeBorderWallsDirection.Value == Direction.NegativeX || excludeBorderWallsDirection.Value == Direction.PositiveX)
             {
-                if (((Start.X == 0 || Start.X == r.NumXSectors - 1) && Area.Size.X == 0) ||
-                    ((Start.Y == 0 || Start.Y == r.NumZSectors - 1) && Area.Size.Y == 0))
+                if ((Start.Y == 0 || Start.Y == r.NumZSectors - 1) && Area.Size.Y == 0)
                     return null;
-                c = 1; // Cut border walls from comparison
+                c[0] = 1;
+            }
+            if (excludeAll || excludeBorderWallsDirection.Value == Direction.NegativeZ || excludeBorderWallsDirection.Value == Direction.PositiveZ)
+            {
+                if ((Start.X == 0 || Start.X == r.NumXSectors - 1) && Area.Size.X == 0)
+                    return null;
+                c[1] = 1;
             }
 
             return new SectorSelection()
             {
-                Start = new VectorInt2(MathC.Clamp(Start.X, c, r.NumXSectors - (1 + c)), MathC.Clamp(Start.Y, c, r.NumZSectors - (1 + c))),
-                End = new VectorInt2(MathC.Clamp(End.X, c, r.NumXSectors - (1 + c)), MathC.Clamp(End.Y, c, r.NumZSectors - (1 + c)))
+                Start = new VectorInt2(MathC.Clamp(Start.X, c[1], r.NumXSectors - (1 + c[1])), MathC.Clamp(Start.Y, c[0], r.NumZSectors - (1 + c[0]))),
+                End = new VectorInt2(MathC.Clamp(End.X, c[1], r.NumXSectors - (1 + c[1])), MathC.Clamp(End.Y, c[0], r.NumZSectors - (1 + c[0])))
             };
         }
     }

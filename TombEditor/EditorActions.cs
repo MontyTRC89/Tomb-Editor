@@ -1812,18 +1812,7 @@ namespace TombEditor
 
         public static void AddPortal(Room room, RectangleInt2 area, IWin32Window owner)
         {
-            // Check if one of the four corner is selected
-            var cornerSelected = false;
-            if (area.X0 == 0 && area.Y0 == 0 || area.X1 == 0 && area.Y1 == 0)
-                cornerSelected = true;
-            if (area.X0 == 0 && area.Y0 == room.NumZSectors - 1 || area.X1 == 0 && area.Y1 == room.NumZSectors - 1)
-                cornerSelected = true;
-            if (area.X0 == room.NumXSectors - 1 && area.Y0 == 0 || area.X1 == room.NumXSectors - 1 && area.Y1 == 0)
-                cornerSelected = true;
-            if (area.X0 == room.NumXSectors - 1 && area.Y0 == room.NumZSectors - 1 || area.X1 == room.NumXSectors - 1 && area.Y1 == room.NumZSectors - 1)
-                cornerSelected = true;
-
-            if (cornerSelected)
+            if (room.CornerSelected(area))
             {
                 _editor.SendMessage("You have selected one of the four room's corners.", PopupType.Error);
                 return;
@@ -2098,7 +2087,7 @@ namespace TombEditor
                 return null;
             }
 
-            var clampedSelection = (SectorSelection.IsEmpty(selection) ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, direction > PortalDirection.Ceiling ? false : true);
+            var clampedSelection = (SectorSelection.IsEmpty(selection) ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, PortalInstance.GetDirection(direction));
             if (!clampedSelection.HasValue)
             {
                 _editor.SendMessage("Can't create adjoining room. \nSelection is inside border walls.", PopupType.Error);
@@ -2135,7 +2124,7 @@ namespace TombEditor
 
                     roomSizeX = roomDepth + 2;
                     roomSizeY = room.GetHighestCorner(clampedSelection.Value.Area) - room.GetLowestCorner(clampedSelection.Value.Area);
-                    roomSizeZ = (clampedSelection.Value.ClampToRoom(room, false)).Value.Area.Size.Y + 3;
+                    roomSizeZ = clampedSelection.Value.Area.Size.Y + 3;
                     roomPos   = room.Position + new VectorInt3(direction == PortalDirection.WallNegativeX ? -roomDepth : room.NumXSectors - 2,
                                                                room.GetLowestCorner(clampedSelection.Value.Area),
                                                                clampedSelection.Value.Area.Start.Y - 1);
@@ -2167,7 +2156,7 @@ namespace TombEditor
                         clampedSelection = clampedSelection.Value.ClampToRoom(room);
                     }
 
-                    roomSizeX = (clampedSelection.Value.ClampToRoom(room, false)).Value.Area.Size.X + 3;
+                    roomSizeX = clampedSelection.Value.Area.Size.X + 3;
                     roomSizeY = room.GetHighestCorner(clampedSelection.Value.Area) - room.GetLowestCorner(clampedSelection.Value.Area);
                     roomSizeZ = roomDepth + 2;
                     roomPos   = room.Position + new VectorInt3(clampedSelection.Value.Area.Start.X - 1,

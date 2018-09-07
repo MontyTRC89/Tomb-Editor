@@ -367,7 +367,7 @@ namespace TombLib.LevelData
         {
             Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
             _ed[0] = _ed[1] = _ed[2] = _ed[3] = (short)floor;
-            _rf[0] = _rf[0] = _rf[2] = _rf[3] = (short)ceiling;
+            _rf[0] = _rf[1] = _rf[2] = _rf[3] = (short)ceiling;
             Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
         }
 
@@ -468,7 +468,8 @@ namespace TombLib.LevelData
 
         public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment)
         {
-            SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
+            if(increment != 0)
+                SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
         }
 
         public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false)

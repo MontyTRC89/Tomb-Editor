@@ -463,7 +463,7 @@ namespace TombEditor.Controls
                                     _toolHandler.Engage(e.X, e.Y, newBlockPicking, false, newRoom);
 
                                     if (!ShowPortals && !ShowAllRooms)
-                                        _editor.SendMessage("Parent is invisible.\nTurn on Draw Doors mode.", TombLib.Forms.PopupType.Info);
+                                        _editor.SendMessage("Parent is invisible. Turn on Draw Doors mode.", TombLib.Forms.PopupType.Info);
                                 }
                                 return;
                             }
@@ -720,7 +720,7 @@ namespace TombEditor.Controls
                                     currRoom.Resize(_editor.Level, resizeArea, resizeHeight[0], resizeHeight[1], operateOnFloor);
                                     EditorActions.MoveRooms(move, currRoom.Versions);
                                     if(_toolHandler.ReferenceRoom == _editor.SelectedRoom)
-                                        _editor.HighlightedSectors = new SectorSelection() { Area = resizeArea };
+                                        _editor.HighlightedSectors = new SectorSelection() { Area = _toolHandler.ReferenceRoom.LocalArea };
                                 }
                             }
                             else if (_editor.SelectedSectors.Valid)
