@@ -143,11 +143,9 @@ namespace TombEditor.Controls
             if (obj is Editor.ModeChangedEvent)
                 if (_editor.Mode == EditorMode.Map2D && (_editor.Configuration.Map2D_ShowTimes < 3)) // Show up to 3 times to increase likelyhood of the user noticing.
                 {
-                    _editor.SendMessage("Double click or press Alt + left click on the map to add a depth probe.\n" +
-                        "Double click or press Ctrl + left click on a depth probe to remove it.\n" +
-                        "\n" +
-                        "Press the middle mouse button to select multiple rooms or select connected rooms by double clicking.\n" +
-                        "The selection can be modified using Ctrl, Shift, Alt. To copy rooms, press Ctrl while moving.", PopupType.Info);
+                    _editor.SendMessage("Double click or Alt + click on the map to add or remove depth probe.\n" +
+                        "Click and drag on the emptiness to start selection by area.\n" +
+                        "The selection can be modified using Ctrl or Shift. To copy rooms, press Ctrl while moving.", PopupType.Info);
 
                     _editor.Configuration.Map2D_ShowTimes++;
                     _editor.ConfigurationChange();
@@ -258,18 +256,20 @@ namespace TombEditor.Controls
                     {
                         _roomMouseClicked = DoPicking(clickPos);
                         if (_roomMouseClicked == null)
-                            break;
-                        if (ModifierKeys != Keys.None || !_editor.SelectedRooms.Contains(_roomMouseClicked))
                         {
-                            _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
-                                new[] { _roomMouseClicked }, ModifierKeys));
+                            _editor.SelectedRooms = new[] { _editor.SelectedRoom };
+                            _selectionArea = new SelectionArea { _area = new Rectangle2(clickPos, clickPos) };
                         }
-                        _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
+                        else
+                        {
+                            if (ModifierKeys != Keys.None || !_editor.SelectedRooms.Contains(_roomMouseClicked))
+                            {
+                                _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
+                                    new[] { _roomMouseClicked }, ModifierKeys));
+                            }
+                            _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
+                        }
                     }
-                    break;
-
-                case MouseButtons.Middle:
-                    _selectionArea = new SelectionArea { _area = new Rectangle2(clickPos, clickPos) };
                     break;
 
                 case MouseButtons.Right:
@@ -357,12 +357,14 @@ namespace TombEditor.Controls
             {
                 case MouseButtons.Left:
                     if (_currentlyEditedDepthProbeIndex.HasValue)
-                    {// Move depth probe around
+                    {
+                        // Move depth probe around
                         _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = FromVisualCoord(e.Location);
                         Invalidate();
                     }
                     else if (_roomMouseClicked != null)
-                    { // Move room around
+                    { 
+                        // Move room around
                         if (ModifierKeys.HasFlag(Keys.Control))
                         {
                             _roomsToMove = null;
@@ -381,10 +383,7 @@ namespace TombEditor.Controls
                             Invalidate();
                         }
                     }
-                    break;
-
-                case MouseButtons.Middle:
-                    if (_selectionArea != null)
+                    else if (_selectionArea != null)
                     {
                         RectangleF oldArea = ToVisualCoord(_selectionArea._area);
                         _selectionArea._area.End = FromVisualCoord(e.Location);
