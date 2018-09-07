@@ -77,7 +77,7 @@ namespace TombLib.LevelData
         { }
 
         // Usually it's highly recommended to call FixupNeighborPortals afterwards, to fix neighboring portals.
-        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool useFloor = false)
+        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool? useFloor = false)
         {
             int numXSectors = area.Width + 1;
             int numZSectors = area.Height + 1;
@@ -98,8 +98,18 @@ namespace TombLib.LevelData
                 {
                     Block oldBlock = GetBlockTry(new VectorInt2(x, z) + offset);
                     newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
-                    if (oldBlock == null || newBlocks[x, z].Type == BlockType.BorderWall)
-                        newBlocks[x, z].Type = useFloor ? BlockType.Floor : BlockType.Wall;
+
+                    if (oldBlock == null || (useFloor.HasValue && newBlocks[x, z].Type == BlockType.BorderWall))
+                        newBlocks[x, z].Type = !useFloor.HasValue || useFloor.Value ? BlockType.Floor : BlockType.Wall;
+                    
+                    if(!useFloor.HasValue)
+                    {
+                        oldBlock.Raise(BlockVertical.Floor, floor);
+                        oldBlock.Raise(BlockVertical.Ed, floor);
+                        oldBlock.Raise(BlockVertical.Ceiling, ceiling);
+                        oldBlock.Raise(BlockVertical.Rf, ceiling);
+                    }
+
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         newBlocks[x, z].Type = BlockType.BorderWall;
@@ -704,6 +714,21 @@ namespace TombLib.LevelData
             }
 
             return slopeIsIllegal;
+        }
+
+        public bool CornerSelected(RectangleInt2 area)
+        {
+            // Check if one of the four corner is selected
+            var cornerSelected = false;
+            if (area.X0 == 0 && area.Y0 == 0 || area.X1 == 0 && area.Y1 == 0)
+                cornerSelected = true;
+            if (area.X0 == 0 && area.Y0 == NumZSectors - 1 || area.X1 == 0 && area.Y1 == NumZSectors - 1)
+                cornerSelected = true;
+            if (area.X0 == NumXSectors - 1 && area.Y0 == 0 || area.X1 == NumXSectors - 1 && area.Y1 == 0)
+                cornerSelected = true;
+            if (area.X0 == NumXSectors - 1 && area.Y0 == NumZSectors - 1 || area.X1 == NumXSectors - 1 && area.Y1 == NumZSectors - 1)
+                cornerSelected = true;
+            return cornerSelected;
         }
 
         public bool IsFaceDefined(int x, int z, BlockFace face)

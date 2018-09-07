@@ -178,7 +178,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = oldPoly.Index3;
-                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0xfe) >> 1);
+                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0x7c) >> 2);
                 poly.Texture = textureArea;
                 mesh.Polys.Add(poly);
             }
@@ -193,7 +193,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = 0;
-                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0xfe) >> 1);
+                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0x7c) >> 2);
                 poly.Texture = textureArea;
                 mesh.Polys.Add(poly);
             }

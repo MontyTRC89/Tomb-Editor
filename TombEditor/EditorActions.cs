@@ -187,7 +187,7 @@ namespace TombEditor
                             if (vertical == BlockVertical.Floor || vertical == BlockVertical.Ceiling)
                                 block.RaiseStepWise(vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                             else
-                                block.Raise(vertical, false, increment);
+                                block.Raise(vertical, increment, false);
                         }
                         else
                         {
@@ -393,7 +393,7 @@ namespace TombEditor
 
                     if (stepped)
                     {
-                        room.Blocks[w, h].Raise(vertical, false, (int)currentHeight);
+                        room.Blocks[w, h].Raise(vertical, (int)currentHeight, false);
                         room.Blocks[w, h].FixHeights();
                     }
                     else
@@ -1812,18 +1812,7 @@ namespace TombEditor
 
         public static void AddPortal(Room room, RectangleInt2 area, IWin32Window owner)
         {
-            // Check if one of the four corner is selected
-            var cornerSelected = false;
-            if (area.X0 == 0 && area.Y0 == 0 || area.X1 == 0 && area.Y1 == 0)
-                cornerSelected = true;
-            if (area.X0 == 0 && area.Y0 == room.NumZSectors - 1 || area.X1 == 0 && area.Y1 == room.NumZSectors - 1)
-                cornerSelected = true;
-            if (area.X0 == room.NumXSectors - 1 && area.Y0 == 0 || area.X1 == room.NumXSectors - 1 && area.Y1 == 0)
-                cornerSelected = true;
-            if (area.X0 == room.NumXSectors - 1 && area.Y0 == room.NumZSectors - 1 || area.X1 == room.NumXSectors - 1 && area.Y1 == room.NumZSectors - 1)
-                cornerSelected = true;
-
-            if (cornerSelected)
+            if (room.CornerSelected(area))
             {
                 _editor.SendMessage("You have selected one of the four room's corners.", PopupType.Error);
                 return;
@@ -2090,43 +2079,131 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void CreateRoomAboveOrBelow(Room room, SectorSelection selection, Func<Room, int> GetYOffset, short newRoomHeight, bool switchRoom = true)
+        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true)
         {
-            var clampedSelection = selection.ClampToRoom(room, true);
-            if (!clampedSelection.HasValue)
-                return; // We're inside border walls
-
-            int roomSizeX = room.NumXSectors;
-            int roomSizeZ = room.NumZSectors;
-            int roomPosX = 0;
-            int roomPosZ = 0;
-
-            if (!SectorSelection.IsEmpty(selection))
+            if (!SectorSelection.IsEmpty(selection) && !selection.Valid)
             {
-                if(!selection.Valid)
-                {
-                    _editor.SendMessage("Selection is invalid. Can't create new room.", PopupType.Error);
-                    return;
-                }
-
-                roomSizeX = clampedSelection.Value.Area.Size.X  + 3;
-                roomSizeZ = clampedSelection.Value.Area.Size.Y  + 3;
-                roomPosX  = clampedSelection.Value.Area.Start.X - 1;
-                roomPosZ  = clampedSelection.Value.Area.Start.Y - 1;
+                _editor.SendMessage("Selection is invalid. Can't create new room.", PopupType.Error);
+                return null;
             }
-            
-            // Create room
+
+            var clampedSelection = (SectorSelection.IsEmpty(selection) ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, PortalInstance.GetDirection(direction));
+            if (!clampedSelection.HasValue)
+            {
+                _editor.SendMessage("Can't create adjoining room. \nSelection is inside border walls.", PopupType.Error);
+                return null;
+            }
+
+            int roomSizeX, roomSizeY, roomSizeZ;
+            VectorInt3 roomPos;
+            RectangleInt2 portalArea;
+            var dirString = "";
+
+            int selectionRefPoint = 0;
+            if (direction == PortalDirection.WallPositiveZ)
+                selectionRefPoint = room.NumZSectors - 1;
+            else if (direction == PortalDirection.WallPositiveX)
+                selectionRefPoint = room.NumXSectors - 1;
+
+            switch (direction)
+            {
+                case PortalDirection.WallNegativeX:
+                case PortalDirection.WallPositiveX:
+                    if (!(clampedSelection.Value.Area.Start.X == selectionRefPoint || clampedSelection.Value.Area.End.X == selectionRefPoint))
+                    {
+                        _editor.SendMessage("Can't create horizontally adjoining room. \nSelect room border to attach it.", PopupType.Error);
+                        return null; // Don't create room aside if selection doesn't touch border wall
+                    }
+
+                    // Inflate small selection to define min/max height later based on neighbor sector heights
+                    if (clampedSelection.Value.Area.Size.X == 0)
+                    {
+                        clampedSelection = new SectorSelection() { Area = clampedSelection.Value.Area.Inflate(1, 0) };
+                        clampedSelection = clampedSelection.Value.ClampToRoom(room);
+                    }
+
+                    roomSizeX = roomDepth + 2;
+                    roomSizeY = room.GetHighestCorner(clampedSelection.Value.Area) - room.GetLowestCorner(clampedSelection.Value.Area);
+                    roomSizeZ = clampedSelection.Value.Area.Size.Y + 3;
+                    roomPos   = room.Position + new VectorInt3(direction == PortalDirection.WallNegativeX ? -roomDepth : room.NumXSectors - 2,
+                                                               room.GetLowestCorner(clampedSelection.Value.Area),
+                                                               clampedSelection.Value.Area.Start.Y - 1);
+                    // Position portal and assign dir name
+                    if (direction == PortalDirection.WallNegativeX)
+                    {
+                        portalArea = new RectangleInt2(roomSizeX - 1, 1, roomSizeX - 1, roomSizeZ - 2);
+                        dirString = "left";
+                    }
+                    else
+                    {
+                        portalArea = new RectangleInt2(0, 1, 0, roomSizeZ - 2);
+                        dirString = "right";
+                    }
+                    break;
+
+                case PortalDirection.WallNegativeZ:
+                case PortalDirection.WallPositiveZ:
+                    if (!(clampedSelection.Value.Area.Start.Y == selectionRefPoint || clampedSelection.Value.Area.End.Y == selectionRefPoint))
+                    {
+                        _editor.SendMessage("Can't create horizontally adjoining room. \nSelect room border to attach it.", PopupType.Error);
+                        return null; // Don't create room aside if selection doesn't touch border wall
+                    }
+
+                    // Inflate small selection to define min/max height later based on neighbor sector heights
+                    if (clampedSelection.Value.Area.Size.Y == 0)
+                    {
+                        clampedSelection = new SectorSelection() { Area = clampedSelection.Value.Area.Inflate(0, 1) };
+                        clampedSelection = clampedSelection.Value.ClampToRoom(room);
+                    }
+
+                    roomSizeX = clampedSelection.Value.Area.Size.X + 3;
+                    roomSizeY = room.GetHighestCorner(clampedSelection.Value.Area) - room.GetLowestCorner(clampedSelection.Value.Area);
+                    roomSizeZ = roomDepth + 2;
+                    roomPos   = room.Position + new VectorInt3(clampedSelection.Value.Area.Start.X - 1,
+                                                               room.GetLowestCorner(clampedSelection.Value.Area),
+                                                               direction == PortalDirection.WallNegativeZ ? -roomDepth : room.NumZSectors - 2);
+                    // Position portal and assign dir name
+                    if (direction == PortalDirection.WallNegativeZ)
+                    {
+                        portalArea = new RectangleInt2(1, roomSizeZ - 1, roomSizeX - 2, roomSizeZ - 1);
+                        dirString = "back";
+                    }
+                    else
+                    {
+                        portalArea = new RectangleInt2(1, 0, roomSizeX - 2, 0);
+                        dirString = "in front";
+                    }
+                    break;
+                    
+                case PortalDirection.Floor:
+                case PortalDirection.Ceiling:
+                default:
+                    roomSizeX = clampedSelection.Value.Area.Size.X + 3;
+                    roomSizeY = roomDepth;
+                    roomSizeZ = clampedSelection.Value.Area.Size.Y + 3;
+                    roomPos = room.Position + new VectorInt3(clampedSelection.Value.Area.Start.X - 1,
+                                                             direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) - roomDepth : room.GetHighestCorner(selection.Area),
+                                                             clampedSelection.Value.Area.Start.Y - 1);
+                    portalArea = new RectangleInt2(1, 1, roomSizeX - 2, roomSizeZ - 2);
+                    dirString = direction == PortalDirection.Floor ? "below" : "above";
+
+                    // Reset parent floor or ceiling to adjoin new portal
+                    FlattenRoomArea(room, selection.Area);
+                    break;
+            }
+
+            // Create room and attach portal
             var newRoom = new Room(_editor.Level, roomSizeX, roomSizeZ, _editor.Level.Settings.DefaultAmbientLight,
-                                   "", newRoomHeight);
-            newRoom.Position = room.Position + new VectorInt3(roomPosX, GetYOffset(newRoom), roomPosZ);
-            newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
-            newRoom.AddObject(_editor.Level, new PortalInstance(newRoom.LocalArea.Inflate(-1), newRoom.Position.Y < room.Position.Y ? PortalDirection.Ceiling : PortalDirection.Floor, room));
-            _editor.Level.AssignRoomToFree(newRoom);
+                                   "", (short)roomSizeY);
+            int roomNumber = _editor.Level.AssignRoomToFree(newRoom);
+            newRoom.Position = roomPos;
+            newRoom.AddObject(_editor.Level, new PortalInstance(portalArea, PortalInstance.GetOppositeDirection(direction), room));
+            newRoom.Name = "Room " + roomNumber + " (digged " + dirString + ")";
             _editor.RoomListChange();
 
             // Build the geometry of the new room
             Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
-            
+
             if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
                 _editor.SelectedRoom = newRoom; //Don't center
             else
@@ -2134,8 +2211,31 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
                 _editor.RoomSectorPropertiesChange(newRoom);
             }
+
+            return newRoom;
         }
 
+        public static void FlattenRoomArea(Room room, RectangleInt2 area, int? height = null, bool ceiling = false, bool includeWalls = false, bool rebuild = false)
+        {
+            if (!height.HasValue)
+                height = ceiling ? room.GetHighestCorner(area) : room.GetLowestCorner(area);
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type == BlockType.Wall))
+                    {
+                        
+                        if (ceiling && room.Blocks[x, z].CeilingPortal == null)
+                            room.Blocks[x, z].Ceiling.SetHeight(height.Value);
+                        else if(!ceiling && room.Blocks[x, z].FloorPortal == null)
+                            room.Blocks[x, z].Floor.SetHeight(height.Value);
+                    }
+                }
+
+            if(rebuild)
+                SmartBuildGeometry(room, area);
+        }
 
         public static void MergeRoomsHorizontally(IEnumerable<Room> rooms, IWin32Window owner)
         {
