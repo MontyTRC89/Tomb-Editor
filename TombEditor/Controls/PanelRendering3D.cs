@@ -925,7 +925,7 @@ namespace TombEditor.Controls
                                 EditorActions.RotateSectors(_editor.SelectedRoom, new RectangleInt2(pos, pos), belongsToFloor);
                                 return;
                             }
-                            else if (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool >= EditorToolType.Drag)
+                            else if (_editor.Tool.Tool == EditorToolType.Selection || (_editor.Tool.Tool >= EditorToolType.Drag && _editor.Tool.Tool < EditorToolType.PortalDigger))
                                 if (!_doSectorSelection && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
                                     // Rotate the arrows
                                     if (ModifierKeys.HasFlag(Keys.Control))
