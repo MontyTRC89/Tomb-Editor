@@ -716,6 +716,30 @@ namespace TombLib.LevelData
             return slopeIsIllegal;
         }
 
+        public bool IsAnyPortal(PortalDirection direction, RectangleInt2 area)
+        {
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    switch(direction)
+                    {
+                        case PortalDirection.Floor:
+                            if (Blocks[x, z].FloorPortal != null)
+                                return true;
+                            continue;
+                        case PortalDirection.Ceiling:
+                            if (Blocks[x, z].CeilingPortal != null)
+                                return true;
+                            continue;
+                        default:
+                            if (Blocks[x, z].WallPortal != null)
+                                return true;
+                            continue;
+                    }
+                }
+            return false;
+        }
+
         public bool CornerSelected(RectangleInt2 area)
         {
             // Check if one of the four corner is selected
