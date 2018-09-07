@@ -2143,12 +2143,12 @@ namespace TombEditor
                     if (direction == PortalDirection.WallNegativeX)
                     {
                         portalArea = new RectangleInt2(roomSizeX - 1, 1, roomSizeX - 1, roomSizeZ - 2);
-                        dirString = "on the left of ";
+                        dirString = "left";
                     }
                     else
                     {
                         portalArea = new RectangleInt2(0, 1, 0, roomSizeZ - 2);
-                        dirString = "on the right of ";
+                        dirString = "right";
                     }
                     break;
 
@@ -2177,12 +2177,12 @@ namespace TombEditor
                     if (direction == PortalDirection.WallNegativeZ)
                     {
                         portalArea = new RectangleInt2(1, roomSizeZ - 1, roomSizeX - 2, roomSizeZ - 1);
-                        dirString = "behind ";
+                        dirString = "back";
                     }
                     else
                     {
                         portalArea = new RectangleInt2(1, 0, roomSizeX - 2, 0);
-                        dirString = "in front of ";
+                        dirString = "in front";
                     }
                     break;
                     
@@ -2196,17 +2196,17 @@ namespace TombEditor
                                                              direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) - roomDepth : room.GetHighestCorner(selection.Area),
                                                              clampedSelection.Value.Area.Start.Y - 1);
                     portalArea = new RectangleInt2(1, 1, roomSizeX - 2, roomSizeZ - 2);
-                    dirString = direction == PortalDirection.Floor ? "below " : "above ";
+                    dirString = direction == PortalDirection.Floor ? "below" : "above";
                     break;
             }
 
             // Create room and attach portal
             var newRoom = new Room(_editor.Level, roomSizeX, roomSizeZ, _editor.Level.Settings.DefaultAmbientLight,
                                    "", (short)roomSizeY);
+            int roomNumber = _editor.Level.AssignRoomToFree(newRoom);
             newRoom.Position = roomPos;
-            newRoom.Name = "Digged room " + dirString + room.Name;
             newRoom.AddObject(_editor.Level, new PortalInstance(portalArea, PortalInstance.GetOppositeDirection(direction), room));
-            _editor.Level.AssignRoomToFree(newRoom);
+            newRoom.Name = "Room " + roomNumber + " (digged " + dirString + ")";
             _editor.RoomListChange();
 
             // Build the geometry of the new room
