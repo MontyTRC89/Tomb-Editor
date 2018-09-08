@@ -120,7 +120,6 @@
             this.averageCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flattenFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flattenCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.gridWallsIn3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridWallsIn5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1131,7 +1130,6 @@
             this.averageCeilingToolStripMenuItem,
             this.flattenFloorToolStripMenuItem,
             this.flattenCeilingToolStripMenuItem,
-            this.toolStripSeparator2,
             this.toolStripMenuSeparator13,
             this.gridWallsIn3ToolStripMenuItem,
             this.gridWallsIn5ToolStripMenuItem});
@@ -1273,14 +1271,6 @@
             this.flattenCeilingToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.flattenCeilingToolStripMenuItem.Tag = "FlattenCeiling";
             this.flattenCeilingToolStripMenuItem.Text = "FlattenCeiling";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
             // 
             // toolStripMenuSeparator13
             // 
@@ -1900,7 +1890,6 @@
         private System.Windows.Forms.ToolStripMenuItem moveRoomRightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveRoomForwardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveRoomBackToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem newRoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newRoomUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newRoomDownToolStripMenuItem;
