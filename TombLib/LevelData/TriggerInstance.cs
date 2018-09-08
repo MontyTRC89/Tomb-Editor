@@ -113,6 +113,9 @@ namespace TombLib.LevelData
             : base(area)
         { }
 
+        public static TriggerInstance Default = new TriggerInstance(RectangleInt2.Zero)
+        { OneShot = false, CodeBits = 0x1F, Timer = new TriggerParameterUshort(0) };
+
         public override string ToString()
         {
             string output = TriggerType + " ";

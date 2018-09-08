@@ -2005,7 +2005,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void Flatten(Room room, RectangleInt2 area, BlockVertical vertical)
+        public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical)
         {
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
@@ -2194,7 +2194,7 @@ namespace TombEditor
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
-                    FlattenRoomArea(room, selection.Area);
+                    FlattenRoomArea(room, clampedSelection.Value.Area);
                     break;
             }
 

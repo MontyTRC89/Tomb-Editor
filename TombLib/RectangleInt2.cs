@@ -6,6 +6,7 @@ namespace TombLib
     public struct RectangleInt2 : IEquatable<RectangleInt2>
     {
         public static readonly RectangleInt2 MaxMin = new RectangleInt2(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
+        public static readonly RectangleInt2 Zero = new RectangleInt2(0, 0, 0, 0);
 
         public VectorInt2 Start;
         public VectorInt2 End;

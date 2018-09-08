@@ -1039,18 +1039,18 @@ namespace TombEditor
                 EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
             });
 
-            AddCommand("FlattenFloor", "Flatten floor", CommandType.Geometry, delegate (CommandArgs args)
+            AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.Flatten(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Floor);
+                EditorActions.AverageSectors(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Floor);
             });
 
-            AddCommand("FlattenCeiling", "Flatten ceiling", CommandType.Geometry, delegate (CommandArgs args)
+            AddCommand("AverageCeiling", "Average ceiling", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.Flatten(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Ceiling);
+                EditorActions.AverageSectors(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Ceiling);
             });
 
             AddCommand("GridWallsIn3", "Grid walls in 3", CommandType.Geometry, delegate (CommandArgs args)
@@ -1498,13 +1498,13 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("FlattenFloorToMin", "Flatten floor area to minimum", CommandType.Geometry, delegate (CommandArgs args)
+            AddCommand("FlattenFloor", "Flatten floor", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
                     EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, false, false, true);
             });
 
-            AddCommand("FlattenCeilingToMin", "Flatten ceiling area to minimum", CommandType.Geometry, delegate (CommandArgs args)
+            AddCommand("FlattenCeiling", "Flatten ceiling", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
                     EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, false, true);

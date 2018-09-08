@@ -279,7 +279,7 @@ namespace TombLib.LevelData.Compilers
             if (firstTrigger != null)
             {
                 // First, we search if a special trigger exists
-                TriggerInstance found = triggers.FirstOrDefault(t => t.TriggerType != TriggerType.Trigger) ?? firstTrigger;
+                TriggerInstance found = triggers.FirstOrDefault(t => t.TargetType == TriggerTargetType.Object) ?? TriggerInstance.Default;
                 var sortedTriggers = new List<TriggerInstance> { found };
                 sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
 
