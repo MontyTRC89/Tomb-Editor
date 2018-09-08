@@ -534,7 +534,7 @@ namespace TombLib.LevelData
                     {
                         if (autoSwitch)
                         {
-                            Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
+                            Rotate(vertical.IsOnFloor(), 2);
                             Raise(vertical, increment, !diagonalStep);
                         }
                         return;
@@ -605,21 +605,15 @@ namespace TombLib.LevelData
         }
 
         // @FIXME: Fallback to rotate function, because I can't fix TRTombLevBauer's voodoo Transform() code.
-        public void Rotate(bool? floor = null, int iterations = 1)
+        public void Rotate(bool floor = true, int iterations = 1)
         {
             if (iterations < 1 || iterations > 3)
                 return;
 
-            if(!floor.HasValue)
-            {
-                Rotate(true,  iterations);
-                Rotate(false, iterations);
-                return;
-            }
-
             for (int i = 0; i < iterations; i++)
             {
-                if (floor.Value && Floor.DiagonalSplit != DiagonalSplit.None)
+                if ((floor || Type == BlockType.Wall) &&
+                     Floor.DiagonalSplit != DiagonalSplit.None)
                 {
                     if (Floor.DiagonalSplit == DiagonalSplit.XnZp)
                         Floor.DiagonalSplit = DiagonalSplit.XpZp;
@@ -629,23 +623,28 @@ namespace TombLib.LevelData
                         Floor.DiagonalSplit = DiagonalSplit.XnZn;
                     else if (Floor.DiagonalSplit == DiagonalSplit.XnZn)
                         Floor.DiagonalSplit = DiagonalSplit.XnZp;
+
+                    Floor.SplitDirectionToggled = !Floor.SplitDirectionToggled;
                 }
 
-                if (!floor.Value && Floor.DiagonalSplit != DiagonalSplit.None)
+                if ((!floor || Type == BlockType.Wall) &&
+                     Ceiling.DiagonalSplit != DiagonalSplit.None)
                 {
-                    if (Floor.DiagonalSplit == DiagonalSplit.XnZp)
-                        Floor.DiagonalSplit = DiagonalSplit.XpZp;
-                    else if (Floor.DiagonalSplit == DiagonalSplit.XpZp)
-                        Floor.DiagonalSplit = DiagonalSplit.XpZn;
-                    else if (Floor.DiagonalSplit == DiagonalSplit.XpZn)
-                        Floor.DiagonalSplit = DiagonalSplit.XnZn;
-                    else if (Floor.DiagonalSplit == DiagonalSplit.XnZn)
-                        Floor.DiagonalSplit = DiagonalSplit.XnZp;
+                    if (Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
+                        Ceiling.DiagonalSplit = DiagonalSplit.XpZp;
+                    else if (Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
+                        Ceiling.DiagonalSplit = DiagonalSplit.XpZn;
+                    else if (Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
+                        Ceiling.DiagonalSplit = DiagonalSplit.XnZn;
+                    else if (Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
+                        Ceiling.DiagonalSplit = DiagonalSplit.XnZp;
+
+                    Ceiling.SplitDirectionToggled = !Ceiling.SplitDirectionToggled;
                 }
 
                 short[] swapFace = new short[4];
 
-                if (floor.Value)
+                if (floor || Type == BlockType.Wall)
                 {
                     swapFace[0] = Floor.XnZn;
                     swapFace[1] = Floor.XnZp;
@@ -667,7 +666,8 @@ namespace TombLib.LevelData
                     _ed[2] = swapFace[2];
                     _ed[3] = swapFace[3];
                 }
-                else
+
+                if (!floor || Type == BlockType.Wall)
                 {
                     swapFace[0] = Ceiling.XnZn;
                     swapFace[1] = Ceiling.XnZp;
@@ -689,7 +689,7 @@ namespace TombLib.LevelData
                     _rf[2] = swapFace[2];
                     _rf[3] = swapFace[3];
                 }
-                //FixHeights(floor.Value ? BlockVertical.Floor : BlockVertical.Ceiling);
+                FixHeights(floor ? BlockVertical.Floor : BlockVertical.Ceiling);
             }
         }
 
