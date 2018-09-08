@@ -46,10 +46,10 @@
             this.toolBowl = new System.Windows.Forms.ToolStripButton();
             this.toolPyramid = new System.Windows.Forms.ToolStripButton();
             this.toolTerrain = new System.Windows.Forms.ToolStripButton();
-            this.toolPortalDigger = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolPortalDigger = new System.Windows.Forms.ToolStripButton();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -89,7 +89,7 @@
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.toolStrip.Size = new System.Drawing.Size(28, 460);
+            this.toolStrip.Size = new System.Drawing.Size(28, 453);
             this.toolStrip.TabIndex = 3;
             // 
             // toolSelection
@@ -312,19 +312,6 @@
             this.toolTerrain.ToolTipText = "Terrain";
             this.toolTerrain.Click += new System.EventHandler(this.toolTerrain_Click);
             // 
-            // toolPortalDigger
-            // 
-            this.toolPortalDigger.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolPortalDigger.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolPortalDigger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolPortalDigger.Image = global::TombEditor.Properties.Resources.toolbox_PortalDigger;
-            this.toolPortalDigger.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolPortalDigger.Margin = new System.Windows.Forms.Padding(1);
-            this.toolPortalDigger.Name = "toolPortalDigger";
-            this.toolPortalDigger.Size = new System.Drawing.Size(24, 24);
-            this.toolPortalDigger.ToolTipText = "Portal Digger";
-            this.toolPortalDigger.Click += new System.EventHandler(this.toolPortalDigger_Click);
-            // 
             // toolEraser
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -359,6 +346,19 @@
             this.toolSeparator2.Name = "toolSeparator2";
             this.toolSeparator2.Size = new System.Drawing.Size(23, 6);
             // 
+            // toolPortalDigger
+            // 
+            this.toolPortalDigger.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolPortalDigger.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolPortalDigger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolPortalDigger.Image = global::TombEditor.Properties.Resources.toolbox_PortalDigger;
+            this.toolPortalDigger.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolPortalDigger.Margin = new System.Windows.Forms.Padding(1);
+            this.toolPortalDigger.Name = "toolPortalDigger";
+            this.toolPortalDigger.Size = new System.Drawing.Size(23, 20);
+            this.toolPortalDigger.ToolTipText = "Portal Digger";
+            this.toolPortalDigger.Click += new System.EventHandler(this.toolPortalDigger_Click);
+            // 
             // toolUVFixer
             // 
             this.toolUVFixer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -381,7 +381,7 @@
             this.Controls.Add(this.toolStrip);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolBox";
-            this.Size = new System.Drawing.Size(28, 460);
+            this.Size = new System.Drawing.Size(28, 453);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
