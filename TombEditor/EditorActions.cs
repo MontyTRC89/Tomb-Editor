@@ -413,8 +413,8 @@ namespace TombEditor
             bool reverseX = arrow == ArrowType.EdgeW || arrow == ArrowType.CornerSW || arrow == ArrowType.CornerNW;
             bool reverseZ = arrow == ArrowType.EdgeS || arrow == ArrowType.CornerSW || arrow == ArrowType.CornerSE;
 
-            float smoothGrainX = (float)(allFace || step90 && !turn90 ? Math.PI : Math.PI * 0.5f) / (area.Width + 1);
-            float smoothGrainZ = (float)(allFace || step90 && turn90 ? Math.PI : Math.PI * 0.5f) / (area.Height + 1);
+            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : Math.PI * 0.5f) / (area.Width + 1);
+            float smoothGrainZ = (float)(allFace || (step90 &&  turn90) ? Math.PI : Math.PI * 0.5f) / (area.Height + 1);
 
             for (int w = area.X0, x = 0; w < area.X1 + 2; w++, x++)
                 for (int h = area.Y0, z = 0; h != area.Y1 + 2; h++, z++)
@@ -1510,7 +1510,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XpZp = maxHeight;
                             room.Blocks[x, z].Floor.XnZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XnZp;
-                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                            if (room.Blocks[x, z].Type == BlockType.Wall)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XnZp;
                         }
 
@@ -1519,7 +1519,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XnZp = maxHeight;
                             room.Blocks[x, z].Floor.XpZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XpZp;
-                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                            if (room.Blocks[x, z].Type == BlockType.Wall)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XpZp;
                         }
 
@@ -1528,7 +1528,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XpZp = maxHeight;
                             room.Blocks[x, z].Floor.XnZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XpZn;
-                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                            if (room.Blocks[x, z].Type == BlockType.Wall)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XpZn;
                         }
 
@@ -1537,7 +1537,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XnZp = maxHeight;
                             room.Blocks[x, z].Floor.XpZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XnZn;
-                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                            if (room.Blocks[x, z].Type == BlockType.Wall)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XnZn;
                         }
 
@@ -2967,7 +2967,7 @@ namespace TombEditor
 
             // Is there a prj file to open?
             string prjFile = files.FirstOrDefault(file => file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase));
-            if (prjFile != null)
+            if (!string.IsNullOrEmpty(prjFile))
             {
                 OpenLevelPrj(owner, prjFile);
                 return files.Length - 1;
@@ -2975,7 +2975,7 @@ namespace TombEditor
 
             // Is there a prj2 file to open?
             string prj2File = files.FirstOrDefault(file => file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase));
-            if (prjFile != null)
+            if (!string.IsNullOrEmpty(prjFile))
             {
                 OpenLevel(owner, prj2File);
                 return files.Length - 1;

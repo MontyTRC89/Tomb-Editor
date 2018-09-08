@@ -543,20 +543,14 @@ namespace TombEditor.Forms
                 targetSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
 
                 if (genType == AnimGenerationType.Clone)
-                {
                     targetSet = targetSet.Clone(); // Make a copy and use it for clone type
-
-                    // Only generate new name if we clone current set
-                    if (genType == AnimGenerationType.Clone && string.IsNullOrEmpty(targetSet.Name))
-                        targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
-                }
-                else if (genType == AnimGenerationType.AddFrames)
-                {
-                    if (targetSet.Frames.Count > 0)
-                        startIndex = texturesDataGridView.CurrentRow.Index + 1; // Insert frames at selection point
-                }
+                else if (genType == AnimGenerationType.AddFrames && targetSet.Frames.Count > 0)
+                    startIndex = texturesDataGridView.CurrentRow.Index + 1; // Insert frames at selection point
                 else if (genType == AnimGenerationType.Replace)
                     targetSet.Frames.Clear();
+
+                if(string.IsNullOrEmpty(targetSet.Name))
+                    targetSet.Name = "Animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1);
             }
             else
                 targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
