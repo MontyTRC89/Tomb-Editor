@@ -51,8 +51,6 @@
             this.mirrorRoomsOnXAxisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mirrorRoomsOnZAxisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.newRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cropRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mergeRoomsHorizontallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,14 +102,13 @@
             this.sharpRandomCeilingUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sharpRandomCeilingDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.averageFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.averageCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flattenFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flattenCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.gridWallsIn3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridWallsIn5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.wholeRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.wholeRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -156,8 +153,21 @@
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.flattenFloorToMinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flattenCeilingToMinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.moveRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveRoomLeftToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wholeRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wholeRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveRoomRightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveRoomForwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveRoomBackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomLeftToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomRightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomFrontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newRoomBackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -455,9 +465,9 @@
             this.rotateRoomsCountercockwiseToolStripMenuItem,
             this.mirrorRoomsOnXAxisToolStripMenuItem,
             this.mirrorRoomsOnZAxisToolStripMenuItem,
+            this.moveRoomsToolStripMenuItem,
             this.toolStripMenuSeparator5,
-            this.newRoomUpToolStripMenuItem,
-            this.newRoomDownToolStripMenuItem,
+            this.newRoomToolStripMenuItem,
             this.cropRoomToolStripMenuItem,
             this.splitRoomToolStripMenuItem,
             this.mergeRoomsHorizontallyToolStripMenuItem,
@@ -551,26 +561,6 @@
             this.toolStripMenuSeparator5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuSeparator5.Name = "toolStripMenuSeparator5";
             this.toolStripMenuSeparator5.Size = new System.Drawing.Size(240, 6);
-            // 
-            // newRoomUpToolStripMenuItem
-            // 
-            this.newRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.newRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newRoomUpToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_NewRoomUp_16;
-            this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
-            this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.newRoomUpToolStripMenuItem.Tag = "NewRoomUp";
-            this.newRoomUpToolStripMenuItem.Text = "NewRoomUp";
-            // 
-            // newRoomDownToolStripMenuItem
-            // 
-            this.newRoomDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.newRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newRoomDownToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_NewRoomDown_16;
-            this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
-            this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.newRoomDownToolStripMenuItem.Tag = "NewRoomDown";
-            this.newRoomDownToolStripMenuItem.Text = "NewRoomDown";
             // 
             // cropRoomToolStripMenuItem
             // 
@@ -999,16 +989,14 @@
             this.sharpRandomCeilingUpToolStripMenuItem,
             this.sharpRandomCeilingDownToolStripMenuItem,
             this.toolStripMenuSeparator12,
+            this.averageFloorToolStripMenuItem,
+            this.averageCeilingToolStripMenuItem,
             this.flattenFloorToolStripMenuItem,
             this.flattenCeilingToolStripMenuItem,
-            this.flattenFloorToMinToolStripMenuItem,
-            this.flattenCeilingToMinToolStripMenuItem,
+            this.toolStripSeparator2,
             this.toolStripMenuSeparator13,
             this.gridWallsIn3ToolStripMenuItem,
-            this.gridWallsIn5ToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.wholeRoomUpToolStripMenuItem,
-            this.wholeRoomDownToolStripMenuItem});
+            this.gridWallsIn5ToolStripMenuItem});
             this.transformToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
             this.transformToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
@@ -1110,11 +1098,30 @@
             this.toolStripMenuSeparator12.Name = "toolStripMenuSeparator12";
             this.toolStripMenuSeparator12.Size = new System.Drawing.Size(226, 6);
             // 
+            // averageFloorToolStripMenuItem
+            // 
+            this.averageFloorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.averageFloorToolStripMenuItem.Enabled = false;
+            this.averageFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.averageFloorToolStripMenuItem.Name = "averageFloorToolStripMenuItem";
+            this.averageFloorToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.averageFloorToolStripMenuItem.Tag = "AverageFloor";
+            this.averageFloorToolStripMenuItem.Text = "AverageFloor";
+            // 
+            // averageCeilingToolStripMenuItem
+            // 
+            this.averageCeilingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.averageCeilingToolStripMenuItem.Enabled = false;
+            this.averageCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.averageCeilingToolStripMenuItem.Name = "averageCeilingToolStripMenuItem";
+            this.averageCeilingToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.averageCeilingToolStripMenuItem.Tag = "AverageCeiling";
+            this.averageCeilingToolStripMenuItem.Text = "AverageCeiling";
+            // 
             // flattenFloorToolStripMenuItem
             // 
             this.flattenFloorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.flattenFloorToolStripMenuItem.Enabled = false;
-            this.flattenFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.flattenFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.flattenFloorToolStripMenuItem.Name = "flattenFloorToolStripMenuItem";
             this.flattenFloorToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.flattenFloorToolStripMenuItem.Tag = "FlattenFloor";
@@ -1123,8 +1130,7 @@
             // flattenCeilingToolStripMenuItem
             // 
             this.flattenCeilingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.flattenCeilingToolStripMenuItem.Enabled = false;
-            this.flattenCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.flattenCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.flattenCeilingToolStripMenuItem.Name = "flattenCeilingToolStripMenuItem";
             this.flattenCeilingToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.flattenCeilingToolStripMenuItem.Tag = "FlattenCeiling";
@@ -1157,32 +1163,6 @@
             this.gridWallsIn5ToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.gridWallsIn5ToolStripMenuItem.Tag = "GridWallsIn5";
             this.gridWallsIn5ToolStripMenuItem.Text = "GridWallsIn5";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
-            // 
-            // wholeRoomUpToolStripMenuItem
-            // 
-            this.wholeRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.wholeRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.wholeRoomUpToolStripMenuItem.Name = "wholeRoomUpToolStripMenuItem";
-            this.wholeRoomUpToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.wholeRoomUpToolStripMenuItem.Tag = "MoveRoomUp";
-            this.wholeRoomUpToolStripMenuItem.Text = "MoveRoomUp";
-            // 
-            // wholeRoomDownToolStripMenuItem
-            // 
-            this.wholeRoomDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.wholeRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.wholeRoomDownToolStripMenuItem.Name = "wholeRoomDownToolStripMenuItem";
-            this.wholeRoomDownToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.wholeRoomDownToolStripMenuItem.Tag = "MoveRoomDown";
-            this.wholeRoomDownToolStripMenuItem.Text = "MoveRoomDown";
             // 
             // toolStripMenuItem4
             // 
@@ -1602,23 +1582,151 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
-            // flattenFloorToMinToolStripMenuItem
+            // toolStripSeparator2
             // 
-            this.flattenFloorToMinToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.flattenFloorToMinToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.flattenFloorToMinToolStripMenuItem.Name = "flattenFloorToMinToolStripMenuItem";
-            this.flattenFloorToMinToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.flattenFloorToMinToolStripMenuItem.Tag = "FlattenFloorToMin";
-            this.flattenFloorToMinToolStripMenuItem.Text = "FlattenFloorToMin";
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
             // 
-            // flattenCeilingToMinToolStripMenuItem
+            // moveRoomsToolStripMenuItem
             // 
-            this.flattenCeilingToMinToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.flattenCeilingToMinToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.flattenCeilingToMinToolStripMenuItem.Name = "flattenCeilingToMinToolStripMenuItem";
-            this.flattenCeilingToMinToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.flattenCeilingToMinToolStripMenuItem.Tag = "FlattenCeilingToMin";
-            this.flattenCeilingToMinToolStripMenuItem.Text = "FlattenCeilingToMin";
+            this.moveRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveRoomsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.wholeRoomUpToolStripMenuItem,
+            this.wholeRoomDownToolStripMenuItem,
+            this.moveRoomLeftToolStripMenuItem,
+            this.moveRoomRightToolStripMenuItem,
+            this.moveRoomForwardToolStripMenuItem,
+            this.moveRoomBackToolStripMenuItem});
+            this.moveRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveRoomsToolStripMenuItem.Name = "moveRoomsToolStripMenuItem";
+            this.moveRoomsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.moveRoomsToolStripMenuItem.Text = "Move rooms";
+            // 
+            // moveRoomLeftToolStripMenuItem
+            // 
+            this.moveRoomLeftToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveRoomLeftToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveRoomLeftToolStripMenuItem.Name = "moveRoomLeftToolStripMenuItem";
+            this.moveRoomLeftToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.moveRoomLeftToolStripMenuItem.Tag = "MoveRoomLeft";
+            this.moveRoomLeftToolStripMenuItem.Text = "MoveRoomLeft";
+            // 
+            // wholeRoomUpToolStripMenuItem
+            // 
+            this.wholeRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.wholeRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.wholeRoomUpToolStripMenuItem.Name = "wholeRoomUpToolStripMenuItem";
+            this.wholeRoomUpToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.wholeRoomUpToolStripMenuItem.Tag = "MoveRoomUp";
+            this.wholeRoomUpToolStripMenuItem.Text = "MoveRoomUp";
+            // 
+            // wholeRoomDownToolStripMenuItem
+            // 
+            this.wholeRoomDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.wholeRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.wholeRoomDownToolStripMenuItem.Name = "wholeRoomDownToolStripMenuItem";
+            this.wholeRoomDownToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.wholeRoomDownToolStripMenuItem.Tag = "MoveRoomDown";
+            this.wholeRoomDownToolStripMenuItem.Text = "MoveRoomDown";
+            // 
+            // moveRoomRightToolStripMenuItem
+            // 
+            this.moveRoomRightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveRoomRightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveRoomRightToolStripMenuItem.Name = "moveRoomRightToolStripMenuItem";
+            this.moveRoomRightToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.moveRoomRightToolStripMenuItem.Tag = "MoveRoomRight";
+            this.moveRoomRightToolStripMenuItem.Text = "MoveRoomRight";
+            // 
+            // moveRoomForwardToolStripMenuItem
+            // 
+            this.moveRoomForwardToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveRoomForwardToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveRoomForwardToolStripMenuItem.Name = "moveRoomForwardToolStripMenuItem";
+            this.moveRoomForwardToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.moveRoomForwardToolStripMenuItem.Tag = "MoveRoomForward";
+            this.moveRoomForwardToolStripMenuItem.Text = "MoveRoomForward";
+            // 
+            // moveRoomBackToolStripMenuItem
+            // 
+            this.moveRoomBackToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveRoomBackToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveRoomBackToolStripMenuItem.Name = "moveRoomBackToolStripMenuItem";
+            this.moveRoomBackToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.moveRoomBackToolStripMenuItem.Tag = "MoveRoomBack";
+            this.moveRoomBackToolStripMenuItem.Text = "MoveRoomBack";
+            // 
+            // newRoomToolStripMenuItem
+            // 
+            this.newRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newRoomUpToolStripMenuItem,
+            this.newRoomDownToolStripMenuItem,
+            this.newRoomLeftToolStripMenuItem,
+            this.newRoomRightToolStripMenuItem,
+            this.newRoomFrontToolStripMenuItem,
+            this.newRoomBackToolStripMenuItem});
+            this.newRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomToolStripMenuItem.Name = "newRoomToolStripMenuItem";
+            this.newRoomToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.newRoomToolStripMenuItem.Text = "New room";
+            // 
+            // newRoomUpToolStripMenuItem
+            // 
+            this.newRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
+            this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newRoomUpToolStripMenuItem.Tag = "NewRoomUp";
+            this.newRoomUpToolStripMenuItem.Text = "NewRoomUp";
+            // 
+            // newRoomDownToolStripMenuItem
+            // 
+            this.newRoomDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
+            this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newRoomDownToolStripMenuItem.Tag = "NewRoomDown";
+            this.newRoomDownToolStripMenuItem.Text = "NewRoomDown";
+            // 
+            // newRoomLeftToolStripMenuItem
+            // 
+            this.newRoomLeftToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomLeftToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomLeftToolStripMenuItem.Name = "newRoomLeftToolStripMenuItem";
+            this.newRoomLeftToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newRoomLeftToolStripMenuItem.Tag = "NewRoomLeft";
+            this.newRoomLeftToolStripMenuItem.Text = "NewRoomLeft";
+            // 
+            // newRoomRightToolStripMenuItem
+            // 
+            this.newRoomRightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomRightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomRightToolStripMenuItem.Name = "newRoomRightToolStripMenuItem";
+            this.newRoomRightToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newRoomRightToolStripMenuItem.Tag = "NewRoomRight";
+            this.newRoomRightToolStripMenuItem.Text = "NewRoomRight";
+            // 
+            // newRoomFrontToolStripMenuItem
+            // 
+            this.newRoomFrontToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomFrontToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomFrontToolStripMenuItem.Name = "newRoomFrontToolStripMenuItem";
+            this.newRoomFrontToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newRoomFrontToolStripMenuItem.Tag = "NewRoomFront";
+            this.newRoomFrontToolStripMenuItem.Text = "NewRoomFront";
+            // 
+            // newRoomBackToolStripMenuItem
+            // 
+            this.newRoomBackToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newRoomBackToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomBackToolStripMenuItem.Name = "newRoomBackToolStripMenuItem";
+            this.newRoomBackToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newRoomBackToolStripMenuItem.Tag = "NewRoomBack";
+            this.newRoomBackToolStripMenuItem.Text = "NewRoomBack";
             // 
             // FormMain
             // 
@@ -1666,12 +1774,10 @@
         private System.Windows.Forms.ToolStripMenuItem buildLevelPlayToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator3;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newRoomUpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newRoomDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomFloorUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomFloorDownToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem flattenFloorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem flattenCeilingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem averageFloorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem averageCeilingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addCameraToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addFlybyCameraToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addSinkToolStripMenuItem;
@@ -1745,9 +1851,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolPaletteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dockableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem floatingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem wholeRoomUpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem wholeRoomDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel statusLastCompilation;
         private System.Windows.Forms.ToolStripMenuItem selectConnectedRoomsToolStripMenuItem;
@@ -1787,7 +1890,22 @@
         private System.Windows.Forms.ToolStripMenuItem splitSectorObjectOnSelectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearAllTexturesInRoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem flattenFloorToMinToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem flattenCeilingToMinToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flattenFloorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flattenCeilingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveRoomsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wholeRoomUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wholeRoomDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveRoomLeftToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveRoomRightToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveRoomForwardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveRoomBackToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem newRoomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newRoomUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newRoomDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newRoomLeftToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newRoomRightToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newRoomFrontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newRoomBackToolStripMenuItem;
     }
 }

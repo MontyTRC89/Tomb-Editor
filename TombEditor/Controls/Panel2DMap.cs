@@ -145,7 +145,7 @@ namespace TombEditor.Controls
                 {
                     _editor.SendMessage("Double click or Alt + click on the map to add or remove depth probe.\n" +
                         "Click and drag on the emptiness to start selection by area.\n" +
-                        "The selection can be modified using Ctrl or Shift. To copy rooms, press Ctrl while moving.", PopupType.Info);
+                        "Selection can be changed using Ctrl or Shift. To copy rooms, press Ctrl while moving.", PopupType.Info);
 
                     _editor.Configuration.Map2D_ShowTimes++;
                     _editor.ConfigurationChange();
