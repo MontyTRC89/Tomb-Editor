@@ -89,9 +89,9 @@ namespace TombEditor.Controls
             VectorInt2 gridDimensions = GetGridDimensions();
             Size ClientSize = this.ClientSize;
             if ((ClientSize.Width * gridDimensions.Y) < (ClientSize.Height * gridDimensions.X))
-                return ClientSize.Width / gridDimensions.X;
+                return (float)(ClientSize.Width) / gridDimensions.X;
             else
-                return ClientSize.Height / gridDimensions.Y;
+                return (float)(ClientSize.Height) / gridDimensions.Y;
         }
 
         protected RectangleF GetVisualAreaTotal()

@@ -197,7 +197,7 @@ namespace TombEditor
             {
                 if (_selectedRooms != null && _selectedRooms.SequenceEqual(value))
                     return;
-                if (value.Count < 0)
+                if (value.Count <= 0)
                     throw new ArgumentException("The selected room list must contain at least 1 room.");
                 if (value.Any(room => room == null))
                     throw new ArgumentNullException(nameof(value), "The selected room list may not contain null.");
