@@ -278,10 +278,21 @@ namespace TombLib.LevelData.Compilers
             var firstTrigger = triggers.FirstOrDefault();
             if (firstTrigger != null)
             {
-                // First, we search if a special trigger exists
-                TriggerInstance found = triggers.FirstOrDefault(t => t.TargetType == TriggerTargetType.Object) ?? TriggerInstance.Default;
-                var sortedTriggers = new List<TriggerInstance> { found };
-                sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
+                var sortedTriggers = new List<TriggerInstance>();
+
+                // First, we search if a special trigger exists. If not, we use dummy trigger entry.
+                TriggerInstance found = triggers.FirstOrDefault(t => t.TargetType == TriggerTargetType.Object);
+                if (found != null)
+                {
+                    sortedTriggers.Add(found);
+                    sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
+                }
+                else
+                {
+                    found = TriggerInstance.Default;
+                    sortedTriggers.AddRange(triggers);
+                }
+
 
                 {
                     lastFloorDataFunction = outFloorData.Count;
