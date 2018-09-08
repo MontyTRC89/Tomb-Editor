@@ -604,6 +604,101 @@ namespace TombLib.LevelData
             }
         }
 
+        // @FIXME: Fallback to rotate function, because I can't fix TRTombLevBauer's voodoo Transform() code.
+        public void Rotate(bool? floor = null, int iterations = 1)
+        {
+            if (iterations < 1 || iterations > 3)
+                return;
+
+            if(!floor.HasValue)
+            {
+                Rotate(true,  iterations);
+                Rotate(false, iterations);
+                return;
+            }
+
+            for (int i = 0; i < iterations; i++)
+            {
+                if (floor.Value && Floor.DiagonalSplit != DiagonalSplit.None)
+                {
+                    if (Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                        Floor.DiagonalSplit = DiagonalSplit.XpZp;
+                    else if (Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                        Floor.DiagonalSplit = DiagonalSplit.XpZn;
+                    else if (Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                        Floor.DiagonalSplit = DiagonalSplit.XnZn;
+                    else if (Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                        Floor.DiagonalSplit = DiagonalSplit.XnZp;
+                }
+
+                if (!floor.Value && Floor.DiagonalSplit != DiagonalSplit.None)
+                {
+                    if (Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                        Floor.DiagonalSplit = DiagonalSplit.XpZp;
+                    else if (Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                        Floor.DiagonalSplit = DiagonalSplit.XpZn;
+                    else if (Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                        Floor.DiagonalSplit = DiagonalSplit.XnZn;
+                    else if (Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                        Floor.DiagonalSplit = DiagonalSplit.XnZp;
+                }
+
+                short[] swapFace = new short[4];
+
+                if (floor.Value)
+                {
+                    swapFace[0] = Floor.XnZn;
+                    swapFace[1] = Floor.XnZp;
+                    swapFace[2] = Floor.XpZp;
+                    swapFace[3] = Floor.XpZn;
+
+                    Floor.XnZp = swapFace[0];
+                    Floor.XpZp = swapFace[1];
+                    Floor.XpZn = swapFace[2];
+                    Floor.XnZn = swapFace[3];
+
+                    swapFace[0] = _ed[3];
+                    swapFace[1] = _ed[0];
+                    swapFace[2] = _ed[1];
+                    swapFace[3] = _ed[2];
+
+                    _ed[0] = swapFace[0];
+                    _ed[1] = swapFace[1];
+                    _ed[2] = swapFace[2];
+                    _ed[3] = swapFace[3];
+                }
+                else
+                {
+                    swapFace[0] = Ceiling.XnZn;
+                    swapFace[1] = Ceiling.XnZp;
+                    swapFace[2] = Ceiling.XpZp;
+                    swapFace[3] = Ceiling.XpZn;
+
+                    Ceiling.XnZp = swapFace[0];
+                    Ceiling.XpZp = swapFace[1];
+                    Ceiling.XpZn = swapFace[2];
+                    Ceiling.XnZn = swapFace[3];
+
+                    swapFace[0] = _rf[3];
+                    swapFace[1] = _rf[0];
+                    swapFace[2] = _rf[1];
+                    swapFace[3] = _rf[2];
+
+                    _rf[0] = swapFace[0];
+                    _rf[1] = swapFace[1];
+                    _rf[2] = swapFace[2];
+                    _rf[3] = swapFace[3];
+                }
+                //FixHeights(floor.Value ? BlockVertical.Floor : BlockVertical.Ceiling);
+            }
+        }
+
+
+        // @FIXME: Function is broken and disabled.
+        // 1. Rotation happens in counterclockwise order, which doesn't comply with clockwise texture rotation order.
+        // 2. Function aburptly changes triangle split type even for non-triangulated blocks
+        // 3. Function incorrectly sets triangle split type for diagonally split blocks.    -- Lwmte
+
         public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<BlockFace, FaceShape> oldFaceIsTriangle = null)
         {
             // Rotate sector flags
@@ -636,6 +731,7 @@ namespace TombLib.LevelData
                 if (requiredFloorSplitDirectionIsXEqualsZ != Floor.SplitDirectionIsXEqualsZ)
                     Floor.SplitDirectionToggled = !Floor.SplitDirectionToggled;
             }
+
             bool oldCeilingSplitDirectionIsXEqualsZReal = Ceiling.SplitDirectionIsXEqualsZWithDiagonalSplit;
             if (onlyFloor != true)
             {
