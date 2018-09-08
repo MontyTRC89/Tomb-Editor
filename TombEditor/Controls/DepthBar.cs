@@ -282,7 +282,7 @@ namespace TombEditor.Controls
                     int delta = (int)(Math.Ceiling(destinationHeight) - _roomMouseClicked.Position.Y);
 
                     // Snapping
-                    if(!Control.ModifierKeys.HasFlag(Keys.Alt))
+                    if(!(Control.ModifierKeys.HasFlag(Keys.Alt) || Control.ModifierKeys.HasFlag(Keys.Shift)))
                     {
                         HashSet<Room> roomsInGroup = new HashSet<Room>();
                         List<List<RelevantRoom>> roomSequences = groupBuildRoomSequences(level, Vector2.Zero, _groupMouseClicked);
