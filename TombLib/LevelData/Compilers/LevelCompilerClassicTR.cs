@@ -165,7 +165,7 @@ namespace TombLib.LevelData.Compilers
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     SoundID = _soundManager.AllocateSoundInfo(soundInfo),
-                    Flags = 0x80
+                    Flags = instance.Room == null ? (ushort)0xC0 : (instance.Room.AlternateBaseRoom != null) ? (ushort)0x40 : (ushort)0x80
                 });
             }
 
