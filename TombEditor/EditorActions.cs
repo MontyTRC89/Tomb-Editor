@@ -1510,7 +1510,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XpZp = maxHeight;
                             room.Blocks[x, z].Floor.XnZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XnZp;
-                            if (room.Blocks[x, z].Type == BlockType.Wall)
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XnZp;
                         }
 
@@ -1519,7 +1519,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XnZp = maxHeight;
                             room.Blocks[x, z].Floor.XpZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XpZp;
-                            if (room.Blocks[x, z].Type == BlockType.Wall)
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XpZp;
                         }
 
@@ -1528,7 +1528,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XpZp = maxHeight;
                             room.Blocks[x, z].Floor.XnZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XpZn;
-                            if (room.Blocks[x, z].Type == BlockType.Wall)
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XpZn;
                         }
 
@@ -1537,7 +1537,7 @@ namespace TombEditor
                             room.Blocks[x, z].Floor.XnZp = maxHeight;
                             room.Blocks[x, z].Floor.XpZn = maxHeight;
                             room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.XnZn;
-                            if (room.Blocks[x, z].Type == BlockType.Wall)
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.XnZn;
                         }
 
