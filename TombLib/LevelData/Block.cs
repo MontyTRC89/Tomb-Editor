@@ -506,9 +506,9 @@ namespace TombLib.LevelData
                 for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
                 {
                     if (edge == BlockEdge.XnZp && split == DiagonalSplit.XpZn ||
-                        edge == BlockEdge.XnZn && split == DiagonalSplit.XnZn ||
+                        edge == BlockEdge.XnZn && split == DiagonalSplit.XpZp ||
                         edge == BlockEdge.XpZn && split == DiagonalSplit.XnZp ||
-                        edge == BlockEdge.XpZp && split == DiagonalSplit.XpZp)
+                        edge == BlockEdge.XpZp && split == DiagonalSplit.XnZn)
                         continue;
                     ChangeHeight(vertical, edge, increment);
                 }
@@ -694,10 +694,10 @@ namespace TombLib.LevelData
         }
 
 
-        // @FIXME: Function is broken and disabled.
+        // @FIXME: Function is broken and disabled for trivial sector transformation.
         // 1. Rotation happens in counterclockwise order, which doesn't comply with clockwise texture rotation order.
         // 2. Function aburptly changes triangle split type even for non-triangulated blocks
-        // 3. Function incorrectly sets triangle split type for diagonally split blocks.    -- Lwmte
+        // 3. Function disjoints diagonal walls with subdivisions on rotation.    -- Lwmte
 
         public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<BlockFace, FaceShape> oldFaceIsTriangle = null)
         {
