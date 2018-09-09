@@ -133,9 +133,9 @@ namespace TombLib.LevelData
                     output += Target;
             }
 
-            output += " (Timer: " + Timer;
-            if(Extra != null) output += ", Extra: " + Extra;
-            output += ")";
+            if (Timer != null) output += " (Timer: " + Timer;
+            if (Extra != null) output += ", Extra: " + Extra;
+            if (Timer != null || Extra != null) output += ")";
 
             var roomName = Room?.ToString();
             if(!string.IsNullOrEmpty(roomName))
