@@ -75,21 +75,21 @@ namespace TombLib.Rendering.DirectX11
                             lastSectorTexture = 0;
                             if (result.SectorTexture != SectorTexture.None)
                             { // Use sector texture
-                                lastSectorTexture = 0x20 | (((uint)result.SectorTexture - 1) << 7);
+                                lastSectorTexture = 0x40 | (((uint)result.SectorTexture - 1) << 8);
                             }
                             else
                             { // Use sector color
                                 lastSectorTexture =
-                                    (((uint)(result.Color.X * 255)) << 7) |
-                                    (((uint)(result.Color.Y * 255)) << 15) |
-                                    (((uint)(result.Color.Z * 255)) << 23);
+                                    (((uint)(result.Color.X * 255)) << 8) |
+                                    (((uint)(result.Color.Y * 255)) << 16) |
+                                    (((uint)(result.Color.Z * 255)) << 24);
                             }
-                            // Highlight dragged sectors
-                            if (result.Highlighted)
-                                lastSectorTexture |= 0x10;
+                            // Highlight / dim sectors
+                            if (result.Highlighted) lastSectorTexture |= 0x10;
+                            if (result.Dimmed)      lastSectorTexture |= 0x20;
                             // Indicate selected textured faces
                             if (result.Selected && roomGeometry.TriangleTextureAreas[i].Texture != null)
-                                lastSectorTexture |= 0x40;
+                                lastSectorTexture |= 0x80;
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;
                         editorUVAndSectorTexture[i * 3 + 1] |= lastSectorTexture;

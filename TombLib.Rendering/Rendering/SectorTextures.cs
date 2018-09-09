@@ -50,6 +50,7 @@ namespace TombLib.Rendering
         public SectorTexture SectorTexture;
         public bool Selected;
         public bool Highlighted;
+        public bool Dimmed;
     }
 
     public class SectorTextureDefault
@@ -81,6 +82,7 @@ namespace TombLib.Rendering
         {
             SectorTexture SectorTexture = SectorTexture.None;
             Vector4 Color;
+            bool Dimmed = false;
 
             // Choose base color
             switch (face)
@@ -132,6 +134,12 @@ namespace TombLib.Rendering
                     Color = currentHighlights != null ? currentHighlights[0].Color : SectorColoringInfo.ColorFloor;
                     if (room.Blocks[x, z].FloorPortal != null)
                         Color = SectorColoringInfo.ColorPortalFace;
+                    if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                    {
+                        if ((room.Blocks[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
+                            (room.Blocks[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.FloorTriangle2))
+                            Dimmed = true;
+                    }
                     break;
 
                 case BlockFace.Ceiling:
@@ -141,6 +149,12 @@ namespace TombLib.Rendering
                     Color = currentHighlights2 != null ? currentHighlights2[0].Color : SectorColoringInfo.ColorFloor;
                     if (room.Blocks[x, z].CeilingPortal != null)
                         Color = SectorColoringInfo.ColorPortalFace;
+                    if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
+                    {
+                        if ((room.Blocks[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
+                            (room.Blocks[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.CeilingTriangle2))
+                            Dimmed = true;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("Unknown BlockFlag encountered.");
@@ -447,6 +461,7 @@ namespace TombLib.Rendering
             {
                 Color = Color,
                 SectorTexture = SectorTexture,
+                Dimmed = Dimmed,
                 Selected = (SelectionArea.Contains(new VectorInt2(x, z))),
                 Highlighted = (HighlightArea.Contains(new VectorInt2(x, z)))
             };
