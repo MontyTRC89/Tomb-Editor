@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using SharpDX.Toolkit.Graphics;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
 using System.Windows.Forms;
@@ -40,6 +41,8 @@ namespace WadTool.Controls
         public bool DrawGizmo { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawLights { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawNormals { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Vector3 StaticPosition { get; set; } = Vector3.Zero;
@@ -244,6 +247,39 @@ namespace WadTool.Controls
 
                         _device.Draw(PrimitiveType.LineList, _vertexBufferCollision.ElementCount);
                     }
+                }
+
+                // Draw normals
+                if (DrawNormals)
+                {
+                    var lines = new List<SolidVertex>();
+                    for (int i = 0; i < Static.Mesh.VerticesNormals.Count; i++)
+                    {
+                        var p = Vector3.Transform(Static.Mesh.VerticesPositions[i], world);
+                        var n = Vector3.TransformNormal(Static.Mesh.VerticesNormals[i] /
+                            Static.Mesh.VerticesNormals[i].Length(), world);
+
+                        var v = new SolidVertex();
+                        v.Position = p;
+                        v.Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+                        lines.Add(v);
+
+                        v = new SolidVertex();
+                        v.Position = p + n * 256.0f;
+                        v.Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+                        lines.Add(v);
+                    }
+
+                    Buffer<SolidVertex> bufferLines = Buffer.New(_device, lines.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+                    _device.SetVertexBuffer(bufferLines);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, bufferLines));
+                    _device.SetIndexBuffer(null, false);
+
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                    _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
                 }
             }
 
@@ -500,27 +536,30 @@ namespace WadTool.Controls
         {
             Static.Mesh.VerticesShades.Clear();
 
+            Matrix4x4 world = Matrix4x4.CreateTranslation(StaticPosition);
+
             for (int i = 0; i < Static.Mesh.VerticesPositions.Count; i++)
             {
                 float newShade = Static.AmbientLight / 255.0f;
                 foreach (var light in Static.Lights)
                 {
+                    // Transform current vertex and normal
+                    var p = Vector3.Transform(Static.Mesh.VerticesPositions[i], world);
+                    var n = Vector3.TransformNormal(Static.Mesh.VerticesNormals[i] / Static.Mesh.VerticesNormals[i].Length(), world);
+
                     // Get the light direction vector
-                    var lightDirection = light.Position - Static.Mesh.VerticesPositions[i];
+                    var lightDirection = light.Position - p;
                     if (lightDirection.Length() > light.Radius * 1024)
                         continue;
 
                     var l = lightDirection / lightDirection.Length();
-
-                    // Get the normal
-                    var n = Static.Mesh.VerticesNormals[i] / Static.Mesh.VerticesNormals[i].Length();
 
                     // Calculate cosine
                     float dot = Vector3.Dot(n, l);
                     if (dot <= 0)
                         continue;
 
-                    newShade += dot * light.Intensity * (1.0f - (light.Position - Static.Mesh.VerticesPositions[i]).Length() /
+                    newShade += dot * light.Intensity * (1.0f - (light.Position - p).Length() /
                                 (light.Radius * 1024.0f));
                 }
 

@@ -459,5 +459,11 @@ namespace WadTool
                                                                      result));
             panelRendering.Invalidate();
         }
+
+        private void cbDrawNormals_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawNormals = cbDrawNormals.Checked;
+            panelRendering.Invalidate();
+        }
     }
 }

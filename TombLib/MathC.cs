@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using TombLib.Utils;
 
 namespace TombLib
 {
@@ -266,6 +268,20 @@ namespace TombLib
                     t1 * s +
                     v1;
             return (double)result;
+        }
+
+        // Useful for storing a dictionary of vertices
+        public static Hash GetVector3Hash(Vector3 p)
+        {
+            byte[] buffer;
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(BitConverter.GetBytes(p.X), 0, 4);
+                ms.Write(BitConverter.GetBytes(p.Y), 0, 4);
+                ms.Write(BitConverter.GetBytes(p.Z), 0, 4);
+                buffer = ms.ToArray();
+            }
+            return Hash.FromByteArray(buffer);
         }
     }
 }
