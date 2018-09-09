@@ -2520,8 +2520,32 @@ namespace TombEditor
 
         public static void DuplicateRooms(IWin32Window owner)
         {
+            // Prevent "Copy of Copy of Copy" situation
+            int foundPostfixPos = _editor.SelectedRoom.Name.IndexOf(" (copy");
+            string buffer = string.Empty;
+            if (foundPostfixPos != -1)
+            {
+                int potentialCopyNumber = 0;
+                buffer = _editor.SelectedRoom.Name.Substring(foundPostfixPos, _editor.SelectedRoom.Name.Length - foundPostfixPos);
+                int enclosingBracketPos = buffer.IndexOf(")");
+
+                if (enclosingBracketPos != -1)
+                {
+                    var numString = buffer.Substring(6, enclosingBracketPos - 6);
+                    bool numberFound = Int32.TryParse(numString, out potentialCopyNumber);
+                    if (!numberFound)
+                        potentialCopyNumber = 2;
+                    else
+                        potentialCopyNumber++;
+                    buffer = " " + potentialCopyNumber++.ToString();
+                }
+                else
+                    buffer = string.Empty;
+            }
+            var cutName = _editor.SelectedRoom.Name.Substring(0, foundPostfixPos == -1 ? _editor.SelectedRoom.Name.Length : foundPostfixPos);
+
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
-            newRoom.Name = _editor.SelectedRoom.Name + " (copy)";
+            newRoom.Name = cutName + " (copy" + buffer + ")";
             newRoom.BuildGeometry();
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
