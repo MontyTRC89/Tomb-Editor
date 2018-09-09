@@ -14,5 +14,7 @@
                 ", Y = " + SectorPosition.Y +
                 ", Z = " + SectorPosition.Z;
         }
+
+        public string ShortName() => (Fixed ? "Fixed camera" : "Camera") + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
     }
 }

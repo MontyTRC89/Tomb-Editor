@@ -53,11 +53,13 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sound " + SoundNameToDisplay +
+            return "Sound source " + SoundNameToDisplay +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
                 ", Y = " + SectorPosition.Y +
                 ", Z = " + SectorPosition.Z;
         }
+
+        public string ShortName => "Sound source" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
     }
 }

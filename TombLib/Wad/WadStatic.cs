@@ -31,6 +31,7 @@ namespace TombLib.Wad
             return "(" + TypeId + ") " + TrCatalog.GetStaticName(gameVersion, TypeId);
         }
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+        public string ShortName(WadGameVersion gameVersion) => TrCatalog.GetStaticName(gameVersion, TypeId);
     }
 
     public class WadStatic : IWadObject, ICloneable

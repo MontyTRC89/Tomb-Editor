@@ -119,12 +119,27 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             string output = TriggerType + " ";
-            if (output.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) == -1)
-                output += "Trigger ";
-            output += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
-            output += "on sectors [" + Area.X0 + ", " + Area.Y0 + " to " + Area.X1 + ", " + Area.Y1 + "] ";
-            output += "for " + TargetType + " ";
-            output += "(Target: " + Target + ", Timer: " + Timer + ", Extra: " + Extra + ")";
+            output += "[" + TargetType + "] ";
+
+            if (Target is TriggerParameterUshort)
+                output += "#" + ((TriggerParameterUshort)Target).Key;
+            else
+            {
+                output += "for ";
+                var method = Target.GetType().GetMethod("ShortName");
+                if (method != null)
+                    output += method.Invoke(Target, null);
+                else
+                    output += Target;
+            }
+
+            output += " (Timer: " + Timer;
+            if(Extra != null) output += ", Extra: " + Extra;
+            output += ")";
+
+            var roomName = Room?.ToString();
+            if(!string.IsNullOrEmpty(roomName))
+                output += " in '" + roomName + "'";
             return output;
         }
 

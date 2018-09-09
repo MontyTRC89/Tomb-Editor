@@ -30,6 +30,8 @@ namespace TombLib.LevelData
                    ", Z = " + SectorPosition.Z;
         }
 
+        public string ShortName() => ItemType.ShortName() + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
+
         public static ItemInstance FromItemType(ItemType item)
         {
             if (item.IsStatic)
@@ -94,6 +96,14 @@ namespace TombLib.LevelData
                 return StaticId.ToString(_wadGameVersion);
             else
                 return MoveableId.ToString(_wadGameVersion);
+        }
+
+        public string ShortName()
+        {
+            if (IsStatic)
+                return StaticId.ShortName(_wadGameVersion);
+            else
+                return MoveableId.ShortName(_wadGameVersion);
         }
     }
 
