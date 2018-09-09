@@ -4265,15 +4265,15 @@
             <moveable id="29" name="Torch animation"/>
             <moveable id="30" name="Lara's hair"/>
             <moveable id="31" name="Guard 1"/>
-            <moveable id="32" name="Frogman with harpoon (TR3)"/>
+            <moveable id="32" name="Jeep (TR4)"/>
             <moveable id="33" name="Guard 2"/>
-            <moveable id="34" name="Tribesman with ax (TR3)"/>
+            <moveable id="34" name="Quad bike (TR3)"/>
             <moveable id="35" name="Guard 3"/>
-            <moveable id="36" name="Tribesman with darts (TR3)"/>
+            <moveable id="36" name="Lara jeep anims (TR4)"/>
             <moveable id="37" name="Guard 4"/>
-            <moveable id="38" name="Monk (TR2)"/>
+            <moveable id="38" name="Lara quad bike anims (TR3)"/>
             <moveable id="39" name="Guard laser"/>
-            <moveable id="40" name="Eagle (TR3)"/>
+            <moveable id="40" name="Skeleton (TR4)"/>
             <moveable id="41" name="Doberman"/>
             <moveable id="42" name="Crocodile (TR4)"/>
             <moveable id="43" name="Crow"/>
@@ -4285,47 +4285,47 @@
             <moveable id="49" name="Armed baddy 1"/>
             <moveable id="50" name="Guide (TR4)"/>
             <moveable id="51" name="Armed baddy 2"/>
-            <moveable id="52" name="Monkey (TR3)"/>
+            <moveable id="52" name="Sphinx (TR4)"/>
             <moveable id="53" name="Guard 5"/>
-            <moveable id="54" name="Wraith (TR4)"/>
+            <moveable id="54" name="Horseman (TR4)"/>
             <moveable id="55" name="Guard 6"/>
-            <moveable id="56" name="Shark (TR2)"/>
+            <moveable id="56" name="Horse (TR4)"/>
             <moveable id="57" name="Lion" y_adjust="0.075"/>
-            <moveable id="58" name="Tiger (TR3)"/>
+            <moveable id="58" name="Wild boar (TR4)"/>
             <moveable id="59" name="Gladiator" y_adjust="0.1"/>
-            <moveable id="60" name="Knight Templar (TR4)"/>
+            <moveable id="60" name="Harpy (TR4)"/>
             <moveable id="61" name="Roman statue"/>
-            <moveable id="62" name="Mercenary (TR3)"/>
+            <moveable id="62" name="Demigod 1 (TR4)"/>
             <moveable id="63" name="Small dragon" y_adjust="2"/>
-            <moveable id="64" name="T-Rex (TR2)" y_adjust="2"/>
+            <moveable id="64" name="Demigod 2 (TR4)" y_adjust="2"/>
             <moveable id="65" name="Laser head"/>
-            <moveable id="66" name="Raptor (TR3)"/>
+            <moveable id="66" name="Demigod 3 (TR4)"/>
             <moveable id="67" name="Cyborg" y_adjust="0.030"/>
-            <moveable id="68" name="Skeleton (TR4)"/>
+            <moveable id="68" name="Little beetle (TR4)"/>
             <moveable id="69" name="VCI worker"/>
-            <moveable id="70" name="Cobra (TR3)"/>
+            <moveable id="70" name="Mercenary (TR3)"/>
             <moveable id="71" name="Lighthing Guide"/>
-            <moveable id="72" name="Jungle Temple statue (TR3)"/>
+            <moveable id="72" name="Shark (TR2)"/>
             <moveable id="73" name="Invisible ghost"/>
-            <moveable id="74" name="Pirahnas/Fish emitter (TR3)"/>
+            <moveable id="74" name="Baddy 1 (TR4)"/>
             <moveable id="75" name="Reaper"/>
-            <moveable id="76" name="Puna Guy (TR3)"/>
+            <moveable id="76" name="Baddy 2 (TR4)"/>
             <moveable id="77" name="Brown beast"/>
-            <moveable id="78" name="Baddy 1 (TR4)"/>
+            <moveable id="78" name="Chain (TR4)"/>
             <moveable id="79" name="Lagoon Witch"/>
-            <moveable id="80" name="Baddy 2 (TR4)"/>
+            <moveable id="80" name="Plough (TR4)"/>
             <moveable id="81" name="Submarine"/>
-            <moveable id="82" name="Flamethrower guy (TR3)"/>
+            <moveable id="82" name="Stargate (TR4)"/>
             <moveable id="83" name="M16 guard"/>
-            <moveable id="84" name="Wolf (TR1)"/>
+            <moveable id="84" name="Burning floor (TR4)"/>
             <moveable id="85" name="Dog"/>
-            <moveable id="86" name="Bear (TR1)"/>
+            <moveable id="86" name="Cog (TR4)"/>
             <moveable id="87" name="The chef"/>
-            <moveable id="88" name="Gorilla (TR1)" x_adjust="-1"/>
+            <moveable id="88" name="Spikeball (TR4)" x_adjust="-1"/>
             <moveable id="89" name="Imp"/>
-            <moveable id="90" name="Kayak (TR3)"/>
+            <moveable id="90" name="Floor 4 blades (TR4)"/>
             <moveable id="91" name="Gunship" z_adjust="3"/>
-            <moveable id="92" name="Lara kayak animations (TR3)"/>
+            <moveable id="92" name="Ceiling 4 blades (TR4)"/>
             <moveable id="93" name="Little bat"/>
             <moveable id="94" name="Little rat"/>
             <moveable id="95" name="Spider"/>
@@ -4398,13 +4398,13 @@
             <moveable id="162" name="Moving laser"/>
             <moveable id="163" name="Imp rock"/>
             <moveable id="164" name="Cupboard" Ry_adjust="180"/>
-            <moveable id="165" name="Quad (TR3)"/>
+            <moveable id="165" name="Catwalk blade (TR4)"/>
             <moveable id="166" name="Cupboard" Ry_adjust="180"/>
-            <moveable id="167" name="Lara quad animations (TR3)"/>
+            <moveable id="167" name="Plinth blade (TR4)"/>
             <moveable id="168" name="Cupboard" Ry_adjust="180"/>
-            <moveable id="169" name="Boat (TR2)"/>
+            <moveable id="169" name="Seth blade (TR4)"/>
             <moveable id="170" name="Suitcase"/>
-            <moveable id="171" name="Lara boat animations (TR2)"/>
+            <moveable id="171" name="Slicer dicer (TR4)"/>
             <moveable id="172" name="Puzzle 1"/>
             <moveable id="173" name="Puzzle 2"/>
             <moveable id="174" name="Puzzle 3"/>
@@ -4518,49 +4518,49 @@
             <moveable id="282" name="Pulley"/>
             <moveable id="283" name="Crowdove switch"/>
             <moveable id="284" name="Door 1"/>
-            <moveable id="285" name="Frogman harpoon (TR2)"/>
+            <moveable id="285" name="Sacrophagus (TR4)"/>
             <moveable id="286" name="Door 2"/>
-            <moveable id="287" name="Winged mummy (TR1)"/>
+            <moveable id="287" name="Bird blade (TR4)"/>
             <moveable id="288" name="Door 3"/>
-            <moveable id="289" name="Mutant (TR1)"/>
+            <moveable id="289" name="Kayak (TR3)"/>
             <moveable id="290" name="Door 4"/>
-            <moveable id="291" name="Sword of Damocles (TR1)"/>
+            <moveable id="291" name="Lara kayak anims (TR3)"/>
             <moveable id="292" name="Door 5"/>
-            <moveable id="293" name="Slamming doors (TR1)"/>
+            <moveable id="293" name="Boat (TR2)"/>
             <moveable id="294" name="Door 6"/>
-            <moveable id="295" name="Wall disk emitter (TR2)"/>
+            <moveable id="295" name="Lara boat anims (TR2)"/>
             <moveable id="296" name="Door 7"/>
-            <moveable id="297" name="Wall disk (TR2)"/>
+            <moveable id="297" name="Tribesman with ax (TR3)"/>
             <moveable id="298" name="Door 8"/>
-            <moveable id="299" name="Tibetan bell switch (TR2)"/>
+            <moveable id="299" name="Tribesman with darts (TR3)"/>
             <moveable id="300" name="Door 9"/>
-            <moveable id="301" name="Air fan (TR2)"/>
+            <moveable id="301" name="Scuba diver (TR3)"/>
             <moveable id="302" name="Door 10"/>
-            <moveable id="303" name="Bounce pad (TR2)"/>
+            <moveable id="303" name="Crow (TR3)"/>
             <moveable id="304" name="Door 11"/>
-            <moveable id="305" name="Rolling blade (TR2)"/>
+            <moveable id="305" name="Tiger (TR3)"/>
             <moveable id="306" name="Door 12"/>
-            <moveable id="307" name="Statue with blade (TR2)"/>
+            <moveable id="307" name="Eagle (TR3)"/>
             <moveable id="308" name="Door 13"/>
-            <moveable id="309" name="Wall mounted blade (TR2)"/>
+            <moveable id="309" name="Raptor (TR3)"/>
             <moveable id="310" name="Door 14"/>
-            <moveable id="311" name="Temple statue petrified (TR3)"/>
+            <moveable id="311" name="Tyrannosaur (TR3)"/>
             <moveable id="312" name="Lift doors 1"/>
-            <moveable id="313" name="Guard with stick (TR3)"/>
+            <moveable id="313" name="Cobra (TR3)"/>
             <moveable id="314" name="Lift doors 2"/>
-            <moveable id="315" name="Sophia Lee (TR3)"/>
+            <moveable id="315" name="Monkey (TR3)"/>
             <moveable id="316" name="Push-pull door 1"/>
-            <moveable id="317" name="Zipline handle (TR3)"/>
+            <moveable id="317" name="MP with stick (TR3)"/>
             <moveable id="318" name="Push-pull door 2"/>
-            <moveable id="319" name="Jeep (TR4)"/>
+            <moveable id="319" name="MP with gun (TR3)"/>
             <moveable id="320" name="Kick door 1"/>
-            <moveable id="321" name="Lara jeep animations (TR4)"/>
+            <moveable id="321" name="Wall mounted blade (TR2/3)"/>
             <moveable id="322" name="Kick door 2"/>
-            <moveable id="323" name="Baracudda"/>
+            <moveable id="323" name="Spikey wall (TR3)"/>
             <moveable id="324" name="Underwater door"/>
-            <moveable id="325" name="Sphinx (TR4)"/>
+            <moveable id="325" name="Zipline handle (TR3)"/>
             <moveable id="326" name="Double doors"/>
-            <moveable id="327" name="Demigod (TR4)"/>
+            <moveable id="327" name="Pirahnas/fish emitter (TR3)"/>
             <moveable id="328" name="Sequence door"/>
             <moveable id="329" name="Sequence switch 1"/>
             <moveable id="330" name="Sequence switch 2"/>
@@ -4649,37 +4649,37 @@
             <moveable id="414" name="Waterfall 4"/>
             <moveable id="415" name="Waterfall 5"/>
             <moveable id="416" name="Animating 1"/>
-            <moveable id="417" name="Pushable dead man (TR4)"/>
+            <moveable id="417" name="Barracuda (TR2)"/>
             <moveable id="418" name="Animating 2"/>
-            <moveable id="419" name="Chain (TR4)"/>
+            <moveable id="419" name="Monk with stick (TR2)"/>
             <moveable id="420" name="Animating 3"/>
-            <moveable id="421" name="Plough (TR4)"/>
+            <moveable id="421" name="Monk with knife (TR2)"/>
             <moveable id="422" name="Animating 4"/>
-            <moveable id="423" name="Stargate (TR4)"/>
+            <moveable id="423" name="Disk shooter (TR2)"/>
             <moveable id="424" name="Animating 5"/>
-            <moveable id="425" name="Spikeball (TR4)"/>
+            <moveable id="425" name="Disk (TR2)"/>
             <moveable id="426" name="Animating 6"/>
-            <moveable id="427" name="Sarcophagus (TR4)"/>
+            <moveable id="427" name="Statue with blade (TR2)"/>
             <moveable id="428" name="Animating 7"/>
-            <moveable id="429" name="Obelisk (TR4)"/>
+            <moveable id="429" name="Springboard (TR2)"/>
             <moveable id="430" name="Animating 8"/>
-            <moveable id="431" name="Floor blade (TR4)"/>
+            <moveable id="431" name="Rolling spindle (TR2)"/>
             <moveable id="432" name="Animating 9"/>
-            <moveable id="433" name="Ceiling blade (TR4)"/>
+            <moveable id="433" name="Wolf (TR1)"/>
             <moveable id="434" name="Animating 10"/>
-            <moveable id="435" name="Bird blade (TR4)"/>
+            <moveable id="435" name="Bear (TR1)"/>
             <moveable id="436" name="Animating 11"/>
-            <moveable id="437" name="Spikey wall (TR3)"/>
+            <moveable id="437" name="Gorilla (TR1)"/>
             <moveable id="438" name="Animating 12"/>
-            <moveable id="439" name="Spinning blade (TR2)"/>
+            <moveable id="439" name="Winged mummy (TR1)"/>
             <moveable id="440" name="Animating 13"/>
-            <moveable id="441" name="Animating 13_mip"/>
+            <moveable id="441" name="Centaur mutant (TR1)"/>
             <moveable id="442" name="Animating 14"/>
-            <moveable id="443" name="Animating 14_mip"/>
+            <moveable id="443" name="Winged Natla (TR1)"/>
             <moveable id="444" name="Animating 15"/>
-            <moveable id="445" name="Animating 15_mip"/>
+            <moveable id="445" name="Giant mutant (TR1)"/>
             <moveable id="446" name="Animating 16"/>
-            <moveable id="447" name="Animating 16_mip"/>
+            <moveable id="447" name="Scuba harpoon (TR3)"/>
             <moveable id="448" name="Floor 1 flat"/>
             <moveable id="449" name="Floor 2 flat"/>
             <moveable id="450" name="Floor 1 slope 1"/>
@@ -4689,7 +4689,35 @@
             <moveable id="454" name="Horizon"/>
             <moveable id="456" name="Binoculars graphics"/>
             <moveable id="457" name="Target graphics"/>
-            <moveable id="484" name="TR3 Tiger"/>
+            <moveable id="460" name="Object 460"/>
+            <moveable id="461" name="Custom slot 461"/>
+            <moveable id="462" name="Custom slot 462"/>
+            <moveable id="463" name="Custom slot 463"/>
+            <moveable id="464" name="Custom slot 464"/>
+            <moveable id="465" name="Custom slot 465"/>
+            <moveable id="466" name="Custom slot 466"/>
+            <moveable id="467" name="Custom slot 467"/>
+            <moveable id="468" name="Custom slot 468"/>
+            <moveable id="469" name="Custom slot 469"/>
+            <moveable id="470" name="Custom slot 470"/>
+            <moveable id="471" name="Custom slot 471"/>
+            <moveable id="472" name="Custom slot 472"/>
+            <moveable id="473" name="Custom slot 473"/>
+            <moveable id="474" name="Custom slot 474"/>
+            <moveable id="475" name="Custom slot 475"/>
+            <moveable id="476" name="Custom slot 476"/>
+            <moveable id="477" name="Custom slot 477"/>
+            <moveable id="478" name="Custom slot 478"/>
+            <moveable id="479" name="Custom slot 479"/>
+            <moveable id="480" name="Custom slot 480"/>
+            <moveable id="481" name="Custom slot 481"/>
+            <moveable id="482" name="Custom slot 482"/>
+            <moveable id="483" name="Custom slot 483"/>
+            <moveable id="484" name="Custom slot 484"/>
+            <moveable id="485" name="Custom slot 485"/>
+            <moveable id="486" name="Custom slot 486"/>
+            <moveable id="487" name="Custom slot 487"/>
+            <moveable id="488" name="Custom slot 488"/>
         </moveables>
         <sprite_sequences>
             <sprite_sequence id="455" name="Sky graphics"/>
