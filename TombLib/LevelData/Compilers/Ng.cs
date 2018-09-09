@@ -5,7 +5,7 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
-        private void WriteNgHeader(BinaryWriter writer)
+        private void WriteNgHeader(BinaryWriter writer, string ngVersion)
         {
             var ngleStartSignature = System.Text.Encoding.ASCII.GetBytes("NG");
             var endSignature = System.Text.Encoding.ASCII.GetBytes("NGLE");
@@ -24,8 +24,8 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
-            WriteNgChunkTomVersion(writer);
-            WriteNgChunkLevelVersion(writer);
+            WriteNgChunkTomVersion(writer, ngVersion);
+            WriteNgChunkLevelVersion(writer, ngVersion);
 
             // Write end signature
             writer.Write(endSignature);
@@ -143,16 +143,18 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void WriteNgChunkLevelVersion(BinaryWriter writer)
+        private void WriteNgChunkLevelVersion(BinaryWriter writer, string version)
         {
-            var buffer = new byte[] { 0x07, 0x00, 0x24, 0x80, 0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00 };
+            var buffer = new byte[] { 0x07, 0x00, 0x24, 0x80 };
             writer.Write(buffer);
+            WriteNgVersion(writer, version);
         }
 
-        private void WriteNgChunkTomVersion(BinaryWriter writer)
+        private void WriteNgChunkTomVersion(BinaryWriter writer, string version)
         {
-            var buffer = new byte[] { 0x07, 0x00, 0x25, 0x80, 0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00 };
+            var buffer = new byte[] { 0x07, 0x00, 0x25, 0x80 };
             writer.Write(buffer);
+            WriteNgVersion(writer, version);
         }
 
         private void WriteNgChunkPluginsNames(BinaryWriter writer)
@@ -161,7 +163,6 @@ namespace TombLib.LevelData.Compilers
             writer.Write(buffer);
         }
 
-        //@FIXME: UNKNOWN TRNG CHUNK!
         private void WriteNgChunkTexPartial(BinaryWriter writer)
         {
             var buffer = new byte[] { 0x03, 0x00, 0x17, 0x80, 0x00, 0x00 };
@@ -240,6 +241,21 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
             }
+        }
+
+        private void WriteNgVersion(BinaryWriter writer, string version)
+        {
+            // Parse NGLE version string
+            var verChunks = version.Split(',');
+
+            for (int i = 0; i < 4; i++)
+            {
+                ushort number = 0;
+                if(i < verChunks.Length) ushort.TryParse(verChunks[i], out number);
+                writer.Write(number);
+            }
+                
+            writer.Write((ushort)0);
         }
     }
 }
