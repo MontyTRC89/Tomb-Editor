@@ -87,7 +87,7 @@ float4 main(PixelInputType input) : SV_TARGET
         else
 		{
 			if (input.EditorSectorTexture & 0x40) // Textured or colored?
-				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 7)));
+				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 8)));
 			else
 				result = float4(
 					((input.EditorSectorTexture >> 8) & 0xff) * (1.0f / 255.0f),
@@ -96,8 +96,8 @@ float4 main(PixelInputType input) : SV_TARGET
 					1.0f);
 		}
         
-        if (input.EditorSectorTexture & 0x20) // Dim?
-            result.xyz -= 0.2f;
+        if ((input.EditorSectorTexture & 0x20) && !(result.x > 0.85f && result.y > 0.85f && result.z > 0.85f)) // Dim?
+            result.xyz *= 0.70f;
 	}
 
 	if (input.EditorSectorTexture & 0x80 && !RoomGridForce) // Selected and textured?
