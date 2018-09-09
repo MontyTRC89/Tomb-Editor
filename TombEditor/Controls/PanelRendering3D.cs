@@ -258,7 +258,12 @@ namespace TombEditor.Controls
 
             // Update rooms
             if (obj is IEditorRoomChangedEvent)
+            {
                 _renderingCachedRooms.Remove(((IEditorRoomChangedEvent)obj).Room);
+                if(obj is Editor.RoomGeometryChangedEvent)
+                    foreach (var portal in ((Editor.RoomGeometryChangedEvent)obj).Room.Portals)
+                        _renderingCachedRooms.Remove(portal.AdjoiningRoom);
+            }
             if (obj is Editor.SelectedSectorsChangedEvent || 
                 obj is Editor.HighlightedSectorChangedEvent)
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
