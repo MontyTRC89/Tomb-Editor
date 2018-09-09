@@ -32,6 +32,7 @@ namespace TombLib.Wad
             return "(" + TypeId + ") " + TrCatalog.GetMoveableName(gameVersion, TypeId);
         }
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+        public string ShortName(WadGameVersion gameVersion) => TrCatalog.GetMoveableName(gameVersion, TypeId);
 
         public static WadMoveableId Lara = new WadMoveableId(0);
         public static WadMoveableId LaraSkin = new WadMoveableId(8);

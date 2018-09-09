@@ -63,6 +63,8 @@ namespace TombLib.LevelData
                 ", Z = " + SectorPosition.Z;
         }
 
+        public string ShortName() => "Flyby cam {" + Sequence + ":" + Number + "}" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
+
         public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         {
             base.CopyDependentLevelSettings(args);

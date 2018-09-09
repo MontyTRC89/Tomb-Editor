@@ -14,5 +14,7 @@
                 ", Y = " + SectorPosition.Y +
                 ", Z = " + SectorPosition.Z;
         }
+
+        public string ShortName() => "Sink" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
     }
 }
