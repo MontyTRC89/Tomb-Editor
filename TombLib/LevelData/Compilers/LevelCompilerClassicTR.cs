@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
@@ -115,8 +117,10 @@ namespace TombLib.LevelData.Compilers
                     WriteLevelTr3();
                     break;
                 case GameVersion.TR4:
+                    WriteLevelTr4();
+                    break;
                 case GameVersion.TRNG:
-                    WriteLevelTr4(_level.Settings.GameVersion == GameVersion.TRNG);
+                    WriteLevelTr4(GetTRNGVersion());
                     break;
                 case GameVersion.TR5:
                 case GameVersion.TR5Main:
@@ -432,6 +436,19 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(30, "    Number of items: " + _items.Count);
             ReportProgress(30, "    Number of AI objects: " + _aiItems.Count);
+        }
+
+        public string GetTRNGVersion()
+        {
+            var buffer = PathC.GetDirectoryNameTry(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)) + "\\Tomb_NextGeneration.dll";
+            if (File.Exists(buffer))
+                buffer = (FileVersionInfo.GetVersionInfo(buffer)).ProductVersion;
+            else
+            {
+                _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
+                buffer = "1,3,0,6";
+            }
+            return buffer;
         }
     }
 }

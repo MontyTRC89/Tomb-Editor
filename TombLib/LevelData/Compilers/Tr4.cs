@@ -8,7 +8,7 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
-        private void WriteLevelTr4(bool ng)
+        private void WriteLevelTr4(string ngVersion = null)
         {
             // Now begin to compile the geometry block in a MemoryStream
             byte[] geometryDataBuffer;
@@ -24,9 +24,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numRooms);
 
                 foreach (var r in _level.Rooms.Where(r => r != null))
-                {
                     _tempRooms[r].WriteTr4(writer);
-                }
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;
@@ -231,10 +229,10 @@ namespace TombLib.LevelData.Compilers
                 _soundManager.WriteSoundData(writer);
 
                 // Write NG header
-                if(ng)
+                if(!string.IsNullOrEmpty(ngVersion))
                 {
                     ReportProgress(98, "Writing NG header");
-                    WriteNgHeader(writer);
+                    WriteNgHeader(writer, ngVersion);
                 }
 
                 ReportProgress(99, "Done");
