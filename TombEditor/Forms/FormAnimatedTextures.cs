@@ -6,14 +6,13 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Controls;
-using DarkUI.Extensions;
 using DarkUI.Forms;
 using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
-using RectangleF = System.Drawing.RectangleF;
 using TombLib;
 using TombLib.Forms;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace TombEditor.Forms
 {
