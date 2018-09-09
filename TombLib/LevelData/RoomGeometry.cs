@@ -1189,10 +1189,10 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
-                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
-                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
-                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
+                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
+                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)
