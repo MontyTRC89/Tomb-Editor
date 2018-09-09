@@ -86,20 +86,23 @@ float4 main(PixelInputType input) : SV_TARGET
             result = float4(0.0f, 0.0f, 0.0f, 0.0f);
         else
 		{
-			if (input.EditorSectorTexture & 0x20) // Textured or colored?
+			if (input.EditorSectorTexture & 0x40) // Textured or colored?
 				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 7)));
 			else
 				result = float4(
-					((input.EditorSectorTexture >> 7) & 0xff) * (1.0f / 255.0f),
-					((input.EditorSectorTexture >> 15) & 0xff) * (1.0f / 255.0f),
-					((input.EditorSectorTexture >> 23) & 0xff) * (1.0f / 255.0f),
+					((input.EditorSectorTexture >> 8) & 0xff) * (1.0f / 255.0f),
+					((input.EditorSectorTexture >> 16) & 0xff) * (1.0f / 255.0f),
+					((input.EditorSectorTexture >> 24) & 0xff) * (1.0f / 255.0f),
 					1.0f);
 		}
+        
+        if (input.EditorSectorTexture & 0x20) // Dim?
+            result.xyz -= 0.2f;
 	}
 
-	if (input.EditorSectorTexture & 0x40 && !RoomGridForce) // Selected and textured?
+	if (input.EditorSectorTexture & 0x80 && !RoomGridForce) // Selected and textured?
 	{
-		result.x += 0.1f * result.w;
+		result.x = saturate(result.x + 0.1f * result.w);
 		drawOutline = 2;
 	}
     
