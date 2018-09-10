@@ -19,7 +19,7 @@ namespace TombLib.LevelData.Compilers.Util
         {
             get
             {
-                return AnimationType == AnimatedTextureAnimationType.FullRotate ||
+                return AnimationType == AnimatedTextureAnimationType.UVRotate ||
                        AnimationType == AnimatedTextureAnimationType.HalfRotate ||
                        AnimationType == AnimatedTextureAnimationType.RiverRotate;
             }
@@ -395,15 +395,13 @@ namespace TombLib.LevelData.Compilers.Util
                 }
         }
 
-        public int NgUvRotateCount
+        public int UvRotateCount
         {
             get
             {
                 var num = 0;
                 foreach (var set in _compiledAnimatedTextures)
-                    if (set.AnimationType == AnimatedTextureAnimationType.FullRotate ||
-                        set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
-                        set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
+                    if (set.IsUvRotate)
                         num++;
                 return num;
             }

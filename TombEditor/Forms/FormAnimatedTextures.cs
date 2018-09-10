@@ -127,8 +127,11 @@ namespace TombEditor.Forms
             }
             else
             {
-                lblHeaderNgSettings.Visible = false;
-                settingsPanelNG.Visible = false;
+                comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
+                comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
+
+                comboUvRotate.Enabled = false;
+                comboFps.Enabled = false;
             }
 
             // Init state
@@ -309,7 +312,7 @@ namespace TombEditor.Forms
                         _previewTimer.Interval = (int)Math.Round(1000 / _previewFps); // TODO: verify this
                         break;
 
-                    case AnimatedTextureAnimationType.FullRotate:
+                    case AnimatedTextureAnimationType.UVRotate:
                         _previewTimer.Interval = (int)Math.Round(1000 / (selectedSet.Fps != 0 ? selectedSet.Fps : _previewFps));
                         _lastY = 0;
                         break;
@@ -326,17 +329,17 @@ namespace TombEditor.Forms
             if (tooManyFramesWarning.Visible = _editor.Level.Settings.GameVersion == GameVersion.TRNG && frameCount > _maxLegacyFrames)
                 toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "!\nThis will cause crash in TRNG!");
 
+            comboEffect.SelectedItem = selectedSet.AnimationType;
+
             if (_isNg)
             {
-                comboEffect.SelectedItem = selectedSet.AnimationType;
                 OnEffectChanged();
-
                 switch (selectedSet.AnimationType)
                 {
                     case AnimatedTextureAnimationType.Frames:
                         NgSelectComboboxValue(selectedSet.Fps, comboFps);
                         break;
-                    case AnimatedTextureAnimationType.FullRotate:
+                    case AnimatedTextureAnimationType.UVRotate:
                     case AnimatedTextureAnimationType.HalfRotate:
                     case AnimatedTextureAnimationType.RiverRotate:
                         NgSelectComboboxValue(selectedSet.Fps, comboFps);
@@ -452,7 +455,7 @@ namespace TombEditor.Forms
         {
             //if (!_loaded) return;
             bool enable = comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet;
-            settingsPanelNG.Enabled = enable;
+            settingsPanel.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
             butEditSetName.Enabled = enable;
@@ -1024,7 +1027,8 @@ namespace TombEditor.Forms
 
         private void comboEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            OnEffectChanged();
+            if (_isNg)
+                OnEffectChanged();
         }
 
         private void OnEffectChanged()
@@ -1055,7 +1059,7 @@ namespace TombEditor.Forms
                     comboUvRotate.Visible = false;
                     break;
 
-                case AnimatedTextureAnimationType.FullRotate:
+                case AnimatedTextureAnimationType.UVRotate:
                 case AnimatedTextureAnimationType.HalfRotate:
                 case AnimatedTextureAnimationType.RiverRotate:
                     lblFps.Visible = true;

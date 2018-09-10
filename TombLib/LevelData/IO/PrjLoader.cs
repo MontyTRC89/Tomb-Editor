@@ -1434,6 +1434,8 @@ namespace TombLib.LevelData.IO
                             TexCoord3 = new Vector2(x + 63.5f, y + 63.5f)
                         });
                     }
+                    if (animatedTextureSet.Frames.Count <= 2)
+                        animatedTextureSet.AnimationType = AnimatedTextureAnimationType.UVRotate;
                     level.Settings.AnimatedTextureSets.Add(animatedTextureSet);
                 }
 
@@ -1506,7 +1508,7 @@ namespace TombLib.LevelData.IO
                                                     break;
 
                                                 case 0x8000:
-                                                    level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.FullRotate;
+                                                    level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.UVRotate;
                                                     level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
                                                     level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                     break;

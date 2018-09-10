@@ -9,7 +9,7 @@ namespace TombLib.LevelData
     {
         Frames,
         PFrames,
-        FullRotate,
+        UVRotate,
         RiverRotate,
         HalfRotate
     }
@@ -70,7 +70,7 @@ namespace TombLib.LevelData
         {
             get
             {
-                return AnimationType == AnimatedTextureAnimationType.FullRotate ||
+                return AnimationType == AnimatedTextureAnimationType.UVRotate ||
                        AnimationType == AnimatedTextureAnimationType.HalfRotate ||
                        AnimationType == AnimatedTextureAnimationType.RiverRotate;
             }

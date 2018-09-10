@@ -41,7 +41,7 @@ namespace TombLib.LevelData.Compilers
 
             // Count number of textures with UVRotate
             writer.Write((byte)0x01);
-            writer.Write(checked((byte)_objectTextureManager.NgUvRotateCount));
+            writer.Write(checked((byte)_objectTextureManager.UvRotateCount));
             writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
 
             // Array VetInfoRangeAnim
@@ -63,7 +63,7 @@ namespace TombLib.LevelData.Compilers
                         case AnimatedTextureAnimationType.PFrames:
                             param = 0x4000;
                             break;
-                        case AnimatedTextureAnimationType.FullRotate:
+                        case AnimatedTextureAnimationType.UVRotate:
                             param = 0x8000;
                             param |= (ushort)((set.Fps << 8) & 0x1F00);
                             param |= (ushort)(set.UvRotate & 0x00FF);
