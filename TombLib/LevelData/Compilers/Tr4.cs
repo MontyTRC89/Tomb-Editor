@@ -134,7 +134,7 @@ namespace TombLib.LevelData.Compilers
                 _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
 
                 // Write object textures
-                writer.Write(checked((byte)_objectTextureManager.NgUvRotateCount));
+                writer.Write(checked((byte)_objectTextureManager.UvRotateCount));
                 writer.Write(new byte[] { 0x54, 0x45, 0x58 });
 
                 _objectTextureManager.WriteObjectTextures(writer, _level);
