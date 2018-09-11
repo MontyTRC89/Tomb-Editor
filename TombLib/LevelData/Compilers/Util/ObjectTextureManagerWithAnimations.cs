@@ -365,7 +365,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Sort sets for keeping UVRotate ranges first (stable sort)
-            _compiledAnimatedTextures = _compiledAnimatedTextures.OrderBy(x => x.UvRotate == 0).ToList();
+            _compiledAnimatedTextures = _compiledAnimatedTextures.OrderBy(x => !x.IsUvRotate).ToList();
 
             // Continue
             base.OnPackingTextures(progressReporter);

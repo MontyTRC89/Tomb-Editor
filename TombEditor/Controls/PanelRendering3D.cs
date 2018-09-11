@@ -685,7 +685,7 @@ namespace TombEditor.Controls
                                     case PortalDirection.Ceiling:
                                         var newHeight = (-dragValue.Value.Y * verticalPrecision);
                                         if (resizeHeight[1] - resizeHeight[0] + (portalDirection == PortalDirection.Floor ? newHeight : -newHeight) <= 0)
-                                            return;  // Limit inwards dragging
+                                            return;  // Limit inward dragging
                                         resizeHeight[0] = (short)(portalDirection == PortalDirection.Floor ? 0 : newHeight);
                                         resizeHeight[1] = (short)(portalDirection == PortalDirection.Floor ? newHeight : 0);
                                         break;

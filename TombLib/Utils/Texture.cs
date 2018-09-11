@@ -167,6 +167,18 @@ namespace TombLib.Utils
             Swap.Do(ref TexCoord1, ref TexCoord2);
         }
 
+        public void Rotate(int iter = 1)
+        {
+            for(int i = 0; i < iter; i++)
+            {
+                Vector2 tempTexCoord = TexCoord3;
+                TexCoord3 = TexCoord2;
+                TexCoord2 = TexCoord1;
+                TexCoord1 = TexCoord0;
+                TexCoord0 = tempTexCoord;
+            }
+        }
+
         private static float CalculateArea(Vector2 texCoord0, Vector2 texCoord1)
         {
             return (texCoord1.X - texCoord0.X) * (texCoord1.Y + texCoord0.Y);
