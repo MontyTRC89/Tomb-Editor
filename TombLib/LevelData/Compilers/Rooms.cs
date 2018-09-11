@@ -212,6 +212,7 @@ namespace TombLib.LevelData.Compilers
                             TextureArea textureArea1 = roomGeometry.TriangleTextureAreas[i / 3 + 1];
                             textureArea1.TexCoord2 = textureArea0.TexCoord0;
                             textureArea1.TexCoord3 = textureArea0.TexCoord1;
+                            textureArea1.Rotate(2);
 
                             Util.ObjectTextureManager.Result result;
                             lock (_objectTextureManager)
