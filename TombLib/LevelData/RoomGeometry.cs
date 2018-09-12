@@ -1527,7 +1527,10 @@ namespace TombLib.LevelData
                 VertexColors[i + 2] != VertexColors[i + 4])
                 return false;
             TextureArea firstTexture = TriangleTextureAreas[i / 3];
-            TextureArea secondTexture = TriangleTextureAreas[i / 3];
+            TextureArea secondTexture = TriangleTextureAreas[i / 3 + 1];
+            firstTexture.TexCoord0 = secondTexture.TexCoord0;
+            firstTexture.TexCoord3 = secondTexture.TexCoord3;
+            Swap.Do(ref firstTexture.TexCoord1, ref firstTexture.TexCoord2);
             if (firstTexture != secondTexture)
                 return false;
             return true;
