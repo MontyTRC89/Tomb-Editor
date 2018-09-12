@@ -2682,11 +2682,7 @@ namespace TombEditor
 
         public static void BuildLevelAndPlay(IWin32Window owner)
         {
-            if (_editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
-                 _editor.Level.Rooms
-                .Where(room => room != null)
-                .SelectMany(room => room.Objects)
-                .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara)))
+            if (IsLaraInLevel())
             {
                 if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
@@ -2694,6 +2690,14 @@ namespace TombEditor
             else
                 _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
 
+        }
+
+        public static bool IsLaraInLevel()
+        {
+            return _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
+                   _editor.Level.Rooms.Where(room => room != null)
+                                      .SelectMany(room => room.Objects)
+                                      .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
         }
 
         public static IEnumerable<LevelTexture> AddTexture(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
