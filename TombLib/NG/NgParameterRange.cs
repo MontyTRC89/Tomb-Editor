@@ -216,6 +216,11 @@ namespace TombLib.NG
                 return false;
             if (first.FixedEnumeration != null && !first.FixedEnumeration.SequenceEqual(second.FixedEnumeration))
                 return false;
+            if (first.LinearModel.HasValue != (second.LinearModel.HasValue))
+                return false;
+            if (first.LinearModel.HasValue && !first.LinearModel.Value.Equals(second.LinearModel.Value))
+                return false;
+
             return true;
         }
         public static bool operator !=(NgParameterRange first, NgParameterRange second) => !(first == second);
