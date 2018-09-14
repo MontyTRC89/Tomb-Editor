@@ -1112,14 +1112,6 @@ namespace TombEditor.Forms
                 textureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
         }
 
-        private void comboCurrentTexture_DropDown(object sender, EventArgs e)
-        {
-            // Make the combo box as wide as possible
-            Point screenPointLeft = comboCurrentTexture.PointToScreen(new Point(0, 0));
-            Rectangle screenPointRight = Screen.GetBounds(comboCurrentTexture.PointToScreen(new Point(0, comboCurrentTexture.Width)));
-            comboCurrentTexture.DropDownWidth = screenPointRight.Right - screenPointLeft.X - 15; // Margin
-        }
-
         private void butEditSetName_Click(object sender, EventArgs e)
         {
             var currentSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
