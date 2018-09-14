@@ -200,11 +200,11 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
-                                false, //_level.Settings.GameVersion == GameVersion.TR1,
+                                false,
                                 _level.Settings.GameVersion == GameVersion.TR4 ||
                                 _level.Settings.GameVersion == GameVersion.TRNG ||
                                 _level.Settings.GameVersion == GameVersion.TR5 ||
-                                _level.Settings.GameVersion != GameVersion.TR5Main);
+                                _level.Settings.GameVersion == GameVersion.TR5Main);
                     }
 
                     // Figure out padding of the frames
