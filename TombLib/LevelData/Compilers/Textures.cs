@@ -59,36 +59,46 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(18, "Building font & sky textures");
 
             var image = ImageC.CreateNew(256, _level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main ? 768 : 512);
+            int toY = 0;
 
+            // Read extra textures
             if (_level.Settings.GameVersion == GameVersion.TR5)
             {
-                // Read extra textures
-                string extraFileName = _level.Settings.MakeAbsolute(_level.Settings.Tr5ExtraSpritesFilePath) ?? "<default>";
-                ReportProgress(19, "Reading extra TR5 texture: " + extraFileName);
-                image.CopyFrom(0, 0, _level.Settings.LoadTr5ExtraSprites());
+                string extraFileName = _level.Settings.MakeAbsolute(_level.Settings.Tr5ExtraSpritesFilePath);
+                if (!string.IsNullOrEmpty(extraFileName) && !File.Exists(extraFileName))
+                {
+                    _progressReporter.ReportWarn("Specified extra TR5 texture not found, using default.");
+                    extraFileName = null;
+                }
+                else
+                    ReportProgress(19, "Reading extra TR5 texture: " + extraFileName);
+                image.CopyFrom(0, toY, _level.Settings.LoadTr5ExtraSprites(extraFileName));
+                toY += 256;
+            }
 
-                // Read font texture
-                string fontFileName = _level.Settings.MakeAbsolute(_level.Settings.FontTextureFilePath) ?? "<default>";
-                ReportProgress(19, "Reading font texture: " + fontFileName);
-                image.CopyFrom(0, 256, _level.Settings.LoadFontTexture());
-
-                // Read sky texture
-                string skyFileName = _level.Settings.MakeAbsolute(_level.Settings.SkyTextureFilePath) ?? "<default>";
-                ReportProgress(18, "Reading sky texture: " + skyFileName);
-                image.CopyFrom(0, 512, _level.Settings.LoadSkyTexture());
+            // Read font texture
+            string fontFileName = _level.Settings.MakeAbsolute(_level.Settings.FontTextureFilePath);
+            if (!string.IsNullOrEmpty(fontFileName) && !File.Exists(fontFileName))
+            {
+                _progressReporter.ReportWarn("Specified font texture not found, using default.");
+                fontFileName = null;
             }
             else
-            {
-                // Read font texture
-                string fontFileName = _level.Settings.MakeAbsolute(_level.Settings.FontTextureFilePath) ?? "<default>";
                 ReportProgress(19, "Reading font texture: " + fontFileName);
-                image.CopyFrom(0, 0, _level.Settings.LoadFontTexture());
+            image.CopyFrom(0, toY, _level.Settings.LoadFontTexture(fontFileName));
+            toY += 256;
 
-                // Read sky texture
-                string skyFileName = _level.Settings.MakeAbsolute(_level.Settings.SkyTextureFilePath) ?? "<default>";
-                ReportProgress(18, "Reading sky texture: " + skyFileName);
-                image.CopyFrom(0, 256, _level.Settings.LoadSkyTexture());
+
+            // Read sky texture
+            string skyFileName = _level.Settings.MakeAbsolute(_level.Settings.SkyTextureFilePath);
+            if (!string.IsNullOrEmpty(skyFileName) && !File.Exists(skyFileName))
+            {
+                _progressReporter.ReportWarn("Specified sky texture not found, using default.");
+                skyFileName = null;
             }
+            else
+                ReportProgress(19, "Reading sky texture: " + skyFileName);
+            image.CopyFrom(0, toY, _level.Settings.LoadSkyTexture(skyFileName));
 
             return image.ToRawStream();
         }

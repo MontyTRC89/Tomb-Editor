@@ -2638,9 +2638,16 @@ namespace TombEditor
         public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
         {
             Level level = _editor.Level;
-            if (level.Settings.Wads.All(wad => wad.Wad == null))
+
+            if (!level.Settings.Wads.All(wad => wad.Wad != null))
             {
-                _editor.SendMessage("No wads loaded. Can't compile level without wads.", PopupType.Error);
+                _editor.SendMessage("Wads are missing. Can't compile level without wads.", PopupType.Error);
+                return false;
+            }
+
+            if (!level.Settings.Textures.All(texture => texture.IsAvailable))
+            {
+                _editor.SendMessage("Textures are missing. Can't compile level without textures.", PopupType.Error);
                 return false;
             }
 
@@ -2689,7 +2696,6 @@ namespace TombEditor
             }
             else
                 _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
-
         }
 
         public static bool IsLaraInLevel()
