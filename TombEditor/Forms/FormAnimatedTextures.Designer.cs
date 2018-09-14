@@ -123,7 +123,6 @@ namespace TombEditor.Forms
             this.comboCurrentTexture.Name = "comboCurrentTexture";
             this.comboCurrentTexture.Size = new System.Drawing.Size(359, 23);
             this.comboCurrentTexture.TabIndex = 4;
-            this.comboCurrentTexture.DropDown += new System.EventHandler(this.comboCurrentTexture_DropDown);
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
             // textureMap
