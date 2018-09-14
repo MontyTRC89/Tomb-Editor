@@ -286,28 +286,25 @@ namespace TombLib.LevelData
             }
         }
 
-        public ImageC LoadFontTexture()
+        public ImageC LoadFontTexture(string path = null)
         {
-            string absolutePath = MakeAbsolute(FontTextureFilePath);
-            if (string.IsNullOrEmpty(absolutePath))
+            if (string.IsNullOrEmpty(path))
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Font_pc);
-            return LoadRawExtraTexture(absolutePath);
+            return LoadRawExtraTexture(path);
         }
 
-        public ImageC LoadSkyTexture()
+        public ImageC LoadSkyTexture(string path = null)
         {
-            string absolutePath = MakeAbsolute(SkyTextureFilePath);
-            if (string.IsNullOrEmpty(absolutePath))
+            if (string.IsNullOrEmpty(path))
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.pcsky_raw);
-            return LoadRawExtraTexture(absolutePath);
+            return LoadRawExtraTexture(path);
         }
 
-        public ImageC LoadTr5ExtraSprites()
+        public ImageC LoadTr5ExtraSprites(string path = null)
         {
-            string absolutePath = MakeAbsolute(Tr5ExtraSpritesFilePath);
-            if (string.IsNullOrEmpty(absolutePath))
+            if (string.IsNullOrEmpty(path))
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
-            return LoadRawExtraTexture(absolutePath);
+            return LoadRawExtraTexture(path);
         }
 
         public static ImageC LoadRawExtraTexture(string path)
