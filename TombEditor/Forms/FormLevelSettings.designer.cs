@@ -57,10 +57,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.objectFileDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.objectFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
@@ -123,6 +119,10 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.objectFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -610,38 +610,6 @@
             this.objectFileDataGridView.TabIndex = 4;
             this.objectFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.objectFileDataGridView_CellContentClick);
             this.objectFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectFileDataGridView_CellFormatting);
-            // 
-            // objectFileDataGridViewPathColumn
-            // 
-            this.objectFileDataGridViewPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.objectFileDataGridViewPathColumn.DataPropertyName = "Path";
-            this.objectFileDataGridViewPathColumn.HeaderText = "Path";
-            this.objectFileDataGridViewPathColumn.Name = "objectFileDataGridViewPathColumn";
-            // 
-            // objectFileDataGridViewSearchColumn
-            // 
-            this.objectFileDataGridViewSearchColumn.HeaderText = "";
-            this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
-            this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.objectFileDataGridViewSearchColumn.Text = "Search";
-            this.objectFileDataGridViewSearchColumn.Width = 80;
-            // 
-            // objectFileDataGridViewShowColumn
-            // 
-            this.objectFileDataGridViewShowColumn.HeaderText = "Show";
-            this.objectFileDataGridViewShowColumn.Name = "objectFileDataGridViewShowColumn";
-            this.objectFileDataGridViewShowColumn.Text = "◀";
-            this.objectFileDataGridViewShowColumn.Width = 45;
-            // 
-            // objectFileDataGridViewMessageColumn
-            // 
-            this.objectFileDataGridViewMessageColumn.DataPropertyName = "Message";
-            this.objectFileDataGridViewMessageColumn.FillWeight = 200F;
-            this.objectFileDataGridViewMessageColumn.HeaderText = "Message";
-            this.objectFileDataGridViewMessageColumn.Name = "objectFileDataGridViewMessageColumn";
-            this.objectFileDataGridViewMessageColumn.ReadOnly = true;
-            this.objectFileDataGridViewMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.objectFileDataGridViewMessageColumn.Width = 200;
             // 
             // darkLabel5
             // 
@@ -1311,6 +1279,40 @@
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
             // 
+            // objectFileDataGridViewPathColumn
+            // 
+            this.objectFileDataGridViewPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.objectFileDataGridViewPathColumn.DataPropertyName = "Path";
+            this.objectFileDataGridViewPathColumn.FillWeight = 60F;
+            this.objectFileDataGridViewPathColumn.HeaderText = "Path";
+            this.objectFileDataGridViewPathColumn.Name = "objectFileDataGridViewPathColumn";
+            // 
+            // objectFileDataGridViewSearchColumn
+            // 
+            this.objectFileDataGridViewSearchColumn.HeaderText = "";
+            this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
+            this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.objectFileDataGridViewSearchColumn.Text = "Search";
+            this.objectFileDataGridViewSearchColumn.Width = 80;
+            // 
+            // objectFileDataGridViewShowColumn
+            // 
+            this.objectFileDataGridViewShowColumn.HeaderText = "Show";
+            this.objectFileDataGridViewShowColumn.Name = "objectFileDataGridViewShowColumn";
+            this.objectFileDataGridViewShowColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.objectFileDataGridViewShowColumn.Text = "◀";
+            this.objectFileDataGridViewShowColumn.Width = 45;
+            // 
+            // objectFileDataGridViewMessageColumn
+            // 
+            this.objectFileDataGridViewMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.objectFileDataGridViewMessageColumn.DataPropertyName = "Message";
+            this.objectFileDataGridViewMessageColumn.FillWeight = 40F;
+            this.objectFileDataGridViewMessageColumn.HeaderText = "Message";
+            this.objectFileDataGridViewMessageColumn.Name = "objectFileDataGridViewMessageColumn";
+            this.objectFileDataGridViewMessageColumn.ReadOnly = true;
+            this.objectFileDataGridViewMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
@@ -1469,10 +1471,6 @@
         private DarkUI.Controls.DarkDataGridView textureFileDataGridView;
         private DarkUI.Controls.DarkLabel darkLabel4;
         private TombLib.Controls.DarkDataGridViewControls textureFileDataGridViewControls;
-        private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewPathColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewSearchColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewShowColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewMessageColumn;
         private System.Windows.Forms.DataGridViewImageColumn textureFileDataGridViewPreviewColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewPathColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn textureFileDataGridViewSearchColumn;
@@ -1481,5 +1479,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewSizeColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewPathColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewSearchColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewShowColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewMessageColumn;
     }
 }
