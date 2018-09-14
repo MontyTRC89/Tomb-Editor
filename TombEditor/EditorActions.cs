@@ -2782,7 +2782,7 @@ namespace TombEditor
                 _editor.SelectedTexture = new TextureArea { Texture = null };
             _editor.Level.Settings.Textures.Remove(textureToDelete);
             _editor.Level.RemoveTextures(texture => texture == textureToDelete);
-            _editor.LoadedTexturesChange();
+            _editor.LoadedTexturesChange(_editor.Level.Settings.Textures.FirstOrDefault());
         }
 
         public static IEnumerable<ReferencedWad> AddWad(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
