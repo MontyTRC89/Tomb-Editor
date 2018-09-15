@@ -35,7 +35,13 @@ namespace TombEditor.Forms
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.lstLog = new System.Windows.Forms.RichTextBox();
+            this.panelLogAndProgressBar = new System.Windows.Forms.Panel();
+            this.panelLog = new System.Windows.Forms.Panel();
+            this.panelProgressBar = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1.SuspendLayout();
+            this.panelLogAndProgressBar.SuspendLayout();
+            this.panelLog.SuspendLayout();
+            this.panelProgressBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // butOk
@@ -54,9 +60,9 @@ namespace TombEditor.Forms
             // 
             this.pbStato.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbStato.Location = new System.Drawing.Point(7, 339);
+            this.pbStato.Location = new System.Drawing.Point(3, 2);
             this.pbStato.Name = "pbStato";
-            this.pbStato.Size = new System.Drawing.Size(641, 23);
+            this.pbStato.Size = new System.Drawing.Size(640, 23);
             this.pbStato.TabIndex = 3;
             // 
             // tableLayoutPanel1
@@ -90,16 +96,43 @@ namespace TombEditor.Forms
             // 
             // lstLog
             // 
-            this.lstLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstLog.Location = new System.Drawing.Point(7, 7);
+            this.lstLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstLog.Location = new System.Drawing.Point(3, 3);
             this.lstLog.Name = "lstLog";
             this.lstLog.ReadOnly = true;
-            this.lstLog.Size = new System.Drawing.Size(641, 325);
+            this.lstLog.Size = new System.Drawing.Size(640, 329);
             this.lstLog.TabIndex = 0;
             this.lstLog.Text = "";
+            // 
+            // panelLogAndProgressBar
+            // 
+            this.panelLogAndProgressBar.Controls.Add(this.panelLog);
+            this.panelLogAndProgressBar.Controls.Add(this.panelProgressBar);
+            this.panelLogAndProgressBar.Location = new System.Drawing.Point(4, 4);
+            this.panelLogAndProgressBar.Name = "panelLogAndProgressBar";
+            this.panelLogAndProgressBar.Size = new System.Drawing.Size(646, 363);
+            this.panelLogAndProgressBar.TabIndex = 5;
+            // 
+            // panelLog
+            // 
+            this.panelLog.AllowDrop = true;
+            this.panelLog.Controls.Add(this.lstLog);
+            this.panelLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelLog.Location = new System.Drawing.Point(0, 0);
+            this.panelLog.Name = "panelLog";
+            this.panelLog.Padding = new System.Windows.Forms.Padding(3);
+            this.panelLog.Size = new System.Drawing.Size(646, 335);
+            this.panelLog.TabIndex = 5;
+            // 
+            // panelProgressBar
+            // 
+            this.panelProgressBar.Controls.Add(this.pbStato);
+            this.panelProgressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelProgressBar.Location = new System.Drawing.Point(0, 335);
+            this.panelProgressBar.Name = "panelProgressBar";
+            this.panelProgressBar.Size = new System.Drawing.Size(646, 28);
+            this.panelProgressBar.TabIndex = 4;
             // 
             // FormOperationDialog
             // 
@@ -108,9 +141,8 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(654, 402);
+            this.Controls.Add(this.panelLogAndProgressBar);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Controls.Add(this.pbStato);
-            this.Controls.Add(this.lstLog);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
             this.Name = "FormOperationDialog";
@@ -122,6 +154,9 @@ namespace TombEditor.Forms
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormImportPRJ_FormClosing);
             this.Shown += new System.EventHandler(this.FormBuildLevel_Shown);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.panelLogAndProgressBar.ResumeLayout(false);
+            this.panelLog.ResumeLayout(false);
+            this.panelProgressBar.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -133,5 +168,8 @@ namespace TombEditor.Forms
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private DarkButton butCancel;
         private System.Windows.Forms.RichTextBox lstLog;
+        private System.Windows.Forms.Panel panelLogAndProgressBar;
+        private System.Windows.Forms.Panel panelLog;
+        private System.Windows.Forms.Panel panelProgressBar;
     }
 }

@@ -2665,7 +2665,7 @@ namespace TombEditor
                 return false;
             }
 
-            using (var form = new FormOperationDialog("Build level", autoCloseWhenDone,
+            using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
                     var watch = new Stopwatch();
@@ -3408,7 +3408,14 @@ namespace TombEditor
             Level newLevel = null;
             try
             {
-                newLevel = Prj2Loader.LoadFromPrj2(fileName, new ProgressReporterSimple());
+                using (var form = new FormOperationDialog("Open level", true, true, progressReporter =>
+                    newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter)))
+                {
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return;
+                    _editor.Level = newLevel;
+                    newLevel = null;
+                }
             }
             catch (Exception exc)
             {
@@ -3463,7 +3470,7 @@ namespace TombEditor
                 return;
 
             Level newLevel = null;
-            using (var form = new FormOperationDialog("Import PRJ", false, progressReporter =>
+            using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
                 newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport)))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
