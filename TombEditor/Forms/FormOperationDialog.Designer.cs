@@ -101,7 +101,7 @@ namespace TombEditor.Forms
             this.lstLog.Location = new System.Drawing.Point(3, 3);
             this.lstLog.Name = "lstLog";
             this.lstLog.ReadOnly = true;
-            this.lstLog.Size = new System.Drawing.Size(640, 329);
+            this.lstLog.Size = new System.Drawing.Size(640, 325);
             this.lstLog.TabIndex = 0;
             this.lstLog.Text = "";
             // 
@@ -111,7 +111,7 @@ namespace TombEditor.Forms
             this.panelLogAndProgressBar.Controls.Add(this.panelProgressBar);
             this.panelLogAndProgressBar.Location = new System.Drawing.Point(4, 4);
             this.panelLogAndProgressBar.Name = "panelLogAndProgressBar";
-            this.panelLogAndProgressBar.Size = new System.Drawing.Size(646, 363);
+            this.panelLogAndProgressBar.Size = new System.Drawing.Size(646, 359);
             this.panelLogAndProgressBar.TabIndex = 5;
             // 
             // panelLog
@@ -122,14 +122,14 @@ namespace TombEditor.Forms
             this.panelLog.Location = new System.Drawing.Point(0, 0);
             this.panelLog.Name = "panelLog";
             this.panelLog.Padding = new System.Windows.Forms.Padding(3);
-            this.panelLog.Size = new System.Drawing.Size(646, 335);
+            this.panelLog.Size = new System.Drawing.Size(646, 331);
             this.panelLog.TabIndex = 5;
             // 
             // panelProgressBar
             // 
             this.panelProgressBar.Controls.Add(this.pbStato);
             this.panelProgressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelProgressBar.Location = new System.Drawing.Point(0, 335);
+            this.panelProgressBar.Location = new System.Drawing.Point(0, 331);
             this.panelProgressBar.Name = "panelProgressBar";
             this.panelProgressBar.Size = new System.Drawing.Size(646, 28);
             this.panelProgressBar.TabIndex = 4;
@@ -144,6 +144,7 @@ namespace TombEditor.Forms
             this.Controls.Add(this.panelLogAndProgressBar);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormOperationDialog";
             this.ShowIcon = false;
@@ -151,7 +152,7 @@ namespace TombEditor.Forms
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "<Unknown>";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormImportPRJ_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormOperationDialog_FormClosing);
             this.Shown += new System.EventHandler(this.FormBuildLevel_Shown);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panelLogAndProgressBar.ResumeLayout(false);

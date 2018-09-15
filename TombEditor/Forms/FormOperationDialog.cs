@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using DarkUI.Extensions;
 using DarkUI.Forms;
 using NLog;
 using TombLib.Forms;
@@ -43,12 +42,16 @@ namespace TombEditor.Forms
             _thread.Start();
         }
 
-        private void FormImportPRJ_FormClosing(object sender, FormClosingEventArgs e)
+        private void FormOperationDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing && _thread.IsAlive && !_threadShouldAbort)
+            if(_thread.IsAlive)
             {
-                EndThread();
                 e.Cancel = true;
+                if (e.CloseReason == CloseReason.UserClosing && !_threadShouldAbort)
+                {
+                    butCancel.Enabled = false;
+                    EndThread();
+                }
             }
         }
 
@@ -65,6 +68,7 @@ namespace TombEditor.Forms
                     {
                         pbStato.Value = 100;
                         butOk.Enabled = true;
+                        butCancel.Enabled = false;
                         butOk.Focus();
 
                         if (_autoCloseWhenDone)
@@ -81,7 +85,7 @@ namespace TombEditor.Forms
                 while (ex is AggregateException) // Improve error messages from exceptions of Task.* threads
                     ex = ex.InnerException;
 
-                logger.Error(ex, "PRJ loading failed");
+                logger.Error(ex, "Operation failed: " + Text);
 
                 string message = "There was an error. Message: " + ex.Message;
                 Invoke((Action)delegate
@@ -95,6 +99,8 @@ namespace TombEditor.Forms
                         }
 
                         lstLog.BackColor = Color.LightPink;
+                        butCancel.Enabled = true;
+                        butOk.Enabled = false;
                         butCancel.Focus();
                     });
             }
@@ -145,10 +151,7 @@ namespace TombEditor.Forms
 
         private void butCancel_Click(object sender, EventArgs e)
         {
-            if (_thread.IsAlive && _threadShouldAbort)
-                EndThread();
-            else
-                Close();
+            Close();
         }
 
         private void butOk_Click(object sender, EventArgs e)
