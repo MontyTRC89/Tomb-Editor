@@ -183,7 +183,7 @@ namespace TombLib.LevelData.IO
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Wads)
                 {
-                    progressReporter?.ReportInfo("Reading wads");
+                    progressReporter?.ReportInfo("Reading wads...");
 
                     var toLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
                     var list = new List<ReferencedWad>(); // Order matters
@@ -206,6 +206,7 @@ namespace TombLib.LevelData.IO
                         // Add wad
                         list.Add(newWad);
                         toLoad.Add(newWad, path);
+                        progressReporter?.ReportInfo("Wad successfully loaded: " + path);
                         return true;
                     });
 
@@ -214,7 +215,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.Textures)
                 {
-                    progressReporter?.ReportInfo("Reading textures");
+                    progressReporter?.ReportInfo("Reading textures...");
 
                     var toLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
                     var levelTextures = new Dictionary<long, LevelTexture>();
@@ -256,6 +257,7 @@ namespace TombLib.LevelData.IO
                         });
                         levelTextures.Add(levelTextureIndex, levelTexture);
                         toLoad.Add(levelTexture, path);
+                        progressReporter?.ReportInfo("Texture successfully loaded: " + path);
                         return true;
                     });
                     settings.Textures = levelTextures.Values.ToList();
@@ -264,7 +266,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.ImportedGeometries)
                 {
-                    progressReporter?.ReportInfo("Reading imported geometry");
+                    progressReporter?.ReportInfo("Reading imported geometry...");
 
                     var toLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
                     var importedGeometries = new Dictionary<long, ImportedGeometry>();
@@ -310,6 +312,7 @@ namespace TombLib.LevelData.IO
                         ImportedGeometry importedGeometry = new ImportedGeometry();
                         importedGeometries.Add(importedGeometryIndex, importedGeometry);
                         toLoad.Add(importedGeometry, importedGeometryInfo);
+                        progressReporter?.ReportInfo("Imported geometry successfully loaded: " + importedGeometry.Info.Name);
                         return true;
                     });
                     settings.ImportedGeometries = importedGeometries.Values.ToList();
@@ -556,9 +559,9 @@ namespace TombLib.LevelData.IO
                         roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(alternateRoomIndex, alternateRoom =>
                             {
                                 if (room.AlternateRoom != null)
-                                    logger.Error("The room " + room + " has more than 1 flip room.");
+                                    progressReporter?.ReportWarn("Room " + room + " has more than 1 flip room.");
                                 else if (alternateRoom.AlternateBaseRoom != null)
-                                    logger.Error("Room  " + alternateRoom + " is used for more than 1 flip room.");
+                                    progressReporter?.ReportWarn("Room  " + alternateRoom + " is used for more than 1 flip room.");
                                 else
                                 {
                                     room.AlternateRoom = alternateRoom;
