@@ -39,14 +39,14 @@ namespace TombLib.LevelData.IO
                 chunkIO.ReadChunks((id, chunkSize) =>
                 {
                     LevelSettings settings = null;
-                    if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref settings, loadSettings))
+                    if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref settings, loadSettings, progressReporter))
                     {
                         level.ApplyNewLevelSettings(settings);
                         return true;
                     }
-                    else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad))
+                    else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad, progressReporter))
                         return true;
-                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, embeddedSoundInfoWad))
+                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, embeddedSoundInfoWad, progressReporter))
                         return true;
                     return false;
                 });
@@ -90,7 +90,7 @@ namespace TombLib.LevelData.IO
             public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
         }
 
-        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, ref LevelSettings settingsOuter, Settings loadingSettings)
+        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, ref LevelSettings settingsOuter, Settings loadingSettings, IProgressReporter progressReporter = null)
         {
             if (idOuter != Prj2Chunks.Settings)
                 return false;
@@ -105,6 +105,7 @@ namespace TombLib.LevelData.IO
             {
                 if (id == Prj2Chunks.ObsoleteWadFilePath)
                 {
+                    progressReporter?.ReportInfo("Reading legacy wad");
                     string wadFilePath = chunkIO.ReadChunkString(chunkSize);
                     ReferencedWad wad = new ReferencedWad(settings, "");
                     WadsToLoad.Clear();
@@ -182,6 +183,8 @@ namespace TombLib.LevelData.IO
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Wads)
                 {
+                    progressReporter?.ReportInfo("Reading wads");
+
                     var toLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
                     var list = new List<ReferencedWad>(); // Order matters
                     chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -211,6 +214,8 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.Textures)
                 {
+                    progressReporter?.ReportInfo("Reading textures");
+
                     var toLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
                     var levelTextures = new Dictionary<long, LevelTexture>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -259,6 +264,8 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.ImportedGeometries)
                 {
+                    progressReporter?.ReportInfo("Reading imported geometry");
+
                     var toLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
                     var importedGeometries = new Dictionary<long, ImportedGeometry>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -365,16 +372,19 @@ namespace TombLib.LevelData.IO
             });
 
             // Load wads
+            progressReporter?.ReportInfo("Loading wads into level");
             if (!loadingSettings.IgnoreWads)
                 Parallel.ForEach(WadsToLoad, wad =>
                     wad.Key.SetPath(settings, wad.Value));
 
             // Load level textures
+            progressReporter?.ReportInfo("Loading textures into level");
             if (!loadingSettings.IgnoreTextures)
                 Parallel.ForEach(levelTexturesToLoad, levelTexture =>
                     levelTexture.Key.SetPath(settings, levelTexture.Value));
 
             // Load imported geoemtries
+            progressReporter?.ReportInfo("Loading imported geometry into level");
             settings.ImportedGeometryUpdate(importedGeometriesToLoad);
 
             // Apply settings
@@ -383,18 +393,19 @@ namespace TombLib.LevelData.IO
             return true;
         }
 
-        private static bool LoadEmbeddedSoundInfoWad(ChunkReader chunkIO, ChunkId idOuter, ref Wad2 embeddedSoundInfoWad)
+        private static bool LoadEmbeddedSoundInfoWad(ChunkReader chunkIO, ChunkId idOuter, ref Wad2 embeddedSoundInfoWad, IProgressReporter progressReporter = null)
         {
             if (idOuter != Prj2Chunks.EmbeddedSoundInfoWad)
                 return false;
 
+            progressReporter?.ReportInfo("Loading embedded sound samples");
             embeddedSoundInfoWad = Wad2Loader.LoadFromStream(chunkIO.Raw.BaseStream);
             return true;
         }
 
 
 
-        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, Wad2 embeddedSoundInfoWad)
+        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, Wad2 embeddedSoundInfoWad, IProgressReporter progressReporter = null)
         {
             if (idOuter != Prj2Chunks.Rooms)
                 return false;
@@ -404,6 +415,8 @@ namespace TombLib.LevelData.IO
 
             List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions = new List<KeyValuePair<long, Action<ObjectInstance>>>();
             Dictionary<long, ObjectInstance> newObjects = new Dictionary<long, ObjectInstance>();
+
+            progressReporter?.ReportInfo("Loading rooms");
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -570,8 +583,11 @@ namespace TombLib.LevelData.IO
 
                 if (!newRooms.ContainsKey(roomIndex))
                     newRooms.Add(roomIndex, room);
+
                 return true;
             });
+
+            progressReporter?.ReportInfo("Linking rooms with objects");
 
             // Link rooms
             foreach (var roomLinkAction in roomLinkActions)
@@ -596,8 +612,8 @@ namespace TombLib.LevelData.IO
                 }
 
             // Now build the real geometry and update geometry buffers
+            progressReporter?.ReportInfo("Building world geometry");
             Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.BuildGeometry());
-
             return true;
         }
 

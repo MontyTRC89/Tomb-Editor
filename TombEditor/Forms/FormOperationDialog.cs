@@ -7,6 +7,7 @@ using DarkUI.Forms;
 using NLog;
 using TombLib.Forms;
 using TombLib.Utils;
+using TombLib;
 
 namespace TombEditor.Forms
 {
@@ -19,7 +20,7 @@ namespace TombEditor.Forms
         private volatile bool _threadShouldAbort;
         private readonly bool _autoCloseWhenDone;
 
-        public FormOperationDialog(string operationName, bool autoCloseWhenDone, Action<IProgressReporter> operation)
+        public FormOperationDialog(string operationName, bool autoCloseWhenDone, bool noProgressBar, Action<IProgressReporter> operation)
         {
             _autoCloseWhenDone = autoCloseWhenDone;
             _operation = operation;
@@ -31,6 +32,8 @@ namespace TombEditor.Forms
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(152, 93) + (Size - ClientSize);
+
+            panelProgressBar.Visible = !noProgressBar;
         }
 
         private void FormBuildLevel_Shown(object sender, EventArgs e)
@@ -103,7 +106,7 @@ namespace TombEditor.Forms
             if (!(bool)Invoke((Func<bool>)delegate
             {
                 if (progress.HasValue)
-                    pbStato.Value = (int)Math.Round(progress.Value, 0);
+                    pbStato.Value = (int)Math.Round(MathC.Clamp(progress.Value, 0, 100), 0);
 
                 if (!string.IsNullOrEmpty(message))
                 {
