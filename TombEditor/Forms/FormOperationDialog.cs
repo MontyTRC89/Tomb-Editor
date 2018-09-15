@@ -180,7 +180,7 @@ namespace TombEditor.Forms
             // Shut the thread down forcefully
             lstLog.SelectionBackColor = Color.Tomato;
             lstLog.AppendText("Forcefully stopping process.\n");
-            _thread.Abort();
+            _thread.Interrupt();
             while ((_thread.ThreadState & (ThreadState.Stopped | ThreadState.Aborted)) != 0)
                 Thread.Sleep(5);
         }
