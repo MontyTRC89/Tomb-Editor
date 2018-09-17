@@ -928,8 +928,8 @@ namespace TombLib.LevelData
                             wB = b.Ceiling.XnZn;
                             fA = b.Floor.XnZp;
                             fB = b.Floor.XnZp;
-                            cA = b.Ceiling.XnZp;
-                            cB = b.Ceiling.XnZp;
+                            cA = b.IsAnyWall ? b.Ceiling.XnZp : b.Ceiling.XpZp;
+                            cB = b.IsAnyWall ? b.Ceiling.XnZp : b.Ceiling.XnZn;
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -951,8 +951,8 @@ namespace TombLib.LevelData
                             wB = b.Ceiling.XnZp;
                             fA = b.Floor.XpZp;
                             fB = b.Floor.XpZp;
-                            cA = b.Ceiling.XpZp;
-                            cB = b.Ceiling.XpZp;
+                            cA = b.IsAnyWall ? b.Ceiling.XpZp : b.Ceiling.XpZn;
+                            cB = b.IsAnyWall ? b.Ceiling.XpZp : b.Ceiling.XnZp;
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -974,8 +974,8 @@ namespace TombLib.LevelData
                             wB = b.Ceiling.XpZp;
                             fA = b.Floor.XpZn;
                             fB = b.Floor.XpZn;
-                            cA = b.Ceiling.XpZn;
-                            cB = b.Ceiling.XpZn;
+                            cA = b.IsAnyWall ? b.Ceiling.XpZn : b.Ceiling.XnZn;
+                            cB = b.IsAnyWall ? b.Ceiling.XpZn : b.Ceiling.XpZp;
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -997,8 +997,8 @@ namespace TombLib.LevelData
                             wB = b.Ceiling.XpZn;
                             fA = b.Floor.XnZn;
                             fB = b.Floor.XnZn;
-                            cA = b.Ceiling.XnZn;
-                            cB = b.Ceiling.XnZn;
+                            cA = b.IsAnyWall ? b.Ceiling.XnZn : b.Ceiling.XnZp;
+                            cB = b.IsAnyWall ? b.Ceiling.XnZn : b.Ceiling.XpZn;
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -1025,8 +1025,8 @@ namespace TombLib.LevelData
                             rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
                             wA = b.Ceiling.XpZp;
                             wB = b.Ceiling.XnZn;
-                            fA = b.Floor.XnZp;
-                            fB = b.Floor.XnZp;
+                            fA = b.IsAnyWall ? b.Floor.XnZp : b.Floor.XpZp;
+                            fB = b.IsAnyWall ? b.Floor.XnZp : b.Floor.XnZn;
                             cA = b.Ceiling.XnZp;
                             cB = b.Ceiling.XnZp;
                             qaFace = BlockFace.DiagonalQA;
@@ -1048,8 +1048,8 @@ namespace TombLib.LevelData
                             rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
                             wA = b.Ceiling.XpZn;
                             wB = b.Ceiling.XnZp;
-                            fA = b.Floor.XpZp;
-                            fB = b.Floor.XpZp;
+                            fA = b.IsAnyWall ? b.Floor.XpZp : b.Floor.XpZn;
+                            fB = b.IsAnyWall ? b.Floor.XpZp : b.Floor.XnZp;
                             cA = b.Ceiling.XpZp;
                             cB = b.Ceiling.XpZp;
                             qaFace = BlockFace.DiagonalQA;
@@ -1071,8 +1071,8 @@ namespace TombLib.LevelData
                             rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
                             wA = b.Ceiling.XnZn;
                             wB = b.Ceiling.XpZp;
-                            fA = b.Floor.XpZn;
-                            fB = b.Floor.XpZn;
+                            fA = b.IsAnyWall ? b.Floor.XpZn : b.Floor.XnZn;
+                            fB = b.IsAnyWall ? b.Floor.XpZn : b.Floor.XpZp;
                             cA = b.Ceiling.XpZn;
                             cB = b.Ceiling.XpZn;
                             qaFace = BlockFace.DiagonalQA;
@@ -1094,8 +1094,8 @@ namespace TombLib.LevelData
                             rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
                             wA = b.Ceiling.XnZp;
                             wB = b.Ceiling.XpZn;
-                            fA = b.Floor.XnZn;
-                            fB = b.Floor.XnZn;
+                            fA = b.IsAnyWall ? b.Floor.XnZn : b.Floor.XnZp;
+                            fB = b.IsAnyWall ? b.Floor.XnZn : b.Floor.XpZn;
                             cA = b.Ceiling.XnZn;
                             cB = b.Ceiling.XnZn;
                             qaFace = BlockFace.DiagonalQA;

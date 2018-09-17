@@ -1748,6 +1748,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
 
+                    room.Blocks[x, z].Type = BlockType.Floor;
                     room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
                 }
 
