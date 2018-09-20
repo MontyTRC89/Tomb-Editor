@@ -107,6 +107,8 @@ namespace TombLib.LevelData.Compilers
             PrepareTextures();
             _soundManager.PrepareSoundsData(_progressReporter);
 
+            _progressReporter.ReportInfo("\nWriting level file...\n");
+
             //Write the level
             switch (_level.Settings.GameVersion)
             {
@@ -442,11 +444,14 @@ namespace TombLib.LevelData.Compilers
         {
             var buffer = PathC.GetDirectoryNameTry(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)) + "\\Tomb_NextGeneration.dll";
             if (File.Exists(buffer))
+            {
                 buffer = (FileVersionInfo.GetVersionInfo(buffer)).ProductVersion;
+                _progressReporter.ReportInfo("TRNG found, version is " + buffer);
+            }
             else
             {
-                _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
                 buffer = "1,3,0,6";
+                _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
             }
             return buffer;
         }

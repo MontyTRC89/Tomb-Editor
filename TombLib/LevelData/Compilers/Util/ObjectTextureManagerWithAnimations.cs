@@ -7,12 +7,11 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
 {
-    public struct NgAnimatedTextureInfo
+    public struct AnimatedTextureInfo
     {
         public AnimatedTextureAnimationType AnimationType;
-        public sbyte Fps;
+        public float Fps;
         public sbyte UvRotate;
-        public short Delay;
         public List<ushort> ObjectTextureIndices;
 
         public bool IsUvRotate
@@ -58,11 +57,11 @@ namespace TombLib.LevelData.Compilers.Util
         // Animation expansion is delayed to allow to allow them to use really big object texture indices.
         private readonly Dictionary<Result, AnimationVersion> _delayAddedAnimationVersions = new Dictionary<Result, AnimationVersion>();
 
-        private List<NgAnimatedTextureInfo> _compiledAnimatedTextures = new List<NgAnimatedTextureInfo>();
+        private List<AnimatedTextureInfo> _compiledAnimatedTextures = new List<AnimatedTextureInfo>();
 
         private const float _marginFactor = 1.0f / 512.0f;
 
-        public IReadOnlyList<NgAnimatedTextureInfo> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
+        public IReadOnlyList<AnimatedTextureInfo> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
 
         public ObjectTextureManagerWithAnimations(IEnumerable<AnimatedTextureSet> animatedTextureSets)
         {
@@ -274,26 +273,14 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Create compiled animated texture
                 // TODO: remove test values when UI will be ready
-                NgAnimatedTextureInfo compiledAnimatedTexture = new NgAnimatedTextureInfo();
+                AnimatedTextureInfo compiledAnimatedTexture = new AnimatedTextureInfo();
                 compiledAnimatedTexture.ObjectTextureIndices = new List<ushort>();
                 compiledAnimatedTexture.AnimationType = set.AnimationType;
-                if (set.AnimationType == AnimatedTextureAnimationType.Frames)
-                {
-                    if (set.Fps < 0)
-                    {
-                        compiledAnimatedTexture.Fps = 0;
-                        compiledAnimatedTexture.Delay = (byte)-set.Fps;
-                    }
-                    else
-                    {
-                        compiledAnimatedTexture.Fps = set.Fps;
-                        compiledAnimatedTexture.Delay = 0;
-                    }
-                }
-                else if (set.AnimationType == AnimatedTextureAnimationType.PFrames)
+
+                if (set.AnimationType == AnimatedTextureAnimationType.PFrames)
                 {
                     compiledAnimatedTexture.Fps = 0;
-                    compiledAnimatedTexture.Delay = 0;
+                    compiledAnimatedTexture.UvRotate = 0;
                 }
                 else
                 {

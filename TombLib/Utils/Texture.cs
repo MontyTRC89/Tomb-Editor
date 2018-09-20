@@ -55,6 +55,14 @@ namespace TombLib.Utils
         Lighten = 10
     }
 
+    public enum BumpLevel : ushort
+    {
+        None,
+        Level1,
+        Level2,
+        Level3  // Future use
+    }
+
     public struct TextureArea : IEquatable<TextureArea>
     {
         public const float SafetyMargin = 0.45f;
@@ -66,6 +74,7 @@ namespace TombLib.Utils
         public Vector2 TexCoord2; //    - No array bounds checks
         public Vector2 TexCoord3; //    - 'Clone', 'GetHashCode' and so on work by default
         public BlendMode BlendMode;
+        public BumpLevel BumpLevel;
         public bool DoubleSided;
 
         public static bool operator ==(TextureArea first, TextureArea second)
@@ -77,6 +86,7 @@ namespace TombLib.Utils
                 first.TexCoord2.Equals(second.TexCoord2) &&
                 first.TexCoord3.Equals(second.TexCoord3) &&
                 first.BlendMode == second.BlendMode &&
+                first.BumpLevel == second.BumpLevel &&
                 first.DoubleSided == second.DoubleSided;
         }
 

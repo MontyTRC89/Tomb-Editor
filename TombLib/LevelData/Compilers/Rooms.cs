@@ -291,6 +291,7 @@ namespace TombLib.LevelData.Compilers
                                 TextureArea texture;
                                 texture.DoubleSided = false;
                                 texture.BlendMode = BlendMode.Normal;
+                                texture.BumpLevel = BumpLevel.None;
                                 texture.Texture = submesh.Value.Material.Texture;
                                 texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
                                 texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
