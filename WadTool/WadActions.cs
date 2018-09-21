@@ -241,7 +241,13 @@ namespace WadTool
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
                                 return;
+                            if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
+                            {
+                                destinationWad.Remove(form.NewId);
+                                tool.DestinationWadChanged();
+                            }
                             newIds[i] = form.NewId;
+                            break;
                         }
                     }
                     else
