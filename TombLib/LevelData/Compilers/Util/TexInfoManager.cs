@@ -114,18 +114,31 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
+        public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
+        {
+            // Add object textures
+            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
+            bool isNew;
+            byte firstTexCoordToEmit;
+            ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, textureSpaceIdentifier,
+                _textureAllocator.GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
+            return new Result
+            {
+                ObjectTextureIndex = objTexIndex,
+                FirstVertexIndexToEmit = firstTexCoordToEmit,
+                Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None)
+            };
+        }
+
         private long GetTexInfo(TextureArea areaToLook, out byte rotation)
         {
-            long result = -1;
+            rotation = 0;
 
             foreach (var parentTexInfo in ParentTextures)
             {
-                // Parent which is similar to incoming areaToLook quickly returns its TexInfo
+                // Parent which is similar to incoming area quickly returns its TexInfo
                 if(areaToLook == parentTexInfo.Area)
-                {
-                    rotation = 0;
                     return parentTexInfo.TexInfoIndex;
-                }
 
                 // Parents with different attributes are quickly discarded
                 if (parentTexInfo.Area.Texture   != areaToLook.Texture   ||
@@ -133,162 +146,77 @@ namespace TombLib.LevelData.Compilers.Util
                     parentTexInfo.Area.BumpLevel != areaToLook.BumpLevel  )
                     continue;
 
+                // Compare parent's own coordinates
+                var sourceCoordinates = new Vector2[] { new Vector2(parentTexInfo.Area.TexCoord0.X, parentTexInfo.Area.TexCoord0.Y),
+                                                        new Vector2(parentTexInfo.Area.TexCoord1.X, parentTexInfo.Area.TexCoord1.Y),
+                                                        new Vector2(parentTexInfo.Area.TexCoord2.X, parentTexInfo.Area.TexCoord2.Y),
+                                                        new Vector2(parentTexInfo.Area.TexCoord3.X, parentTexInfo.Area.TexCoord3.Y), };
+                var lookupCoordinates = new Vector2[] { new Vector2(areaToLook.TexCoord0.X, areaToLook.TexCoord0.Y),
+                                                        new Vector2(areaToLook.TexCoord1.X, areaToLook.TexCoord1.Y),
+                                                        new Vector2(areaToLook.TexCoord2.X, areaToLook.TexCoord2.Y),
+                                                        new Vector2(areaToLook.TexCoord3.X, areaToLook.TexCoord3.Y), };
 
-                    // TODO add scan here
-
-                    foreach (var children in parentTexInfo.Children)
+                int result = TestUVSimilarity(sourceCoordinates, lookupCoordinates);
+                if (result != -1)
                 {
-                    // TODO add scan here
+                    // Parent is rotation-wise equal to incoming area
+                    rotation = (byte)result;
+                    return parentTexInfo.TexInfoIndex;
+                }
+
+                foreach (var child in parentTexInfo.Children)
+                {
+                    result = TestUVSimilarity(child.Value, lookupCoordinates);
+                    if(result != -1)
+                    {
+                        // Child is rotation-wise equal to incoming area
+                        rotation = (byte)result;
+                        return child.Key;
+                    }
                 }
             }
+
+            return -1; // No equal entry, new should be created
         }
 
-        // TODO write scan func here
-
-        private ushort AddOrGetTexInfo(TextureArea newEntry, bool isTriangle, bool isUsedInRoomMesh, out bool isNew, out byte rotation, out bool mirror)
+        private int TestUVSimilarity(Vector2[] first, Vector2[] second)
         {
-            ushort id;
-            if (_objectTexturesLookup.TryGetValue(newEntry, out id))
+            int Result = -1; // Not similar
+
+            // If first/second coordinates are not mutually quads/tris, quickly return -1.
+            // Also discard out of bounds cases without exception.
+            if (first.Length == second.Length && first.Length >= 3 && first.Length <= 4)
             {
-                isNew = false;
-                rotation = 0;
-                mirror = 0;
-                return id;
-            }
+                int baseCoord = -1;  // Used to keep first-found similar coordinate
 
-            // Now identify same texture in rotated variations
-
-            foreach (var tex in _objectTexturesLookup)
-            {
-                var currTexture = tex.Key;
-                byte currCoord = 0;
-                bool notSame = true;
-
-                if (currTexture.TextureID == 1126)
+                // Now scroll through all texture coords and find one which is similar to 
+                // first one in current texture
+                for (byte i = 0; i < first.Length; i++)
                 {
-                    var scc = false;
-                }
-
-                // At first, we look if all other attributes beside coordinates match
-
-                if (currTexture.BlendMode == newEntry.BlendMode &&
-                    currTexture.TextureID == newEntry.TextureID &&
-                    currTexture.IsTriangularAndPadding == newEntry.IsTriangularAndPadding &&
-                    currTexture.TextureSpaceIdentifier == newEntry.TextureSpaceIdentifier &&
-                    currTexture.NewFlags == newEntry.NewFlags)
-                {
-                    int cToComp = currTexture.IsTriangularAndPadding != 0 ? 3 : 4;
-                    bool foundSameCoord = false;
-
-                    // Now scroll through all texture coords and find one which is similar to 
-                    // first one in current texture
-
-                    for (byte i = 0; i < cToComp; i++)
+                    if (first[0] == second[i])
                     {
-                        ushort[] compareCoords = new ushort[2] { 0, 0 };
-
-                        switch (i)
-                        {
-                            case 0:
-                                compareCoords[0] = currTexture.TexCoord0X;
-                                compareCoords[1] = currTexture.TexCoord0Y;
-                                break;
-                            case 1:
-                                compareCoords[0] = currTexture.TexCoord1X;
-                                compareCoords[1] = currTexture.TexCoord1Y;
-                                break;
-                            case 2:
-                                compareCoords[0] = currTexture.TexCoord2X;
-                                compareCoords[1] = currTexture.TexCoord2Y;
-                                break;
-                            case 3:
-                                compareCoords[0] = currTexture.TexCoord3X;
-                                compareCoords[1] = currTexture.TexCoord3Y;
-                                break;
-                        }
-
-                        if (compareCoords[0] == newEntry.TexCoord0X && compareCoords[1] == newEntry.TexCoord0Y)
-                        {
-                            currCoord = i;
-                            foundSameCoord = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundSameCoord)
+                        baseCoord = i;
                         break;
-
-                    for (byte i = 0; i < cToComp; i++)
-                    {
-                        ushort[] newCoords = new ushort[2] { 0, 0 };
-                        ushort[] compareCoords = new ushort[2] { 0, 0 };
-
-                        int currCompCoord = (i + currCoord) % cToComp;
-
-                        switch (currCompCoord)
-                        {
-                            case 0:
-                                compareCoords[0] = currTexture.TexCoord0X;
-                                compareCoords[1] = currTexture.TexCoord0Y;
-                                break;
-                            case 1:
-                                compareCoords[0] = currTexture.TexCoord1X;
-                                compareCoords[1] = currTexture.TexCoord1Y;
-                                break;
-                            case 2:
-                                compareCoords[0] = currTexture.TexCoord2X;
-                                compareCoords[1] = currTexture.TexCoord2Y;
-                                break;
-                            case 3:
-                                compareCoords[0] = currTexture.TexCoord3X;
-                                compareCoords[1] = currTexture.TexCoord3Y;
-                                break;
-                        }
-
-                        switch (i)
-                        {
-                            case 0:
-                                newCoords[0] = newEntry.TexCoord0X;
-                                newCoords[1] = newEntry.TexCoord0Y;
-                                break;
-                            case 1:
-                                newCoords[0] = newEntry.TexCoord1X;
-                                newCoords[1] = newEntry.TexCoord1Y;
-                                break;
-                            case 2:
-                                newCoords[0] = newEntry.TexCoord2X;
-                                newCoords[1] = newEntry.TexCoord2Y;
-                                break;
-                            case 3:
-                                newCoords[0] = newEntry.TexCoord3X;
-                                newCoords[1] = newEntry.TexCoord3Y;
-                                break;
-                        }
-
-                        if (newCoords[0] != compareCoords[0] || newCoords[1] != compareCoords[1])
-                            break;
-
-                        notSame = false;
                     }
                 }
 
-                if (!notSame)
+                // No first-found coordinate, discard further comparison
+                if (baseCoord != -1)
                 {
-                    isNew = false;
-                    nativeCoordToEmit = currCoord;
-                    return tex.Value;
+                    for (int i = 0; i < first.Length; i++)
+                    {
+                        // Shifted coord is different, discard further comparison
+                        if (first[i] != second[((i + baseCoord) % first.Length)])
+                            break;
+                        // Last coord reached, comparison succeeded
+                        if (i == first.Length - 1)
+                            Result = baseCoord;
+                    }
                 }
             }
-
-            // Now identify if "lower" tex coords are larger than "higher" ones.
-            // It is needed for compatibility with UVRotate textures, which 
-
-            id = AddObjectTextureWithoutLookup(newEntry, supportsUpTo65536);
-            _objectTexturesLookup.Add(newEntry, id);
-            isNew = true;
-            nativeCoordToEmit = 0;
-            return id;
+            return Result;
         }
+    }
 
         // ==================================== NON-REFACTORED CODE DOWN THE LINE ==========================
 
