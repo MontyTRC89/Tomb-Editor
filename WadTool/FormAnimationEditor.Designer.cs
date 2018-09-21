@@ -61,6 +61,7 @@ namespace WadTool
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelRight = new System.Windows.Forms.Panel();
+            this.butShowAll = new DarkUI.Controls.DarkButton();
             this.tbSearchByStateID = new DarkUI.Controls.DarkTextBox();
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.tbLateralEndVelocity = new DarkUI.Controls.DarkTextBox();
@@ -102,6 +103,7 @@ namespace WadTool
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
+            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackFrames = new System.Windows.Forms.TrackBar();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
@@ -131,36 +133,13 @@ namespace WadTool
             this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
             this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
-            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
-            this.panelInterpolate = new System.Windows.Forms.Panel();
-            this.butInterpolateFrames = new DarkUI.Controls.DarkButton();
-            this.butInterpolateSetCurrent2 = new DarkUI.Controls.DarkButton();
-            this.butInterpolateSetCurrent1 = new DarkUI.Controls.DarkButton();
-            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
-            this.tbInterpolateNumFrames = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
-            this.tbInterpolateFrame2 = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel19 = new DarkUI.Controls.DarkLabel();
-            this.tbInterpolateFrame1 = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.tbLatAccel = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
-            this.tbLatSpeed = new DarkUI.Controls.DarkTextBox();
-            this.tbSpeed = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
-            this.tbAccel = new DarkUI.Controls.DarkTextBox();
             this.openFileDialogPrj2 = new System.Windows.Forms.OpenFileDialog();
-            this.butShowAll = new DarkUI.Controls.DarkButton();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackFrames)).BeginInit();
             this.topBar.SuspendLayout();
-            this.panelRendering.SuspendLayout();
-            this.panelInterpolate.SuspendLayout();
             this.SuspendLayout();
             // 
             // topMenu
@@ -639,9 +618,22 @@ namespace WadTool
             this.panelRight.Size = new System.Drawing.Size(243, 673);
             this.panelRight.TabIndex = 2;
             // 
+            // butShowAll
+            // 
+            this.butShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butShowAll.Image = global::WadTool.Properties.Resources.angle_right_16;
+            this.butShowAll.Location = new System.Drawing.Point(160, 3);
+            this.butShowAll.Name = "butShowAll";
+            this.butShowAll.Size = new System.Drawing.Size(75, 22);
+            this.butShowAll.TabIndex = 124;
+            this.butShowAll.Text = "Show all";
+            this.butShowAll.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
+            // 
             // tbSearchByStateID
             // 
-            this.tbSearchByStateID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbSearchByStateID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSearchByStateID.Location = new System.Drawing.Point(6, 3);
             this.tbSearchByStateID.Name = "tbSearchByStateID";
@@ -650,7 +642,7 @@ namespace WadTool
             // 
             // darkButton1
             // 
-            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkButton1.Image = global::WadTool.Properties.Resources.search_16;
             this.darkButton1.Location = new System.Drawing.Point(45, 3);
@@ -1107,6 +1099,16 @@ namespace WadTool
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
             // 
+            // panelRendering
+            // 
+            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRendering.Location = new System.Drawing.Point(3, 59);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(809, 570);
+            this.panelRendering.TabIndex = 0;
+            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -1437,268 +1439,19 @@ namespace WadTool
             this.saveFileDialogExport.Filter = "Wad Tool animation (*.anim)|*.anim";
             this.saveFileDialogExport.Title = "Export animation";
             // 
-            // panelRendering
-            // 
-            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelRendering.Controls.Add(this.panelInterpolate);
-            this.panelRendering.Controls.Add(this.tbLatAccel);
-            this.panelRendering.Controls.Add(this.darkLabel14);
-            this.panelRendering.Controls.Add(this.darkLabel17);
-            this.panelRendering.Controls.Add(this.tbLatSpeed);
-            this.panelRendering.Controls.Add(this.tbSpeed);
-            this.panelRendering.Controls.Add(this.darkLabel15);
-            this.panelRendering.Controls.Add(this.darkLabel16);
-            this.panelRendering.Controls.Add(this.tbAccel);
-            this.panelRendering.Location = new System.Drawing.Point(3, 54);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(809, 575);
-            this.panelRendering.TabIndex = 4;
-            // 
-            // panelInterpolate
-            // 
-            this.panelInterpolate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelInterpolate.Controls.Add(this.butInterpolateFrames);
-            this.panelInterpolate.Controls.Add(this.butInterpolateSetCurrent2);
-            this.panelInterpolate.Controls.Add(this.butInterpolateSetCurrent1);
-            this.panelInterpolate.Controls.Add(this.darkLabel21);
-            this.panelInterpolate.Controls.Add(this.tbInterpolateNumFrames);
-            this.panelInterpolate.Controls.Add(this.darkLabel18);
-            this.panelInterpolate.Controls.Add(this.tbInterpolateFrame2);
-            this.panelInterpolate.Controls.Add(this.darkLabel19);
-            this.panelInterpolate.Controls.Add(this.tbInterpolateFrame1);
-            this.panelInterpolate.Controls.Add(this.darkLabel20);
-            this.panelInterpolate.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelInterpolate.Location = new System.Drawing.Point(570, 5);
-            this.panelInterpolate.Name = "panelInterpolate";
-            this.panelInterpolate.Size = new System.Drawing.Size(236, 148);
-            this.panelInterpolate.TabIndex = 0;
-            // 
-            // butInterpolateFrames
-            // 
-            this.butInterpolateFrames.Image = global::WadTool.Properties.Resources.interpolate_16;
-            this.butInterpolateFrames.Location = new System.Drawing.Point(11, 112);
-            this.butInterpolateFrames.Name = "butInterpolateFrames";
-            this.butInterpolateFrames.Size = new System.Drawing.Size(213, 23);
-            this.butInterpolateFrames.TabIndex = 96;
-            this.butInterpolateFrames.Text = "Interpolate selected frames";
-            this.butInterpolateFrames.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butInterpolateFrames.Click += new System.EventHandler(this.butInterpolateFrames_Click);
-            // 
-            // butInterpolateSetCurrent2
-            // 
-            this.butInterpolateSetCurrent2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butInterpolateSetCurrent2.Location = new System.Drawing.Point(139, 58);
-            this.butInterpolateSetCurrent2.Name = "butInterpolateSetCurrent2";
-            this.butInterpolateSetCurrent2.Size = new System.Drawing.Size(85, 22);
-            this.butInterpolateSetCurrent2.TabIndex = 95;
-            this.butInterpolateSetCurrent2.Text = "Set current";
-            this.butInterpolateSetCurrent2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butInterpolateSetCurrent2.Click += new System.EventHandler(this.butInterpolateSetCurrent2_Click);
-            // 
-            // butInterpolateSetCurrent1
-            // 
-            this.butInterpolateSetCurrent1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butInterpolateSetCurrent1.Location = new System.Drawing.Point(139, 30);
-            this.butInterpolateSetCurrent1.Name = "butInterpolateSetCurrent1";
-            this.butInterpolateSetCurrent1.Size = new System.Drawing.Size(85, 22);
-            this.butInterpolateSetCurrent1.TabIndex = 94;
-            this.butInterpolateSetCurrent1.Text = "Set current";
-            this.butInterpolateSetCurrent1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butInterpolateSetCurrent1.Click += new System.EventHandler(this.butInterpolateSetCurrent1_Click);
-            // 
-            // darkLabel21
-            // 
-            this.darkLabel21.AutoSize = true;
-            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel21.Location = new System.Drawing.Point(8, 9);
-            this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(102, 13);
-            this.darkLabel21.TabIndex = 60;
-            this.darkLabel21.Text = "Interpolate frames";
-            // 
-            // tbInterpolateNumFrames
-            // 
-            this.tbInterpolateNumFrames.Location = new System.Drawing.Point(73, 86);
-            this.tbInterpolateNumFrames.Name = "tbInterpolateNumFrames";
-            this.tbInterpolateNumFrames.Size = new System.Drawing.Size(60, 22);
-            this.tbInterpolateNumFrames.TabIndex = 59;
-            this.tbInterpolateNumFrames.Text = "0";
-            // 
-            // darkLabel18
-            // 
-            this.darkLabel18.AutoSize = true;
-            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(8, 88);
-            this.darkLabel18.Name = "darkLabel18";
-            this.darkLabel18.Size = new System.Drawing.Size(58, 13);
-            this.darkLabel18.TabIndex = 58;
-            this.darkLabel18.Text = "N. frames:";
-            // 
-            // tbInterpolateFrame2
-            // 
-            this.tbInterpolateFrame2.Location = new System.Drawing.Point(73, 58);
-            this.tbInterpolateFrame2.Name = "tbInterpolateFrame2";
-            this.tbInterpolateFrame2.ReadOnly = true;
-            this.tbInterpolateFrame2.Size = new System.Drawing.Size(60, 22);
-            this.tbInterpolateFrame2.TabIndex = 57;
-            this.tbInterpolateFrame2.Text = "0";
-            // 
-            // darkLabel19
-            // 
-            this.darkLabel19.AutoSize = true;
-            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel19.Location = new System.Drawing.Point(8, 60);
-            this.darkLabel19.Name = "darkLabel19";
-            this.darkLabel19.Size = new System.Drawing.Size(50, 13);
-            this.darkLabel19.TabIndex = 56;
-            this.darkLabel19.Text = "Frame 2:";
-            // 
-            // tbInterpolateFrame1
-            // 
-            this.tbInterpolateFrame1.Location = new System.Drawing.Point(73, 30);
-            this.tbInterpolateFrame1.Name = "tbInterpolateFrame1";
-            this.tbInterpolateFrame1.ReadOnly = true;
-            this.tbInterpolateFrame1.Size = new System.Drawing.Size(60, 22);
-            this.tbInterpolateFrame1.TabIndex = 55;
-            this.tbInterpolateFrame1.Text = "0";
-            // 
-            // darkLabel20
-            // 
-            this.darkLabel20.AutoSize = true;
-            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel20.Location = new System.Drawing.Point(8, 32);
-            this.darkLabel20.Name = "darkLabel20";
-            this.darkLabel20.Size = new System.Drawing.Size(50, 13);
-            this.darkLabel20.TabIndex = 54;
-            this.darkLabel20.Text = "Frame 1:";
-            // 
-            // tbLatAccel
-            // 
-            this.tbLatAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLatAccel.Location = new System.Drawing.Point(77, 93);
-            this.tbLatAccel.Name = "tbLatAccel";
-            this.tbLatAccel.Size = new System.Drawing.Size(81, 20);
-            this.tbLatAccel.TabIndex = 112;
-            this.tbLatAccel.Visible = false;
-            this.tbLatAccel.TextChanged += new System.EventHandler(this.tbLatAccel_TextChanged);
-            // 
-            // darkLabel14
-            // 
-            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel14.AutoSize = true;
-            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(17, 95);
-            this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(57, 13);
-            this.darkLabel14.TabIndex = 111;
-            this.darkLabel14.Text = "Lat. accel:";
-            this.darkLabel14.Visible = false;
-            // 
-            // darkLabel17
-            // 
-            this.darkLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel17.AutoSize = true;
-            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(17, 11);
-            this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(41, 13);
-            this.darkLabel17.TabIndex = 105;
-            this.darkLabel17.Text = "Speed:";
-            this.darkLabel17.Visible = false;
-            // 
-            // tbLatSpeed
-            // 
-            this.tbLatSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLatSpeed.Location = new System.Drawing.Point(77, 65);
-            this.tbLatSpeed.Name = "tbLatSpeed";
-            this.tbLatSpeed.Size = new System.Drawing.Size(81, 20);
-            this.tbLatSpeed.TabIndex = 110;
-            this.tbLatSpeed.Visible = false;
-            this.tbLatSpeed.Validated += new System.EventHandler(this.tbLatSpeed_Validated);
-            // 
-            // tbSpeed
-            // 
-            this.tbSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSpeed.Location = new System.Drawing.Point(77, 9);
-            this.tbSpeed.Name = "tbSpeed";
-            this.tbSpeed.Size = new System.Drawing.Size(80, 20);
-            this.tbSpeed.TabIndex = 106;
-            this.tbSpeed.Visible = false;
-            this.tbSpeed.Validated += new System.EventHandler(this.tbSpeed_Validated);
-            // 
-            // darkLabel15
-            // 
-            this.darkLabel15.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel15.AutoSize = true;
-            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(17, 67);
-            this.darkLabel15.Name = "darkLabel15";
-            this.darkLabel15.Size = new System.Drawing.Size(60, 13);
-            this.darkLabel15.TabIndex = 109;
-            this.darkLabel15.Text = "Lat. speed:";
-            this.darkLabel15.Visible = false;
-            // 
-            // darkLabel16
-            // 
-            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel16.AutoSize = true;
-            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(17, 39);
-            this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(37, 13);
-            this.darkLabel16.TabIndex = 107;
-            this.darkLabel16.Text = "Accel:";
-            this.darkLabel16.Visible = false;
-            // 
-            // tbAccel
-            // 
-            this.tbAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbAccel.Location = new System.Drawing.Point(77, 37);
-            this.tbAccel.Name = "tbAccel";
-            this.tbAccel.Size = new System.Drawing.Size(81, 20);
-            this.tbAccel.TabIndex = 108;
-            this.tbAccel.Visible = false;
-            this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
-            // 
             // openFileDialogPrj2
             // 
             this.openFileDialogPrj2.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
             this.openFileDialogPrj2.Title = "Open Prj2";
-            // 
-            // butShowAll
-            // 
-            this.butShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butShowAll.Image = global::WadTool.Properties.Resources.angle_right_16;
-            this.butShowAll.Location = new System.Drawing.Point(160, 3);
-            this.butShowAll.Name = "butShowAll";
-            this.butShowAll.Size = new System.Drawing.Size(75, 22);
-            this.butShowAll.TabIndex = 124;
-            this.butShowAll.Text = "Show all";
-            this.butShowAll.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
             // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1058, 741);
+            this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.topBar);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.topMenu);
@@ -1711,6 +1464,7 @@ namespace WadTool
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animation editor";
+            this.Load += new System.EventHandler(this.FormAnimationEditor_Load);
             this.topMenu.ResumeLayout(false);
             this.topMenu.PerformLayout();
             this.darkStatusStrip1.ResumeLayout(false);
@@ -1722,10 +1476,6 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.trackFrames)).EndInit();
             this.topBar.ResumeLayout(false);
             this.topBar.PerformLayout();
-            this.panelRendering.ResumeLayout(false);
-            this.panelRendering.PerformLayout();
-            this.panelInterpolate.ResumeLayout(false);
-            this.panelInterpolate.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

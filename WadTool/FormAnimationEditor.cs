@@ -159,10 +159,10 @@ namespace WadTool
             tbLateralEndVelocity.Text = node.WadAnimation.EndLateralVelocity.ToString();
 
             // TODO: deprecated stuff
-            tbSpeed.Text = (node.WadAnimation.Speed / 65536.0f).ToString();
+            /*tbSpeed.Text = (node.WadAnimation.Speed / 65536.0f).ToString();
             tbAccel.Text = (node.WadAnimation.Acceleration / 65536.0f).ToString();
             tbLatSpeed.Text = (node.WadAnimation.LateralSpeed / 65536.0f).ToString();
-            tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();
+            tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();*/
 
             panelRendering.CurrentKeyFrame = 0;
             panelRendering.SelectedMesh = null;
@@ -1330,6 +1330,11 @@ namespace WadTool
         {
             tbSearchByStateID.Text = "";
             ReloadAnimations();
+        }
+
+        private void FormAnimationEditor_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
