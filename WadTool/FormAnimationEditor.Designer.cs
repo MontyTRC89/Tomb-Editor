@@ -61,6 +61,8 @@ namespace WadTool
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelRight = new System.Windows.Forms.Panel();
+            this.tbSearchByStateID = new DarkUI.Controls.DarkTextBox();
+            this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.tbLateralEndVelocity = new DarkUI.Controls.DarkTextBox();
             this.tbLateralStartVelocity = new DarkUI.Controls.DarkTextBox();
             this.tbStartVelocity = new DarkUI.Controls.DarkTextBox();
@@ -69,7 +71,7 @@ namespace WadTool
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkLabel24 = new DarkUI.Controls.DarkLabel();
             this.darkLabel25 = new DarkUI.Controls.DarkLabel();
-            this.butPlay = new DarkUI.Controls.DarkButton();
+            this.butPlayAnimation = new DarkUI.Controls.DarkButton();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tbStateId = new DarkUI.Controls.DarkTextBox();
             this.butDeleteFrame = new DarkUI.Controls.DarkButton();
@@ -82,7 +84,7 @@ namespace WadTool
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.darkButton3 = new DarkUI.Controls.DarkButton();
+            this.butAddNewAnimation = new DarkUI.Controls.DarkButton();
             this.butEditAnimCommands = new DarkUI.Controls.DarkButton();
             this.butCalculateCollisionBox = new DarkUI.Controls.DarkButton();
             this.tbCollisionBoxMaxZ = new DarkUI.Controls.DarkTextBox();
@@ -98,7 +100,6 @@ namespace WadTool
             this.tbCollisionBoxMinX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -151,6 +152,7 @@ namespace WadTool
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.tbAccel = new DarkUI.Controls.DarkTextBox();
             this.openFileDialogPrj2 = new System.Windows.Forms.OpenFileDialog();
+            this.butShowAll = new DarkUI.Controls.DarkButton();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -174,7 +176,7 @@ namespace WadTool
             this.topMenu.Location = new System.Drawing.Point(0, 0);
             this.topMenu.Name = "topMenu";
             this.topMenu.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.topMenu.Size = new System.Drawing.Size(1016, 24);
+            this.topMenu.Size = new System.Drawing.Size(1058, 24);
             this.topMenu.TabIndex = 0;
             this.topMenu.Text = "darkMenuStrip1";
             // 
@@ -575,7 +577,7 @@ namespace WadTool
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 705);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1016, 36);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(1058, 36);
             this.darkStatusStrip1.TabIndex = 1;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -589,6 +591,9 @@ namespace WadTool
             // 
             this.panelRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRight.Controls.Add(this.butShowAll);
+            this.panelRight.Controls.Add(this.tbSearchByStateID);
+            this.panelRight.Controls.Add(this.darkButton1);
             this.panelRight.Controls.Add(this.tbLateralEndVelocity);
             this.panelRight.Controls.Add(this.tbLateralStartVelocity);
             this.panelRight.Controls.Add(this.tbStartVelocity);
@@ -597,7 +602,7 @@ namespace WadTool
             this.panelRight.Controls.Add(this.darkLabel23);
             this.panelRight.Controls.Add(this.darkLabel24);
             this.panelRight.Controls.Add(this.darkLabel25);
-            this.panelRight.Controls.Add(this.butPlay);
+            this.panelRight.Controls.Add(this.butPlayAnimation);
             this.panelRight.Controls.Add(this.darkLabel2);
             this.panelRight.Controls.Add(this.tbStateId);
             this.panelRight.Controls.Add(this.butDeleteFrame);
@@ -610,7 +615,7 @@ namespace WadTool
             this.panelRight.Controls.Add(this.darkLabel4);
             this.panelRight.Controls.Add(this.tbName);
             this.panelRight.Controls.Add(this.darkLabel3);
-            this.panelRight.Controls.Add(this.darkButton3);
+            this.panelRight.Controls.Add(this.butAddNewAnimation);
             this.panelRight.Controls.Add(this.butEditAnimCommands);
             this.panelRight.Controls.Add(this.butCalculateCollisionBox);
             this.panelRight.Controls.Add(this.tbCollisionBoxMaxZ);
@@ -626,14 +631,35 @@ namespace WadTool
             this.panelRight.Controls.Add(this.tbCollisionBoxMinX);
             this.panelRight.Controls.Add(this.darkLabel13);
             this.panelRight.Controls.Add(this.butEditStateChanges);
-            this.panelRight.Controls.Add(this.darkLabel1);
             this.panelRight.Controls.Add(this.butDeleteAnimation);
             this.panelRight.Controls.Add(this.treeAnimations);
             this.panelRight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelRight.Location = new System.Drawing.Point(773, 27);
+            this.panelRight.Location = new System.Drawing.Point(815, 27);
             this.panelRight.Name = "panelRight";
             this.panelRight.Size = new System.Drawing.Size(243, 673);
             this.panelRight.TabIndex = 2;
+            // 
+            // tbSearchByStateID
+            // 
+            this.tbSearchByStateID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearchByStateID.Location = new System.Drawing.Point(6, 3);
+            this.tbSearchByStateID.Name = "tbSearchByStateID";
+            this.tbSearchByStateID.Size = new System.Drawing.Size(33, 22);
+            this.tbSearchByStateID.TabIndex = 123;
+            // 
+            // darkButton1
+            // 
+            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkButton1.Image = global::WadTool.Properties.Resources.search_16;
+            this.darkButton1.Location = new System.Drawing.Point(45, 3);
+            this.darkButton1.Name = "darkButton1";
+            this.darkButton1.Size = new System.Drawing.Size(109, 22);
+            this.darkButton1.TabIndex = 122;
+            this.darkButton1.Text = "Search State ID";
+            this.darkButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
             // 
             // tbLateralEndVelocity
             // 
@@ -723,17 +749,17 @@ namespace WadTool
             this.darkLabel25.TabIndex = 116;
             this.darkLabel25.Text = "End velocity:";
             // 
-            // butPlay
+            // butPlayAnimation
             // 
-            this.butPlay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.butPlayAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butPlay.Image = global::WadTool.Properties.Resources.play_16;
-            this.butPlay.Location = new System.Drawing.Point(95, 298);
-            this.butPlay.Name = "butPlay";
-            this.butPlay.Size = new System.Drawing.Size(59, 23);
-            this.butPlay.TabIndex = 113;
-            this.butPlay.Text = "Play";
-            this.butPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butPlayAnimation.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPlayAnimation.Location = new System.Drawing.Point(95, 298);
+            this.butPlayAnimation.Name = "butPlayAnimation";
+            this.butPlayAnimation.Size = new System.Drawing.Size(59, 23);
+            this.butPlayAnimation.TabIndex = 113;
+            this.butPlayAnimation.Text = "Play";
+            this.butPlayAnimation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             // 
             // darkLabel2
             // 
@@ -871,17 +897,18 @@ namespace WadTool
             this.darkLabel3.TabIndex = 94;
             this.darkLabel3.Text = "Name:";
             // 
-            // darkButton3
+            // butAddNewAnimation
             // 
-            this.darkButton3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkButton3.Image = global::WadTool.Properties.Resources.plus_math_16;
-            this.darkButton3.Location = new System.Drawing.Point(6, 298);
-            this.darkButton3.Name = "darkButton3";
-            this.darkButton3.Size = new System.Drawing.Size(83, 23);
-            this.darkButton3.TabIndex = 93;
-            this.darkButton3.Text = "Add new";
-            this.darkButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddNewAnimation.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddNewAnimation.Location = new System.Drawing.Point(6, 298);
+            this.butAddNewAnimation.Name = "butAddNewAnimation";
+            this.butAddNewAnimation.Size = new System.Drawing.Size(83, 23);
+            this.butAddNewAnimation.TabIndex = 93;
+            this.butAddNewAnimation.Text = "Add new";
+            this.butAddNewAnimation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddNewAnimation.Click += new System.EventHandler(this.butAddNewAnimation_Click);
             // 
             // butEditAnimCommands
             // 
@@ -1054,17 +1081,6 @@ namespace WadTool
             this.butEditStateChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butEditStateChanges.Click += new System.EventHandler(this.butEditStateChanges_Click);
             // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 11);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(67, 13);
-            this.darkLabel1.TabIndex = 25;
-            this.darkLabel1.Text = "Animations";
-            // 
             // butDeleteAnimation
             // 
             this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -1098,7 +1114,7 @@ namespace WadTool
             this.panel1.Controls.Add(this.trackFrames);
             this.panel1.Location = new System.Drawing.Point(0, 635);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(770, 65);
+            this.panel1.Size = new System.Drawing.Size(812, 65);
             this.panel1.TabIndex = 5;
             // 
             // trackFrames
@@ -1107,7 +1123,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackFrames.Location = new System.Drawing.Point(3, 8);
             this.trackFrames.Name = "trackFrames";
-            this.trackFrames.Size = new System.Drawing.Size(764, 45);
+            this.trackFrames.Size = new System.Drawing.Size(806, 45);
             this.trackFrames.TabIndex = 0;
             this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
             // 
@@ -1146,7 +1162,7 @@ namespace WadTool
             this.topBar.Location = new System.Drawing.Point(0, 28);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.topBar.Size = new System.Drawing.Size(896, 28);
+            this.topBar.Size = new System.Drawing.Size(809, 28);
             this.topBar.TabIndex = 6;
             this.topBar.Text = "darkToolStrip1";
             // 
@@ -1437,7 +1453,7 @@ namespace WadTool
             this.panelRendering.Controls.Add(this.tbAccel);
             this.panelRendering.Location = new System.Drawing.Point(3, 54);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(767, 575);
+            this.panelRendering.Size = new System.Drawing.Size(809, 575);
             this.panelRendering.TabIndex = 4;
             // 
             // panelInterpolate
@@ -1454,7 +1470,7 @@ namespace WadTool
             this.panelInterpolate.Controls.Add(this.tbInterpolateFrame1);
             this.panelInterpolate.Controls.Add(this.darkLabel20);
             this.panelInterpolate.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelInterpolate.Location = new System.Drawing.Point(528, 5);
+            this.panelInterpolate.Location = new System.Drawing.Point(570, 5);
             this.panelInterpolate.Name = "panelInterpolate";
             this.panelInterpolate.Size = new System.Drawing.Size(236, 148);
             this.panelInterpolate.TabIndex = 0;
@@ -1567,7 +1583,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbLatAccel.Location = new System.Drawing.Point(77, 93);
             this.tbLatAccel.Name = "tbLatAccel";
-            this.tbLatAccel.Size = new System.Drawing.Size(39, 20);
+            this.tbLatAccel.Size = new System.Drawing.Size(81, 20);
             this.tbLatAccel.TabIndex = 112;
             this.tbLatAccel.Visible = false;
             this.tbLatAccel.TextChanged += new System.EventHandler(this.tbLatAccel_TextChanged);
@@ -1604,7 +1620,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbLatSpeed.Location = new System.Drawing.Point(77, 65);
             this.tbLatSpeed.Name = "tbLatSpeed";
-            this.tbLatSpeed.Size = new System.Drawing.Size(39, 20);
+            this.tbLatSpeed.Size = new System.Drawing.Size(81, 20);
             this.tbLatSpeed.TabIndex = 110;
             this.tbLatSpeed.Visible = false;
             this.tbLatSpeed.Validated += new System.EventHandler(this.tbLatSpeed_Validated);
@@ -1615,7 +1631,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSpeed.Location = new System.Drawing.Point(77, 9);
             this.tbSpeed.Name = "tbSpeed";
-            this.tbSpeed.Size = new System.Drawing.Size(38, 20);
+            this.tbSpeed.Size = new System.Drawing.Size(80, 20);
             this.tbSpeed.TabIndex = 106;
             this.tbSpeed.Visible = false;
             this.tbSpeed.Validated += new System.EventHandler(this.tbSpeed_Validated);
@@ -1652,7 +1668,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbAccel.Location = new System.Drawing.Point(77, 37);
             this.tbAccel.Name = "tbAccel";
-            this.tbAccel.Size = new System.Drawing.Size(39, 20);
+            this.tbAccel.Size = new System.Drawing.Size(81, 20);
             this.tbAccel.TabIndex = 108;
             this.tbAccel.Visible = false;
             this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
@@ -1662,11 +1678,24 @@ namespace WadTool
             this.openFileDialogPrj2.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
             this.openFileDialogPrj2.Title = "Open Prj2";
             // 
+            // butShowAll
+            // 
+            this.butShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butShowAll.Image = global::WadTool.Properties.Resources.angle_right_16;
+            this.butShowAll.Location = new System.Drawing.Point(160, 3);
+            this.butShowAll.Name = "butShowAll";
+            this.butShowAll.Size = new System.Drawing.Size(75, 22);
+            this.butShowAll.TabIndex = 124;
+            this.butShowAll.Text = "Show all";
+            this.butShowAll.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1016, 741);
+            this.ClientSize = new System.Drawing.Size(1058, 741);
             this.Controls.Add(this.topBar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panelRendering);
@@ -1739,7 +1768,6 @@ namespace WadTool
         private DarkUI.Controls.DarkButton butDeleteAnimation;
         private DarkUI.Controls.DarkButton butEditStateChanges;
         private DarkUI.Controls.DarkButton butDeleteFrame;
-        private DarkUI.Controls.DarkLabel darkLabel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TrackBar trackFrames;
         private DarkUI.Controls.DarkButton butCalculateCollisionBox;
@@ -1757,7 +1785,7 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel13;
         private System.Windows.Forms.ToolStripStatusLabel statusFrame;
         private DarkUI.Controls.DarkButton butEditAnimCommands;
-        private DarkUI.Controls.DarkButton darkButton3;
+        private DarkUI.Controls.DarkButton butAddNewAnimation;
         private DarkUI.Controls.DarkTextBox tbFramerate;
         private DarkUI.Controls.DarkLabel darkLabel4;
         private DarkUI.Controls.DarkTextBox tbName;
@@ -1814,7 +1842,7 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkTextBox tbInterpolateFrame1;
         private DarkUI.Controls.DarkLabel darkLabel20;
-        private DarkUI.Controls.DarkButton butPlay;
+        private DarkUI.Controls.DarkButton butPlayAnimation;
         private System.Windows.Forms.Timer timerPlayAnimation;
         private DarkUI.Controls.DarkTextBox tbLateralEndVelocity;
         private DarkUI.Controls.DarkTextBox tbLateralStartVelocity;
@@ -1835,5 +1863,8 @@ namespace WadTool
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripComboBox comboRooms;
         private System.Windows.Forms.OpenFileDialog openFileDialogPrj2;
+        private DarkUI.Controls.DarkTextBox tbSearchByStateID;
+        private DarkUI.Controls.DarkButton darkButton1;
+        private DarkUI.Controls.DarkButton butShowAll;
     }
 }

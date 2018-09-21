@@ -107,14 +107,28 @@ namespace WadTool
 
             var list = new List<DarkUI.Controls.DarkTreeNode>();
             int index = 0;
+
+            // Filter by State ID?
+            int searchStateId = -1;
+            tbSearchByStateID.Text = tbSearchByStateID.Text.Trim();
+            if (!int.TryParse(tbSearchByStateID.Text, out searchStateId))
+                searchStateId = -1;
+
             foreach (var animation in _workingAnimations)
             {
+                // Filter by State ID?
+                if (searchStateId >= 0 && animation.WadAnimation.StateId != searchStateId)
+                    continue;
+
                 var node = new DarkUI.Controls.DarkTreeNode(index++ + ": " + animation.WadAnimation.Name);
                 node.Tag = animation;
                 list.Add(node);
             }
 
             treeAnimations.Nodes.AddRange(list);
+            if (list.Count != 0)
+                treeAnimations.SelectNode(list[0]);
+            treeAnimations.Refresh();
         }
 
         private void addNewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1300,6 +1314,22 @@ namespace WadTool
             }
 
             panelRendering.Invalidate();
+        }
+
+        private void butAddNewAnimation_Click(object sender, EventArgs e)
+        {
+            AddNewAnimation();
+        }
+
+        private void butSearchByStateID_Click(object sender, EventArgs e)
+        {
+            ReloadAnimations();
+        }
+
+        private void butShowAll_Click(object sender, EventArgs e)
+        {
+            tbSearchByStateID.Text = "";
+            ReloadAnimations();
         }
     }
 }
