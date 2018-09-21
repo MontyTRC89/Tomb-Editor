@@ -253,7 +253,7 @@ namespace TombLib.Controls
             {
                 WadSpriteSequence spriteSequence = (WadSpriteSequence)CurrentObject;
                 int spriteIndex = Math.Min(spriteSequence.Sprites.Count - 1, KeyFrameIndex);
-                if (spriteIndex < spriteSequence.Sprites.Count)
+                if (spriteIndex < spriteSequence.Sprites.Count && spriteIndex >= 0)
                 {
                     WadSprite sprite = spriteSequence.Sprites[spriteIndex];
 
