@@ -63,6 +63,20 @@ namespace WadTool
                 panel3D.Invalidate();
 
                 Text = "Wad Tool - " + (_tool.DestinationWad?.FileName ?? "New");
+
+                if (_tool.DestinationWad != null)
+                {
+                    labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
+                                           "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
+                                           "Sprites sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
+                                           "Fixed sounds: " + _tool.DestinationWad.FixedSoundInfos.Count + " | " +
+                                           "Additional sounds: " + _tool.DestinationWad.AdditionalSoundInfos.Count + " | " +
+                                           "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count;
+                }
+                else
+                {
+                    labelStatistics.Text = "";
+                }
             }
             if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
