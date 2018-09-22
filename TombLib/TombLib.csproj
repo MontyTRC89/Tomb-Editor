@@ -167,6 +167,7 @@
     <Compile Include="LevelData\Compilers\Util\ObjectTextureManager.cs" />
     <Compile Include="LevelData\Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
     <Compile Include="LevelData\Compilers\Util\SoundManager.cs" />
+    <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
     <Compile Include="LevelData\Compilers\Util\TextureAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />
     <Compile Include="LevelData\FlybyCameraInstance.cs" />

@@ -95,9 +95,11 @@ namespace TombLib.Utils
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
         public override int GetHashCode() => base.GetHashCode();
 
+        public bool ParametersSimilar(TextureArea other) => Texture == other.Texture && BlendMode == other.BlendMode && BumpLevel == other.BumpLevel;
+
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
-
+        
         public bool TriangleCoordsOutOfBounds
         {
             get
@@ -120,6 +122,12 @@ namespace TombLib.Utils
                 Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
                 return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
             }
+        }
+
+        public Vector2[] GetMinMax()
+        {
+            return new Vector2[2] { Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
+                                    Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)) };
         }
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords

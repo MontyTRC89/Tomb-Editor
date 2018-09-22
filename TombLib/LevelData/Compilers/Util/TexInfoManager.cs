@@ -14,12 +14,19 @@ namespace TombLib.LevelData.Compilers.Util
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        // List of parent textures should contain all "ancestor" texture areas in which all variations
+        // are placed, including mirrored and rotated ones.
+
+        public List<ParentTextureArea> ParentTextures = new List<ParentTextureArea>();
+        public int TexInfoCount { get; private set; } = 0;
+
         public int TexturePageSize = 256;
         public int NumNonBumpedTexturePages = 0;
         public int NumBumpedTexturePages = 0;
 
         // Get page offset for bump-mapped texture pages
         private int PageOffset(ushort flags) => ((flags & 0x1800) != 0) ? NumNonBumpedTexturePages : 0;
+
 
         // ParentTextureArea is a texture area which contains all other texture areas which are
         // completely inside current one. Blending mode and bumpmapping parameters define that
@@ -28,27 +35,107 @@ namespace TombLib.LevelData.Compilers.Util
 
         public class ParentTextureArea
         {
-            public long TexInfoIndex { get; private set; }
             public TextureArea Area { get; private set; }
+            public List<KeyValuePair<int, Vector2[]>> Children;
 
-            public List<KeyValuePair<long, Vector2[]>> Children;
+            // Generates new ParentTextureArea from raw texture coordinates.
+            public ParentTextureArea(TextureArea newTextureArea)
+            {
+                var minMax = newTextureArea.GetMinMax();
+
+                Area = new TextureArea()
+                {
+                    BlendMode = newTextureArea.BlendMode,
+                    BumpLevel = newTextureArea.BumpLevel,
+                    DoubleSided = newTextureArea.DoubleSided,
+                    Texture = newTextureArea.Texture,
+
+                    // Please note that resulting parent area is a min-max quad, because
+                    // generally it makes more sense to operate on it than on raw tex coords.
+                    TexCoord0 = new Vector2(minMax[0].X, minMax[0].Y),
+                    TexCoord1 = new Vector2(minMax[1].X, minMax[0].Y),
+                    TexCoord2 = new Vector2(minMax[1].X, minMax[1].Y),
+                    TexCoord3 = new Vector2(minMax[0].X, minMax[1].Y)
+                };
+
+                Children = new List<KeyValuePair<int, Vector2[]>>();
+            }
+
+            // Checks if parameters are similar to another texture area, and if so,
+            // also checks if texture area is enclosed in parent's area.
+            public bool IsPotentialChild(TextureArea texture)
+            {
+                return (Area.ParametersSimilar(texture) &&
+                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord0)) &&
+                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord1)) &&
+                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord2)) &&
+                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord3)));
+            }
+
+            // Adds texture as a child to existing parent, with recalculating coordinates to relative.
+            public void AddChild(TextureArea texture, int newTextureID)
+            {
+                Children.Add(new KeyValuePair<int, Vector2[]>(newTextureID,
+                    new Vector2[4]
+                    {
+                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord0.X, Y = Area.TexCoord0.Y - texture.TexCoord0.Y },
+                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord1.X, Y = Area.TexCoord0.Y - texture.TexCoord1.Y },
+                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord2.X, Y = Area.TexCoord0.Y - texture.TexCoord2.Y },
+                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord3.X, Y = Area.TexCoord0.Y - texture.TexCoord3.Y }
+                    }));
+            }
+
+            // Returns absolute child coordinates
+            public static Vector2[] GetAbsChildCoordinates(ParentTextureArea parent, Vector2[] relativeCoordinates)
+            {
+                if(relativeCoordinates.Length != 4)
+                {
+                    logger.Error("GetAbsChildCoordinates: Weird coordinates count encountered!");
+                    return new Vector2[] { Vector2.Zero };
+                }
+
+                return new Vector2[] { new Vector2(parent.Area.TexCoord0.X + relativeCoordinates[0].X, parent.Area.TexCoord0.Y + relativeCoordinates[0].Y),
+                                       new Vector2(parent.Area.TexCoord0.X + relativeCoordinates[1].X, parent.Area.TexCoord0.Y + relativeCoordinates[1].Y),
+                                       new Vector2(parent.Area.TexCoord0.X + relativeCoordinates[2].X, parent.Area.TexCoord0.Y + relativeCoordinates[2].Y),
+                                       new Vector2(parent.Area.TexCoord0.X + relativeCoordinates[3].X, parent.Area.TexCoord0.Y + relativeCoordinates[3].Y), };
+            }
         }
 
-        // List of parent textures should contain all "ancestor" texture areas in which all variations
-        // are placed, including mirrored and rotated ones.
-
-        public List<ParentTextureArea> ParentTextures = new List<ParentTextureArea>();
-        public long TexInfoCount = 0;
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Result : IEquatable<Result>
+        // Gets free TexInfo index
+        private int GetNewTexInfoIndex()
         {
-            public ushort TexInfoIndex;
+            // Do we really need to check for free index in existing children lists?
+            // Because texture generation is a linear one-off operation, I think we may
+            // not care about that.
+
+            int result = TexInfoCount;
+            TexInfoCount++;
+            return result;
+        }
+
+        // Try to find potential parent (larger texture) and add texture to its children
+        public int FindAndAddToParent(TextureArea texture)
+        {
+            foreach (var parent in ParentTextures)
+            {
+                if (parent.IsPotentialChild(texture))
+                {
+                    var newTexIndex = GetNewTexInfoIndex();
+                    parent.AddChild(texture, newTexIndex);
+                    return newTexIndex;
+                }
+            }
+            return -1;
+        }
+
+        public struct Result
+        {
+            // TexInfoIndex is saved as int for forward compatibility with engines such as TR5Main.
+            public int TexInfoIndex;
 
             // Rotation value indicate that incoming TextureArea should be rotated N times. 
             // This approach allows to tightly pack TexInfos in same manner as tom2pc does.
             // As result, CreateFace3/4 should return a face with changed index order.
-
             public byte Rotation;
 
             public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
@@ -56,7 +143,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if(indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
+                ushort objectTextureIndex = (ushort)(GetLegacyIndex() | (doubleSided ? 0x8000 : 0));
                 ushort[] transformedIndices = new ushort[3] { indices[0], indices[1], indices[2] };
 
                 if(Rotation > 0)
@@ -79,7 +166,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
+                ushort objectTextureIndex = (ushort)(GetLegacyIndex() | (doubleSided ? 0x8000 : 0));
                 ushort[] transformedIndices = new ushort[4] { indices[0], indices[1], indices[2], indices[3] };
 
                 if (Rotation > 0)
@@ -96,6 +183,9 @@ namespace TombLib.LevelData.Compilers.Util
 
                 return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
             }
+
+            // Silly measure to prevent overflowing legacy texinfo count
+            private ushort GetLegacyIndex() => (ushort)((TexInfoIndex <= short.MaxValue) ? TexInfoIndex : short.MaxValue);
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
@@ -114,8 +204,18 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
+        public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0)
         {
+            // Try to get existing TexInfo
+            byte rotation = 0;
+            int  texInfoIndex = GetTexInfo(texture, out rotation);
+
+            // Similar texture found
+            if(texInfoIndex != -1)
+                return new Result() { TexInfoIndex = texInfoIndex, Rotation = rotation };
+            
+
+
             // Add object textures
             int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
             bool isNew;
@@ -130,43 +230,44 @@ namespace TombLib.LevelData.Compilers.Util
             };
         }
 
-        private long GetTexInfo(TextureArea areaToLook, out byte rotation)
+        // Adds new TexInfo either to enclosed parent area or creates new one.
+        // Additionally peforms checks if added TexInfo encloses any existing
+        // parents, and if it does, merges the parent and becomes parent itself.
+
+        private int MakeTexInfo(TextureArea areaToMake, out byte rotation)
         {
             rotation = 0;
 
-            foreach (var parentTexInfo in ParentTextures)
+            foreach(var parentTexInfo in ParentTextures)
             {
-                // Parent which is similar to incoming area quickly returns its TexInfo
-                if(areaToLook == parentTexInfo.Area)
-                    return parentTexInfo.TexInfoIndex;
 
+
+            }
+        }
+
+        // Gets existing TexInfo index if there is such one in ParentTextures list.
+        // If parent itself is similar, its TexInfo index is returned.
+        // If parent's child is similar, child TexInfo index is returned.
+
+        private int GetTexInfo(TextureArea areaToLook, out byte rotation)
+        {
+            rotation = 0;
+
+            foreach (var parent in ParentTextures)
+            {
                 // Parents with different attributes are quickly discarded
-                if (parentTexInfo.Area.Texture   != areaToLook.Texture   ||
-                    parentTexInfo.Area.BlendMode != areaToLook.BlendMode ||
-                    parentTexInfo.Area.BumpLevel != areaToLook.BumpLevel  )
+                if(!parent.Area.ParametersSimilar(areaToLook))
                     continue;
 
-                // Compare parent's own coordinates
-                var sourceCoordinates = new Vector2[] { new Vector2(parentTexInfo.Area.TexCoord0.X, parentTexInfo.Area.TexCoord0.Y),
-                                                        new Vector2(parentTexInfo.Area.TexCoord1.X, parentTexInfo.Area.TexCoord1.Y),
-                                                        new Vector2(parentTexInfo.Area.TexCoord2.X, parentTexInfo.Area.TexCoord2.Y),
-                                                        new Vector2(parentTexInfo.Area.TexCoord3.X, parentTexInfo.Area.TexCoord3.Y), };
                 var lookupCoordinates = new Vector2[] { new Vector2(areaToLook.TexCoord0.X, areaToLook.TexCoord0.Y),
                                                         new Vector2(areaToLook.TexCoord1.X, areaToLook.TexCoord1.Y),
                                                         new Vector2(areaToLook.TexCoord2.X, areaToLook.TexCoord2.Y),
                                                         new Vector2(areaToLook.TexCoord3.X, areaToLook.TexCoord3.Y), };
 
-                int result = TestUVSimilarity(sourceCoordinates, lookupCoordinates);
-                if (result != -1)
+                // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
+                foreach (var child in parent.Children)
                 {
-                    // Parent is rotation-wise equal to incoming area
-                    rotation = (byte)result;
-                    return parentTexInfo.TexInfoIndex;
-                }
-
-                foreach (var child in parentTexInfo.Children)
-                {
-                    result = TestUVSimilarity(child.Value, lookupCoordinates);
+                    var result = TestUVSimilarity(ParentTextureArea.GetAbsChildCoordinates(parent, child.Value), lookupCoordinates);
                     if(result != -1)
                     {
                         // Child is rotation-wise equal to incoming area
@@ -178,6 +279,10 @@ namespace TombLib.LevelData.Compilers.Util
 
             return -1; // No equal entry, new should be created
         }
+
+        // Tests if all UV coordinates are similar with different rotations.
+        // If all coordinates are equal for one of the rotation factors, rotation factor is returned,
+        // otherwise -1 is returned (not similar). If coordinates are 100% equal, 0 is returned.
 
         private int TestUVSimilarity(Vector2[] first, Vector2[] second)
         {
@@ -215,6 +320,23 @@ namespace TombLib.LevelData.Compilers.Util
                 }
             }
             return Result;
+        }
+
+        private int TestUVAlignment(TextureArea texture, out TextureArea rotatedTexture)
+        {
+            var testTexture = texture;
+            int result = 0;
+
+            while(testTexture.TexCoord0.Y < testTexture.TexCoord1.Y ||
+                  testTexture.TexCoord0.Y < testTexture.TexCoord2.Y ||
+                  testTexture.TexCoord0.Y < testTexture.TexCoord3.Y)
+            {
+                testTexture.Rotate();
+                result++;
+            }
+
+            rotatedTexture = testTexture;
+            return result;
         }
     }
 
