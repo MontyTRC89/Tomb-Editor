@@ -748,7 +748,7 @@ namespace TombEditor
             Block blocks = room.GetBlock(pos);
 
             TextureArea newTexture = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Quad)
+            if (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Quad)
             {
                 Vector2 tempTexCoord = newTexture.TexCoord3;
                 newTexture.TexCoord3 = newTexture.TexCoord2;
@@ -776,7 +776,7 @@ namespace TombEditor
             Block blocks = room.GetBlock(pos);
 
             TextureArea newTexture = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Quad)
+            if (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Quad)
             {
                 Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord1);
                 Swap.Do(ref newTexture.TexCoord2, ref newTexture.TexCoord3);
@@ -3164,7 +3164,7 @@ namespace TombEditor
                                             var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, (BlockFace)faceType));
                                             var shape = room.GetFaceShape(x, z, (BlockFace)faceType);
 
-                                            if (shape == Block.FaceShape.Quad)
+                                            if (shape == BlockFaceShape.Quad)
                                             {
                                                 int i = range.Start;
 

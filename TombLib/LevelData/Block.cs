@@ -88,6 +88,16 @@ namespace TombLib.LevelData
         Count
     }
 
+    public enum BlockFaceType
+    {
+        Floor, Ceiling, Wall
+    }
+
+    public enum BlockFaceShape
+    {
+        Quad, Triangle, Unknown
+    }
+
     public static class BlockFaceExtensions
     {
         public static Direction GetDirection(this BlockFace face)
@@ -544,13 +554,6 @@ namespace TombLib.LevelData
             Raise(vertical, increment, diagonalStep);
         }
 
-        public enum FaceShape
-        {
-            Triangle,
-            Quad,
-            Unknown
-        }
-
         private static DiagonalSplit TransformDiagonalSplit(DiagonalSplit split, RectTransformation transformation)
         {
             if (transformation.MirrorX)
@@ -590,14 +593,14 @@ namespace TombLib.LevelData
             return split;
         }
 
-        private void MirrorWallTexture(BlockFace oldFace, Func<BlockFace, FaceShape> oldFaceIsTriangle)
+        private void MirrorWallTexture(BlockFace oldFace, Func<BlockFace, BlockFaceShape> oldFaceIsTriangle)
         {
             switch (oldFaceIsTriangle(oldFace))
             {
-                case FaceShape.Triangle:
+                case BlockFaceShape.Triangle:
                     Swap.Do(ref _faceTextures[(int)oldFace].TexCoord0, ref _faceTextures[(int)oldFace].TexCoord1);
                     break;
-                case FaceShape.Quad:
+                case BlockFaceShape.Quad:
                     Swap.Do(ref _faceTextures[(int)oldFace].TexCoord0, ref _faceTextures[(int)oldFace].TexCoord3);
                     Swap.Do(ref _faceTextures[(int)oldFace].TexCoord1, ref _faceTextures[(int)oldFace].TexCoord2);
                     break;
@@ -699,7 +702,7 @@ namespace TombLib.LevelData
         // 2. Function aburptly changes triangle split type even for non-triangulated blocks
         // 3. Function disjoints diagonal walls with subdivisions on rotation.    -- Lwmte
 
-        public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<BlockFace, FaceShape> oldFaceIsTriangle = null)
+        public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<BlockFace, BlockFaceShape> oldFaceIsTriangle = null)
         {
             // Rotate sector flags
             if (onlyFloor != null)
