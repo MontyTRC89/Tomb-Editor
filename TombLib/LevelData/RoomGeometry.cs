@@ -274,14 +274,14 @@ namespace TombLib.LevelData
                     // Floor polygons
                     Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
                     BuildFloorOrCeilingFace(room, x, z, Blocks[x, z].Floor.XnZp, Blocks[x, z].Floor.XpZp, Blocks[x, z].Floor.XpZn, Blocks[x, z].Floor.XnZn, Blocks[x, z].Floor.DiagonalSplit, Blocks[x, z].Floor.SplitDirectionIsXEqualsZ,
-                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType, false);
+                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType);
 
                     // Ceiling polygons
                     int ceilingStartVertex = VertexPositions.Count;
 
                     Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
                     BuildFloorOrCeilingFace(room, x, z, Blocks[x, z].Ceiling.XnZp, Blocks[x, z].Ceiling.XpZp, Blocks[x, z].Ceiling.XpZn, Blocks[x, z].Ceiling.XnZn, Blocks[x, z].Ceiling.DiagonalSplit, Blocks[x, z].Ceiling.SplitDirectionIsXEqualsZ,
-                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType, true);
+                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType);
 
                     // Change vertices order for ceiling polygons
                     for (int i = ceilingStartVertex; i < VertexPositions.Count; i += 3)
@@ -322,8 +322,7 @@ namespace TombLib.LevelData
         }
 
         private void BuildFloorOrCeilingFace(Room room, int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
-                                             BlockFace face1, BlockFace face2, Room.RoomConnectionType portalMode,
-                                             bool isForCeiling)
+                                             BlockFace face1, BlockFace face2, Room.RoomConnectionType portalMode)
         {
             BlockType blockType = room.Blocks[x, z].Type;
 
@@ -449,8 +448,7 @@ namespace TombLib.LevelData
                     new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
                     new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
-                    room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1),
-                    isForCeiling);
+                    room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
             {
@@ -1461,8 +1459,7 @@ namespace TombLib.LevelData
         }
 
         private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
-                             TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3,
-                             bool isForCeiling = false)
+                             TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 2;
@@ -1514,26 +1511,6 @@ namespace TombLib.LevelData
 
             TriangleTextureAreas.Add(texture);
             TriangleSectorInfo.Add(new SectorInfo(x, z, face));
-        }
-
-        public bool IsQuad(int i)
-        {
-            if (i + 6 > VertexPositions.Count)
-                return false;
-            if (VertexPositions[i + 1] != VertexPositions[i + 5] ||
-                VertexPositions[i + 2] != VertexPositions[i + 4])
-                return false;
-            if (VertexColors[i + 1] != VertexColors[i + 5] ||
-                VertexColors[i + 2] != VertexColors[i + 4])
-                return false;
-            TextureArea firstTexture = TriangleTextureAreas[i / 3];
-            TextureArea secondTexture = TriangleTextureAreas[i / 3 + 1];
-            firstTexture.TexCoord0 = secondTexture.TexCoord0;
-            firstTexture.TexCoord3 = secondTexture.TexCoord3;
-            Swap.Do(ref firstTexture.TexCoord1, ref firstTexture.TexCoord2);
-            if (firstTexture != secondTexture)
-                return false;
-            return true;
         }
 
         private bool RayTraceCheckFloorCeiling(Room room, int x, int y, int z, int xLight, int zLight)
