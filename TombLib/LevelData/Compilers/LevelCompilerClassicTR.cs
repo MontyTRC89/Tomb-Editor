@@ -138,7 +138,10 @@ namespace TombLib.LevelData.Compilers
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
 
-            // Return statics
+            // Needed to make decision about backup (delete or restore)
+            _compiledSuccessfully = true;
+
+            // Return statistics
             return new CompilerStatistics
             {
                 BoxCount = _boxes.Length,
