@@ -55,6 +55,14 @@ namespace TombLib.Utils
         Lighten = 10
     }
 
+    public enum BumpLevel : ushort
+    {
+        None,
+        Level1,
+        Level2,
+        Level3  // Future use
+    }
+
     public struct TextureArea : IEquatable<TextureArea>
     {
         public const float SafetyMargin = 0.45f;
@@ -66,6 +74,7 @@ namespace TombLib.Utils
         public Vector2 TexCoord2; //    - No array bounds checks
         public Vector2 TexCoord3; //    - 'Clone', 'GetHashCode' and so on work by default
         public BlendMode BlendMode;
+        public BumpLevel BumpLevel;
         public bool DoubleSided;
 
         public static bool operator ==(TextureArea first, TextureArea second)
@@ -77,6 +86,7 @@ namespace TombLib.Utils
                 first.TexCoord2.Equals(second.TexCoord2) &&
                 first.TexCoord3.Equals(second.TexCoord3) &&
                 first.BlendMode == second.BlendMode &&
+                first.BumpLevel == second.BumpLevel &&
                 first.DoubleSided == second.DoubleSided;
         }
 
@@ -85,9 +95,11 @@ namespace TombLib.Utils
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
         public override int GetHashCode() => base.GetHashCode();
 
+        public bool ParametersSimilar(TextureArea other) => Texture == other.Texture && BlendMode == other.BlendMode && BumpLevel == other.BumpLevel;
+
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
-
+        
         public bool TriangleCoordsOutOfBounds
         {
             get
@@ -112,6 +124,12 @@ namespace TombLib.Utils
             }
         }
 
+        public Vector2[] GetMinMax()
+        {
+            return new Vector2[2] { Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
+                                    Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)) };
+        }
+
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
             get
@@ -121,6 +139,22 @@ namespace TombLib.Utils
                 yield return new KeyValuePair<int, Vector2>(2, TexCoord2);
                 yield return new KeyValuePair<int, Vector2>(3, TexCoord3);
             }
+        }
+
+        // Gets canonical texture area which is compatible with UVRotate routine
+        // and also puts rotational difference into Rotation out parameter
+        public TextureArea GetCanonicalTexture(out byte Rotation)
+        {
+            var minY = GetMinMax()[0].Y;
+            var transformedTexture = this;
+
+            Rotation = 0;
+            while (transformedTexture.TexCoord0.Y != minY)
+            {
+                transformedTexture.Rotate();
+                Rotation++;
+            }
+            return transformedTexture;
         }
 
         public Vector2 GetTexCoord(int index)
