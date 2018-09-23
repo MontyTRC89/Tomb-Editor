@@ -141,6 +141,22 @@ namespace TombLib.Utils
             }
         }
 
+        // Gets canonical texture area which is compatible with UVRotate routine
+        // and also puts rotational difference into Rotation out parameter
+        public TextureArea GetCanonicalTexture(out byte Rotation)
+        {
+            var minY = GetMinMax()[0].Y;
+            var transformedTexture = this;
+
+            Rotation = 0;
+            while (transformedTexture.TexCoord0.Y != minY)
+            {
+                transformedTexture.Rotate();
+                Rotation++;
+            }
+            return transformedTexture;
+        }
+
         public Vector2 GetTexCoord(int index)
         {
             switch (index)

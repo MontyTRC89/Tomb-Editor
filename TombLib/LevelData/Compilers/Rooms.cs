@@ -216,7 +216,10 @@ namespace TombLib.LevelData.Compilers
 
                             Util.ObjectTextureManager.Result result;
                             lock (_objectTextureManager)
+                            {
                                 result = _objectTextureManager.AddTexturePossiblyAnimated(textureArea1, false, true);
+                                var shit = _textureInfoManager.AddTexture(textureArea1, false, true);
+                            }
 
                             roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
                             i += 3;
@@ -226,7 +229,10 @@ namespace TombLib.LevelData.Compilers
                             ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 2], roomGeometry.VertexColors[i + 2]);
                             Util.ObjectTextureManager.Result result;
                             lock (_objectTextureManager)
+                            {
                                 result = _objectTextureManager.AddTexturePossiblyAnimated(roomGeometry.TriangleTextureAreas[i / 3], true, true);
+                                var shit = _textureInfoManager.AddTexture(roomGeometry.TriangleTextureAreas[i / 3], false, true);
+                            }
 
                             roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
                         }
