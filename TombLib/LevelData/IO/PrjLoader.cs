@@ -349,10 +349,10 @@ namespace TombLib.LevelData.IO
                                         triggerTypeEnum = TriggerType.HeavyAntritrigger;
                                         break;
                                     case 12:
-                                        triggerTypeEnum = TriggerType.ConditionNg;
+                                        triggerTypeEnum = TriggerType.MonkeyOrConditionNg;
                                         break;
                                     case 13:
-                                        triggerTypeEnum = TriggerType.ConditionNg;
+                                        triggerTypeEnum = TriggerType.MonkeyOrConditionNg;
                                         break;
                                     default:
                                         progressReporter.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");
@@ -416,7 +416,7 @@ namespace TombLib.LevelData.IO
                                         continue;
                                 }
 
-                                if (triggerTypeEnum == TriggerType.ConditionNg)
+                                if (triggerTypeEnum == TriggerType.MonkeyOrConditionNg)
                                     triggerTargetTypeEnum = TriggerTargetType.ParameterNg;
 
                                 ushort? triggerTimer, triggerExtra;

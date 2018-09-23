@@ -327,8 +327,20 @@ namespace TombLib.LevelData.Compilers
                         case TriggerType.HeavyAntritrigger:
                             trigger1 |= 0x0b << 8;
                             break;
-                        case TriggerType.ConditionNg:
+                        case TriggerType.MonkeyOrConditionNg:
                             trigger1 |= 0x0c << 8;
+                            break;
+                        case TriggerType.Skeleton:
+                            trigger1 |= 0x0d << 8;
+                            break;
+                        case TriggerType.TightRope:
+                            trigger1 |= 0x0e << 8;
+                            break;
+                        case TriggerType.Crawl:
+                            trigger1 |= 0x0f << 8;
+                            break;
+                        case TriggerType.Climb:
+                            trigger1 |= 0x10 << 8;
                             break;
                         default:
                             throw new Exception("Unknown trigger type found '" + found + "'");
@@ -341,7 +353,7 @@ namespace TombLib.LevelData.Compilers
                         if (found.TargetType == TriggerTargetType.FlipEffect)
                             triggerSetup = 0;
                         // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
-                        else if (found.TriggerType == TriggerType.ConditionNg)
+                        else if (found.TriggerType == TriggerType.MonkeyOrConditionNg)
                             triggerSetup = GetTriggerRealTimer(found, 0xffff);
                         // all other triggers work as usual
                         else

@@ -24,12 +24,12 @@ namespace TombLib.NG
             yield return TriggerType.HeavySwitch;
             yield return TriggerType.HeavyAntritrigger;
             if (levelSettings.GameVersion == GameVersion.TRNG)
-                yield return TriggerType.ConditionNg;
+                yield return TriggerType.MonkeyOrConditionNg;
         }
 
         public static IEnumerable<TriggerTargetType> GetTargetTypeRange(LevelSettings levelSettings, TriggerType triggerType)
         {
-            if (triggerType == TriggerType.ConditionNg)
+            if (triggerType == TriggerType.MonkeyOrConditionNg)
             {
                 yield return TriggerTargetType.ParameterNg;
             }
@@ -72,7 +72,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.ConditionNg:
+                case TriggerType.MonkeyOrConditionNg:
                     if (!(timer is TriggerParameterUshort))
                         return new NgParameterRange(NgParameterKind.Empty);
                     NgTriggerSubtype conditionSubtriggerType = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
@@ -125,7 +125,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.ConditionNg:
+                case TriggerType.MonkeyOrConditionNg:
                     return new NgParameterRange(NgCatalog.ConditionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
 
                 default:
@@ -153,7 +153,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.ConditionNg:
+                case TriggerType.MonkeyOrConditionNg:
                     if (!(timer is TriggerParameterUshort))
                         return new NgParameterRange(NgParameterKind.Empty);
                     NgTriggerSubtype conditionSubtriggerType = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
@@ -203,7 +203,7 @@ namespace TombLib.NG
             ushort extraUpperBound = (ushort)(upperBound >> 8);
             switch (triggerType)
             {
-                case TriggerType.ConditionNg:
+                case TriggerType.MonkeyOrConditionNg:
                     return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 8));
 
                 default:
@@ -232,7 +232,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.ConditionNg:
+                case TriggerType.MonkeyOrConditionNg:
                     timer = (ushort)(realTimer & 255);
                     var conditionTrigger = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(timer.Value);
                     if (conditionTrigger != null && conditionTrigger.Extra.IsEmpty)
@@ -318,7 +318,7 @@ namespace TombLib.NG
 
                 switch (trigger.TriggerType)
                 {
-                    case TriggerType.ConditionNg:
+                    case TriggerType.MonkeyOrConditionNg:
                         {
                             if (!TriggerIsValid(level.Settings, trigger))
                                 throw new Exception("Trigger is invalid.");
