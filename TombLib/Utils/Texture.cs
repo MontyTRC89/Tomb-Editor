@@ -60,7 +60,8 @@ namespace TombLib.Utils
         None,
         Level1,
         Level2,
-        Level3  // Future use
+        Level3,    // Future use
+        NormalMap  // Future use
     }
 
     public struct TextureArea : IEquatable<TextureArea>
@@ -94,8 +95,6 @@ namespace TombLib.Utils
         public bool Equals(TextureArea other) => this == other;
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
         public override int GetHashCode() => base.GetHashCode();
-
-        public bool ParametersSimilar(TextureArea other) => Texture == other.Texture && BlendMode == other.BlendMode && BumpLevel == other.BumpLevel;
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
