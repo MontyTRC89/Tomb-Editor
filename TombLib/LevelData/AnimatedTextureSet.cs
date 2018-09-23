@@ -61,7 +61,7 @@ namespace TombLib.LevelData
     {
         public AnimatedTextureAnimationType AnimationType { get; set; }
         public string Name { get; set; }
-        public sbyte Fps { get; set; }
+        public float Fps { get; set; }  // float is for SPF (seconds per frame) values
         public sbyte UvRotate { get; set; }
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
@@ -86,7 +86,7 @@ namespace TombLib.LevelData
                                           };
         }
         object ICloneable.Clone() => Clone();
-        public bool AnimationIsTrivial => Frames.Count < 1 && AnimationType == AnimatedTextureAnimationType.Frames || Frames.Count == 0;
+        public bool AnimationIsTrivial => (Frames.Count < 1 && AnimationType == AnimatedTextureAnimationType.Frames) || Frames.Count == 0;
 
         public bool Equals(AnimatedTextureSet other) => Frames.SequenceEqual(other.Frames);
         public override bool Equals(object other) => other is AnimatedTextureSet && Equals((AnimatedTextureSet)other);

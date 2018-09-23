@@ -225,7 +225,10 @@ namespace TombLib.LevelData.Compilers
 
                                     Util.ObjectTextureManager.Result result;
                                     lock (_objectTextureManager)
+                                    {
+                                        var tmp = _textureInfoManager.AddTexture(texture, false, true); // @FIXME: UNIT TEST
                                         result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
+                                    }
 
                                     roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
                                     i += 3;
@@ -238,7 +241,10 @@ namespace TombLib.LevelData.Compilers
                                     
                                     Util.ObjectTextureManager.Result result;
                                     lock (_objectTextureManager)
+                                    {
+                                        var tmp = _textureInfoManager.AddTexture(texture, true, true); // @FIXME: UNIT TEST
                                         result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+                                    }
 
                                     roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
                                 }
@@ -304,6 +310,7 @@ namespace TombLib.LevelData.Compilers
                                 TextureArea texture;
                                 texture.DoubleSided = false;
                                 texture.BlendMode = BlendMode.Normal;
+                                texture.BumpLevel = BumpLevel.None;
                                 texture.Texture = submesh.Value.Material.Texture;
                                 texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
                                 texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;

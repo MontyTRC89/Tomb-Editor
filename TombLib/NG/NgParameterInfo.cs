@@ -53,7 +53,7 @@ namespace TombLib.NG
                     yield return TriggerTargetType.FmvNg;
                     yield return TriggerTargetType.TimerfieldNg;
                 }
-                if (levelSettings.GameVersion== GameVersion.TR5Main)
+                if (levelSettings.GameVersion == GameVersion.TR5Main)
                 {
                     yield return TriggerTargetType.LuaScript;
                 }

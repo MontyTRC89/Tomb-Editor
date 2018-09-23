@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
@@ -57,25 +58,25 @@ namespace TombLib.LevelData.Compilers
                     switch (set.AnimationType)
                     {
                         case AnimatedTextureAnimationType.Frames:
-                            param = 0x00;
-                            param |= (ushort)(set.Delay & 0x1FFF);
+                            param |= (ushort)(Math.Round(1000.0f / set.Fps));
                             break;
                         case AnimatedTextureAnimationType.PFrames:
                             param = 0x4000;
                             break;
-                        case AnimatedTextureAnimationType.UVRotate:
-                            param = 0x8000;
-                            param |= (ushort)((set.Fps << 8) & 0x1F00);
-                            param |= (ushort)(set.UvRotate & 0x00FF);
-                            break;
-                        case AnimatedTextureAnimationType.RiverRotate:
-                            param = 0xA000;
-                            param |= (ushort)((set.Fps << 8) & 0x1F00);
-                            param |= (ushort)(set.UvRotate & 0x00FF);
-                            break;
-                        case AnimatedTextureAnimationType.HalfRotate:
-                            param = 0xC000;
-                            param |= (ushort)((set.Fps << 8) & 0x1F00);
+                        default:
+                            switch(set.AnimationType)
+                            {
+                                case AnimatedTextureAnimationType.UVRotate:
+                                    param = 0x8000;
+                                    break;
+                                case AnimatedTextureAnimationType.RiverRotate:
+                                    param = 0xA000;
+                                    break;
+                                case AnimatedTextureAnimationType.HalfRotate:
+                                    param = 0xC000;
+                                    break;
+                            }
+                            param |= (ushort)(((int)set.Fps << 8) & 0x1F00);
                             param |= (ushort)(set.UvRotate & 0x00FF);
                             break;
                     }
@@ -90,7 +91,12 @@ namespace TombLib.LevelData.Compilers
 
             // Array VetToTex
             for (var i = 0; i < 40; i++)
-                writer.Write((ushort)0);
+            {
+                if(i == 0)
+                    writer.Write((ushort)7);
+                else
+                    writer.Write((ushort)0);
+            }
 
             var sizeDefault = (short)64;
             writer.Write(sizeDefault);

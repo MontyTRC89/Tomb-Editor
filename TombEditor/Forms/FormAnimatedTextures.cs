@@ -61,10 +61,10 @@ namespace TombEditor.Forms
         }
         private struct NgAnimatedTextureSettingPair
         {
-            public readonly int Key;
+            public readonly float Key;
             public readonly string Value;
 
-            public NgAnimatedTextureSettingPair(int key, string value)
+            public NgAnimatedTextureSettingPair(float key, string value)
             {
                 Key = key;
                 Value = value;
@@ -303,9 +303,7 @@ namespace TombEditor.Forms
                 {
                     case AnimatedTextureAnimationType.Frames:
                         if (selectedSet.Fps > 0)
-                            _previewTimer.Interval = (int)Math.Round(1000 / selectedSet.Fps / 2.0f);
-                        else if (selectedSet.Fps < 0)
-                            _previewTimer.Interval = -selectedSet.Fps * 1000;
+                            _previewTimer.Interval = (int)Math.Round(1000.0f / selectedSet.Fps);
                         break;
 
                     case AnimatedTextureAnimationType.PFrames:
@@ -349,7 +347,7 @@ namespace TombEditor.Forms
             }
         }
 
-        private void NgSelectComboboxValue(int value, DarkComboBox cb)
+        private void NgSelectComboboxValue(float value, DarkComboBox cb)
         {
             foreach (NgAnimatedTextureSettingPair item in cb.Items)
                 if (item.Key == value)
@@ -1045,9 +1043,9 @@ namespace TombEditor.Forms
                     comboFps.Items.Clear();
                     comboFps.Items.Add(new NgAnimatedTextureSettingPair(0, "Default"));
                     for (var i = 30; i > 1; i--)
-                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " Fps"));
-                    for (var i = 1; i <= 8; i++)
-                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(-i, i + " Sfps"));
+                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
+                    for (var i = 8; i > 0; i--)
+                        comboFps.Items.Add(new NgAnimatedTextureSettingPair((float)i * 0.125f, (float)i * 0.125f + " FPS"));
                     comboFps.SelectedIndex = 0;
 
                     break;
@@ -1069,8 +1067,8 @@ namespace TombEditor.Forms
 
                     comboFps.Items.Clear();
                     comboFps.Items.Add(new NgAnimatedTextureSettingPair(0, "Default"));
-                    for (var i = 1; i <= 32; i++)
-                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " Fps"));
+                    for (var i = 1; i <= 30; i++)
+                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
 
                     comboFps.SelectedIndex = 0;
                     comboUvRotate.SelectedIndex = 64;

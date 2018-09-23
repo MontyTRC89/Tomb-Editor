@@ -332,11 +332,23 @@ namespace TombLib.LevelData.IO
                         {
                             if (id3 == Prj2Chunks.AnimatedTextureSetName)
                                 set.Name = chunkIO.ReadChunkString(chunkSize3);
-                            else if (id3 == Prj2Chunks.AnimatedTextureSetExtraInfo)
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetExtraInfo) // Legacy!
                             {
                                 set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
                                 set.Fps = LEB128.ReadSByte(chunkIO.Raw);
                                 set.UvRotate = LEB128.ReadSByte(chunkIO.Raw);
+                            }
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetType)
+                            {
+                                set.AnimationType = (AnimatedTextureAnimationType)chunkIO.ReadChunkInt(chunkSize3);
+                            }
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetFps)
+                            {
+                                set.Fps = chunkIO.ReadChunkFloat(chunkSize3);
+                            }
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetUvRotate)
+                            {
+                                set.Fps = chunkIO.ReadChunkInt(chunkSize3);
                             }
                             else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {

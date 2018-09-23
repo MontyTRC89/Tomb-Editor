@@ -1967,6 +1967,9 @@ namespace TombLib.LevelData.IO
                     texture.DoubleSided = (prjFace._txtFlags & 0x04) != 0;
                     texture.BlendMode = (prjFace._txtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;
 
+                    //@FIXME: implement proper bumpmap data import
+                    texture.BumpLevel = BumpLevel.None;
+
                     // Apply flipping
                     if ((prjFace._txtFlags & 0x80) != 0)
                     {

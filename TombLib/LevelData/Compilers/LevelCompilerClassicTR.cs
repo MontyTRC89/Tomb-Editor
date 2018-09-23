@@ -66,6 +66,7 @@ namespace TombLib.LevelData.Compilers
 
         private Util.SoundManager _soundManager;
         private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
+        private Util.TexInfoManager _textureInfoManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -90,12 +91,17 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
+            _textureInfoManager = new Util.TexInfoManager();
+
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
             // Prepare level data in parallel to the sounds
             //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4();
             BuildRooms();
+
+            _progressReporter.ReportWarn("\nTexInfoManager room faces UNIT TEST: " + _textureInfoManager.ParentTextures.Count + " parents, " + _textureInfoManager.TexInfoCount + " TexInfos\n");
+
             PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
@@ -106,6 +112,8 @@ namespace TombLib.LevelData.Compilers
             // Combine the data collected
             PrepareTextures();
             _soundManager.PrepareSoundsData(_progressReporter);
+
+            _progressReporter.ReportInfo("\nWriting level file...\n");
 
             //Write the level
             switch (_level.Settings.GameVersion)
@@ -442,11 +450,14 @@ namespace TombLib.LevelData.Compilers
         {
             var buffer = PathC.GetDirectoryNameTry(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)) + "\\Tomb_NextGeneration.dll";
             if (File.Exists(buffer))
+            {
                 buffer = (FileVersionInfo.GetVersionInfo(buffer)).ProductVersion;
+                _progressReporter.ReportInfo("TRNG found, version is " + buffer);
+            }
             else
             {
-                _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
                 buffer = "1,3,0,6";
+                _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
             }
             return buffer;
         }
