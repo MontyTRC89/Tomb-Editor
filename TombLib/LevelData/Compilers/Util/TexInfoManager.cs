@@ -121,10 +121,10 @@ namespace TombLib.LevelData.Compilers.Util
                 Children.Add(new KeyValuePair<int, Vector2[]>(newTextureID,
                     new Vector2[4]
                     {
-                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord0.X, Y = Area.TexCoord0.Y - texture.TexCoord0.Y },
-                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord1.X, Y = Area.TexCoord0.Y - texture.TexCoord1.Y },
-                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord2.X, Y = Area.TexCoord0.Y - texture.TexCoord2.Y },
-                        new Vector2 { X = Area.TexCoord0.X - texture.TexCoord3.X, Y = Area.TexCoord0.Y - texture.TexCoord3.Y }
+                        new Vector2 { X = texture.TexCoord0.X - Area.TexCoord0.X, Y = texture.TexCoord0.Y - Area.TexCoord0.Y },
+                        new Vector2 { X = texture.TexCoord1.X - Area.TexCoord0.X, Y = texture.TexCoord1.Y - Area.TexCoord0.Y },
+                        new Vector2 { X = texture.TexCoord2.X - Area.TexCoord0.X, Y = texture.TexCoord2.Y - Area.TexCoord0.Y },
+                        new Vector2 { X = texture.TexCoord3.X - Area.TexCoord0.X, Y = texture.TexCoord3.Y - Area.TexCoord0.Y }
                     }));
             }
 

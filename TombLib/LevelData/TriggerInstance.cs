@@ -37,6 +37,7 @@ namespace TombLib.LevelData
         ParameterNg = 13,
         FmvNg = 14,
         TimerfieldNg = 15,
+        LuaScript = 20,
     }
 
     public interface ITriggerParameter : IEquatable<ITriggerParameter>

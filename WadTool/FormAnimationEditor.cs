@@ -107,14 +107,28 @@ namespace WadTool
 
             var list = new List<DarkUI.Controls.DarkTreeNode>();
             int index = 0;
+
+            // Filter by State ID?
+            int searchStateId = -1;
+            tbSearchByStateID.Text = tbSearchByStateID.Text.Trim();
+            if (!int.TryParse(tbSearchByStateID.Text, out searchStateId))
+                searchStateId = -1;
+
             foreach (var animation in _workingAnimations)
             {
+                // Filter by State ID?
+                if (searchStateId >= 0 && animation.WadAnimation.StateId != searchStateId)
+                    continue;
+
                 var node = new DarkUI.Controls.DarkTreeNode(index++ + ": " + animation.WadAnimation.Name);
                 node.Tag = animation;
                 list.Add(node);
             }
 
             treeAnimations.Nodes.AddRange(list);
+            if (list.Count != 0)
+                treeAnimations.SelectNode(list[0]);
+            treeAnimations.Refresh();
         }
 
         private void addNewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -145,10 +159,10 @@ namespace WadTool
             tbLateralEndVelocity.Text = node.WadAnimation.EndLateralVelocity.ToString();
 
             // TODO: deprecated stuff
-            tbSpeed.Text = (node.WadAnimation.Speed / 65536.0f).ToString();
+            /*tbSpeed.Text = (node.WadAnimation.Speed / 65536.0f).ToString();
             tbAccel.Text = (node.WadAnimation.Acceleration / 65536.0f).ToString();
             tbLatSpeed.Text = (node.WadAnimation.LateralSpeed / 65536.0f).ToString();
-            tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();
+            tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();*/
 
             panelRendering.CurrentKeyFrame = 0;
             panelRendering.SelectedMesh = null;
@@ -1300,6 +1314,27 @@ namespace WadTool
             }
 
             panelRendering.Invalidate();
+        }
+
+        private void butAddNewAnimation_Click(object sender, EventArgs e)
+        {
+            AddNewAnimation();
+        }
+
+        private void butSearchByStateID_Click(object sender, EventArgs e)
+        {
+            ReloadAnimations();
+        }
+
+        private void butShowAll_Click(object sender, EventArgs e)
+        {
+            tbSearchByStateID.Text = "";
+            ReloadAnimations();
+        }
+
+        private void FormAnimationEditor_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

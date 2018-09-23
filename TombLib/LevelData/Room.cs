@@ -13,16 +13,6 @@ namespace TombLib.LevelData
         Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
     }
 
-    public enum BlockFaceShape : byte
-    {
-        RectangleInt2, Triangle
-    }
-
-    public enum BlockFaceType
-    {
-        Floor, Ceiling, Wall
-    }
-
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -778,16 +768,16 @@ namespace TombLib.LevelData
             return max;
         }
 
-        public Block.FaceShape GetFaceShape(int x, int z, BlockFace face)
+        public BlockFaceShape GetFaceShape(int x, int z, BlockFace face)
         {
             switch (RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face)).Count)
             {
                 case 3:
-                    return Block.FaceShape.Triangle;
+                    return BlockFaceShape.Triangle;
                 case 6:
-                    return Block.FaceShape.Quad;
+                    return BlockFaceShape.Quad;
                 default:
-                    return Block.FaceShape.Unknown;
+                    return BlockFaceShape.Unknown;
             }
         }
 

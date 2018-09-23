@@ -172,71 +172,78 @@ namespace TombLib.LevelData.Compilers
                 newRoom.WaterScheme += room.MistLevel;
             }
 
+
             // Generate geometry
             {
                 // Add room geometry
+                var vertexPositions = room.RoomGeometry.VertexPositions;
+                var vertexColors = room.RoomGeometry.VertexColors;
+
                 var roomVerticesDictionary = new Dictionary<tr_room_vertex, ushort>();
                 var roomVertices = new List<tr_room_vertex>();
 
                 var roomTriangles = new List<tr_face3>();
                 var roomQuads = new List<tr_face4>();
 
-                // Future code once vertex system of rooms is refactored
-                /*var editorRoomVertices = room.GetRoomVertices();
-                for (int i = 0; i < editorRoomVertices.Count; i += 3)
-                {
-                    ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
-                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
-                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
-                    Util.ObjectTextureManager.Result result = _objectTextureManager.AddTexturePossiblyAnimated();
-
-                    roomTriangles.Add(new tr_face3 { Vertices = new ushort[3] { vertex0Index, vertex1Index, vertex2Index }, Texture = texture });
-                }*/
-
-                RoomGeometry roomGeometry = room.RoomGeometry;
-                var vertexPositions = roomGeometry.VertexPositions;
-                var vertexColors = roomGeometry.VertexColors;
-                int vertexCount = roomGeometry.VertexPositions.Count;
-                for (int i = 0; i < vertexCount; i += 3)
-                {
-                    ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i], roomGeometry.VertexColors[i]);
-                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 1], roomGeometry.VertexColors[i + 1]);
-
-                    // Check if 2 triangles can be combined to a quad
-                    if (!roomGeometry.TriangleTextureAreas[i / 3].TextureIsInvisble)
-                        if (roomGeometry.IsQuad(i))
+                for (int z = 0; z < room.NumZSectors; ++z)
+                    for (int x = 0; x < room.NumXSectors; ++x)
+                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
                         {
-                            ushort vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 2], roomGeometry.VertexColors[i + 2]);
-                            ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 3], roomGeometry.VertexColors[i + 3]);
-                            TextureArea textureArea0 = roomGeometry.TriangleTextureAreas[i / 3];
-                            TextureArea textureArea1 = roomGeometry.TriangleTextureAreas[i / 3 + 1];
-                            textureArea1.TexCoord2 = textureArea0.TexCoord0;
-                            textureArea1.TexCoord3 = textureArea0.TexCoord1;
-                            textureArea1.Rotate(2);
+                            var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
+                            var shape = room.GetFaceShape(x, z, face);
 
-                            Util.ObjectTextureManager.Result result;
-                            lock (_objectTextureManager)
+                            if (range.Count == 0)
+                                continue;
+
+                            TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
+                            if (texture.TextureIsInvisble)
+                                continue;
+
+                            int rangeEnd = range.Start + range.Count;
+                            for (int i = range.Start; i < rangeEnd; i += 3)
                             {
-                                result = _objectTextureManager.AddTexturePossiblyAnimated(textureArea1, false, true);
-                                var shit = _textureInfoManager.AddTexture(textureArea1, false, true);
-                            }
+                                ushort vertex0Index, vertex1Index, vertex2Index;
+                                
+                                if(shape == BlockFaceShape.Quad)
+                                {
+                                    ushort vertex3Index;
 
-                            roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
-                            i += 3;
-                        }
-                        else
-                        {
-                            ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 2], roomGeometry.VertexColors[i + 2]);
-                            Util.ObjectTextureManager.Result result;
-                            lock (_objectTextureManager)
-                            {
-                                result = _objectTextureManager.AddTexturePossiblyAnimated(roomGeometry.TriangleTextureAreas[i / 3], true, true);
-                                var shit = _textureInfoManager.AddTexture(roomGeometry.TriangleTextureAreas[i / 3], false, true);
-                            }
+                                    if (face == BlockFace.Ceiling)
+                                    {
+                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5]);
+                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                        vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                    }
+                                    else
+                                    {
+                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3]);
+                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                        vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                    }
 
-                            roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                                    Util.ObjectTextureManager.Result result;
+                                    lock (_objectTextureManager)
+                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
+
+                                    roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
+                                    i += 3;
+                                }
+                                else
+                                {
+                                    vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                    vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                    vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                    
+                                    Util.ObjectTextureManager.Result result;
+                                    lock (_objectTextureManager)
+                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+
+                                    roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                                }
+                            }
                         }
-                }
 
                 // Add geometry imported objects
                 int geometryVertexIndexBase = roomVertices.Count;

@@ -396,13 +396,13 @@ namespace TombLib.LevelData.Compilers.Util
             if (supportsUpTo65536)
             {
                 if (newID > 0xffff)
-                    throw new ApplicationException("More than 0xffff object textures are not possible for animated textures.");
+                    throw new ApplicationException("More than 65536 object textures are not possible for animated textures.");
                 _supportsUpTo65536TextureCount += 1;
             }
             else
             {
                 if (newID > 0x7fff)
-                    throw new ApplicationException("More than 0x7fff object textures that are used for meshes in rooms/movables/statics are not possible.");
+                    throw new ApplicationException("More than 32768 object textures that are used for meshes in rooms/movables/statics are not possible.");
             }
             _objectTextures.Add(newEntry);
             return (ushort)newID;

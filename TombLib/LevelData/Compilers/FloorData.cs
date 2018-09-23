@@ -456,14 +456,20 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger2);
                             break;
                         case TriggerTargetType.ParameterNg:
-                            // Trigger for secret found
                             ushort targetTypeBits = trigger.Target is ObjectInstance ? (ushort)(0 << 10) : (ushort)(13 << 10);
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
                             outFloorData.Add(trigger2);
                             break;
                         case TriggerTargetType.FmvNg:
-                            // Trigger for secret found
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.LuaScript:
+                            trigger2 = (ushort)(0 | (20 << 10));
+                            outFloorData.Add(trigger2);
+                            // Using trigger parameter as function index would be too limiting (max 512 functions) so we add 
+                            // an extra short that allows 32768 functions
+                            trigger2 = GetTriggerParameter(trigger.Target, trigger, 0x7fff);
                             outFloorData.Add(trigger2);
                             break;
                         default:

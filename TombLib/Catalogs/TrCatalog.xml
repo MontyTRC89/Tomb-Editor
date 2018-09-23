@@ -4267,11 +4267,11 @@
             <moveable id="31" name="Guard 1"/>
             <moveable id="32" name="Jeep (TR4)"/>
             <moveable id="33" name="Guard 2"/>
-            <moveable id="34" name="Quad bike (TR3)"/>
+            <moveable id="34" name="Bike (TR4)"/>
             <moveable id="35" name="Guard 3"/>
             <moveable id="36" name="Lara jeep anims (TR4)"/>
             <moveable id="37" name="Guard 4"/>
-            <moveable id="38" name="Lara quad bike anims (TR3)"/>
+            <moveable id="38" name="Lara bike anims (TR4)"/>
             <moveable id="39" name="Guard laser"/>
             <moveable id="40" name="Skeleton (TR4)"/>
             <moveable id="41" name="Doberman"/>
@@ -4320,7 +4320,7 @@
             <moveable id="84" name="Burning floor (TR4)"/>
             <moveable id="85" name="Dog"/>
             <moveable id="86" name="Cog (TR4)"/>
-            <moveable id="87" name="The chef"/>
+            <moveable id="87" name="SAS (TR5)"/>
             <moveable id="88" name="Spikeball (TR4)" x_adjust="-1"/>
             <moveable id="89" name="Imp"/>
             <moveable id="90" name="Floor 4 blades (TR4)"/>
@@ -4384,13 +4384,13 @@
             <moveable id="148" name="Lift"/>
             <moveable id="149" name="Bomb"/>
             <moveable id="150" name="Iris lightning"/>
-            <moveable id="151" name="Monitor"/>
-            <moveable id="152" name="Security screen"/>
+            <moveable id="151" name="Quad (TR3)"/>
+            <moveable id="152" name="Lara quad animations (TR3)"/>
             <moveable id="153" name="Motion sensors"/>
             <moveable id="154" name="Tight rope"/>
             <moveable id="155" name="Parallel bars"/>
             <moveable id="156" name="X-ray controller (dummy item)"/>
-            <moveable id="157" name="Cutscene rope"/>
+            <moveable id="157" name="Rat (TR2)"/>
             <moveable id="158" name="Flat window"/>
             <moveable id="159" name="Generic slot 1"/>
             <moveable id="160" name="Gas emitter"/>
@@ -4669,7 +4669,7 @@
             <moveable id="434" name="Animating 10"/>
             <moveable id="435" name="Bear (TR1)"/>
             <moveable id="436" name="Animating 11"/>
-            <moveable id="437" name="Gorilla (TR1)"/>
+            <moveable id="437" name="Ape (TR1)"/>
             <moveable id="438" name="Animating 12"/>
             <moveable id="439" name="Winged mummy (TR1)"/>
             <moveable id="440" name="Animating 13"/>

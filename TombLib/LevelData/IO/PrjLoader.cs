@@ -1983,7 +1983,7 @@ namespace TombLib.LevelData.IO
                     }
 
                     ushort rotation = prjFace._txtRotation;
-                    if (room.GetFaceShape(x, z, face) == Block.FaceShape.Triangle)
+                    if (room.GetFaceShape(x, z, face) == BlockFaceShape.Triangle)
                     {
                         // Get UV coordinates for polygon
                         switch (prjFace._txtTriangle)
