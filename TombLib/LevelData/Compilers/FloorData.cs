@@ -477,7 +477,7 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger2);
                             break;
                         case TriggerTargetType.LuaScript:
-                            trigger2 = (ushort)(0 | (20 << 10));
+                            trigger2 = (ushort)(0 | (11 << 10));
                             outFloorData.Add(trigger2);
                             // Using trigger parameter as function index would be too limiting (max 512 functions) so we add 
                             // an extra short that allows 32768 functions

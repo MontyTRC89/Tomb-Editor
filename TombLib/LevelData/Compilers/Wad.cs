@@ -126,7 +126,11 @@ namespace TombLib.LevelData.Compilers
                 {
                     ObjectTextureManager.Result result;
                     lock (_objectTextureManager)
+                    {
                         result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
+                        var tmp = _textureInfoManager.AddTexture(poly.Texture, false, false);
+                    }
+
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
                     currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12;
                 }
@@ -134,7 +138,10 @@ namespace TombLib.LevelData.Compilers
                 {
                     ObjectTextureManager.Result result;
                     lock (_objectTextureManager)
+                    {
                         result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
+                        var tmp = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                    }
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
                     currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10;

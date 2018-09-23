@@ -35,6 +35,10 @@ namespace TombLib.LevelData.Compilers.Util
 
         public class ParentTextureArea
         {
+            public VectorInt2 PositionInPage { get; set; }
+            public int Page { get; set; }
+            public int Padding { get; set; }
+
             private TextureArea _area;
             public TextureArea Area
             {
@@ -351,6 +355,56 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             return new Result() { TexInfoIndex = texInfoIndex, Rotation = rotation };
+        }
+
+        public void PackTextures()
+        {
+            int padding = 2;
+            int currentPage = 0;
+            RectPacker packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
+
+            for (int i = 0; i < ParentTextures.Count; i++)
+            {
+                // Get the size of the quad surrounding texture area, typically should be the texture area itself
+                int w = (int)(ParentTextures[i].Area.GetMinMax()[1].X - ParentTextures[i].Area.GetMinMax()[0].X);
+                int h = (int)(ParentTextures[i].Area.GetMinMax()[1].Y - ParentTextures[i].Area.GetMinMax()[0].Y);
+
+                // If texture is not too big we can pad it, otherwise we don't pad it
+                // TODO: implement adaptative padding (for example 2 could be bad, but 1 could be fine instead of 0)
+                if (w + 2 * padding < 256 && h + 2 * padding < 256)
+                {
+                    w += padding * 2;
+                    h += padding * 2;
+                    ParentTextures[i].Padding = padding;
+                }
+
+                // Pack texture
+                // TODO: use tree packer for better packing
+                var result = packer.TryAdd(new VectorInt2(w, h));
+                if (result == null || !result.HasValue)
+                {
+                    packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
+                    currentPage++;
+                    result = packer.TryAdd(new VectorInt2(w, h));
+                }
+
+                ParentTextures[i].Page = currentPage;
+                ParentTextures[i].PositionInPage = result.Value;
+            }
+
+            // DEBUG: Now for testing create a bitmap
+            var image = ImageC.CreateNew(256, (currentPage + 1) * 256);
+            for (int i = 0; i < ParentTextures.Count; i++)
+            {
+                var p = ParentTextures[i];
+
+                image.CopyFrom(p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, p.Area.Texture.Image,
+                               (int)p.Area.GetMinMax()[0].X,
+                               (int)p.Area.GetMinMax()[0].Y,
+                               (int)(p.Area.GetMinMax()[1].X - p.Area.GetMinMax()[0].X + 1),
+                               (int)(p.Area.GetMinMax()[1].Y - p.Area.GetMinMax()[0].Y + 1));
+            }
+            image.Save("H:\\testpack.png");
         }
     }
 }
