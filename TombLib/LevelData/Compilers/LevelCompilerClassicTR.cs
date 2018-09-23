@@ -99,6 +99,9 @@ namespace TombLib.LevelData.Compilers
             //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4();
             BuildRooms();
+
+            _progressReporter.ReportWarn("\nTexInfoManager room faces UNIT TEST: " + _textureInfoManager.ParentTextures.Count + " parents, " + _textureInfoManager.TexInfoCount + " TexInfos\n");
+
             PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();

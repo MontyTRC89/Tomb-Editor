@@ -56,7 +56,8 @@ namespace TombLib.LevelData.Compilers.Util
                         }
                     }
 
-                    _area = value;
+                    // Set new parent area to min-max quad of incoming TextureArea
+                    _area = GetQuad(value);
                 }
             }
             public List<KeyValuePair<int, Vector2[]>> Children;
@@ -171,21 +172,6 @@ namespace TombLib.LevelData.Compilers.Util
                 var newTexIndex = GetNewTexInfoIndex();
                 parent.AddChild(texture, newTexIndex);
                 return newTexIndex;
-            }
-            return -1;
-        }
-
-        private int FindAndBecomeParent(TextureArea texture)
-        {
-            foreach (var parent in ParentTextures)
-            {
-                if (parent.IsPotentialParent(texture))
-                {
-                    var newTexIndex = GetNewTexInfoIndex();
-
-                    parent.AddChild(texture, newTexIndex);
-                    return newTexIndex;
-                }
             }
             return -1;
         }
