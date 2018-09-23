@@ -93,6 +93,7 @@
             this.lstTriggers.Size = new System.Drawing.Size(280, 114);
             this.lstTriggers.TabIndex = 0;
             this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
+            this.lstTriggers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstTriggers_KeyDown);
             this.lstTriggers.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstTriggers_MouseDoubleClick);
             // 
             // toolTip
