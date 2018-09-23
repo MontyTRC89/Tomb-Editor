@@ -92,25 +92,27 @@ namespace TombLib.LevelData.Compilers.Util
             // also checks if texture area is enclosed in parent's area.
             public bool IsPotentialChild(TextureArea texture)
             {
+                var minMax = texture.GetMinMax();
+
+                var diff1 = Area.TexCoord0 - minMax[0];
+                var diff2 = Area.TexCoord0 - minMax[0];
+
                 return (Area.ParametersSimilar(texture) &&
-                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord0)) &&
-                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord1)) &&
-                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord2)) &&
-                       (PolygonFunctions.DoesQuadContainPoint(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3, Area.TexCoord3)));
+                       (diff1.X <= 0.0f && diff1.Y <= 0.0f) &&
+                       (diff2.X >= 0.0f && diff2.Y >= 0.0f));
             }
 
             // Checks if incoming texture is similar in parameters and encloses parent area.
             public bool IsPotentialParent(TextureArea texture)
             {
                 var minMax = texture.GetMinMax();
-                Vector2 p0 = new Vector2(minMax[0].X, minMax[0].Y);
-                Vector2 p1 = new Vector2(minMax[1].X, minMax[0].Y);
-                Vector2 p2 = new Vector2(minMax[1].X, minMax[1].Y);
-                Vector2 p3 = new Vector2(minMax[0].X, minMax[1].Y);
+
+                var diff1 = Area.TexCoord0 - minMax[0];
+                var diff2 = Area.TexCoord0 - minMax[0];
 
                 return (Area.ParametersSimilar(texture) &&
-                       (PolygonFunctions.DoesQuadContainPoint(p0, p1, p2, p3, Area.TexCoord0)) &&
-                       (PolygonFunctions.DoesQuadContainPoint(p0, p1, p2, p3, Area.TexCoord2)));
+                       (diff1.X > 0.0f && diff1.Y > 0.0f) &&
+                       (diff2.X < 0.0f && diff2.Y < 0.0f));
             }
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
@@ -156,13 +158,14 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int TryToAddToExisting(TextureArea texture)
         {
+            var textureQuad = ParentTextureArea.GetQuad(texture);
             foreach (var parent in ParentTextures)
             {
                 // Try to find potential child (smaller texture) and make itself a child
-                if (parent.IsPotentialParent(texture))
-                    parent.Area = ParentTextureArea.GetQuad(texture);
+                if (parent.IsPotentialParent(textureQuad))
+                    parent.Area = textureQuad;
                 // Try to find potential parent (larger texture) and add itself to children
-                else if (!parent.IsPotentialChild(texture))
+                else if (!parent.IsPotentialChild(textureQuad))
                     continue;
 
                 var newTexIndex = GetNewTexInfoIndex();
