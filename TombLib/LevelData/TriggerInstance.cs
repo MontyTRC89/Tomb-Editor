@@ -16,7 +16,11 @@ namespace TombLib.LevelData
         Antitrigger = 9,
         HeavySwitch = 10,
         HeavyAntritrigger = 11,
-        ConditionNg = 12
+        MonkeyOrConditionNg = 12,
+        Skeleton = 13,
+        TightRope = 14,
+        Crawl = 15,
+        Climb = 16
     }
 
     public enum TriggerTargetType : ushort
@@ -37,7 +41,7 @@ namespace TombLib.LevelData
         ParameterNg = 13,
         FmvNg = 14,
         TimerfieldNg = 15,
-        LuaScript = 20,
+        LuaScript = 16,
     }
 
     public interface ITriggerParameter : IEquatable<ITriggerParameter>
