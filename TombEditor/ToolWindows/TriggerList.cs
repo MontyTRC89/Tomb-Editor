@@ -78,18 +78,29 @@ namespace TombEditor.ToolWindows
             }
         }
 
+        private void DeleteTrigger()
+        {
+            if (_editor.SelectedRoom == null || !(_editor.SelectedObject is TriggerInstance))
+                return;
+            EditorActions.DeleteObject(_editor.SelectedObject);
+        }
+
+        private void lstTriggers_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+                DeleteTrigger();
+        }
+
+        private void butDeleteTrigger_Click(object sender, EventArgs e)
+        {
+            DeleteTrigger();
+        }
+
         private void butEditTrigger_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedRoom == null || !(_editor.SelectedObject is TriggerInstance))
                 return;
             EditorActions.EditObject(_editor.SelectedObject, this);
-        }
-
-        private void butDeleteTrigger_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom == null || !(_editor.SelectedObject is TriggerInstance))
-                return;
-            EditorActions.DeleteObject(_editor.SelectedObject);
         }
 
         private void lstTriggers_SelectedIndexChanged(object sender, EventArgs e)
