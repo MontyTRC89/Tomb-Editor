@@ -11,14 +11,14 @@ using TombLib.NG;
 
 namespace TombEditor.Forms
 {
-    public partial class FormTrigger : DarkForm
+    public partial class paramLuaScript : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Level _level;
         private readonly TriggerInstance _trigger;
 
-        public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
+        public paramLuaScript(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
         {
             InitializeComponent();
@@ -55,6 +55,7 @@ namespace TombEditor.Forms
             paramTarget.Parameter = _trigger.Target;
             paramTimer.Parameter = _trigger.Timer;
             paramExtra.Parameter = _trigger.Extra;
+            tbLuaScript.Text = _trigger.LuaScript;
 
             // Update the dialog
             UpdateDialog();
@@ -69,6 +70,18 @@ namespace TombEditor.Forms
             paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
             paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
+            paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
+
+            if (TargetType == TriggerTargetType.LuaScript)
+            {
+                tbLuaScript.Visible = true;
+                paramTarget.Visible = false;
+            }
+            else
+            {
+                tbLuaScript.Visible = false;
+                paramTarget.Visible = true;
+            }
 
             UpdateExportToTrigger();
         }
@@ -120,6 +133,7 @@ namespace TombEditor.Forms
             _trigger.Extra = paramExtra.Parameter;
             _trigger.CodeBits = CodeBits;
             _trigger.OneShot = cbOneShot.Checked;
+            _trigger.LuaScript = tbLuaScript.Text;
 
             // Close
             DialogResult = DialogResult.OK;

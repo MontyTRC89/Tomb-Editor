@@ -29,7 +29,8 @@ namespace TombLib.NG
         StringsList255, // STRING_LIST_255
         WadSlots, // WAD-SLOTS
         StaticsSlots, // STATIC_SLOTS
-        LaraStartPosOcb // LARA_POS_OCB
+        LaraStartPosOcb, // LARA_POS_OCB
+        LuaScript
     }
 
     public struct NgLinearParameter
@@ -250,6 +251,7 @@ namespace TombLib.NG
                     return new ITriggerParameter[0];
 
                 case NgParameterKind.AnyNumber:
+                case NgParameterKind.LuaScript:
                     return null;
 
                 case NgParameterKind.FixedEnumeration:

@@ -106,6 +106,7 @@ namespace TombLib.LevelData.IO
         /************/public static readonly ChunkId ObjectTrigger2Extra = ChunkId.FromString("TeEx");
         /************/public static readonly ChunkId ObjectTrigger2CodeBits = ChunkId.FromString("TeCo");
         /************/public static readonly ChunkId ObjectTrigger2OneShot = ChunkId.FromString("TeOS");
+        /************/public static readonly ChunkId ObjectTrigger2LuaScript = ChunkId.FromString("TeTrLua");
         public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
     }
 }

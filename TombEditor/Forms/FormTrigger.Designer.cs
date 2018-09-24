@@ -3,7 +3,7 @@ using DarkUI.Controls;
 
 namespace TombEditor.Forms
 {
-    partial class FormTrigger
+    partial class paramLuaScript
     {
         /// <summary>
         /// Required designer variable.
@@ -48,10 +48,12 @@ namespace TombEditor.Forms
             this.tbScript = new DarkUI.Controls.DarkTextBox();
             this.labelScript = new DarkUI.Controls.DarkLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.scriptExportPanel = new System.Windows.Forms.Panel();
-            this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
             this.butCopyWithComments = new DarkUI.Controls.DarkButton();
             this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
+            this.scriptExportPanel = new System.Windows.Forms.Panel();
+            this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
+            this.labelLUA = new DarkUI.Controls.DarkLabel();
+            this.tbLuaScript = new DarkUI.Controls.DarkTextBox();
             this.paramTriggerType = new TombLib.Controls.TriggerParameterControl();
             this.paramTargetType = new TombLib.Controls.TriggerParameterControl();
             this.paramExtra = new TombLib.Controls.TriggerParameterControl();
@@ -66,7 +68,7 @@ namespace TombEditor.Forms
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(9, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
+            this.label1.Size = new System.Drawing.Size(70, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Trigger Type:";
             // 
@@ -104,7 +106,7 @@ namespace TombEditor.Forms
             // 
             this.cbBit4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit4.AutoSize = true;
-            this.cbBit4.Location = new System.Drawing.Point(241, 148);
+            this.cbBit4.Location = new System.Drawing.Point(241, 270);
             this.cbBit4.Name = "cbBit4";
             this.cbBit4.Size = new System.Drawing.Size(49, 17);
             this.cbBit4.TabIndex = 9;
@@ -114,7 +116,7 @@ namespace TombEditor.Forms
             // 
             this.cbBit3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit3.AutoSize = true;
-            this.cbBit3.Location = new System.Drawing.Point(188, 148);
+            this.cbBit3.Location = new System.Drawing.Point(188, 270);
             this.cbBit3.Name = "cbBit3";
             this.cbBit3.Size = new System.Drawing.Size(49, 17);
             this.cbBit3.TabIndex = 8;
@@ -124,7 +126,7 @@ namespace TombEditor.Forms
             // 
             this.cbBit2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit2.AutoSize = true;
-            this.cbBit2.Location = new System.Drawing.Point(135, 148);
+            this.cbBit2.Location = new System.Drawing.Point(135, 270);
             this.cbBit2.Name = "cbBit2";
             this.cbBit2.Size = new System.Drawing.Size(49, 17);
             this.cbBit2.TabIndex = 7;
@@ -134,7 +136,7 @@ namespace TombEditor.Forms
             // 
             this.cbBit1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit1.AutoSize = true;
-            this.cbBit1.Location = new System.Drawing.Point(82, 148);
+            this.cbBit1.Location = new System.Drawing.Point(82, 270);
             this.cbBit1.Name = "cbBit1";
             this.cbBit1.Size = new System.Drawing.Size(49, 17);
             this.cbBit1.TabIndex = 6;
@@ -144,7 +146,7 @@ namespace TombEditor.Forms
             // 
             this.cbBit5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit5.AutoSize = true;
-            this.cbBit5.Location = new System.Drawing.Point(294, 148);
+            this.cbBit5.Location = new System.Drawing.Point(294, 270);
             this.cbBit5.Name = "cbBit5";
             this.cbBit5.Size = new System.Drawing.Size(49, 17);
             this.cbBit5.TabIndex = 10;
@@ -154,7 +156,7 @@ namespace TombEditor.Forms
             // 
             this.cbOneShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbOneShot.AutoSize = true;
-            this.cbOneShot.Location = new System.Drawing.Point(82, 170);
+            this.cbOneShot.Location = new System.Drawing.Point(82, 292);
             this.cbOneShot.Name = "cbOneShot";
             this.cbOneShot.Size = new System.Drawing.Size(75, 17);
             this.cbOneShot.TabIndex = 11;
@@ -164,7 +166,7 @@ namespace TombEditor.Forms
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(589, 198);
+            this.butCancel.Location = new System.Drawing.Point(606, 320);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 16;
@@ -175,7 +177,7 @@ namespace TombEditor.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(503, 198);
+            this.butOK.Location = new System.Drawing.Point(520, 320);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 15;
@@ -212,30 +214,6 @@ namespace TombEditor.Forms
             this.labelScript.TabIndex = 75;
             this.labelScript.Text = "Script:";
             // 
-            // scriptExportPanel
-            // 
-            this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.scriptExportPanel.Controls.Add(this.butCopyWithComments);
-            this.scriptExportPanel.Controls.Add(this.tbScript);
-            this.scriptExportPanel.Controls.Add(this.labelScript);
-            this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
-            this.scriptExportPanel.Location = new System.Drawing.Point(398, 148);
-            this.scriptExportPanel.Name = "scriptExportPanel";
-            this.scriptExportPanel.Size = new System.Drawing.Size(271, 25);
-            this.scriptExportPanel.TabIndex = 78;
-            // 
-            // cbRawMode
-            // 
-            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRawMode.AutoSize = true;
-            this.cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbRawMode.Location = new System.Drawing.Point(474, 176);
-            this.cbRawMode.Name = "cbRawMode";
-            this.cbRawMode.Size = new System.Drawing.Size(196, 17);
-            this.cbRawMode.TabIndex = 14;
-            this.cbRawMode.Text = "Raw mode (show numeric values)";
-            this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
-            // 
             // butCopyWithComments
             // 
             this.butCopyWithComments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -258,6 +236,48 @@ namespace TombEditor.Forms
             this.toolTip.SetToolTip(this.butCopyToClipboard, "Copy to clipboard");
             this.butCopyToClipboard.Click += new System.EventHandler(this.butCopyToClipboard_Click);
             // 
+            // scriptExportPanel
+            // 
+            this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.scriptExportPanel.Controls.Add(this.butCopyWithComments);
+            this.scriptExportPanel.Controls.Add(this.tbScript);
+            this.scriptExportPanel.Controls.Add(this.labelScript);
+            this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
+            this.scriptExportPanel.Location = new System.Drawing.Point(416, 269);
+            this.scriptExportPanel.Name = "scriptExportPanel";
+            this.scriptExportPanel.Size = new System.Drawing.Size(271, 23);
+            this.scriptExportPanel.TabIndex = 78;
+            // 
+            // cbRawMode
+            // 
+            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbRawMode.AutoSize = true;
+            this.cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbRawMode.Location = new System.Drawing.Point(491, 298);
+            this.cbRawMode.Name = "cbRawMode";
+            this.cbRawMode.Size = new System.Drawing.Size(196, 17);
+            this.cbRawMode.TabIndex = 14;
+            this.cbRawMode.Text = "Raw mode (show numeric values)";
+            this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
+            // 
+            // labelLUA
+            // 
+            this.labelLUA.AutoSize = true;
+            this.labelLUA.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLUA.Location = new System.Drawing.Point(9, 149);
+            this.labelLUA.Name = "labelLUA";
+            this.labelLUA.Size = new System.Drawing.Size(61, 13);
+            this.labelLUA.TabIndex = 80;
+            this.labelLUA.Text = "LUA script:";
+            // 
+            // tbLuaScript
+            // 
+            this.tbLuaScript.Location = new System.Drawing.Point(84, 145);
+            this.tbLuaScript.Multiline = true;
+            this.tbLuaScript.Name = "tbLuaScript";
+            this.tbLuaScript.Size = new System.Drawing.Size(602, 102);
+            this.tbLuaScript.TabIndex = 81;
+            // 
             // paramTriggerType
             // 
             this.paramTriggerType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -266,7 +286,7 @@ namespace TombEditor.Forms
             this.paramTriggerType.Level = null;
             this.paramTriggerType.Location = new System.Drawing.Point(82, 12);
             this.paramTriggerType.Name = "paramTriggerType";
-            this.paramTriggerType.Size = new System.Drawing.Size(587, 23);
+            this.paramTriggerType.Size = new System.Drawing.Size(604, 23);
             this.paramTriggerType.TabIndex = 1;
             this.paramTriggerType.ParameterChanged += new System.EventHandler(this.paramTriggerType_ParameterChanged);
             // 
@@ -278,7 +298,7 @@ namespace TombEditor.Forms
             this.paramTargetType.Level = null;
             this.paramTargetType.Location = new System.Drawing.Point(82, 38);
             this.paramTargetType.Name = "paramTargetType";
-            this.paramTargetType.Size = new System.Drawing.Size(587, 23);
+            this.paramTargetType.Size = new System.Drawing.Size(604, 23);
             this.paramTargetType.TabIndex = 2;
             this.paramTargetType.ParameterChanged += new System.EventHandler(this.paramTargetType_ParameterChanged);
             // 
@@ -290,7 +310,7 @@ namespace TombEditor.Forms
             this.paramExtra.Level = null;
             this.paramExtra.Location = new System.Drawing.Point(82, 116);
             this.paramExtra.Name = "paramExtra";
-            this.paramExtra.Size = new System.Drawing.Size(587, 23);
+            this.paramExtra.Size = new System.Drawing.Size(604, 23);
             this.paramExtra.TabIndex = 5;
             this.paramExtra.ParameterChanged += new System.EventHandler(this.paramExtra_ParameterChanged);
             // 
@@ -302,7 +322,7 @@ namespace TombEditor.Forms
             this.paramTimer.Level = null;
             this.paramTimer.Location = new System.Drawing.Point(82, 90);
             this.paramTimer.Name = "paramTimer";
-            this.paramTimer.Size = new System.Drawing.Size(587, 23);
+            this.paramTimer.Size = new System.Drawing.Size(604, 23);
             this.paramTimer.TabIndex = 4;
             this.paramTimer.ParameterChanged += new System.EventHandler(this.paramTimer_ParameterChanged);
             // 
@@ -314,17 +334,18 @@ namespace TombEditor.Forms
             this.paramTarget.Level = null;
             this.paramTarget.Location = new System.Drawing.Point(82, 64);
             this.paramTarget.Name = "paramTarget";
-            this.paramTarget.Size = new System.Drawing.Size(587, 23);
+            this.paramTarget.Size = new System.Drawing.Size(604, 23);
             this.paramTarget.TabIndex = 3;
             this.paramTarget.ParameterChanged += new System.EventHandler(this.paramTarget_ParameterChanged);
             // 
-            // FormTrigger
+            // paramLuaScript
             // 
-            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(678, 227);
+            this.ClientSize = new System.Drawing.Size(695, 349);
+            this.Controls.Add(this.tbLuaScript);
+            this.Controls.Add(this.labelLUA);
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.paramTriggerType);
             this.Controls.Add(this.butCancel);
@@ -348,7 +369,7 @@ namespace TombEditor.Forms
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
-            this.Name = "FormTrigger";
+            this.Name = "paramLuaScript";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -388,5 +409,7 @@ namespace TombEditor.Forms
         private TombLib.Controls.TriggerParameterControl paramTriggerType;
         private DarkCheckBox cbRawMode;
         private DarkButton butCopyWithComments;
+        private DarkLabel labelLUA;
+        private DarkTextBox tbLuaScript;
     }
 }

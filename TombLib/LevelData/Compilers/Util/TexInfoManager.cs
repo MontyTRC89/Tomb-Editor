@@ -514,7 +514,7 @@ namespace TombLib.LevelData.Compilers.Util
                     }
                 }
             }
-            image.Save("E:\\testpack.png");
+           // image.Save("E:\\testpack.png");
         }
     }
 }

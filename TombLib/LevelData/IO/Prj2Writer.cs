@@ -500,6 +500,8 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Extra, () => writeTriggerParameter(instance.Extra), 32);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2CodeBits, instance.CodeBits);
                             chunkIO.WriteChunkBool(Prj2Chunks.ObjectTrigger2OneShot, instance.OneShot);
+                            if (instance.TargetType == TriggerTargetType.LuaScript)
+                                chunkIO.WriteChunkString(Prj2Chunks.ObjectTrigger2LuaScript, instance.LuaScript);
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)

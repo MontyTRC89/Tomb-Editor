@@ -15,7 +15,7 @@ namespace TombLib.LevelData
         Dummy = 8,
         Antitrigger = 9,
         HeavySwitch = 10,
-        HeavyAntritrigger = 11,
+        HeavyAntitrigger = 11,
         MonkeyOrConditionNg = 12,
         Skeleton = 13,
         TightRope = 14,
@@ -41,7 +41,7 @@ namespace TombLib.LevelData
         ParameterNg = 13,
         FmvNg = 14,
         TimerfieldNg = 15,
-        LuaScript = 16,
+        LuaScript = 16
     }
 
     public interface ITriggerParameter : IEquatable<ITriggerParameter>
@@ -85,6 +85,33 @@ namespace TombLib.LevelData
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => Equals(other);
     }
 
+    public class TriggerParameterString : IEquatable<TriggerParameterString>, ITriggerParameter
+    {
+        public string Value { get; set; }
+
+        public TriggerParameterString(string value)
+        {
+            Value = value;
+        }
+
+        public override string ToString() => Value;
+
+        public static bool operator ==(TriggerParameterString first, TriggerParameterString second)
+        {
+            return (first.Equals(second));
+        }
+        public static bool operator !=(TriggerParameterString first, TriggerParameterString second) => !(first == second);
+        public override int GetHashCode() => base.GetHashCode();
+        public override bool Equals(object other)
+        {
+            if (!(other is TriggerParameterUshort))
+                return false;
+            return this == (TriggerParameterString)other;
+        }
+        public bool Equals(TriggerParameterString other) => this == other;
+        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => Equals(other);
+    }
+
     public class TriggerInstance : SectorBasedObjectInstance
     {
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
@@ -109,6 +136,13 @@ namespace TombLib.LevelData
         {
             get { return _extra; }
             set { UpdateEvents(ref _extra, value); }
+        }
+
+        private string _luaScript;
+        public string LuaScript
+        {
+            get { return _luaScript; }
+            set { _luaScript = value; }
         }
 
         public bool OneShot { get; set; } = false;
