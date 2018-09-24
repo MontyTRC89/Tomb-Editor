@@ -134,8 +134,10 @@ namespace TombLib.LevelData.Compilers
                     WriteLevelTr4(GetTRNGVersion());
                     break;
                 case GameVersion.TR5:
-                case GameVersion.TR5Main:
                     WriteLevelTr5();
+                    break;
+                case GameVersion.TR5Main:
+                    WriteLevelTr5Main();
                     break;
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");

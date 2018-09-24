@@ -24,6 +24,10 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(70, "Building floordata");
 
+            // Prepare LUA triggers eventually
+            if (_level.Settings.GameVersion == GameVersion.TR5Main)
+                PrepareLuaTriggers();
+
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
             _floorData.Add(0x0000);
 
@@ -324,7 +328,7 @@ namespace TombLib.LevelData.Compilers
                         case TriggerType.HeavySwitch:
                             trigger1 |= 0x0a << 8;
                             break;
-                        case TriggerType.HeavyAntritrigger:
+                        case TriggerType.HeavyAntitrigger:
                             trigger1 |= 0x0b << 8;
                             break;
                         case TriggerType.MonkeyOrConditionNg:
@@ -481,7 +485,7 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger2);
                             // Using trigger parameter as function index would be too limiting (max 512 functions) so we add 
                             // an extra short that allows 32768 functions
-                            trigger2 = GetTriggerParameter(trigger.Target, trigger, 0x7fff);
+                            trigger2 = (ushort)(_luaTriggers.IndexOf(trigger));
                             outFloorData.Add(trigger2);
                             break;
                         default:

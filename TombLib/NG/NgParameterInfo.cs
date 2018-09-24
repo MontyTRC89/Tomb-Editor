@@ -22,7 +22,7 @@ namespace TombLib.NG
             yield return TriggerType.Dummy;
             yield return TriggerType.Antitrigger;
             yield return TriggerType.HeavySwitch;
-            yield return TriggerType.HeavyAntritrigger;
+            yield return TriggerType.HeavyAntitrigger;
             if (levelSettings.GameVersion == GameVersion.TRNG)
                 yield return TriggerType.MonkeyOrConditionNg;
         }
@@ -114,6 +114,9 @@ namespace TombLib.NG
 
                         case TriggerTargetType.TimerfieldNg:
                             return NgCatalog.TimerFieldTrigger;
+
+                        case TriggerTargetType.LuaScript:
+                            return new NgParameterRange(NgParameterKind.LuaScript);
 
                         default:
                             return new NgParameterRange(NgParameterKind.AnyNumber);

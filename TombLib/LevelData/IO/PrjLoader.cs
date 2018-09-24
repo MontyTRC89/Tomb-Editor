@@ -346,7 +346,7 @@ namespace TombLib.LevelData.IO
                                         triggerTypeEnum = TriggerType.HeavySwitch;
                                         break;
                                     case 11:
-                                        triggerTypeEnum = TriggerType.HeavyAntritrigger;
+                                        triggerTypeEnum = TriggerType.HeavyAntitrigger;
                                         break;
                                     case 12:
                                         triggerTypeEnum = TriggerType.MonkeyOrConditionNg;

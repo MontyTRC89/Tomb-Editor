@@ -834,6 +834,8 @@ namespace TombLib.LevelData.IO
                             instance.CodeBits = unchecked((byte)chunkIO.ReadChunkLong(chunkSize4));
                         else if (id4 == Prj2Chunks.ObjectTrigger2OneShot)
                             instance.OneShot = chunkIO.ReadChunkBool(chunkSize4);
+                        else if (id4 == Prj2Chunks.ObjectTrigger2LuaScript)
+                            instance.LuaScript = chunkIO.ReadChunkString(chunkSize4);
                         else
                             return false;
                         return true;
