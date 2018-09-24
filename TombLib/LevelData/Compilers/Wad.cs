@@ -128,7 +128,7 @@ namespace TombLib.LevelData.Compilers
                     lock (_objectTextureManager)
                     {
                         result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        var tmp = _textureInfoManager.AddTexture(poly.Texture, false, false);
+                        var tmp = _textureInfoManager.AddTexture(poly.Texture, false, false, packPriority);
                     }
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
@@ -140,7 +140,7 @@ namespace TombLib.LevelData.Compilers
                     lock (_objectTextureManager)
                     {
                         result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-                        var tmp = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                        var tmp = _textureInfoManager.AddTexture(poly.Texture, true, false, packPriority);
                     }
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
