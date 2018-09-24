@@ -442,9 +442,17 @@ namespace TombLib.LevelData.Compilers.Util
             return new Result() { TexInfoIndex = texInfoIndex, Rotation = rotation };
         }
 
+        public void AddAnimatedTextures(List<AnimatedTextureSet> animatedTextures)
+        {
+            foreach(var set in animatedTextures)
+            {
+
+            }
+        }
+
         public void PackTextures()
         {
-            int padding = 2;
+            int padding = 16;
             int currentPage = 0;
             RectPacker packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
 
@@ -482,12 +490,49 @@ namespace TombLib.LevelData.Compilers.Util
             for (int i = 0; i < ParentTextures.Count; i++)
             {
                 var p = ParentTextures[i];
+                var x = (int)p.Area.GetMinMax()[0].X;
+                var y = (int)p.Area.GetMinMax()[0].Y;
+                var width  = (int)(p.Area.GetMinMax()[1].X - p.Area.GetMinMax()[0].X + 1);
+                var height = (int)(p.Area.GetMinMax()[1].Y - p.Area.GetMinMax()[0].Y + 1);
 
                 image.CopyFrom(p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, p.Area.Texture.Image,
-                               (int)p.Area.GetMinMax()[0].X,
-                               (int)p.Area.GetMinMax()[0].Y,
-                               (int)(p.Area.GetMinMax()[1].X - p.Area.GetMinMax()[0].X + 1),
-                               (int)(p.Area.GetMinMax()[1].Y - p.Area.GetMinMax()[0].Y + 1));
+                               x, y, width, height);
+
+                // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
+
+                var topLeft = p.Area.Texture.Image.GetPixel(x, y);
+                var topRight = p.Area.Texture.Image.GetPixel(x + width - 1, y);
+                var bottomLeft = p.Area.Texture.Image.GetPixel(x, y + height - 1);
+                var bottomRight = p.Area.Texture.Image.GetPixel(x + width - 1, y + height - 1);
+
+                for (int xP = 0; xP < padding; xP++)
+                {
+                    // copy left line
+                    image.CopyFrom(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + padding, p.Area.Texture.Image,
+                               x, y, 1, height - 1);
+                    // copy right line
+                    image.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + padding, p.Area.Texture.Image,
+                               x + width - 1, y, 1, height - 1);
+
+                    for (int yP = 0; yP < padding; yP++)
+                    {
+                        // copy top line
+                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP, p.Area.Texture.Image,
+                                   x, y, width - 1, 1);
+                        // copy bottom line
+                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, p.Area.Texture.Image,
+                                   x, y + height - 1, width - 1, 1);
+
+                        // expand top-left pixel
+                        image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP, topLeft);
+                        // expand top-right pixel
+                        image.SetPixel(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + yP, topRight);
+                        // expand bottom-left pixel
+                        image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, bottomLeft);
+                        // expand bottom-right pixel
+                        image.SetPixel(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, bottomRight);
+                    }
+                }
             }
             image.Save("E:\\testpack.png");
         }
