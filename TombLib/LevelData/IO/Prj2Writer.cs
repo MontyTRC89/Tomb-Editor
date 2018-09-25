@@ -12,6 +12,7 @@ namespace TombLib.LevelData.IO
     public static class Prj2Writer
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static Level _level;
 
         public class Filter
         {
@@ -27,6 +28,8 @@ namespace TombLib.LevelData.IO
 
         public static void SaveToPrj2(Stream stream, Level level, Filter filter = null)
         {
+            _level = level;
+
             using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
             {
                 // Index rooms
@@ -358,7 +361,7 @@ namespace TombLib.LevelData.IO
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovable, LEB128.MaximumSize1Byte))
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMovable2, () =>
                         {
                             var instance = (MoveableInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -370,9 +373,10 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Invisible);
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
-                        }
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
+                        });
                     else if (o is StaticInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, LEB128.MaximumSize1Byte))
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectStatic2, () =>
                         {
                             var instance = (StaticInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -383,7 +387,8 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Color);
                             chunkIO.Raw.Write((int)0); // Unused 32 bit value
                             chunkIO.Raw.Write(instance.Ocb);
-                        }
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
+                        });
                     else if (o is CameraInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, LEB128.MaximumSize1Byte))
                         {

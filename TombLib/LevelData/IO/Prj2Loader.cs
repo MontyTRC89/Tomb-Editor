@@ -75,7 +75,8 @@ namespace TombLib.LevelData.IO
                         return true;
                     else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad))
                         return true;
-                    else if (LoadObjects(chunkIO, id, levelSettingsIds, obj => loadedObjects.Objects.Add(obj), newObjects, null, null, null, embeddedSoundInfoWad))
+                    else if (LoadObjects(chunkIO, id, levelSettingsIds, 
+                        obj => loadedObjects.Objects.Add(obj), newObjects, null, null, null, embeddedSoundInfoWad))
                         return true;
                     return false;
                 });
@@ -583,7 +584,8 @@ namespace TombLib.LevelData.IO
                                 }
                             }));
                     }
-                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, obj => room.AddObjectAndSingularPortal(level, obj), newObjects, room, roomLinkActions, objectLinkActions, embeddedSoundInfoWad))
+                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, obj => room.AddObjectAndSingularPortal(level, obj), 
+                            newObjects, room, roomLinkActions, objectLinkActions, embeddedSoundInfoWad))
                         return true;
                     else
                         return false;
@@ -634,7 +636,8 @@ namespace TombLib.LevelData.IO
 
         private static bool LoadObjects(ChunkReader chunkIO, ChunkId idOuter, LevelSettingsIds levelSettingsIds,
             Action<ObjectInstance> addObject, Dictionary<long, ObjectInstance> newObjects,
-            Room room, List<KeyValuePair<long, Action<Room>>> roomLinkActions, List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions, Wad2 embeddedSoundInfoWad)
+            Room room, List<KeyValuePair<long, Action<Room>>> roomLinkActions, 
+            List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions, Wad2 embeddedSoundInfoWad)
         {
             if (idOuter != Prj2Chunks.Objects)
                 return false;
@@ -656,6 +659,29 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                if (id3 == Prj2Chunks.ObjectMovable2)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new Wad.WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    chunkIO.ReadChunks((id4, chunkSize4) =>
+                    {
+                        if (id4 == Prj2Chunks.ObjectItemLuaId)
+                        {
+                            instance.LuaId = chunkIO.ReadChunkInt(chunkSize4);
+                            return true;
+                        }
+                        return false;
+                    });
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);                    
+                }
                 else if (id3 == Prj2Chunks.ObjectStatic)
                 {
                     var instance = new StaticInstance();
@@ -666,6 +692,15 @@ namespace TombLib.LevelData.IO
                     instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
                     instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.Raw.ReadSingle(); // Unused 32 bit value
+                    chunkIO.ReadChunks((id4, chunkSize4) =>
+                    {
+                        if (id4 == Prj2Chunks.ObjectItemLuaId)
+                        {
+                            instance.LuaId = chunkIO.ReadChunkInt(chunkSize4);
+                            return true;
+                        }
+                        return false;
+                    });
                     instance.Ocb = chunkIO.Raw.ReadUInt16();
                     addObject(instance);
                 }
