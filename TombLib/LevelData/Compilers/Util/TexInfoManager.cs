@@ -1,11 +1,9 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -14,6 +12,19 @@ namespace TombLib.LevelData.Compilers.Util
     public class TexInfoManager
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        // Two lists of animated textures contain reference animation versions for each sequence
+        // and actual found animated texture sequences in rooms. When compiler encounters a tile
+        // which is similar to one of the reference animation versions, it copies it into actual
+        // animations list with all respective frames. Any new comparison is made with actual
+        // animation sequences at first, so next found similar tile will refer to already existing
+        // animation version.
+        // On packing, list of actual anim textures is added to main ParentTextures list, so only
+        // versions existing in level file are added to texinfo list. Rest from reference list
+        // is ignored.
+
+        public List<ParentAnimatedTexture> ReferenceAnimTextures = new List<ParentAnimatedTexture>();
+        public List<ParentAnimatedTexture> ActualAnimTextures = new List<ParentAnimatedTexture>();
 
         // List of parent textures should contain all "ancestor" texture areas in which all variations
         // are placed, including mirrored and rotated ones.
@@ -50,10 +61,8 @@ namespace TombLib.LevelData.Compilers.Util
                     return new Vector2[] { Vector2.Zero };
                 }
 
-                return new Vector2[] { new Vector2(parent.Area.TexCoord0.X + child.TexCoord[0].X, parent.Area.TexCoord0.Y + child.TexCoord[0].Y),
-                                       new Vector2(parent.Area.TexCoord0.X + child.TexCoord[1].X, parent.Area.TexCoord0.Y + child.TexCoord[1].Y),
-                                       new Vector2(parent.Area.TexCoord0.X + child.TexCoord[2].X, parent.Area.TexCoord0.Y + child.TexCoord[2].Y),
-                                       new Vector2(parent.Area.TexCoord0.X + child.TexCoord[3].X, parent.Area.TexCoord0.Y + child.TexCoord[3].Y), };
+                return new Vector2[] { parent.Area.Start + child.TexCoord[0], parent.Area.Start + child.TexCoord[1],
+                                       parent.Area.Start + child.TexCoord[2], parent.Area.Start + child.TexCoord[3] };
             }
         }
 
@@ -68,99 +77,69 @@ namespace TombLib.LevelData.Compilers.Util
             public int Page { get; set; }
             public int Padding { get; set; }
 
+            public Texture Texture { get; private set; }
+            public BumpLevel BumpLevel { get; private set; }
             public bool IsForRoom { get; private set; }
             public int PackPriority { get; private set; }
 
-            private TextureArea _area;
-            public TextureArea Area
+            private Rectangle2 _area;
+            public Rectangle2 Area
             {
                 get { return _area; }
                 set
                 {
                     // Disallow reducing area size, cause it corrupts children.
-                    if (value == _area || Math.Abs(value.QuadArea) < Math.Abs(_area.QuadArea))
+                    if (value == _area || !value.Contains(_area))
                         return;
 
                     // Calculate startpoint delta and fix up children to comply with new parent area.
                     if (Children != null && Children.Count > 0)
                     {
-                        var delta = _area.TexCoord0 - value.TexCoord0;
+                        var delta = _area.Start - value.Start;
                         foreach (var child in Children)
-                        {
                             for (int i = 0; i < 4; i++)
                                 child.TexCoord[i] += delta;
-                        }
                     }
 
-                    // Set new parent area to min-max quad of incoming TextureArea
-                    _area = GetQuad(value);
+                    _area = value;
                 }
             }
             public List<ChildTextureArea> Children;
 
             // Generates new ParentTextureArea from raw texture coordinates.
-            public ParentTextureArea(TextureArea newTextureArea, bool isForRoom, int packPriority)
+            public ParentTextureArea(TextureArea texture, bool isForRoom, int packPriority)
             {
-                Area = GetQuad(newTextureArea);
+                _area = texture.GetRect();
                 Children = new List<ChildTextureArea>();
+
+                Texture = texture.Texture;
+                BumpLevel = texture.BumpLevel;
                 IsForRoom = isForRoom;
                 PackPriority = packPriority;
             }
 
             // Compare parent's properties with incoming texture properties.
             public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom, int packPriority)
-            {
-                return ( Area.BumpLevel == incomingTexture.BumpLevel &&
-                         Area.Texture   == incomingTexture.Texture &&
-                         IsForRoom      == isForRoom &&
-                         PackPriority   == packPriority );
-            }
-
-            // Gets canonical quad area in which texture is enclosed
-            public static TextureArea GetQuad(TextureArea texture)
-            {
-                var minMax = texture.GetMinMax();
-                return new TextureArea()
-                {
-                    BlendMode = texture.BlendMode,
-                    BumpLevel = texture.BumpLevel,
-                    DoubleSided = texture.DoubleSided,
-                    Texture = texture.Texture,
-
-                    // Please note that resulting parent area is a min-max quad, because
-                    // generally it makes more sense to operate on it than on raw tex coords.
-                    TexCoord0 = new Vector2(minMax[0].X, minMax[0].Y),
-                    TexCoord1 = new Vector2(minMax[1].X, minMax[0].Y),
-                    TexCoord2 = new Vector2(minMax[1].X, minMax[1].Y),
-                    TexCoord3 = new Vector2(minMax[0].X, minMax[1].Y)
-                };
-            }
+                => BumpLevel == incomingTexture.BumpLevel && Texture == incomingTexture.Texture && IsForRoom == isForRoom && PackPriority == packPriority;
 
             // Checks if parameters are similar to another texture area, and if so,
             // also checks if texture area is enclosed in parent's area.
             public bool IsPotentialParent(TextureArea texture, bool isForRoom, int packPriority)
-            {
-                var minMax = texture.GetMinMax();
-
-                var diff1 = Area.TexCoord0 - minMax[0];
-                var diff2 = Area.TexCoord2 - minMax[1];
-
-                return (ParametersSimilar(texture, isForRoom, packPriority) &&
-                       (diff1.X <= 0.0f && diff1.Y <= 0.0f) &&
-                       (diff2.X >= 0.0f && diff2.Y >= 0.0f));
-            }
+                => (ParametersSimilar(texture, isForRoom, packPriority) && texture.GetRect().Contains(_area));
 
             // Checks if incoming texture is similar in parameters and encloses parent area.
-            public bool IsPotentialChild(TextureArea texture, bool isForRoom, int packPriority)
+            public bool IsPotentialChild(TextureArea texture, bool isForRoom, int packPriority, bool allowOverlaps = false, uint maxOverlappedSize = 256)
             {
-                var minMax = texture.GetMinMax();
-
-                var diff1 = Area.TexCoord0 - minMax[0];
-                var diff2 = Area.TexCoord2 - minMax[1];
-
-                return (ParametersSimilar(texture, isForRoom, packPriority) &&
-                       (diff1.X >= 0.0f && diff1.Y >= 0.0f) &&
-                       (diff2.X <= 0.0f && diff2.Y <= 0.0f));
+                var rect = texture.GetRect();
+                if (!allowOverlaps)
+                    return (ParametersSimilar(texture, isForRoom, packPriority) && _area.Contains(rect));
+                else
+                {
+                    var potentialNewArea = rect.Union(_area);
+                    return (ParametersSimilar(texture, isForRoom, packPriority) &&
+                           (potentialNewArea.Width <= maxOverlappedSize) &&
+                           (potentialNewArea.Height <= maxOverlappedSize));
+                }
             }
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
@@ -171,14 +150,16 @@ namespace TombLib.LevelData.Compilers.Util
                     TexInfoIndex = newTextureID,
                     BlendMode = texture.BlendMode,
                     IsForTriangle = isForTriangle,
-                    TexCoord = new Vector2[4]
-                    {
-                        new Vector2 { X = texture.TexCoord0.X - Area.TexCoord0.X, Y = texture.TexCoord0.Y - Area.TexCoord0.Y },
-                        new Vector2 { X = texture.TexCoord1.X - Area.TexCoord0.X, Y = texture.TexCoord1.Y - Area.TexCoord0.Y },
-                        new Vector2 { X = texture.TexCoord2.X - Area.TexCoord0.X, Y = texture.TexCoord2.Y - Area.TexCoord0.Y },
-                        new Vector2 { X = texture.TexCoord3.X - Area.TexCoord0.X, Y = texture.TexCoord3.Y - Area.TexCoord0.Y }
-                    }
+                    TexCoord = new Vector2[4] { texture.TexCoord0 - Area.Start,
+                                                texture.TexCoord1 - Area.Start,
+                                                texture.TexCoord2 - Area.Start,
+                                                texture.TexCoord3 - Area.Start }
                 });
+
+                // Expand parent area, if needed
+                var rect = texture.GetRect();
+                if (!Area.Contains(rect))
+                    Area.Union(rect);
             }
 
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
@@ -190,13 +171,10 @@ namespace TombLib.LevelData.Compilers.Util
                     TexInfoIndex = child.TexInfoIndex,
                     BlendMode = child.BlendMode,
                     IsForTriangle = child.IsForTriangle,
-                    TexCoord = new Vector2[4]
-                    {
-                        new Vector2 { X = absCoordinates[0].X - Area.TexCoord0.X, Y = absCoordinates[0].Y - Area.TexCoord0.Y },
-                        new Vector2 { X = absCoordinates[1].X - Area.TexCoord0.X, Y = absCoordinates[1].Y - Area.TexCoord0.Y },
-                        new Vector2 { X = absCoordinates[2].X - Area.TexCoord0.X, Y = absCoordinates[2].Y - Area.TexCoord0.Y },
-                        new Vector2 { X = absCoordinates[3].X - Area.TexCoord0.X, Y = absCoordinates[3].Y - Area.TexCoord0.Y }
-                    }
+                    TexCoord = new Vector2[4] { absCoordinates[0] - Area.Start,
+                                                absCoordinates[1] - Area.Start,
+                                                absCoordinates[2] - Area.Start,
+                                                absCoordinates[3] - Area.Start }
                 });
             }
 
@@ -204,12 +182,24 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 foreach (var parent in parents)
                 {
-
                     foreach (var child in parent.Children)
                         parent.MoveChild(child, this);
 
                     parent.Children.Clear();
                 }
+            }
+        }
+
+        // add desc!
+
+        public class ParentAnimatedTexture
+        {
+            public AnimatedTextureSet Origin;
+            public List<ParentTextureArea> CompiledAnimation = new List<ParentTextureArea>();
+
+            public ParentAnimatedTexture(AnimatedTextureSet origin)
+            {
+                Origin = origin;
             }
         }
 
@@ -227,13 +217,11 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int TryToAddToExisting(TextureArea texture, bool isForRoom, bool isForTriangle, int packPriority)
         {
-            var textureQuad = ParentTextureArea.GetQuad(texture);
-
             // Try to find and merge parents which are enclosed in incoming texture area
-            var childrenWannabes = ParentTextures.Where(item => item.IsPotentialChild(textureQuad, isForRoom, packPriority)).ToList();
+            var childrenWannabes = ParentTextures.Where(item => item.IsPotentialChild(texture, isForRoom, packPriority)).ToList();
             if(childrenWannabes.Count > 0)
             {
-                var newParent = new ParentTextureArea(textureQuad, isForRoom, packPriority);
+                var newParent = new ParentTextureArea(texture, isForRoom, packPriority);
                 var texIndex = GetNewTexInfoIndex();
                 newParent.AddChild(texture, texIndex, isForTriangle);
                 newParent.MergeParents(childrenWannabes);
@@ -245,7 +233,7 @@ namespace TombLib.LevelData.Compilers.Util
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in ParentTextures)
             {
-                if (!parent.IsPotentialParent(textureQuad, isForRoom, packPriority))
+                if (!parent.IsPotentialParent(texture, isForRoom, packPriority))
                     continue;
 
                 var newTexIndex = GetNewTexInfoIndex();
@@ -436,18 +424,10 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // No any potential parents or children, create as new parent
                 if (texInfoIndex == -1)
-                    AddParent(canonicalTexture, isForTriangle, isForRoom, packPriority);
+                    texInfoIndex = AddParent(canonicalTexture, isForTriangle, isForRoom, packPriority);
             }
 
             return new Result() { TexInfoIndex = texInfoIndex, Rotation = rotation };
-        }
-
-        public void AddAnimatedTextures(List<AnimatedTextureSet> animatedTextures)
-        {
-            foreach(var set in animatedTextures)
-            {
-
-            }
         }
 
         public void PackTextures()
@@ -459,8 +439,8 @@ namespace TombLib.LevelData.Compilers.Util
             for (int i = 0; i < ParentTextures.Count; i++)
             {
                 // Get the size of the quad surrounding texture area, typically should be the texture area itself
-                int w = (int)(ParentTextures[i].Area.GetMinMax()[1].X - ParentTextures[i].Area.GetMinMax()[0].X);
-                int h = (int)(ParentTextures[i].Area.GetMinMax()[1].Y - ParentTextures[i].Area.GetMinMax()[0].Y);
+                int w = (int)(ParentTextures[i].Area.End.X - ParentTextures[i].Area.Start.X);
+                int h = (int)(ParentTextures[i].Area.End.Y - ParentTextures[i].Area.Start.Y);
 
                 // If texture is not too big we can pad it, otherwise we don't pad it
                 // TODO: implement adaptative padding (for example 2 could be bad, but 1 could be fine instead of 0)
@@ -490,37 +470,37 @@ namespace TombLib.LevelData.Compilers.Util
             for (int i = 0; i < ParentTextures.Count; i++)
             {
                 var p = ParentTextures[i];
-                var x = (int)p.Area.GetMinMax()[0].X;
-                var y = (int)p.Area.GetMinMax()[0].Y;
-                var width  = (int)(p.Area.GetMinMax()[1].X - p.Area.GetMinMax()[0].X + 1);
-                var height = (int)(p.Area.GetMinMax()[1].Y - p.Area.GetMinMax()[0].Y + 1);
+                var x = (int)p.Area.Start.X;
+                var y = (int)p.Area.Start.Y;
+                var width  = (int)(p.Area.End.X - p.Area.Start.X + 1);
+                var height = (int)(p.Area.End.Y - p.Area.Start.Y + 1);
 
-                image.CopyFrom(p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, p.Area.Texture.Image,
+                image.CopyFrom(p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, p.Texture.Image,
                                x, y, width, height);
 
                 // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
 
-                var topLeft = p.Area.Texture.Image.GetPixel(x, y);
-                var topRight = p.Area.Texture.Image.GetPixel(x + width - 1, y);
-                var bottomLeft = p.Area.Texture.Image.GetPixel(x, y + height - 1);
-                var bottomRight = p.Area.Texture.Image.GetPixel(x + width - 1, y + height - 1);
+                var topLeft = p.Texture.Image.GetPixel(x, y);
+                var topRight = p.Texture.Image.GetPixel(x + width - 1, y);
+                var bottomLeft = p.Texture.Image.GetPixel(x, y + height - 1);
+                var bottomRight = p.Texture.Image.GetPixel(x + width - 1, y + height - 1);
 
                 for (int xP = 0; xP < padding; xP++)
                 {
                     // copy left line
-                    image.CopyFrom(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + padding, p.Area.Texture.Image,
+                    image.CopyFrom(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + padding, p.Texture.Image,
                                x, y, 1, height - 1);
                     // copy right line
-                    image.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + padding, p.Area.Texture.Image,
+                    image.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + padding, p.Texture.Image,
                                x + width - 1, y, 1, height - 1);
 
                     for (int yP = 0; yP < padding; yP++)
                     {
                         // copy top line
-                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP, p.Area.Texture.Image,
+                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP, p.Texture.Image,
                                    x, y, width - 1, 1);
                         // copy bottom line
-                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, p.Area.Texture.Image,
+                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, p.Texture.Image,
                                    x, y + height - 1, width - 1, 1);
 
                         // expand top-left pixel
