@@ -920,6 +920,9 @@ namespace TombLib.LevelData
 
         public ObjectInstance AddObjectAndSingularPortal(Level level, ObjectInstance instance)
         {
+            if (instance is ItemInstance)
+                (instance as ItemInstance).LuaId = level.AllocNewLuaId();
+
             if (instance is PositionBasedObjectInstance)
                 _objects.Add((PositionBasedObjectInstance)instance);
             try

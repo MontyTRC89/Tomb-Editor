@@ -9,7 +9,14 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
+        // Collections for LUA triggers
         private List<TriggerInstance> _luaTriggers;
+        private Dictionary<int, int> _luaIdToItems;
+
+        private static readonly ChunkId Tr5MainChunkTriggersList = ChunkId.FromString("Tr5Triggers");
+        private static readonly ChunkId Tr5MainChunkTrigger = ChunkId.FromString("Tr5Trigger");
+        private static readonly ChunkId Tr5MainChunkLuaIds = ChunkId.FromString("Tr5LuaIds");
+        private static readonly ChunkId Tr5MainChunkLuaId = ChunkId.FromString("Tr5LuaId");
 
         private void PrepareLuaTriggers()
         {
@@ -176,99 +183,120 @@ namespace TombLib.LevelData.Compilers
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
+            using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                ReportProgress(90, "Writing final level");
-                writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
-
-                ReportProgress(95, "Writing textures");
-
-                // The room texture tile count currently also currently contains the wad textures
-                // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
-                writer.Write((ushort)(_texture32Data.GetLength(0) / (256 * 256 * 4)));
-                writer.Write((ushort)0);
-                writer.Write((ushort)0);
-
-                // Compress data
-                ReportProgress(96, "Compressing data");
-
-                byte[] texture32 = null;
-                int texture32UncompressedSize = -1;
-                byte[] texture16 = null;
-                int texture16UncompressedSize = -1;
-                byte[] textureMisc = null;
-                int textureMiscUncompressedSize = -1;
-                byte[] geometryData = geometryDataBuffer;
-                int geometryDataUncompressedSize = geometryData.Length;
-
-                using (Task Texture32task = Task.Factory.StartNew(() =>
+                using (var writer = new BinaryWriterEx(fs, true))
                 {
-                    texture32 = ZLib.CompressData(_texture32Data);
-                    texture32UncompressedSize = _texture32Data.Length;
-                }))
-                using (Task Texture16task = Task.Factory.StartNew(() =>
-                {
-                    byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data);
-                    texture16 = ZLib.CompressData(texture16Data);
-                    texture16UncompressedSize = texture16Data.Length;
-                }))
-                using (Task textureMiscTask = Task.Factory.StartNew(() =>
-                {
-                    Stream textureMiscData = PrepareFontAndSkyTexture();
-                    textureMisc = ZLib.CompressData(textureMiscData);
-                    textureMiscUncompressedSize = (int)textureMiscData.Length;
-                }))
+                    ReportProgress(90, "Writing final level");
+                    writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
 
-                    Task.WaitAll(Texture32task, Texture16task, textureMiscTask);
+                    ReportProgress(95, "Writing textures");
 
-                // Write data
-                ReportProgress(97, "Writing compressed data to file.");
+                    // The room texture tile count currently also currently contains the wad textures
+                    // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
+                    writer.Write((ushort)(_texture32Data.GetLength(0) / (256 * 256 * 4)));
+                    writer.Write((ushort)0);
+                    writer.Write((ushort)0);
 
-                writer.Write(texture32UncompressedSize);
-                writer.Write(texture32.Length);
-                writer.Write(texture32);
+                    // Compress data
+                    ReportProgress(96, "Compressing data");
 
-                writer.Write(texture16UncompressedSize);
-                writer.Write(texture16.Length);
-                writer.Write(texture16);
+                    byte[] texture32 = null;
+                    int texture32UncompressedSize = -1;
+                    byte[] texture16 = null;
+                    int texture16UncompressedSize = -1;
+                    byte[] textureMisc = null;
+                    int textureMiscUncompressedSize = -1;
+                    byte[] geometryData = geometryDataBuffer;
+                    int geometryDataUncompressedSize = geometryData.Length;
 
-                writer.Write(textureMiscUncompressedSize);
-                writer.Write(textureMisc.Length);
-                writer.Write(textureMisc);
+                    using (Task Texture32task = Task.Factory.StartNew(() =>
+                    {
+                        texture32 = ZLib.CompressData(_texture32Data);
+                        texture32UncompressedSize = _texture32Data.Length;
+                    }))
+                    using (Task Texture16task = Task.Factory.StartNew(() =>
+                    {
+                        byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data);
+                        texture16 = ZLib.CompressData(texture16Data);
+                        texture16UncompressedSize = texture16Data.Length;
+                    }))
+                    using (Task textureMiscTask = Task.Factory.StartNew(() =>
+                    {
+                        Stream textureMiscData = PrepareFontAndSkyTexture();
+                        textureMisc = ZLib.CompressData(textureMiscData);
+                        textureMiscUncompressedSize = (int)textureMiscData.Length;
+                    }))
 
-                writer.Write((ushort)_level.Settings.Tr5LaraType);
-                writer.Write((ushort)_level.Settings.Tr5WeatherType);
+                        Task.WaitAll(Texture32task, Texture16task, textureMiscTask);
 
-                for (var i = 0; i < 28; i++)
-                    writer.Write((byte)0);
+                    // Write data
+                    ReportProgress(97, "Writing compressed data to file.");
 
-                // In TR5 geometry data is not compressed
-                writer.Write(geometryDataUncompressedSize);
-                writer.Write(geometryDataUncompressedSize);
-                writer.Write(geometryData);
+                    writer.Write(texture32UncompressedSize);
+                    writer.Write(texture32.Length);
+                    writer.Write(texture32);
 
-                ReportProgress(98, "Writing WAVE sounds");
-                _soundManager.WriteSoundData(writer);
+                    writer.Write(texture16UncompressedSize);
+                    writer.Write(texture16.Length);
+                    writer.Write(texture16);
 
-                // Write extra data
-                writer.Write((int)0x5455354D);
+                    writer.Write(textureMiscUncompressedSize);
+                    writer.Write(textureMisc.Length);
+                    writer.Write(textureMisc);
 
-                writer.Write((int)_luaTriggers.Count);
-                foreach (var trigger in _luaTriggers)
-                {
-                    string functionName = "Trigger_" + _luaTriggers.IndexOf(trigger);
-                    string functionCode = "function " + functionName + "()\n" +
-                                          trigger.LuaScript + "\n" +
-                                          "end\n";
+                    writer.Write((ushort)_level.Settings.Tr5LaraType);
+                    writer.Write((ushort)_level.Settings.Tr5WeatherType);
 
-                    writer.Write((int)functionName.Length);
-                    writer.Write(System.Text.Encoding.UTF8.GetBytes(functionName));
+                    for (var i = 0; i < 28; i++)
+                        writer.Write((byte)0);
 
-                    writer.Write((int)functionCode.Length);
-                    writer.Write(System.Text.Encoding.UTF8.GetBytes(functionCode));
+                    // In TR5 geometry data is not compressed
+                    writer.Write(geometryDataUncompressedSize);
+                    writer.Write(geometryDataUncompressedSize);
+                    writer.Write(geometryData);
+
+                    ReportProgress(98, "Writing WAVE sounds");
+                    _soundManager.WriteSoundData(writer);
+
+                    writer.Close();
+
+                    // Write extra data
+                    var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(fs));
+
+                    chunkIO.WriteChunkWithChildren(Tr5MainChunkTriggersList, () =>
+                    {
+                        foreach (var trigger in _luaTriggers)
+                        {
+                            chunkIO.WriteChunk(Tr5MainChunkTrigger, () =>
+                            {
+                                string functionName = "Trigger_" + _luaTriggers.IndexOf(trigger);
+                                string functionCode = "function " + functionName + "()\n" +
+                                                      trigger.LuaScript + "\n" +
+                                                      "end\n";
+
+                                chunkIO.Raw.WriteStringUTF8(functionName);
+                                chunkIO.Raw.WriteStringUTF8(functionCode);
+                            });
+                        }
+                    });
+
+                    chunkIO.WriteChunkWithChildren(Tr5MainChunkLuaIds, () =>
+                    {
+                        for (int i = 0; i < _luaIdToItems.Count; i++)
+                        {
+                            chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
+                            {
+                                chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
+                                chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
+                            });
+                        }
+                    });
+
+                    chunkIO.Raw.Flush();
+
+                    ReportProgress(99, "Done");
                 }
-
-                ReportProgress(99, "Done");
             }
         }
     }

@@ -5,6 +5,8 @@ namespace TombLib.LevelData
 {
     public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IRotateableY
     {
+        public int LuaId { get; set; }
+
         private float _rotation;
         /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
         public float RotationY

@@ -1818,7 +1818,12 @@ namespace TombEditor.Controls
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
                         moveable.ToString(_editor.Level.Settings.WadGameVersion) +
-                            " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                        (_editor.Level.Settings.GameVersion != GameVersion.TRNG ? 
+                        "" :
+                        " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                        (_editor.Level.Settings.GameVersion != GameVersion.TR5Main ?
+                        "" :
+                        " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
                             "\n" + GetObjectPositionString(room, instance) +
                             "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
                             (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
@@ -1967,7 +1972,12 @@ namespace TombEditor.Controls
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
                         @static.ToString(_editor.Level.Settings.WadGameVersion) +
-                            " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                        (_editor.Level.Settings.GameVersion != GameVersion.TRNG ?
+                        "" :
+                        " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                        (_editor.Level.Settings.GameVersion != GameVersion.TR5Main ?
+                        "" :
+                        " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
                             "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
                             "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
                             BuildTriggeredByMessage(instance)));

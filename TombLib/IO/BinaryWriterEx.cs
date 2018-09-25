@@ -12,6 +12,10 @@ namespace TombLib.IO
             : base(output)
         {}
 
+        public BinaryWriterEx(Stream output, bool leaveOpen)
+          : base(output, System.Text.Encoding.UTF8, leaveOpen)
+        { }
+
         public void Write(Vector2 value)
         {
             Write(value.X);

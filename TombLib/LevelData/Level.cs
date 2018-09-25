@@ -356,5 +356,21 @@ namespace TombLib.LevelData
             }
         }
         public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });
+
+        public int AllocNewLuaId()
+        {
+            var ids = new List<int>();
+            foreach (var room in Rooms)
+                if (room != null)
+                    foreach (var obj in room.Objects)
+                        if (obj is ItemInstance)
+                            ids.Add((obj as ItemInstance).LuaId);
+
+            int firstAvailable = Enumerable.Range(0, int.MaxValue)
+                                .Except(ids)
+                                .FirstOrDefault();
+
+            return firstAvailable;
+        }
     }
 }
