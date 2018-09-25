@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -47,25 +47,10 @@ namespace TombLib
         public static Vector3 Ceiling(Vector3 v) => new Vector3((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y), (float)Math.Ceiling(v.Z));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Ceiling(Vector4 v) => new Vector4((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y), (float)Math.Ceiling(v.Z), (float)Math.Ceiling(v.W));
-
-        /// <summary>
-        /// Clamps the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="min">The min.</param>
-        /// <param name="max">The max.</param>
-        /// <returns>The result of clamping a value between min and max</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Clamp(int value, int min, int max)
-        {
-            return value < min ? min : value > max ? max : value;
-        }
-
+        public static int Clamp(int value, int min, int max) => value < min ? min : value > max ? max : value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Clamp(double value, double min, double max)
-        {
-            return value < min ? min : value > max ? max : value;
-        }
+        public static double Clamp(double value, double min, double max) => value < min? min : value > max ? max : value;
 
         /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.

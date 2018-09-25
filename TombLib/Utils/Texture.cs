@@ -123,10 +123,10 @@ namespace TombLib.Utils
             }
         }
 
-        public Vector2[] GetMinMax()
+        public Rectangle2 GetRect()
         {
-            return new Vector2[2] { Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
-                                    Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)) };
+            return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
+                                  Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)));
         }
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
@@ -144,7 +144,7 @@ namespace TombLib.Utils
         // and also puts rotational difference into Rotation out parameter
         public TextureArea GetCanonicalTexture(out byte Rotation)
         {
-            var minY = GetMinMax()[0].Y;
+            var minY = GetRect().Start.Y;
             var transformedTexture = this;
 
             Rotation = 0;
