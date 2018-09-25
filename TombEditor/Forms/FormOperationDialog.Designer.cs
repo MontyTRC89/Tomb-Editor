@@ -107,6 +107,9 @@ namespace TombEditor.Forms
             // 
             // panelLogAndProgressBar
             // 
+            this.panelLogAndProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelLogAndProgressBar.Controls.Add(this.panelLog);
             this.panelLogAndProgressBar.Controls.Add(this.panelProgressBar);
             this.panelLogAndProgressBar.Location = new System.Drawing.Point(4, 4);
