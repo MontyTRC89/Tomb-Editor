@@ -185,7 +185,7 @@ namespace TombLib.LevelData.Compilers
 
             using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                using (var writer = new BinaryWriterEx(fs, true))
+                using (var writer = new BinaryWriterEx(fs))
                 {
                     ReportProgress(90, "Writing final level");
                     writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
@@ -259,41 +259,47 @@ namespace TombLib.LevelData.Compilers
                     ReportProgress(98, "Writing WAVE sounds");
                     _soundManager.WriteSoundData(writer);
 
-                    writer.Close();
-
                     // Write extra data
-                    var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(fs));
-
-                    chunkIO.WriteChunkWithChildren(Tr5MainChunkTriggersList, () =>
+                    using (var ms = new MemoryStream())
                     {
-                        foreach (var trigger in _luaTriggers)
+                        var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(ms));
+
+                        chunkIO.WriteChunkWithChildren(Tr5MainChunkTriggersList, () =>
                         {
-                            chunkIO.WriteChunk(Tr5MainChunkTrigger, () =>
+                            foreach (var trigger in _luaTriggers)
                             {
-                                string functionName = "Trigger_" + _luaTriggers.IndexOf(trigger);
-                                string functionCode = "function " + functionName + "()\n" +
-                                                      trigger.LuaScript + "\n" +
-                                                      "end\n";
+                                chunkIO.WriteChunk(Tr5MainChunkTrigger, () =>
+                                {
+                                    string functionName = "Trigger_" + _luaTriggers.IndexOf(trigger);
+                                    string functionCode = "function " + functionName + "()\n" +
+                                                          trigger.LuaScript + "\n" +
+                                                          "end\n";
 
-                                chunkIO.Raw.WriteStringUTF8(functionName);
-                                chunkIO.Raw.WriteStringUTF8(functionCode);
-                            });
-                        }
-                    });
+                                    chunkIO.Raw.WriteStringUTF8(functionName);
+                                    chunkIO.Raw.WriteStringUTF8(functionCode);
+                                });
+                            }
+                        });
 
-                    chunkIO.WriteChunkWithChildren(Tr5MainChunkLuaIds, () =>
-                    {
-                        for (int i = 0; i < _luaIdToItems.Count; i++)
+                        chunkIO.WriteChunkWithChildren(Tr5MainChunkLuaIds, () =>
                         {
-                            chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
+                            for (int i = 0; i < _luaIdToItems.Count; i++)
                             {
-                                chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
-                                chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
-                            });
-                        }
-                    });
+                                chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
+                                {
+                                    chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
+                                    chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
+                                });
+                            }
+                        });
 
-                    chunkIO.Raw.Flush();
+                        chunkIO.Raw.Flush();
+
+                        writer.Write((int)(ms.Length + 4));
+                        writer.Write((int)(ms.Length + 4));
+                        writer.Write(ms.ToArray(), 0, (int)ms.Length);
+                        writer.Write((int)0);
+                    }
 
                     ReportProgress(99, "Done");
                 }
