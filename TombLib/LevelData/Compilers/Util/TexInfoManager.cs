@@ -469,7 +469,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, int padding, BumpLevel bumpLevel)
         {
-            var image = ImageC.CreateNew(256, numPages * 256);
+            var image = ImageC.CreateNew(256, numPages * 256 * (bumpLevel != BumpLevel.None ? 2 : 1));
             for (int i = 0; i < textures.Count; i++)
             {
                 var p = textures[i];
@@ -480,6 +480,15 @@ namespace TombLib.LevelData.Compilers.Util
 
                 image.CopyFrom(p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, p.Texture.Image,
                                x, y, width, height);
+
+                // Do the bump map if needed
+                if (bumpLevel != BumpLevel.None)
+                {
+                    var bumpImage = ImageC.CreateNew((int)p.Area.Width, (int)p.Area.Height);
+                    bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, (int)p.Area.Width, (int)p.Area.Height);
+                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 1, 3);
+                    image.CopyFrom(p.PositionInPage.X + p.Padding, (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding, bumpImage);
+                }
 
                 // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
 
@@ -519,7 +528,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Eventually generate bump maps
-            if (bumpLevel != BumpLevel.None)
+            /*if (bumpLevel != BumpLevel.None)
             {
                 var bumpImage = ImageC.CreateNew(256, numPages * 256);
                 bumpImage.CopyFrom(0, 0, image);
@@ -530,7 +539,7 @@ namespace TombLib.LevelData.Compilers.Util
                 finalImage.CopyFrom(0, numPages * 256, bumpImage);
 
                 image = finalImage;
-            }
+            }*/
 
             return image;
         }
@@ -548,7 +557,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 if (ParentTextures[i].IsForRoom)
                 {
-                    if (ParentTextures[i].BumpLevel != BumpLevel.None)
+                    if (ParentTextures[i].BumpLevel == BumpLevel.None)
                         bumpedTextures.Add(ParentTextures[i]);
                     else
                         roomTextures.Add(ParentTextures[i]);
@@ -576,7 +585,7 @@ namespace TombLib.LevelData.Compilers.Util
             finalImage.CopyFrom(0, (numRoomPages + numObjectsPages) * 256, bumpedPages);
 
             // DEBUG: Now for testing create a bitmap
-            finalImage.Save("E:\\testpack.png");
+            //finalImage.Save("h:\\testpack.png");
         }
     }
 }
