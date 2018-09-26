@@ -55,14 +55,10 @@ namespace TombLib.LevelData.Compilers.Util
             // Returns absolute child coordinates
             public static Vector2[] GetAbsChildCoordinates(ParentTextureArea parent, ChildTextureArea child)
             {
-                if (child.TexCoord.Length != 4)
-                {
-                    logger.Error("GetAbsChildCoordinates: Weird coordinates count encountered!");
-                    return new Vector2[] { Vector2.Zero };
-                }
-
-                return new Vector2[] { parent.Area.Start + child.TexCoord[0], parent.Area.Start + child.TexCoord[1],
-                                       parent.Area.Start + child.TexCoord[2], parent.Area.Start + child.TexCoord[3] };
+                var result = new Vector2[child.TexCoord.Length];
+                for (int i = 0; i < child.TexCoord.Length; i++)
+                    result[i] = parent.Area.Start + child.TexCoord[i];
+                return result;
             }
         }
 
@@ -80,7 +76,7 @@ namespace TombLib.LevelData.Compilers.Util
             public Texture Texture { get; private set; }
             public BumpLevel BumpLevel { get; private set; }
             public bool IsForRoom { get; private set; }
-            public int PackPriority { get; private set; }
+            public int PackPriority { get; set; }
 
             private Rectangle2 _area;
             public Rectangle2 Area
@@ -97,7 +93,7 @@ namespace TombLib.LevelData.Compilers.Util
                     {
                         var delta = _area.Start - value.Start;
                         foreach (var child in Children)
-                            for (int i = 0; i < 4; i++)
+                            for (int i = 0; i < child.TexCoord.Length; i++)
                                 child.TexCoord[i] += delta;
                     }
 
@@ -119,24 +115,24 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Compare parent's properties with incoming texture properties.
-            public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom, int packPriority)
-                => BumpLevel == incomingTexture.BumpLevel && Texture == incomingTexture.Texture && IsForRoom == isForRoom && PackPriority == packPriority;
+            public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom)
+                => BumpLevel == incomingTexture.BumpLevel && Texture == incomingTexture.Texture && IsForRoom == isForRoom;
 
             // Checks if parameters are similar to another texture area, and if so,
             // also checks if texture area is enclosed in parent's area.
-            public bool IsPotentialParent(TextureArea texture, bool isForRoom, int packPriority)
-                => (ParametersSimilar(texture, isForRoom, packPriority) && texture.GetRect().Contains(_area));
+            public bool IsPotentialParent(TextureArea texture, bool isForRoom)
+                => (ParametersSimilar(texture, isForRoom) && _area.Contains(texture.GetRect()));
 
             // Checks if incoming texture is similar in parameters and encloses parent area.
-            public bool IsPotentialChild(TextureArea texture, bool isForRoom, int packPriority, bool allowOverlaps = false, uint maxOverlappedSize = 256)
+            public bool IsPotentialChild(TextureArea texture, bool isForRoom, bool allowOverlaps = false, uint maxOverlappedSize = 256)
             {
                 var rect = texture.GetRect();
                 if (!allowOverlaps)
-                    return (ParametersSimilar(texture, isForRoom, packPriority) && _area.Contains(rect));
+                    return (ParametersSimilar(texture, isForRoom) && rect.Contains(_area));
                 else
                 {
                     var potentialNewArea = rect.Union(_area);
-                    return (ParametersSimilar(texture, isForRoom, packPriority) &&
+                    return (ParametersSimilar(texture, isForRoom) &&
                            (potentialNewArea.Width <= maxOverlappedSize) &&
                            (potentialNewArea.Height <= maxOverlappedSize));
                 }
@@ -145,15 +141,16 @@ namespace TombLib.LevelData.Compilers.Util
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
             public void AddChild(TextureArea texture, int newTextureID, bool isForTriangle)
             {
+                var result = new Vector2[isForTriangle ? 3 : 4];
+                for (int i = 0; i < result.Length; i++)
+                    result[i] = texture.GetTexCoord(i) - Area.Start;
+
                 Children.Add(new ChildTextureArea()
                 {
                     TexInfoIndex = newTextureID,
                     BlendMode = texture.BlendMode,
                     IsForTriangle = isForTriangle,
-                    TexCoord = new Vector2[4] { texture.TexCoord0 - Area.Start,
-                                                texture.TexCoord1 - Area.Start,
-                                                texture.TexCoord2 - Area.Start,
-                                                texture.TexCoord3 - Area.Start }
+                    TexCoord = result
                 });
 
                 // Expand parent area, if needed
@@ -164,17 +161,16 @@ namespace TombLib.LevelData.Compilers.Util
 
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
             {
-                var absCoordinates = ChildTextureArea.GetAbsChildCoordinates(this, child);
+                var newCoordinates = ChildTextureArea.GetAbsChildCoordinates(this, child);
+                for (int i = 0; i < newCoordinates.Length; i++)
+                    newCoordinates[i] -= Area.Start;
 
                 newParent.Children.Add(new ChildTextureArea()
                 {
                     TexInfoIndex = child.TexInfoIndex,
                     BlendMode = child.BlendMode,
                     IsForTriangle = child.IsForTriangle,
-                    TexCoord = new Vector2[4] { absCoordinates[0] - Area.Start,
-                                                absCoordinates[1] - Area.Start,
-                                                absCoordinates[2] - Area.Start,
-                                                absCoordinates[3] - Area.Start }
+                    TexCoord = newCoordinates
                 });
             }
 
@@ -218,10 +214,11 @@ namespace TombLib.LevelData.Compilers.Util
         public int TryToAddToExisting(TextureArea texture, bool isForRoom, bool isForTriangle, int packPriority)
         {
             // Try to find and merge parents which are enclosed in incoming texture area
-            var childrenWannabes = ParentTextures.Where(item => item.IsPotentialChild(texture, isForRoom, packPriority)).ToList();
+            var childrenWannabes = ParentTextures.Where(item => item.IsPotentialChild(texture, isForRoom)).ToList();
             if (childrenWannabes.Count > 0)
             {
-                var newParent = new ParentTextureArea(texture, isForRoom, packPriority);
+                var newPriority = Math.Max(packPriority, childrenWannabes.Max(item => item.PackPriority));
+                var newParent = new ParentTextureArea(texture, isForRoom, newPriority);
                 var texIndex = GetNewTexInfoIndex();
                 newParent.AddChild(texture, texIndex, isForTriangle);
                 newParent.MergeParents(childrenWannabes);
@@ -233,11 +230,12 @@ namespace TombLib.LevelData.Compilers.Util
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in ParentTextures)
             {
-                if (!parent.IsPotentialParent(texture, isForRoom, packPriority))
+                if (!parent.IsPotentialParent(texture, isForRoom))
                     continue;
 
                 var newTexIndex = GetNewTexInfoIndex();
                 parent.AddChild(texture, newTexIndex, isForTriangle);
+                parent.PackPriority = Math.Max(parent.PackPriority, packPriority);
                 return newTexIndex;
             }
 
@@ -323,20 +321,19 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in ParentTextures list.
 
-        private int GetTexInfo(TextureArea areaToLook, bool isForRoom, bool isForTriangle, int packPriority, out byte rotation)
+        private int GetTexInfo(TextureArea areaToLook, bool isForRoom, bool isForTriangle, out byte rotation)
         {
             rotation = 0;
 
             foreach (var parent in ParentTextures)
             {
                 // Parents with different attributes are quickly discarded
-                if (!parent.ParametersSimilar(areaToLook, isForRoom, packPriority))
+                if (!parent.ParametersSimilar(areaToLook, isForRoom))
                     continue;
 
-                var lookupCoordinates = new Vector2[] { new Vector2(areaToLook.TexCoord0.X, areaToLook.TexCoord0.Y),
-                                                        new Vector2(areaToLook.TexCoord1.X, areaToLook.TexCoord1.Y),
-                                                        new Vector2(areaToLook.TexCoord2.X, areaToLook.TexCoord2.Y),
-                                                        new Vector2(areaToLook.TexCoord3.X, areaToLook.TexCoord3.Y), };
+                var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
+                for (int i = 0; i < lookupCoordinates.Length; i++)
+                    lookupCoordinates[i] = areaToLook.GetTexCoord(i);
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
                 foreach (var child in parent.Children)
@@ -414,12 +411,12 @@ namespace TombLib.LevelData.Compilers.Util
         {
             // Try to get existing TexInfo
             byte rotation = 0;
-            int texInfoIndex = GetTexInfo(texture, isForRoom, isForTriangle, packPriority, out rotation);
+            int texInfoIndex = GetTexInfo(texture, isForRoom, isForTriangle, out rotation);
 
             if (texInfoIndex == -1)
             {
                 // Try to create new canonical texture as child or parent
-                var canonicalTexture = texture.GetCanonicalTexture(out rotation);
+                var canonicalTexture = texture.GetCanonicalTexture(isForTriangle, out rotation);
                 texInfoIndex = TryToAddToExisting(canonicalTexture, isForRoom, isForTriangle, packPriority);
 
                 // No any potential parents or children, create as new parent

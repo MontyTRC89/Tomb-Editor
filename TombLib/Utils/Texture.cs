@@ -123,10 +123,14 @@ namespace TombLib.Utils
             }
         }
 
-        public Rectangle2 GetRect()
+        public Rectangle2 GetRect(bool isTriangle = true)
         {
-            return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
-                                  Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)));
+            if (isTriangle)
+                return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2),
+                                      Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2));
+            else
+                return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
+                                      Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)));
         }
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
@@ -142,15 +146,15 @@ namespace TombLib.Utils
 
         // Gets canonical texture area which is compatible with UVRotate routine
         // and also puts rotational difference into Rotation out parameter
-        public TextureArea GetCanonicalTexture(out byte Rotation)
+        public TextureArea GetCanonicalTexture(bool isTriangle, out byte Rotation)
         {
-            var minY = GetRect().Start.Y;
+            var minY = GetRect(isTriangle).Start.Y;
             var transformedTexture = this;
 
             Rotation = 0;
             while (transformedTexture.TexCoord0.Y != minY)
             {
-                transformedTexture.Rotate();
+                transformedTexture.Rotate(1, isTriangle);
                 Rotation++;
             }
             return transformedTexture;
@@ -200,15 +204,26 @@ namespace TombLib.Utils
             Swap.Do(ref TexCoord1, ref TexCoord2);
         }
 
-        public void Rotate(int iter = 1)
+        public void Rotate(int iter = 1, bool isTriangle = true)
         {
             for(int i = 0; i < iter; i++)
             {
-                Vector2 tempTexCoord = TexCoord3;
-                TexCoord3 = TexCoord2;
-                TexCoord2 = TexCoord1;
-                TexCoord1 = TexCoord0;
-                TexCoord0 = tempTexCoord;
+                if (!isTriangle)
+                {
+                    Vector2 tempTexCoord = TexCoord3;
+                    TexCoord3 = TexCoord2;
+                    TexCoord2 = TexCoord1;
+                    TexCoord1 = TexCoord0;
+                    TexCoord0 = tempTexCoord;
+                }
+                else
+                {
+                    Vector2 tempTexCoord = TexCoord2;
+                    TexCoord2 = TexCoord1;
+                    TexCoord1 = TexCoord0;
+                    TexCoord0 = tempTexCoord;
+                    TexCoord3 = TexCoord2;
+                }
             }
         }
 

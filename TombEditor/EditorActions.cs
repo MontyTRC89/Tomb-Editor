@@ -748,22 +748,7 @@ namespace TombEditor
             Block blocks = room.GetBlock(pos);
 
             TextureArea newTexture = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Quad)
-            {
-                Vector2 tempTexCoord = newTexture.TexCoord3;
-                newTexture.TexCoord3 = newTexture.TexCoord2;
-                newTexture.TexCoord2 = newTexture.TexCoord1;
-                newTexture.TexCoord1 = newTexture.TexCoord0;
-                newTexture.TexCoord0 = tempTexCoord;
-            }
-            else
-            {
-                Vector2 tempTexCoord = newTexture.TexCoord2;
-                newTexture.TexCoord2 = newTexture.TexCoord1;
-                newTexture.TexCoord1 = newTexture.TexCoord0;
-                newTexture.TexCoord0 = tempTexCoord;
-                newTexture.TexCoord3 = newTexture.TexCoord2;
-            }
+            newTexture.Rotate(1, room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle);
             blocks.SetFaceTexture(face, newTexture);
 
             // Update state
