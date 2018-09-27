@@ -491,8 +491,6 @@ namespace TombLib.LevelData.Compilers.Util
                 int  triangleVariation = 0;
                 bool mirroredVariation = false;
 
-                int debugVersionCount = 0;
-
                 // Create all possible versions of current animation, including
                 // mirrored and rotated ones. Later on, when parsing actual TextureAreas
                 // from faces, we will compare them with this "lookup table" and will be
