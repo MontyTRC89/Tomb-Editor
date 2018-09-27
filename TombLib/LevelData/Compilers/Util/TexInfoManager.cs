@@ -32,7 +32,7 @@ namespace TombLib.LevelData.Compilers.Util
         public List<ParentTextureArea> ParentTextures = new List<ParentTextureArea>();
         public int TexInfoCount { get; private set; } = 0;
 
-        public int MaxParentSize = 256;
+        public uint MaxParentSize = 256;
         public int NumNonBumpedTexturePages = 0;
         public int NumBumpedTexturePages = 0;
 
@@ -186,14 +186,17 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        // add desc!
+        // ParentAnimatedTexture contains all precompiled frames of a specific anim texture set.
+        // Since animated textures can overlap (especially with animators), we store list of frames
+        // as a list of parents. Children and parents are added in sequential order, so no sorting
+        // must be made on CompiledAnimation.
 
         public class ParentAnimatedTexture
         {
             public AnimatedTextureSet Origin;
             public List<ParentTextureArea> CompiledAnimation = new List<ParentTextureArea>();
 
-            public ParentAnimatedTexture(AnimatedTextureSet origin)
+            public ParentAnimatedTexture(AnimatedTextureSet origin) 
             {
                 Origin = origin;
             }
@@ -211,10 +214,10 @@ namespace TombLib.LevelData.Compilers.Util
             return result;
         }
 
-        public int TryToAddToExisting(TextureArea texture, bool isForRoom, bool isForTriangle, int packPriority)
+        public int TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, int packPriority, bool allowOverlaps = false)
         {
             // Try to find and merge parents which are enclosed in incoming texture area
-            var childrenWannabes = ParentTextures.Where(item => item.IsPotentialChild(texture, isForRoom)).ToList();
+            var childrenWannabes = parentList.Where(item => item.IsPotentialChild(texture, isForRoom, allowOverlaps, MaxParentSize)).ToList();
             if (childrenWannabes.Count > 0)
             {
                 var newPriority = Math.Max(packPriority, childrenWannabes.Max(item => item.PackPriority));
@@ -222,13 +225,13 @@ namespace TombLib.LevelData.Compilers.Util
                 var texIndex = GetNewTexInfoIndex();
                 newParent.AddChild(texture, texIndex, isForTriangle);
                 newParent.MergeParents(childrenWannabes);
-                childrenWannabes.ForEach(item => ParentTextures.Remove(item));
-                ParentTextures.Add(newParent);
+                childrenWannabes.ForEach(item => parentList.Remove(item));
+                parentList.Add(newParent);
                 return texIndex;
             }
 
             // Try to find potential parent (larger texture) and add itself to children
-            foreach (var parent in ParentTextures)
+            foreach (var parent in parentList)
             {
                 if (!parent.IsPotentialParent(texture, isForRoom))
                     continue;
@@ -319,13 +322,13 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        // Gets existing TexInfo child index if there is similar one in ParentTextures list.
+        // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private int GetTexInfo(TextureArea areaToLook, bool isForRoom, bool isForTriangle, out byte rotation)
+        private int GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, out byte rotation)
         {
             rotation = 0;
 
-            foreach (var parent in ParentTextures)
+            foreach (var parent in parentList)
             {
                 // Parents with different attributes are quickly discarded
                 if (!parent.ParametersSimilar(areaToLook, isForRoom))
@@ -398,30 +401,43 @@ namespace TombLib.LevelData.Compilers.Util
             return Result;
         }
 
-        public int AddParent(TextureArea texture, bool isForTriangle, bool isForRoom, int packPriority)
+        public int AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom, int packPriority)
         {
             var newParent = new ParentTextureArea(texture, isForRoom, packPriority);
             var texInfoIndex = GetNewTexInfoIndex();
             newParent.AddChild(texture, texInfoIndex, isForTriangle);
-            ParentTextures.Add(newParent);
+            parentList.Add(newParent);
             return texInfoIndex;
         }
 
+
         public Result AddTexture(TextureArea texture, bool isForTriangle, bool isForRoom, int packPriority = 0)
         {
-            // Try to get existing TexInfo
+            // TODO: add anim tex comparer here
+            return AddTexture(texture, ParentTextures, isForTriangle, isForRoom, packPriority);
+        }
+
+        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom, int packPriority = 0, bool packAnimations = false, bool makeCanonical = true)
+        {
+            // Rotation receives incoming texture's rotation in relation to canonical texture which is possibly already
+            // in the list. This is needed to prevent creation of extra TexInfos for similar rotated textures.
             byte rotation = 0;
-            int texInfoIndex = GetTexInfo(texture, isForRoom, isForTriangle, out rotation);
+
+            // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
+            // frames can be dublicated with Repeat function or simply because of complex animator functions applied.
+            int texInfoIndex = packAnimations ? -1 : GetTexInfo(texture, parentList, isForRoom, isForTriangle, out rotation);
 
             if (texInfoIndex == -1)
             {
-                // Try to create new canonical texture as child or parent
-                var canonicalTexture = texture.GetCanonicalTexture(isForTriangle, out rotation);
-                texInfoIndex = TryToAddToExisting(canonicalTexture, isForRoom, isForTriangle, packPriority);
+                // Try to create new canonical (top-left-based) texture as child or parent.
+                // makeCanonical parameter is necessary for UVRotate animations, because in case texture is not top-left-based,
+                // engine will incorrectly calculate texture split for UV panning.
+                var canonicalTexture = makeCanonical ? texture : texture.GetCanonicalTexture(isForTriangle, out rotation);
+                texInfoIndex = TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, packPriority, packAnimations);
 
                 // No any potential parents or children, create as new parent
                 if (texInfoIndex == -1)
-                    texInfoIndex = AddParent(canonicalTexture, isForTriangle, isForRoom, packPriority);
+                    texInfoIndex = AddParent(canonicalTexture, parentList, isForTriangle, isForRoom, packPriority);
             }
 
             return new Result() { TexInfoIndex = texInfoIndex, Rotation = rotation };
@@ -462,6 +478,71 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             return (currentPage + 1);
+        }
+
+        public void BuildAnimTextures(List<AnimatedTextureSet> sets)
+        {
+            foreach(var set in sets)
+            {
+                // Ignore trivial (single-frame non-UVRotated) anims
+                if (set.AnimationIsTrivial)
+                    continue;
+
+                int  triangleVariation = 0;
+                bool mirroredVariation = false;
+
+                int debugVersionCount = 0;
+
+                // Create all possible versions of current animation, including
+                // mirrored and rotated ones. Later on, when parsing actual TextureAreas
+                // from faces, we will compare them with this "lookup table" and will be
+                // able to quickly return desired variation ID without complicated in-place
+                // calculations.
+
+                while(true)
+                {
+                    var refAnim = new ParentAnimatedTexture(set);
+
+                    foreach (var frame in set.Frames)
+                    {
+                        // Create base frame
+                        TextureArea newFrame = new TextureArea()
+                        {
+                            Texture = frame.Texture,
+                            TexCoord0 = frame.TexCoord0,
+                            TexCoord1 = frame.TexCoord1,
+                            TexCoord2 = frame.TexCoord2,
+                            TexCoord3 = (triangleVariation > 0 ? frame.TexCoord2 : frame.TexCoord3)
+                        };
+
+                        // Mirror if needed
+                        if (mirroredVariation)
+                            newFrame.Mirror();
+
+                        // Rotate if needed
+                        if(triangleVariation > 0)
+                            newFrame.Rotate(triangleVariation - 1, true);
+
+                        // Make frame, including repeat versions
+                        for (int i = 0; i < frame.Repeat; i++)
+                            AddTexture(newFrame, refAnim.CompiledAnimation, false, true, set.IsUvRotate ? 1 : 0, true, set.IsUvRotate);
+                    }
+
+                    ReferenceAnimTextures.Add(refAnim);
+
+                    triangleVariation++;
+                    if (triangleVariation == 5)
+                    {
+                        if (mirroredVariation == false)
+                        {
+                            triangleVariation = 0;
+                            mirroredVariation = true;
+                        }
+                        else
+                            break;
+                    }
+                }
+            }
         }
 
         private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, int padding, BumpLevel bumpLevel)

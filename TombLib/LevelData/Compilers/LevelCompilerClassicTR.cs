@@ -103,6 +103,9 @@ namespace TombLib.LevelData.Compilers
             _progressReporter.ReportWarn("\nTexInfoManager room faces UNIT TEST: " + _textureInfoManager.ParentTextures.Count + " parents, " + _textureInfoManager.TexInfoCount + " TexInfos\n");
 
             // New texture packer
+            _textureInfoManager.BuildAnimTextures(_level.Settings.AnimatedTextureSets);
+            _progressReporter.ReportWarn("\nTexInfoManager: anim seq variations: " + _textureInfoManager.ReferenceAnimTextures.Count);
+
             _textureInfoManager.PackTextures();
 
             PrepareSoundSources();
