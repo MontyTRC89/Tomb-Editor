@@ -301,7 +301,7 @@ namespace TombLib.LevelData.Compilers
                         writer.Write((int)0);
                     }
 
-                    ReportProgress(99, "Done");
+                    ReportProgress(99, "Done");   
                 }
             }
         }

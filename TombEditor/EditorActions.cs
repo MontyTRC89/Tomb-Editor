@@ -489,7 +489,7 @@ namespace TombEditor
             }
 
             // Display form
-            using (var formTrigger = new paramLuaScript(_editor.Level, trigger, obj => _editor.ShowObject(obj),
+            using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj),
                                                      r => _editor.SelectRoomAndResetCamera(r)))
             {
                 if (formTrigger.ShowDialog(owner) != DialogResult.OK)
@@ -664,7 +664,7 @@ namespace TombEditor
             }
             else if (instance is TriggerInstance)
             {
-                using (var formTrigger = new paramLuaScript(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj),
+                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj),
                                                          r => _editor.SelectRoomAndResetCamera(r)))
                     if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                         return;
