@@ -1,9 +1,10 @@
 ﻿using System.Windows.Forms;
 using DarkUI.Controls;
+using TombLib.Controls;
 
 namespace TombEditor.Forms
 {
-    partial class paramLuaScript
+    partial class FormTrigger
     {
         /// <summary>
         /// Required designer variable.
@@ -53,7 +54,7 @@ namespace TombEditor.Forms
             this.scriptExportPanel = new System.Windows.Forms.Panel();
             this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
             this.labelLUA = new DarkUI.Controls.DarkLabel();
-            this.tbLuaScript = new DarkUI.Controls.DarkTextBox();
+            this.tbLuaScript = new TombLib.Controls.LuaTextBox();
             this.paramTriggerType = new TombLib.Controls.TriggerParameterControl();
             this.paramTargetType = new TombLib.Controls.TriggerParameterControl();
             this.paramExtra = new TombLib.Controls.TriggerParameterControl();
@@ -272,10 +273,11 @@ namespace TombEditor.Forms
             // 
             // tbLuaScript
             // 
+            this.tbLuaScript.Code = "";
+            this.tbLuaScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbLuaScript.Location = new System.Drawing.Point(84, 145);
-            this.tbLuaScript.Multiline = true;
             this.tbLuaScript.Name = "tbLuaScript";
-            this.tbLuaScript.Size = new System.Drawing.Size(602, 102);
+            this.tbLuaScript.Size = new System.Drawing.Size(602, 107);
             this.tbLuaScript.TabIndex = 81;
             // 
             // paramTriggerType
@@ -338,7 +340,7 @@ namespace TombEditor.Forms
             this.paramTarget.TabIndex = 3;
             this.paramTarget.ParameterChanged += new System.EventHandler(this.paramTarget_ParameterChanged);
             // 
-            // paramLuaScript
+            // FormTrigger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -369,7 +371,7 @@ namespace TombEditor.Forms
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
-            this.Name = "paramLuaScript";
+            this.Name = "FormTrigger";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -410,6 +412,6 @@ namespace TombEditor.Forms
         private DarkCheckBox cbRawMode;
         private DarkButton butCopyWithComments;
         private DarkLabel labelLUA;
-        private DarkTextBox tbLuaScript;
+        private LuaTextBox tbLuaScript;
     }
 }

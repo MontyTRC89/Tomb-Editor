@@ -11,14 +11,14 @@ using TombLib.NG;
 
 namespace TombEditor.Forms
 {
-    public partial class paramLuaScript : DarkForm
+    public partial class FormTrigger : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Level _level;
         private readonly TriggerInstance _trigger;
 
-        public paramLuaScript(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
+        public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
         {
             InitializeComponent();
