@@ -119,8 +119,9 @@ namespace TombLib.LevelData.Compilers.Util
                 Initialize(texture.Texture, texture.BumpLevel, isForRoom, packPriority);
             }
 
-            public ParentTextureArea(Texture texture, BumpLevel bumpLevel, bool isForRoom, int packPriority)
+            public ParentTextureArea(Rectangle2 area, Texture texture, BumpLevel bumpLevel, bool isForRoom, int packPriority)
             {
+                _area = area;
                 Initialize(texture, bumpLevel, isForRoom, packPriority);
             }
 
@@ -151,10 +152,15 @@ namespace TombLib.LevelData.Compilers.Util
                     return (ParametersSimilar(texture, isForRoom) && rect.Contains(_area));
                 else
                 {
-                    var potentialNewArea = rect.Union(_area);
-                    return (ParametersSimilar(texture, isForRoom) &&
-                           (potentialNewArea.Width <= maxOverlappedSize) &&
-                           (potentialNewArea.Height <= maxOverlappedSize));
+                    if (rect.Intersects(_area))
+                    {
+                        var potentialNewArea = rect.Union(_area);
+                        return (ParametersSimilar(texture, isForRoom) &&
+                               (potentialNewArea.Width <= maxOverlappedSize) &&
+                               (potentialNewArea.Height <= maxOverlappedSize));
+                    }
+                    else
+                        return false;
                 }
             }
 
@@ -220,13 +226,20 @@ namespace TombLib.LevelData.Compilers.Util
 
                 foreach(var parent in CompiledAnimation)
                 {
-                    var newParent = new ParentTextureArea(parent.Texture, parent.BumpLevel, parent.IsForRoom, parent.PackPriority);
+                    var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.BumpLevel, parent.IsForRoom, parent.PackPriority);
                     foreach(var child in parent.Children)
                     {
-                        var newChild = new ChildTextureArea() { BlendMode = child.BlendMode,
-                                                                IsForTriangle = child.IsForTriangle,
-                                                                TexInfoIndex = child.TexInfoIndex };
-                        Array.Copy(child.TexCoord, newChild.TexCoord, 2);
+                        var newChild = new ChildTextureArea()
+                        {
+                            BlendMode = child.BlendMode,
+                            IsForTriangle = child.IsForTriangle,
+                            TexInfoIndex = child.TexInfoIndex
+                        };
+
+                        newChild.TexCoord = new Vector2[child.TexCoord.Length];
+                        for (int i = 0; i < child.TexCoord.Length; i++)
+                            newChild.TexCoord[i] = child.TexCoord[i];
+
                         newParent.Children.Add(newChild);
                     }
                     result.CompiledAnimation.Add(newParent);
@@ -463,8 +476,6 @@ namespace TombLib.LevelData.Compilers.Util
             if (ReferenceAnimTextures.Count > 0)
                 foreach(var refTex in ReferenceAnimTextures)
                 {
-                    if (!isForRoom)
-                        continue;
                     // If reference set found, generate actual one and immediately return fresh result
                     if(GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false).HasValue)
                     {
@@ -585,13 +596,13 @@ namespace TombLib.LevelData.Compilers.Util
 
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
-                            AddTexture(newFrame, refAnim.CompiledAnimation, false, true, set.IsUvRotate ? 1 : 0, true, set.IsUvRotate);
+                            AddTexture(newFrame, refAnim.CompiledAnimation, (triangleVariation > 0), true, set.IsUvRotate ? 1 : 0, true, set.IsUvRotate);
                     }
 
                     ReferenceAnimTextures.Add(refAnim);
 
                     triangleVariation++;
-                    if (triangleVariation == 5)
+                    if (triangleVariation > 4)
                     {
                         if (mirroredVariation == false)
                         {
