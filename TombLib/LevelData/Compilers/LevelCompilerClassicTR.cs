@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-            _textureInfoManager = new Util.TexInfoManager();
+            _textureInfoManager = new Util.TexInfoManager(256, _level.Settings.AnimatedTextureSets);
 
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
@@ -100,11 +100,11 @@ namespace TombLib.LevelData.Compilers
             ConvertWad2DataToTr4();
             BuildRooms();
 
-            _progressReporter.ReportWarn("\nTexInfoManager room faces UNIT TEST: " + _textureInfoManager.ParentTextures.Count + " parents, " + _textureInfoManager.TexInfoCount + " TexInfos\n");
+            _progressReporter.ReportWarn("\nTexInfoManager room faces UNIT TEST: " + _textureInfoManager.ParentCount + " parents, " + _textureInfoManager.TexInfoCount + " TexInfos\n");
 
             // New texture packer
-            _textureInfoManager.BuildAnimTextures(_level.Settings.AnimatedTextureSets);
-            _progressReporter.ReportWarn("\nTexInfoManager: anim seq variations: " + _textureInfoManager.ReferenceAnimTextures.Count);
+            _progressReporter.ReportWarn("\nTexInfoManager: anim seq reference variations: " + _textureInfoManager.ReferenceAnimTexturesCount);
+            _progressReporter.ReportWarn("\nTexInfoManager: anim seq actual variations: " + _textureInfoManager.ActualAnimTexturesCount);
 
             _textureInfoManager.PackTextures();
 
