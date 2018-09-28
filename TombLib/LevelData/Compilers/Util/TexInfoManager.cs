@@ -390,7 +390,7 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var child in parent.Children)
                 {
                     // If parameters are different, children is quickly discarded from comparison.
-                    if (child.BlendMode != areaToLook.BlendMode || child.IsForTriangle != isForTriangle)
+                    if ((checkParameters && child.BlendMode != areaToLook.BlendMode) || child.IsForTriangle != isForTriangle)
                         continue;
 
                     // Test if coordinates are mutually equal and return resulting rotation if they are
@@ -463,26 +463,29 @@ namespace TombLib.LevelData.Compilers.Util
         
         public Result AddTexture(TextureArea texture, bool isForTriangle, bool isForRoom, int packPriority = 0)
         {
-            // Try to compare incoming texture with existing anims and return animation frame
-            if (ActualAnimTextures.Count > 0)
-                foreach(var actualTex in ActualAnimTextures)
-                {
-                    var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle);
-                    if (existing.HasValue)
-                        return existing.Value;
-                }
-
-            // Now try to compare incoming texture with lookup anim seq table
-            if (ReferenceAnimTextures.Count > 0)
-                foreach(var refTex in ReferenceAnimTextures)
-                {
-                    // If reference set found, generate actual one and immediately return fresh result
-                    if(GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false).HasValue)
+            if(isForRoom)
+            {
+                // Try to compare incoming texture with existing anims and return animation frame
+                if (ActualAnimTextures.Count > 0)
+                    foreach (var actualTex in ActualAnimTextures)
                     {
-                        GenerateAnimTexture(refTex, texture, isForTriangle, isForRoom, packPriority);
-                        return AddTexture(texture, isForTriangle, isForRoom, packPriority);
+                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle);
+                        if (existing.HasValue)
+                            return existing.Value;
                     }
-                }
+
+                // Now try to compare incoming texture with lookup anim seq table
+                if (ReferenceAnimTextures.Count > 0)
+                    foreach (var refTex in ReferenceAnimTextures)
+                    {
+                        // If reference set found, generate actual one and immediately return fresh result
+                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false).HasValue)
+                        {
+                            GenerateAnimTexture(refTex, texture, isForTriangle, isForRoom, packPriority);
+                            return AddTexture(texture, isForTriangle, isForRoom, packPriority);
+                        }
+                    }
+            }
 
             return AddTexture(texture, ParentTextures, isForTriangle, isForRoom, packPriority);
         }
@@ -577,27 +580,44 @@ namespace TombLib.LevelData.Compilers.Util
                     foreach (var frame in set.Frames)
                     {
                         // Create base frame
-                        TextureArea newFrame = new TextureArea()
+                        TextureArea newFrame = new TextureArea() { Texture = frame.Texture };
+
+                        // Rotate or cut 4nd coordinate if needed
+                        switch(triangleVariation)
                         {
-                            Texture = frame.Texture,
-                            TexCoord0 = frame.TexCoord0,
-                            TexCoord1 = frame.TexCoord1,
-                            TexCoord2 = frame.TexCoord2,
-                            TexCoord3 = frame.TexCoord3
-                        };
+                            case 0:
+                                newFrame.TexCoord0 = frame.TexCoord0;
+                                newFrame.TexCoord1 = frame.TexCoord1;
+                                newFrame.TexCoord2 = frame.TexCoord2;
+                                newFrame.TexCoord3 = frame.TexCoord3;
+                                break;
+                            case 1:
+                                newFrame.TexCoord0 = frame.TexCoord0;
+                                newFrame.TexCoord1 = frame.TexCoord1;
+                                newFrame.TexCoord2 = frame.TexCoord2;
+                                break;
+                            case 2:
+                                newFrame.TexCoord0 = frame.TexCoord0;
+                                newFrame.TexCoord1 = frame.TexCoord2;
+                                newFrame.TexCoord2 = frame.TexCoord3;
+                                break;
+                            case 3:
+                                newFrame.TexCoord0 = frame.TexCoord0;
+                                newFrame.TexCoord1 = frame.TexCoord1;
+                                newFrame.TexCoord2 = frame.TexCoord3;
+                                break;
+                            case 4:
+                                newFrame.TexCoord0 = frame.TexCoord1;
+                                newFrame.TexCoord1 = frame.TexCoord2;
+                                newFrame.TexCoord2 = frame.TexCoord3;
+                                break;
+                        }
+                        if(triangleVariation > 0)
+                            newFrame.TexCoord3 = newFrame.TexCoord2;
 
                         // Mirror if needed
                         if (mirroredVariation)
                             newFrame.Mirror();
-
-                        // Rotate or cut 4nd coordinate if needed
-                        if(triangleVariation > 0)
-                        {
-                            if (triangleVariation == 1)
-                                newFrame.TexCoord3 = newFrame.TexCoord2;
-                            else
-                                newFrame.Rotate(triangleVariation - 1, true);
-                        }
 
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
