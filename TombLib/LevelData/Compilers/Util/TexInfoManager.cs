@@ -583,16 +583,21 @@ namespace TombLib.LevelData.Compilers.Util
                             TexCoord0 = frame.TexCoord0,
                             TexCoord1 = frame.TexCoord1,
                             TexCoord2 = frame.TexCoord2,
-                            TexCoord3 = (triangleVariation > 0 ? frame.TexCoord2 : frame.TexCoord3)
+                            TexCoord3 = frame.TexCoord3
                         };
 
                         // Mirror if needed
                         if (mirroredVariation)
                             newFrame.Mirror();
 
-                        // Rotate if needed
+                        // Rotate or cut 4nd coordinate if needed
                         if(triangleVariation > 0)
-                            newFrame.Rotate(triangleVariation - 1, true);
+                        {
+                            if (triangleVariation == 1)
+                                newFrame.TexCoord3 = newFrame.TexCoord2;
+                            else
+                                newFrame.Rotate(triangleVariation - 1, true);
+                        }
 
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
