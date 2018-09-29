@@ -51,8 +51,8 @@ namespace TombLib.LevelData.Compilers.Util
 
         // ChildTextureArea is a simple enclosed relative texture area with stripped down parameters
         // which should be the same among all children of same parent.
-        // Stripped down parameters include BumpLevel and Texture, because if these are different, it
-        // automatically means we should assign new parent for this child.
+        // Stripped down parameters include BumpLevel and IsForTriangle, because if these are
+        // different, it automatically means we should assign new parent for this child.
 
         public class ChildTextureArea
         {
@@ -73,9 +73,9 @@ namespace TombLib.LevelData.Compilers.Util
         }
 
         // ParentTextureArea is a texture area which contains all other texture areas which are
-        // completely inside current one. Blending mode and bumpmapping parameters define that
-        // parent is different, hence two TextureAreas with same UV coordinates but with different
-        // BlendMode and BumpLevel will be saved as different parents.
+        // completely inside current one. Bumpmapping parameter define that parent is different,
+        // hence two TextureAreas with same UV coordinates but with different BumpLevel will be 
+        // saved as different parents.
 
         public class ParentTextureArea
         {
@@ -86,7 +86,13 @@ namespace TombLib.LevelData.Compilers.Util
             public Texture Texture { get; private set; }
             public BumpLevel BumpLevel { get; set; }
             public bool IsForRoom { get; set; }
-            public int PackPriority { get; set; }
+
+            private int _packPriority;
+            public int PackPriority
+            {
+                get { return _packPriority; }
+                set { _packPriority = Math.Max(value, _packPriority); }
+            }
 
             private Rectangle2 _area;
             public Rectangle2 Area
@@ -286,8 +292,7 @@ namespace TombLib.LevelData.Compilers.Util
             var childrenWannabes = parentList.Where(item => item.IsPotentialChild(texture, isForRoom, allowOverlaps, MaxParentSize)).ToList();
             if (childrenWannabes.Count > 0)
             {
-                var newPriority = Math.Max(packPriority, childrenWannabes.Max(item => item.PackPriority));
-                var newParent = new ParentTextureArea(texture, isForRoom, newPriority);
+                var newParent = new ParentTextureArea(texture, isForRoom, packPriority);
                 var texIndex = GetNewTexInfoIndex();
                 newParent.AddChild(texture, texIndex, isForTriangle);
                 newParent.MergeParents(childrenWannabes);
@@ -304,7 +309,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 var newTexIndex = GetNewTexInfoIndex();
                 parent.AddChild(texture, newTexIndex, isForTriangle);
-                parent.PackPriority = Math.Max(parent.PackPriority, packPriority);
+                parent.PackPriority = packPriority;
                 return newTexIndex;
             }
 
