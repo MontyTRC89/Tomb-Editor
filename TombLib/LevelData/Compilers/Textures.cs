@@ -13,17 +13,42 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareTextures()
         {
-            List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
-            List<ImageC> spritePages = BuildSprites(packedTextures.Count);
+            //List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
+            //List<ImageC> spritePages = BuildSprites(packedTextures.Count);
+
+            // It's fine using the old unpadded way for sprites, they are quad
+            List<ImageC> spritePages = BuildSprites(_textureInfoManager.NumRoomTexturePages + _textureInfoManager.NumObjectsTexturePages);
+
+            // Get the final number of pages
+            int numPages = _textureInfoManager.NumRoomTexturePages + _textureInfoManager.NumObjectsTexturePages +
+                spritePages.Count + _textureInfoManager.NumBumpTexturePages;
+
+            // I need to update the bumped tiles
+            _textureInfoManager.UpdateTiles(spritePages.Count);
 
             ReportProgress(10, "Building final texture map");
 
-            byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * 256 * 256 * 4];
+            byte[] texture32Data = new byte[numPages * 256 * 256 * 4];
+            int totalPages = 0;
+
+            _textureInfoManager.RoomPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            totalPages += _textureInfoManager.NumRoomTexturePages;
+
+            _textureInfoManager.ObjectsPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            totalPages += _textureInfoManager.NumObjectsTexturePages;
+
+            for (int i = 0; i < spritePages.Count; i++)
+                spritePages[i].RawCopyTo(texture32Data, (totalPages + i) * 256 * 256 * 4);
+            totalPages += spritePages.Count;
+
+            _textureInfoManager.BumpPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+
+            /*byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * 256 * 256 * 4];
 
             for (int i = 0; i < packedTextures.Count; ++i)
                 packedTextures[i].RawCopyTo(texture32Data, i * 256 * 256 * 4);
             for (int i = 0; i < spritePages.Count; ++i)
-                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * 256 * 256 * 4);
+                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * 256 * 256 * 4);*/
 
             _texture32Data = texture32Data;
         }

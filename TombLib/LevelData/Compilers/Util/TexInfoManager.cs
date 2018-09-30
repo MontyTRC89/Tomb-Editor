@@ -8,7 +8,7 @@ using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
-{
+{  
     public class TexInfoManager
     {
         private const int NoTexInfo = -1;
@@ -48,6 +48,26 @@ namespace TombLib.LevelData.Compilers.Util
         public int ParentCount => ParentTextures.Count;
         public int ActualAnimTexturesCount => ActualAnimTextures.Count;
         public int ReferenceAnimTexturesCount => ReferenceAnimTextures.Count;
+
+        private int _numRoomTexturePages;
+        public int NumRoomTexturePages { get { return _numRoomTexturePages; } }
+
+        private int _numObjectsTexturePages;
+        public int NumObjectsTexturePages { get { return _numObjectsTexturePages; } }
+
+        private int _numBumpTexturePages;
+        public int NumBumpTexturePages { get { return _numBumpTexturePages; } }
+
+        private ImageC _roomPages;
+        public ImageC RoomPages { get { return _roomPages; } }
+
+        private ImageC _objectsPages;
+        public ImageC ObjectsPages { get { return _objectsPages; } }
+
+        private ImageC _bumpPages;
+        public ImageC BumpPages { get { return _bumpPages; } }
+
+        private SortedDictionary<int, ObjectTexture> _objectTextures;
 
         // ChildTextureArea is a simple enclosed relative texture area with stripped down parameters
         // which should be the same among all children of same parent.
@@ -262,7 +282,73 @@ namespace TombLib.LevelData.Compilers.Util
                 Origin = origin;
             }
         }
-        
+
+        private class ObjectTexture
+        {
+            public bool IsForTriangle;
+            public bool IsForRoom;
+            public int Tile;
+            public BlendMode BlendMode;
+            public BumpLevel BumpLevel;
+
+            public ushort TexCoord0X;
+            public ushort TexCoord0Y;
+            public ushort TexCoord1X;
+            public ushort TexCoord1Y;
+            public ushort TexCoord2X;
+            public ushort TexCoord2Y;
+            public ushort TexCoord3X;
+            public ushort TexCoord3Y;
+
+            public int Width;
+            public int Height;
+
+            public ChildTextureArea ChildTextureArea;
+
+            public ObjectTexture( ParentTextureArea parent, ChildTextureArea child)
+            {
+                ChildTextureArea = child;
+                BlendMode = child.BlendMode;
+                BumpLevel = parent.BumpLevel;
+                IsForRoom = parent.IsForRoom;
+                IsForTriangle = child.IsForTriangle;
+                Tile = parent.Page;
+
+                Width = 0;
+                Height = 0;
+
+                // C# sucks!!!!!
+                TexCoord0X = TexCoord0Y = 0;
+                TexCoord1X = TexCoord1Y = 0;
+                TexCoord2X = TexCoord2Y = 0;
+                TexCoord3X = TexCoord3Y = 0;
+
+                //var coords = ChildTextureArea.GetAbsChildCoordinates(parent, child);
+                var coords = child.TexCoord;
+                for (int i = 0; i < coords.Length; i++)
+                {
+                    coords[i].X += (parent.PositionInPage.X);
+                    coords[i].Y += (parent.PositionInPage.Y); 
+                }
+
+                TexCoord0X = (ushort)((ushort)(coords[0].X + parent.Padding) << 8);
+                TexCoord0Y = (ushort)((ushort)(coords[0].Y + parent.Padding) << 8);
+
+                TexCoord1X = (ushort)((ushort)(coords[1].X + parent.Padding) << 8);
+                TexCoord1Y = (ushort)((ushort)(coords[1].Y + parent.Padding) << 8);
+
+                TexCoord2X = (ushort)((ushort)(coords[2].X + parent.Padding) << 8);
+                TexCoord2Y = (ushort)((ushort)(coords[2].Y + parent.Padding) << 8);
+
+                if (coords.Length == 4)
+                {
+                    TexCoord3X = (ushort)((ushort)(coords[3].X + parent.Padding) << 8);
+                    TexCoord3Y = (ushort)((ushort)(coords[3].Y + parent.Padding) << 8);
+                }
+            }
+        }
+
+
         public TexInfoManager(uint maxParentSize, List<AnimatedTextureSet> sets)
         {
             MaxParentSize = maxParentSize;
@@ -342,8 +428,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     for (int i = 0; i < Rotation; i++)
                     {
-                        ushort tempIndex = indices[3];
-                        indices[3] = indices[2];
+                        ushort tempIndex = indices[2];
                         indices[2] = indices[1];
                         indices[1] = indices[0];
                         indices[0] = tempIndex;
@@ -680,7 +765,7 @@ namespace TombLib.LevelData.Compilers.Util
                                x, y, width, height);
 
                 // Do the bump map if needed
-                if (bumpLevel != BumpLevel.None)
+                if (p.BumpLevel != BumpLevel.None)
                 {
                     var bumpImage = ImageC.CreateNew((int)p.Area.Width, (int)p.Area.Height);
                     bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, (int)p.Area.Width, (int)p.Area.Height);
@@ -724,21 +809,7 @@ namespace TombLib.LevelData.Compilers.Util
                     }
                 }
             }
-
-            // Eventually generate bump maps
-            /*if (bumpLevel != BumpLevel.None)
-            {
-                var bumpImage = ImageC.CreateNew(256, numPages * 256);
-                bumpImage.CopyFrom(0, 0, image);
-                bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 1, 3);
-
-                var finalImage = ImageC.CreateNew(256, numPages * 2 * 256);
-                finalImage.CopyFrom(0, 0, image);
-                finalImage.CopyFrom(0, numPages * 256, bumpImage);
-
-                image = finalImage;
-            }*/
-
+            
             return image;
         }
 
@@ -755,7 +826,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 if (ParentTextures[i].IsForRoom)
                 {
-                    if (ParentTextures[i].BumpLevel == BumpLevel.None)
+                    if (ParentTextures[i].BumpLevel != BumpLevel.None)
                         bumpedTextures.Add(ParentTextures[i]);
                     else
                         roomTextures.Add(ParentTextures[i]);
@@ -764,26 +835,146 @@ namespace TombLib.LevelData.Compilers.Util
                     objectsTextures.Add(ParentTextures[i]);
             }
 
+            for (int n = 0; n < ActualAnimTextures.Count; n++)
+            {
+                var parentTextures = ActualAnimTextures[n].CompiledAnimation;
+                for (int i = 0; i < parentTextures.Count; i++)
+                {
+                    if (parentTextures[i].IsForRoom)
+                    {
+                        if (parentTextures[i].BumpLevel != BumpLevel.None)
+                            bumpedTextures.Add(parentTextures[i]);
+                        else
+                            roomTextures.Add(parentTextures[i]);
+                    }
+                    else
+                        objectsTextures.Add(parentTextures[i]);
+                }
+            }
+
             // Calculate new X, Y of each texture area
             int numRoomPages = PlaceTexturesInMap(ref roomTextures, padding);
             int numObjectsPages = PlaceTexturesInMap(ref objectsTextures, padding);
             int numBumpedPages = PlaceTexturesInMap(ref bumpedTextures, padding);
 
             // Place all the textures areas in the maps
-            var roomPages = BuildTextureMap(ref roomTextures, numRoomPages, padding, BumpLevel.None);
-            var objectsPages = BuildTextureMap(ref objectsTextures, numObjectsPages, padding, BumpLevel.None);
-            var bumpedPages = BuildTextureMap(ref bumpedTextures, numBumpedPages, padding, BumpLevel.Level2);
+            _roomPages = BuildTextureMap(ref roomTextures, numRoomPages, padding, BumpLevel.None);
+            _objectsPages = BuildTextureMap(ref objectsTextures, numObjectsPages, padding, BumpLevel.None);
+            _bumpPages = BuildTextureMap(ref bumpedTextures, numBumpedPages, padding, BumpLevel.Level2);
 
             // Combine all maps in the final map
-            numBumpedPages *= 2;
+            /*numBumpedPages *= 2;
             int numPages = numRoomPages + numObjectsPages + numBumpedPages;
             var finalImage = ImageC.CreateNew(256, numPages * 256);
             finalImage.CopyFrom(0, 0, roomPages);
             finalImage.CopyFrom(0, numRoomPages * 256, objectsPages);
-            finalImage.CopyFrom(0, (numRoomPages + numObjectsPages) * 256, bumpedPages);
+            finalImage.CopyFrom(0, (numRoomPages + numObjectsPages) * 256, bumpedPages);*/
+
+            _numRoomTexturePages = numRoomPages;
+            _numObjectsTexturePages = numObjectsPages;
+            _numBumpTexturePages = numBumpedPages * 2;
+            //_texture = finalImage;
 
             // DEBUG: Now for testing create a bitmap
             //finalImage.Save("h:\\testpack.png");
+        }
+
+        public void BuildTextureInfos()
+        {
+            _objectTextures = new SortedDictionary<int, ObjectTexture>();
+
+            foreach (var parent in ParentTextures)
+                foreach (var child in parent.Children)
+                    if (!_objectTextures.ContainsKey(child.TexInfoIndex))
+                        _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child));
+
+            foreach (var animTexture in ActualAnimTextures)
+                foreach (var parent in animTexture.CompiledAnimation)
+                    foreach (var child in parent.Children)
+                        if (!_objectTextures.ContainsKey(child.TexInfoIndex))
+                            _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child));
+        }
+
+        public void WriteAnimatedTextures(BinaryWriterEx writer)
+        {
+            /*int numAnimatedTexture = 1;
+            foreach (var compiledAnimatedTexture in ActualAnimTextures)
+                numAnimatedTexture += compiledAnimatedTexture.CompiledAnimation.Count + 1;
+            writer.Write((uint)numAnimatedTexture);
+
+            writer.Write((ushort)ActualAnimTextures.Count);
+            foreach (var compiledAnimatedTexture in ActualAnimTextures)
+            {
+                writer.Write((ushort)(compiledAnimatedTexture.CompiledAnimation.Count - 1));
+                foreach (var child in compiledAnimatedTexture.CompiledAnimation)
+                    writer.Write(child.);
+            }*/
+        }
+
+        public void WriteTextureInfos(BinaryWriterEx writer, Level level)
+        {
+            writer.Write((int)_objectTextures.Count);
+            for (int i = 0; i < _objectTextures.Count; i++)
+            {
+                var texture = _objectTextures.ElementAt(i).Value;
+
+                // Tile and flags
+                ushort tile = (ushort)texture.Tile;
+                if (texture.IsForTriangle && level.Settings.GameVersion > GameVersion.TR2) tile |= 0x8000;
+
+                // New flags from >= TR4
+                ushort newFlags = 0;
+                if (texture.IsForRoom) newFlags |= 0x8000;
+                if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
+                if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 11);
+                if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 11);
+
+                // Blend mode
+                ushort attribute = (ushort)texture.BlendMode;
+
+                // Now write the texture
+                writer.Write(attribute);
+                writer.Write(tile);
+                if (level.Settings.GameVersion >= GameVersion.TR4)
+                    writer.Write(newFlags);
+                writer.Write(texture.TexCoord0X);
+                writer.Write(texture.TexCoord0Y);
+                writer.Write(texture.TexCoord1X);
+                writer.Write(texture.TexCoord1Y);
+                writer.Write(texture.TexCoord2X);
+                writer.Write(texture.TexCoord2Y);
+                writer.Write(texture.TexCoord3X);
+                writer.Write(texture.TexCoord3Y);
+                if (level.Settings.GameVersion >= GameVersion.TR4)
+                {
+                    writer.Write(texture.Width);
+                    writer.Write(texture.Height);
+                    writer.Write((int)0);
+                    writer.Write((int)0);
+                }
+                if (level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
+                    writer.Write((ushort)0);
+            }
+        }
+
+        public void UpdateTiles(int numSpritesPages)
+        {
+            for (int i = 0; i < _objectTextures.Count; i++)
+            {
+                var texture = _objectTextures.ElementAt(i).Value;
+                if (texture.IsForRoom && texture.BumpLevel== BumpLevel.None)
+                {
+                    // Tile is OK
+                }
+                else if (!texture.IsForRoom)
+                {
+                    texture.Tile += _numRoomTexturePages;
+                }
+                else if (texture.IsForRoom && texture.BumpLevel != BumpLevel.None)
+                {
+                    texture.Tile += _numRoomTexturePages + _numObjectsTexturePages + numSpritesPages;
+                }
+            }
         }
     }
 }

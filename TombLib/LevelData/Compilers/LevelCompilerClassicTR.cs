@@ -107,6 +107,7 @@ namespace TombLib.LevelData.Compilers
             _progressReporter.ReportWarn("\nTexInfoManager: anim seq actual variations: " + _textureInfoManager.ActualAnimTexturesCount);
 
             _textureInfoManager.PackTextures();
+            _textureInfoManager.BuildTextureInfos();
 
             PrepareSoundSources();
             PrepareItems();

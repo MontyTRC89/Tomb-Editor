@@ -458,6 +458,9 @@ namespace TombEditor
             reader.ReadBlockArray(out Texture32, Texture32CompressedSize);
             Texture32 = ZLib.DecompressData(Texture32);
 
+            ImageC img = ImageC.FromByteArray(Texture32, 256, (int)Texture32UncompressedSize / 262144 * 256);
+            img.Save("H:\\karnak.png");
+
             BinaryWriterEx wrttext = new BinaryWriterEx(new FileStream("textures.raw", FileMode.Create, FileAccess.Write, FileShare.None));
             wrttext.WriteBlockArray(Texture32);
             wrttext.Flush();
@@ -773,13 +776,31 @@ namespace TombEditor
             reader.ReadBlock(out NumObjectTextures);
             reader.ReadBlockArray(out ObjectTextures, NumObjectTextures);
 
+            if (File.Exists("textures." + fn + "." + outFileName + ".txt"))
+                File.Delete("textures." + fn + "." + outFileName + ".txt");
+            writer = new StreamWriter(new FileStream("textures." + fn + "." + outFileName + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+
             for (int ii = 0; ii < NumObjectTextures; ii++)
             {
+                writer.WriteLine("TEXTURE #" + ii);
+                writer.WriteLine("    Tile: " + (ObjectTextures[ii].Tile & 0xFF).ToString());
+                for (int jj = 0; jj < 4; jj++)
+                {
+                    writer.WriteLine("    " + jj + " X: " +
+                        ((ushort)(ObjectTextures[ii].Vertices[jj].Xpixel << 8 + ObjectTextures[ii].Vertices[jj].Xcoordinate)).ToString() +
+                        " Y: " +
+                        ((ushort)(ObjectTextures[ii].Vertices[jj].Ypixel << 8 + ObjectTextures[ii].Vertices[jj].Ycoordinate)).ToString() +
+                        " (" + ObjectTextures[ii].Vertices[jj].Xpixel + ", " + ObjectTextures[ii].Vertices[jj].Ypixel + ")");
+                }
+
                 /* BinaryWriterEx tmpwriter2 = new BinaryWriterEx(new FileStream("test\\cleopal_" + ii + ".text", FileMode.Create, FileAccess.Write, FileShare.None));
                  tmpwriter2.WriteBlock(ObjectTextures[ii]);
                  tmpwriter2.Flush();
                  tmpwriter2.Close();*/
             }
+
+            writer.Flush();
+            writer.Close();
 
             reader.ReadBlock(out NumItems);
             reader.ReadBlockArray(out Items, NumItems);

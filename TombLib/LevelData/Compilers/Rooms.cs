@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TombLib.Utils;
+using static TombLib.LevelData.Compilers.Util.TexInfoManager;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -223,14 +224,15 @@ namespace TombLib.LevelData.Compilers
                                         vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     }
 
-                                    Util.ObjectTextureManager.Result result;
+                                    Result result;
                                     lock (_objectTextureManager)
                                     {
-                                        var tmp = _textureInfoManager.AddTexture(texture, false, true); // @FIXME: UNIT TEST
-                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
+                                        result = _textureInfoManager.AddTexture(texture, false, true); // @FIXME: UNIT TEST
+                                        //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
                                     }
 
-                                    roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
+                                    roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
+                                                    texture.DoubleSided, 0));
                                     i += 3;
                                 }
                                 else
@@ -239,14 +241,15 @@ namespace TombLib.LevelData.Compilers
                                     vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
                                     
-                                    Util.ObjectTextureManager.Result result;
+                                    Result result;
                                     lock (_objectTextureManager)
                                     {
-                                        var tmp = _textureInfoManager.AddTexture(texture, true, true); // @FIXME: UNIT TEST
-                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+                                        result = _textureInfoManager.AddTexture(texture, true, true); // @FIXME: UNIT TEST
+                                        //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
                                     }
 
-                                    roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                                    roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
+                                                    texture.DoubleSided, 0));
                                 }
                             }
                         }
