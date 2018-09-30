@@ -124,26 +124,28 @@ namespace TombLib.LevelData.Compilers
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
-                    ObjectTextureManager.Result result;
+                    TexInfoManager.Result result;
                     lock (_objectTextureManager)
                     {
-                        result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        var tmp = _textureInfoManager.AddTexture(poly.Texture, false, false, packPriority);
+                        //result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
+                        result = _textureInfoManager.AddTexture(poly.Texture, false, false, packPriority);
                     }
 
-                    newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
+                    newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
+                        poly.Texture.DoubleSided, lightingEffect);
                     currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12;
                 }
                 else
                 {
-                    ObjectTextureManager.Result result;
+                    TexInfoManager.Result result;
                     lock (_objectTextureManager)
                     {
-                        result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-                        var tmp = _textureInfoManager.AddTexture(poly.Texture, true, false, packPriority);
+                        //result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
+                        result = _textureInfoManager.AddTexture(poly.Texture, true, false, packPriority);
                     }
 
-                    newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
+                    newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
+                        poly.Texture.DoubleSided, lightingEffect);
                     currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10;
                 }
             }

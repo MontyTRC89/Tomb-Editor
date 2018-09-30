@@ -55,7 +55,7 @@ namespace TombEditor.Forms
             paramTarget.Parameter = _trigger.Target;
             paramTimer.Parameter = _trigger.Timer;
             paramExtra.Parameter = _trigger.Extra;
-            tbLuaScript.Text = _trigger.LuaScript;
+            tbLuaScript.Code = _trigger.LuaScript;
 
             // Update the dialog
             UpdateDialog();
@@ -133,7 +133,7 @@ namespace TombEditor.Forms
             _trigger.Extra = paramExtra.Parameter;
             _trigger.CodeBits = CodeBits;
             _trigger.OneShot = cbOneShot.Checked;
-            _trigger.LuaScript = tbLuaScript.Text;
+            _trigger.LuaScript = tbLuaScript.Code;
 
             // Close
             DialogResult = DialogResult.OK;
