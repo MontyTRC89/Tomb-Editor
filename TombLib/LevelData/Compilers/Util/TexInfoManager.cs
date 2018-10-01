@@ -34,6 +34,8 @@ namespace TombLib.LevelData.Compilers.Util
         private List<ParentAnimatedTexture> ReferenceAnimTextures = new List<ParentAnimatedTexture>();
         private List<ParentAnimatedTexture> ActualAnimTextures = new List<ParentAnimatedTexture>();
 
+        public int UvRotateCount => ActualAnimTextures.Count(seq => seq.Origin.IsUvRotate);
+
         // List of parent textures should contain all "ancestor" texture areas in which all variations
         // are placed, including mirrored and rotated ones.
 
@@ -902,30 +904,21 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
+            // Put UVRotate sequences first
+            var SortedAnimTextures = ActualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
+
             int numAnimatedTextures = 1;
-            foreach (var compiledAnimatedTexture in ActualAnimTextures)
+            foreach (var compiledAnimatedTexture in SortedAnimTextures)
                 numAnimatedTextures += compiledAnimatedTexture.FrameCount() + 1;
             writer.Write((uint)numAnimatedTextures);
 
-            writer.Write((ushort)ActualAnimTextures.Count);
-            foreach (var compiledAnimatedTexture in ActualAnimTextures)
+            writer.Write((ushort)SortedAnimTextures.Count);
+            foreach (var compiledAnimatedTexture in SortedAnimTextures)
             {
                 writer.Write((ushort)(compiledAnimatedTexture.FrameCount() - 1));
                 foreach (var parent in compiledAnimatedTexture.CompiledAnimation)
                     foreach(var child in parent.Children)
                         writer.Write((ushort)child.TexInfoIndex);
-            }
-        }
-
-        public int UvRotateCount
-        {
-            get
-            {
-                var num = 0;
-                foreach (var set in ActualAnimTextures)
-                    if (set.Origin.IsUvRotate)
-                        num++;
-                return num;
             }
         }
 
