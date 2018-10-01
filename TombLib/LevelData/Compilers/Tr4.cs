@@ -138,7 +138,6 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(new byte[] { 0x54, 0x45, 0x58 });
 
                 _textureInfoManager.WriteTextureInfos(writer, _level);
-                //_objectTextureManager.WriteObjectTextures(writer, _level);
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);

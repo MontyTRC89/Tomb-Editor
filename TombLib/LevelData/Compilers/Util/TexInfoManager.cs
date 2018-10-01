@@ -295,45 +295,22 @@ namespace TombLib.LevelData.Compilers.Util
 
         private class ObjectTexture
         {
+            public int Tile;
+            public VectorInt2[] TexCoord = new VectorInt2[4];
+
             public bool IsForTriangle;
             public bool IsForRoom;
-            public int Tile;
             public BlendMode BlendMode;
             public BumpLevel BumpLevel;
 
-            public ushort TexCoord0X;
-            public ushort TexCoord0Y;
-            public ushort TexCoord1X;
-            public ushort TexCoord1Y;
-            public ushort TexCoord2X;
-            public ushort TexCoord2Y;
-            public ushort TexCoord3X;
-            public ushort TexCoord3Y;
-
-            public int Width;
-            public int Height;
-
-            public ChildTextureArea ChildTextureArea;
-
             public ObjectTexture( ParentTextureArea parent, ChildTextureArea child)
             {
-                ChildTextureArea = child;
                 BlendMode = child.BlendMode;
                 BumpLevel = parent.BumpLevel;
                 IsForRoom = parent.IsForRoom;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
 
-                Width = 0;
-                Height = 0;
-
-                // C# sucks!!!!!
-                TexCoord0X = TexCoord0Y = 0;
-                TexCoord1X = TexCoord1Y = 0;
-                TexCoord2X = TexCoord2Y = 0;
-                TexCoord3X = TexCoord3Y = 0;
-
-                //var coords = ChildTextureArea.GetAbsChildCoordinates(parent, child);
                 var coords = child.TexCoord;
                 for (int i = 0; i < coords.Length; i++)
                 {
@@ -341,23 +318,21 @@ namespace TombLib.LevelData.Compilers.Util
                     coords[i].Y += (parent.PositionInPage.Y); 
                 }
 
-                TexCoord0X = (ushort)((ushort)(coords[0].X + parent.Padding) << 8);
-                TexCoord0Y = (ushort)((ushort)(coords[0].Y + parent.Padding) << 8);
+                for(int i = 0; i < coords.Length; i++)
+                    TexCoord[i] = new VectorInt2(((int)(coords[i].X + parent.Padding) << 8),
+                                                 ((int)(coords[i].Y + parent.Padding) << 8));
+            }
 
-                TexCoord1X = (ushort)((ushort)(coords[1].X + parent.Padding) << 8);
-                TexCoord1Y = (ushort)((ushort)(coords[1].Y + parent.Padding) << 8);
-
-                TexCoord2X = (ushort)((ushort)(coords[2].X + parent.Padding) << 8);
-                TexCoord2Y = (ushort)((ushort)(coords[2].Y + parent.Padding) << 8);
-
-                if (coords.Length == 4)
-                {
-                    TexCoord3X = (ushort)((ushort)(coords[3].X + parent.Padding) << 8);
-                    TexCoord3Y = (ushort)((ushort)(coords[3].Y + parent.Padding) << 8);
-                }
+            public Rectangle2 GetRect(bool isTriangle)
+            {
+                if (isTriangle)
+                    return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord[0], TexCoord[1]), TexCoord[2]),
+                                          Vector2.Max(Vector2.Max(TexCoord[0], TexCoord[1]), TexCoord[2]));
+                else
+                    return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord[0], TexCoord[1]), Vector2.Min(TexCoord[2], TexCoord[3])),
+                                          Vector2.Max(Vector2.Max(TexCoord[0], TexCoord[1]), Vector2.Max(TexCoord[2], TexCoord[3])));
             }
         }
-
 
         public TexInfoManager(uint maxParentSize, List<AnimatedTextureSet> sets)
         {
@@ -933,36 +908,42 @@ namespace TombLib.LevelData.Compilers.Util
                 ushort tile = (ushort)texture.Tile;
                 if (texture.IsForTriangle && level.Settings.GameVersion > GameVersion.TR2) tile |= 0x8000;
 
-                // New flags from >= TR4
-                ushort newFlags = 2;
-                if (texture.IsForRoom) newFlags |= 0x8000;
-                if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
-                if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 11);
-                if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 11);
-
                 // Blend mode
                 ushort attribute = (ushort)texture.BlendMode;
 
                 // Now write the texture
                 writer.Write(attribute);
                 writer.Write(tile);
-                if (level.Settings.GameVersion >= GameVersion.TR4)
-                    writer.Write(newFlags);
-                writer.Write(texture.TexCoord0X);
-                writer.Write(texture.TexCoord0Y);
-                writer.Write(texture.TexCoord1X);
-                writer.Write(texture.TexCoord1Y);
-                writer.Write(texture.TexCoord2X);
-                writer.Write(texture.TexCoord2Y);
-                writer.Write(texture.TexCoord3X);
-                writer.Write(texture.TexCoord3Y);
+
+                // New flags from >= TR4
                 if (level.Settings.GameVersion >= GameVersion.TR4)
                 {
-                    writer.Write(texture.Width);
-                    writer.Write(texture.Height);
+                    ushort newFlags = 2;    // @FIXME: Add proper persp correct flag from old tex manager!
+
+                    if (texture.IsForRoom) newFlags |= 0x8000;
+
+                         if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
+                    else if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 11);
+                    else if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 11);
+
+                    writer.Write(newFlags);
+                }
+
+                for(int j = 0; j < 4; j++)
+                {
+                    writer.Write((ushort)texture.TexCoord[j].X);
+                    writer.Write((ushort)texture.TexCoord[j].Y);
+                }
+
+                if (level.Settings.GameVersion >= GameVersion.TR4)
+                {
+                    var rect = texture.GetRect(texture.IsForTriangle);
+                    writer.Write(rect.Width);
+                    writer.Write(rect.Height);
                     writer.Write((int)0);
                     writer.Write((int)0);
                 }
+
                 if (level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
                     writer.Write((ushort)0);
             }
