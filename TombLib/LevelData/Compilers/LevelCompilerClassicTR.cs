@@ -108,7 +108,7 @@ namespace TombLib.LevelData.Compilers
 
             _progressReporter.ReportInfo("   Number of textures: " + _textureInfoManager.ParentCount);
             _progressReporter.ReportInfo("   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
-            _progressReporter.ReportWarn("   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTexturesCount);
+            _progressReporter.ReportInfo("   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTexturesCount);
 
             PrepareSoundSources();
             PrepareItems();

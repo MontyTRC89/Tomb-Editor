@@ -941,7 +941,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (texture.IsForTriangle && level.Settings.GameVersion > GameVersion.TR2) tile |= 0x8000;
 
                 // New flags from >= TR4
-                ushort newFlags = 0;
+                ushort newFlags = 2;
                 if (texture.IsForRoom) newFlags |= 0x8000;
                 if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
                 if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 11);
