@@ -281,6 +281,14 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 Origin = origin;
             }
+
+            public int FrameCount()
+            {
+                int result = 0;
+                foreach(var parent in CompiledAnimation)
+                    result += parent.Children.Count;
+                return result;
+            }
         }
 
         private class ObjectTexture
@@ -408,9 +416,6 @@ namespace TombLib.LevelData.Compilers.Util
             // TexInfoIndex is saved as int for forward compatibility with engines such as TR5Main.
             public int TexInfoIndex;
 
-            // Silly measure to prevent overflowing legacy texinfo count
-            private ushort LegacyIndex => (ushort)((TexInfoIndex <= short.MaxValue) ? TexInfoIndex : short.MaxValue);
-
             // Rotation value indicate that incoming TextureArea should be rotated N times. 
             // This approach allows to tightly pack TexInfos in same manner as tom2pc does.
             // As result, CreateFace3/4 should return a face with changed index order.
@@ -421,7 +426,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                ushort objectTextureIndex = (ushort)(LegacyIndex | (doubleSided ? 0x8000 : 0));
+                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
                 ushort[] transformedIndices = new ushort[3] { indices[0], indices[1], indices[2] };
 
                 if (Rotation > 0)
@@ -443,7 +448,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                ushort objectTextureIndex = (ushort)(LegacyIndex | (doubleSided ? 0x8000 : 0));
+                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
                 ushort[] transformedIndices = new ushort[4] { indices[0], indices[1], indices[2], indices[3] };
 
                 if (Rotation > 0)
@@ -897,18 +902,31 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
-            /*int numAnimatedTexture = 1;
+            int numAnimatedTextures = 1;
             foreach (var compiledAnimatedTexture in ActualAnimTextures)
-                numAnimatedTexture += compiledAnimatedTexture.CompiledAnimation.Count + 1;
-            writer.Write((uint)numAnimatedTexture);
+                numAnimatedTextures += compiledAnimatedTexture.FrameCount() + 1;
+            writer.Write((uint)numAnimatedTextures);
 
             writer.Write((ushort)ActualAnimTextures.Count);
             foreach (var compiledAnimatedTexture in ActualAnimTextures)
             {
-                writer.Write((ushort)(compiledAnimatedTexture.CompiledAnimation.Count - 1));
-                foreach (var child in compiledAnimatedTexture.CompiledAnimation)
-                    writer.Write(child.);
-            }*/
+                writer.Write((ushort)(compiledAnimatedTexture.FrameCount() - 1));
+                foreach (var parent in compiledAnimatedTexture.CompiledAnimation)
+                    foreach(var child in parent.Children)
+                        writer.Write((ushort)child.TexInfoIndex);
+            }
+        }
+
+        public int UvRotateCount
+        {
+            get
+            {
+                var num = 0;
+                foreach (var set in ActualAnimTextures)
+                    if (set.Origin.IsUvRotate)
+                        num++;
+                return num;
+            }
         }
 
         public void WriteTextureInfos(BinaryWriterEx writer, Level level)

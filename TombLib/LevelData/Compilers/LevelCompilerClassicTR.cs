@@ -99,15 +99,16 @@ namespace TombLib.LevelData.Compilers
             //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4();
             BuildRooms();
-
-            _progressReporter.ReportWarn("\nTexInfoManager room faces UNIT TEST: " + _textureInfoManager.ParentCount + " parents, " + _textureInfoManager.TexInfoCount + " TexInfos\n");
-
+            
             // New texture packer
-            _progressReporter.ReportWarn("\nTexInfoManager: anim seq reference variations: " + _textureInfoManager.ReferenceAnimTexturesCount);
-            _progressReporter.ReportWarn("\nTexInfoManager: anim seq actual variations: " + _textureInfoManager.ActualAnimTexturesCount);
-
+            _progressReporter.ReportInfo("Packing textures");
+            
             _textureInfoManager.PackTextures();
             _textureInfoManager.BuildTextureInfos();
+
+            _progressReporter.ReportInfo("   Number of textures: " + _textureInfoManager.ParentCount);
+            _progressReporter.ReportInfo("   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            _progressReporter.ReportWarn("   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTexturesCount);
 
             PrepareSoundSources();
             PrepareItems();

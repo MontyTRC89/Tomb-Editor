@@ -131,12 +131,10 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 // Write animated textures
-                writer.Write((int)1);
-                writer.Write((ushort)0);
-                //_objectTextureManager.WriteAnimatedTexturesForTr4(writer);
+                _textureInfoManager.WriteAnimatedTextures(writer);
 
                 // Write object textures
-                writer.Write(checked((byte)_objectTextureManager.UvRotateCount));
+                writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
                 writer.Write(new byte[] { 0x54, 0x45, 0x58 });
 
                 _textureInfoManager.WriteTextureInfos(writer, _level);
