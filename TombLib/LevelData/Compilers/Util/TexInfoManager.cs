@@ -603,7 +603,7 @@ namespace TombLib.LevelData.Compilers.Util
                 // Try to create new canonical (top-left-based) texture as child or parent.
                 // makeCanonical parameter is necessary for UVRotate animations, because in case texture is not top-left-based,
                 // engine will incorrectly calculate texture split for UV panning.
-                var canonicalTexture = makeCanonical ? texture : texture.GetCanonicalTexture(isForTriangle, out rotation);
+                var canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle, out rotation) : texture;
                 var texInfoIndex = TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, packPriority, packAnimations);
 
                 // No any potential parents or children, create as new parent

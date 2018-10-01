@@ -152,11 +152,19 @@ namespace TombLib.Utils
             var transformedTexture = this;
 
             Rotation = 0;
-            while (transformedTexture.TexCoord1.Y != minY)
+            while (transformedTexture.TexCoord0.Y != minY)
             {
                 transformedTexture.Rotate(1, isTriangle);
                 Rotation++;
             }
+
+            // Perform extra rotation in case it's rect texture with similar upper coordinates
+            if(minY == transformedTexture.TexCoord3.Y)
+            {
+                Rotation++;
+                transformedTexture.Rotate(1, isTriangle);
+            }
+
             return transformedTexture;
         }
 
