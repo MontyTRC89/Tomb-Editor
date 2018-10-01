@@ -590,7 +590,7 @@ namespace TombLib.LevelData.Compilers.Util
         // Internal AddTexture variation which is capable of adding texture to various ParentTextureArea lists
         // with customizable parameters.
 
-        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom, int packPriority = 0, bool packAnimations = false, bool makeCanonical = true)
+        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom, int packPriority = 0, bool packAnimations = false, bool makeCanonical = false)
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be dublicated with Repeat function or simply because of complex animator functions applied.
