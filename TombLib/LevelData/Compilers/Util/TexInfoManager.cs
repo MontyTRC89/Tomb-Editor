@@ -428,10 +428,10 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     for (int i = 0; i < Rotation; i++)
                     {
-                        ushort tempIndex = indices[2];
-                        indices[2] = indices[1];
-                        indices[1] = indices[0];
-                        indices[0] = tempIndex;
+                        ushort tempIndex = transformedIndices[0];
+                        transformedIndices[0] = transformedIndices[1];
+                        transformedIndices[1] = transformedIndices[2];
+                        transformedIndices[2] = tempIndex;
                     }
                 }
 
@@ -450,11 +450,11 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     for (int i = 0; i < Rotation; i++)
                     {
-                        ushort tempIndex = indices[3];
-                        indices[3] = indices[2];
-                        indices[2] = indices[1];
-                        indices[1] = indices[0];
-                        indices[0] = tempIndex;
+                        ushort tempIndex = transformedIndices[0];
+                        transformedIndices[0] = transformedIndices[1];
+                        transformedIndices[1] = transformedIndices[2];
+                        transformedIndices[2] = transformedIndices[3];
+                        transformedIndices[3] = tempIndex;
                     }
                 }
 

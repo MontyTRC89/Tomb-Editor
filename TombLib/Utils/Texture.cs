@@ -204,7 +204,7 @@ namespace TombLib.Utils
             Swap.Do(ref TexCoord1, ref TexCoord2);
         }
 
-        public void Rotate(int iter = 1, bool isTriangle = true)
+        public void Rotate(int iter = 1, bool isTriangle = false)
         {
             for(int i = 0; i < iter; i++)
             {
