@@ -152,7 +152,7 @@ namespace TombLib.Utils
             var transformedTexture = this;
 
             Rotation = 0;
-            while (transformedTexture.TexCoord0.Y != minY)
+            while (transformedTexture.TexCoord1.Y != minY)
             {
                 transformedTexture.Rotate(1, isTriangle);
                 Rotation++;
