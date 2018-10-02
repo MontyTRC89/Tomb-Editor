@@ -2409,12 +2409,12 @@
       <sound id="107" name="Earthquake loop" fixed_by_default="true"/>
       <sound id="108" name="Menu rotate" fixed_by_default="true"/>
       <sound id="109" name="Menu select" fixed_by_default="true"/>
-      <sound id="110" name="Menu empty"/>
+      <sound id="110" name="Menu empty 1"/>
       <sound id="111" name="Menu choose" fixed_by_default="true"/>
       <sound id="112" name="Tick tock"/>
-      <sound id="113" name="Menu empty"/>
+      <sound id="113" name="Menu empty 2"/>
       <sound id="114" name="Menu combine" fixed_by_default="true"/>
-      <sound id="115" name="Menu empty"/>
+      <sound id="115" name="Menu empty 3"/>
       <sound id="116" name="Menu medi" fixed_by_default="true"/>
       <sound id="117" name="Lara climb walls noise"/>
       <sound id="118" name="Water loop"/>
@@ -2462,7 +2462,7 @@
       <sound id="160" name="Launcher 2"/>
       <sound id="161" name="Trapdoor open"/>
       <sound id="162" name="Trapdoor close"/>
-      <sound id="163" name="Empty"/>
+      <sound id="163" name="Empty 1"/>
       <sound id="164" name="Baboon stand wait"/>
       <sound id="165" name="Baboon attack low"/>
       <sound id="166" name="Baboon attack jump"/>
@@ -2484,8 +2484,8 @@
       <sound id="182" name="Thunder rumble" fixed_by_default="true"/>
       <sound id="183" name="Thunder crack" fixed_by_default="true"/>
       <sound id="184" name="Wraith whispers"  fixed_by_default="true"/>
-      <sound id="185" name="Empty"/>
-      <sound id="186" name="Empty"/>
+      <sound id="185" name="Empty 2"/>
+      <sound id="186" name="Empty 3"/>
       <sound id="187" name="Skel footsteps"/>
       <sound id="188" name="Skel attack"/>
       <sound id="189" name="Generic sword swoosh"/>
@@ -2498,7 +2498,7 @@
       <sound id="196" name="Jeep door close"/>
       <sound id="197" name="Elec arcing loop" fixed_by_default="true"/>
       <sound id="198" name="Elec one shot" fixed_by_default="true"/>
-      <sound id="199" name="Empty"/>
+      <sound id="199" name="Empty 4"/>
       <sound id="200" name="Library cog loop"/>
       <sound id="201" name="Jeep side impact"/>
       <sound id="202" name="Jeep front impact"/>
@@ -2569,7 +2569,7 @@
       <sound id="267" name="Sas mg fire"/>
       <sound id="268" name="Hammer head wade"/>
       <sound id="269" name="Small switch"/>
-      <sound id="270" name="Empty"/>
+      <sound id="270" name="Empty 5"/>
       <sound id="271" name="Siren wing flap"/>
       <sound id="272" name="Siren noizes"/>
       <sound id="273" name="Siren attack"/>
