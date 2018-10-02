@@ -85,6 +85,24 @@ namespace TombLib
         public static Rectangle2 FromLTRB(Vector2 start, Vector2 size) => new Rectangle2(start, start + size);
         public static Rectangle2 FromLTRB(float x0, float y0, float width, float height) => new Rectangle2(x0, y0, x0 + width, y0 + height);
 
+        public static Rectangle2 FromCoordinates(Vector2[] coordinates)
+        {
+            if (coordinates.Length == 4)
+                return FromCoordinates(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+            else
+                return FromCoordinates(coordinates[0], coordinates[1], coordinates[2]);
+        }
+
+        public static Rectangle2 FromCoordinates(Vector2 coord0, Vector2 coord1, Vector2 coord2, Vector2? coord3 = null)
+        {
+            if (!coord3.HasValue)
+                return new Rectangle2(Vector2.Min(Vector2.Min(coord0, coord1), coord2),
+                                      Vector2.Max(Vector2.Max(coord0, coord1), coord2));
+            else
+                return new Rectangle2(Vector2.Min(Vector2.Min(coord0, coord1), Vector2.Min(coord2, coord3.Value)),
+                                      Vector2.Max(Vector2.Max(coord0, coord1), Vector2.Max(coord2, coord3.Value)));
+        }
+
         public bool Equals(Rectangle2 other) => this == other;
         public override string ToString() => Start + " to " + End;
         public override bool Equals(object obj)

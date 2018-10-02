@@ -126,11 +126,9 @@ namespace TombLib.Utils
         public Rectangle2 GetRect(bool isTriangle = true)
         {
             if (isTriangle)
-                return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2),
-                                      Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2));
+                return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2);
             else
-                return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3)),
-                                      Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3)));
+                return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
         }
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
