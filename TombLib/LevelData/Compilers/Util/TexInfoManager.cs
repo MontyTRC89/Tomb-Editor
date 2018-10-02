@@ -192,10 +192,26 @@ namespace TombLib.LevelData.Compilers.Util
                 for (int i = 0; i < result.Length; i++)
                     result[i] = texture.GetTexCoord(i) - Area.Start;
 
+                BlendMode mode = texture.BlendMode;
+
+                Rectangle2 area;
+                if (!isForTriangle)
+                    area = Rectangle2.FromCoordinates(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3);
+                else
+                    area = Rectangle2.FromCoordinates(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2);
+
+                if (texture.BlendMode != BlendMode.Additive)
+                {
+                    // Has this texture some transparent areas?
+                    var hasAlpha = texture.Texture.Image.HasAlpha((int)area.X0, (int)area.Y0, (int)area.Width, (int)area.Height);
+                    if (hasAlpha)
+                        mode = BlendMode.AlphaTest;
+                }
+
                 Children.Add(new ChildTextureArea()
                 {
                     TexInfoIndex = newTextureID,
-                    BlendMode = texture.BlendMode,
+                    BlendMode = mode,
                     IsForTriangle = isForTriangle,
                     TexCoord = result
                 });
@@ -602,7 +618,7 @@ namespace TombLib.LevelData.Compilers.Util
         private int PlaceTexturesInMap(ref List<ParentTextureArea> textures, int padding)
         {
             int currentPage = 0;
-            RectPacker packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
+            RectPacker packer = new RectPackerTree(new VectorInt2(256, 256));
 
             for (int i = 0; i < textures.Count; i++)
             {
@@ -740,9 +756,9 @@ namespace TombLib.LevelData.Compilers.Util
             ActualAnimTextures.Add(refCopy);
         }
 
-        private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, int padding, BumpLevel bumpLevel)
+        private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, int padding, bool bump)
         {
-            var image = ImageC.CreateNew(256, numPages * 256 * (bumpLevel != BumpLevel.None ? 2 : 1));
+            var image = ImageC.CreateNew(256, numPages * 256 * (bump ? 2 : 1));
             for (int i = 0; i < textures.Count; i++)
             {
                 var p = textures[i];
@@ -759,7 +775,10 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     var bumpImage = ImageC.CreateNew((int)p.Area.Width, (int)p.Area.Height);
                     bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, (int)p.Area.Width, (int)p.Area.Height);
-                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 1, 3);
+                    if (p.BumpLevel == BumpLevel.Level1)
+                        bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 2, -2);
+                    else
+                        bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 2, -3);
                     image.CopyFrom(p.PositionInPage.X + p.Padding, (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding, bumpImage);
                 }
 
@@ -848,25 +867,21 @@ namespace TombLib.LevelData.Compilers.Util
             int numBumpedPages = PlaceTexturesInMap(ref bumpedTextures, padding);
 
             // Place all the textures areas in the maps
-            _roomPages = BuildTextureMap(ref roomTextures, numRoomPages, padding, BumpLevel.None);
-            _objectsPages = BuildTextureMap(ref objectsTextures, numObjectsPages, padding, BumpLevel.None);
-            _bumpPages = BuildTextureMap(ref bumpedTextures, numBumpedPages, padding, BumpLevel.Level2);
+            _roomPages = BuildTextureMap(ref roomTextures, numRoomPages, padding, false);
+            _objectsPages = BuildTextureMap(ref objectsTextures, numObjectsPages, padding, false);
+            _bumpPages = BuildTextureMap(ref bumpedTextures, numBumpedPages, padding, true);
 
-            // Combine all maps in the final map
-            /*numBumpedPages *= 2;
-            int numPages = numRoomPages + numObjectsPages + numBumpedPages;
+            // DEBUG: Combine all maps in the final map
+            /*int numPages = numRoomPages + numObjectsPages + numBumpedPages * 2;
             var finalImage = ImageC.CreateNew(256, numPages * 256);
-            finalImage.CopyFrom(0, 0, roomPages);
-            finalImage.CopyFrom(0, numRoomPages * 256, objectsPages);
-            finalImage.CopyFrom(0, (numRoomPages + numObjectsPages) * 256, bumpedPages);*/
+            finalImage.CopyFrom(0, 0, _roomPages);
+            finalImage.CopyFrom(0, numRoomPages * 256, _objectsPages);
+            finalImage.CopyFrom(0, (numRoomPages + numObjectsPages) * 256, _bumpPages);
+            finalImage.Save("h:\\testpack.png");*/
 
             _numRoomTexturePages = numRoomPages;
             _numObjectsTexturePages = numObjectsPages;
-            _numBumpTexturePages = numBumpedPages * 2;
-            //_texture = finalImage;
-
-            // DEBUG: Now for testing create a bitmap
-            //finalImage.Save("h:\\testpack.png");
+            _numBumpTexturePages = numBumpedPages * 2;            
         }
 
         public void BuildTextureInfos()
