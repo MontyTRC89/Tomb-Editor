@@ -778,6 +778,13 @@ namespace TombEditor.Forms
                         }
                         break;
                 }
+
+                // Round texture coordinates
+
+                targetSet.Frames[i].TexCoord0 = MathC.RoundToHalf(targetSet.Frames[i].TexCoord0);
+                targetSet.Frames[i].TexCoord1 = MathC.RoundToHalf(targetSet.Frames[i].TexCoord1);
+                targetSet.Frames[i].TexCoord2 = MathC.RoundToHalf(targetSet.Frames[i].TexCoord2);
+                targetSet.Frames[i].TexCoord3 = MathC.RoundToHalf(targetSet.Frames[i].TexCoord3);
             }
 
             // Add new set to level for types which create new animation, otherwise just send change event.

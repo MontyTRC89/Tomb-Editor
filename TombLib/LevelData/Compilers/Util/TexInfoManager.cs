@@ -83,15 +83,6 @@ namespace TombLib.LevelData.Compilers.Util
 
             public BlendMode BlendMode;
             public bool IsForTriangle;
-
-            // Returns absolute child coordinates
-            public static Vector2[] GetAbsChildCoordinates(ParentTextureArea parent, ChildTextureArea child)
-            {
-                var result = new Vector2[child.TexCoord.Length];
-                for (int i = 0; i < child.TexCoord.Length; i++)
-                    result[i] = parent.Area.Start + child.TexCoord[i];
-                return result;
-            }
         }
 
         // ParentTextureArea is a texture area which contains all other texture areas which are
@@ -176,20 +167,22 @@ namespace TombLib.LevelData.Compilers.Util
             public bool IsPotentialChild(TextureArea texture, bool isForRoom, bool allowOverlaps = false, uint maxOverlappedSize = 256)
             {
                 var rect = texture.GetRect();
-                if (!allowOverlaps)
-                    return (ParametersSimilar(texture, isForRoom) && rect.Contains(_area));
-                else
+
+                if(ParametersSimilar(texture, isForRoom))
                 {
-                    if (rect.Intersects(_area))
+                    if (rect.Contains(_area))
+                        return true;
+                    else if (allowOverlaps)
                     {
-                        var potentialNewArea = rect.Union(_area);
-                        return (ParametersSimilar(texture, isForRoom) &&
-                               (potentialNewArea.Width <= maxOverlappedSize) &&
-                               (potentialNewArea.Height <= maxOverlappedSize));
+                        if (!_area.Contains(rect) && rect.Intersects(_area))
+                        {
+                            var potentialNewArea = rect.Union(_area);
+                            return ((potentialNewArea.Width <= maxOverlappedSize) &&
+                                    (potentialNewArea.Height <= maxOverlappedSize));
+                        }
                     }
-                    else
-                        return false;
                 }
+                return false;
             }
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
@@ -210,12 +203,13 @@ namespace TombLib.LevelData.Compilers.Util
                 // Expand parent area, if needed
                 var rect = texture.GetRect();
                 if (!Area.Contains(rect))
-                    Area.Union(rect);
+                    Area = Area.Union(rect);
             }
 
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
             {
-                var newCoordinates = ChildTextureArea.GetAbsChildCoordinates(this, child);
+                var newCoordinates = GetAbsChildCoordinates(child);
+
                 for (int i = 0; i < newCoordinates.Length; i++)
                     newCoordinates[i] -= Area.Start;
 
@@ -226,6 +220,19 @@ namespace TombLib.LevelData.Compilers.Util
                     IsForTriangle = child.IsForTriangle,
                     TexCoord = newCoordinates
                 });
+
+                // Expand parent area, if needed
+                var rect = Rectangle2.FromCoordinates(GetAbsChildCoordinates(child));
+                Area = Area.Union(rect);
+            }
+
+            // Returns absolute child coordinates
+            public Vector2[] GetAbsChildCoordinates(ChildTextureArea child)
+            {
+                var result = new Vector2[child.TexCoord.Length];
+                for (int i = 0; i < child.TexCoord.Length; i++)
+                    result[i] = Area.Start + child.TexCoord[i];
+                return result;
             }
 
             public void MergeParents(List<ParentTextureArea> parents)
@@ -326,11 +333,9 @@ namespace TombLib.LevelData.Compilers.Util
             public Rectangle2 GetRect(bool isTriangle)
             {
                 if (isTriangle)
-                    return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord[0], TexCoord[1]), TexCoord[2]),
-                                          Vector2.Max(Vector2.Max(TexCoord[0], TexCoord[1]), TexCoord[2]));
+                    return Rectangle2.FromCoordinates(TexCoord[0], TexCoord[1], TexCoord[2]);
                 else
-                    return new Rectangle2(Vector2.Min(Vector2.Min(TexCoord[0], TexCoord[1]), Vector2.Min(TexCoord[2], TexCoord[3])),
-                                          Vector2.Max(Vector2.Max(TexCoord[0], TexCoord[1]), Vector2.Max(TexCoord[2], TexCoord[3])));
+                    return Rectangle2.FromCoordinates(TexCoord[0], TexCoord[1], TexCoord[2], TexCoord[3]);
             }
         }
 
@@ -466,7 +471,7 @@ namespace TombLib.LevelData.Compilers.Util
                         continue;
 
                     // Test if coordinates are mutually equal and return resulting rotation if they are
-                    var result = TestUVSimilarity(ChildTextureArea.GetAbsChildCoordinates(parent, child), lookupCoordinates);
+                    var result = TestUVSimilarity(parent.GetAbsChildCoordinates(child), lookupCoordinates);
                     if (result != NoTexInfo)
                     {
                         // Child is rotation-wise equal to incoming area
@@ -496,7 +501,7 @@ namespace TombLib.LevelData.Compilers.Util
                 // first one in current texture
                 for (byte i = 0; i < first.Length; i++)
                 {
-                    if (first[0] == second[i])
+                    if (MathC.WithinEpsilon(first[0].X, second[i].X, 1.5f) && MathC.WithinEpsilon(first[0].Y, second[i].Y, 1.5f))
                     {
                         baseCoord = i;
                         break;
@@ -508,9 +513,12 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     for (int i = 0; i < first.Length; i++)
                     {
+                        var nextCoord = ((i + baseCoord) % first.Length);
+
                         // Shifted coord is different, discard further comparison
-                        if (first[i] != second[((i + baseCoord) % first.Length)])
+                        if (!MathC.WithinEpsilon(first[i].X, second[nextCoord].X, 1.5f) || !MathC.WithinEpsilon(first[i].Y, second[nextCoord].Y, 1.5f))
                             break;
+
                         // Last coord reached, comparison succeeded
                         if (i == first.Length - 1)
                             Result = baseCoord;

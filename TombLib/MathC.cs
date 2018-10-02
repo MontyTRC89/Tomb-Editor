@@ -47,6 +47,10 @@ namespace TombLib
         public static Vector3 Ceiling(Vector3 v) => new Vector3((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y), (float)Math.Ceiling(v.Z));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Ceiling(Vector4 v) => new Vector4((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y), (float)Math.Ceiling(v.Z), (float)Math.Ceiling(v.W));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 RoundToHalf(Vector2 v) => Round(v * 2.0f) / 2.0f;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(int value, int min, int max) => value < min ? min : value > max ? max : value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
