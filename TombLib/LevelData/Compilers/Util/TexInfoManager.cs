@@ -193,26 +193,10 @@ namespace TombLib.LevelData.Compilers.Util
                 for (int i = 0; i < result.Length; i++)
                     result[i] = texture.GetTexCoord(i) - Area.Start;
 
-                BlendMode mode = texture.BlendMode;
-
-                Rectangle2 area;
-                if (!isForTriangle)
-                    area = Rectangle2.FromCoordinates(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2, texture.TexCoord3);
-                else
-                    area = Rectangle2.FromCoordinates(texture.TexCoord0, texture.TexCoord1, texture.TexCoord2);
-
-                if (texture.BlendMode != BlendMode.Additive)
-                {
-                    // Has this texture some transparent areas?
-                    var hasAlpha = texture.Texture.Image.HasAlpha((int)area.X0, (int)area.Y0, (int)area.Width, (int)area.Height);
-                    if (hasAlpha)
-                        mode = BlendMode.AlphaTest;
-                }
-
                 Children.Add(new ChildTextureArea()
                 {
                     TexInfoIndex = newTextureID,
-                    BlendMode = mode,
+                    BlendMode = texture.GetRealBlendMode(),
                     IsForTriangle = isForTriangle,
                     TexCoord = result
                 });
@@ -483,7 +467,7 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var child in parent.Children)
                 {
                     // If parameters are different, children is quickly discarded from comparison.
-                    if ((checkParameters && child.BlendMode != areaToLook.BlendMode) || child.IsForTriangle != isForTriangle)
+                    if ((checkParameters && !areaToLook.SameBlendMode(child.BlendMode)) || child.IsForTriangle != isForTriangle)
                         continue;
 
                     // Test if coordinates are mutually equal and return resulting rotation if they are
