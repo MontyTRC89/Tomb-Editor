@@ -98,7 +98,24 @@ namespace TombLib.Utils
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
-        
+
+        public BlendMode GetRealBlendMode()
+        {
+            if (BlendMode < BlendMode.Additive)
+            {
+                var area = Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
+
+                // Has this texture some transparent areas?
+                var hasAlpha = Texture.Image.HasAlpha((int)area.X0, (int)area.Y0, (int)area.Width, (int)area.Height);
+                if (hasAlpha)
+                    return BlendMode.AlphaTest;
+                else
+                    return BlendMode.Normal;
+            }
+            return BlendMode;
+        }
+        public bool SameBlendMode(BlendMode other) => (BlendMode < BlendMode.Additive && other < BlendMode.Additive) ? true : BlendMode == other;
+
         public bool TriangleCoordsOutOfBounds
         {
             get
