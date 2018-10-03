@@ -96,11 +96,11 @@ namespace TombLib
         public static Rectangle2 FromCoordinates(Vector2 coord0, Vector2 coord1, Vector2 coord2, Vector2? coord3 = null)
         {
             if (!coord3.HasValue)
-                return new Rectangle2(Vector2.Min(Vector2.Min(coord0, coord1), coord2),
-                                      Vector2.Max(Vector2.Max(coord0, coord1), coord2));
+                return new Rectangle2(new Vector2(Math.Min(Math.Min(coord0.X, coord1.X), coord2.X), Math.Min(Math.Min(coord0.Y, coord1.Y), coord2.Y)),
+                                      new Vector2(Math.Max(Math.Max(coord0.X, coord1.X), coord2.X), Math.Max(Math.Max(coord0.Y, coord1.Y), coord2.Y)));
             else
-                return new Rectangle2(Vector2.Min(Vector2.Min(coord0, coord1), Vector2.Min(coord2, coord3.Value)),
-                                      Vector2.Max(Vector2.Max(coord0, coord1), Vector2.Max(coord2, coord3.Value)));
+                return new Rectangle2(new Vector2(Math.Min(Math.Min(Math.Min(coord0.X, coord1.X), coord2.X), coord3.Value.X), Math.Min(Math.Min(Math.Min(coord0.Y, coord1.Y), coord2.Y), coord3.Value.Y)),
+                                      new Vector2(Math.Max(Math.Max(Math.Max(coord0.X, coord1.X), coord2.X), coord3.Value.X), Math.Max(Math.Max(Math.Max(coord0.Y, coord1.Y), coord2.Y), coord3.Value.Y)));
         }
 
         public bool Equals(Rectangle2 other) => this == other;

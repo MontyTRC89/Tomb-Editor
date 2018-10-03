@@ -123,7 +123,7 @@ namespace TombLib.Utils
             }
         }
 
-        public Rectangle2 GetRect(bool isTriangle = true)
+        public Rectangle2 GetRect(bool isTriangle = false)
         {
             if (isTriangle)
                 return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2);

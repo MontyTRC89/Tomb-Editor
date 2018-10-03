@@ -11,8 +11,9 @@ namespace TombLib.LevelData.Compilers.Util
 {  
     public class TexInfoManager
     {
-        private const int NoTexInfo = -1;
-        private const int DummyTexInfo = -2;
+        private const int   NoTexInfo = -1;
+        private const int   DummyTexInfo = -2;
+        private const float AnimTextureLookupMargin = 5.0f;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -160,17 +161,13 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Checks if parameters are similar to another texture area, and if so,
             // also checks if texture area is enclosed in parent's area.
-            public bool IsPotentialParent(TextureArea texture, bool isForRoom)
-                => (ParametersSimilar(texture, isForRoom) && _area.Contains(texture.GetRect()));
-
-            // Checks if incoming texture is similar in parameters and encloses parent area.
-            public bool IsPotentialChild(TextureArea texture, bool isForRoom, bool allowOverlaps = false, uint maxOverlappedSize = 256)
+            public bool IsPotentialParent(TextureArea texture, bool isForRoom, bool allowOverlaps = false, uint maxOverlappedSize = 256)
             {
                 var rect = texture.GetRect();
 
-                if(ParametersSimilar(texture, isForRoom))
+                if (ParametersSimilar(texture, isForRoom))
                 {
-                    if (rect.Contains(_area))
+                    if (_area.Contains(rect))
                         return true;
                     else if (allowOverlaps)
                     {
@@ -184,6 +181,10 @@ namespace TombLib.LevelData.Compilers.Util
                 }
                 return false;
             }
+
+            // Checks if incoming texture is similar in parameters and encloses parent area.
+            public bool IsPotentialChild(TextureArea texture, bool isForRoom)
+                => (ParametersSimilar(texture, isForRoom) && texture.GetRect().Contains(_area));
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
             public void AddChild(TextureArea texture, int newTextureID, bool isForTriangle)
@@ -225,9 +226,8 @@ namespace TombLib.LevelData.Compilers.Util
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
             {
                 var newCoordinates = GetAbsChildCoordinates(child);
-
                 for (int i = 0; i < newCoordinates.Length; i++)
-                    newCoordinates[i] -= Area.Start;
+                    newCoordinates[i] -= newParent.Area.Start;
 
                 newParent.Children.Add(new ChildTextureArea()
                 {
@@ -237,9 +237,6 @@ namespace TombLib.LevelData.Compilers.Util
                     TexCoord = newCoordinates
                 });
 
-                // Expand parent area, if needed
-                var rect = Rectangle2.FromCoordinates(GetAbsChildCoordinates(child));
-                Area = Area.Union(rect);
             }
 
             // Returns absolute child coordinates
@@ -251,15 +248,19 @@ namespace TombLib.LevelData.Compilers.Util
                 return result;
             }
 
-            public void MergeParents(List<ParentTextureArea> parents)
+            public void MergeParents(List<ParentTextureArea> parentList, List<ParentTextureArea> parents)
             {
                 foreach (var parent in parents)
                 {
+                    Area = Area.Union(parent.Area);
+
                     foreach (var child in parent.Children)
                         parent.MoveChild(child, this);
 
                     parent.Children.Clear();
                 }
+
+                parents.ForEach(item => parentList.Remove(item));
             }
         }
 
@@ -380,29 +381,28 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, int packPriority, bool allowOverlaps = false)
         {
-            // Try to find and merge parents which are enclosed in incoming texture area
-            var childrenWannabes = parentList.Where(item => item.IsPotentialChild(texture, isForRoom, allowOverlaps, MaxParentSize)).ToList();
-            if (childrenWannabes.Count > 0)
-            {
-                var newParent = new ParentTextureArea(texture, isForRoom, packPriority);
-                var texIndex = GetNewTexInfoIndex();
-                newParent.AddChild(texture, texIndex, isForTriangle);
-                newParent.MergeParents(childrenWannabes);
-                childrenWannabes.ForEach(item => parentList.Remove(item));
-                parentList.Add(newParent);
-                return texIndex;
-            }
-
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
             {
-                if (!parent.IsPotentialParent(texture, isForRoom))
+                if (!parent.IsPotentialParent(texture, isForRoom, allowOverlaps, MaxParentSize))
                     continue;
 
                 var newTexIndex = GetNewTexInfoIndex();
                 parent.AddChild(texture, newTexIndex, isForTriangle);
                 parent.PackPriority = packPriority;
                 return newTexIndex;
+            }
+
+            // Try to find and merge parents which are enclosed in incoming texture area
+            var childrenWannabes = parentList.Where(item => item.IsPotentialChild(texture, isForRoom)).ToList();
+            if (childrenWannabes.Count > 0)
+            {
+                var newParent = new ParentTextureArea(texture, isForRoom, packPriority);
+                var texIndex = GetNewTexInfoIndex();
+                newParent.AddChild(texture, texIndex, isForTriangle);
+                newParent.MergeParents(parentList, childrenWannabes);
+                parentList.Add(newParent);
+                return texIndex;
             }
 
             // No success
@@ -517,7 +517,8 @@ namespace TombLib.LevelData.Compilers.Util
                 // first one in current texture
                 for (byte i = 0; i < first.Length; i++)
                 {
-                    if (MathC.WithinEpsilon(first[0].X, second[i].X, 1.5f) && MathC.WithinEpsilon(first[0].Y, second[i].Y, 1.5f))
+                    if (MathC.WithinEpsilon(first[0].X, second[i].X, AnimTextureLookupMargin) && 
+                        MathC.WithinEpsilon(first[0].Y, second[i].Y, AnimTextureLookupMargin))
                     {
                         baseCoord = i;
                         break;
@@ -532,7 +533,8 @@ namespace TombLib.LevelData.Compilers.Util
                         var nextCoord = ((i + baseCoord) % first.Length);
 
                         // Shifted coord is different, discard further comparison
-                        if (!MathC.WithinEpsilon(first[i].X, second[nextCoord].X, 1.5f) || !MathC.WithinEpsilon(first[i].Y, second[nextCoord].Y, 1.5f))
+                        if (!MathC.WithinEpsilon(first[i].X, second[nextCoord].X, AnimTextureLookupMargin) || 
+                            !MathC.WithinEpsilon(first[i].Y, second[nextCoord].Y, AnimTextureLookupMargin))
                             break;
 
                         // Last coord reached, comparison succeeded
@@ -673,7 +675,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     var refAnim = new ParentAnimatedTexture(set);
 
-                    foreach (var frame in set.Frames)
+                    foreach(var frame in set.Frames)
                     {
                         // Create base frame
                         TextureArea newFrame = new TextureArea() { Texture = frame.Texture };
