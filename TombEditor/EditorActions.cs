@@ -788,7 +788,8 @@ namespace TombEditor
         {
             Block block = room.GetBlock(pos);
 
-            if (!_editor.Tool.TextureUVFixer)
+            if (!_editor.Tool.TextureUVFixer || 
+                (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle && texture.TextureIsTriangle))
                 return block.SetFaceTexture(face, texture);
 
             TextureArea processedTexture = texture;
@@ -803,7 +804,6 @@ namespace TombEditor
                     {
                         Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
                         processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                        processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     }
                     else
                     {
@@ -811,6 +811,7 @@ namespace TombEditor
                         processedTexture.TexCoord1 = processedTexture.TexCoord2;
                         processedTexture.TexCoord2 = processedTexture.TexCoord3;
                     }
+                    processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     break;
 
                 case BlockFace.FloorTriangle2:
@@ -818,15 +819,13 @@ namespace TombEditor
                     BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
                     if (surface2.IsQuad)
                         break;
-                    if (surface2.SplitDirectionIsXEqualsZ)
-                        processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                    else
+                    if (!surface2.SplitDirectionIsXEqualsZ)
                     {
                         processedTexture.TexCoord2 = processedTexture.TexCoord1;
                         processedTexture.TexCoord1 = processedTexture.TexCoord0;
                         processedTexture.TexCoord0 = processedTexture.TexCoord3;
-                        processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     }
+                    processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     break;
 
                 default:

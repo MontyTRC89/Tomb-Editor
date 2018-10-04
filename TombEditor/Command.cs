@@ -566,7 +566,7 @@ namespace TombEditor
             AddCommand("RotateTexture", "Rotate selected texture", CommandType.Textures, delegate (CommandArgs args)
             {
                 TextureArea newTexture = args.Editor.SelectedTexture;
-                newTexture.Rotate();
+                newTexture.Rotate(1, newTexture.TextureIsTriangle);
                 args.Editor.SelectedTexture = newTexture;
             });
 
