@@ -98,6 +98,7 @@ namespace TombLib.Utils
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
+        public bool TextureIsTriangle => TexCoord2 == TexCoord3 || (TexCoord3.X == 0 && TexCoord3.Y == 0);
 
         public BlendMode GetRealBlendMode()
         {
@@ -173,11 +174,11 @@ namespace TombLib.Utils
                 Rotation++;
             }
 
-            // Perform extra rotation in case it's rect texture with similar upper coordinates
-            if(minY == transformedTexture.TexCoord3.Y)
+            // Perform extra rotation in case it's texture with similar upper coordinates
+            if(minY == (isTriangle ? transformedTexture.TexCoord2.Y : transformedTexture.TexCoord3.Y))
             {
-                Rotation++;
                 transformedTexture.Rotate(1, isTriangle);
+                Rotation++;
             }
 
             return transformedTexture;

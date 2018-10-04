@@ -311,7 +311,7 @@ namespace TombLib.LevelData.Compilers.Util
             public BlendMode BlendMode;
             public BumpLevel BumpLevel;
 
-            public ObjectTexture( ParentTextureArea parent, ChildTextureArea child)
+            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child)
             {
                 BlendMode = child.BlendMode;
                 BumpLevel = parent.BumpLevel;
@@ -940,17 +940,25 @@ namespace TombLib.LevelData.Compilers.Util
 
                 for(int j = 0; j < 4; j++)
                 {
-                    writer.Write((ushort)texture.TexCoord[j].X);
-                    writer.Write((ushort)texture.TexCoord[j].Y);
+                    if(texture.IsForTriangle && j == 3)
+                    {
+                        writer.Write((ushort)0);
+                        writer.Write((ushort)0);
+                    }
+                    else
+                    {
+                        writer.Write((ushort)texture.TexCoord[j].X);
+                        writer.Write((ushort)texture.TexCoord[j].Y);
+                    }
                 }
 
                 if (level.Settings.GameVersion >= GameVersion.TR4)
                 {
                     var rect = texture.GetRect(texture.IsForTriangle);
-                    writer.Write(rect.Width);
-                    writer.Write(rect.Height);
                     writer.Write((int)0);
                     writer.Write((int)0);
+                    writer.Write(rect.Width - 1);
+                    writer.Write(rect.Height - 1);
                 }
 
                 if (level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
