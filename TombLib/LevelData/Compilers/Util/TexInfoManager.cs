@@ -40,7 +40,7 @@ namespace TombLib.LevelData.Compilers.Util
         // is ignored.
 
         private List<ParentAnimatedTexture> ReferenceAnimTextures = new List<ParentAnimatedTexture>();
-        private List<ParentAnimatedTexture> ActualAnimTextures = new List<ParentAnimatedTexture>();
+        public List<ParentAnimatedTexture> ActualAnimTextures { get; private set; } = new List<ParentAnimatedTexture>();
 
         // UVRotate count should be placed after anim texture data to identify how many first anim seqs
         // should be processed using UVRotate engine function
@@ -62,12 +62,6 @@ namespace TombLib.LevelData.Compilers.Util
         // serial manner as well.
 
         public int TexInfoCount { get; private set; } = 0;
-
-        // Simple helper counters for final data structures, used in progress reporter
-
-        public int ParentCount => ParentTextures.Count;
-        public int ActualAnimTexturesCount => ActualAnimTextures.Count;
-        public int ReferenceAnimTexturesCount => ReferenceAnimTextures.Count;
 
         // Final texture pages and its counters
 
