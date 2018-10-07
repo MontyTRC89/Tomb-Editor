@@ -110,8 +110,11 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.levelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
+            this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
+            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.panel11 = new System.Windows.Forms.Panel();
@@ -1048,9 +1051,9 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 194);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 226);
             this.panelTr5Weather.Name = "panelTr5Weather";
-            this.panelTr5Weather.Size = new System.Drawing.Size(563, 59);
+            this.panelTr5Weather.Size = new System.Drawing.Size(563, 51);
             this.panelTr5Weather.TabIndex = 97;
             // 
             // comboTr5Weather
@@ -1077,9 +1080,9 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 144);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 175);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
-            this.panelTr5LaraType.Size = new System.Drawing.Size(563, 50);
+            this.panelTr5LaraType.Size = new System.Drawing.Size(563, 51);
             this.panelTr5LaraType.TabIndex = 96;
             // 
             // comboLaraType
@@ -1107,7 +1110,7 @@
             this.panel10.Controls.Add(this.darkLabel15);
             this.panel10.Controls.Add(this.tbScriptPath);
             this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel10.Location = new System.Drawing.Point(0, 94);
+            this.panel10.Location = new System.Drawing.Point(0, 125);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(563, 50);
             this.panel10.TabIndex = 95;
@@ -1145,7 +1148,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 42);
+            this.panel6.Location = new System.Drawing.Point(0, 73);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(563, 52);
             this.panel6.TabIndex = 94;
@@ -1179,13 +1182,25 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.darkLabel13);
             this.panel12.Controls.Add(this.darkLabel16);
+            this.panel12.Controls.Add(this.numPadding);
             this.panel12.Controls.Add(this.panelRoomAmbientLight);
+            this.panel12.Controls.Add(this.darkLabel12);
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(563, 42);
+            this.panel12.Size = new System.Drawing.Size(563, 73);
             this.panel12.TabIndex = 91;
+            // 
+            // darkLabel13
+            // 
+            this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel13.Location = new System.Drawing.Point(202, 44);
+            this.darkLabel13.Name = "darkLabel13";
+            this.darkLabel13.Size = new System.Drawing.Size(45, 17);
+            this.darkLabel13.TabIndex = 103;
+            this.darkLabel13.Text = "pixels";
             // 
             // darkLabel16
             // 
@@ -1198,6 +1213,22 @@
             this.darkLabel16.TabIndex = 90;
             this.darkLabel16.Text = "Default ambient light:";
             // 
+            // numPadding
+            // 
+            this.numPadding.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numPadding.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numPadding.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numPadding.Location = new System.Drawing.Point(129, 42);
+            this.numPadding.MousewheelSingleIncrement = true;
+            this.numPadding.Name = "numPadding";
+            this.numPadding.Size = new System.Drawing.Size(67, 22);
+            this.numPadding.TabIndex = 102;
+            this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
+            // 
             // panelRoomAmbientLight
             // 
             this.panelRoomAmbientLight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1207,6 +1238,15 @@
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 24);
             this.panelRoomAmbientLight.TabIndex = 89;
             this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
+            // 
+            // darkLabel12
+            // 
+            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel12.Location = new System.Drawing.Point(0, 44);
+            this.darkLabel12.Name = "darkLabel12";
+            this.darkLabel12.Size = new System.Drawing.Size(123, 17);
+            this.darkLabel12.TabIndex = 101;
+            this.darkLabel12.Text = "Texture tile padding:";
             // 
             // darkSectionPanel1
             // 
@@ -1483,5 +1523,8 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewSearchColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewShowColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewMessageColumn;
+        private DarkUI.Controls.DarkLabel darkLabel13;
+        private DarkUI.Controls.DarkNumericUpDown numPadding;
+        private DarkUI.Controls.DarkLabel darkLabel12;
     }
 }

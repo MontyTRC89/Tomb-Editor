@@ -25,6 +25,7 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId GameEnableQuickStartFeature = ChunkId.FromString("TeGameEnableQuickStartFeature"); // UTF-8 string
         /**/public static readonly ChunkId GameVersion = ChunkId.FromString("TeGameVersion");
         /**/public static readonly ChunkId DefaultAmbientLight = ChunkId.FromString("TeDefaultAmbientLight");
+        /**/public static readonly ChunkId TexturePadding = ChunkId.FromString("TeTexturePadding");
         /**/public static readonly ChunkId Wads = ChunkId.FromString("TeWads");
         /****/public static readonly ChunkId Wad = ChunkId.FromString("TeWad");
         /******/public static readonly ChunkId WadPath = ChunkId.FromString("TePath");

@@ -112,6 +112,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)settings.GameVersion);
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5LaraType, (long)settings.Tr5LaraType);
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);
+                chunkIO.WriteChunkInt(Prj2Chunks.TexturePadding, (long)settings.TexturePadding);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))

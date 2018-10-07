@@ -465,6 +465,9 @@ namespace TombEditor.Forms
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
 
+            // Update padding
+            numPadding.Value = _levelSettings.TexturePadding;
+
             // Hide version-specific controls
 
             bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
@@ -473,13 +476,9 @@ namespace TombEditor.Forms
             currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5 || _levelSettings.GameVersion == GameVersion.TR5Main);
             GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
             lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
-            lblLaraType.Visible = currentVersionToCheck;
-            comboLaraType.Visible = currentVersionToCheck;
-            lblTr5Weather.Visible = currentVersionToCheck;
-            comboTr5Weather.Visible = currentVersionToCheck;
+            panelTr5LaraType.Visible = currentVersionToCheck;
+            panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
-
-
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -988,6 +987,11 @@ namespace TombEditor.Forms
                 return;
             _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
             UpdateDialog();
+        }
+
+        private void numPadding_ValueChanged(object sender, EventArgs e)
+        {
+             _levelSettings.TexturePadding = (int)numPadding.Value;
         }
     }
 }
