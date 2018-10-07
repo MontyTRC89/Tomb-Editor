@@ -104,7 +104,7 @@ namespace TombLib.LevelData.Compilers
             _progressReporter.ReportInfo("Packing textures");
             
             _textureInfoManager.PackTextures();
-            _textureInfoManager.BuildTextureInfos();
+            _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 
             _progressReporter.ReportInfo("   Number of textures: " + _textureInfoManager.ParentCount);
             _progressReporter.ReportInfo("   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
