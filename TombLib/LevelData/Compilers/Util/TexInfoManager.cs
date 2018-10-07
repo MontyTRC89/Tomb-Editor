@@ -174,7 +174,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Compare parent's properties with incoming texture properties.
             public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom)
-                => BumpLevel == incomingTexture.BumpLevel && Texture == incomingTexture.Texture && IsForRoom == isForRoom;
+                => BumpLevel == incomingTexture.BumpLevel && Texture.Image == incomingTexture.Texture.Image && IsForRoom == isForRoom;
 
             // Checks if parameters are similar to another texture area, and if so,
             // also checks if texture area is enclosed in parent's area.
@@ -833,10 +833,8 @@ namespace TombLib.LevelData.Compilers.Util
             return image;
         }
 
-        public void PackTextures()
+        public void PackTextures(int padding = 8)
         {
-            int padding = 8;
-
             // Subdivide textures in 3 blocks: room, objects, bump
             var roomTextures = new List<ParentTextureArea>();
             var objectsTextures = new List<ParentTextureArea>();

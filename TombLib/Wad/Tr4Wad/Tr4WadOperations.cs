@@ -807,7 +807,7 @@ namespace TombLib.Wad.Tr4Wad
                     default:
                         throw new NotImplementedException("Unknown texture shape " + shape + " found in the wad.");
                 }
-                textureArea.TexCoord3 = new Vector2();
+                textureArea.TexCoord3 = textureArea.TexCoord2;
             }
 
             return textureArea;
