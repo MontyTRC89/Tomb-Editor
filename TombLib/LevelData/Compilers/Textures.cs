@@ -17,11 +17,11 @@ namespace TombLib.LevelData.Compilers
             //List<ImageC> spritePages = BuildSprites(packedTextures.Count);
 
             // It's fine using the old unpadded way for sprites, they are quad
-            List<ImageC> spritePages = BuildSprites(_textureInfoManager.NumRoomTexturePages + _textureInfoManager.NumObjectsTexturePages);
+            List<ImageC> spritePages = BuildSprites(_textureInfoManager.NumRoomPages + _textureInfoManager.NumObjectsPages);
 
             // Get the final number of pages
-            int numPages = _textureInfoManager.NumRoomTexturePages + _textureInfoManager.NumObjectsTexturePages +
-                spritePages.Count + _textureInfoManager.NumBumpTexturePages;
+            int numPages = _textureInfoManager.NumRoomPages + _textureInfoManager.NumObjectsPages +
+                spritePages.Count + _textureInfoManager.NumBumpPages;
 
             // I need to update the bumped tiles
             _textureInfoManager.UpdateTiles(spritePages.Count);
@@ -32,10 +32,10 @@ namespace TombLib.LevelData.Compilers
             int totalPages = 0;
 
             _textureInfoManager.RoomPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
-            totalPages += _textureInfoManager.NumRoomTexturePages;
+            totalPages += _textureInfoManager.NumRoomPages;
 
             _textureInfoManager.ObjectsPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
-            totalPages += _textureInfoManager.NumObjectsTexturePages;
+            totalPages += _textureInfoManager.NumObjectsPages;
 
             for (int i = 0; i < spritePages.Count; i++)
                 spritePages[i].RawCopyTo(texture32Data, (totalPages + i) * 256 * 256 * 4);

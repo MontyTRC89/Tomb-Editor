@@ -251,11 +251,6 @@ namespace TombLib.Utils
             }
         }
 
-        private static float CalculateArea(Vector2 texCoord0, Vector2 texCoord1)
-        {
-            return (texCoord1.X - texCoord0.X) * (texCoord1.Y + texCoord0.Y);
-        }
-
         public TextureArea Transform(RectTransformation transformation)
         {
             TextureArea result = this;
@@ -263,25 +258,7 @@ namespace TombLib.Utils
             return result;
         }
 
-        public float TriangleArea
-        {
-            get
-            {
-                return (CalculateArea(TexCoord0, TexCoord1) +
-                    CalculateArea(TexCoord1, TexCoord2) +
-                    CalculateArea(TexCoord2, TexCoord0)) * 0.5f;
-            }
-        }
-
-        public float QuadArea
-        {
-            get
-            {
-                return (CalculateArea(TexCoord0, TexCoord1) +
-                    CalculateArea(TexCoord1, TexCoord2) +
-                    CalculateArea(TexCoord2, TexCoord3) +
-                    CalculateArea(TexCoord3, TexCoord0)) * 0.5f;
-            }
-        }
+        public float TriangleArea => MathC.CalculateArea(TexCoord0, TexCoord1, TexCoord2);
+        public float QuadArea => MathC.CalculateArea(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
     }
 }

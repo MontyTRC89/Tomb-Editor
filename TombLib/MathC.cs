@@ -124,6 +124,9 @@ namespace TombLib
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool WithinEpsilon(float a, float b, float epsilon)
         {
+            // Quickly return simple equality in case e=0
+            if (epsilon == 0.0f) return a == b;
+
             float num = a - b;
             return -epsilon <= num && num <= epsilon;
         }
@@ -271,6 +274,36 @@ namespace TombLib
                 buffer = ms.ToArray();
             }
             return Hash.FromByteArray(buffer);
+        }
+
+        public static float CalculateArea(Vector2 coord0, Vector2 coord1)
+        {
+            return (coord1.X - coord0.X) * (coord1.Y + coord0.Y);
+        }
+
+        public static float CalculateArea(Vector2 coord0, Vector2 coord1, Vector2 coord2, Vector2? coord3 = null)
+        {
+            if (!coord3.HasValue)
+                return CalculateArea(new Vector2[3] { coord0, coord1, coord2 });
+            else
+                return CalculateArea(new Vector2[4] { coord0, coord1, coord2, coord3.Value });
+        }
+
+        public static float CalculateArea(Vector2[] coords)
+        {
+            if (coords.Length == 3)
+            {
+                return (CalculateArea(coords[0], coords[1]) +
+                        CalculateArea(coords[1], coords[2]) +
+                        CalculateArea(coords[2], coords[0])) * 0.5f;
+            }
+            else
+            {
+                return (CalculateArea(coords[0], coords[1]) +
+                        CalculateArea(coords[1], coords[2]) +
+                        CalculateArea(coords[2], coords[3]) +
+                        CalculateArea(coords[3], coords[0])) * 0.5f;
+            }
         }
     }
 }
