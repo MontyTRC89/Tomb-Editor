@@ -74,6 +74,14 @@ namespace TombLib
 
         public Rectangle2 Inflate(float width, float height) => Inflate(new Vector2(width, height));
 
+        public Rectangle2 Round()
+        {
+            Rectangle2 result = this;
+            result.Start = new Vector2((float)Math.Floor(result.Start.X), (float)Math.Floor(result.Start.Y));
+            result.End = new Vector2((float)Math.Ceiling(result.End.X), (float)Math.Ceiling(result.End.Y));
+            return result;
+        }
+
         public static Rectangle2 operator +(Rectangle2 area, Vector2 offset) => new Rectangle2(area.Start + offset, area.End + offset);
         public static Rectangle2 operator -(Rectangle2 area, Vector2 offset) => new Rectangle2(area.Start - offset, area.End - offset);
         public static Rectangle2 operator +(Vector2 offset, Rectangle2 area) => new Rectangle2(offset + area.Start, offset + area.End);
