@@ -147,12 +147,7 @@ namespace TombLib.LevelData.Compilers.Util
             // Generates new ParentTextureArea from raw texture coordinates.
             public ParentTextureArea(TextureArea texture, bool isForRoom, int packPriority)
             {
-                _area = texture.GetRect();
-
-                // Expand to nearest pixel to prevent rounding errors further down the line
-                _area.Start = new Vector2((float)Math.Floor(_area.Start.X), (float)Math.Floor(_area.Start.Y));
-                _area.End = new Vector2((float)Math.Ceiling(_area.End.X), (float)Math.Ceiling(_area.End.Y));
-
+                _area = texture.GetRect().Round(); // Round to nearest pixel to prevent rounding errors further down the line
                 Initialize(texture.Texture, texture.BumpLevel, isForRoom, packPriority);
             }
 
@@ -201,7 +196,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Checks if incoming texture is similar in parameters and encloses parent area.
             public bool IsPotentialChild(TextureArea texture, bool isForRoom)
-                => (ParametersSimilar(texture, isForRoom) && texture.GetRect().Contains(_area));
+                => (ParametersSimilar(texture, isForRoom) && texture.GetRect().Round().Contains(_area));
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
             public void AddChild(TextureArea texture, int newTextureID, bool isForTriangle)
@@ -221,7 +216,7 @@ namespace TombLib.LevelData.Compilers.Util
                 // Expand parent area, if needed
                 var rect = texture.GetRect();
                 if (!Area.Contains(rect))
-                    Area = Area.Union(rect);
+                    Area = Area.Union(rect).Round();
             }
 
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
