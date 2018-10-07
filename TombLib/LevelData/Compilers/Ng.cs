@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
@@ -26,9 +28,12 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
             WriteNgChunkTomVersion(writer, ngVersion);
+            WriteNgChunkRemappedTails(writer);
             WriteNgChunkLevelVersion(writer, ngVersion);
 
             // Write end signature
+
+            writer.Write((int)0);
             writer.Write(endSignature);
             writer.Write((int)(writer.BaseStream.Position + 4 - startOffset));
         }
@@ -42,18 +47,18 @@ namespace TombLib.LevelData.Compilers
 
             // Count number of textures with UVRotate
             writer.Write((byte)0x01);
-            writer.Write(checked((byte)_objectTextureManager.UvRotateCount));
-            writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
+            writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
+            writer.Write((short)_textureInfoManager.ActualAnimTextures.Count);
 
             // Array VetInfoRangeAnim
             for (var i = 0; i < 40; i++)
             {
-                if (i >= _objectTextureManager.CompiledAnimatedTextures.Count)
+                if (i >= _textureInfoManager.ActualAnimTextures.Count)
                     writer.Write((short)0);
                 else
                 {
                     var param = (ushort)0;
-                    var set = _objectTextureManager.CompiledAnimatedTextures[i];
+                    var set = _textureInfoManager.ActualAnimTextures[i].Origin;
 
                     switch (set.AnimationType)
                     {
@@ -85,17 +90,34 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
+            short frameCount = 0;
+
             // Array VetFromTex
             for (var i = 0; i < 40; i++)
-                writer.Write((ushort)0);
+            {
+                if (i >= _textureInfoManager.ActualAnimTextures.Count)
+                    writer.Write((short)0);
+                else
+                {
+                    var set = _textureInfoManager.ActualAnimTextures[i].Origin;
+                    writer.Write(frameCount);
+                    frameCount += (short)set.Frames.Count;
+                }
+            }
+
+            frameCount = 0;
 
             // Array VetToTex
             for (var i = 0; i < 40; i++)
             {
-                if(i == 0)
-                    writer.Write((ushort)7);
+                if (i >= _textureInfoManager.ActualAnimTextures.Count)
+                    writer.Write((short)0);
                 else
-                    writer.Write((ushort)0);
+                {
+                    var set = _textureInfoManager.ActualAnimTextures[i].Origin;
+                    frameCount += (short)(set.Frames.Count - 1);
+                    writer.Write(frameCount);
+                }
             }
 
             var sizeDefault = (short)64;
@@ -173,6 +195,39 @@ namespace TombLib.LevelData.Compilers
         {
             var buffer = new byte[] { 0x03, 0x00, 0x17, 0x80, 0x00, 0x00 };
             writer.Write(buffer);
+        }
+
+        private void WriteNgChunkRemappedTails(BinaryWriter writer)
+        {
+            // Do not write remapped tails chunk if there's no anim textures
+            if (_textureInfoManager.ActualAnimTextures.Count < 1)
+                return;
+
+            ushort frameCount = 0;
+            var animFrameList = new List<KeyValuePair<int, int>>();
+
+            foreach(var anim in _textureInfoManager.ActualAnimTextures)
+                foreach(var seq in anim.CompiledAnimation)
+                    foreach(var frame in seq.Children)
+                    {
+                        animFrameList.Add(new KeyValuePair<int, int>(frameCount, frame.TexInfoIndex));
+                        frameCount++;
+                    }
+
+            // TRNG Magic! Commented for now, probably will need it later...
+
+            //animFrameList.Sort((x, y) => x.Value.CompareTo(y.Value));
+            //animFrameList[animFrameList.Count - 1] = new KeyValuePair<int, int>(1034, animFrameList[animFrameList.Count - 1].Value);
+
+            writer.Write((ushort)((frameCount * 2) + 3));
+            writer.Write((ushort)0x8018);
+            writer.Write(frameCount);
+
+            foreach(var frame in animFrameList)
+            {
+                writer.Write((ushort)frame.Key);
+                writer.Write((ushort)frame.Value);
+            }
         }
 
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)

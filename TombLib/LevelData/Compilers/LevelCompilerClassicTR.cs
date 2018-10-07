@@ -106,9 +106,8 @@ namespace TombLib.LevelData.Compilers
             _textureInfoManager.PackTextures(_level.Settings.TexturePadding);
             _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 
-            _progressReporter.ReportInfo("   Number of textures: " + _textureInfoManager.ParentCount);
             _progressReporter.ReportInfo("   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
-            _progressReporter.ReportInfo("   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTexturesCount);
+            _progressReporter.ReportInfo("   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);
 
             PrepareSoundSources();
             PrepareItems();
@@ -156,7 +155,7 @@ namespace TombLib.LevelData.Compilers
             {
                 BoxCount = _boxes.Length,
                 OverlapCount = _overlaps.Length,
-                ObjectTextureCount = _objectTextureManager.ObjectTextureCount,
+                ObjectTextureCount = _textureInfoManager.TexInfoCount,
             };
         }
 

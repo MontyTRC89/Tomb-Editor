@@ -158,31 +158,44 @@ namespace TombLib.LevelData
 
         public string GetVariable(VariableType type)
         {
+            string result;
+
             switch (type)
             {
                 case VariableType.EditorDirectory:
-                    return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    result = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    break;
                 case VariableType.ScriptDirectory:
-                    return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Dir + "Script";
+                    result = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Dir + "Script";
+                    break;
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
-                        return Path.GetDirectoryName(LevelFilePath);
-                    return GetVariable(VariableType.EditorDirectory);
+                        result = Path.GetDirectoryName(LevelFilePath);
+                    else
+                        result = GetVariable(VariableType.EditorDirectory);
+                    break;
                 case VariableType.GameDirectory:
-                    return MakeAbsolute(GameDirectory ?? VariableCreate(VariableType.LevelDirectory), VariableType.GameDirectory);
+                    result = MakeAbsolute(GameDirectory ?? VariableCreate(VariableType.LevelDirectory), VariableType.GameDirectory);
+                    break;
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
-                        return PathC.GetFileNameWithoutExtensionTry(LevelFilePath);
-                    if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
-                        return PathC.GetFileNameWithoutExtensionTry(Wads[0].Path);
-                    return "Default";
+                        result = PathC.GetFileNameWithoutExtensionTry(LevelFilePath);
+                    else if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
+                        result = PathC.GetFileNameWithoutExtensionTry(Wads[0].Path);
+                    else
+                        result = "Default";
+                    break;
                 case VariableType.EngineVersion:
-                    return GameVersion.ToString();
+                    result = GameVersion.ToString();
+                    break;
                 case VariableType.SoundEngineVersion:
-                    return (GameVersion == GameVersion.TRNG ? GameVersion.TR4 : GameVersion).ToString();
+                    result = (GameVersion == GameVersion.TRNG ? GameVersion.TR4 : GameVersion).ToString();
+                    break;
                 default:
                     throw new ArgumentException();
             }
+            if (result == null) result = "";
+            return result;
         }
 
         public string ParseVariables(string path, params VariableType[] excluded)
