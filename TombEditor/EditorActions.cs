@@ -246,7 +246,7 @@ namespace TombEditor
                                             continue;
                                     }
                                     else if (autoSwitchDiagonals && currentSplit == splits[0] && block.GetHeight(vertical, corners[0]) == block.GetHeight(vertical, corners[1]) && !incrementInvalid)
-                                        block.Rotate(vertical.IsOnFloor(), 2);
+                                        block.Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
                                     else
                                         continue;
                                 }
@@ -788,7 +788,7 @@ namespace TombEditor
         {
             Block block = room.GetBlock(pos);
 
-            if (!_editor.Tool.TextureUVFixer || 
+            if (!_editor.Tool.TextureUVFixer ||
                 (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle && texture.TextureIsTriangle))
                 return block.SetFaceTexture(face, texture);
 
@@ -1458,7 +1458,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
                         if (room.Blocks[x, z].Type == BlockType.Floor)
-                            room.Blocks[x, z].Rotate(true);
+                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, true);
                     }
                     else
                     {
@@ -1532,7 +1532,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                     {
                         if (room.Blocks[x, z].Type == BlockType.Floor)
-                            room.Blocks[x, z].Rotate(false);
+                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, false);
                     }
                     else
                     {
@@ -1606,7 +1606,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
                         if (room.Blocks[x, z].Type == BlockType.Wall)
-                            room.Blocks[x, z].Rotate();
+                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, null);
                         else
                             room.Blocks[x, z].Ceiling.DiagonalSplit = room.Blocks[x, z].Floor.DiagonalSplit;
                     }
@@ -1680,7 +1680,7 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].Rotate(floor);
+                    room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, room.Blocks[x, z].IsAnyWall ? null : (bool?)floor);
 
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None && room.Blocks[x, z].IsAnyWall)
                         wallsRotated = true;
@@ -2139,7 +2139,7 @@ namespace TombEditor
                         dirString = "in front";
                     }
                     break;
-                    
+
                 case PortalDirection.Floor:
                 case PortalDirection.Ceiling:
                 default:
@@ -2190,7 +2190,7 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type == BlockType.Wall))
                     {
-                        
+
                         if (ceiling && room.Blocks[x, z].CeilingPortal == null)
                             room.Blocks[x, z].Ceiling.SetHeight(height.Value);
                         else if(!ceiling && room.Blocks[x, z].FloorPortal == null)

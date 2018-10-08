@@ -144,7 +144,7 @@ namespace TombEditor.Controls
                 if (_editor.Mode == EditorMode.Map2D && (_editor.Configuration.Map2D_ShowTimes < 3)) // Show up to 3 times to increase likelyhood of the user noticing.
                 {
                     _editor.SendMessage("Double click or Alt + click on the map to add or remove depth probe.\n" +
-                        "Click and drag on the emptiness to start selection by area.\n" +
+                        "Click and drag on the emptiness to start selection by area or use the middle mouse button.\n" +
                         "Selection can be changed using Ctrl or Shift. To copy rooms, press Ctrl while moving.", PopupType.Info);
 
                     _editor.Configuration.Map2D_ShowTimes++;
@@ -280,6 +280,10 @@ namespace TombEditor.Controls
                     _viewMoveMouseWorldCoord = clickPos;
                     break;
 
+                case MouseButtons.Middle:
+                    _selectionArea = new SelectionArea { _area = new Rectangle2(clickPos, clickPos) };
+                    break;
+
                 case MouseButtons.XButton1:
                     // Remove depth probe closest to mouse pointer
                     currentProbeIndex = FindClosestProbe(clickPos);
@@ -363,7 +367,7 @@ namespace TombEditor.Controls
                         Invalidate();
                     }
                     else if (_roomMouseClicked != null)
-                    { 
+                    {
                         // Move room around
                         if (ModifierKeys.HasFlag(Keys.Control))
                         {
@@ -384,13 +388,15 @@ namespace TombEditor.Controls
                         }
                     }
                     else if (_selectionArea != null)
-                    {
-                        RectangleF oldArea = ToVisualCoord(_selectionArea._area);
-                        _selectionArea._area.End = FromVisualCoord(e.Location);
-                        RectangleF newArea = ToVisualCoord(_selectionArea._area);
-                        _selectionArea._roomSelectionCache = null;
-                        Invalidate();
-                    }
+                        goto case MouseButtons.Middle;
+                    break;
+
+                case MouseButtons.Middle:
+                    RectangleF oldArea = ToVisualCoord(_selectionArea._area);
+                    _selectionArea._area.End = FromVisualCoord(e.Location);
+                    RectangleF newArea = ToVisualCoord(_selectionArea._area);
+                    _selectionArea._roomSelectionCache = null;
+                    Invalidate();
                     break;
 
                 case MouseButtons.Right:
