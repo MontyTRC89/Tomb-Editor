@@ -3,11 +3,17 @@ using System.Numerics;
 
 namespace TombLib.Utils
 {
+    // Represents a set of 90° operations to be performed.
+    // All possible such transformations boil down to a mirror on X first, and a variable number of counterclockwise rotations afterwards.
+    // Mirror on Z: MirrorX = true, QuadrantRotation = 2
+    // Rotate clockwise: MirrorX = false, QuadrantRotation = 3
     public struct RectTransformation
     {
         public bool MirrorX { get; set; }
 
         private int _quadrantRotation;
+
+        // Rotations in multiples of 90° counterclockwise.
         public int QuadrantRotation
         {
             get { return _quadrantRotation; }
@@ -88,7 +94,7 @@ namespace TombLib.Utils
             Vector2 second = Transform(area.End, oldSize);
             return new Rectangle2(Vector2.Min(first, second), Vector2.Max(first, second));
         }
-        
+
         public Vector3 TransformVec3(Vector3 position, float oldWidth, float oldHeight)
         {
             Vector2 result = Transform(new Vector2(position.X, position.Z), new Vector2(oldWidth, oldHeight));
