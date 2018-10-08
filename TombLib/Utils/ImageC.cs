@@ -284,7 +284,7 @@ namespace TombLib.Utils
             // Detect special image types
             if (startBytes[0] == 0x44 && startBytes[1] == 0x44 && startBytes[2] == 0x53 && startBytes[3] == 0x20)
             { // dds image
-                return FromPfimImage(Pfim.Dds.Create(stream));
+                return FromPfimImage(Pfim.Dds.Create(stream, new Pfim.PfimConfig()));
             }
             else if (startBytes[0] == 0x38 && startBytes[1] == 0x42 && startBytes[2] == 0x50 && startBytes[3] == 0x53)
             { // psd image
@@ -295,7 +295,7 @@ namespace TombLib.Utils
             }
             else if (IsTga(startBytes))
             { // tga image
-                return FromPfimImage(Pfim.Targa.Create(stream));
+                return FromPfimImage(Pfim.Targa.Create(stream, new Pfim.PfimConfig()));
             }
             else
             { // other image

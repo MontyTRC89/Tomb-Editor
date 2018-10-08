@@ -46,7 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -74,12 +74,18 @@
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +154,7 @@
     <Message Importance="High" Text="PixelShader: $(IntermediateOutputPath)%(PixelShader.Identity)"/>
     <Message Importance="High" Text="GeometryShader: $(IntermediateOutputPath)%(GeometryShader.Identity)"/>
     <Message Importance="High" Text="ComputeShader: $(IntermediateOutputPath)%(ComputeShader.Identity)"/>-->
-	<ItemGroup>
+    <ItemGroup>
       <EmbeddedResource Include="$(IntermediateOutputPath)$([System.IO.Path]::ChangeExtension('%(VertexShader.Identity)', '.cso'))" Condition="'%(VertexShader.Identity)'!=''">
         <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
         <Visible>false</Visible>
@@ -167,7 +173,6 @@
       </EmbeddedResource>
     </ItemGroup>
   </Target>
-  
   <ItemGroup>
     <VertexShader Include="Rendering\DirectX11\RoomShaderVS.hlsl">
       <ShaderModel>4_0</ShaderModel>
