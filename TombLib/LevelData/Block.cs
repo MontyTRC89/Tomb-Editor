@@ -544,7 +544,7 @@ namespace TombLib.LevelData
                     {
                         if (autoSwitch)
                         {
-                            Rotate(vertical.IsOnFloor(), 2);
+                            Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
                             Raise(vertical, increment, !diagonalStep);
                         }
                         return;
@@ -696,12 +696,12 @@ namespace TombLib.LevelData
             }
         }
 
-
-        // @FIXME: Function is broken and disabled for trivial sector transformation.
-        // 1. Rotation happens in counterclockwise order, which doesn't comply with clockwise texture rotation order.
-        // 2. Function aburptly changes triangle split type even for non-triangulated blocks
-        // 3. Function disjoints diagonal walls with subdivisions on rotation.    -- Lwmte
-
+        // Rotates and mirrors a sector according to a given transformation. The transformation can be combination of rotations and mirrors
+        // but all possible transformation essentially are boiled down to a mirror on the x axis and a rotation afterwards.
+        // Thus all that needs to be handled is mirroring on x and a single counterclockwise rotation (perhaps multiple times in a row).
+        // When mirroring is done, a oldFaceIsTriangle must be provided that can return the previous shape of texture faces.
+        // Set "onlyFloor" to true, to only modify the floor.
+        // Set "onlyFloor" to false, to only modify the ceiling.
         public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<BlockFace, BlockFaceShape> oldFaceIsTriangle = null)
         {
             // Rotate sector flags
@@ -788,12 +788,16 @@ namespace TombLib.LevelData
                         Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
                         Swap.Do(ref _faceTextures[(int)BlockFace.Floor].TexCoord0, ref _faceTextures[(int)BlockFace.Floor].TexCoord2);
                         Swap.Do(ref _faceTextures[(int)BlockFace.FloorTriangle2].TexCoord0, ref _faceTextures[(int)BlockFace.FloorTriangle2].TexCoord2);
+                        if (Floor.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
+                            Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
                     }
 
                     // Rotation
                     for (int i = 0; i < transformation.QuadrantRotation; ++i)
                     {
                         if (!oldFloorSplitDirectionIsXEqualsZReal)
+                            Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
+                        if (Floor.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
                             Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
                         oldFloorSplitDirectionIsXEqualsZReal = !oldFloorSplitDirectionIsXEqualsZReal;
                     }
@@ -840,12 +844,16 @@ namespace TombLib.LevelData
                         Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
                         Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling].TexCoord0, ref _faceTextures[(int)BlockFace.Ceiling].TexCoord2);
                         Swap.Do(ref _faceTextures[(int)BlockFace.CeilingTriangle2].TexCoord0, ref _faceTextures[(int)BlockFace.CeilingTriangle2].TexCoord2);
+                        if (Ceiling.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
+                            Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
                     }
 
                     // Rotation
                     for (int i = 0; i < transformation.QuadrantRotation; ++i)
                     {
                         if (!oldCeilingSplitDirectionIsXEqualsZReal)
+                            Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
+                        if (Ceiling.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
                             Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
                         oldCeilingSplitDirectionIsXEqualsZReal = !oldCeilingSplitDirectionIsXEqualsZReal;
                     }
