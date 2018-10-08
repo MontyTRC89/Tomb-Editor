@@ -11,7 +11,7 @@ namespace TombLib.LevelData.Compilers.Util
     {
         public AnimatedTextureAnimationType AnimationType;
         public float Fps;
-        public sbyte UvRotate;
+        public int UvRotate;
         public List<ushort> ObjectTextureIndices;
 
         public bool IsUvRotate
