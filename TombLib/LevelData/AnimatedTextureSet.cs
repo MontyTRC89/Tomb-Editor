@@ -62,7 +62,7 @@ namespace TombLib.LevelData
         public AnimatedTextureAnimationType AnimationType { get; set; }
         public string Name { get; set; }
         public float Fps { get; set; }  // float is for SPF (seconds per frame) values
-        public sbyte UvRotate { get; set; }
+        public int UvRotate { get; set; }
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 

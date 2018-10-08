@@ -351,7 +351,7 @@ namespace TombLib.LevelData.IO
                             }
                             else if (id3 == Prj2Chunks.AnimatedTextureSetUvRotate)
                             {
-                                set.Fps = chunkIO.ReadChunkInt(chunkSize3);
+                                set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
                             }
                             else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {

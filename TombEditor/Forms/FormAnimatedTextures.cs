@@ -1091,7 +1091,7 @@ namespace TombEditor.Forms
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
             if (selectedSet == null)
                 return;
-            selectedSet.Fps = (sbyte)((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
+            selectedSet.Fps = ((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
             _editor.AnimatedTexturesChange();
         }
 
