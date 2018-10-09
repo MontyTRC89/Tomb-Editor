@@ -52,10 +52,10 @@ namespace TombLib.LevelData.Compilers.Util
 
         private List<ParentTextureArea> ParentTextures = new List<ParentTextureArea>();
 
-        // MaxParentSize defines maximum size to which parent can be inflated by incoming child, if
+        // MaxTileSize defines maximum size to which parent can be inflated by incoming child, if
         // inflation is allowed.
 
-        private uint MaxParentSize = 256;
+        private ushort MaxTileSize = 256;
 
         // TexInfoCount is internally a "reference counter" which is also used to get new TexInfo IDs.
         // Since generation of TexInfos is an one-off serialized process, we can safely use it in
@@ -101,7 +101,7 @@ namespace TombLib.LevelData.Compilers.Util
         {
             public VectorInt2 PositionInPage { get; set; }
             public int Page { get; set; }
-            public int Padding { get; set; }
+            public int[] Padding { get; set; } = new int[4]; // LTRB
 
             public Texture Texture { get; private set; }
             public BumpLevel BumpLevel { get; set; }
@@ -317,7 +317,7 @@ namespace TombLib.LevelData.Compilers.Util
             public BlendMode BlendMode;
             public BumpLevel BumpLevel;
 
-            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, GameVersion version)
+            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, GameVersion version, float maxTextureSize)
             {
                 BlendMode = child.BlendMode;
                 BumpLevel = parent.BumpLevel;
@@ -329,12 +329,16 @@ namespace TombLib.LevelData.Compilers.Util
 
                 for (int i = 0; i < coords.Length; i++)
                 {
-                    coords[i].X += (float)(parent.PositionInPage.X + parent.Padding);
-                    coords[i].Y += (float)(parent.PositionInPage.Y + parent.Padding);
+                    coords[i].X += (float)(parent.PositionInPage.X + parent.Padding[0]);
+                    coords[i].Y += (float)(parent.PositionInPage.Y + parent.Padding[1]);
 
                     // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
                     if(version >= GameVersion.TR4)
                         coords[i] -= IsForTriangle ? _distort3[i] : _distort4[i];
+
+                    coords[i].X = (float)MathC.Clamp(coords[i].X, 0, maxTextureSize);
+                    coords[i].Y = (float)MathC.Clamp(coords[i].Y, 0, maxTextureSize);
+
                 }
 
                 for (int i = 0; i < coords.Length; i++)
@@ -352,9 +356,9 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public TexInfoManager(uint maxParentSize, List<AnimatedTextureSet> sets)
+        public TexInfoManager(ushort maxTileSize, List<AnimatedTextureSet> sets)
         {
-            MaxParentSize = maxParentSize;
+            MaxTileSize = maxTileSize;
             GenerateAnimLookups(sets);  // Generate anim texture lookup table
             GenerateTexInfos = true;    // Set manager ready state 
         }
@@ -380,7 +384,7 @@ namespace TombLib.LevelData.Compilers.Util
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
             {
-                if (!parent.IsPotentialParent(texture, isForRoom, allowOverlaps, MaxParentSize))
+                if (!parent.IsPotentialParent(texture, isForRoom, allowOverlaps, MaxTileSize))
                     continue;
 
                 var newTexIndex = GetNewTexInfoIndex();
@@ -626,14 +630,29 @@ namespace TombLib.LevelData.Compilers.Util
                 int w = (int)(textures[i].Area.Width);
                 int h = (int)(textures[i].Area.Height);
 
-                // If texture is not too big we can pad it, otherwise we don't pad it
-                // TODO: implement adaptative padding (for example 2 could be bad, but 1 could be fine instead of 0)
-                if (w + 2 * padding < 256 && h + 2 * padding < 256)
+                // Calculate adaptive padding at all sides
+                int lP = padding;
+                int rP = padding;
+                int tP = padding;
+                int bP = padding;
+
+                int horizontalPaddingSpace = MaxTileSize - w;
+                int verticalPaddingSpace = MaxTileSize - h;
+
+                // If hor/ver padding won't fully fit, get existing space and calculate padding out of it
+                if (verticalPaddingSpace < padding * 2)
                 {
-                    w += padding * 2;
-                    h += padding * 2;
-                    textures[i].Padding = padding;
+                    tP = verticalPaddingSpace / 2;
+                    bP = verticalPaddingSpace - tP;
                 }
+                if (horizontalPaddingSpace < padding * 2)
+                {
+                    lP = horizontalPaddingSpace / 2;
+                    rP = horizontalPaddingSpace - lP;
+                }
+
+                w += lP + rP;
+                h += tP + bP;
 
                 // Pack texture
                 // TODO: use tree packer for better packing
@@ -645,6 +664,10 @@ namespace TombLib.LevelData.Compilers.Util
                     result = packer.TryAdd(new VectorInt2(w, h));
                 }
 
+                textures[i].Padding[0] = lP;
+                textures[i].Padding[1] = tP;
+                textures[i].Padding[2] = rP;
+                textures[i].Padding[3] = bP;
                 textures[i].Page = currentPage;
                 textures[i].PositionInPage = result.Value;
             }
@@ -767,19 +790,32 @@ namespace TombLib.LevelData.Compilers.Util
                 var width = (int)p.Area.Width;
                 var height = (int)p.Area.Height;
 
-                image.CopyFrom(p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, p.Texture.Image,
+                image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
                                x, y, width, height);
 
                 // Do the bump map if needed
                 if (p.BumpLevel != BumpLevel.None)
                 {
                     var bumpImage = ImageC.CreateNew(width, height);
-                    bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding, p.Page * 256 + p.PositionInPage.Y + p.Padding, (int)p.Area.Width, (int)p.Area.Height);
-                    if (p.BumpLevel == BumpLevel.Level1)
-                        bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 2, -2);
-                    else
-                        bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 2, -3);
-                    image.CopyFrom(p.PositionInPage.X + p.Padding, (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding, bumpImage);
+                    bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + p.Padding[1], (int)p.Area.Width, (int)p.Area.Height);
+
+                    int effectSize = 0;
+
+                    switch(p.BumpLevel)
+                    {
+                        case BumpLevel.Level1:
+                            effectSize = -2;
+                            break;
+                        case BumpLevel.Level2:
+                            effectSize = -3;
+                            break;
+                        case BumpLevel.Level3:
+                            effectSize = -4;
+                            break;
+                    }
+                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 2, effectSize);
+
+                    image.CopyFrom(p.PositionInPage.X + p.Padding[0], (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding[1], bumpImage);
                 }
 
                 // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
@@ -792,29 +828,38 @@ namespace TombLib.LevelData.Compilers.Util
                 for (int xP = 0; xP < padding; xP++)
                 {
                     // copy left line
-                    image.CopyFrom(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + padding, p.Texture.Image,
-                               x, y, 1, height - 1);
+                    if(xP < p.Padding[0])
+                        image.CopyFrom(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
+                                   x, y, 1, height - 1);
+
                     // copy right line
-                    image.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + padding, p.Texture.Image,
-                               x + width - 1, y, 1, height - 1);
+                    if (xP < p.Padding[2])
+                        image.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
+                                   x + width - 1, y, 1, height - 1);
 
                     for (int yP = 0; yP < padding; yP++)
                     {
                         // copy top line
-                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP, p.Texture.Image,
-                                   x, y, width - 1, 1);
+                        if (yP < p.Padding[1])
+                            image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP, p.Texture.Image,
+                                       x, y, width - 1, 1);
                         // copy bottom line
-                        image.CopyFrom(p.PositionInPage.X + padding, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, p.Texture.Image,
-                                   x, y + height - 1, width - 1, 1);
+                        if (yP < p.Padding[3])
+                            image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], p.Texture.Image,
+                                       x, y + height - 1, width - 1, 1);
 
                         // expand top-left pixel
-                        image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP, topLeft);
+                        if (xP < p.Padding[0] && yP < p.Padding[1])
+                            image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP, topLeft);
                         // expand top-right pixel
-                        image.SetPixel(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + yP, topRight);
+                        if (xP < p.Padding[2] && yP < p.Padding[1])
+                            image.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP, topRight);
                         // expand bottom-left pixel
-                        image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, bottomLeft);
+                        if (xP < p.Padding[0] && yP < p.Padding[3])
+                            image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomLeft);
                         // expand bottom-right pixel
-                        image.SetPixel(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + padding, bottomRight);
+                        if (xP < p.Padding[2] && yP < p.Padding[3])
+                            image.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomRight);
                     }
                 }
             }
@@ -883,18 +928,20 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void BuildTextureInfos(GameVersion version)
         {
+            float maxSize = (float)MaxTileSize - (1.0f / 255.0f);
+
             _objectTextures = new SortedDictionary<int, ObjectTexture>();
 
             foreach (var parent in ParentTextures)
                 foreach (var child in parent.Children)
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
-                        _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version));
+                        _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version, maxSize));
 
             foreach (var animTexture in ActualAnimTextures)
                 foreach (var parent in animTexture.CompiledAnimation)
                     foreach (var child in parent.Children)
                         if (!_objectTextures.ContainsKey(child.TexInfoIndex))
-                            _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version));
+                            _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version, maxSize));
         }
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
