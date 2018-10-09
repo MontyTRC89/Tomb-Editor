@@ -612,6 +612,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         private int PlaceTexturesInMap(ref List<ParentTextureArea> textures, int padding)
         {
+            if (textures.Count == 0)
+                return 0;
+
             int currentPage = 0;
             RectPacker packer = new RectPackerTree(new VectorInt2(256, 256));
 
