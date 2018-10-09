@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall, bool isStatic, int objectId)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId)
         {
             int currentMeshSize = 0;
 
@@ -112,7 +112,6 @@ namespace TombLib.LevelData.Compilers
             newMesh.TexturedQuads = new tr_face4[numQuads];
             newMesh.TexturedTriangles = new tr_face3[numTriangles];
 
-            int packPriority = (isWaterfall ? 1 : 0); //waterfallMeshes.Contains(oldMesh) ? 1 : 0;
             foreach (var poly in oldMesh.Polys)
             {
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
@@ -128,7 +127,7 @@ namespace TombLib.LevelData.Compilers
                     lock (_objectTextureManager)
                     {
                         //result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        result = _textureInfoManager.AddTexture(poly.Texture, false, false, packPriority);
+                        result = _textureInfoManager.AddTexture(poly.Texture, false, false);
                     }
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
@@ -141,7 +140,7 @@ namespace TombLib.LevelData.Compilers
                     lock (_objectTextureManager)
                     {
                         //result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-                        result = _textureInfoManager.AddTexture(poly.Texture, true, false, packPriority);
+                        result = _textureInfoManager.AddTexture(poly.Texture, true, false);
                     }
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
@@ -373,7 +372,7 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wadMesh, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), false, (int)oldMoveable.Id.TypeId);
+                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId);
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
@@ -436,7 +435,7 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                ConvertWadMesh(oldStaticMesh.Mesh, false, true, (int)oldStaticMesh.Id.TypeId);
+                ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId);
 
                 _staticMeshes.Add(newStaticMesh);
             }
