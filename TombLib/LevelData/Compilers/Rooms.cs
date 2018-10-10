@@ -200,6 +200,18 @@ namespace TombLib.LevelData.Compilers
                             if (texture.TextureIsInvisble)
                                 continue;
 
+                            if(texture.TextureIsUnavailable )
+                            {
+                                _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
+                                continue;
+                            }
+
+                            if((shape == BlockFaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == BlockFaceShape.Quad && texture.QuadCoordsOutOfBounds))
+                            {
+                                _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
+                                continue;
+                            }
+
                             int rangeEnd = range.Start + range.Count;
                             for (int i = range.Start; i < rangeEnd; i += 3)
                             {
@@ -228,7 +240,7 @@ namespace TombLib.LevelData.Compilers
                                     Result result;
                                     lock (_objectTextureManager)
                                     {
-                                        result = _textureInfoManager.AddTexture(texture, false, true); // @FIXME: UNIT TEST
+                                        result = _textureInfoManager.AddTexture(texture, false, true);
                                         //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
                                     }
 
@@ -245,7 +257,7 @@ namespace TombLib.LevelData.Compilers
                                     Result result;
                                     lock (_objectTextureManager)
                                     {
-                                        result = _textureInfoManager.AddTexture(texture, true, true); // @FIXME: UNIT TEST
+                                        result = _textureInfoManager.AddTexture(texture, true, true);
                                         //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
                                     }
 
@@ -321,10 +333,13 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = new Vector2();
 
-                                Util.ObjectTextureManager.Result result;
+                                Result result;
                                 lock (_objectTextureManager)
-                                    result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                                roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
+                                {
+                                    result = _textureInfoManager.AddTexture(texture, false, true);
+                                    //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+                                }
+                                roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
 
                             geometryVertexIndexBase += mesh.Vertices.Count;

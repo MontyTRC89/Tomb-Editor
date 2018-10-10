@@ -670,7 +670,7 @@ namespace TombLib.LevelData.Compilers
         {
             if (Value < -16 || Value > 15)
             {
-                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
+                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". Triangle is too steep, collision is inaccurate.");
                 Value = Math.Max(Math.Min(Value, 15), -16);
             }
             ushort Result = (ushort)Value;
@@ -682,7 +682,7 @@ namespace TombLib.LevelData.Compilers
         {
             if (Value < 0 || Value > 15)
             {
-                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
+                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". Triangle is too steep, collision is inaccurate.");
                 Value = Math.Max(Math.Min(Value, 0), 15);
             }
             return (ushort)Value;
