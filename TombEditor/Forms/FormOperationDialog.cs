@@ -100,6 +100,7 @@ namespace TombEditor.Forms
                         {
                             lstLog.SelectionBackColor = Color.Tomato;
                             lstLog.AppendText(message + "\n");
+                            lstLog.ScrollToCaret();
                         }
 
                         lstLog.BackColor = Color.LightPink;
@@ -125,6 +126,7 @@ namespace TombEditor.Forms
                 {
                     lstLog.SelectionBackColor = isWarning ? Color.Yellow : Color.Empty;
                     lstLog.AppendText(message + "\n");
+                    lstLog.ScrollToCaret();
                 }
 
                 return !_threadShouldAbort;
@@ -180,6 +182,7 @@ namespace TombEditor.Forms
             // Try shutting down the thread softly
             lstLog.SelectionBackColor = Color.Tomato;
             lstLog.AppendText("Trying to stop the process...\n");
+            lstLog.ScrollToCaret();
             for (int i = 0; i < 23; ++i)
             {
                 if (_thread.Join(40))
@@ -190,6 +193,7 @@ namespace TombEditor.Forms
             // Shut the thread down forcefully
             lstLog.SelectionBackColor = Color.Tomato;
             lstLog.AppendText("Forcefully stopping process.\n");
+            lstLog.ScrollToCaret();
             _thread.Interrupt();
             while ((_thread.ThreadState & (ThreadState.Stopped | ThreadState.Aborted)) != 0)
                 Thread.Sleep(5);
