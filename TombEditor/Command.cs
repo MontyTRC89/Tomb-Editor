@@ -883,6 +883,19 @@ namespace TombEditor
                 EditorActions.MoveLara(args.Window, args.Editor.SelectedSectors.Start);
             });
 
+            AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard.", CommandType.Objects, delegate (CommandArgs args)
+            {
+                var selectedObj = args.Editor.SelectedObject as IHasScriptID;
+                if (selectedObj == null)
+                {
+                    args.Editor.SendMessage("The selected object does not have a script ID.");
+                    return;
+                }
+                if (selectedObj.ScriptId == null)
+                    selectedObj.AllocateNewScriptId();
+                Clipboard.SetText(selectedObj.ScriptId.Value.ToString());
+            });
+
             AddCommand("SplitSectorObjectOnSelection", "Split sector based object on selection", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.SplitSectorObjectOnSelection(args.Editor.SelectedObject as SectorBasedObjectInstance);
