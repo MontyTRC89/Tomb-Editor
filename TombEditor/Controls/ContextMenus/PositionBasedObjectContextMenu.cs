@@ -10,7 +10,10 @@ namespace TombEditor.Controls.ContextMenus
         {
             if (targetObject is IHasScriptID)
             {
-                Items.Add(new ToolStripMenuItem("ScriptID = " + ((targetObject as IHasScriptID).ScriptId?.ToString() ?? "<None>")) { Enabled = false });
+                Items.Add(new ToolStripMenuItem("(ScriptID = " + ((targetObject as IHasScriptID).ScriptId?.ToString() ?? "<None>") + ") Copy the NG ID to clipboard.", null, (o, e) =>
+                    {
+                        CommandHandler.GetCommand("AssignAndClipboardNgId").Execute(new CommandArgs { Editor = editor, Window = owner });
+                    }));
                 Items.Add(new ToolStripSeparator());
             }
 
