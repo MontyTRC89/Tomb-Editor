@@ -13,6 +13,7 @@ using TombLib.Utils;
 using TombLib;
 using TombLib.Forms;
 using RectangleF = System.Drawing.RectangleF;
+using DarkUI.Extensions;
 
 namespace TombEditor.Forms
 {
@@ -370,7 +371,7 @@ namespace TombEditor.Forms
             // Update view
             previewProgressBar.Minimum = 0;
             previewProgressBar.Maximum = frameCount - 1;
-            previewProgressBar.Value = frameIndex;
+            previewProgressBar.SetProgressNoAnimation(frameIndex); // If an animation is played, the visual display can lag behind significantly, not showing any progress at all. This is at least the case on Windows 8.1 here. -TRTomb
             previewImage.Image = _imageCache[new CachedImageInfo
             {
                 _image = _previewCurrentFrame.Texture.Image,
@@ -509,7 +510,7 @@ namespace TombEditor.Forms
             // Limit effect strength to reasonable value and additionally reverse it for scale/stretch types,
             // because for scale/stretch types, visible effect opposes mathematical function.
             effectStrength = (float)MathC.Clamp((type <= ProceduralAnimationType.Scale) ? -effectStrength : effectStrength, -1.0, 1.0);
-            
+
             int startIndex = 0;
             AnimatedTextureSet targetSet = null;
 
@@ -536,7 +537,7 @@ namespace TombEditor.Forms
             }
             else
                 targetSet = new AnimatedTextureSet() { Name = "Procedural animation #" + (_editor.Level.Settings.AnimatedTextureSets.Count + 1) };
-            
+
             if (genType == AnimGenerationType.New ||
                 genType == AnimGenerationType.Replace ||
                 genType == AnimGenerationType.AddFrames)
@@ -572,7 +573,7 @@ namespace TombEditor.Forms
             }
 
             // Used to bypass smooth and loop, which doesn't make sense with single-frame anims
-            bool realAnim = resultingFrameCount > 1; 
+            bool realAnim = resultingFrameCount > 1;
 
             // Crop existing postfixes to prevent "Copy of Copy of Copy..." problem
             if (genType != AnimGenerationType.New)
@@ -686,7 +687,7 @@ namespace TombEditor.Forms
                                 {
                                     var center1 = Vector2.Lerp(referenceFrame.TexCoord0, (p == 0 ? referenceFrame.TexCoord3 : referenceFrame.TexCoord1), 0.5f);
                                     var center2 = Vector2.Lerp(referenceFrame.TexCoord2, (p == 0 ? referenceFrame.TexCoord1 : referenceFrame.TexCoord3), 0.5f);
-                                    
+
                                     targetSet.Frames[i].TexCoord0 = Vector2.Lerp(referenceFrame.TexCoord0, center1, weight);
                                     targetSet.Frames[i].TexCoord1 = Vector2.Lerp(referenceFrame.TexCoord1, (p == 0 ? center2 : center1), weight);
                                     targetSet.Frames[i].TexCoord2 = Vector2.Lerp(referenceFrame.TexCoord2, center2, weight);
@@ -747,7 +748,7 @@ namespace TombEditor.Forms
                         {
                             // Shake strength is constant in case effect is non-symmetric (looped).
                             // Negative shake doesn't make sense, so we apply Abs() onto effect strength.
-                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : effectStrength) * 16.0f); 
+                            int rndStrength = (int)((loop ? Math.Abs(effectStrength - weight) : effectStrength) * 16.0f);
 
                             float xRnd = rnd.Next(-rndStrength, rndStrength);
                             float yRnd = rnd.Next(-rndStrength, rndStrength);
