@@ -63,27 +63,28 @@ namespace TombLib.LevelData.Compilers
                     switch (set.AnimationType)
                     {
                         case AnimatedTextureAnimationType.Frames:
-                            param |= (ushort)(Math.Round(1000.0f / set.Fps));
+                            param |= (ushort)MathC.Clamp(Math.Round(1000.0f / set.Fps), 0, 0x1fff);
                             break;
                         case AnimatedTextureAnimationType.PFrames:
                             param = 0x4000;
                             break;
-                        default:
-                            switch(set.AnimationType)
-                            {
-                                case AnimatedTextureAnimationType.UVRotate:
-                                    param = 0x8000;
-                                    break;
-                                case AnimatedTextureAnimationType.RiverRotate:
-                                    param = 0xA000;
-                                    break;
-                                case AnimatedTextureAnimationType.HalfRotate:
-                                    param = 0xC000;
-                                    break;
-                            }
-                            param |= (ushort)(((int)set.Fps << 8) & 0x1F00);
+                        case AnimatedTextureAnimationType.UVRotate:
+                            param = 0x8000;
+                            param |= (ushort)(set.Fps > 31 ? 0 : (int)MathC.Clamp(Math.Round(set.Fps), 0, 0x1F) << 8); // 0 means 'MAX FPS'
                             param |= (ushort)(set.UvRotate & 0x00FF);
                             break;
+                        case AnimatedTextureAnimationType.RiverRotate:
+                            param = 0xA000;
+                            param |= (ushort)(set.Fps > 31 ? 0 : (int)MathC.Clamp(Math.Round(set.Fps), 0, 0x1F) << 8); // 0 means 'MAX FPS'
+                            param |= (ushort)(set.UvRotate & 0x00FF);
+                            break;
+                        case AnimatedTextureAnimationType.HalfRotate:
+                            param = 0xC000;
+                            param |= (ushort)(set.Fps > 31 ? 0 : (int)MathC.Clamp(Math.Round(set.Fps), 0, 0x1F) << 8); // 0 means 'MAX FPS'
+                            param |= (ushort)(set.UvRotate & 0x00FF);
+                            break;
+                        default:
+                            throw new NotSupportedException("Unsupported NG animation type encountered.");
                     }
 
                     writer.Write(param);
@@ -315,7 +316,7 @@ namespace TombLib.LevelData.Compilers
                 if(i < verChunks.Length) ushort.TryParse(verChunks[i], out number);
                 writer.Write(number);
             }
-                
+
             writer.Write((ushort)0);
         }
     }

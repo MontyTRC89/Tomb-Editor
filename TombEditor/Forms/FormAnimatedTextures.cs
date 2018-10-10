@@ -119,11 +119,15 @@ namespace TombEditor.Forms
                     comboEffect.Items.Add(animationType);
 
                 // Fill uv rotate combobox
-                for (var i = -64; i < 0; i++)
+                for (int i = -64; i < 0; i++)
                     comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
                 comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(0, "Default (from script)"));
-                for (var i = 1; i <= 64; i++)
+                for (int i = 1; i <= 64; i++)
                     comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
+
+                // Fill with NG predefined FPS values required for river rotate etc.
+                for (int i = 1; i <= 32; i++)
+                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
             }
             else
             {
@@ -132,6 +136,7 @@ namespace TombEditor.Forms
 
                 comboUvRotate.Enabled = false;
                 comboFps.Enabled = false;
+                numericUpDownFPS.Enabled = false;
             }
 
             // Init state
@@ -292,30 +297,8 @@ namespace TombEditor.Forms
                 _previewTimer.Enabled = true;
                 previewProgressBar.TextMode = DarkProgressBarMode.XOfN;
             }
-
-            if (!_isNg)
-            {
-                _previewTimer.Interval = (int)Math.Round(1000 / _previewFps);
-            }
-            else
-            {
-                switch (selectedSet.AnimationType)
-                {
-                    case AnimatedTextureAnimationType.Frames:
-                        if (selectedSet.Fps > 0)
-                            _previewTimer.Interval = (int)Math.Round(1000.0f / selectedSet.Fps);
-                        break;
-
-                    case AnimatedTextureAnimationType.PFrames:
-                        _previewTimer.Interval = (int)Math.Round(1000 / _previewFps); // TODO: verify this
-                        break;
-
-                    case AnimatedTextureAnimationType.UVRotate:
-                        _previewTimer.Interval = (int)Math.Round(1000 / (selectedSet.Fps != 0 ? selectedSet.Fps : _previewFps));
-                        _lastY = 0;
-                        break;
-                }
-            }
+            _previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / selectedSet.Fps), 1, int.MaxValue); // Without NG, the default value of 15 should be present at this point.
+            _lastY = 0;
 
             // Update warning about too many frames
             int frameCount = 0;
@@ -335,7 +318,7 @@ namespace TombEditor.Forms
                 switch (selectedSet.AnimationType)
                 {
                     case AnimatedTextureAnimationType.Frames:
-                        NgSelectComboboxValue(selectedSet.Fps, comboFps);
+                        numericUpDownFPS.Value = (decimal)selectedSet.Fps;
                         break;
                     case AnimatedTextureAnimationType.UVRotate:
                     case AnimatedTextureAnimationType.HalfRotate:
@@ -349,12 +332,11 @@ namespace TombEditor.Forms
 
         private void NgSelectComboboxValue(float value, DarkComboBox cb)
         {
+            var bestItem = cb.Items.Cast<NgAnimatedTextureSettingPair>().First();
             foreach (NgAnimatedTextureSettingPair item in cb.Items)
-                if (item.Key == value)
-                {
-                    cb.SelectedItem = item;
-                    return;
-                }
+                if (Math.Abs(item.Key - value) < Math.Abs(bestItem.Key - value)) // Chose the entry closest to the float we are looking for.
+                    bestItem = item;
+            cb.SelectedItem = bestItem;
         }
 
         private void NewDataSource_ListChanged(object sender, ListChangedEventArgs e)
@@ -1036,23 +1018,16 @@ namespace TombEditor.Forms
             {
                 case AnimatedTextureAnimationType.Frames:
                     lblFps.Visible = true;
-                    comboFps.Visible = true;
+                    comboFps.Visible = false;
+                    numericUpDownFPS.Visible = true;
                     lblUvRotate.Visible = false;
                     comboUvRotate.Visible = false;
-
-                    comboFps.Items.Clear();
-                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(0, "Default"));
-                    for (var i = 30; i > 1; i--)
-                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
-                    for (var i = 8; i > 0; i--)
-                        comboFps.Items.Add(new NgAnimatedTextureSettingPair((float)i * 0.125f, (float)i * 0.125f + " FPS"));
-                    comboFps.SelectedIndex = 0;
-
                     break;
 
                 case AnimatedTextureAnimationType.PFrames:
                     lblFps.Visible = false;
                     comboFps.Visible = false;
+                    numericUpDownFPS.Visible = false;
                     lblUvRotate.Visible = false;
                     comboUvRotate.Visible = false;
                     break;
@@ -1062,18 +1037,15 @@ namespace TombEditor.Forms
                 case AnimatedTextureAnimationType.RiverRotate:
                     lblFps.Visible = true;
                     comboFps.Visible = true;
+                    numericUpDownFPS.Visible = false;
                     lblUvRotate.Visible = true;
                     comboUvRotate.Visible = true;
 
-                    comboFps.Items.Clear();
-                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(0, "Default"));
-                    for (var i = 1; i <= 30; i++)
-                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
-
                     comboFps.SelectedIndex = 0;
                     comboUvRotate.SelectedIndex = 64;
-
                     break;
+                default:
+                    throw new NotSupportedException("Unsupported texture animation type encountered.");
             }
         }
 
@@ -1092,6 +1064,15 @@ namespace TombEditor.Forms
             if (selectedSet == null)
                 return;
             selectedSet.Fps = ((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
+            _editor.AnimatedTexturesChange();
+        }
+
+        private void numericUpDownFPS_ValueChanged(object sender, EventArgs e)
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (selectedSet == null)
+                return;
+            selectedSet.Fps = (float)numericUpDownFPS.Value;
             _editor.AnimatedTexturesChange();
         }
 
