@@ -182,9 +182,9 @@ namespace TombEditor.Forms
             this.lblProcAnim.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblProcAnim.Location = new System.Drawing.Point(1, 431);
             this.lblProcAnim.Name = "lblProcAnim";
-            this.lblProcAnim.Size = new System.Drawing.Size(120, 18);
+            this.lblProcAnim.Size = new System.Drawing.Size(246, 18);
             this.lblProcAnim.TabIndex = 21;
-            this.lblProcAnim.Text = "Procedural animation";
+            this.lblProcAnim.Text = "Procedural animation tool";
             this.lblProcAnim.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // panel3
@@ -554,9 +554,9 @@ namespace TombEditor.Forms
             this.lblHeaderNgSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblHeaderNgSettings.Location = new System.Drawing.Point(1, 537);
             this.lblHeaderNgSettings.Name = "lblHeaderNgSettings";
-            this.lblHeaderNgSettings.Size = new System.Drawing.Size(82, 18);
+            this.lblHeaderNgSettings.Size = new System.Drawing.Size(167, 18);
             this.lblHeaderNgSettings.TabIndex = 10;
-            this.lblHeaderNgSettings.Text = "Settings";
+            this.lblHeaderNgSettings.Text = "TRNG Settings";
             this.lblHeaderNgSettings.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // lblPreview
