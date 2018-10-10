@@ -162,24 +162,17 @@ namespace TombLib.Utils
 
         // Gets canonical texture area which is compatible with UVRotate routine
         // and also puts rotational difference into Rotation out parameter
-        public TextureArea GetCanonicalTexture(bool isTriangle, out byte Rotation)
+        public TextureArea GetCanonicalTexture(bool isTriangle)
         {
             var minY = GetRect(isTriangle).Start.Y;
             var transformedTexture = this;
 
-            Rotation = 0;
             while (transformedTexture.TexCoord0.Y != minY)
-            {
                 transformedTexture.Rotate(1, isTriangle);
-                Rotation++;
-            }
 
             // Perform extra rotation in case it's texture with similar upper coordinates
-            if(minY == (isTriangle ? transformedTexture.TexCoord2.Y : transformedTexture.TexCoord3.Y))
-            {
+            if (minY == (isTriangle ? transformedTexture.TexCoord2.Y : transformedTexture.TexCoord3.Y))
                 transformedTexture.Rotate(1, isTriangle);
-                Rotation++;
-            }
 
             return transformedTexture;
         }
