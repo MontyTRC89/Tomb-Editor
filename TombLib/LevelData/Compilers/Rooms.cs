@@ -17,7 +17,7 @@ namespace TombLib.LevelData.Compilers
 
         private void BuildRooms()
         {
-            ReportProgress(20, "Building rooms");
+            ReportProgress(15, "Building rooms");
 
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
@@ -72,11 +72,11 @@ namespace TombLib.LevelData.Compilers
             }
 #endif
 
-            ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
+            ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
             MatchPortalVertexColors();
 
-            ReportProgress(28, "    Vertex colors on portals matched.");
+            ReportProgress(25, "    Vertex colors on portals matched.");
         }
 
         private tr_room BuildRoom(Room room)

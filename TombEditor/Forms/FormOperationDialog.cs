@@ -13,7 +13,7 @@ namespace TombEditor.Forms
     public partial class FormOperationDialog : DarkForm, IProgressReporter
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
+        
         private readonly Action<IProgressReporter> _operation;
         private Thread _thread;
         private volatile bool _threadShouldAbort;
@@ -33,6 +33,8 @@ namespace TombEditor.Forms
             MinimumSize = new Size(152, 93) + (Size - ClientSize);
 
             panelProgressBar.Visible = !noProgressBar;
+            if(!noProgressBar)
+                TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Normal);
         }
 
         private void FormBuildLevel_Shown(object sender, EventArgs e)
@@ -61,12 +63,13 @@ namespace TombEditor.Forms
             try
             {
 #endif
-                _operation(this);
+            _operation(this);
 
-                // Done
-                BeginInvoke((Action)delegate
+            // Done
+            BeginInvoke((Action)delegate
                     {
                         pbStato.Value = 100;
+                        TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
                         butOk.Enabled = true;
                         butCancel.Enabled = false;
                         butOk.Focus();
@@ -91,6 +94,7 @@ namespace TombEditor.Forms
                 Invoke((Action)delegate
                     {
                         pbStato.Value = 0;
+                        TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
 
                         if (!string.IsNullOrEmpty(message))
                         {
@@ -112,7 +116,10 @@ namespace TombEditor.Forms
             if (!(bool)Invoke((Func<bool>)delegate
             {
                 if (progress.HasValue)
+                {
                     pbStato.Value = (int)Math.Round(MathC.Clamp(progress.Value, 0, 100), 0);
+                    TaskbarProgress.SetValue(Application.OpenForms[0].Handle, progress.Value, 100);
+                }
 
                 if (!string.IsNullOrEmpty(message))
                 {

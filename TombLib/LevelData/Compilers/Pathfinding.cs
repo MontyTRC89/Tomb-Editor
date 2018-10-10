@@ -7,7 +7,7 @@ namespace TombLib.LevelData.Compilers
     {
         private void BuildPathFindingData()
         {
-            ReportProgress(50, "Building pathfinding data");
+            ReportProgress(48, "Building pathfinding data");
 
             // Fix monkey on portals
             foreach (var fixRoom in _tempRooms.Values)
@@ -208,8 +208,8 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            ReportProgress(60, "    Number of boxes/zones: " + _boxes.Length);
-            ReportProgress(60, "    Number of overlaps: " + _overlaps.Length);
+            ReportProgress(52, "    Number of boxes/zones: " + _boxes.Length);
+            ReportProgress(52, "    Number of overlaps: " + _overlaps.Length);
         }
 
         private IEnumerable<int> GetAllReachableBoxes(int box, int zoneType, bool flipped)

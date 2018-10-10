@@ -17,7 +17,7 @@ namespace TombLib.LevelData.Compilers
             using (var geometryDataStream = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
-                ReportProgress(85, "Writing geometry data to memory buffer");
+                ReportProgress(80, "Writing geometry data to memory buffer");
 
                 const int filler = 0;
                 writer.Write(filler);
@@ -170,7 +170,7 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(90, "Writing final level");
                 writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
 
-                ReportProgress(95, "Writing textures");
+                ReportProgress(91, "Writing textures");
 
                 // The room texture tile count currently also currently contains the wad textures
                 // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
@@ -179,7 +179,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((ushort)0);
 
                 // Compress data
-                ReportProgress(96, "Compressing data");
+                ReportProgress(95, "Compressing data");
 
                 byte[] texture32 = null;
                 int texture32UncompressedSize = -1;
