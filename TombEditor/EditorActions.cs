@@ -1458,7 +1458,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
                         if (room.Blocks[x, z].Type == BlockType.Floor)
-                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, true);
+                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = -1 }, true);
                     }
                     else
                     {
@@ -1532,7 +1532,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                     {
                         if (room.Blocks[x, z].Type == BlockType.Floor)
-                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, false);
+                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = -1 }, false);
                     }
                     else
                     {
@@ -1606,7 +1606,7 @@ namespace TombEditor
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
                         if (room.Blocks[x, z].Type == BlockType.Wall)
-                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, null);
+                            room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = -1 }, null);
                         else
                             room.Blocks[x, z].Ceiling.DiagonalSplit = room.Blocks[x, z].Floor.DiagonalSplit;
                     }
@@ -1680,7 +1680,7 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, room.Blocks[x, z].IsAnyWall ? null : (bool?)floor);
+                    room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = -1 }, room.Blocks[x, z].IsAnyWall ? null : (bool?)floor);
 
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None && room.Blocks[x, z].IsAnyWall)
                         wallsRotated = true;
