@@ -99,10 +99,10 @@ namespace TombLib.LevelData.Compilers
             //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4();
             BuildRooms();
-            
+
             // New texture packer
             ReportProgress(30, "Packing textures");
-            
+
             _textureInfoManager.PackTextures(_level.Settings.TexturePadding);
             _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 

@@ -55,9 +55,10 @@ namespace TombEditor.Forms
             this.lblUvRotate = new DarkUI.Controls.DarkLabel();
             this.comboUvRotate = new DarkUI.Controls.DarkComboBox();
             this.lblFps = new DarkUI.Controls.DarkLabel();
-            this.comboFps = new DarkUI.Controls.DarkComboBox();
             this.lblEffect = new DarkUI.Controls.DarkLabel();
             this.comboEffect = new DarkUI.Controls.DarkComboBox();
+            this.numericUpDownFPS = new DarkUI.Controls.DarkNumericUpDown();
+            this.comboFps = new DarkUI.Controls.DarkComboBox();
             this.previewImage = new System.Windows.Forms.PictureBox();
             this.texturesDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.butAnimatedTextureSetDelete = new DarkUI.Controls.DarkButton();
@@ -73,6 +74,7 @@ namespace TombEditor.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numStrength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).BeginInit();
             this.settingsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -576,9 +578,10 @@ namespace TombEditor.Forms
             this.settingsPanel.Controls.Add(this.lblUvRotate);
             this.settingsPanel.Controls.Add(this.comboUvRotate);
             this.settingsPanel.Controls.Add(this.lblFps);
-            this.settingsPanel.Controls.Add(this.comboFps);
             this.settingsPanel.Controls.Add(this.lblEffect);
             this.settingsPanel.Controls.Add(this.comboEffect);
+            this.settingsPanel.Controls.Add(this.numericUpDownFPS);
+            this.settingsPanel.Controls.Add(this.comboFps);
             this.settingsPanel.Location = new System.Drawing.Point(4, 558);
             this.settingsPanel.Name = "settingsPanel";
             this.settingsPanel.Size = new System.Drawing.Size(336, 52);
@@ -641,6 +644,49 @@ namespace TombEditor.Forms
             this.comboEffect.TabIndex = 7;
             this.comboEffect.SelectedIndexChanged += new System.EventHandler(this.comboEffect_SelectedIndexChanged);
             this.comboEffect.SelectionChangeCommitted += new System.EventHandler(this.comboEffect_SelectionChangeCommitted);
+            // 
+            // numericUpDownFPS
+            // 
+            this.numericUpDownFPS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDownFPS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numericUpDownFPS.DecimalPlaces = 2;
+            this.numericUpDownFPS.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericUpDownFPS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numericUpDownFPS.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericUpDownFPS.Location = new System.Drawing.Point(92, 22);
+            this.numericUpDownFPS.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownFPS.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            131072});
+            this.numericUpDownFPS.MousewheelSingleIncrement = true;
+            this.numericUpDownFPS.Name = "numericUpDownFPS";
+            this.numericUpDownFPS.Size = new System.Drawing.Size(71, 23);
+            this.numericUpDownFPS.TabIndex = 15;
+            this.numericUpDownFPS.Value = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.numericUpDownFPS.ValueChanged += new System.EventHandler(this.numericUpDownFPS_ValueChanged);
+            // 
+            // comboFps
+            // 
+            this.comboFps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboFps.Location = new System.Drawing.Point(92, 22);
+            this.comboFps.Name = "comboFps";
+            this.comboFps.Size = new System.Drawing.Size(71, 23);
+            this.comboFps.TabIndex = 9;
+            this.comboFps.SelectionChangeCommitted += new System.EventHandler(this.comboFps_SelectionChangeCommitted);
             // 
             // previewImage
             // 
@@ -745,6 +791,7 @@ namespace TombEditor.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numStrength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).EndInit();
             this.settingsPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
             this.ResumeLayout(false);
 
@@ -803,5 +850,6 @@ namespace TombEditor.Forms
         private DarkLabel label1;
         private DarkButton butReplaceProcAnim;
         private DarkButton butAddProcAnim;
+        private DarkNumericUpDown numericUpDownFPS;
     }
 }

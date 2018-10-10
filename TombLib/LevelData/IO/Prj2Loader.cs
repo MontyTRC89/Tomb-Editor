@@ -75,7 +75,7 @@ namespace TombLib.LevelData.IO
                         return true;
                     else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad))
                         return true;
-                    else if (LoadObjects(chunkIO, id, levelSettingsIds, 
+                    else if (LoadObjects(chunkIO, id, levelSettingsIds,
                         obj => loadedObjects.Objects.Add(obj), newObjects, null, null, null, embeddedSoundInfoWad))
                         return true;
                     return false;
@@ -339,6 +339,8 @@ namespace TombLib.LevelData.IO
                             {
                                 set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
                                 set.Fps = LEB128.ReadSByte(chunkIO.Raw);
+                                if (set.Fps == 0.0f)
+                                    set.Fps = 15.0f;
                                 set.UvRotate = LEB128.ReadSByte(chunkIO.Raw);
                             }
                             else if (id3 == Prj2Chunks.AnimatedTextureSetType)
@@ -586,7 +588,7 @@ namespace TombLib.LevelData.IO
                                 }
                             }));
                     }
-                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, obj => room.AddObjectAndSingularPortal(level, obj), 
+                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, obj => room.AddObjectAndSingularPortal(level, obj),
                             newObjects, room, roomLinkActions, objectLinkActions, embeddedSoundInfoWad))
                         return true;
                     else
@@ -638,7 +640,7 @@ namespace TombLib.LevelData.IO
 
         private static bool LoadObjects(ChunkReader chunkIO, ChunkId idOuter, LevelSettingsIds levelSettingsIds,
             Action<ObjectInstance> addObject, Dictionary<long, ObjectInstance> newObjects,
-            Room room, List<KeyValuePair<long, Action<Room>>> roomLinkActions, 
+            Room room, List<KeyValuePair<long, Action<Room>>> roomLinkActions,
             List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions, Wad2 embeddedSoundInfoWad)
         {
             if (idOuter != Prj2Chunks.Objects)
@@ -682,7 +684,7 @@ namespace TombLib.LevelData.IO
                         return false;
                     });
                     addObject(instance);
-                    newObjects.TryAdd(objectID, instance);                    
+                    newObjects.TryAdd(objectID, instance);
                 }
                 else if (id3 == Prj2Chunks.ObjectStatic)
                 {

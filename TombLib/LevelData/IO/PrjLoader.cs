@@ -1500,7 +1500,7 @@ namespace TombLib.LevelData.IO
                                             {
                                                 case 0x0000:
                                                     level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.Frames;
-                                                    level.Settings.AnimatedTextureSets[i].Fps = (sbyte)(data & 0x00FF);
+                                                    level.Settings.AnimatedTextureSets[i].Fps = (data == 0) ? 15.0f : (1000.0f / data); // If the speed set to 8 Seceonds per frame, data will be 8000.
                                                     break;
 
                                                 case 0x4000:
@@ -1509,20 +1509,24 @@ namespace TombLib.LevelData.IO
 
                                                 case 0x8000:
                                                     level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.UVRotate;
-                                                    level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
+                                                    level.Settings.AnimatedTextureSets[i].Fps = ((data & 0x1F00) == 0) ? 32 : (sbyte)((data & 0x1F00) >> 8); // Because of the limited bits available, FPS is directly encoded in 1 to 31 FPS. 0 means "max FPS", which we are currently interpreting as 32 FPS.
                                                     level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                     break;
 
                                                 case 0xA000:
-                                                    level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.HalfRotate;
-                                                    level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
+                                                    level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.RiverRotate;
+                                                    level.Settings.AnimatedTextureSets[i].Fps = ((data & 0x1F00) == 0) ? 32 : ((data & 0x1F00) >> 8); // Because of the limited bits available, FPS is directly encoded in 1 to 32 FPS. 0 means "max FPS", which we are currently interpreting as 32 FPS.
                                                     level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                     break;
 
                                                 case 0xC000:
-                                                    level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.RiverRotate;
-                                                    level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
+                                                    level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.HalfRotate;
+                                                    level.Settings.AnimatedTextureSets[i].Fps = ((data & 0x1F00) == 0) ? 32 : ((data & 0x1F00) >> 8); // Because of the limited bits available, FPS is directly encoded in 1 to 32 FPS. 0 means "max FPS", which we are currently interpreting as 32 FPS.
                                                     level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
+                                                    break;
+
+                                                default:
+                                                    progressReporter.ReportWarn("Unknown NG animation type with ID " + animationType + " has been encountered. It has been ignored.");
                                                     break;
                                             }
                                         }

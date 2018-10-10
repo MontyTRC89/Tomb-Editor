@@ -59,10 +59,10 @@ namespace TombLib.LevelData
 
     public class AnimatedTextureSet : ICloneable, IEquatable<AnimatedTextureSet>
     {
-        public AnimatedTextureAnimationType AnimationType { get; set; }
-        public string Name { get; set; }
-        public float Fps { get; set; }  // float is for SPF (seconds per frame) values
-        public int UvRotate { get; set; }
+        public AnimatedTextureAnimationType AnimationType { get; set; } = AnimatedTextureAnimationType.Frames;
+        public string Name { get; set; } = null;
+        public float Fps { get; set; } = 15.0f;  // float is for FPS (frames per second) values. 0 is not a valid default for this!
+        public int UvRotate { get; set; } = 0;
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 
