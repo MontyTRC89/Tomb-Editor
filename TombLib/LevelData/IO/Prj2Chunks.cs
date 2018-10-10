@@ -93,6 +93,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectStatic2 = ChunkId.FromString("TeSta2");
         /**********/public static readonly ChunkId ObjectCamera = ChunkId.FromString("TeCam");
         /**********/public static readonly ChunkId ObjectFlyBy = ChunkId.FromString("TeFly");
+        /**********/public static readonly ChunkId ObjectFlyBy2 = ChunkId.FromString("TeFly2");
+        /**********/public static readonly ChunkId ObjectFlyBy2LuaScript = ChunkId.FromString("TeFly2Lua");
         /**********/public static readonly ChunkId ObjectSink = ChunkId.FromString("TeSin");
         /**********/public static readonly ChunkId ObjectSoundSource = ChunkId.FromString("TeSou");
         /**********/public static readonly ChunkId ObjectSoundSource2 = ChunkId.FromString("TeSou2");

@@ -10,10 +10,13 @@ namespace TombEditor.Forms
         public bool IsNew { get; set; }
 
         private readonly FlybyCameraInstance _flyByCamera;
+        private readonly Editor _editor;
 
         public FormFlybyCamera(FlybyCameraInstance flyByCamera)
         {
             _flyByCamera = flyByCamera;
+            _editor = Editor.Instance;
+
             InitializeComponent();
         }
 
@@ -50,6 +53,18 @@ namespace TombEditor.Forms
             tbRoll.Text = _flyByCamera.Roll.ToString();
             tbRotationX.Text = _flyByCamera.RotationX.ToString();
             tbRotationY.Text = _flyByCamera.RotationY.ToString();
+
+            if (_editor.Level.Settings.GameVersion== GameVersion.TR5Main)
+            {
+                Width = 960;
+                tbLuaScript.Enabled = true;
+                tbLuaScript.Code = _flyByCamera.LuaScript;
+            }
+            else
+            {
+                Width = 500;
+                tbLuaScript.Enabled = false;
+            }
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -138,6 +153,11 @@ namespace TombEditor.Forms
             _flyByCamera.Roll = roll;
             _flyByCamera.RotationX = rotationX;
             _flyByCamera.RotationY = rotationY;
+
+            if (_editor.Level.Settings.GameVersion == GameVersion.TR5Main)
+            {
+                _flyByCamera.LuaScript = tbLuaScript.Code;
+            }
 
             DialogResult = DialogResult.OK;
             Close();
