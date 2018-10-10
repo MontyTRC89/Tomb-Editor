@@ -101,13 +101,13 @@ namespace TombLib.LevelData.Compilers
             BuildRooms();
             
             // New texture packer
-            _progressReporter.ReportInfo("Packing textures");
+            ReportProgress(30, "Packing textures");
             
             _textureInfoManager.PackTextures(_level.Settings.TexturePadding);
             _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 
-            _progressReporter.ReportInfo("   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
-            _progressReporter.ReportInfo("   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);
+            ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);
 
             PrepareSoundSources();
             PrepareItems();
@@ -198,7 +198,7 @@ namespace TombLib.LevelData.Compilers
 
         private void BuildCamerasAndSinks()
         {
-            ReportProgress(42, "Building cameras and sinks");
+            ReportProgress(46, "Building cameras and sinks");
 
             {
                 int cameraSinkID = 0;
@@ -294,9 +294,9 @@ namespace TombLib.LevelData.Compilers
                 lastIndex = _flyByCameras[i].Index;
             }
 
-            ReportProgress(45, "    Number of cameras: " + _cameraTable.Count);
-            ReportProgress(45, "    Number of flyby cameras: " + _flyByCameras.Count);
-            ReportProgress(45, "    Number of sinks: " + _sinkTable.Count);
+            ReportProgress(47, "    Number of cameras: " + _cameraTable.Count);
+            ReportProgress(47, "    Number of flyby cameras: " + _flyByCameras.Count);
+            ReportProgress(47, "    Number of sinks: " + _sinkTable.Count);
         }
 
         private static tr_room_sector GetSector(tr_room room, int x, int z)
@@ -401,7 +401,7 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareItems()
         {
-            ReportProgress(18, "Building items table");
+            ReportProgress(42, "Building items table");
 
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
             _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
@@ -460,8 +460,8 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-            ReportProgress(30, "    Number of items: " + _items.Count);
-            ReportProgress(30, "    Number of AI objects: " + _aiItems.Count);
+            ReportProgress(45, "    Number of items: " + _items.Count);
+            ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
         }
 
         public string GetTRNGVersion()

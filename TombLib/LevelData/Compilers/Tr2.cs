@@ -11,7 +11,7 @@ namespace TombLib.LevelData.Compilers
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
-                ReportProgress(85, "Writing geometry data to memory buffer");
+                ReportProgress(80, "Writing geometry data to memory buffer");
 
                 // Write version
                 writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });

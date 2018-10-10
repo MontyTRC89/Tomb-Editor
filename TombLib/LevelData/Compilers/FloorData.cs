@@ -22,7 +22,7 @@ namespace TombLib.LevelData.Compilers
 
         private void BuildFloorData()
         {
-            ReportProgress(70, "Building floordata");
+            ReportProgress(53, "Building floordata");
 
             // Prepare LUA triggers eventually
             if (_level.Settings.GameVersion == GameVersion.TR5Main)
@@ -215,7 +215,7 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            ReportProgress(80, "    Floordata size: " + _floorData.Count * 2 + " bytes");
+            ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
 
         private void BuildFloorDataForSector(Room room, Block block, VectorInt2 pos, RoomSectorShape floorShape, RoomSectorShape ceilingShape, List<ushort> outFloorData)

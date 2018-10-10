@@ -121,6 +121,7 @@
     <Compile Include="Controls\SoundInfoEditor.Designer.cs">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TaskbarProgress.cs" />
     <Compile Include="Controls\TriggerParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

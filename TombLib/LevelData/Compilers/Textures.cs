@@ -26,7 +26,7 @@ namespace TombLib.LevelData.Compilers
             // I need to update the bumped tiles
             _textureInfoManager.UpdateTiles(spritePages.Count);
 
-            ReportProgress(10, "Building final texture map");
+            ReportProgress(60, "Building final texture map");
 
             byte[] texture32Data = new byte[numPages * 256 * 256 * 4];
             int totalPages = 0;
@@ -51,6 +51,10 @@ namespace TombLib.LevelData.Compilers
                 spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * 256 * 256 * 4);*/
 
             _texture32Data = texture32Data;
+
+            ReportProgress(70, "    Num room pages: " + _textureInfoManager.NumRoomPages);
+            ReportProgress(70, "    Num objects pages: " + _textureInfoManager.NumObjectsPages);
+            ReportProgress(70, "    Num bumpmap pages: " + _textureInfoManager.NumBumpPages);
         }
 
         private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
@@ -81,7 +85,7 @@ namespace TombLib.LevelData.Compilers
 
         private Stream PrepareFontAndSkyTexture()
         {
-            ReportProgress(18, "Building font & sky textures");
+            ReportProgress(96, "Building font & sky textures");
 
             var image = ImageC.CreateNew(256, _level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main ? 768 : 512);
             int toY = 0;
@@ -96,7 +100,7 @@ namespace TombLib.LevelData.Compilers
                     extraFileName = null;
                 }
                 else
-                    ReportProgress(19, "Reading extra TR5 texture: " + extraFileName);
+                    ReportProgress(96, "Reading extra TR5 texture: " + extraFileName);
                 image.CopyFrom(0, toY, _level.Settings.LoadTr5ExtraSprites(extraFileName));
                 toY += 256;
             }
@@ -109,7 +113,7 @@ namespace TombLib.LevelData.Compilers
                 fontFileName = null;
             }
             else
-                ReportProgress(19, "Reading font texture: " + fontFileName);
+                ReportProgress(96, "Reading font texture: " + fontFileName);
             image.CopyFrom(0, toY, _level.Settings.LoadFontTexture(fontFileName));
             toY += 256;
 
@@ -122,7 +126,7 @@ namespace TombLib.LevelData.Compilers
                 skyFileName = null;
             }
             else
-                ReportProgress(19, "Reading sky texture: " + skyFileName);
+                ReportProgress(96, "Reading sky texture: " + skyFileName);
             image.CopyFrom(0, toY, _level.Settings.LoadSkyTexture(skyFileName));
 
             return image.ToRawStream();
@@ -130,7 +134,7 @@ namespace TombLib.LevelData.Compilers
 
         private List<ImageC> BuildSprites(int pagesBeforeSprites)
         {
-            ReportProgress(9, "Building sprites");
+            ReportProgress(59, "Building sprites");
             var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
             //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
