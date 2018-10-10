@@ -371,7 +371,7 @@ namespace TombLib.LevelData.Compilers.Util
         // Try to add texture to existing parent(s) either as a child of one, or as a parent, merging
         // enclosed parents.
 
-        public int TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool allowOverlaps = false)
+        public bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool allowOverlaps = false)
         {
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
@@ -381,7 +381,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 var newTexIndex = GetNewTexInfoIndex();
                 parent.AddChild(texture, newTexIndex, isForTriangle);
-                return newTexIndex;
+                return true;
             }
 
             // Try to find and merge parents which are enclosed in incoming texture area
@@ -393,11 +393,11 @@ namespace TombLib.LevelData.Compilers.Util
                 newParent.AddChild(texture, texIndex, isForTriangle);
                 newParent.MergeParents(parentList, childrenWannabes);
                 parentList.Add(newParent);
-                return texIndex;
+                return true;
             }
 
             // No success
-            return NoTexInfo;
+            return false;
         }
 
         public struct Result
@@ -423,9 +423,9 @@ namespace TombLib.LevelData.Compilers.Util
                     for (int i = 0; i < Rotation; i++)
                     {
                         ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[1];
-                        transformedIndices[1] = transformedIndices[2];
-                        transformedIndices[2] = tempIndex;
+                        transformedIndices[0] = transformedIndices[2];
+                        transformedIndices[2] = transformedIndices[1];
+                        transformedIndices[1] = tempIndex;
                     }
                 }
 
@@ -445,10 +445,10 @@ namespace TombLib.LevelData.Compilers.Util
                     for (int i = 0; i < Rotation; i++)
                     {
                         ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[1];
-                        transformedIndices[1] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[3];
-                        transformedIndices[3] = tempIndex;
+                        transformedIndices[0] = transformedIndices[3];
+                        transformedIndices[3] = transformedIndices[2];
+                        transformedIndices[2] = transformedIndices[1];
+                        transformedIndices[1] = tempIndex;
                     }
                 }
 
@@ -496,58 +496,35 @@ namespace TombLib.LevelData.Compilers.Util
 
         private int TestUVSimilarity(Vector2[] first, Vector2[] second, float lookupMargin)
         {
-            int Result = NoTexInfo; // Not similar
-
             // If first/second coordinates are not mutually quads/tris, quickly return NoTexInfo.
             // Also discard out of bounds cases without exception.
             if (first.Length == second.Length && first.Length >= 3 && first.Length <= 4)
             {
-                int baseCoord = -1;  // Used to keep first-found similar coordinate
-
-                // Now scroll through all texture coords and find one which is similar to 
-                // first one in current texture
-                for (byte i = 0; i < first.Length; i++)
-                {
-                    if (MathC.WithinEpsilon(first[0].X, second[i].X, lookupMargin) &&
-                        MathC.WithinEpsilon(first[0].Y, second[i].Y, lookupMargin))
+                for (int i = 0; i < first.Length; i++)
+                    for (int j = 0; j < second.Length; j++)
                     {
-                        baseCoord = i;
-                        break;
-                    }
-                }
+                        var shift = (j + i) % second.Length;
 
-                // No first-found coordinate, discard further comparison
-                if (baseCoord != -1)
-                {
-                    for (int i = 0; i < first.Length; i++)
-                    {
-                        var nextCoord = ((i + baseCoord) % first.Length);
-
-                        // Shifted coord is different, discard further comparison
-                        if (!MathC.WithinEpsilon(first[i].X, second[nextCoord].X, lookupMargin) ||
-                            !MathC.WithinEpsilon(first[i].Y, second[nextCoord].Y, lookupMargin))
-
-                            if (first[i] != second[nextCoord])
+                        if (!MathC.WithinEpsilon(first[j].X, second[shift].X, lookupMargin) ||
+                            !MathC.WithinEpsilon(first[j].Y, second[shift].Y, lookupMargin))
                             break;
 
-                        // Last coord reached, comparison succeeded
-                        if (i == first.Length - 1)
-                            Result = baseCoord;
+                        //Comparison was successful
+                        if (j == second.Length - 1)
+                            return i == 0 ? 0 : second.Length - i;
                     }
-                }
             }
-            return Result;
+            return NoTexInfo;
         }
 
         // Generate new parent with incoming texture and immediately add incoming texture as a child
 
-        public int AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom)
+        public void AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom)
         {
             var newParent = new ParentTextureArea(texture, isForRoom);
             var texInfoIndex = GetNewTexInfoIndex();
             newParent.AddChild(texture, texInfoIndex, isForTriangle);
             parentList.Add(newParent);
-            return texInfoIndex;
         }
 
         // Only exposed variation of AddTexture that should be used outside of TexInfoManager itself
@@ -584,7 +561,7 @@ namespace TombLib.LevelData.Compilers.Util
         // Internal AddTexture variation which is capable of adding texture to various ParentTextureArea lists
         // with customizable parameters.
 
-        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom, bool packAnimations = false, bool makeCanonical = false)
+        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom, bool packAnimations = false, bool makeCanonical = true)
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be dublicated with Repeat function or simply because of complex animator functions applied.
@@ -592,19 +569,20 @@ namespace TombLib.LevelData.Compilers.Util
 
             if (!result.HasValue)
             {
-                byte rotation = 0;
-
                 // Try to create new canonical (top-left-based) texture as child or parent.
-                // makeCanonical parameter is necessary for UVRotate animations, because in case texture is not top-left-based,
-                // engine will incorrectly calculate texture split for UV panning.
-                var canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle, out rotation) : texture;
-                var texInfoIndex = TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, packAnimations);
+                // makeCanonical parameter is necessary for animated textures, because animators may produce frames
+                // with non-canonically rotated coordinates (e.g. spin animator).
+                var canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle) : texture;
 
-                // No any potential parents or children, create as new parent
-                if (texInfoIndex == NoTexInfo)
-                    texInfoIndex = AddParent(canonicalTexture, parentList, isForTriangle, isForRoom);
-
-                result = new Result() { TexInfoIndex = texInfoIndex, Rotation = rotation };
+                // If no any potential parents or children, create as new parent
+                if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, packAnimations))
+                    AddParent(canonicalTexture, parentList, isForTriangle, isForRoom);
+                
+                // Try again to get texinfo
+                if(packAnimations)
+                    result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
+                else
+                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle);
             }
 
             return result.Value;
