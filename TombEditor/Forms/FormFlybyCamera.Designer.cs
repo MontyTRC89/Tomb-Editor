@@ -64,13 +64,14 @@ namespace TombEditor.Forms
             this.tbRotationX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tbRotationY = new DarkUI.Controls.DarkTextBox();
+            this.tbLuaScript = new TombLib.Controls.LuaTextBox();
             this.SuspendLayout();
             // 
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(428, 389);
+            this.butCancel.Location = new System.Drawing.Point(855, 389);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
@@ -81,7 +82,7 @@ namespace TombEditor.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(342, 389);
+            this.butOK.Location = new System.Drawing.Point(769, 389);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
@@ -353,13 +354,26 @@ namespace TombEditor.Forms
             this.tbRotationY.Size = new System.Drawing.Size(71, 22);
             this.tbRotationY.TabIndex = 25;
             // 
+            // tbLuaScript
+            // 
+            this.tbLuaScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaScript.Code = "";
+            this.tbLuaScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbLuaScript.Location = new System.Drawing.Point(491, 19);
+            this.tbLuaScript.Name = "tbLuaScript";
+            this.tbLuaScript.Size = new System.Drawing.Size(441, 364);
+            this.tbLuaScript.TabIndex = 82;
+            // 
             // FormFlybyCamera
             // 
             this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(513, 418);
+            this.ClientSize = new System.Drawing.Size(940, 418);
+            this.Controls.Add(this.tbLuaScript);
             this.Controls.Add(this.tbSpeed);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tbTimer);
@@ -445,5 +459,6 @@ namespace TombEditor.Forms
         private DarkTextBox tbRotationX;
         private DarkLabel darkLabel2;
         private DarkTextBox tbRotationY;
+        private TombLib.Controls.LuaTextBox tbLuaScript;
     }
 }
