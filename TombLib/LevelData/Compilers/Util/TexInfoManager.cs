@@ -319,26 +319,24 @@ namespace TombLib.LevelData.Compilers.Util
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
 
-                var coords = child.RelCoord;
-
-                for (int i = 0; i < coords.Length; i++)
+                for (int i = 0; i < child.RelCoord.Length; i++)
                 {
-                    coords[i].X += (float)(parent.PositionInPage.X + parent.Padding[0]);
-                    coords[i].Y += (float)(parent.PositionInPage.Y + parent.Padding[1]);
+                    var coord = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
+                                            child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
                     // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
                     if(version >= GameVersion.TR4)
-                        coords[i] -= IsForTriangle ? _distort3[i] : _distort4[i];
+                        coord -= IsForTriangle ? _distort3[i] : _distort4[i];
 
-                    coords[i].X = (float)MathC.Clamp(coords[i].X, 0, maxTextureSize);
-                    coords[i].Y = (float)MathC.Clamp(coords[i].Y, 0, maxTextureSize);
+                    coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
+                    coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
 
+                    TexCoord[i] = new VectorInt2(((int)Math.Floor(coord.X) << 8) + (int)(Math.Ceiling(coord.X % 1.0f * 255.0f)),
+                                                 ((int)Math.Floor(coord.Y) << 8) + (int)(Math.Ceiling(coord.Y % 1.0f * 255.0f)));
                 }
 
-                for (int i = 0; i < coords.Length; i++)
-                    TexCoord[i] = new VectorInt2(((int)Math.Floor(coords[i].X) << 8) + (int)(Math.Ceiling(coords[i].X % 1.0f * 255.0f)),
-                                                 ((int)Math.Floor(coords[i].Y) << 8) + (int)(Math.Ceiling(coords[i].Y % 1.0f * 255.0f)));
-
+                if (child.IsForTriangle)
+                    TexCoord[3] = TexCoord[2];
             }
 
             public Rectangle2 GetRect(bool isTriangle)
@@ -381,8 +379,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (!parent.IsPotentialParent(texture, isForRoom, allowOverlaps, MaxTileSize))
                     continue;
 
-                var newTexIndex = GetNewTexInfoIndex();
-                parent.AddChild(texture, newTexIndex, isForTriangle);
+                parent.AddChild(texture, GetNewTexInfoIndex(), isForTriangle);
                 return true;
             }
 
@@ -391,8 +388,7 @@ namespace TombLib.LevelData.Compilers.Util
             if (childrenWannabes.Count > 0)
             {
                 var newParent = new ParentTextureArea(texture, isForRoom);
-                var texIndex = GetNewTexInfoIndex();
-                newParent.AddChild(texture, texIndex, isForTriangle);
+                newParent.AddChild(texture, GetNewTexInfoIndex(), isForTriangle);
                 newParent.MergeParents(parentList, childrenWannabes);
                 parentList.Add(newParent);
                 return true;
@@ -524,9 +520,8 @@ namespace TombLib.LevelData.Compilers.Util
         public void AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForTriangle, bool isForRoom)
         {
             var newParent = new ParentTextureArea(texture, isForRoom);
-            var texInfoIndex = GetNewTexInfoIndex();
-            newParent.AddChild(texture, texInfoIndex, isForTriangle);
             parentList.Add(newParent);
+            newParent.AddChild(texture, GetNewTexInfoIndex(), isForTriangle);
         }
 
         // Only exposed variation of AddTexture that should be used outside of TexInfoManager itself
@@ -579,9 +574,9 @@ namespace TombLib.LevelData.Compilers.Util
                 // If no any potential parents or children, create as new parent
                 if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, packAnimations))
                     AddParent(canonicalTexture, parentList, isForTriangle, isForRoom);
-                
+
                 // Try again to get texinfo
-                if(packAnimations)
+                if (packAnimations)
                     result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
                 else
                     result = GetTexInfo(texture, parentList, isForRoom, isForTriangle);
