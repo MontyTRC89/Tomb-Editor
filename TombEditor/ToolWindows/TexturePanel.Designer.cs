@@ -77,7 +77,7 @@ namespace TombEditor.ToolWindows
             this.cmbBump.Name = "cmbBump";
             this.cmbBump.Size = new System.Drawing.Size(65, 23);
             this.cmbBump.TabIndex = 12;
-            this.toolTip.SetToolTip(this.cmbBump, "Selection tile size");
+            this.toolTip.SetToolTip(this.cmbBump, "Bumpmap level");
             this.cmbBump.SelectedIndexChanged += new System.EventHandler(this.cmbBump_SelectedIndexChanged);
             // 
             // butMirror
