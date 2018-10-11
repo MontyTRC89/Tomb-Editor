@@ -791,16 +791,16 @@ namespace TombLib.LevelData.Compilers.Util
                     switch(p.BumpLevel)
                     {
                         case BumpLevel.Level1:
-                            effectSize = -2;
+                            effectSize = 2;
                             break;
                         case BumpLevel.Level2:
-                            effectSize = -3;
+                            effectSize = 3;
                             break;
                         case BumpLevel.Level3:
-                            effectSize = -4;
+                            effectSize = 4;
                             break;
                     }
-                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, 2, effectSize);
+                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectSize, -2);
 
                     image.CopyFrom(p.PositionInPage.X + p.Padding[0], (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding[1], bumpImage);
                 }
@@ -900,9 +900,6 @@ namespace TombLib.LevelData.Compilers.Util
             RoomPages    = BuildTextureMap(ref roomTextures, NumRoomPages, padding, false);
             ObjectsPages = BuildTextureMap(ref objectsTextures, NumObjectsPages, padding, false);
             BumpPages    = BuildTextureMap(ref bumpedTextures, NumBumpPages, padding, true);
-
-            // NumBumpPages is doubled with bumpmap pages themselves
-            NumBumpPages *= 2;
 
             // DEBUG: Combine all maps in the final map
             /*int numPages = numRoomPages + numObjectsPages + numBumpedPages * 2;

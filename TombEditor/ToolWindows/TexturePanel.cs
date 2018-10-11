@@ -3,9 +3,9 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TombLib.Utils;        // FIXME OLD
 using TombEditor.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;        // FIXME OLD
 
 namespace TombEditor.ToolWindows
 {
@@ -26,6 +26,7 @@ namespace TombEditor.ToolWindows
             { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
             cmbBlending.SelectedIndex = 0;
+            cmbBump.SelectedIndex = 0;
             cmbTileSize.SelectedIndex = 1;
         }
 
@@ -62,31 +63,7 @@ namespace TombEditor.ToolWindows
 
                 if (newTexture.Texture is LevelTexture)
                 {
-                    butDoubleSide.BackColorUseGeneric = !newTexture.DoubleSided;
-
-                    switch (newTexture.BlendMode)
-                    {
-                        case BlendMode.Normal:
-                        default:
-                            cmbBlending.SelectedIndex = 0;
-                            break;
-                        case BlendMode.Additive:
-                            cmbBlending.SelectedIndex = 1;
-                            break;
-                        case BlendMode.Subtract:
-                            cmbBlending.SelectedIndex = 2;
-                            break;
-                        case BlendMode.Exclude:
-                            cmbBlending.SelectedIndex = 3;
-                            break;
-                        case BlendMode.Screen:
-                            cmbBlending.SelectedIndex = 4;
-                            break;
-                        case BlendMode.Lighten:
-                            cmbBlending.SelectedIndex = 5;
-                            break;
-                    };
-
+                    UpdateTextureControls(newTexture);
                     panelTextureMap.ShowTexture(newTexture);
                 }
             }
@@ -219,6 +196,26 @@ namespace TombEditor.ToolWindows
                     cmbBlending.SelectedIndex = 5;
                     break;
             };
+
+            switch (texture.BumpLevel)
+            {
+                case BumpLevel.None:
+                default:
+                    cmbBump.SelectedIndex = 0;
+                    break;
+                case BumpLevel.Level1:
+                    cmbBump.SelectedIndex = 1;
+                    break;
+                case BumpLevel.Level2:
+                    cmbBump.SelectedIndex = 2;
+                    break;
+                case BumpLevel.Level3:
+                    cmbBump.SelectedIndex = 3;
+                    break;
+                case BumpLevel.NormalMap:
+                    cmbBump.SelectedIndex = 4;  // Future use
+                    break;
+            };
         }
 
         private void butDeleteTexture_Click(object sender, EventArgs e)
@@ -233,6 +230,31 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 EditorActions.UpdateTextureFilepath(this, texture);
+        }
+
+        private void cmbBump_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedTexture = _editor.SelectedTexture;
+            switch (cmbBump.SelectedIndex)
+            {
+                default:
+                case 0:
+                    selectedTexture.BumpLevel = BumpLevel.None;
+                    break;
+                case 1:
+                    selectedTexture.BumpLevel = BumpLevel.Level1;
+                    break;
+                case 2:
+                    selectedTexture.BumpLevel = BumpLevel.Level2;
+                    break;
+                case 3:
+                    selectedTexture.BumpLevel = BumpLevel.Level3;
+                    break;
+                case 4:
+                    selectedTexture.BumpLevel = BumpLevel.NormalMap;
+                    break;
+            }
+            _editor.SelectedTexture = selectedTexture;
         }
     }
 }
