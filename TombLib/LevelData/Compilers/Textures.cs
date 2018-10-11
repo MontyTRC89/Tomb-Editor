@@ -21,7 +21,7 @@ namespace TombLib.LevelData.Compilers
 
             // Get the final number of pages
             int numPages = _textureInfoManager.NumRoomPages + _textureInfoManager.NumObjectsPages +
-                spritePages.Count + _textureInfoManager.NumBumpPages;
+                spritePages.Count + _textureInfoManager.NumBumpPages * 2;
 
             // I need to update the bumped tiles
             _textureInfoManager.UpdateTiles(spritePages.Count);
