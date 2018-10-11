@@ -779,6 +779,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
                                x, y, width, height);
+                AddPadding(p, p.Texture.Image, image, 0, padding);
 
                 // Do the bump map if needed
                 if (p.BumpLevel != BumpLevel.None)
@@ -802,56 +803,70 @@ namespace TombLib.LevelData.Compilers.Util
                     }
                     bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectSize, -2);
 
-                    image.CopyFrom(p.PositionInPage.X + p.Padding[0], (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding[1], bumpImage);
-                }
+                    var bumpX = p.PositionInPage.X + p.Padding[0];
+                    var bumpY = (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding[1];
 
-                // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
-
-                var topLeft = p.Texture.Image.GetPixel(x, y);
-                var topRight = p.Texture.Image.GetPixel(x + width - 1, y);
-                var bottomLeft = p.Texture.Image.GetPixel(x, y + height - 1);
-                var bottomRight = p.Texture.Image.GetPixel(x + width - 1, y + height - 1);
-
-                for (int xP = 0; xP < padding; xP++)
-                {
-                    // copy left line
-                    if(xP < p.Padding[0])
-                        image.CopyFrom(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
-                                   x, y, 1, height - 1);
-
-                    // copy right line
-                    if (xP < p.Padding[2])
-                        image.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
-                                   x + width - 1, y, 1, height - 1);
-
-                    for (int yP = 0; yP < padding; yP++)
-                    {
-                        // copy top line
-                        if (yP < p.Padding[1])
-                            image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP, p.Texture.Image,
-                                       x, y, width - 1, 1);
-                        // copy bottom line
-                        if (yP < p.Padding[3])
-                            image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], p.Texture.Image,
-                                       x, y + height - 1, width - 1, 1);
-
-                        // expand top-left pixel
-                        if (xP < p.Padding[0] && yP < p.Padding[1])
-                            image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP, topLeft);
-                        // expand top-right pixel
-                        if (xP < p.Padding[2] && yP < p.Padding[1])
-                            image.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP, topRight);
-                        // expand bottom-left pixel
-                        if (xP < p.Padding[0] && yP < p.Padding[3])
-                            image.SetPixel(p.PositionInPage.X + xP, p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomLeft);
-                        // expand bottom-right pixel
-                        if (xP < p.Padding[2] && yP < p.Padding[3])
-                            image.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomRight);
-                    }
+                    image.CopyFrom(bumpX, bumpY, bumpImage);
+                    AddPadding(p, image, image, numPages, padding, bumpX, bumpY);
                 }
             }
             
             return image;
+        }
+
+        private void AddPadding(ParentTextureArea texture, ImageC from, ImageC to, int pageOffset, int padding, int? customX = null, int? customY = null)
+        {
+            var p = texture;
+            var x = customX.HasValue ? customX.Value : (int)p.Area.Start.X;
+            var y = customY.HasValue ? customY.Value : (int)p.Area.Start.Y;
+            var width = (int)p.Area.Width;
+            var height = (int)p.Area.Height;
+            var dataOffset = (p.Page + pageOffset) * 256;
+
+            // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
+
+            var topLeft = from.GetPixel(x, y);
+            var topRight = from.GetPixel(x + width - 1, y);
+            var bottomLeft = from.GetPixel(x, y + height - 1);
+            var bottomRight = from.GetPixel(x + width - 1, y + height - 1);
+
+            for (int xP = 0; xP < padding; xP++)
+            {
+                // copy left line
+                if (xP < p.Padding[0])
+                    to.CopyFrom(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + p.Padding[1], from,
+                               x, y, 1, height - 1);
+
+                // copy right line
+                if (xP < p.Padding[2])
+                    to.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, dataOffset + p.PositionInPage.Y + p.Padding[1], from,
+                               x + width - 1, y, 1, height - 1);
+
+                for (int yP = 0; yP < padding; yP++)
+                {
+                    // copy top line
+                    if (yP < p.Padding[1])
+                        to.CopyFrom(p.PositionInPage.X + p.Padding[0], dataOffset + p.PositionInPage.Y + yP, from,
+                                   x, y, width - 1, 1);
+                    // copy bottom line
+                    if (yP < p.Padding[3])
+                        to.CopyFrom(p.PositionInPage.X + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], from,
+                                   x, y + height - 1, width - 1, 1);
+
+                    // expand top-left pixel
+                    if (xP < p.Padding[0] && yP < p.Padding[1])
+                        to.SetPixel(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + yP, topLeft);
+                    // expand top-right pixel
+                    if (xP < p.Padding[2] && yP < p.Padding[1])
+                        to.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], dataOffset + p.PositionInPage.Y + yP, topRight);
+                    // expand bottom-left pixel
+                    if (xP < p.Padding[0] && yP < p.Padding[3])
+                        to.SetPixel(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomLeft);
+                    // expand bottom-right pixel
+                    if (xP < p.Padding[2] && yP < p.Padding[3])
+                        to.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomRight);
+                }
+            }
         }
 
         public void PackTextures(int padding = 8)
