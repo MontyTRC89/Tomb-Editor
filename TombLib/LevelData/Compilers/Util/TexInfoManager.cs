@@ -7,22 +7,22 @@ using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
-{  
+{
     public class TexInfoManager
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private const int   NoTexInfo = -1;
-        private const int   DummyTexInfo = -2;
+        private const int NoTexInfo = -1;
+        private const int DummyTexInfo = -2;
         private const float AnimTextureLookupMargin = 5.0f;
 
         // Mapping correction compensation coordinate sets.
         // Used to counterbalance TR4/5 internal mapping correction applied in regard to NewFlags
         // value.
 
-        private static readonly Vector2[] _distort4 = new Vector2[4] { new Vector2( 0.5f,  0.5f), new Vector2(-0.5f,  0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f, -0.5f) };
-        private static readonly Vector2[] _distort3 = new Vector2[3] { new Vector2( 0.5f,  0.5f), new Vector2(-0.5f,  0.5f), new Vector2( 0.5f, -0.5f)                            };
-        
+        private static readonly Vector2[] _distort4 = new Vector2[4] { new Vector2(0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, -0.5f) };
+        private static readonly Vector2[] _distort3 = new Vector2[3] { new Vector2(0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(0.5f, -0.5f) };
+
         // Defines if texinfo manager should actually start generating texinfo indexes.
         // Needed for anim lookup table generation.
 
@@ -39,7 +39,7 @@ namespace TombLib.LevelData.Compilers.Util
         // is ignored.
 
         private List<ParentAnimatedTexture> ReferenceAnimTextures = new List<ParentAnimatedTexture>();
-        public  List<ParentAnimatedTexture> ActualAnimTextures { get; private set; } = new List<ParentAnimatedTexture>();
+        public List<ParentAnimatedTexture> ActualAnimTextures { get; private set; } = new List<ParentAnimatedTexture>();
 
         // UVRotate count should be placed after anim texture data to identify how many first anim seqs
         // should be processed using UVRotate engine function
@@ -255,10 +255,10 @@ namespace TombLib.LevelData.Compilers.Util
                 var result = new ParentAnimatedTexture(Origin);
                 result.CompiledAnimation = new List<ParentTextureArea>();
 
-                foreach(var parent in CompiledAnimation)
+                foreach (var parent in CompiledAnimation)
                 {
                     var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.BumpLevel, parent.IsForRoom);
-                    foreach(var child in parent.Children)
+                    foreach (var child in parent.Children)
                     {
                         var newChild = new ChildTextureArea()
                         {
@@ -287,7 +287,7 @@ namespace TombLib.LevelData.Compilers.Util
             public AnimatedTextureSet Origin;
             public List<ParentTextureArea> CompiledAnimation = new List<ParentTextureArea>();
 
-            public ParentAnimatedTexture(AnimatedTextureSet origin) 
+            public ParentAnimatedTexture(AnimatedTextureSet origin)
             {
                 Origin = origin;
             }
@@ -295,7 +295,7 @@ namespace TombLib.LevelData.Compilers.Util
             public int FrameCount()
             {
                 int result = 0;
-                foreach(var parent in CompiledAnimation)
+                foreach (var parent in CompiledAnimation)
                     result += parent.Children.Count;
                 return result;
             }
@@ -325,7 +325,7 @@ namespace TombLib.LevelData.Compilers.Util
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
                     // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
-                    if(version >= GameVersion.TR4)
+                    if (version >= GameVersion.TR4)
                         coord -= IsForTriangle ? _distort3[i] : _distort4[i];
 
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
@@ -525,10 +525,10 @@ namespace TombLib.LevelData.Compilers.Util
         }
 
         // Only exposed variation of AddTexture that should be used outside of TexInfoManager itself
-        
+
         public Result AddTexture(TextureArea texture, bool isForTriangle, bool isForRoom)
         {
-            if(isForRoom)
+            if (isForRoom)
             {
                 // Try to compare incoming texture with existing anims and return animation frame
                 if (ActualAnimTextures.Count > 0)
@@ -659,13 +659,13 @@ namespace TombLib.LevelData.Compilers.Util
                 pos = packer.TryAdd(new VectorInt2(w, h));
                 texPackers.Add(packer);
 
-                PackNextUsedTexture:
-                    textures[i].Padding[0] = lP;
-                    textures[i].Padding[1] = tP;
-                    textures[i].Padding[2] = rP;
-                    textures[i].Padding[3] = bP;
-                    textures[i].Page = fitPage;
-                    textures[i].PositionInPage = pos.Value;
+            PackNextUsedTexture:
+                textures[i].Padding[0] = lP;
+                textures[i].Padding[1] = tP;
+                textures[i].Padding[2] = rP;
+                textures[i].Padding[3] = bP;
+                textures[i].Page = fitPage;
+                textures[i].PositionInPage = pos.Value;
             }
 
             return (currentPage + 1);
@@ -673,13 +673,13 @@ namespace TombLib.LevelData.Compilers.Util
 
         private void GenerateAnimLookups(List<AnimatedTextureSet> sets)
         {
-            foreach(var set in sets)
+            foreach (var set in sets)
             {
                 // Ignore trivial (single-frame non-UVRotated) anims
                 if (set.AnimationIsTrivial)
                     continue;
 
-                int  triangleVariation = 0;
+                int triangleVariation = 0;
                 bool mirroredVariation = false;
 
                 // Create all possible versions of current animation, including
@@ -688,17 +688,17 @@ namespace TombLib.LevelData.Compilers.Util
                 // able to quickly return desired variation ID without complicated in-place
                 // calculations.
 
-                while(true)
+                while (true)
                 {
                     var refAnim = new ParentAnimatedTexture(set);
 
-                    foreach(var frame in set.Frames)
+                    foreach (var frame in set.Frames)
                     {
                         // Create base frame
                         TextureArea newFrame = new TextureArea() { Texture = frame.Texture };
 
                         // Rotate or cut 4nd coordinate if needed
-                        switch(triangleVariation)
+                        switch (triangleVariation)
                         {
                             case 0:
                                 newFrame.TexCoord0 = frame.TexCoord0;
@@ -727,7 +727,7 @@ namespace TombLib.LevelData.Compilers.Util
                                 newFrame.TexCoord2 = frame.TexCoord3;
                                 break;
                         }
-                        if(triangleVariation > 0)
+                        if (triangleVariation > 0)
                             newFrame.TexCoord3 = newFrame.TexCoord2;
 
                         // Mirror if needed
@@ -759,12 +759,12 @@ namespace TombLib.LevelData.Compilers.Util
         private void GenerateAnimTexture(ParentAnimatedTexture reference, TextureArea origin, bool isForTriangle, bool isForRoom)
         {
             var refCopy = reference.Clone();
-            foreach(var parent in refCopy.CompiledAnimation)
+            foreach (var parent in refCopy.CompiledAnimation)
             {
                 parent.BumpLevel = origin.BumpLevel;
                 parent.IsForRoom = isForRoom;
 
-                foreach(var child in parent.Children)
+                foreach (var child in parent.Children)
                 {
                     child.BlendMode = origin.BlendMode;
                     child.IsForTriangle = isForTriangle;
@@ -797,7 +797,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     int effectSize = 0;
 
-                    switch(p.BumpLevel)
+                    switch (p.BumpLevel)
                     {
                         case BumpLevel.Level1:
                             effectSize = 2;
@@ -818,7 +818,7 @@ namespace TombLib.LevelData.Compilers.Util
                     AddPadding(p, image, image, numPages, padding, bumpX, bumpY);
                 }
             }
-            
+
             return image;
         }
 
@@ -915,22 +915,14 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Calculate new X, Y of each texture area
-            NumRoomPages    = PlaceTexturesInMap(ref roomTextures, padding);
+            NumRoomPages = PlaceTexturesInMap(ref roomTextures, padding);
             NumObjectsPages = PlaceTexturesInMap(ref objectsTextures, padding);
-            NumBumpPages    = PlaceTexturesInMap(ref bumpedTextures, padding);  
+            NumBumpPages = PlaceTexturesInMap(ref bumpedTextures, padding);
 
             // Place all the textures areas in the maps
-            RoomPages    = BuildTextureMap(ref roomTextures, NumRoomPages, padding, false);
+            RoomPages = BuildTextureMap(ref roomTextures, NumRoomPages, padding, false);
             ObjectsPages = BuildTextureMap(ref objectsTextures, NumObjectsPages, padding, false);
-            BumpPages    = BuildTextureMap(ref bumpedTextures, NumBumpPages, padding, true);
-
-            // DEBUG: Combine all maps in the final map
-            /*int numPages = numRoomPages + numObjectsPages + numBumpedPages * 2;
-            var finalImage = ImageC.CreateNew(256, numPages * 256);
-            finalImage.CopyFrom(0, 0, _roomPages);
-            finalImage.CopyFrom(0, numRoomPages * 256, _objectsPages);
-            finalImage.CopyFrom(0, (numRoomPages + numObjectsPages) * 256, _bumpPages);
-            finalImage.Save("h:\\testpack.png");*/
+            BumpPages = BuildTextureMap(ref bumpedTextures, NumBumpPages, padding, true);
         }
 
         public void BuildTextureInfos(GameVersion version)
@@ -970,7 +962,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 writer.Write((ushort)(compiledAnimatedTexture.FrameCount() - 1));
                 foreach (var parent in compiledAnimatedTexture.CompiledAnimation)
-                    foreach(var child in parent.Children)
+                    foreach (var child in parent.Children)
                         writer.Write((ushort)child.TexInfoIndex);
             }
         }
@@ -1002,7 +994,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (texture.IsForRoom) newFlags |= 0x8000;
 
-                         if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
+                    if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
                     else if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 11);
                     else if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 11);
 
@@ -1042,7 +1034,7 @@ namespace TombLib.LevelData.Compilers.Util
             for (int i = 0; i < _objectTextures.Count; i++)
             {
                 var texture = _objectTextures.ElementAt(i).Value;
-                if (texture.IsForRoom && texture.BumpLevel== BumpLevel.None)
+                if (texture.IsForRoom && texture.BumpLevel == BumpLevel.None)
                 {
                     // Tile is OK
                 }
@@ -1055,6 +1047,8 @@ namespace TombLib.LevelData.Compilers.Util
                     texture.Tile += NumRoomPages + NumObjectsPages + numSpritesPages;
                 }
             }
+
+            NumObjectsPages += numSpritesPages;
         }
     }
 }
