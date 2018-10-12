@@ -13,18 +13,12 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareTextures()
         {
-            //List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
-            //List<ImageC> spritePages = BuildSprites(packedTextures.Count);
-
             // It's fine using the old unpadded way for sprites, they are quad
             List<ImageC> spritePages = BuildSprites(_textureInfoManager.NumRoomPages + _textureInfoManager.NumObjectsPages);
 
             // Get the final number of pages
             int numPages = _textureInfoManager.NumRoomPages + _textureInfoManager.NumObjectsPages +
                 spritePages.Count + _textureInfoManager.NumBumpPages * 2;
-
-            // I need to update the bumped tiles
-            _textureInfoManager.UpdateTiles(spritePages.Count);
 
             ReportProgress(60, "Building final texture map");
 
@@ -43,14 +37,14 @@ namespace TombLib.LevelData.Compilers
 
             _textureInfoManager.BumpPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
 
-            /*byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * 256 * 256 * 4];
-
-            for (int i = 0; i < packedTextures.Count; ++i)
-                packedTextures[i].RawCopyTo(texture32Data, i * 256 * 256 * 4);
-            for (int i = 0; i < spritePages.Count; ++i)
-                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * 256 * 256 * 4);*/
-
             _texture32Data = texture32Data;
+
+            // I need to update the bumped tiles
+            _textureInfoManager.UpdateTiles(spritePages.Count);
+            
+            // DEBUG: dump the texture map
+            //var tempImage = ImageC.FromByteArray(texture32Data, 256, numPages * 256);
+            //tempImage.Save("H:\\testpack.png");
 
             ReportProgress(70, "    Num room pages: " + _textureInfoManager.NumRoomPages);
             ReportProgress(70, "    Num objects pages: " + _textureInfoManager.NumObjectsPages);
