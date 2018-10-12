@@ -331,8 +331,8 @@ namespace TombLib.LevelData.Compilers.Util
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
                     coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
 
-                    TexCoord[i] = new VectorInt2(((int)Math.Floor(coord.X) << 8) + (int)(Math.Ceiling(coord.X % 1.0f * 255.0f)),
-                                                 ((int)Math.Floor(coord.Y) << 8) + (int)(Math.Ceiling(coord.Y % 1.0f * 255.0f)));
+                    TexCoord[i] = new VectorInt2((((int)Math.Truncate(coord.X)) << 8) + (int)(Math.Floor(coord.X % 1.0f * 255.0f)),
+                                                 (((int)Math.Truncate(coord.Y)) << 8) + (int)(Math.Floor(coord.Y % 1.0f * 255.0f)));
                 }
 
                 if (child.IsForTriangle)
@@ -604,7 +604,9 @@ namespace TombLib.LevelData.Compilers.Util
             if (textures.Count == 0)
                 return 0;
 
-            int currentPage = 0;
+            int currentPage = -1;
+            List<RectPacker> texPackers = new List<RectPacker>();
+
             RectPacker packer = new RectPackerTree(new VectorInt2(256, 256));
 
             for (int i = 0; i < textures.Count; i++)
@@ -638,21 +640,32 @@ namespace TombLib.LevelData.Compilers.Util
                 h += tP + bP;
 
                 // Pack texture
-                // TODO: use tree packer for better packing
-                var result = packer.TryAdd(new VectorInt2(w, h));
-                if (result == null || !result.HasValue)
+                int fitPage;
+                VectorInt2? pos;
+
+                for (ushort j = 0; j < currentPage; ++j)
                 {
-                    packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
-                    currentPage++;
-                    result = packer.TryAdd(new VectorInt2(w, h));
+                    pos = texPackers[j].TryAdd(new VectorInt2(w, h));
+                    if (pos.HasValue)
+                    {
+                        fitPage = j;
+                        goto PackNextUsedTexture;
+                    }
                 }
 
-                textures[i].Padding[0] = lP;
-                textures[i].Padding[1] = tP;
-                textures[i].Padding[2] = rP;
-                textures[i].Padding[3] = bP;
-                textures[i].Page = currentPage;
-                textures[i].PositionInPage = result.Value;
+                currentPage++;
+                fitPage = currentPage;
+                packer = new RectPackerTree(new VectorInt2(256, 256));
+                pos = packer.TryAdd(new VectorInt2(w, h));
+                texPackers.Add(packer);
+
+                PackNextUsedTexture:
+                    textures[i].Padding[0] = lP;
+                    textures[i].Padding[1] = tP;
+                    textures[i].Padding[2] = rP;
+                    textures[i].Padding[3] = bP;
+                    textures[i].Page = fitPage;
+                    textures[i].PositionInPage = pos.Value;
             }
 
             return (currentPage + 1);
@@ -830,36 +843,36 @@ namespace TombLib.LevelData.Compilers.Util
                 // copy left line
                 if (xP < p.Padding[0])
                     to.CopyFrom(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + p.Padding[1], from,
-                               x, y, 1, height - 1);
+                               x, y, 1, height);
 
                 // copy right line
                 if (xP < p.Padding[2])
-                    to.CopyFrom(p.PositionInPage.X + xP + width - 1 + padding, dataOffset + p.PositionInPage.Y + p.Padding[1], from,
-                               x + width - 1, y, 1, height - 1);
+                    to.CopyFrom(p.PositionInPage.X + xP + width + p.Padding[0], dataOffset + p.PositionInPage.Y + p.Padding[1], from,
+                               x + width - 1, y, 1, height);
 
                 for (int yP = 0; yP < padding; yP++)
                 {
                     // copy top line
                     if (yP < p.Padding[1])
                         to.CopyFrom(p.PositionInPage.X + p.Padding[0], dataOffset + p.PositionInPage.Y + yP, from,
-                                   x, y, width - 1, 1);
+                                   x, y, width, 1);
                     // copy bottom line
                     if (yP < p.Padding[3])
-                        to.CopyFrom(p.PositionInPage.X + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], from,
-                                   x, y + height - 1, width - 1, 1);
+                        to.CopyFrom(p.PositionInPage.X + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height + p.Padding[1], from,
+                                   x, y + height - 1, width, 1);
 
                     // expand top-left pixel
                     if (xP < p.Padding[0] && yP < p.Padding[1])
                         to.SetPixel(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + yP, topLeft);
                     // expand top-right pixel
                     if (xP < p.Padding[2] && yP < p.Padding[1])
-                        to.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], dataOffset + p.PositionInPage.Y + yP, topRight);
+                        to.SetPixel(p.PositionInPage.X + xP + width + p.Padding[0], dataOffset + p.PositionInPage.Y + yP, topRight);
                     // expand bottom-left pixel
                     if (xP < p.Padding[0] && yP < p.Padding[3])
-                        to.SetPixel(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomLeft);
+                        to.SetPixel(p.PositionInPage.X + xP, dataOffset + p.PositionInPage.Y + yP + height + p.Padding[1], bottomLeft);
                     // expand bottom-right pixel
                     if (xP < p.Padding[2] && yP < p.Padding[3])
-                        to.SetPixel(p.PositionInPage.X + xP + width - 1 + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height - 1 + p.Padding[1], bottomRight);
+                        to.SetPixel(p.PositionInPage.X + xP + width + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height + p.Padding[1], bottomRight);
                 }
             }
         }

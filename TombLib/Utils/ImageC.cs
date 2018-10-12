@@ -89,7 +89,7 @@ namespace TombLib.Utils
         public ColorC Get(int i)
         {
             int index = i * PixelSize;
-            if (index + 3 >= _data.Length)
+            if (index + 3 >= _data.Length || index < 0)
                 return new ColorC(255, 0, 0);
             else
                 return new ColorC { B = _data[index], G = _data[index + 1], R = _data[index + 2], A = _data[index + 3] };
@@ -98,7 +98,7 @@ namespace TombLib.Utils
         public void Set(int i, byte r, byte g, byte b, byte a = 255)
         {
             int index = i * PixelSize;
-            if (index + 3 >= _data.Length)
+            if (index + 3 >= _data.Length || index < 0)
                 return;
 
             _data[index] = b;
@@ -115,7 +115,7 @@ namespace TombLib.Utils
         public ColorC GetPixel(int x, int y)
         {
             int index = (y * Width + x) * PixelSize;
-            if (index + 3 >= _data.Length)
+            if (index + 3 >= _data.Length || index < 0)
                 return new ColorC(255, 0, 0);
             else
                 return new ColorC { B = _data[index], G = _data[index + 1], R = _data[index + 2], A = _data[index + 3] };
@@ -124,7 +124,7 @@ namespace TombLib.Utils
         public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
         {
             int index = (y * Width + x) * PixelSize;
-            if (index + 3 >= _data.Length)
+            if (index + 3 >= _data.Length || index < 0)
                 return;
 
             _data[index] = b;
