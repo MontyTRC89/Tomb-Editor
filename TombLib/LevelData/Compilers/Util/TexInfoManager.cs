@@ -643,7 +643,7 @@ namespace TombLib.LevelData.Compilers.Util
                 int fitPage;
                 VectorInt2? pos;
 
-                for (ushort j = 0; j < currentPage; ++j)
+                for (ushort j = 0; j <= currentPage; ++j)
                 {
                     pos = texPackers[j].TryAdd(new VectorInt2(w, h));
                     if (pos.HasValue)
