@@ -188,6 +188,18 @@ namespace TombEditor
                 args.Editor.SelectedTexture = texture;
             });
 
+            AddCommand("SetTextureBumpMapLevel", "Set bumpmap level", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                if (texture.BumpLevel == BumpLevel.None)
+                    texture.BumpLevel = BumpLevel.Level1;
+                else if (texture.BumpLevel == BumpLevel.Level1)
+                    texture.BumpLevel = BumpLevel.Level2;
+                else if (texture.BumpLevel == BumpLevel.Level2)
+                    texture.BumpLevel = BumpLevel.None;
+                args.Editor.SelectedTexture = texture;
+            });
+
             AddCommand("SetTextureDoubleSided", "Set double-sided attribute", CommandType.Textures, delegate (CommandArgs args)
             {
                 var texture = args.Editor.SelectedTexture;
@@ -883,7 +895,7 @@ namespace TombEditor
                 EditorActions.MoveLara(args.Window, args.Editor.SelectedSectors.Start);
             });
 
-            AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard.", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard", CommandType.Objects, delegate (CommandArgs args)
             {
                 var selectedObj = args.Editor.SelectedObject as IHasScriptID;
                 if (selectedObj == null)
