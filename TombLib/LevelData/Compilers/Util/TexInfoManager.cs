@@ -795,21 +795,25 @@ namespace TombLib.LevelData.Compilers.Util
                     var bumpImage = ImageC.CreateNew(width, height);
                     bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + p.Padding[1], (int)p.Area.Width, (int)p.Area.Height);
 
-                    int effectSize = 0;
+                    int effectWeight = 0;
+                    int effectSize   = 0;
 
                     switch (p.BumpLevel)
                     {
                         case BumpLevel.Level1:
+                            effectWeight = -2;
                             effectSize = 2;
                             break;
                         case BumpLevel.Level2:
+                            effectWeight = -2;
                             effectSize = 3;
                             break;
                         case BumpLevel.Level3:
-                            effectSize = 4;
+                            effectWeight = -1;
+                            effectSize = 2;
                             break;
                     }
-                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectSize, -2);
+                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
 
                     var bumpX = p.PositionInPage.X + p.Padding[0];
                     var bumpY = (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding[1];
