@@ -616,15 +616,6 @@ namespace TombEditor.Forms
             this.lblFps.TabIndex = 8;
             this.lblFps.Text = "FPS:";
             // 
-            // comboFps
-            // 
-            this.comboFps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboFps.Location = new System.Drawing.Point(92, 22);
-            this.comboFps.Name = "comboFps";
-            this.comboFps.Size = new System.Drawing.Size(71, 23);
-            this.comboFps.TabIndex = 9;
-            this.comboFps.SelectionChangeCommitted += new System.EventHandler(this.comboFps_SelectionChangeCommitted);
-            // 
             // lblEffect
             // 
             this.lblEffect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -653,21 +644,16 @@ namespace TombEditor.Forms
             this.numericUpDownFPS.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.numericUpDownFPS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numericUpDownFPS.IncrementAlternate = new decimal(new int[] {
-            10,
+            25,
             0,
             0,
-            65536});
+            131072});
             this.numericUpDownFPS.Location = new System.Drawing.Point(92, 22);
             this.numericUpDownFPS.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDownFPS.Minimum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            131072});
             this.numericUpDownFPS.MousewheelSingleIncrement = true;
             this.numericUpDownFPS.Name = "numericUpDownFPS";
             this.numericUpDownFPS.Size = new System.Drawing.Size(71, 23);
