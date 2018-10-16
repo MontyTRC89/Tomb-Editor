@@ -2153,7 +2153,7 @@ namespace TombEditor
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
-                    FlattenRoomArea(room, clampedSelection.Value.Area);
+                    FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling);
                     break;
             }
 
