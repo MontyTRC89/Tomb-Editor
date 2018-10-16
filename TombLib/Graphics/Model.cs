@@ -12,7 +12,8 @@ namespace TombLib.Graphics
     {
         Static,
         Skinned,
-        RoomGeometry
+        RoomGeometry,
+        Room
     }
 
     public abstract class Model<T, U> : IRenderableObject, IDisposable where U : struct
