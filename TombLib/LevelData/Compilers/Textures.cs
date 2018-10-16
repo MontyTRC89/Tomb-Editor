@@ -44,7 +44,7 @@ namespace TombLib.LevelData.Compilers
             
             // DEBUG: dump the texture map
             //var tempImage = ImageC.FromByteArray(texture32Data, 256, numPages * 256);
-            //tempImage.Save("H:\\testpack.png");
+            //tempImage.Save("H:\\testpack.jpg");
 
             ReportProgress(70, "    Num room pages: " + _textureInfoManager.NumRoomPages);
             ReportProgress(70, "    Num objects pages: " + _textureInfoManager.NumObjectsPages);
