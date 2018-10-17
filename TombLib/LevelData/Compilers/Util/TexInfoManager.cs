@@ -607,8 +607,6 @@ namespace TombLib.LevelData.Compilers.Util
             int currentPage = -1;
             List<RectPacker> texPackers = new List<RectPacker>();
 
-            RectPacker packer = new RectPackerTree(new VectorInt2(256, 256));
-
             for (int i = 0; i < textures.Count; i++)
             {
                 // Get the size of the quad surrounding texture area, typically should be the texture area itself
@@ -655,9 +653,8 @@ namespace TombLib.LevelData.Compilers.Util
 
                 currentPage++;
                 fitPage = currentPage;
-                packer = new RectPackerTree(new VectorInt2(256, 256));
-                pos = packer.TryAdd(new VectorInt2(w, h));
-                texPackers.Add(packer);
+                texPackers.Add(new RectPackerTree(new VectorInt2(256, 256)));
+                pos = texPackers.Last().TryAdd(new VectorInt2(w, h));
 
             PackNextUsedTexture:
                 textures[i].Padding[0] = lP;
