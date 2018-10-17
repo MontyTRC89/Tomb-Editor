@@ -33,11 +33,9 @@ namespace TombLib.LevelData.Compilers
             // Delete old backup and replace it with new level file
             if (_compiledSuccessfully)
             {
-                if (File.Exists(_dest) && File.Exists(_backup))
-                {
+                if (File.Exists(_backup))
                     File.Delete(_backup);
-                    File.Move(_dest, _backup);
-                }
+                File.Move(_dest, _backup);
             }
             else
             {
