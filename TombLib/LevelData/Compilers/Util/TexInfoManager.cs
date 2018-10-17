@@ -213,16 +213,16 @@ namespace TombLib.LevelData.Compilers.Util
 
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
             {
-                var newCoordinates = child.AbsCoord;
-                for (int i = 0; i < newCoordinates.Length; i++)
-                    newCoordinates[i] -= newParent.Area.Start;
+                var newRelCoord = new Vector2[child.AbsCoord.Length];
+                for (int i = 0; i < newRelCoord.Length; i++)
+                    newRelCoord[i] = child.AbsCoord[i] - newParent.Area.Start;
 
                 newParent.Children.Add(new ChildTextureArea()
                 {
                     TexInfoIndex = child.TexInfoIndex,
                     BlendMode = child.BlendMode,
                     IsForTriangle = child.IsForTriangle,
-                    RelCoord = newCoordinates,
+                    RelCoord = newRelCoord,
                     AbsCoord = child.AbsCoord
                 });
             }
