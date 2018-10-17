@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -587,16 +588,19 @@ namespace TombLib.LevelData.Compilers.Util
 
         private void SortOutAlpha(List<ParentTextureArea> parentList)
         {
-            foreach (var parent in parentList)
+            Parallel.For(0, parentList.Count, i =>
             {
-                var opaqueChildren = parent.Children.Where(child => child.BlendMode < BlendMode.Additive);
+                var opaqueChildren = parentList[i].Children.Where(child => child.BlendMode < BlendMode.Additive);
                 if (opaqueChildren.Count() > 0 &&
-                   parent.Texture.Image.HasAlpha((int)parent.Area.X0, (int)parent.Area.Y0, (int)parent.Area.Width, (int)parent.Area.Height))
+                   parentList[i].Texture.Image.HasAlpha((int)parentList[i].Area.X0,
+                                                        (int)parentList[i].Area.Y0,
+                                                        (int)parentList[i].Area.Width,
+                                                        (int)parentList[i].Area.Height))
                 {
                     foreach (var children in opaqueChildren)
                         children.BlendMode = BlendMode.AlphaTest;
                 }
-            }
+            });
         }
 
         private int PlaceTexturesInMap(ref List<ParentTextureArea> textures, int padding)
