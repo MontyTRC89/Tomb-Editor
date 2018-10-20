@@ -117,8 +117,13 @@ namespace TombLib.LevelData.Compilers
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if(poly.ShineStrength > 0)
                 {
-                    lightingEffect |= 0x02;
-                    lightingEffect |= (ushort)(poly.ShineStrength << 2);
+                    if(useShades && isStatic)
+                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectId + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
+                    else
+                    {
+                        lightingEffect |= 0x02;
+                        lightingEffect |= (ushort)(poly.ShineStrength << 2);
+                    }
                 }
 
                 if (poly.Shape == WadPolygonShape.Quad)
@@ -176,10 +181,13 @@ namespace TombLib.LevelData.Compilers
 
         public void ConvertWad2DataToTr4()
         {
+            ReportProgress(0, "Preparing WAD data");
+
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
             // First thing build frames
+            ReportProgress(1, "Building animations");
             var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
@@ -406,6 +414,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Convert static meshes
+            ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
                 var newStaticMesh = new tr_staticmesh();
