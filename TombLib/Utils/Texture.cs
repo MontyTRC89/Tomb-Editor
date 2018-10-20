@@ -198,10 +198,15 @@ namespace TombLib.Utils
             }
         }
 
-        public void Mirror()
+        public void Mirror(bool isTriangle = false)
         {
-            Swap.Do(ref TexCoord0, ref TexCoord3);
-            Swap.Do(ref TexCoord1, ref TexCoord2);
+            if(!isTriangle)
+            {
+                Swap.Do(ref TexCoord0, ref TexCoord3);
+                Swap.Do(ref TexCoord1, ref TexCoord2);
+            }
+            else
+                Swap.Do(ref TexCoord0, ref TexCoord2);
         }
 
         public void Rotate(int iter = 1, bool isTriangle = false)

@@ -761,13 +761,7 @@ namespace TombEditor
             Block blocks = room.GetBlock(pos);
 
             TextureArea newTexture = blocks.GetFaceTexture(face);
-            if (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Quad)
-            {
-                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord1);
-                Swap.Do(ref newTexture.TexCoord2, ref newTexture.TexCoord3);
-            }
-            else
-                Swap.Do(ref newTexture.TexCoord0, ref newTexture.TexCoord2);
+            newTexture.Mirror(room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Quad);
             blocks.SetFaceTexture(face, newTexture);
 
             // Update state

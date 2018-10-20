@@ -250,10 +250,13 @@ namespace TombLib.LevelData.Compilers
                                 }
                                 else
                                 {
+                                    if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+                                        texture.Mirror(true);
+
                                     vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                     vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                    
+                                   
                                     Result result;
                                     lock (_objectTextureManager)
                                     {
