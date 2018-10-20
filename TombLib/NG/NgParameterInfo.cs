@@ -220,7 +220,8 @@ namespace TombLib.NG
             switch (triggerType)
             {
                 case TriggerType.ConditionNg:
-                    return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 8));
+                    // Bit 8 is one shot in trigger setup so we must shift by 9
+                    return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 9));
 
                 default:
                     switch (targetType)

@@ -363,11 +363,15 @@ namespace TombLib.LevelData.Compilers
                         // all other triggers work as usual
                         else
                             triggerSetup = GetTriggerRealTimer(found, 0xff);
+
+                        triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
                     }
                     else
+                    {
                         triggerSetup = GetTriggerParameter(found.Timer, found, 0xff);
-                    triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
-                    triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
+                        triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
+                        triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
+                    }
 
                     outFloorData.Add(trigger1);
                     outFloorData.Add(triggerSetup);
