@@ -106,6 +106,16 @@ namespace TombLib.LevelData.IO
                 progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
                 logger.Debug("Opening Winroomedit PRJ file " + filename);
 
+                // Identify if project is NGLE or classic TRLE one
+
+                bool isNg = false;
+                reader.BaseStream.Seek(-8, SeekOrigin.End);
+                var ngFooter = reader.ReadUInt32();
+                if (ngFooter == 0x454C474E)
+                    isNg = true;
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                progressReporter.ReportProgress(1, "PRJ is a " + (isNg ? "n NGLE" : "TRLE") + " project");
+
                 // Version
                 reader.ReadBytes(12);
 
@@ -349,10 +359,10 @@ namespace TombLib.LevelData.IO
                                         triggerTypeEnum = TriggerType.HeavyAntitrigger;
                                         break;
                                     case 12:
-                                        triggerTypeEnum = TriggerType.MonkeyOrConditionNg;
+                                        triggerTypeEnum = isNg ? TriggerType.ConditionNg : TriggerType.Monkey;
                                         break;
                                     case 13:
-                                        triggerTypeEnum = TriggerType.MonkeyOrConditionNg;
+                                        triggerTypeEnum = TriggerType.ConditionNg;  // @FIXME: really? NGLE used 2 different IDs for same trigger type?
                                         break;
                                     default:
                                         progressReporter.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");
@@ -416,7 +426,7 @@ namespace TombLib.LevelData.IO
                                         continue;
                                 }
 
-                                if (triggerTypeEnum == TriggerType.MonkeyOrConditionNg)
+                                if (triggerTypeEnum == TriggerType.ConditionNg)
                                     triggerTargetTypeEnum = TriggerTargetType.ParameterNg;
 
                                 ushort? triggerTimer, triggerExtra;

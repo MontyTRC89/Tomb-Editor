@@ -23,13 +23,26 @@ namespace TombLib.NG
             yield return TriggerType.Antitrigger;
             yield return TriggerType.HeavySwitch;
             yield return TriggerType.HeavyAntitrigger;
+
             if (levelSettings.GameVersion == GameVersion.TRNG)
-                yield return TriggerType.MonkeyOrConditionNg;
+                yield return TriggerType.ConditionNg;
+            else
+            {
+                if (levelSettings.GameVersion >= GameVersion.TR4)
+                    yield return TriggerType.Monkey;
+                if (levelSettings.GameVersion >= GameVersion.TR5)
+                {
+                    yield return TriggerType.Skeleton;
+                    yield return TriggerType.TightRope;
+                    yield return TriggerType.Crawl;
+                    yield return TriggerType.Climb;
+                }
+            }
         }
 
         public static IEnumerable<TriggerTargetType> GetTargetTypeRange(LevelSettings levelSettings, TriggerType triggerType)
         {
-            if (triggerType == TriggerType.MonkeyOrConditionNg)
+            if (triggerType == TriggerType.ConditionNg)
             {
                 yield return TriggerTargetType.ParameterNg;
             }
@@ -72,7 +85,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.MonkeyOrConditionNg:
+                case TriggerType.ConditionNg:
                     if (!(timer is TriggerParameterUshort))
                         return new NgParameterRange(NgParameterKind.Empty);
                     NgTriggerSubtype conditionSubtriggerType = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
@@ -128,7 +141,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.MonkeyOrConditionNg:
+                case TriggerType.ConditionNg:
                     return new NgParameterRange(NgCatalog.ConditionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
 
                 default:
@@ -156,7 +169,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.MonkeyOrConditionNg:
+                case TriggerType.ConditionNg:
                     if (!(timer is TriggerParameterUshort))
                         return new NgParameterRange(NgParameterKind.Empty);
                     NgTriggerSubtype conditionSubtriggerType = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
@@ -206,7 +219,7 @@ namespace TombLib.NG
             ushort extraUpperBound = (ushort)(upperBound >> 8);
             switch (triggerType)
             {
-                case TriggerType.MonkeyOrConditionNg:
+                case TriggerType.ConditionNg:
                     return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 8));
 
                 default:
@@ -235,7 +248,7 @@ namespace TombLib.NG
         {
             switch (triggerType)
             {
-                case TriggerType.MonkeyOrConditionNg:
+                case TriggerType.ConditionNg:
                     timer = (ushort)(realTimer & 255);
                     var conditionTrigger = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(timer.Value);
                     if (conditionTrigger != null && conditionTrigger.Extra.IsEmpty)
@@ -321,7 +334,7 @@ namespace TombLib.NG
 
                 switch (trigger.TriggerType)
                 {
-                    case TriggerType.MonkeyOrConditionNg:
+                    case TriggerType.ConditionNg:
                         {
                             if (!TriggerIsValid(level.Settings, trigger))
                                 throw new Exception("Trigger is invalid.");

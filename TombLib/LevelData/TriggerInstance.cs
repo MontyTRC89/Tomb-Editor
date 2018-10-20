@@ -16,11 +16,12 @@ namespace TombLib.LevelData
         Antitrigger = 9,
         HeavySwitch = 10,
         HeavyAntitrigger = 11,
-        MonkeyOrConditionNg = 12,
+        ConditionNg = 12,
         Skeleton = 13,
         TightRope = 14,
         Crawl = 15,
-        Climb = 16
+        Climb = 16,
+        Monkey = 17, // Was 12 in original TRLE, relocated to avoid collisions with NGLE condition trigger type
     }
 
     public enum TriggerTargetType : ushort
@@ -160,7 +161,9 @@ namespace TombLib.LevelData
             string output = TriggerType + " ";
             output += "[" + TargetType + "] ";
 
-            if (Target is TriggerParameterUshort)
+            if (Target == null)
+                output += "<None>";
+            else if (Target is TriggerParameterUshort)
                 output += "#" + ((TriggerParameterUshort)Target).Key;
             else
             {
