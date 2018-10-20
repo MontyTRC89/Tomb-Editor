@@ -590,6 +590,9 @@ namespace TombEditor
 
             reader.ReadBlock(out NumMeshData);
 
+            for (int i = 0; i < NumFloorData; i++)
+                Console.WriteLine(FloorData[i].ToString("X2"));
+
             int numBytes = 0;
             int totalBytes = 0;
             int l = 0;
