@@ -65,27 +65,27 @@ namespace TombLib.Rendering.DirectX11
             });
         }
 
-        public override ImageC RetriveTestImage()
+        public override ImageC RetrieveTestImage()
         {
-            const int mipLevelToRetrive = 0;
+            const int mipLevelToRetrieve = 0;
             Texture2DDescription dx11Description;
             dx11Description.ArraySize = 1;
             dx11Description.BindFlags = BindFlags.None;
             dx11Description.CpuAccessFlags = CpuAccessFlags.Read;
             dx11Description.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
-            dx11Description.Height = Size.X >> mipLevelToRetrive;
+            dx11Description.Height = Size.X >> mipLevelToRetrieve;
             dx11Description.MipLevels = 1;
             dx11Description.OptionFlags = ResourceOptionFlags.None;
             dx11Description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
             dx11Description.Usage = ResourceUsage.Staging;
-            dx11Description.Width = Size.Y >> mipLevelToRetrive;
+            dx11Description.Width = Size.Y >> mipLevelToRetrieve;
             using (Texture2D tempTexture = new Texture2D(Context.Device, dx11Description))
             {
-                int bytesPerSlice = (Size.X >> mipLevelToRetrive) * (Size.Y >> mipLevelToRetrive) * ImageC.PixelSize;
+                int bytesPerSlice = (Size.X >> mipLevelToRetrieve) * (Size.Y >> mipLevelToRetrieve) * ImageC.PixelSize;
                 byte[] result = new byte[bytesPerSlice * Size.Z];
                 for (int z = 0; z < Size.Z; ++z)
                 {
-                    int subresourceIndex = MipLevelCount * z + mipLevelToRetrive;
+                    int subresourceIndex = MipLevelCount * z + mipLevelToRetrieve;
                     Context.CopySubresourceRegion(Texture, subresourceIndex, null, tempTexture, 0);
                     DataBox mappedBuffer = Context.MapSubresource(tempTexture, 0, MapMode.Read, MapFlags.None);
                     try
@@ -97,7 +97,7 @@ namespace TombLib.Rendering.DirectX11
                         Context.UnmapSubresource(tempTexture, 0);
                     }
                 }
-                return ImageC.FromByteArray(result, Size.X >> mipLevelToRetrive, (Size.Y >> mipLevelToRetrive) * Size.Z);
+                return ImageC.FromByteArray(result, Size.X >> mipLevelToRetrieve, (Size.Y >> mipLevelToRetrieve) * Size.Z);
             }
         }
     }
