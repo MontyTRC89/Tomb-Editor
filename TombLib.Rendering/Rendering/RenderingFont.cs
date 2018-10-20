@@ -74,7 +74,7 @@ namespace TombLib.Rendering
                 _gdiGetCharacterPlacementOrder = Marshal.AllocHGlobal(sizeof(uint) * _gdiGetCharacterPlacementGlyphCount);
                 _gdiGetCharacterPlacementDx = Marshal.AllocHGlobal(sizeof(int) * _gdiGetCharacterPlacementGlyphCount);
                 _gdiGetCharacterPlacementGlpyhs = Marshal.AllocHGlobal(sizeof(GlyphIndex) * _gdiGetCharacterPlacementGlyphCount);
-                GDI.TEXTMETRIC textMetric;
+                GDI.TEXTMETRICW textMetric;
                 if (!GDI.GetTextMetricsW(_gdiHdc, out textMetric))
                     throw new GDI.GDIException("GetTextMetricsW");
                 _lineAscent = textMetric.tmAscent;
@@ -313,7 +313,7 @@ namespace TombLib.Rendering
 
             [DllImport("gdi32.dll", EntryPoint = "GetTextMetricsW", CharSet = CharSet.Unicode, SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            public static extern bool GetTextMetricsW(IntPtr hdc, out TEXTMETRIC lptm);
+            public static extern bool GetTextMetricsW(IntPtr hdc, out TEXTMETRICW lptm);
 
             [DllImport("gdi32.dll", EntryPoint = "SetBkColor", CharSet = CharSet.Unicode, SetLastError = true)]
             public static extern uint SetBkColor(IntPtr hdc, int crColor);
@@ -442,8 +442,8 @@ namespace TombLib.Rendering
             public const uint CLEARTYPE_QUALITY = 5;
             public const uint DIB_RGB_COLORS = 0;
 
-            [StructLayout(LayoutKind.Sequential)]
-            public struct TEXTMETRIC
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+            public struct TEXTMETRICW
             {
                 public int tmHeight;
                 public int tmAscent;
@@ -456,10 +456,10 @@ namespace TombLib.Rendering
                 public int tmOverhang;
                 public int tmDigitizedAspectX;
                 public int tmDigitizedAspectY;
-                public char tmFirstChar;
-                public char tmLastChar;
-                public char tmDefaultChar;
-                public char tmBreakChar;
+                public ushort tmFirstChar;
+                public ushort tmLastChar;
+                public ushort tmDefaultChar;
+                public ushort tmBreakChar;
                 public byte tmItalic;
                 public byte tmUnderlined;
                 public byte tmStruckOut;
