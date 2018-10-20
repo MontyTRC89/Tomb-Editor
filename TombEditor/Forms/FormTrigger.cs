@@ -72,16 +72,17 @@ namespace TombEditor.Forms
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
 
-            if (TargetType == TriggerTargetType.LuaScript)
-            {
-                tbLuaScript.Visible = true;
-                paramTarget.Visible = false;
-            }
-            else
-            {
-                tbLuaScript.Visible = false;
-                paramTarget.Visible = true;
-            }
+            bool isLuaScript = (TargetType == TriggerTargetType.LuaScript);
+            bool isConditionNg = (TriggerType == TriggerType.ConditionNg);
+
+            tbLuaScript.Visible = isLuaScript;
+            paramTarget.Visible = !isLuaScript;
+
+            cbBit1.Enabled = !isConditionNg;
+            cbBit2.Enabled = !isConditionNg;
+            cbBit3.Enabled = !isConditionNg;
+            cbBit4.Enabled = !isConditionNg;
+            cbBit5.Enabled = !isConditionNg;
 
             UpdateExportToTrigger();
         }
