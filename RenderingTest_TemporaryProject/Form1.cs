@@ -49,7 +49,7 @@ namespace RenderingTest_TemporaryProject
             renderingPanel1.InitializeRendering(Device);
 
             RegularFont = Device.CreateFont(new RenderingFont.Description { TextureAllocator = TextureAllocator, FontSize = 40 });
-            TextureAllocator.RetriveTestImage().Save("T:\\Out.png");
+            TextureAllocator.RetrieveTestImage().Save("T:\\Out.png");
         }
 
         protected override void Dispose(bool disposing)
