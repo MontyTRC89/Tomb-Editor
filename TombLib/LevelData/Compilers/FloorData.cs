@@ -331,7 +331,8 @@ namespace TombLib.LevelData.Compilers
                         case TriggerType.HeavyAntitrigger:
                             trigger1 |= 0x0b << 8;
                             break;
-                        case TriggerType.MonkeyOrConditionNg:
+                        case TriggerType.Monkey:
+                        case TriggerType.ConditionNg:   // @FIXME: check if these really use same subfunction?
                             trigger1 |= 0x0c << 8;
                             break;
                         case TriggerType.Skeleton:
@@ -357,7 +358,7 @@ namespace TombLib.LevelData.Compilers
                         if (found.TargetType == TriggerTargetType.FlipEffect)
                             triggerSetup = 0;
                         // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
-                        else if (found.TriggerType == TriggerType.MonkeyOrConditionNg)
+                        else if (found.TriggerType == TriggerType.ConditionNg)
                             triggerSetup = GetTriggerRealTimer(found, 0xffff);
                         // all other triggers work as usual
                         else
