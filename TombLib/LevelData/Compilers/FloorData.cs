@@ -49,9 +49,9 @@ namespace TombLib.LevelData.Compilers
                     }
 
                 var tempFloorData = new List<ushort>();
-                for (var z = 0; z < room.NumZSectors; z++)
+                for (var x = 0; x < room.NumXSectors; x++)
                 {
-                    for (var x = 0; x < room.NumXSectors; x++)
+                    for (var z = 0; z < room.NumZSectors; z++)
                     {
                         Block block = room.Blocks[x, z];
 
