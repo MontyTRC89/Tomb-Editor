@@ -27,7 +27,7 @@ namespace TombEditor.Forms
             _trigger = trigger;
 
             // Setup events
-            foreach (var control in Controls.OfType<TriggerParameterControl>())
+            foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
             {
                 control.ViewObject += selectObject;
                 control.ViewRoom += selectRoom;
@@ -38,10 +38,20 @@ namespace TombEditor.Forms
                 control.Click += scriptExportPanel_Click;
             scriptExportPanel.Click += scriptExportPanel_Click;
 
+            if (_level.Settings.GameVersion != GameVersion.TR5Main)
+            {
+                FormBorderStyle = FormBorderStyle.FixedSingle;
+                panelLuaScript.Visible = false;
+                MaximizeBox = false;
+                Height = panelClassicTriggerControls.Height + panelButtons.Height + panelMain.Padding.Top + panelMain.Padding.Bottom;
+            }
+
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MaximumSize = new Size(32000, Size.Height);
-            MinimumSize = new Size(611 + (Size.Height - ClientSize.Height), Size.Height);
+            MinimumSize = new Size(611, Size.Height) + (Size - ClientSize);
+
+            // Update the dialog
+            UpdateDialog();
 
             // Set values
             cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
@@ -56,9 +66,6 @@ namespace TombEditor.Forms
             paramTimer.Parameter = _trigger.Timer;
             paramExtra.Parameter = _trigger.Extra;
             tbLuaScript.Code = _trigger.LuaScript;
-
-            // Update the dialog
-            UpdateDialog();
         }
 
         public void UpdateDialog()
@@ -71,12 +78,12 @@ namespace TombEditor.Forms
             paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
-
-            bool isLuaScript = (TargetType == TriggerTargetType.LuaScript);
-            bool isConditionNg = (TriggerType == TriggerType.ConditionNg);
-
-            tbLuaScript.Visible = isLuaScript;
-            paramTarget.Visible = !isLuaScript;
+            
+            bool isLuaScript   = TargetType  == TriggerTargetType.LuaScript;
+            bool isConditionNg = TriggerType == TriggerType.ConditionNg;
+            
+            tbLuaScript.Enabled =  isLuaScript;
+            paramTarget.Enabled = !isLuaScript;
 
             cbBit1.Enabled = !isConditionNg;
             cbBit2.Enabled = !isConditionNg;
@@ -246,7 +253,7 @@ namespace TombEditor.Forms
 
         private void cbRawMode_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (var control in Controls.OfType<TriggerParameterControl>())
+            foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
                 control.RawMode = cbRawMode.Checked;
         }
     }

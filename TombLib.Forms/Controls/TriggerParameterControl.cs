@@ -171,7 +171,7 @@ namespace TombLib.Controls
                         combo.Visible = false;
                         butSearch.Visible = false;
                         numericUpDown.Visible = true;
-                        if (_parameter != null)
+                        if (_parameter != null && _parameter is TriggerParameterUshort)
                             numericUpDown.Value = (_parameter as TriggerParameterUshort).Key;
                         else
                             Parameter = new TriggerParameterUshort(0);
