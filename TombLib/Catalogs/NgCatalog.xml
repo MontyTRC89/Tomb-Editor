@@ -10572,7 +10572,7 @@
   </ActionTrigger>
   <ConditionTrigger>
     <Subtrigger K="1" V="Inventory. Missing &lt;#&gt;inventory_item.">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="175" V="PUZZLE_ITEM1                    &#x9;Slot=175" />
           <Enum K="176" V="PUZZLE_ITEM2                    &#x9;Slot=176" />
@@ -10689,10 +10689,10 @@
           <Enum K="371" V="BINOCULARS_ITEM                 &#x9;Slot=371" />
           <Enum K="372" V="FLARE_ITEM                      &#x9;Slot=372" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="2" V="Inventory. Present &lt;#&gt;inventory_item.">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="175" V="PUZZLE_ITEM1                    &#x9;Slot=175" />
           <Enum K="176" V="PUZZLE_ITEM2                    &#x9;Slot=176" />
@@ -10809,10 +10809,10 @@
           <Enum K="371" V="BINOCULARS_ITEM                 &#x9;Slot=371" />
           <Enum K="372" V="FLARE_ITEM                      &#x9;Slot=372" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="3" V="Inventory. There are at least (E) of &lt;#&gt;inventory_item in inventory">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="175" V="PUZZLE_ITEM1                    &#x9;Slot=175" />
           <Enum K="176" V="PUZZLE_ITEM2                    &#x9;Slot=176" />
@@ -10929,7 +10929,7 @@
           <Enum K="371" V="BINOCULARS_ITEM                 &#x9;Slot=371" />
           <Enum K="372" V="FLARE_ITEM                      &#x9;Slot=372" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Linear Add="0" Factor="1" />
@@ -10937,7 +10937,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="4" V="Inventory. There are less than (E) of &lt;#&gt;inventory_item in inventory">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="175" V="PUZZLE_ITEM1                    &#x9;Slot=175" />
           <Enum K="176" V="PUZZLE_ITEM2                    &#x9;Slot=176" />
@@ -11054,7 +11054,7 @@
           <Enum K="371" V="BINOCULARS_ITEM                 &#x9;Slot=371" />
           <Enum K="372" V="FLARE_ITEM                      &#x9;Slot=372" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Linear Add="0" Factor="1" />
@@ -11062,7 +11062,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="5" V="Lara. (Status) Lara is performing &lt;#&gt;action is (E)">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Climbing" />
           <Enum K="1" V="Swimming underwater" />
@@ -11085,7 +11085,7 @@
           <Enum K="18" V="Hanged" />
           <Enum K="19" V="Dripping" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="TRUE (Lara is performing #action)" />
@@ -11094,7 +11094,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="6" V="Fragmented trigger. Check in (E) way if lara is in &lt;#&gt;fragment of 2x2 sector grid">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Square fragment (1,1)" />
           <Enum K="1" V="Square fragment (1,2)" />
@@ -11121,7 +11121,7 @@
           <Enum K="196" V="Two crossed diagonals passing at point (2,1)" />
           <Enum K="197" V="Two crossed diagonals passing at point (2,2)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current #fragment" />
@@ -11132,7 +11132,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="7" V="Fragmented trigger. Check in (E) way if lara is in &lt;#&gt;fragment of 3x3 sector grid">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Square fragment (1,1)" />
           <Enum K="1" V="Square fragment (1,2)" />
@@ -11186,7 +11186,7 @@
           <Enum K="201" V="Two crossed diagonals passing at point (3,2)" />
           <Enum K="202" V="Two crossed diagonals passing at point (3,3)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current #fragment" />
@@ -11197,7 +11197,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="8" V="Fragmented trigger. Check in (E) way if lara is in &lt;#&gt;fragment of 4x4 sector grid">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Square fragment (1,1)" />
           <Enum K="1" V="Square fragment (1,2)" />
@@ -11288,7 +11288,7 @@
           <Enum K="206" V="Two crossed diagonals passing at point (4,3)" />
           <Enum K="207" V="Two crossed diagonals passing at point (4,4)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current #fragment" />
@@ -11299,7 +11299,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="9" V="Vertical trigger. Zone of &lt;#&gt;clicks from floor and high (E) clicks">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="512">
           <Fixed>Clicks =</Fixed>
           <Linear Add="0.0" Factor="0.5" />
@@ -11307,7 +11307,7 @@
           <Linear Add="0" Factor="1" />
           <Fixed>)</Fixed>
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Fixed>Clicks =</Fixed>
@@ -11319,7 +11319,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="10" V="Vertical trigger. Inverse zone of &lt;#&gt;clicks from floor and high (E) clicks">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="512">
           <Fixed>Clicks =</Fixed>
           <Linear Add="0.0" Factor="0.5" />
@@ -11327,7 +11327,7 @@
           <Linear Add="0" Factor="1" />
           <Fixed>)</Fixed>
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Fixed>Clicks =</Fixed>
@@ -11339,7 +11339,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="11" V="Vertical trigger. Anti zone of &lt;#&gt;click from floor and high (E) clicks">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="512">
           <Fixed>Clicks =</Fixed>
           <Linear Add="0.0" Factor="0.5" />
@@ -11347,7 +11347,7 @@
           <Linear Add="0" Factor="1" />
           <Fixed>)</Fixed>
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Fixed>Clicks =</Fixed>
@@ -11359,7 +11359,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="12" V="Keyboard. &lt;#&gt;keyboard scancode is currently (E)">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="1" V="ESCAPE" />
           <Enum K="2" V="Number1" />
@@ -11435,7 +11435,7 @@
           <Enum K="87" V="F11" />
           <Enum K="88" V="F12" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="INACTIVE (Single shot for positive condition)" />
@@ -11446,7 +11446,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="13" V="Keyboard. &lt;#&gt;Command game is currently (E)">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Foreward (run, UP Arrow)" />
           <Enum K="1" V="Backward (DOWN arrow)" />
@@ -11468,7 +11468,7 @@
           <Enum K="17" V="Inventory" />
           <Enum K="18" V="Escape" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="INACTIVE (Single shot for positive condition)" />
@@ -11479,9 +11479,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="14" V="Creature. &lt;#&gt;Creature is currently (E)">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" Enemy is dead" />
@@ -11493,20 +11493,20 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="15" V="Multiple condition of &lt;#&gt;TriggerGroup script command">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>TriggerGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="16" V="Multiple condition of &lt;#&gt;MultEnvCondition script command in (E)way">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>MultEnvCondition=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" In AND way. (All ENV conditions have to be true)" />
@@ -11515,36 +11515,36 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="17" V="Lara. (Secrets) Lara found at least &lt;#&gt;secrets">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="126">
           <Fixed>Found Secrets=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="18" V="Lara. (Secrets) Lara found exaclty &lt;#&gt;secrets">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="126">
           <Fixed>Found Secrets=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="19" V="KeyPad. Last number typed in keypad is &lt;#&gt;value">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="1022">
           <Fixed>Value=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="20" V="Timer. Timer Screen value is (E) than &lt;#&gt;seconds">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="1022">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" Higher than ..." />
@@ -11586,7 +11586,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="25" V="Lara. (Status) Current &lt;#&gt;Lara status is (E)enabled/disabled">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V=" Invulnerable" />
           <Enum K="1" V=" Infinite Air underwater" />
@@ -11595,7 +11595,7 @@
           <Enum K="4" V=" Touching floor (PAD)" />
           <Enum K="5" V=" Demo/Custscene mode" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" Disabled (False)" />
@@ -11605,26 +11605,26 @@
     </Subtrigger>
     <Subtrigger K="26" V="Collision. Lara is touching &lt;#&gt;Moveable" />
     <Subtrigger K="27" V="Collision. Lara is touching some moveable of &lt;#&gt;Slot type">
-      <Timer>
+      <Target>
         <WadSlots />
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="28" V="Collision. Lara is touching some &lt;#&gt;Creature type">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V=" Mortal Creatures" />
           <Enum K="1" V=" Immortal Creatures" />
           <Enum K="2" V=" Guides and friends" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="29" V="Lara. (Health) Lara vitality is (E)Condition than &lt;#&gt;vitality">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="999">
           <Fixed>Vitality=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" Equal than ..." />
@@ -11634,28 +11634,28 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="30" V="Lara. (Animation) Lara is performing &lt;#&gt;animation">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="998">
           <Fixed>Animation=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="31" V="Lara. (State-Id) Lara is in &lt;#&gt;State-id">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="254">
           <Fixed>State-Id=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="32" V="AnimTextures. The &lt;#&gt;AnimRange textures is (E)enabled/disabled">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="39">
           <Linear Add="1" Factor="1" />
           <Fixed>th Animation Range</Fixed>
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Disabled" />
@@ -11664,17 +11664,17 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="33" V="Collision. Lara is touching some static of &lt;#&gt;Slot static type">
-      <Timer>
+      <Target>
         <StaticsSlots />
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="34" V="Collision. Lara is touching the &lt;#&gt;Static item">
-      <Timer>
+      <Target>
         <StaticsInLevel />
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="35" V="Lara. (Holds) Lara is holding/driving the &lt;#&gt;item">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="1" V="Holding_Pistols" />
           <Enum K="2" V="Holding_Revolver" />
@@ -11694,15 +11694,15 @@
           <Enum K="16" V="Holding_Any_Torch" />
           <Enum K="17" V="Driving_Kayak" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="36" V="Random. Condition is true with &lt;#&gt;chances on 64 computed in (E)way">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="63">
           <Fixed>Chances=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Test condition only while lara enters in this sector" />
@@ -11711,9 +11711,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="37" V="Creature. The &lt;#&gt;creature has the (E)Transparency level">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Fixed>Transparency =</Fixed>
@@ -11722,7 +11722,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="38" V="Variables. The &lt;#&gt;Numeric Variable is &gt;= than (E)Big Number value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -11771,7 +11771,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
@@ -11780,7 +11780,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="39" V="Variables. The &lt;#&gt;Numeric Variable is &lt; than (E)Big Number value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -11829,7 +11829,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
@@ -11838,7 +11838,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="40" V="Variables. The &lt;#&gt;Numeric Variable is = than (E)Big Number value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -11887,7 +11887,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
@@ -11896,7 +11896,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="41" V="Variables. The &lt;#&gt;Numeric Variable is &gt;= than (E)Value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -11945,7 +11945,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Value=</Fixed>
@@ -11954,7 +11954,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="42" V="Variables. The &lt;#&gt;Numeric Variable is &lt; than (E)Value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12003,7 +12003,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Value=</Fixed>
@@ -12012,7 +12012,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="43" V="Variables. The &lt;#&gt;Numeric Variable is = than (E)Value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12061,7 +12061,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Value=</Fixed>
@@ -12070,7 +12070,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="44" V="Variables. The &lt;#&gt;Numeric Variable has the (E)Bit set">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12119,7 +12119,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Bit  0  ($00000001 ; 1)" />
@@ -12158,7 +12158,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="45" V="Variables. The &lt;#&gt;Numeric Variable has the (E)Bit clear">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12207,7 +12207,7 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Bit  0  ($00000001 ; 1)" />
@@ -12246,31 +12246,31 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="46" V="Variables. The Current Value variable is &gt;= than &lt;#&gt;Value">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="1022">
           <Fixed>Value=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="47" V="Variables. The Current Value variable is &lt; than &lt;#&gt;Value">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="1022">
           <Fixed>Value=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="48" V="Variables. The Current Value variable is = than &lt;#&gt;Value">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="1022">
           <Fixed>Value=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="49" V="Variables. The &lt;#&gt;Code Memory is = than Current Value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Audio Track Number on Channel 1 (only for read) (Short)" />
           <Enum K="1" V="Audio Track Number on Channel 2 (only for read) (Short)" />
@@ -12297,10 +12297,10 @@
           <Enum K="22" V="Frame 3d Counter. (It works in game and inventory but not in pause) (Long)" />
           <Enum K="23" V="Index of current vehicle or -1 if lara's not using a vehicle (Short)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="50" V="Variables. The &lt;#&gt;Code Memory is &gt;= than Current Value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Audio Track Number on Channel 1 (only for read) (Short)" />
           <Enum K="1" V="Audio Track Number on Channel 2 (only for read) (Short)" />
@@ -12327,10 +12327,10 @@
           <Enum K="22" V="Frame 3d Counter. (It works in game and inventory but not in pause) (Long)" />
           <Enum K="23" V="Index of current vehicle or -1 if lara's not using a vehicle (Short)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="51" V="Variables. The &lt;#&gt;Code Memory is &lt; than Current Value">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Audio Track Number on Channel 1 (only for read) (Short)" />
           <Enum K="1" V="Audio Track Number on Channel 2 (only for read) (Short)" />
@@ -12357,10 +12357,10 @@
           <Enum K="22" V="Frame 3d Counter. (It works in game and inventory but not in pause) (Long)" />
           <Enum K="23" V="Index of current vehicle or -1 if lara's not using a vehicle (Short)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="52" V="Variables. The &lt;#&gt;Code Memory has the (E)Bit set">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Audio Track Number on Channel 1 (only for read) (Short)" />
           <Enum K="1" V="Audio Track Number on Channel 2 (only for read) (Short)" />
@@ -12387,7 +12387,7 @@
           <Enum K="22" V="Frame 3d Counter. (It works in game and inventory but not in pause) (Long)" />
           <Enum K="23" V="Index of current vehicle or -1 if lara's not using a vehicle (Short)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Bit  0  ($00000001 ; 1)" />
@@ -12426,7 +12426,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="53" V="Variables. The &lt;#&gt;Code Memory has the (E)BIt clear">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Audio Track Number on Channel 1 (only for read) (Short)" />
           <Enum K="1" V="Audio Track Number on Channel 2 (only for read) (Short)" />
@@ -12453,7 +12453,7 @@
           <Enum K="22" V="Frame 3d Counter. (It works in game and inventory but not in pause) (Long)" />
           <Enum K="23" V="Index of current vehicle or -1 if lara's not using a vehicle (Short)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Bit  0  ($00000001 ; 1)" />
@@ -12492,9 +12492,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="54" V="Lara. Distance. Lara is distant by &lt;#&gt;Moveable less or even than (E)Clicks">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="1" End="30">
           <Fixed>Value=</Fixed>
@@ -12503,9 +12503,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="55" V="Lara. Distance. Lara is distant by &lt;#&gt;Moveable less or even than (E)Units">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Units in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
@@ -12514,7 +12514,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="56" V="Variables. CurrentValue is &gt;= than &lt;#&gt;Variable">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12563,10 +12563,10 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="57" V="Variables. CurrentValue is = than &lt;#&gt;Variable">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12615,10 +12615,10 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="58" V="Variables. CurrentValues is &lt; than &lt;#&gt;Variable">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Global Byte Alfa1" />
           <Enum K="1" V="Global Byte Alfa2" />
@@ -12667,10 +12667,10 @@
           <Enum K="115" V="Local Long Timer" />
           <Enum K="255" V="Current Value" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="59" V="Inventory. The just selected item from inventory is &lt;#&gt;Item">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="175" V="PUZZLE_ITEM1                    &#x9;Slot=175" />
           <Enum K="176" V="PUZZLE_ITEM2                    &#x9;Slot=176" />
@@ -12787,15 +12787,15 @@
           <Enum K="371" V="BINOCULARS_ITEM                 &#x9;Slot=371" />
           <Enum K="372" V="FLARE_ITEM                      &#x9;Slot=372" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="60" V="Fragmented trigger. Check in (E) way if lara is in the &lt;#&gt;circle">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="511">
           <Fixed>Circle with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12806,12 +12806,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="61" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in -X,-Z direction (south-west) corner and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12822,12 +12822,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="62" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in -X,+Z direction (north-west) corner and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12838,12 +12838,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="63" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in +X,+Z direction (north-east) corner and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12854,12 +12854,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="64" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in +X,-Z direction (south-east) corner and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12870,12 +12870,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="65" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle--X direction (west) side and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12886,12 +12886,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="66" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-+X direction (east) side and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12902,12 +12902,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="67" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-+Z direction (north) side and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12918,12 +12918,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="68" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle--Z direction (south) side and &lt;#&gt;Radius">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -12934,12 +12934,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="69" V="Fragmented trigger. Check in (E) way if lara is in the -X,+Z direction (north-west) corner triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -12950,12 +12950,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="70" V="Fragmented trigger. Check in (E) way if lara is in the -X,-Z direction (south-west) corner triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -12966,12 +12966,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="71" V="Fragmented trigger. Check in (E) way if lara is in the +X,+Z direction (north-east) corner triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -12982,12 +12982,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="72" V="Fragmented trigger. Check in (E) way if lara is in the +X,-Z direction (south-east) corner triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -12998,12 +12998,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="73" V="Fragmented trigger. Check in (E) way if lara is in the +X direction (east) side triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -13014,12 +13014,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="74" V="Fragmented trigger. Check in (E) way if lara is in the -X direction (west) side triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -13030,12 +13030,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="75" V="Fragmented trigger. Check in (E) way if lara is in the +Z direction (north) side triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -13046,12 +13046,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="76" V="Fragmented trigger. Check in (E) way if lara is in the -Z direction (south) side triangle with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -13062,12 +13062,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="77" V="Fragmented trigger. Check in (E) way if lara is in the Rhombus with &lt;#&gt;Size">
-      <Timer>
+      <Target>
         <LinearModel Start="16" End="1022">
           <Fixed>Diagonal Size=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Rhombus" />
@@ -13078,12 +13078,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="78" V="Fragmented trigger. Check in (E) way if lara is in the custom triangle defined in the &lt;#&gt;Parameter command">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="254">
           <Fixed>Parameters=PARAM_TRIANGLE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Triangle" />
@@ -13094,12 +13094,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="79" V="Fragmented trigger. Check in (E) way if lara is in the quadrilateral defined in the &lt;#&gt;Parameter command">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="254">
           <Fixed>Parameters=PARAM_QUADRILATERAL,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current Quadrilateral" />
@@ -13110,12 +13110,12 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="80" V="Fragmented trigger">
-      <Timer>
+      <Target>
         <LinearModel Start="1" End="254">
           <Fixed>Parameters=PARAM_CIRCLE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="DEFAULT. Lara is over current circle" />
@@ -13126,7 +13126,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="81" V="Lara. Room. Lara is in the &lt;#&gt;room type">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="0" V="Water room" />
           <Enum K="2" V="Quick Sand room" />
@@ -13136,12 +13136,12 @@
           <Enum K="11" V="Rain room" />
           <Enum K="12" V="Cold water room" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="82" V="Collision. &lt;#&gt;Moveable is touching Lara with its (E)mesh">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Mesh </Fixed>
@@ -13150,9 +13150,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="83" V="Collision. Lara is touching &lt;#&gt;Moveable with her (E)mesh">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>Mesh </Fixed>
@@ -13161,9 +13161,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="84" V="Creature. &lt;#&gt;Moveable with (E)degrees of view is able to see Lara">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
       <Extra>
         <LinearModel Start="1" End="12">
           <Linear Add="0.0" Factor="22.5" />
@@ -13172,67 +13172,67 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="85" V="Sound. The &lt;#&gt;Sfx Sound effect is playing">
-      <Timer>
+      <Target>
         <Sfx1024 />
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="86" V="Cutscene. Current demo is playing/recording the &lt;#&gt;frame">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="1022">
           <Fixed>Frame</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="87" V="Cutscene. Current demo is playing/recording the &lt;#&gt;frame from Paramaters=PARAM_BIG_NUMBERS script command">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="126">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="88" V="Cutscene. Leading Actor is far from floor of &lt;#&gt;Units or greater">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="126">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="89" V="Cutscene. Leading Actor is far from floor of &lt;#&gt;Units or lower">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="126">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="90" V="Cutscene. Leading Actor top side is far from ceiling of &lt;#&gt;Units or greater">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="126">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="91" V="Cutscene. Leading Actor top side is far from ceiling of &lt;#&gt;Units or lower">
-      <Timer>
+      <Target>
         <LinearModel Start="0" End="126">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="92" V="Creature. PAD trigger. the &lt;#&gt;moveable is touching floor">
-      <Timer>
+      <Target>
         <MoveablesInLevel />
-      </Timer>
+      </Target>
     </Subtrigger>
     <Subtrigger K="93" V="Variables. The (E)Text Variable is even than &lt;#&gt;NG String (Case sensitive comparison)">
-      <Timer>
+      <Target>
         <NgStringsAll />
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" BigText (319 characters)" />
@@ -13245,9 +13245,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="94" V="Variables. The (E)Text Variable is even than &lt;#&gt;NG String (Not case sensitive comparison)">
-      <Timer>
+      <Target>
         <NgStringsAll />
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" BigText (319 characters)" />
@@ -13260,7 +13260,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="95" V="Variables. The (E)Text Variable is even than &lt;#&gt;TextVariable (Case sensitive comparison)">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="32" V="Text1 (79 characters)" />
           <Enum K="33" V="Text2 (79 characters)" />
@@ -13269,7 +13269,7 @@
           <Enum K="54" V="Last Input Text  (79 characters)" />
           <Enum K="55" V="BigText (319 characters)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" BigText (319 characters)" />
@@ -13282,7 +13282,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="96" V="Variables. The (E)Text Variable is even than &lt;#&gt;TextVariable (Not case sensitive comparison)">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="32" V="Text1 (79 characters)" />
           <Enum K="33" V="Text2 (79 characters)" />
@@ -13291,7 +13291,7 @@
           <Enum K="54" V="Last Input Text  (79 characters)" />
           <Enum K="55" V="BigText (319 characters)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V=" BigText (319 characters)" />
@@ -13304,7 +13304,7 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="97" V="Variables. The &lt;#&gt;Text Variable is a (E)string">
-      <Timer>
+      <Target>
         <FixedEnumeration>
           <Enum K="32" V="Text1 (79 characters)" />
           <Enum K="33" V="Text2 (79 characters)" />
@@ -13313,7 +13313,7 @@
           <Enum K="54" V="Last Input Text  (79 characters)" />
           <Enum K="55" V="BigText (319 characters)" />
         </FixedEnumeration>
-      </Timer>
+      </Target>
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="An empty string (no character, zero length)" />
