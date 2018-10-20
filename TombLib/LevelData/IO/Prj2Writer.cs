@@ -415,7 +415,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Number);
                             LEB128.Write(chunkIO.Raw, instance.Sequence);
                             LEB128.Write(chunkIO.Raw, instance.Timer);
-                            chunkIO.WriteChunkString(Prj2Chunks.ObjectFlyBy2LuaScript, instance.LuaScript);
+                            chunkIO.WriteChunkString(Prj2Chunks.ObjectFlyBy2LuaScript, instance.LuaScript == null ? "" : instance.LuaScript);
                         });
                     else if (o is SinkInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))
