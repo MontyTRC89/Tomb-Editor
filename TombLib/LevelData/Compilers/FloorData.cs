@@ -284,7 +284,10 @@ namespace TombLib.LevelData.Compilers
             {
 
                 // First, we search if a special trigger exists.
-                TriggerInstance found = triggers.FirstOrDefault(t => t.TargetType == TriggerTargetType.Object) ?? firstTrigger;
+                TriggerInstance found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
+                                                                     t.TriggerType == TriggerType.Switch ||
+                                                                     t.TriggerType == TriggerType.Key ||
+                                                                     t.TriggerType == TriggerType.Pickup) ?? firstTrigger;
                 var sortedTriggers = new List<TriggerInstance>() { found };
                 sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
 
@@ -351,6 +354,19 @@ namespace TombLib.LevelData.Compilers
                             throw new Exception("Unknown trigger type found '" + found + "'");
                     }
 
+                    // Do some warnings in case user switches targets and some incompatible triggers are left behind
+
+                    if(_level.Settings.GameVersion != GameVersion.TRNG && found.TriggerType == TriggerType.ConditionNg)
+                        _progressReporter.ReportWarn("Level uses 'Condition' trigger type, which is not supported in this game engine.");
+
+                    if(_level.Settings.GameVersion == GameVersion.TRNG && found.TriggerType == TriggerType.Monkey)
+                        _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
+
+                    if ((_level.Settings.GameVersion != GameVersion.TR5 && _level.Settings.GameVersion != GameVersion.TR5Main) &&
+                        (found.TriggerType > TriggerType.ConditionNg && found.TriggerType < TriggerType.Monkey))
+                        _progressReporter.ReportWarn("Level uses trigger type '" + found.TriggerType + "', which is not supported in this game engine.");
+
+
                     ushort triggerSetup;
                     if (_level.Settings.GameVersion == GameVersion.TRNG)
                     {
@@ -363,15 +379,15 @@ namespace TombLib.LevelData.Compilers
                         // all other triggers work as usual
                         else
                             triggerSetup = GetTriggerRealTimer(found, 0xff);
-
-                        triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
                     }
                     else
-                    {
                         triggerSetup = GetTriggerParameter(found.Timer, found, 0xff);
-                        triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
+                    
+                    triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
+
+                    // Omit writing bitmask for ConditionNg, because it uses these bits for keeping EXTRA param.
+                    if (found.TriggerType != TriggerType.ConditionNg)
                         triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
-                    }
 
                     outFloorData.Add(trigger1);
                     outFloorData.Add(triggerSetup);
