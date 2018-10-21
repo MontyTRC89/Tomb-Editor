@@ -63,7 +63,7 @@ namespace TombLib.LevelData
 
         public bool Equals(LevelTexture other)
         {
-            if (!Path.Equals(other.Path, StringComparison.InvariantCultureIgnoreCase))
+            if (!(Path == null && other.Path == null) && !Path.Equals(other?.Path, StringComparison.InvariantCultureIgnoreCase))
                 return false;
             if (Convert512PixelsToDoubleRows != other.Convert512PixelsToDoubleRows)
                 return false;
@@ -85,16 +85,12 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string Filename;
-            try
-            {
-                Filename = System.IO.Path.GetFileNameWithoutExtension(Path);
-            }
-            catch
-            {
-                Filename = "<Unnamed>";
-            }
-            return Filename + " (at " + Path + ")";
+            string Filename = System.IO.Path.GetFileNameWithoutExtension(Path);
+
+            if (String.IsNullOrEmpty(Filename) && String.IsNullOrEmpty(Path))
+                return "<Unloaded placeholder>";
+            else
+                return Filename + " (at " + Path + ")";
         }
 
         public void Reload(LevelSettings settings)

@@ -965,18 +965,21 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public void WriteAnimatedTextures(BinaryWriterEx writer)
+        public void SortAnimatedTextures()
         {
             // Put UVRotate sequences first
-            var SortedAnimTextures = ActualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
+            ActualAnimTextures = ActualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
+        }
 
+        public void WriteAnimatedTextures(BinaryWriterEx writer)
+        {
             int numAnimatedTextures = 1;
-            foreach (var compiledAnimatedTexture in SortedAnimTextures)
+            foreach (var compiledAnimatedTexture in ActualAnimTextures)
                 numAnimatedTextures += compiledAnimatedTexture.FrameCount() + 1;
             writer.Write((uint)numAnimatedTextures);
 
-            writer.Write((ushort)SortedAnimTextures.Count);
-            foreach (var compiledAnimatedTexture in SortedAnimTextures)
+            writer.Write((ushort)ActualAnimTextures.Count);
+            foreach (var compiledAnimatedTexture in ActualAnimTextures)
             {
                 writer.Write((ushort)(compiledAnimatedTexture.FrameCount() - 1));
 
