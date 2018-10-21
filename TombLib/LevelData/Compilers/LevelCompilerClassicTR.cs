@@ -103,6 +103,7 @@ namespace TombLib.LevelData.Compilers
             // New texture packer
             ReportProgress(30, "Packing textures");
 
+            _textureInfoManager.SortAnimatedTextures();
             _textureInfoManager.PackTextures(_level.Settings.TexturePadding);
             _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 
