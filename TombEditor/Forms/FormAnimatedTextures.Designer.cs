@@ -556,7 +556,7 @@ namespace TombEditor.Forms
             this.lblHeaderNgSettings.Name = "lblHeaderNgSettings";
             this.lblHeaderNgSettings.Size = new System.Drawing.Size(167, 18);
             this.lblHeaderNgSettings.TabIndex = 10;
-            this.lblHeaderNgSettings.Text = "TRNG Settings";
+            this.lblHeaderNgSettings.Text = "Settings";
             this.lblHeaderNgSettings.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // lblPreview
