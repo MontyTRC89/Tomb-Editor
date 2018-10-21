@@ -593,12 +593,16 @@ namespace TombEditor.Controls
                 case MouseButtons.Left:
                     PickingResult newPicking = DoPicking(GetRay(e.X, e.Y), true);
                     if (newPicking is PickingResultObject)
-                        EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, Parent);
+                    {
+                        var pickedObject = ((PickingResultObject)newPicking).ObjectInstance;
+                        if(pickedObject.Room == _editor.SelectedRoom)
+                            EditorActions.EditObject(pickedObject, Parent);
+                    }
                     else if (newPicking is PickingResultBlock)
                     {
-                        var blockPicking = newPicking as PickingResultBlock;
-                        if (blockPicking.Room != _editor.SelectedRoom)
-                            _editor.SelectedRoom = blockPicking.Room;
+                        var pickedRoom = ((PickingResultBlock)newPicking).Room;
+                        if (pickedRoom != _editor.SelectedRoom)
+                            _editor.SelectedRoom = pickedRoom;
                     }
                     break;
 
