@@ -351,7 +351,7 @@
             this.toolPortalDigger.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolPortalDigger.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolPortalDigger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolPortalDigger.Image = global::TombEditor.Properties.Resources.toolbox_PortalDigger;
+            this.toolPortalDigger.Image = global::TombEditor.Properties.Resources.toolbox_PortalDigger_16;
             this.toolPortalDigger.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolPortalDigger.Margin = new System.Windows.Forms.Padding(1);
             this.toolPortalDigger.Name = "toolPortalDigger";
