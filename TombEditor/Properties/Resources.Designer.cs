@@ -1143,9 +1143,9 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap toolbox_PortalDigger {
+        internal static System.Drawing.Bitmap toolbox_PortalDigger_16 {
             get {
-                object obj = ResourceManager.GetObject("toolbox_PortalDigger", resourceCulture);
+                object obj = ResourceManager.GetObject("toolbox_PortalDigger_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
