@@ -1018,29 +1018,25 @@ namespace TombEditor.Forms
             switch (effect)
             {
                 case AnimatedTextureAnimationType.Frames:
-                    lblFps.Visible = true;
                     comboFps.Visible = false;
                     numericUpDownFPS.Visible = true;
-                    lblUvRotate.Visible = false;
-                    comboUvRotate.Visible = false;
+                    numericUpDownFPS.Enabled = true;
+                    comboUvRotate.Enabled = false;
                     break;
 
                 case AnimatedTextureAnimationType.PFrames:
-                    lblFps.Visible = false;
                     comboFps.Visible = false;
-                    numericUpDownFPS.Visible = false;
-                    lblUvRotate.Visible = false;
-                    comboUvRotate.Visible = false;
+                    numericUpDownFPS.Visible = true;
+                    numericUpDownFPS.Enabled = false;
+                    comboUvRotate.Enabled = false;
                     break;
 
                 case AnimatedTextureAnimationType.UVRotate:
                 case AnimatedTextureAnimationType.HalfRotate:
                 case AnimatedTextureAnimationType.RiverRotate:
-                    lblFps.Visible = true;
                     comboFps.Visible = true;
                     numericUpDownFPS.Visible = false;
-                    lblUvRotate.Visible = true;
-                    comboUvRotate.Visible = true;
+                    comboUvRotate.Enabled = true;
 
                     comboFps.SelectedIndex = 0;
                     comboUvRotate.SelectedIndex = 64;
