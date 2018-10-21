@@ -1,6 +1,8 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -118,6 +120,7 @@ namespace TombLib.LevelData.Compilers.Util
             public VectorInt2 PositionInPage { get; set; }
             public int Page { get; set; }
             public int[] Padding { get; set; } = new int[4]; // LTRB
+            public bool SqueezeAndDuplicate { get; set; } // Needed for UVRotate
 
             public Texture Texture { get; private set; }
             public BumpLevel BumpLevel { get; set; }
@@ -167,6 +170,7 @@ namespace TombLib.LevelData.Compilers.Util
                 Texture = texture;
                 BumpLevel = bumpLevel;
                 IsForRoom = isForRoom;
+                SqueezeAndDuplicate = false;
             }
 
             // Compare parent's properties with incoming texture properties.
@@ -274,6 +278,10 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var parent in CompiledAnimation)
                 {
                     var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.BumpLevel, parent.IsForRoom);
+
+                    // Squeeze and duplicate bitmap data for UVRotate texture sets
+                    newParent.SqueezeAndDuplicate = Origin.IsUvRotate;
+
                     foreach (var child in parent.Children)
                     {
                         var newChild = new ChildTextureArea()
@@ -818,15 +826,46 @@ namespace TombLib.LevelData.Compilers.Util
                 var width = (int)p.Area.Width;
                 var height = (int)p.Area.Height;
 
-                image.CopyFrom(p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + p.Padding[1], p.Texture.Image,
-                               x, y, width, height);
-                AddPadding(p, p.Texture.Image, image, 0, padding);
+                var destX = p.PositionInPage.X + p.Padding[0];
+                var destY = p.Page * 256 + p.PositionInPage.Y + p.Padding[1];
+
+                if (p.SqueezeAndDuplicate)
+                {
+                    // If squeeze-and-duplicate approach is needed (UVRotate), use system drawing routines
+                    // to do high-quality bicubic resampling.
+
+                    // Copy original region to new image
+                    var originalImage = ImageC.CreateNew(width, height);
+                    originalImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
+
+                    // Make squeezed bitmap and put original one into it using bicubic resampling
+                    var destBitmap = new Bitmap(width, height / 2);
+                    using (var graphics = System.Drawing.Graphics.FromImage(destBitmap))
+                    {
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
+                    }
+
+                    // Twice copy squeezed image to original image
+                    var squeezedImage = ImageC.FromSystemDrawingImage(destBitmap);
+                    originalImage.CopyFrom(0, 0, squeezedImage, 0, 0, width, height / 2);
+                    originalImage.CopyFrom(0, height / 2, squeezedImage, 0, 0, width, height / 2);
+
+                    // Copy squeezed-and-duplicated image to texture map and add padding
+                    image.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
+                    AddPadding(p, originalImage, image, 0, padding, 0, 0);
+                }
+                else
+                {
+                    image.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
+                    AddPadding(p, p.Texture.Image, image, 0, padding);
+                }
 
                 // Do the bump map if needed
                 if (p.BumpLevel != BumpLevel.None)
                 {
                     var bumpImage = ImageC.CreateNew(width, height);
-                    bumpImage.CopyFrom(0, 0, image, p.PositionInPage.X + p.Padding[0], p.Page * 256 + p.PositionInPage.Y + p.Padding[1], (int)p.Area.Width, (int)p.Area.Height);
+                    bumpImage.CopyFrom(0, 0, image, destX, destY, width, height);
 
                     int effectWeight = 0;
                     int effectSize   = 0;
@@ -848,8 +887,8 @@ namespace TombLib.LevelData.Compilers.Util
                     }
                     bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
 
-                    var bumpX = p.PositionInPage.X + p.Padding[0];
-                    var bumpY = (numPages + p.Page) * 256 + p.PositionInPage.Y + p.Padding[1];
+                    var bumpX = destX;
+                    var bumpY = destY + (numPages * 256);
 
                     image.CopyFrom(bumpX, bumpY, bumpImage);
                     AddPadding(p, image, image, numPages, padding, bumpX, bumpY);
