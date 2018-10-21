@@ -18,7 +18,7 @@ namespace TombLib.LevelData.Compilers
             public int ObjectTextureCount { get; set; }
             public override string ToString()
             {
-                return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | Applied 'object' textures: " + ObjectTextureCount;
+                return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | TexInfos: " + ObjectTextureCount;
             }
         }
 
@@ -107,8 +107,10 @@ namespace TombLib.LevelData.Compilers
             _textureInfoManager.PackTextures(_level.Settings.TexturePadding);
             _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 
-            ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);
+            ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            if (_textureInfoManager.TexInfoCount > 32767)
+                _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
 
             PrepareSoundSources();
             PrepareItems();

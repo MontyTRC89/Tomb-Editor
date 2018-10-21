@@ -32,8 +32,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering", "TombLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundTool", "SoundTool\SoundTool.csproj", "{AE350FF9-E471-473F-9898-2746D889D1BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderingTest_TemporaryProject", "RenderingTest_TemporaryProject\RenderingTest_TemporaryProject.csproj", "{63DEDA5F-9D0B-4C6A-8AC5-CF22B0D7BB06}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptEditor", "ScriptEditor\ScriptEditor.csproj", "{499107F9-09FF-4598-B6B2-9A65663FEB47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombInspect", "TombInspect\TombInspect.csproj", "{6ED36911-8338-4BCA-8F80-A11AAEF96E3D}"
@@ -80,10 +78,6 @@ Global
 		{AE350FF9-E471-473F-9898-2746D889D1BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE350FF9-E471-473F-9898-2746D889D1BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE350FF9-E471-473F-9898-2746D889D1BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63DEDA5F-9D0B-4C6A-8AC5-CF22B0D7BB06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63DEDA5F-9D0B-4C6A-8AC5-CF22B0D7BB06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63DEDA5F-9D0B-4C6A-8AC5-CF22B0D7BB06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63DEDA5F-9D0B-4C6A-8AC5-CF22B0D7BB06}.Release|Any CPU.Build.0 = Release|Any CPU
 		{499107F9-09FF-4598-B6B2-9A65663FEB47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{499107F9-09FF-4598-B6B2-9A65663FEB47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{499107F9-09FF-4598-B6B2-9A65663FEB47}.Release|Any CPU.ActiveCfg = Release|Any CPU
