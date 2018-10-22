@@ -73,18 +73,19 @@ namespace TombEditor.ToolWindows
             "Lvl 1",
             "Lvl 2",
             "Lvl 3"});
-            this.cmbBump.Location = new System.Drawing.Point(31, 3);
+            this.cmbBump.Location = new System.Drawing.Point(3, 30);
             this.cmbBump.Name = "cmbBump";
             this.cmbBump.Size = new System.Drawing.Size(65, 23);
             this.cmbBump.TabIndex = 12;
             this.toolTip.SetToolTip(this.cmbBump, "Bumpmap level");
+            this.cmbBump.Visible = false;
             this.cmbBump.SelectedIndexChanged += new System.EventHandler(this.cmbBump_SelectedIndexChanged);
             // 
             // butMirror
             // 
             this.butMirror.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butMirror.Image = global::TombEditor.Properties.Resources.texture_Mirror;
-            this.butMirror.Location = new System.Drawing.Point(206, 3);
+            this.butMirror.Location = new System.Drawing.Point(173, 3);
             this.butMirror.Name = "butMirror";
             this.butMirror.Size = new System.Drawing.Size(23, 23);
             this.butMirror.TabIndex = 11;
@@ -122,9 +123,9 @@ namespace TombEditor.ToolWindows
             "64",
             "128",
             "256"});
-            this.cmbTileSize.Location = new System.Drawing.Point(233, 3);
+            this.cmbTileSize.Location = new System.Drawing.Point(201, 3);
             this.cmbTileSize.Name = "cmbTileSize";
-            this.cmbTileSize.Size = new System.Drawing.Size(50, 23);
+            this.cmbTileSize.Size = new System.Drawing.Size(82, 23);
             this.cmbTileSize.TabIndex = 9;
             this.toolTip.SetToolTip(this.cmbTileSize, "Selection tile size");
             this.cmbTileSize.SelectedIndexChanged += new System.EventHandler(this.cmbTileSize_SelectedIndexChanged);
@@ -144,7 +145,7 @@ namespace TombEditor.ToolWindows
             // 
             this.butRotate.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butRotate.Image = global::TombEditor.Properties.Resources.texture_Rotate;
-            this.butRotate.Location = new System.Drawing.Point(179, 3);
+            this.butRotate.Location = new System.Drawing.Point(145, 3);
             this.butRotate.Name = "butRotate";
             this.butRotate.Size = new System.Drawing.Size(23, 23);
             this.butRotate.TabIndex = 8;
@@ -161,9 +162,9 @@ namespace TombEditor.ToolWindows
             "Exclude",
             "Screen",
             "Lighten"});
-            this.cmbBlending.Location = new System.Drawing.Point(100, 3);
+            this.cmbBlending.Location = new System.Drawing.Point(31, 3);
             this.cmbBlending.Name = "cmbBlending";
-            this.cmbBlending.Size = new System.Drawing.Size(75, 23);
+            this.cmbBlending.Size = new System.Drawing.Size(109, 23);
             this.cmbBlending.TabIndex = 6;
             this.toolTip.SetToolTip(this.cmbBlending, "Blending mode");
             this.cmbBlending.SelectedIndexChanged += new System.EventHandler(this.cmbBlending_SelectedIndexChanged);
