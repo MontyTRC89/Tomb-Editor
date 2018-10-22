@@ -104,7 +104,7 @@ namespace TombEditor.Forms
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 424F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 618F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(862, 618);
             this.tableLayoutPanel1.TabIndex = 43;
             // 
@@ -226,7 +226,7 @@ namespace TombEditor.Forms
             0,
             0,
             131072});
-            this.numericUpDownFPS.Location = new System.Drawing.Point(107, 1);
+            this.numericUpDownFPS.Location = new System.Drawing.Point(107, 0);
             this.numericUpDownFPS.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -246,7 +246,7 @@ namespace TombEditor.Forms
             // comboFps
             // 
             this.comboFps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboFps.Location = new System.Drawing.Point(107, 1);
+            this.comboFps.Location = new System.Drawing.Point(107, 0);
             this.comboFps.Name = "comboFps";
             this.comboFps.Size = new System.Drawing.Size(71, 23);
             this.comboFps.TabIndex = 9;
