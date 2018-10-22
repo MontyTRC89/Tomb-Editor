@@ -97,7 +97,7 @@ namespace TombEditor.Controls.ContextMenus
                         null,
                         (o, e) =>
                         {
-                            _editor.SelectRoomAndResetCamera(trigger.Room);
+                            _editor.SelectRoom(trigger.Room);
                         });
                     Items.Add(triggerItem);
                 }

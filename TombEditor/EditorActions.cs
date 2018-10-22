@@ -490,7 +490,7 @@ namespace TombEditor
 
             // Display form
             using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj),
-                                                     r => _editor.SelectRoomAndResetCamera(r)))
+                                                     r => _editor.SelectRoom(r)))
             {
                 if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                     return;
@@ -665,7 +665,7 @@ namespace TombEditor
             else if (instance is TriggerInstance)
             {
                 using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj),
-                                                         r => _editor.SelectRoomAndResetCamera(r)))
+                                                         r => _editor.SelectRoom(r)))
                     if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -1390,7 +1390,7 @@ namespace TombEditor
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
             if (rooms.Contains(_editor.SelectedRoom))
-                _editor.SelectRoomAndResetCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+                _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
             _editor.RoomListChange();
         }
 

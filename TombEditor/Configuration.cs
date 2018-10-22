@@ -78,6 +78,7 @@ namespace TombEditor
         public int Rendering3D_FontSize { get; set; } = 24;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
+        public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
