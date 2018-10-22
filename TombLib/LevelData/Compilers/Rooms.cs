@@ -339,7 +339,7 @@ namespace TombLib.LevelData.Compilers
                                 Result result;
                                 lock (_objectTextureManager)
                                 {
-                                    result = _textureInfoManager.AddTexture(texture, false, true);
+                                    result = _textureInfoManager.AddTexture(texture, true, true);
                                     //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
                                 }
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
