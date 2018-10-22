@@ -106,47 +106,20 @@ namespace TombEditor.Forms
                         subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
                 });
 
+            _isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
+
+            // Setup controls
+            SetupControls();
+
             // Setup data grid view
             texturesDataGridViewControls.DataGridView = texturesDataGridView;
             texturesDataGridViewControls.CreateNewRow = GetSelectedAnimatedTextureFrame;
             texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(editor.Level.Settings.Textures);
-
-            // NG settings
-            _isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
-            if (_isNg)
-            {
-                // Fill effect combobox
-                foreach (var animationType in Enum.GetValues(typeof(AnimatedTextureAnimationType)))
-                    comboEffect.Items.Add(animationType);
-
-                // Fill uv rotate combobox
-                for (int i = -64; i < 0; i++)
-                    comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
-                comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(0, "Default (from script)"));
-                for (int i = 1; i <= 64; i++)
-                    comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
-
-                // Fill with NG predefined FPS values required for river rotate etc.
-                for (int i = 1; i <= 32; i++)
-                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
-            }
-            else
-            {
-                comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
-                comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
-
-                comboUvRotate.Enabled = false;
-                comboFps.Enabled = false;
-                numericUpDownFPS.Enabled = false;
-            }
-
+            
             // Init state
             _editor_EditorEventRaised(new Editor.InitEvent());
             if (comboAnimatedTextureSets.Items.Count > 0)
                 comboAnimatedTextureSets.SelectedIndex = 0;
-
-            comboProcPresets.SelectedIndex = 0;
-            numFrames.Value = _maxLegacyFrames;
 
             // Setup texture map
             if (_editor.SelectedTexture.TextureIsInvisble)
@@ -168,8 +141,11 @@ namespace TombEditor.Forms
 
         private void _editor_EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.LevelChangedEvent || obj is Editor.LoadedTexturesChangedEvent)
+                Close();
+
             // Update texture combo box and reset texture map
-            if (obj is Editor.InitEvent || obj is Editor.LoadedTexturesChangedEvent || obj is Editor.LevelChangedEvent)
+            if (obj is Editor.InitEvent)
             {
                 comboCurrentTexture.Items.Clear();
                 comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
@@ -198,11 +174,9 @@ namespace TombEditor.Forms
                     else
                         comboAnimatedTextureSets.Text = "";
                 comboAnimatedTextureSets.Invalidate();
-            }
 
-            // Update display animated texture setup
-            if (obj is Editor.InitEvent || obj is Editor.AnimatedTexturesChanged)
                 UpdateCurrentAnimationDisplay();
+            }
 
             // Invalidate texture view
             if (obj is Editor.AnimatedTexturesChanged)
@@ -246,6 +220,47 @@ namespace TombEditor.Forms
                 selectedSet.Frames.Add(frame);
                 _editor.AnimatedTexturesChange();
             }
+        }
+
+        private void SetupControls()
+        {
+            // Clear previous elements
+            comboEffect.Items.Clear();
+            comboUvRotate.Items.Clear();
+            comboFps.Items.Clear();
+            comboAnimatedTextureSets.Items.Clear();
+
+            // NG settings
+            if (_isNg)
+            {
+                // Fill effect combobox
+                foreach (var animationType in Enum.GetValues(typeof(AnimatedTextureAnimationType)))
+                    comboEffect.Items.Add(animationType);
+
+                // Fill uv rotate combobox
+                for (int i = -64; i < 0; i++)
+                    comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
+                comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(0, "Default (from script)"));
+                for (int i = 1; i <= 64; i++)
+                    comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
+
+                // Fill with NG predefined FPS values required for river rotate etc.
+                for (int i = 1; i <= 32; i++)
+                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
+
+            }
+            else
+            {
+                comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
+                comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
+
+                comboUvRotate.Enabled = false;
+                comboFps.Enabled = false;
+                numericUpDownFPS.Enabled = false;
+            }
+
+            comboProcPresets.SelectedIndex = 0;
+            numFrames.Value = _maxLegacyFrames;
         }
 
         private void UpdateCurrentAnimationDisplay()

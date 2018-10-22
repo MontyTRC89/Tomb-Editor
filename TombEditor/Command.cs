@@ -715,8 +715,14 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate (CommandArgs args)
             {
-                FormSearch searchForm = new FormSearch(args.Editor);
-                searchForm.Show(args.Window); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
+                var existingWindow = Application.OpenForms["FormSearch"];
+                if (existingWindow == null)
+                {
+                    FormSearch searchForm = new FormSearch(args.Editor);
+                    searchForm.Show(args.Window);
+                }
+                else
+                    existingWindow.Focus();
             });
 
             AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate (CommandArgs args)
@@ -1002,8 +1008,14 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
-                using (FormAnimatedTextures form = new FormAnimatedTextures(args.Editor, null))
-                    form.ShowDialog(args.Window);
+                var existingWindow = Application.OpenForms["FormAnimatedTextures"];
+                if (existingWindow == null)
+                {
+                    FormAnimatedTextures form = new FormAnimatedTextures(args.Editor, null);
+                    form.Show(args.Window);
+                }
+                else
+                    existingWindow.Focus();
             });
 
             AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate (CommandArgs args)
