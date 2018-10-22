@@ -168,7 +168,7 @@ namespace TombEditor.Forms
 
         private void _editor_EditorEventRaised(IEditorEvent obj)
         {
-            // Update texture combo box
+            // Update texture combo box and reset texture map
             if (obj is Editor.InitEvent || obj is Editor.LoadedTexturesChangedEvent || obj is Editor.LevelChangedEvent)
             {
                 comboCurrentTexture.Items.Clear();
@@ -178,6 +178,7 @@ namespace TombEditor.Forms
                 texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(_editor.Level.Settings.Textures);
                 if (obj is Editor.LoadedTexturesChangedEvent && ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect != null)
                     comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
+
                 textureMap.Invalidate();
             }
 
@@ -206,14 +207,6 @@ namespace TombEditor.Forms
             // Invalidate texture view
             if (obj is Editor.AnimatedTexturesChanged)
                 textureMap.Invalidate();
-
-            // Reset texture map
-            if (obj is Editor.LevelChangedEvent)
-            {
-                comboCurrentTexture.Items.Clear();
-                comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
-                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
-            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
