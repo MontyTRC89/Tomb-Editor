@@ -73,6 +73,26 @@ namespace TombLib.Rendering
             SectorColoringType.TriggerTriggerer
         };
 
+        public static readonly HashSet<SectorColoringType> IgnoredHighlightsForFloor = new HashSet<SectorColoringType>
+        {
+            SectorColoringType.Portal,
+            SectorColoringType.CeilingPortal,
+            SectorColoringType.BorderWall,
+            SectorColoringType.Wall,
+            SectorColoringType.Beetle,
+            SectorColoringType.TriggerTriggerer
+        };
+
+        public static readonly HashSet<SectorColoringType> IgnoredHighlightsForCeiling = new HashSet<SectorColoringType>
+        {
+            SectorColoringType.Portal,
+            SectorColoringType.FloorPortal,
+            SectorColoringType.BorderWall,
+            SectorColoringType.Wall,
+            SectorColoringType.Beetle,
+            SectorColoringType.TriggerTriggerer
+        };
+
         public static readonly List<SectorColoringShape> UsedShapes = new List<SectorColoringShape>
         {
             SectorColoringShape.Rectangle
@@ -130,10 +150,12 @@ namespace TombLib.Rendering
                 case BlockFace.Floor:
                 case BlockFace.FloorTriangle2:
                     // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
-                    var currentHighlights = ColoringInfo.GetColors(room, x, z, ProbeAttributesThroughPortals, IgnoredHighlights, UsedShapes);
-                    Color = currentHighlights != null ? currentHighlights[0].Color : SectorColoringInfo.ColorFloor;
-                    if (room.Blocks[x, z].FloorPortal != null)
-                        Color = SectorColoringInfo.ColorPortalFace;
+                    var currentHighlights = ColoringInfo.GetColors(room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForFloor, UsedShapes);
+                    if (currentHighlights != null)
+                        Color = currentHighlights[0].Color;
+                    else
+                        Color = SectorColoringInfo.ColorFloor;
+
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
                         if ((room.Blocks[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
@@ -145,10 +167,12 @@ namespace TombLib.Rendering
                 case BlockFace.Ceiling:
                 case BlockFace.CeilingTriangle2:
                     // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
-                    var currentHighlights2 = ColoringInfo.GetColors(room, x, z, ProbeAttributesThroughPortals, IgnoredHighlights, UsedShapes);
-                    Color = currentHighlights2 != null ? currentHighlights2[0].Color : SectorColoringInfo.ColorFloor;
-                    if (room.Blocks[x, z].CeilingPortal != null)
-                        Color = SectorColoringInfo.ColorPortalFace;
+                    var currentHighlights2 = ColoringInfo.GetColors(room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForCeiling, UsedShapes);
+                    if (currentHighlights2 != null)
+                        Color = currentHighlights2[0].Color;
+                    else
+                        Color = SectorColoringInfo.ColorFloor;
+
                     if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                     {
                         if ((room.Blocks[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
@@ -191,7 +215,7 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeZ_RF:
                 case BlockFace.NegativeZ_WS:
                     {
-                        Room.RoomBlockPair lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
+                        Room.RoomBlockPair lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
                             Color = SectorColoringInfo.ColorClimb;
                         break;

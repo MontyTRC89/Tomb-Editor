@@ -16,6 +16,8 @@ namespace TombLib.Rendering
         Death,
         Climb,
         Portal,
+        FloorPortal,
+        CeilingPortal,
         BorderWall,
         Floor,
         Ceiling,
@@ -132,6 +134,14 @@ namespace TombLib.Rendering
                             case SectorColoringType.Portal:
                                 if (block.IsAnyPortal)
                                     return ColorPortal;
+                                break;
+                            case SectorColoringType.FloorPortal:
+                                if (block.FloorPortal != null)
+                                    return ColorPortalFace;
+                                break;
+                            case SectorColoringType.CeilingPortal:
+                                if (block.CeilingPortal != null)
+                                    return ColorPortalFace;
                                 break;
                         }
                         break;

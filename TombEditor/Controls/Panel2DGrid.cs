@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -27,6 +28,12 @@ namespace TombEditor.Controls
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
+
+        public static readonly HashSet<SectorColoringType> IgnoredHighlights = new HashSet<SectorColoringType>
+        {
+            SectorColoringType.FloorPortal,
+            SectorColoringType.CeilingPortal
+        };
 
         public Room Room
         {
@@ -298,7 +305,7 @@ namespace TombEditor.Controls
 
         protected virtual void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
         {
-            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, IgnoredHighlights);
             if (currentSectorColoringInfos == null)
                 return;
 
