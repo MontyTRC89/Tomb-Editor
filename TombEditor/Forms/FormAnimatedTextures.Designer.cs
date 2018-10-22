@@ -66,6 +66,7 @@ namespace TombEditor.Forms
             this.comboAnimatedTextureSets = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel4 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -76,6 +77,7 @@ namespace TombEditor.Forms
             this.settingsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkLabel1
@@ -141,6 +143,7 @@ namespace TombEditor.Forms
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panel4);
             this.panel1.Controls.Add(this.butEditSetName);
             this.panel1.Controls.Add(this.lblProcAnim);
             this.panel1.Controls.Add(this.panel3);
@@ -151,7 +154,6 @@ namespace TombEditor.Forms
             this.panel1.Controls.Add(this.texturesDataGridView);
             this.panel1.Controls.Add(this.lblHeaderNgSettings);
             this.panel1.Controls.Add(this.lblPreview);
-            this.panel1.Controls.Add(this.settingsPanel);
             this.panel1.Controls.Add(this.previewImage);
             this.panel1.Controls.Add(this.texturesDataGridViewControls);
             this.panel1.Controls.Add(this.butAnimatedTextureSetDelete);
@@ -574,24 +576,20 @@ namespace TombEditor.Forms
             // 
             this.settingsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.settingsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.settingsPanel.Controls.Add(this.lblUvRotate);
             this.settingsPanel.Controls.Add(this.comboUvRotate);
-            this.settingsPanel.Controls.Add(this.lblFps);
-            this.settingsPanel.Controls.Add(this.lblEffect);
             this.settingsPanel.Controls.Add(this.comboEffect);
             this.settingsPanel.Controls.Add(this.numericUpDownFPS);
             this.settingsPanel.Controls.Add(this.comboFps);
-            this.settingsPanel.Location = new System.Drawing.Point(4, 558);
+            this.settingsPanel.Location = new System.Drawing.Point(5, 22);
             this.settingsPanel.Name = "settingsPanel";
-            this.settingsPanel.Size = new System.Drawing.Size(336, 52);
+            this.settingsPanel.Size = new System.Drawing.Size(323, 24);
             this.settingsPanel.TabIndex = 12;
             // 
             // lblUvRotate
             // 
             this.lblUvRotate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblUvRotate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblUvRotate.Location = new System.Drawing.Point(166, 5);
+            this.lblUvRotate.Location = new System.Drawing.Point(186, 6);
             this.lblUvRotate.Name = "lblUvRotate";
             this.lblUvRotate.Size = new System.Drawing.Size(58, 14);
             this.lblUvRotate.TabIndex = 10;
@@ -600,9 +598,9 @@ namespace TombEditor.Forms
             // comboUvRotate
             // 
             this.comboUvRotate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboUvRotate.Location = new System.Drawing.Point(169, 22);
+            this.comboUvRotate.Location = new System.Drawing.Point(184, 0);
             this.comboUvRotate.Name = "comboUvRotate";
-            this.comboUvRotate.Size = new System.Drawing.Size(160, 23);
+            this.comboUvRotate.Size = new System.Drawing.Size(139, 23);
             this.comboUvRotate.TabIndex = 11;
             this.comboUvRotate.SelectionChangeCommitted += new System.EventHandler(this.comboUvRotate_SelectionChangeCommitted);
             // 
@@ -610,7 +608,7 @@ namespace TombEditor.Forms
             // 
             this.lblFps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblFps.Location = new System.Drawing.Point(89, 5);
+            this.lblFps.Location = new System.Drawing.Point(109, 6);
             this.lblFps.Name = "lblFps";
             this.lblFps.Size = new System.Drawing.Size(32, 14);
             this.lblFps.TabIndex = 8;
@@ -619,7 +617,7 @@ namespace TombEditor.Forms
             // lblEffect
             // 
             this.lblEffect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblEffect.Location = new System.Drawing.Point(3, 5);
+            this.lblEffect.Location = new System.Drawing.Point(2, 6);
             this.lblEffect.Name = "lblEffect";
             this.lblEffect.Size = new System.Drawing.Size(41, 14);
             this.lblEffect.TabIndex = 6;
@@ -629,9 +627,9 @@ namespace TombEditor.Forms
             // 
             this.comboEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboEffect.Location = new System.Drawing.Point(6, 22);
+            this.comboEffect.Location = new System.Drawing.Point(0, 0);
             this.comboEffect.Name = "comboEffect";
-            this.comboEffect.Size = new System.Drawing.Size(80, 23);
+            this.comboEffect.Size = new System.Drawing.Size(101, 23);
             this.comboEffect.TabIndex = 7;
             this.comboEffect.SelectedIndexChanged += new System.EventHandler(this.comboEffect_SelectedIndexChanged);
             this.comboEffect.SelectionChangeCommitted += new System.EventHandler(this.comboEffect_SelectionChangeCommitted);
@@ -648,7 +646,7 @@ namespace TombEditor.Forms
             0,
             0,
             131072});
-            this.numericUpDownFPS.Location = new System.Drawing.Point(92, 22);
+            this.numericUpDownFPS.Location = new System.Drawing.Point(107, 1);
             this.numericUpDownFPS.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -668,7 +666,7 @@ namespace TombEditor.Forms
             // comboFps
             // 
             this.comboFps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboFps.Location = new System.Drawing.Point(92, 22);
+            this.comboFps.Location = new System.Drawing.Point(107, 1);
             this.comboFps.Name = "comboFps";
             this.comboFps.Size = new System.Drawing.Size(71, 23);
             this.comboFps.TabIndex = 9;
@@ -750,6 +748,18 @@ namespace TombEditor.Forms
             this.toolTip.InitialDelay = 100;
             this.toolTip.ReshowDelay = 20;
             // 
+            // panel4
+            // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.settingsPanel);
+            this.panel4.Controls.Add(this.lblUvRotate);
+            this.panel4.Controls.Add(this.lblEffect);
+            this.panel4.Controls.Add(this.lblFps);
+            this.panel4.Location = new System.Drawing.Point(5, 558);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(335, 52);
+            this.panel4.TabIndex = 23;
+            // 
             // FormAnimatedTextures
             // 
             this.AcceptButton = this.butOk;
@@ -779,6 +789,7 @@ namespace TombEditor.Forms
             this.settingsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -837,5 +848,6 @@ namespace TombEditor.Forms
         private DarkButton butReplaceProcAnim;
         private DarkButton butAddProcAnim;
         private DarkNumericUpDown numericUpDownFPS;
+        private Panel panel4;
     }
 }
