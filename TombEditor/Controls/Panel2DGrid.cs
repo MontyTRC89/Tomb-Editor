@@ -184,12 +184,12 @@ namespace TombEditor.Controls
                         Room room = Room;
                         if (room.AlternateBaseRoom != null && portal.AdjoiningRoom.Alternated)
                         { // Go straight to alternated room
-                            _editor.SelectRoomAndResetCamera(portal.AdjoiningRoom.AlternateRoom);
+                            _editor.SelectRoom(portal.AdjoiningRoom.AlternateRoom);
                             _editor.SelectedObject = portal.FindOppositePortal(room).FindAlternatePortal(portal.AdjoiningRoom.AlternateRoom);
                         }
                         else
                         { // Go straight to base room
-                            _editor.SelectRoomAndResetCamera(portal.AdjoiningRoom);
+                            _editor.SelectRoom(portal.AdjoiningRoom);
                             _editor.SelectedObject = portal.FindOppositePortal(room);
                         }
                     }

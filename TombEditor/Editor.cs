@@ -596,14 +596,16 @@ namespace TombEditor
             RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration, UpdateKeyboardShortcuts = updateKeyboardShortcuts });
         }
 
-        // Select a room and center the camera
-        public void SelectRoomAndResetCamera(Room newRoom)
+        // Select a room and (optonally) center the camera
+        public void SelectRoom(Room newRoom)
         {
             if (SelectedRoom == newRoom)
                 return;
             SelectedSectors = SectorSelection.None;
             SelectedRoom = newRoom;
-            ResetCamera();
+
+            if(Configuration.Rendering3D_ResetCameraOnRoomSwitch)
+                ResetCamera();
         }
 
         // Select rooms
@@ -627,7 +629,7 @@ namespace TombEditor
         public void ShowObject(ObjectInstance objectInstance)
         {
             if (SelectedRoom != objectInstance.Room)
-                SelectRoomAndResetCamera(objectInstance.Room);
+                SelectRoom(objectInstance.Room);
             SelectedObject = objectInstance;
         }
 
@@ -769,7 +771,7 @@ namespace TombEditor
             {
                 List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
                 if (newSelection.FirstOrDefault() == null)
-                    SelectRoomAndResetCamera(_level.Rooms.Where(room => room != null).First());
+                    SelectRoom(_level.Rooms.Where(room => room != null).First());
                 else if (newSelection.Contains(SelectedRoom))
                     SelectRooms(newSelection);
                 else
