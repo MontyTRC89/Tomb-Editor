@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
     <Compile Include="Utils\LevelFileDialog.cs" />
+    <Compile Include="Utils\SynchronizationCallback.cs" />
     <Compile Include="Utils\WinFormsUtils.cs" />
   </ItemGroup>
   <ItemGroup>
