@@ -705,7 +705,7 @@ namespace TombLib.Wad.Tr4Wad
 
         private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> textures)
         {
-            TextureArea textureArea;
+            TextureArea textureArea = new TextureArea();
             textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
             textureArea.DoubleSided = false;
             textureArea.BumpLevel = BumpLevel.None;

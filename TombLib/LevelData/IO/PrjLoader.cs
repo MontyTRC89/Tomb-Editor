@@ -1968,7 +1968,7 @@ namespace TombLib.LevelData.IO
                             texInfo._y + texInfo._height + 0.5f)
                     };
 
-                    TextureArea texture;
+                    TextureArea texture = new TextureArea();
                     texture.Texture = levelTexture;
                     texture.DoubleSided = (prjFace._txtFlags & 0x04) != 0;
                     texture.BlendMode = (prjFace._txtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;

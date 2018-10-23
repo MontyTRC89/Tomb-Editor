@@ -1091,6 +1091,7 @@ namespace TombEditor
             var segments = GetFaces(room, pos, direction, section);
 
             var processedTexture = texture;
+            processedTexture.ParentArea = texture.GetRect();
             float minSectionHeight = float.MaxValue;
             float maxSectionHeight = float.MinValue;
 
@@ -1279,6 +1280,7 @@ namespace TombEditor
                         TextureArea currentTexture = texture;
                         Vector2 currentZ = verticalUVStride * z1;
 
+                        currentTexture.ParentArea = texture.GetRect();
                         currentTexture.TexCoord0 -= currentZ - currentX;
                         currentTexture.TexCoord1 = currentTexture.TexCoord0 - verticalUVStride;
                         currentTexture.TexCoord3 = currentTexture.TexCoord0 + horizontalUVStride;

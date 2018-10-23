@@ -299,7 +299,7 @@ namespace TombLib.LevelData.IO
                                                 continue;
 
                                             if (texture.Texture is LevelTexture)
-                                                using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture, LEB128.MaximumSize1Byte))
+                                                using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
                                                 {
                                                     int textureIndex = levelSettingIds.LevelTextures[(LevelTexture)texture.Texture];
 
@@ -308,6 +308,8 @@ namespace TombLib.LevelData.IO
                                                     chunkIO.Raw.Write(texture.TexCoord1);
                                                     chunkIO.Raw.Write(texture.TexCoord2);
                                                     chunkIO.Raw.Write(texture.TexCoord3);
+                                                    chunkIO.Raw.Write(texture.ParentArea.Start);
+                                                    chunkIO.Raw.Write(texture.ParentArea.End);
                                                     LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
                                                     LEB128.Write(chunkIO.Raw, textureIndex);
                                                 }

@@ -123,7 +123,7 @@ namespace TombLib.Wad.TrLevels
                 WadTexture texture = new WadTexture(image);
 
                 // Create texture area
-                TextureArea textureArea;
+                TextureArea textureArea = new TextureArea();
                 textureArea.DoubleSided = false;
                 textureArea.BlendMode = (BlendMode)(oldTexture.Attributes);
                 textureArea.BumpLevel = (BumpLevel)((oldTexture.NewFlags >> 11) & 0x03);
@@ -242,7 +242,7 @@ namespace TombLib.Wad.TrLevels
             image.SetPixel(0, 1, color2);
             image.SetPixel(1, 1, color2);
 
-            TextureArea textureArea;
+            TextureArea textureArea = new TextureArea();
             textureArea.Texture = new WadTexture(image);
             textureArea.TexCoord0 = new Vector2(0.5f, 0.5f);
             textureArea.TexCoord1 = new Vector2(1.5f, 0.5f);

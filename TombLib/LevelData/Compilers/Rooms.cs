@@ -326,7 +326,7 @@ namespace TombLib.LevelData.Compilers
                                 triangle.Texture = 20;
 
                                 // TODO Move texture area into the mesh
-                                TextureArea texture;
+                                TextureArea texture = new TextureArea();
                                 texture.DoubleSided = false;
                                 texture.BlendMode = BlendMode.Normal;
                                 texture.BumpLevel = BumpLevel.None;
