@@ -141,6 +141,8 @@ namespace TombEditor.Forms
 
         private void _editor_EditorEventRaised(IEditorEvent obj)
         {
+            // @FIXME: Proper event handling for these events was removed, because there were
+            // serious issues with DarkDataGridView on level reloading or unloading textures.
             if (obj is Editor.LevelChangedEvent || obj is Editor.LoadedTexturesChangedEvent)
                 Close();
 

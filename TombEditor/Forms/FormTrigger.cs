@@ -18,6 +18,8 @@ namespace TombEditor.Forms
         private readonly Level _level;
         private readonly TriggerInstance _trigger;
 
+        private bool _dialogIsUpdating = false;
+
         public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
         {
@@ -70,15 +72,19 @@ namespace TombEditor.Forms
 
         public void UpdateDialog()
         {
-            /*if (_loading)
-                return;*/
+            // This is needed to prevent recursive UpdateDialog call.
+            if (_dialogIsUpdating)
+                return;
+            _dialogIsUpdating = true;
+
             paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
             paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, TriggerType).ToParameterRange();
             paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
             paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
-            paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
-            
+
+            _dialogIsUpdating = false;
+
             bool isLuaScript   = TargetType  == TriggerTargetType.LuaScript;
             bool isConditionNg = TriggerType == TriggerType.ConditionNg;
             
