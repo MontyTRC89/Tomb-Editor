@@ -156,7 +156,7 @@ namespace TombEditor.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "<Unknown>";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormOperationDialog_FormClosing);
-            this.Shown += new System.EventHandler(this.FormBuildLevel_Shown);
+            this.Shown += new System.EventHandler(this.FormOperationDialog_Shown);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panelLogAndProgressBar.ResumeLayout(false);
             this.panelLog.ResumeLayout(false);
