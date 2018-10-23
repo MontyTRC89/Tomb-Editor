@@ -232,12 +232,15 @@ namespace TombEditor.Forms
             comboFps.Items.Clear();
             comboAnimatedTextureSets.Items.Clear();
 
+            // Add common animation types
+            comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
+            comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
+
             // NG settings
             if (_isNg)
             {
-                // Fill effect combobox
-                foreach (var animationType in Enum.GetValues(typeof(AnimatedTextureAnimationType)))
-                    comboEffect.Items.Add(animationType);
+                // For now, add only P-Frames mode, as Half-Rotate and River-Rotate modes are faulty.
+                comboEffect.Items.Add(AnimatedTextureAnimationType.PFrames);
 
                 // Fill uv rotate combobox
                 for (int i = -64; i < 0; i++)
@@ -249,13 +252,9 @@ namespace TombEditor.Forms
                 // Fill with NG predefined FPS values required for river rotate etc.
                 for (int i = 1; i <= 32; i++)
                     comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
-
             }
             else
             {
-                comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
-                comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
-
                 comboUvRotate.Enabled = false;
                 comboFps.Enabled = false;
                 numericUpDownFPS.Enabled = false;
@@ -369,8 +368,8 @@ namespace TombEditor.Forms
 
             int frameIndex = 0;
 
-            // Only advance to next frame for non-UVRotate sequences, otherwise show selected or first frame
-            if (!selectedSet.IsUvRotate)
+            // Only advance to next frame for frame type sequences, otherwise show selected or first frame
+            if (selectedSet.AnimationType == AnimatedTextureAnimationType.Frames)
             {
                 if (++_previewCurrentRepeatTimes < (_previewCurrentFrame?.Repeat ?? 0))
                     return;
