@@ -166,7 +166,8 @@ namespace TombLib.LevelData.Compilers
 
                 writer.Write((ushort)_textureInfoManager.NumRoomPages);
                 writer.Write((ushort)_textureInfoManager.NumObjectsPages);
-                writer.Write((ushort)_textureInfoManager.NumBumpPages);
+                // Bump map pages must be multiplied by 2 or tile index will be wrong
+                writer.Write((ushort)(_textureInfoManager.NumBumpPages * 2));
 
                 // Compress data
                 ReportProgress(95, "Compressing data");

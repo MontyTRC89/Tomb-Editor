@@ -1155,9 +1155,9 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (texture.IsForRoom) newFlags |= 0x8000;
 
-                    if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 11);
-                    else if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 11);
-                    else if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 11);
+                    if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 9);
+                    else if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 9);
+                    else if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 9);
 
                     writer.Write(newFlags);
                 }
