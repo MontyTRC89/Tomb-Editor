@@ -392,7 +392,7 @@ namespace TombEditor.Forms
             // Update view
             previewProgressBar.Minimum = 0;
             previewProgressBar.Maximum = frameCount - 1;
-            previewProgressBar.SetProgressNoAnimation(frameIndex); // If an animation is played, the visual display can lag behind significantly, not showing any progress at all. This is at least the case on Windows 8.1 here. -TRTomb
+            previewProgressBar.SetProgressNoAnimation(frameIndex);
 
             previewImage.Image = _imageCache[new CachedImageInfo
             {
