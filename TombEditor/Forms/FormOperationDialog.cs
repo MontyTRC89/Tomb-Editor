@@ -37,9 +37,9 @@ namespace TombEditor.Forms
                 TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Normal);
         }
 
-        private void FormBuildLevel_Shown(object sender, EventArgs e)
+        private void FormOperationDialog_Shown(object sender, EventArgs e)
         {
-            _thread = new Thread(Run);
+            _thread = new Thread((ThreadStart)new SynchronizationCallback(Run));
             _thread.IsBackground = true;
             _thread.Start();
         }
