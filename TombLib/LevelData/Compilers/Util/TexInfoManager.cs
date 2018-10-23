@@ -153,7 +153,9 @@ namespace TombLib.LevelData.Compilers.Util
             // Generates new ParentTextureArea from raw texture coordinates.
             public ParentTextureArea(TextureArea texture, bool isForRoom)
             {
-                _area = texture.GetRect().Round(); // Round to nearest pixel to prevent rounding errors further down the line
+                // Round area to nearest pixel to prevent rounding errors further down the line.
+                // Use ParentArea to create a parent for textures which were applied with group texturing tools.
+                _area = texture.ParentArea.IsZero ? texture.GetRect().Round() : texture.ParentArea.Round();
                 Initialize(texture.Texture, texture.BumpLevel, isForRoom);
             }
 

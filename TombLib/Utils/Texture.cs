@@ -70,6 +70,7 @@ namespace TombLib.Utils
         public static readonly TextureArea None;
 
         public Texture Texture;
+        public Rectangle2 ParentArea;
         public Vector2 TexCoord0; // No array for those because:
         public Vector2 TexCoord1; //    - Cache locality
         public Vector2 TexCoord2; //    - No array bounds checks
@@ -86,6 +87,8 @@ namespace TombLib.Utils
                 first.TexCoord1.Equals(second.TexCoord1) &&
                 first.TexCoord2.Equals(second.TexCoord2) &&
                 first.TexCoord3.Equals(second.TexCoord3) &&
+                first.ParentArea.Start.Equals(second.ParentArea.Start) &&
+                first.ParentArea.End.Equals(second.ParentArea.End) &&
                 first.BlendMode == second.BlendMode &&
                 first.BumpLevel == second.BumpLevel &&
                 first.DoubleSided == second.DoubleSided;

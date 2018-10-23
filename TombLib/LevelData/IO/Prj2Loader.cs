@@ -498,7 +498,8 @@ namespace TombLib.LevelData.IO
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.TextureLevelTexture)
+                                    else if (id4 == Prj2Chunks.TextureLevelTexture ||
+                                             id4 == Prj2Chunks.TextureLevelTexture2)
                                     {
                                         BlockFace face = (BlockFace)LEB128.ReadLong(chunkIO.Raw);
 
@@ -507,6 +508,13 @@ namespace TombLib.LevelData.IO
                                         textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
                                         textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
                                         textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+
+                                        if(id4 == Prj2Chunks.TextureLevelTexture2)
+                                        {
+                                            textureArea.ParentArea.Start = chunkIO.Raw.ReadVector2();
+                                            textureArea.ParentArea.End = chunkIO.Raw.ReadVector2();
+                                        }
+
                                         long blendFlag = LEB128.ReadLong(chunkIO.Raw);
                                         textureArea.BlendMode = (BlendMode)(blendFlag >> 1);
                                         textureArea.DoubleSided = (blendFlag & 1) != 0;
