@@ -115,7 +115,6 @@
             this.toolBrush.Margin = new System.Windows.Forms.Padding(1);
             this.toolBrush.Name = "toolBrush";
             this.toolBrush.Size = new System.Drawing.Size(23, 20);
-            this.toolBrush.Text = "toolStripButton7";
             this.toolBrush.ToolTipText = "Brush";
             this.toolBrush.Click += new System.EventHandler(this.toolBrush_Click);
             // 
@@ -129,7 +128,6 @@
             this.toolShovel.Margin = new System.Windows.Forms.Padding(1);
             this.toolShovel.Name = "toolShovel";
             this.toolShovel.Size = new System.Drawing.Size(23, 20);
-            this.toolShovel.Text = "toolStripButton7";
             this.toolShovel.ToolTipText = "Shovel";
             this.toolShovel.Click += new System.EventHandler(this.toolShovel_Click);
             // 
@@ -143,7 +141,6 @@
             this.toolPencil.Margin = new System.Windows.Forms.Padding(1);
             this.toolPencil.Name = "toolPencil";
             this.toolPencil.Size = new System.Drawing.Size(23, 20);
-            this.toolPencil.Text = "toolStripButton7";
             this.toolPencil.ToolTipText = "Pencil";
             this.toolPencil.Click += new System.EventHandler(this.toolPencil_Click);
             // 
@@ -157,7 +154,6 @@
             this.toolFlatten.Margin = new System.Windows.Forms.Padding(1);
             this.toolFlatten.Name = "toolFlatten";
             this.toolFlatten.Size = new System.Drawing.Size(23, 20);
-            this.toolFlatten.Text = "toolStripButton7";
             this.toolFlatten.ToolTipText = "Bulldozer";
             this.toolFlatten.Click += new System.EventHandler(this.toolFlatten_Click);
             // 
@@ -184,7 +180,6 @@
             this.toolFill.Margin = new System.Windows.Forms.Padding(1);
             this.toolFill.Name = "toolFill";
             this.toolFill.Size = new System.Drawing.Size(23, 20);
-            this.toolFill.Text = "toolStripButton7";
             this.toolFill.ToolTipText = "Fill";
             this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
             // 
@@ -198,7 +193,7 @@
             this.toolPaint2x2.Margin = new System.Windows.Forms.Padding(1);
             this.toolPaint2x2.Name = "toolPaint2x2";
             this.toolPaint2x2.Size = new System.Drawing.Size(23, 20);
-            this.toolPaint2x2.ToolTipText = "Paint 2x2";
+            this.toolPaint2x2.ToolTipText = "Grid Paint";
             this.toolPaint2x2.Click += new System.EventHandler(this.tooPaint2x2_Click);
             // 
             // toolGroup
@@ -211,7 +206,7 @@
             this.toolGroup.Margin = new System.Windows.Forms.Padding(1);
             this.toolGroup.Name = "toolGroup";
             this.toolGroup.Size = new System.Drawing.Size(23, 20);
-            this.toolGroup.ToolTipText = "Group textuing";
+            this.toolGroup.ToolTipText = "Group Textuing";
             this.toolGroup.Click += new System.EventHandler(this.toolGroup_Click);
             // 
             // toolSeparator1
@@ -245,6 +240,7 @@
             this.toolRamp.Margin = new System.Windows.Forms.Padding(1);
             this.toolRamp.Name = "toolRamp";
             this.toolRamp.Size = new System.Drawing.Size(23, 20);
+            this.toolRamp.ToolTipText = "Ramp";
             this.toolRamp.Click += new System.EventHandler(this.toolRamp_Click);
             // 
             // toolQuarterPipe
@@ -368,7 +364,7 @@
             this.toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolUVFixer.Margin = new System.Windows.Forms.Padding(1);
             this.toolUVFixer.Name = "toolUVFixer";
-            this.toolUVFixer.Size = new System.Drawing.Size(23, 20);
+            this.toolUVFixer.Size = new System.Drawing.Size(24, 24);
             this.toolUVFixer.Text = "toolStripButton1";
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
