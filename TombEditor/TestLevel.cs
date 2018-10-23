@@ -590,8 +590,8 @@ namespace TombEditor
 
             reader.ReadBlock(out NumMeshData);
 
-            for (int i = 0; i < NumFloorData; i++)
-                Console.WriteLine(FloorData[i].ToString("X2"));
+            /*for (int i = 0; i < NumFloorData; i++)
+                Console.WriteLine(FloorData[i].ToString("X2"));*/
 
             int numBytes = 0;
             int totalBytes = 0;
@@ -786,6 +786,8 @@ namespace TombEditor
             for (int ii = 0; ii < NumObjectTextures; ii++)
             {
                 writer.WriteLine("TEXTURE #" + ii);
+                writer.WriteLine("    TileAndFlags: " + (ObjectTextures[ii].Tile).ToString());
+                writer.WriteLine("    NewFlags: " + (ObjectTextures[ii].Flags).ToString());
                 writer.WriteLine("    Tile: " + (ObjectTextures[ii].Tile & 0xFF).ToString());
                 for (int jj = 0; jj < 4; jj++)
                 {
