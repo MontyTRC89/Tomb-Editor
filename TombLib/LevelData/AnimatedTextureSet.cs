@@ -86,7 +86,7 @@ namespace TombLib.LevelData
                                           };
         }
         object ICloneable.Clone() => Clone();
-        public bool AnimationIsTrivial => (Frames.Count <= 1 && AnimationType == AnimatedTextureAnimationType.Frames) || Frames.Count == 0;
+        public bool AnimationIsTrivial => ((Frames.Count <= 1 || Fps == 0.0f) && AnimationType == AnimatedTextureAnimationType.Frames) || Frames.Count == 0;
 
         public bool Equals(AnimatedTextureSet other) => Frames.SequenceEqual(other.Frames);
         public override bool Equals(object other) => other is AnimatedTextureSet && Equals((AnimatedTextureSet)other);
