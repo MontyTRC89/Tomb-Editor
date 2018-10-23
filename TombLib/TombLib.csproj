@@ -277,7 +277,6 @@
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\ReferenceEqualityComparer.cs" />
     <Compile Include="Utils\Swap.cs" />
-    <Compile Include="Utils\SynchronizationCallback.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Utils\RectPackerTree.cs" />
     <Compile Include="Utils\ZLib.cs" />
