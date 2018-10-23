@@ -72,6 +72,10 @@ namespace TombLib.LevelData
                 return ReferenceEquals(second, null);
             else if (ReferenceEquals(second, null))
                 return false;
+            // @FIXME: Check name equality ONLY if both parameters has name, because internally editor can
+            // compare raw parameters without name reference, which must return true.
+            else if ((first.Name != null) && (second.Name != null) && !first.Name.Equals(second.Name))
+                return false;
             return first.Key == second.Key;
         }
         public static bool operator !=(TriggerParameterUshort first, TriggerParameterUshort second) => !(first == second);
