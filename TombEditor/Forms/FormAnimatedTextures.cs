@@ -366,22 +366,34 @@ namespace TombEditor.Forms
                 previewImage.Image = null;
                 return;
             }
-            if (++_previewCurrentRepeatTimes < (_previewCurrentFrame?.Repeat ?? 0))
-                return;
+
             int frameIndex = 0;
-            for (int i = 0; i < frameCount; ++i)
-                if (selectedSet.Frames[i] == _previewCurrentFrame)
-                {
-                    frameIndex = (i + 1) % frameCount; // Advance to next image
-                    break;
-                }
+
+            // Only advance to next frame for non-UVRotate sequences, otherwise show selected or first frame
+            if (!selectedSet.IsUvRotate)
+            {
+                if (++_previewCurrentRepeatTimes < (_previewCurrentFrame?.Repeat ?? 0))
+                    return;
+
+                for (int i = 0; i < frameCount; ++i)
+                    if (selectedSet.Frames[i] == _previewCurrentFrame)
+                    {
+                        frameIndex = (i + 1) % frameCount; // Advance to next image
+                        break;
+                    }
+
+                _previewCurrentRepeatTimes = 0;
+            }
+            else if (texturesDataGridView.CurrentRow != null)
+                frameIndex = texturesDataGridView.CurrentRow.Index;
+
             _previewCurrentFrame = selectedSet.Frames[frameIndex];
-            _previewCurrentRepeatTimes = 0;
 
             // Update view
             previewProgressBar.Minimum = 0;
             previewProgressBar.Maximum = frameCount - 1;
             previewProgressBar.SetProgressNoAnimation(frameIndex); // If an animation is played, the visual display can lag behind significantly, not showing any progress at all. This is at least the case on Windows 8.1 here. -TRTomb
+
             previewImage.Image = _imageCache[new CachedImageInfo
             {
                 _image = _previewCurrentFrame.Texture.Image,
