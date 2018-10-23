@@ -1119,19 +1119,6 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("StartSoundTool", "Start Sound Tool...", CommandType.Settings, delegate (CommandArgs args)
-            {
-                try
-                {
-                    Process.Start("SoundTool.exe");
-                }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Error while starting Sound Tool.");
-                    args.Editor.SendMessage("Error while starting Sound Tool.", PopupType.Error);
-                }
-            });
-
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (var f = new FormKeyboardLayout(args.Editor))
