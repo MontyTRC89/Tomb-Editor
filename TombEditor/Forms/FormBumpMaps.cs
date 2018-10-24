@@ -22,7 +22,7 @@ namespace TombEditor.Forms
         private static readonly Brush _coverBrush = new SolidBrush(Color.FromArgb(128, 15, 15, 200));
         private const float _bumpStringSize = 0.4f;
         private const float _bumpProportion = 1.0f / 4.0f;
-        private const string _noCustomMapMessage = "[ custom file not selected ]";
+        private const string _noCustomMapMessage = "custom file not selected";
 
         private Editor _editor;
 
@@ -51,7 +51,7 @@ namespace TombEditor.Forms
 
         private void UpdateDialog()
         {
-            if(textureMap.VisibleTexture != null && textureMap.VisibleTexture is LevelTexture)
+            if (textureMap.VisibleTexture != null && textureMap.VisibleTexture is LevelTexture)
             {
                 bool isCustomMap = !String.IsNullOrEmpty(textureMap.VisibleTexture.BumpPath);
                 cmbBump.Enabled = !isCustomMap;
