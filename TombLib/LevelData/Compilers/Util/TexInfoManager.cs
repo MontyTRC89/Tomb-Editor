@@ -1132,7 +1132,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Sort objects textures by their TopmostAndUnpadded property (waterfalls first!)
-            objectsTextures = objectsTextures.OrderBy(item => item.TopmostAndUnpadded == true).ToList();
+            objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ToList();
 
             for (int n = 0; n < ActualAnimTextures.Count; n++)
             {

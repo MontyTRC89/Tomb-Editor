@@ -15,13 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
 
-        private static bool IsWaterfall(WadGameVersion gameVersion, int id)
-        {
-            return gameVersion == WadGameVersion.TR4_TRNG && id >= 423 && id <= 425 ||
-                   gameVersion == WadGameVersion.TR5 && id >= 410 && id <= 415;
-        }
-
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, bool isWaterfall = false)
         {
             int currentMeshSize = 0;
 
@@ -135,7 +129,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Very quirky way to identify 1st face of a waterfall in TR4-TR5 wads.
-                bool topmostAndUnpadded = (j == 0 && !isStatic) ? IsWaterfall(_level.Settings.WadGameVersion, objectId) : false;
+                bool topmostAndUnpadded = (j == 0) ? isWaterfall : false;
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
@@ -391,7 +385,7 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId);
+                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion));
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
