@@ -16,9 +16,10 @@ namespace TombEditor.Forms
         {
             new SolidBrush(Color.FromArgb(200, 160, 160, 160)), // 0: None
             new SolidBrush(Color.FromArgb(200, 235, 200, 120)), // 1: Level 1
-            new SolidBrush(Color.FromArgb(200, 235, 200, 100)), // 2: Level 2
-            new SolidBrush(Color.FromArgb(200, 235, 200,  80))  // 3: Level 3
+            new SolidBrush(Color.FromArgb(200, 245, 180, 100)), // 2: Level 2
+            new SolidBrush(Color.FromArgb(200, 255, 160,  80))  // 3: Level 3
         };
+
         private static readonly Brush _coverBrush = new SolidBrush(Color.FromArgb(128, 15, 15, 200));
         private const float _bumpStringSize = 0.4f;
         private const float _bumpProportion = 1.0f / 4.0f;
