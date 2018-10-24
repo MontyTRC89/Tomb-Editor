@@ -44,6 +44,7 @@ namespace TombLib.LevelData.Compilers.Util
         // We need to keep level reference for padding and bumpmap references.
 
         protected readonly Level _level;
+        protected readonly IProgressReporter _progressReporter;
 
         // Defines if texinfo manager should actually start generating texinfo indexes.
         // Needed for anim lookup table generation.
@@ -398,9 +399,10 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public TexInfoManager(Level level, ushort maxTileSize)
+        public TexInfoManager(ushort maxTileSize, Level level, IProgressReporter progressReporter)
         {
             _level = level;
+            _progressReporter = progressReporter;
             MaxTileSize = maxTileSize;
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
             GenerateTexInfos = true;    // Set manager ready state 
@@ -906,7 +908,10 @@ namespace TombLib.LevelData.Compilers.Util
                             if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
                                 customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
                             else
+                            {
+                                _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
                                 customBumpmaps.Add(tex.BumpPath, ImageC.Black);
+                            }
                         }
 
                         image.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
