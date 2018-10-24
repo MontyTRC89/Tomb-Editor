@@ -434,7 +434,14 @@ namespace TombEditor
             RaiseEvent(new TextureSoundsChanged());
         }
 
-        // This is invoke after an autosave
+        // This is invoked if the animated texture sets changed for the level.
+        public class BumpmapsChanged : IEditorEventCausesUnsavedChanges { }
+        public void BumpmapsChange()
+        {
+            RaiseEvent(new BumpmapsChanged());
+        }
+
+        // This is invoked after an autosave
         public class AutosaveEvent : IEditorEvent
         {
             public string FileName { get; set; }

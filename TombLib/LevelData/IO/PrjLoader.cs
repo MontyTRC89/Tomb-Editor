@@ -1463,12 +1463,9 @@ namespace TombLib.LevelData.IO
                 else
                 {
                     // Read bump mapping data
-                    //texture.ResizeBumpMappingInfos(4, 64);
+                    texture.ResizeBumpMappingInfos(4, 64);
                     for (int i = 0; i < 256; i++)
-                    {
-                        //texture.SetBumpMappingLevel(i % 4, i / 4, (BumpMappingLevel)reader.ReadByte());
-                        reader.ReadByte();
-                    }
+                        texture.SetBumpMappingLevel(i % 4, i / 4, (BumpMappingLevel)reader.ReadByte());
 
                     string offsetString = "offset 0x" + reader.BaseStream.Position.ToString("x") + ".";
 
@@ -1972,9 +1969,6 @@ namespace TombLib.LevelData.IO
                     texture.Texture = levelTexture;
                     texture.DoubleSided = (prjFace._txtFlags & 0x04) != 0;
                     texture.BlendMode = (prjFace._txtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;
-
-                    //@FIXME: implement proper bumpmap data import
-                    texture.BumpLevel = BumpLevel.None;
 
                     // Apply flipping
                     if ((prjFace._txtFlags & 0x80) != 0)

@@ -20,7 +20,6 @@ namespace TombEditor.ToolWindows
             this.components = new System.ComponentModel.Container();
             this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panelTextureTools = new System.Windows.Forms.Panel();
-            this.cmbBump = new DarkUI.Controls.DarkComboBox();
             this.butMirror = new DarkUI.Controls.DarkButton();
             this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
@@ -34,6 +33,7 @@ namespace TombEditor.ToolWindows
             this.textureSelectionPanel = new System.Windows.Forms.Panel();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
+            this.butBumpMaps = new DarkUI.Controls.DarkButton();
             this.panelTextureTools.SuspendLayout();
             this.textureSelectionPanel.SuspendLayout();
             this.SuspendLayout();
@@ -50,7 +50,7 @@ namespace TombEditor.ToolWindows
             // 
             // panelTextureTools
             // 
-            this.panelTextureTools.Controls.Add(this.cmbBump);
+            this.panelTextureTools.Controls.Add(this.butBumpMaps);
             this.panelTextureTools.Controls.Add(this.butMirror);
             this.panelTextureTools.Controls.Add(this.butDoubleSide);
             this.panelTextureTools.Controls.Add(this.butTextureSounds);
@@ -63,23 +63,6 @@ namespace TombEditor.ToolWindows
             this.panelTextureTools.Name = "panelTextureTools";
             this.panelTextureTools.Size = new System.Drawing.Size(286, 56);
             this.panelTextureTools.TabIndex = 10;
-            // 
-            // cmbBump
-            // 
-            this.cmbBump.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.cmbBump.FormattingEnabled = true;
-            this.cmbBump.Items.AddRange(new object[] {
-            "None",
-            "Lvl 1",
-            "Lvl 2",
-            "Lvl 3"});
-            this.cmbBump.Location = new System.Drawing.Point(3, 30);
-            this.cmbBump.Name = "cmbBump";
-            this.cmbBump.Size = new System.Drawing.Size(65, 23);
-            this.cmbBump.TabIndex = 12;
-            this.toolTip.SetToolTip(this.cmbBump, "Bumpmap level");
-            this.cmbBump.Visible = false;
-            this.cmbBump.SelectedIndexChanged += new System.EventHandler(this.cmbBump_SelectedIndexChanged);
             // 
             // butMirror
             // 
@@ -106,11 +89,11 @@ namespace TombEditor.ToolWindows
             // 
             this.butTextureSounds.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTextureSounds.Location = new System.Drawing.Point(145, 30);
+            this.butTextureSounds.Location = new System.Drawing.Point(114, 30);
             this.butTextureSounds.Name = "butTextureSounds";
-            this.butTextureSounds.Size = new System.Drawing.Size(138, 23);
+            this.butTextureSounds.Size = new System.Drawing.Size(82, 23);
             this.butTextureSounds.TabIndex = 1;
-            this.butTextureSounds.Text = "Texture sounds";
+            this.butTextureSounds.Text = "Sounds";
             this.toolTip.SetToolTip(this.butTextureSounds, "Edit texture sounds...");
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
             // 
@@ -136,10 +119,10 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAnimationRanges.Location = new System.Drawing.Point(3, 30);
             this.butAnimationRanges.Name = "butAnimationRanges";
-            this.butAnimationRanges.Size = new System.Drawing.Size(137, 23);
+            this.butAnimationRanges.Size = new System.Drawing.Size(105, 23);
             this.butAnimationRanges.TabIndex = 0;
             this.butAnimationRanges.Tag = "EditAnimationRanges";
-            this.butAnimationRanges.Text = "Animation ranges";
+            this.butAnimationRanges.Text = "Animations";
             // 
             // butRotate
             // 
@@ -162,9 +145,9 @@ namespace TombEditor.ToolWindows
             "Exclude",
             "Screen",
             "Lighten"});
-            this.cmbBlending.Location = new System.Drawing.Point(31, 3);
+            this.cmbBlending.Location = new System.Drawing.Point(32, 3);
             this.cmbBlending.Name = "cmbBlending";
-            this.cmbBlending.Size = new System.Drawing.Size(109, 23);
+            this.cmbBlending.Size = new System.Drawing.Size(108, 23);
             this.cmbBlending.TabIndex = 6;
             this.toolTip.SetToolTip(this.cmbBlending, "Blending mode");
             this.cmbBlending.SelectedIndexChanged += new System.EventHandler(this.cmbBlending_SelectedIndexChanged);
@@ -234,6 +217,18 @@ namespace TombEditor.ToolWindows
             this.comboCurrentTexture.TabIndex = 0;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
+            // butBumpMaps
+            // 
+            this.butBumpMaps.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.butBumpMaps.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butBumpMaps.Location = new System.Drawing.Point(201, 30);
+            this.butBumpMaps.Name = "butBumpMaps";
+            this.butBumpMaps.Size = new System.Drawing.Size(82, 23);
+            this.butBumpMaps.TabIndex = 12;
+            this.butBumpMaps.Text = "Bumpmaps";
+            this.toolTip.SetToolTip(this.butBumpMaps, "Edit bumpmaps...");
+            this.butBumpMaps.Click += new System.EventHandler(this.butBumpMaps_Click);
+            // 
             // TexturePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -270,6 +265,6 @@ namespace TombEditor.ToolWindows
         private DarkUI.Controls.DarkButton butAddTexture;
         private DarkUI.Controls.DarkButton butDeleteTexture;
         private DarkUI.Controls.DarkButton butBrowseTexture;
-        private DarkUI.Controls.DarkComboBox cmbBump;
+        private DarkUI.Controls.DarkButton butBumpMaps;
     }
 }

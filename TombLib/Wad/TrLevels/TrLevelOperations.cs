@@ -126,7 +126,6 @@ namespace TombLib.Wad.TrLevels
                 TextureArea textureArea = new TextureArea();
                 textureArea.DoubleSided = false;
                 textureArea.BlendMode = (BlendMode)(oldTexture.Attributes);
-                textureArea.BumpLevel = (BumpLevel)((oldTexture.NewFlags >> 11) & 0x03);
                 textureArea.TexCoord0 = coords[0] - start;
                 textureArea.TexCoord1 = coords[1] - start;
                 textureArea.TexCoord2 = coords[2] - start;
@@ -249,7 +248,6 @@ namespace TombLib.Wad.TrLevels
             textureArea.TexCoord2 = new Vector2(1.5f, 1.5f);
             textureArea.TexCoord3 = new Vector2(0.5f, 1.5f);
             textureArea.BlendMode = BlendMode.Normal;
-            textureArea.BumpLevel = BumpLevel.None;
             textureArea.DoubleSided = false;
             return textureArea;
         }

@@ -134,6 +134,7 @@ namespace TombLib.LevelData.IO
                         {
                             chunkIO.WriteChunkInt(Prj2Chunks.LevelTextureIndex, index);
                             chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? "");
+                            chunkIO.WriteChunkString(Prj2Chunks.LevelTextureCustomBumpmapPath, texture.BumpPath ?? "");
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows, texture.Convert512PixelsToDoubleRows);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureReplaceMagentaWithTransparency, texture.ReplaceMagentaWithTransparency);
                             using (var chunkLevelTextureFootStepSounds = chunkIO.WriteChunk(Prj2Chunks.LevelTextureFootStepSounds))
@@ -143,6 +144,14 @@ namespace TombLib.LevelData.IO
                                 for (int y = 0; y < texture.FootStepSoundHeight; ++y)
                                     for (int x = 0; x < texture.FootStepSoundWidth; ++x)
                                         chunkIO.Raw.Write((byte)texture.GetFootStepSound(x, y));
+                            }
+                            using (var chunkLevelTextureBumpmaps = chunkIO.WriteChunk(Prj2Chunks.LevelTextureBumpmaps))
+                            {
+                                chunkIO.Raw.Write(texture.BumpMappingWidth);
+                                chunkIO.Raw.Write(texture.BumpMappingHeight);
+                                for (int y = 0; y < texture.BumpMappingHeight; ++y)
+                                    for (int x = 0; x < texture.BumpMappingWidth; ++x)
+                                        chunkIO.Raw.Write((byte)texture.GetBumpMapLevel(x, y));
                             }
                             chunkIO.WriteChunkEnd();
                         }
