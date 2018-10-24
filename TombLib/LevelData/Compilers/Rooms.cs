@@ -240,7 +240,7 @@ namespace TombLib.LevelData.Compilers
                                     Result result;
                                     lock (_objectTextureManager)
                                     {
-                                        result = _textureInfoManager.AddTexture(texture, false, true);
+                                        result = _textureInfoManager.AddTexture(texture, true, false);
                                         //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
                                     }
 

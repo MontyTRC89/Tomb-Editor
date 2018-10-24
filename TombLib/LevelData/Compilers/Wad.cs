@@ -15,6 +15,12 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
 
+        private static bool IsWaterfall(WadGameVersion gameVersion, int id)
+        {
+            return gameVersion == WadGameVersion.TR4_TRNG && id >= 423 && id <= 425 ||
+                   gameVersion == WadGameVersion.TR5 && id >= 410 && id <= 415;
+        }
+
         private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId)
         {
             int currentMeshSize = 0;
@@ -112,8 +118,10 @@ namespace TombLib.LevelData.Compilers
             newMesh.TexturedQuads = new tr_face4[numQuads];
             newMesh.TexturedTriangles = new tr_face3[numTriangles];
 
-            foreach (var poly in oldMesh.Polys)
+            for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
+                var poly = oldMesh.Polys[j];
+
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if(poly.ShineStrength > 0)
                 {
@@ -126,13 +134,16 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
+                // Very quirky way to identify 1st face of a waterfall in TR4-TR5 wads.
+                bool topmostAndUnpadded = (j == 0 && !isStatic) ? IsWaterfall(_level.Settings.WadGameVersion, objectId) : false;
+
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
                     TexInfoManager.Result result;
                     lock (_objectTextureManager)
                     {
                         //result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        result = _textureInfoManager.AddTexture(poly.Texture, false, false);
+                        result = _textureInfoManager.AddTexture(poly.Texture, false, false, topmostAndUnpadded);
                     }
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
@@ -145,7 +156,7 @@ namespace TombLib.LevelData.Compilers
                     lock (_objectTextureManager)
                     {
                         //result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-                        result = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                        result = _textureInfoManager.AddTexture(poly.Texture, false, true, topmostAndUnpadded);
                     }
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
