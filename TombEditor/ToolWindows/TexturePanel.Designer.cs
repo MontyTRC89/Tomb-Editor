@@ -20,6 +20,7 @@ namespace TombEditor.ToolWindows
             this.components = new System.ComponentModel.Container();
             this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panelTextureTools = new System.Windows.Forms.Panel();
+            this.butBumpMaps = new DarkUI.Controls.DarkButton();
             this.butMirror = new DarkUI.Controls.DarkButton();
             this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
@@ -33,7 +34,6 @@ namespace TombEditor.ToolWindows
             this.textureSelectionPanel = new System.Windows.Forms.Panel();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
-            this.butBumpMaps = new DarkUI.Controls.DarkButton();
             this.panelTextureTools.SuspendLayout();
             this.textureSelectionPanel.SuspendLayout();
             this.SuspendLayout();
@@ -64,6 +64,18 @@ namespace TombEditor.ToolWindows
             this.panelTextureTools.Size = new System.Drawing.Size(286, 56);
             this.panelTextureTools.TabIndex = 10;
             // 
+            // butBumpMaps
+            // 
+            this.butBumpMaps.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.butBumpMaps.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butBumpMaps.Location = new System.Drawing.Point(193, 30);
+            this.butBumpMaps.Name = "butBumpMaps";
+            this.butBumpMaps.Size = new System.Drawing.Size(90, 23);
+            this.butBumpMaps.TabIndex = 12;
+            this.butBumpMaps.Text = "Bumpmaps";
+            this.toolTip.SetToolTip(this.butBumpMaps, "Edit bumpmaps...");
+            this.butBumpMaps.Click += new System.EventHandler(this.butBumpMaps_Click);
+            // 
             // butMirror
             // 
             this.butMirror.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -89,9 +101,9 @@ namespace TombEditor.ToolWindows
             // 
             this.butTextureSounds.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTextureSounds.Location = new System.Drawing.Point(114, 30);
+            this.butTextureSounds.Location = new System.Drawing.Point(98, 30);
             this.butTextureSounds.Name = "butTextureSounds";
-            this.butTextureSounds.Size = new System.Drawing.Size(82, 23);
+            this.butTextureSounds.Size = new System.Drawing.Size(90, 23);
             this.butTextureSounds.TabIndex = 1;
             this.butTextureSounds.Text = "Sounds";
             this.toolTip.SetToolTip(this.butTextureSounds, "Edit texture sounds...");
@@ -119,7 +131,7 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAnimationRanges.Location = new System.Drawing.Point(3, 30);
             this.butAnimationRanges.Name = "butAnimationRanges";
-            this.butAnimationRanges.Size = new System.Drawing.Size(105, 23);
+            this.butAnimationRanges.Size = new System.Drawing.Size(90, 23);
             this.butAnimationRanges.TabIndex = 0;
             this.butAnimationRanges.Tag = "EditAnimationRanges";
             this.butAnimationRanges.Text = "Animations";
@@ -128,7 +140,7 @@ namespace TombEditor.ToolWindows
             // 
             this.butRotate.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butRotate.Image = global::TombEditor.Properties.Resources.texture_Rotate;
-            this.butRotate.Location = new System.Drawing.Point(145, 3);
+            this.butRotate.Location = new System.Drawing.Point(146, 3);
             this.butRotate.Name = "butRotate";
             this.butRotate.Size = new System.Drawing.Size(23, 23);
             this.butRotate.TabIndex = 8;
@@ -145,9 +157,9 @@ namespace TombEditor.ToolWindows
             "Exclude",
             "Screen",
             "Lighten"});
-            this.cmbBlending.Location = new System.Drawing.Point(32, 3);
+            this.cmbBlending.Location = new System.Drawing.Point(31, 3);
             this.cmbBlending.Name = "cmbBlending";
-            this.cmbBlending.Size = new System.Drawing.Size(108, 23);
+            this.cmbBlending.Size = new System.Drawing.Size(110, 23);
             this.cmbBlending.TabIndex = 6;
             this.toolTip.SetToolTip(this.cmbBlending, "Blending mode");
             this.cmbBlending.SelectedIndexChanged += new System.EventHandler(this.cmbBlending_SelectedIndexChanged);
@@ -216,18 +228,6 @@ namespace TombEditor.ToolWindows
             this.comboCurrentTexture.Size = new System.Drawing.Size(192, 23);
             this.comboCurrentTexture.TabIndex = 0;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
-            // 
-            // butBumpMaps
-            // 
-            this.butBumpMaps.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.butBumpMaps.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBumpMaps.Location = new System.Drawing.Point(201, 30);
-            this.butBumpMaps.Name = "butBumpMaps";
-            this.butBumpMaps.Size = new System.Drawing.Size(82, 23);
-            this.butBumpMaps.TabIndex = 12;
-            this.butBumpMaps.Text = "Bumpmaps";
-            this.toolTip.SetToolTip(this.butBumpMaps, "Edit bumpmaps...");
-            this.butBumpMaps.Click += new System.EventHandler(this.butBumpMaps_Click);
             // 
             // TexturePanel
             // 

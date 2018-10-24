@@ -27,13 +27,13 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textureMap.Location = new System.Drawing.Point(8, 9);
             this.textureMap.Name = "textureMap";
-            this.textureMap.Size = new System.Drawing.Size(511, 548);
+            this.textureMap.Size = new System.Drawing.Size(409, 495);
             this.textureMap.TabIndex = 0;
             // 
             // butAssignBumpmap
             // 
             this.butAssignBumpmap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAssignBumpmap.Location = new System.Drawing.Point(320, 586);
+            this.butAssignBumpmap.Location = new System.Drawing.Point(218, 533);
             this.butAssignBumpmap.Name = "butAssignBumpmap";
             this.butAssignBumpmap.Size = new System.Drawing.Size(113, 23);
             this.butAssignBumpmap.TabIndex = 2;
@@ -45,7 +45,7 @@ namespace TombEditor.Forms
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butOk.Location = new System.Drawing.Point(439, 586);
+            this.butOk.Location = new System.Drawing.Point(337, 533);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 3;
@@ -58,9 +58,9 @@ namespace TombEditor.Forms
             this.cmbBump.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbBump.FormattingEnabled = true;
-            this.cmbBump.Location = new System.Drawing.Point(8, 586);
+            this.cmbBump.Location = new System.Drawing.Point(8, 533);
             this.cmbBump.Name = "cmbBump";
-            this.cmbBump.Size = new System.Drawing.Size(306, 23);
+            this.cmbBump.Size = new System.Drawing.Size(204, 23);
             this.cmbBump.TabIndex = 14;
             // 
             // cbUseCustomFile
@@ -68,7 +68,7 @@ namespace TombEditor.Forms
             this.cbUseCustomFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbUseCustomFile.AutoCheck = false;
             this.cbUseCustomFile.AutoSize = true;
-            this.cbUseCustomFile.Location = new System.Drawing.Point(8, 563);
+            this.cbUseCustomFile.Location = new System.Drawing.Point(8, 510);
             this.cbUseCustomFile.Name = "cbUseCustomFile";
             this.cbUseCustomFile.Size = new System.Drawing.Size(107, 17);
             this.cbUseCustomFile.TabIndex = 15;
@@ -80,9 +80,9 @@ namespace TombEditor.Forms
             this.lblCustomMapPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCustomMapPath.ForeColor = System.Drawing.Color.Gray;
-            this.lblCustomMapPath.Location = new System.Drawing.Point(110, 564);
+            this.lblCustomMapPath.Location = new System.Drawing.Point(108, 512);
             this.lblCustomMapPath.Name = "lblCustomMapPath";
-            this.lblCustomMapPath.Size = new System.Drawing.Size(409, 17);
+            this.lblCustomMapPath.Size = new System.Drawing.Size(304, 13);
             this.lblCustomMapPath.TabIndex = 16;
             // 
             // FormBumpMaps
@@ -91,7 +91,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
-            this.ClientSize = new System.Drawing.Size(526, 615);
+            this.ClientSize = new System.Drawing.Size(424, 562);
             this.Controls.Add(this.lblCustomMapPath);
             this.Controls.Add(this.cbUseCustomFile);
             this.Controls.Add(this.cmbBump);
