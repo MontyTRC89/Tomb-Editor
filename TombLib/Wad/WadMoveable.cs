@@ -38,6 +38,12 @@ namespace TombLib.Wad
         public static WadMoveableId LaraSkin = new WadMoveableId(8);
         public static WadMoveableId SkyBox = new WadMoveableId(459);
 
+        public bool IsWaterfall(WadGameVersion gameVersion)
+        {
+            return gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 423 && TypeId <= 425 ||
+                   gameVersion == WadGameVersion.TR5 && TypeId >= 410 && TypeId <= 415;
+        }
+
         public bool IsAI(WadGameVersion gameVersion)
         {
             return TypeId >= 398 && TypeId <= 406;
