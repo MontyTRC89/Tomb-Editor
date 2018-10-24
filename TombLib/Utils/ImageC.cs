@@ -153,8 +153,8 @@ namespace TombLib.Utils
                     for (int dx = 0; dx < kernel_width; dx++)
                         for (int dy = 0; dy < kernel_height; dy++)
                         {
-                            int sourceX = MathC.Clamp(x + dx - 1, 0, width - 1);
-                            int sourceY = MathC.Clamp(y + dy - 1, 0, height - 1);
+                            int sourceX = MathC.Clamp(x + dx, 0, width - 1);
+                            int sourceY = MathC.Clamp(y + dy, 0, height - 1);
                             ColorC clr = oldImage.GetPixel(sourceX, sourceY);
                             r += (int)clr.R * kernel[dx, dy];
                             g += (int)clr.G * kernel[dx, dy];

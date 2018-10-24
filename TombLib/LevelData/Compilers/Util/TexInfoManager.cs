@@ -961,14 +961,8 @@ namespace TombLib.LevelData.Compilers.Util
                                     break;
                             }
 
-                            int Xstride = bumpImage.Width / 8;
-                            int Ystride = bumpImage.Height / 8;
-
-                            for (int x1 = 0; x1 < bumpImage.Width; x1 += Xstride)
-                                for (int y1 = 0; y1 < bumpImage.Height; y1 += Ystride)
-                                    bumpImage.Emboss(x1, y1, Xstride, Ystride, effectWeight, effectSize);
-
-                            image.CopyFrom(bumpX, bumpY, bumpImage);
+                            bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
+                            image.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
                             AddPadding(p, image, image, numPages, _level.Settings.TexturePadding, bumpX, bumpY);
                         }
                     }
