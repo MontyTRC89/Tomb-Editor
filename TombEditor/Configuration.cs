@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using TombLib.Rendering;
 
 namespace TombEditor
 {
@@ -36,6 +37,8 @@ namespace TombEditor
         public bool Editor_AutoSwitchSectorColoringInfo { get; set; } = true;
         public bool Editor_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
+
+        public ColorScheme Editor_ColorScheme { get; set; } = new ColorScheme();
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;

@@ -1405,7 +1405,7 @@ namespace TombEditor
                 newArea = newArea.Inflate(1);
 
             bool useFloor;
-            using (FormResizeRoom form = new FormResizeRoom(room, newArea))
+            using (FormResizeRoom form = new FormResizeRoom(_editor, room, newArea))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;

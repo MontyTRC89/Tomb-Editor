@@ -7,7 +7,7 @@ namespace TombEditor
     public class SectorColoringManager : IDisposable
     {
         public class ChangeSectorColoringInfoEvent : IEditorEvent { }
-        public SectorColoringInfo ColoringInfo = new SectorColoringInfo();
+        public SectorColoringInfo ColoringInfo;
 
         private readonly Editor _editor;
 
@@ -18,6 +18,8 @@ namespace TombEditor
         {
             _editor = editor;
             _transitionAnimator.Tick += UpdateTransitionAnimation;
+
+            ColoringInfo = new SectorColoringInfo(_editor.Configuration.Editor_ColorScheme);
         }
 
         public void Dispose()

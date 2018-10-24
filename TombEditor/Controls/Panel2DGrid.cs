@@ -305,7 +305,7 @@ namespace TombEditor.Controls
 
         protected virtual void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
         {
-            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, IgnoredHighlights);
+            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(_editor.Configuration.Editor_ColorScheme, Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, IgnoredHighlights);
             if (currentSectorColoringInfos == null)
                 return;
 

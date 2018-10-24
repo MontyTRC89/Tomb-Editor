@@ -11,6 +11,8 @@ namespace TombEditor.Forms
 {
     public partial class FormResizeRoom : DarkForm
     {
+        private Editor _editor;
+
         private bool _alreadyUpdatingGui = false;
         private readonly Room _roomToResize;
         public RectangleInt2 NewArea => new RectangleInt2(
@@ -20,11 +22,12 @@ namespace TombEditor.Forms
             _roomToResize.NumZSectors + (int)numericZp.Value - 1);
         public bool UseFloor => optUseFloor.Checked;
 
-        public FormResizeRoom(Room roomToResize, RectangleInt2 newArea)
+        public FormResizeRoom(Editor editor, Room roomToResize, RectangleInt2 newArea)
         {
             InitializeComponent();
             gridControl.Parent = this;
             gridControl.Room = roomToResize;
+            _editor = editor;
             _roomToResize = roomToResize;
 
             try
@@ -132,10 +135,6 @@ namespace TombEditor.Forms
             protected override bool DrawSelection => false;
             protected override VectorInt2 GetGridDimensions() => RoomSize;
 
-            private static readonly Brush _borderWallBrush = new SolidBrush(SectorColoringInfo.ColorBorderWall.ToWinFormsColor());
-            private static readonly Brush _wallBrush = new SolidBrush(SectorColoringInfo.ColorWall.ToWinFormsColor());
-            private static readonly Brush _floorBrush = new SolidBrush(SectorColoringInfo.ColorFloor.ToWinFormsColor());
-
             protected override void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
             {
                 Room room = Parent._roomToResize;
@@ -152,7 +151,8 @@ namespace TombEditor.Forms
                         (newArea.Y1 == room.NumZSectors - 1 && z == newArea.Height && room.LocalArea.Inflate(-1, 0).Contains(old) && 0 < x && x < newArea.Width))
                         base.PaintSectorTile(e, sectorArea, old.X, old.Y);
                     else
-                        e.Graphics.FillRectangle(_borderWallBrush, sectorArea);
+                        using(var b = new SolidBrush(Parent._editor.Configuration.Editor_ColorScheme.ColorBorderWall.ToWinFormsColor()))
+                            e.Graphics.FillRectangle(b, sectorArea);
                     return;
                 }
 
@@ -164,7 +164,10 @@ namespace TombEditor.Forms
                 }
 
                 // Draw new floor
-                e.Graphics.FillRectangle(Parent.UseFloor ? _floorBrush : _wallBrush, sectorArea);
+                using (var b = new SolidBrush(Parent.UseFloor ?
+                                                Parent._editor.Configuration.Editor_ColorScheme.ColorFloor.ToWinFormsColor() :
+                                                Parent._editor.Configuration.Editor_ColorScheme.ColorWall.ToWinFormsColor()))
+                    e.Graphics.FillRectangle(b, sectorArea);
             }
         }
     }

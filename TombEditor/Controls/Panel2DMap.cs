@@ -218,7 +218,7 @@ namespace TombEditor.Controls
             base.OnMouseDown(e);
 
             var clickPos = FromVisualCoord(e.Location);
-            if (!_depthBar.MouseDown(e, Size, _editor.Level, clickPos))
+            if (!_depthBar.MouseDown(e, Size, clickPos))
                 return;
 
             _lastMousePosition = e.Location;
@@ -353,7 +353,7 @@ namespace TombEditor.Controls
             base.OnMouseMove(e);
 
             // Update depth bar...
-            _depthBar.MouseMove(e, Size, _editor.Level);
+            _depthBar.MouseMove(e, Size);
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
             Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X) - 1, (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right) - 1, (int)Math.Ceiling(area.Bottom) - 1));
 
@@ -421,7 +421,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
             Capture = false;
-            _depthBar.MouseUp(e, Size, _editor.Level);
+            _depthBar.MouseUp(e, Size);
 
             switch (e.Button)
             {
@@ -631,7 +631,7 @@ namespace TombEditor.Controls
 
                 // Draw depth bar
                 Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
-                _depthBar.Draw(e, ClientSize, _editor.Level, cursorPos, GetRoomBrush);
+                _depthBar.Draw(e, ClientSize, cursorPos, GetRoomBrush);
 
                 // Invalidation debugger
                 //Random r = new Random();
