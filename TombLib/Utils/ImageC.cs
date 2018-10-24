@@ -163,7 +163,17 @@ namespace TombLib.Utils
                     r = MathC.Clamp((int)(127 + r / weight), 0, 255);
                     g = MathC.Clamp((int)(127 + g / weight), 0, 255);
                     b = MathC.Clamp((int)(127 + b / weight), 0, 255);
-                    SetPixel(xReal, yReal, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
+                    SetPixel(xReal, yReal, new ColorC((byte)r, (byte)g, (byte)b));
+                }
+
+            // Restore alpha
+            for (int x = 0, xReal = xStart; x < width; x++, xReal++)
+                for (int y = 0, yReal = yStart; y < height; y++, yReal++)
+                {
+                    var alpha = oldImage.GetPixel(xReal, yReal).A;
+                    var color = GetPixel(xReal, yReal);
+                    color.A = alpha;
+                    SetPixel(xReal, yReal, color);
                 }
         }
 
