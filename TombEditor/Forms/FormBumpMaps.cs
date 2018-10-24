@@ -185,7 +185,16 @@ namespace TombEditor.Forms
                         if (dialog.ShowDialog(this) != DialogResult.OK)
                             currentTexture.BumpPath = null;
                         else
-                            currentTexture.BumpPath = _editor.Level?.Settings?.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
+                        {
+                            var tempImage = ImageC.FromFile(dialog.FileName);
+                            if (tempImage.Size != currentTexture.Image.Size)
+                            {
+                                DarkMessageBox.Show(this, "Selected image file has different size. Please select image with size similar to original texture file.", "Wrong image size", MessageBoxIcon.Error);
+                                currentTexture.BumpPath = null;
+                            }
+                            else
+                                currentTexture.BumpPath = _editor.Level?.Settings?.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
+                        }
                     }
                 }
             }

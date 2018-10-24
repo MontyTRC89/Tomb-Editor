@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-            _textureInfoManager = new Util.TexInfoManager(_level, 256);
+            _textureInfoManager = new Util.TexInfoManager(256, _level, _progressReporter);
 
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
