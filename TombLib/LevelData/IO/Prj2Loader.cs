@@ -236,6 +236,8 @@ namespace TombLib.LevelData.IO
                                 levelTextureIndex = chunkIO.ReadChunkLong(chunkSize3);
                             else if (id3 == Prj2Chunks.LevelTexturePath)
                                 path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
+                            else if (id3 == Prj2Chunks.LevelTextureCustomBumpmapPath)
+                                levelTexture.BumpPath = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows)
                                 levelTexture.SetConvert512PixelsToDoubleRows(settings, chunkIO.ReadChunkBool(chunkSize3));
                             else if (id3 == Prj2Chunks.LevelTextureReplaceMagentaWithTransparency)
@@ -252,6 +254,20 @@ namespace TombLib.LevelData.IO
                                         if (textureSoundByte > 15)
                                             textureSoundByte = 15;
                                         levelTexture.SetFootStepSound(x, y, (TextureFootStepSound)textureSoundByte);
+                                    }
+                            }
+                            else if (id3 == Prj2Chunks.LevelTextureBumpmaps)
+                            {
+                                int width = chunkIO.Raw.ReadInt32();
+                                int height = chunkIO.Raw.ReadInt32();
+                                levelTexture.ResizeBumpMappingInfos(width, height);
+                                for (int y = 0; y < levelTexture.BumpMappingHeight; ++y)
+                                    for (int x = 0; x < levelTexture.BumpMappingWidth; ++x)
+                                    {
+                                        byte bumpMappingByte = chunkIO.Raw.ReadByte();
+                                        if (bumpMappingByte > 3)
+                                            bumpMappingByte = 3;
+                                        levelTexture.SetBumpMappingLevel(x, y, (BumpMappingLevel)bumpMappingByte);
                                     }
                             }
                             else

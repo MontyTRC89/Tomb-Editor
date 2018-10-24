@@ -188,20 +188,6 @@ namespace TombEditor
                 args.Editor.SelectedTexture = texture;
             });
 
-            // @FIXME: bumpmapping disabled until texture page issue is fixed (see #278 on GH)
-
-            //AddCommand("SetTextureBumpMapLevel", "Set bumpmap level", CommandType.Textures, delegate (CommandArgs args)
-            //{
-            //    var texture = args.Editor.SelectedTexture;
-            //    if (texture.BumpLevel == BumpLevel.None)
-            //        texture.BumpLevel = BumpLevel.Level1;
-            //    else if (texture.BumpLevel == BumpLevel.Level1)
-            //        texture.BumpLevel = BumpLevel.Level2;
-            //    else if (texture.BumpLevel == BumpLevel.Level2)
-            //        texture.BumpLevel = BumpLevel.None;
-            //    args.Editor.SelectedTexture = texture;
-            //});
-
             AddCommand("SetTextureDoubleSided", "Set double-sided attribute", CommandType.Textures, delegate (CommandArgs args)
             {
                 var texture = args.Editor.SelectedTexture;

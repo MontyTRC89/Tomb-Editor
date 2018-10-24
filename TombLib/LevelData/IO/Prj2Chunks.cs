@@ -37,6 +37,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId LevelTextureConvert512PixelsToDoubleRows = ChunkId.FromString("Te512C");
         /**********/public static readonly ChunkId LevelTextureReplaceMagentaWithTransparency = ChunkId.FromString("TeMagentaR");
         /**********/public static readonly ChunkId LevelTextureFootStepSounds = ChunkId.FromString("TeTextureSounds");
+        /**********/public static readonly ChunkId LevelTextureBumpmaps = ChunkId.FromString("TeTextureBumpmaps");
+        /***********/public static readonly ChunkId LevelTextureCustomBumpmapPath = ChunkId.FromString("TeTextureCustomBumpmapPath");
         /**/public static readonly ChunkId ImportedGeometries = ChunkId.FromString("TeImportedGeometries");
         /******/public static readonly ChunkId ImportedGeometry = ChunkId.FromString("TeImportedGeometry");
         /********/public static readonly ChunkId ImportedGeometryIndex = ChunkId.FromString("TeI");

@@ -134,6 +134,12 @@
     <Compile Include="Controls\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormBumpMaps.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormBumpMaps.Designer.cs">
+      <DependentUpon>FormBumpMaps.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormResizeRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -396,6 +402,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ToolBox.resx">
       <DependentUpon>ToolBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormBumpMaps.resx">
+      <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
       <DependentUpon>FormKeyboardLayout.cs</DependentUpon>

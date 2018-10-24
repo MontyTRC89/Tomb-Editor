@@ -41,6 +41,10 @@ namespace TombLib.LevelData.Compilers.Util
             { new Vector2(-0.5f, 0.5f), new Vector2( 0.5f, 0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f) }
         };
 
+        // We need to keep level reference for padding and bumpmap references.
+
+        protected readonly Level _level;
+
         // Defines if texinfo manager should actually start generating texinfo indexes.
         // Needed for anim lookup table generation.
 
@@ -123,7 +127,6 @@ namespace TombLib.LevelData.Compilers.Util
             public bool SqueezeAndDuplicate { get; set; } // Needed for UVRotate
 
             public Texture Texture { get; private set; }
-            public BumpLevel BumpLevel { get; set; }
             public bool IsForRoom { get; set; }
 
             private Rectangle2 _area;
@@ -156,28 +159,45 @@ namespace TombLib.LevelData.Compilers.Util
                 // Round area to nearest pixel to prevent rounding errors further down the line.
                 // Use ParentArea to create a parent for textures which were applied with group texturing tools.
                 _area = texture.ParentArea.IsZero ? texture.GetRect().Round() : texture.ParentArea.Round();
-                Initialize(texture.Texture, texture.BumpLevel, isForRoom);
+                Initialize(texture.Texture, isForRoom);
             }
 
-            public ParentTextureArea(Rectangle2 area, Texture texture, BumpLevel bumpLevel, bool isForRoom)
+            public ParentTextureArea(Rectangle2 area, Texture texture, bool isForRoom)
             {
                 _area = area;
-                Initialize(texture, bumpLevel, isForRoom);
+                Initialize(texture, isForRoom);
             }
 
-            private void Initialize(Texture texture, BumpLevel bumpLevel, bool isForRoom)
+            private void Initialize(Texture texture, bool isForRoom)
             {
                 Children = new List<ChildTextureArea>();
 
                 Texture = texture;
-                BumpLevel = bumpLevel;
                 IsForRoom = isForRoom;
                 SqueezeAndDuplicate = false;
             }
 
             // Compare parent's properties with incoming texture properties.
             public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom)
-                => BumpLevel == incomingTexture.BumpLevel && Texture.Image == incomingTexture.Texture.Image && IsForRoom == isForRoom;
+                => Texture.Image == incomingTexture.Texture.Image && IsForRoom == isForRoom;
+
+            // Check if bumpmapping could be assigned to parent.
+            // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
+            public BumpMappingLevel BumpLevel()
+            {
+                if(Texture is LevelTexture)
+                {
+                    var tex = Texture as LevelTexture;
+                    if (!String.IsNullOrEmpty(tex.BumpPath))
+                        return BumpMappingLevel.Level1; // tomb4 doesn't care about specific flag value
+                    else
+                    {
+                        var bumpLevel = tex.GetBumpMappingLevelFromTexCoord(Area.GetMid());
+                        return bumpLevel.HasValue ? bumpLevel.Value : BumpMappingLevel.None; 
+                    }
+                }
+                return BumpMappingLevel.None;
+            }
 
             // Checks if parameters are similar to another texture area, and if so,
             // also checks if texture area is enclosed in parent's area.
@@ -279,7 +299,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 foreach (var parent in CompiledAnimation)
                 {
-                    var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.BumpLevel, parent.IsForRoom);
+                    var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.IsForRoom);
 
                     // Squeeze and duplicate bitmap data for UVRotate texture sets
                     newParent.SqueezeAndDuplicate = Origin.IsUvRotate;
@@ -336,12 +356,12 @@ namespace TombLib.LevelData.Compilers.Util
             public bool IsForTriangle;
             public bool IsForRoom;
             public BlendMode BlendMode;
-            public BumpLevel BumpLevel;
+            public BumpMappingLevel BumpLevel;
 
             public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, GameVersion version, float maxTextureSize)
             {
                 BlendMode = child.BlendMode;
-                BumpLevel = parent.BumpLevel;
+                BumpLevel = parent.BumpLevel();
                 IsForRoom = parent.IsForRoom;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
@@ -378,10 +398,11 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public TexInfoManager(ushort maxTileSize, List<AnimatedTextureSet> sets)
+        public TexInfoManager(Level level, ushort maxTileSize)
         {
+            _level = level;
             MaxTileSize = maxTileSize;
-            GenerateAnimLookups(sets);  // Generate anim texture lookup table
+            GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
             GenerateTexInfos = true;    // Set manager ready state 
         }
 
@@ -639,7 +660,7 @@ namespace TombLib.LevelData.Compilers.Util
             });
         }
 
-        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures, int padding)
+        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures)
         {
             if (textures.Count == 0)
                 return 0;
@@ -654,6 +675,7 @@ namespace TombLib.LevelData.Compilers.Util
                 int h = (int)(textures[i].Area.Height);
 
                 // Calculate adaptive padding at all sides
+                int padding = _level.Settings.TexturePadding;
                 int lP = padding;
                 int rP = padding;
                 int tP = padding;
@@ -802,7 +824,6 @@ namespace TombLib.LevelData.Compilers.Util
             var refCopy = reference.Clone();
             foreach (var parent in refCopy.CompiledAnimation)
             {
-                parent.BumpLevel = origin.BumpLevel;
                 parent.IsForRoom = isForRoom;
 
                 foreach (var child in parent.Children)
@@ -817,9 +838,11 @@ namespace TombLib.LevelData.Compilers.Util
             ActualAnimTextures.Add(refCopy);
         }
 
-        private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, int padding, bool bump)
+        private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, bool bump)
         {
+            var customBumpmaps = new Dictionary<string, ImageC>();
             var image = ImageC.CreateNew(256, numPages * 256 * (bump ? 2 : 1));
+
             for (int i = 0; i < textures.Count; i++)
             {
                 var p = textures[i];
@@ -855,45 +878,73 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // Copy squeezed-and-duplicated image to texture map and add padding
                     image.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
-                    AddPadding(p, originalImage, image, 0, padding, 0, 0);
+                    AddPadding(p, originalImage, image, 0, _level.Settings.TexturePadding, 0, 0);
                 }
                 else
                 {
                     image.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
-                    AddPadding(p, p.Texture.Image, image, 0, padding);
+                    AddPadding(p, p.Texture.Image, image, 0, _level.Settings.TexturePadding);
                 }
 
                 // Do the bump map if needed
-                if (p.BumpLevel != BumpLevel.None)
+
+                if (p.Texture is LevelTexture)
                 {
-                    var bumpImage = ImageC.CreateNew(width, height);
-                    bumpImage.CopyFrom(0, 0, image, destX, destY, width, height);
-
-                    int effectWeight = 0;
-                    int effectSize   = 0;
-
-                    switch (p.BumpLevel)
-                    {
-                        case BumpLevel.Level1:
-                            effectWeight = -2;
-                            effectSize = 2;
-                            break;
-                        case BumpLevel.Level2:
-                            effectWeight = -2;
-                            effectSize = 3;
-                            break;
-                        case BumpLevel.Level3:
-                            effectWeight = -1;
-                            effectSize = 2;
-                            break;
-                    }
-                    bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
-
+                    var tex = (p.Texture as LevelTexture);
                     var bumpX = destX;
                     var bumpY = destY + (numPages * 256);
 
-                    image.CopyFrom(bumpX, bumpY, bumpImage);
-                    AddPadding(p, image, image, numPages, padding, bumpX, bumpY);
+                    // Try to copy custom bumpmaps
+                    if (!String.IsNullOrEmpty(tex.BumpPath))
+                    {
+                        if (!customBumpmaps.ContainsKey(tex.BumpPath))
+                        {
+                            var potentialBumpImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
+
+                            // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
+
+                            if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+                                customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
+                            else
+                                customBumpmaps.Add(tex.BumpPath, ImageC.Black);
+                        }
+
+                        image.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
+                        AddPadding(p, image, image, numPages, _level.Settings.TexturePadding, bumpX, bumpY);
+                    }
+                    else
+                    {
+                        var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
+
+                        if (level != BumpMappingLevel.None)
+                        {
+                            var bumpImage = ImageC.CreateNew(width, height);
+                            bumpImage.CopyFrom(0, 0, image, destX, destY, width, height);
+
+                            int effectWeight = 0;
+                            int effectSize = 0;
+
+                            switch (level)
+                            {
+                                case BumpMappingLevel.Level1:
+                                    effectWeight = -2;
+                                    effectSize = 2;
+                                    break;
+                                case BumpMappingLevel.Level2:
+                                    effectWeight = -2;
+                                    effectSize = 3;
+                                    break;
+                                case BumpMappingLevel.Level3:
+                                    effectWeight = -1;
+                                    effectSize = 2;
+                                    break;
+                            }
+                            bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
+
+                            image.CopyFrom(bumpX, bumpY, bumpImage);
+                            AddPadding(p, image, image, numPages, _level.Settings.TexturePadding, bumpX, bumpY);
+                        }
+                    }
                 }
             }
 
@@ -1033,7 +1084,7 @@ namespace TombLib.LevelData.Compilers.Util
                 return 0;
         }
 
-        public void PackTextures(int padding = 8)
+        public void PackTextures()
         {
             // Subdivide textures in 3 blocks: room, objects, bump
             var roomTextures = new List<ParentTextureArea>();
@@ -1044,7 +1095,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 if (ParentTextures[i].IsForRoom)
                 {
-                    if (ParentTextures[i].BumpLevel != BumpLevel.None)
+                    if (ParentTextures[i].BumpLevel() != BumpMappingLevel.None)
                         bumpedTextures.Add(ParentTextures[i]);
                     else
                         roomTextures.Add(ParentTextures[i]);
@@ -1060,7 +1111,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     if (parentTextures[i].IsForRoom)
                     {
-                        if (parentTextures[i].BumpLevel != BumpLevel.None)
+                        if (parentTextures[i].BumpLevel() != BumpMappingLevel.None)
                             bumpedTextures.Add(parentTextures[i]);
                         else
                             roomTextures.Add(parentTextures[i]);
@@ -1071,14 +1122,14 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Calculate new X, Y of each texture area
-            NumRoomPages = PlaceTexturesInMap(ref roomTextures, padding);
-            NumObjectsPages = PlaceTexturesInMap(ref objectsTextures, padding);
-            NumBumpPages = PlaceTexturesInMap(ref bumpedTextures, padding);
+            NumRoomPages = PlaceTexturesInMap(ref roomTextures);
+            NumObjectsPages = PlaceTexturesInMap(ref objectsTextures);
+            NumBumpPages = PlaceTexturesInMap(ref bumpedTextures);
 
             // Place all the textures areas in the maps
-            RoomPages = BuildTextureMap(ref roomTextures, NumRoomPages, padding, false);
-            ObjectsPages = BuildTextureMap(ref objectsTextures, NumObjectsPages, padding, false);
-            BumpPages = BuildTextureMap(ref bumpedTextures, NumBumpPages, padding, true);
+            RoomPages = BuildTextureMap(ref roomTextures, NumRoomPages, false);
+            ObjectsPages = BuildTextureMap(ref objectsTextures, NumObjectsPages, false);
+            BumpPages = BuildTextureMap(ref bumpedTextures, NumBumpPages, true);
         }
 
         public void BuildTextureInfos(GameVersion version)
@@ -1155,9 +1206,9 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (texture.IsForRoom) newFlags |= 0x8000;
 
-                    if (texture.BumpLevel == BumpLevel.Level1) newFlags |= (1 << 9);
-                    else if (texture.BumpLevel == BumpLevel.Level2) newFlags |= (2 << 9);
-                    else if (texture.BumpLevel == BumpLevel.Level3) newFlags |= (3 << 9);
+                    if      (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
+                    else if (texture.BumpLevel == BumpMappingLevel.Level2) newFlags |= (2 << 9);
+                    else if (texture.BumpLevel == BumpMappingLevel.Level3) newFlags |= (3 << 9);
 
                     writer.Write(newFlags);
                 }
@@ -1195,7 +1246,7 @@ namespace TombLib.LevelData.Compilers.Util
             for (int i = 0; i < _objectTextures.Count; i++)
             {
                 var texture = _objectTextures.ElementAt(i).Value;
-                if (texture.IsForRoom && texture.BumpLevel == BumpLevel.None)
+                if (texture.IsForRoom && texture.BumpLevel == BumpMappingLevel.None)
                 {
                     // Tile is OK
                 }
@@ -1203,7 +1254,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     texture.Tile += NumRoomPages;
                 }
-                else if (texture.IsForRoom && texture.BumpLevel != BumpLevel.None)
+                else if (texture.IsForRoom && texture.BumpLevel != BumpMappingLevel.None)
                 {
                     texture.Tile += NumRoomPages + NumObjectsPages + numSpritesPages;
                 }

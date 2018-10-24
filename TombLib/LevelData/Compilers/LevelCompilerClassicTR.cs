@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-            _textureInfoManager = new Util.TexInfoManager(256, _level.Settings.AnimatedTextureSets);
+            _textureInfoManager = new Util.TexInfoManager(_level, 256);
 
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
@@ -104,7 +104,7 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(30, "Packing textures");
 
             _textureInfoManager.SortAnimatedTextures();
-            _textureInfoManager.PackTextures(_level.Settings.TexturePadding);
+            _textureInfoManager.PackTextures();
             _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
 
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);

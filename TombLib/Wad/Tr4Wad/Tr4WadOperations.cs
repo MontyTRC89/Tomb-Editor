@@ -708,7 +708,6 @@ namespace TombLib.Wad.Tr4Wad
             TextureArea textureArea = new TextureArea();
             textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
             textureArea.DoubleSided = false;
-            textureArea.BumpLevel = BumpLevel.None;
 
             int textureId = GetTr4TextureIdFromPolygon(poly);
             textureArea.Texture = textures[textureId];

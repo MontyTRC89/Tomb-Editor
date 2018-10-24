@@ -15,15 +15,18 @@ namespace TombLib.LevelData
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const float FootStepSoundGranularity = 64.0f;
-        //public const float BumpMappingGranularity = 64.0f;
+        public const float BumpMappingGranularity = 64.0f;
 
         public string Path { get; private set; }
+
         public Exception LoadException { get; private set; }
         public bool Convert512PixelsToDoubleRows { get; private set; }
         public bool ReplaceMagentaWithTransparency { get; private set; }
 
         private TextureFootStepSound[,] _footStepSounds = new TextureFootStepSound[0, 0];
-        //private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
+
+        public string BumpPath;
+        private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
 
         public LevelTexture()
         { }
@@ -33,6 +36,7 @@ namespace TombLib.LevelData
             Convert512PixelsToDoubleRows = convert512PixelsToDoubleRows;
             ReplaceMagentaWithTransparency = replaceWithTransparency;
             SetPath(settings, path);
+            BumpPath = "";
         }
 
         public override Texture Clone()
@@ -42,11 +46,12 @@ namespace TombLib.LevelData
                 UniqueID = UniqueID,
                 Image = Image,
                 Path = Path,
+                BumpPath = BumpPath,
                 LoadException = LoadException,
                 Convert512PixelsToDoubleRows = Convert512PixelsToDoubleRows,
                 ReplaceMagentaWithTransparency = ReplaceMagentaWithTransparency,
                 _footStepSounds = _footStepSounds,
-                //_bumpMappingLevel = _bumpMappingLevel
+                _bumpMappingLevel = _bumpMappingLevel
             };
         }
 
@@ -54,16 +59,19 @@ namespace TombLib.LevelData
         {
             Image = other.Image;
             Path = other.Path;
+            BumpPath = other.BumpPath;
             LoadException = other.LoadException;
             Convert512PixelsToDoubleRows = other.Convert512PixelsToDoubleRows;
             ReplaceMagentaWithTransparency = other.ReplaceMagentaWithTransparency;
             _footStepSounds = other._footStepSounds;
-            //_bumpMappingLevel = other._bumpMappingLevel;
+            _bumpMappingLevel = other._bumpMappingLevel;
         }
 
         public bool Equals(LevelTexture other)
         {
             if (!(Path == null && other.Path == null) && !Path.Equals(other?.Path, StringComparison.InvariantCultureIgnoreCase))
+                return false;
+            if (!(BumpPath == null && other.BumpPath == null) && !BumpPath.Equals(other?.BumpPath, StringComparison.InvariantCultureIgnoreCase))
                 return false;
             if (Convert512PixelsToDoubleRows != other.Convert512PixelsToDoubleRows)
                 return false;
@@ -75,13 +83,18 @@ namespace TombLib.LevelData
                 for (int y = 0; y < FootStepSoundHeight; ++y)
                     if (_footStepSounds[x, y] != other._footStepSounds[x, y])
                         return false;
-            // Bump mapping!!!!!!!!!!!!!!!!!
+            if (BumpMappingWidth != other.BumpMappingWidth || BumpMappingHeight != other.BumpMappingHeight)
+                return false;
+            for (int x = 0; x < BumpMappingWidth; ++x)
+                for (int y = 0; y < BumpMappingHeight; ++y)
+                    if (_bumpMappingLevel[x, y] != other._bumpMappingLevel[x, y])
+                        return false;
             return true;
         }
 
         public override bool Equals(object other) => other is LevelTexture && Equals((LevelTexture)other);
 
-        public override int GetHashCode() => Path == null ? 0 : Path.GetHashCode();
+        public override int GetHashCode() => Path == null ? 0 : (Path + BumpPath).GetHashCode();
 
         public override string ToString()
         {
@@ -129,9 +142,9 @@ namespace TombLib.LevelData
                     (int)Math.Ceiling(Image.Height / FootStepSoundGranularity));
 
                 // Resize bump maps
-                // ResizeBumpMappingInfos(
-                //    (int)Math.Ceiling(Image.Width / BumpMappingGranularity),
-                //    (int)Math.Ceiling(Image.Height / BumpMappingGranularity));
+                 ResizeBumpMappingInfos(
+                    (int)Math.Ceiling(Image.Width / BumpMappingGranularity),
+                    (int)Math.Ceiling(Image.Height / BumpMappingGranularity));
             }
             catch (Exception exc)
             {
@@ -203,7 +216,7 @@ namespace TombLib.LevelData
             }
         }
 
-        /*public BumpMappingLevel GetBumpMapLevel(int x, int y)
+        public BumpMappingLevel GetBumpMapLevel(int x, int y)
         {
             return _bumpMappingLevel[x, y];
         }
@@ -240,7 +253,7 @@ namespace TombLib.LevelData
                         newBumpMappingInfos[x, y] = _bumpMappingLevel[x, y];
                 _bumpMappingLevel = newBumpMappingInfos;
             }
-        }*/
+        }
 
     }
 }

@@ -21,12 +21,16 @@ namespace TombEditor.ToolWindows
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            butDeleteTexture.Enabled = butBrowseTexture.Enabled = butTextureSounds.Enabled = false;
+            butDeleteTexture.Enabled =
+            butBrowseTexture.Enabled =
+            butAnimationRanges.Enabled =
+            butBumpMaps.Enabled =
+            butTextureSounds.Enabled = false;
+
             panelTextureMap.SelectedTextureChanged += delegate
             { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
             cmbBlending.SelectedIndex = 0;
-            cmbBump.SelectedIndex = 0;
             cmbTileSize.SelectedIndex = 1;
         }
 
@@ -103,7 +107,12 @@ namespace TombEditor.ToolWindows
         {
             if (panelTextureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
                 panelTextureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
-            butDeleteTexture.Enabled = butBrowseTexture.Enabled = butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
+
+            butDeleteTexture.Enabled = 
+            butBrowseTexture.Enabled =
+            butAnimationRanges.Enabled =
+            butBumpMaps.Enabled =
+            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
         }
 
         private void comboCurrentTexture_DropDown(object sender, EventArgs e)
@@ -119,6 +128,14 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 using (var form = new FormFootStepSounds(_editor, texture))
+                    form.ShowDialog(this);
+        }
+
+        private void butBumpMaps_Click(object sender, EventArgs e)
+        {
+            LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
+            if (texture != null)
+                using (var form = new FormBumpMaps(_editor, texture))
                     form.ShowDialog(this);
         }
 
@@ -196,26 +213,6 @@ namespace TombEditor.ToolWindows
                     cmbBlending.SelectedIndex = 5;
                     break;
             };
-
-            switch (texture.BumpLevel)
-            {
-                case BumpLevel.None:
-                default:
-                    cmbBump.SelectedIndex = 0;
-                    break;
-                case BumpLevel.Level1:
-                    cmbBump.SelectedIndex = 1;
-                    break;
-                case BumpLevel.Level2:
-                    cmbBump.SelectedIndex = 2;
-                    break;
-                case BumpLevel.Level3:
-                    cmbBump.SelectedIndex = 3;
-                    break;
-                case BumpLevel.NormalMap:
-                    cmbBump.SelectedIndex = 4;  // Future use
-                    break;
-            };
         }
 
         private void butDeleteTexture_Click(object sender, EventArgs e)
@@ -230,31 +227,6 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 EditorActions.UpdateTextureFilepath(this, texture);
-        }
-
-        private void cmbBump_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            switch (cmbBump.SelectedIndex)
-            {
-                default:
-                case 0:
-                    selectedTexture.BumpLevel = BumpLevel.None;
-                    break;
-                case 1:
-                    selectedTexture.BumpLevel = BumpLevel.Level1;
-                    break;
-                case 2:
-                    selectedTexture.BumpLevel = BumpLevel.Level2;
-                    break;
-                case 3:
-                    selectedTexture.BumpLevel = BumpLevel.Level3;
-                    break;
-                case 4:
-                    selectedTexture.BumpLevel = BumpLevel.NormalMap;
-                    break;
-            }
-            _editor.SelectedTexture = selectedTexture;
         }
     }
 }
