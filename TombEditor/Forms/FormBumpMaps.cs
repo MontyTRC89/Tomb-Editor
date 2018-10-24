@@ -67,6 +67,45 @@ namespace TombEditor.Forms
             }
         }
 
+        private void SwitchCustomBumpmap()
+        {
+            if (textureMap.VisibleTexture != null && textureMap.VisibleTexture is LevelTexture)
+            {
+                var currentTexture = textureMap.VisibleTexture as LevelTexture;
+
+                if (cbUseCustomFile.Checked)
+                    currentTexture.BumpPath = null;
+                else
+                {
+                    using (OpenFileDialog dialog = new OpenFileDialog())
+                    {
+                        dialog.Multiselect = false;
+                        dialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
+                        dialog.Title = "Open custom bump/normal map image";
+
+                        if (!string.IsNullOrWhiteSpace(currentTexture.Path))
+                            dialog.InitialDirectory = _editor.Level?.Settings?.MakeAbsolute(currentTexture.Path) ?? currentTexture.Path;
+
+                        if (dialog.ShowDialog(this) != DialogResult.OK)
+                            currentTexture.BumpPath = null;
+                        else
+                        {
+                            var tempImage = ImageC.FromFile(dialog.FileName);
+                            if (tempImage.Size != currentTexture.Image.Size)
+                            {
+                                DarkMessageBox.Show(this, "Selected image file has different size. Please select image with size similar to original texture file.", "Wrong image size", MessageBoxIcon.Error);
+                                currentTexture.BumpPath = null;
+                            }
+                            else
+                                currentTexture.BumpPath = _editor.Level?.Settings?.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
+                        }
+                    }
+                }
+            }
+
+            UpdateDialog();
+        }
+
         private void butOk_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
@@ -165,41 +204,12 @@ namespace TombEditor.Forms
 
         private void cbUseCustomFile_MouseDown(object sender, MouseEventArgs e)
         {
-            if (textureMap.VisibleTexture != null && textureMap.VisibleTexture is LevelTexture)
-            {
-                var currentTexture = textureMap.VisibleTexture as LevelTexture;
+            SwitchCustomBumpmap();
+        }
 
-                if (cbUseCustomFile.Checked)
-                    currentTexture.BumpPath = null;
-                else
-                {
-                    using (OpenFileDialog dialog = new OpenFileDialog())
-                    {
-                        dialog.Multiselect = false;
-                        dialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
-                        dialog.Title = "Open custom bump/normal map image";
-
-                        if (!string.IsNullOrWhiteSpace(currentTexture.Path))
-                            dialog.InitialDirectory = _editor.Level?.Settings?.MakeAbsolute(currentTexture.Path) ?? currentTexture.Path;
-
-                        if (dialog.ShowDialog(this) != DialogResult.OK)
-                            currentTexture.BumpPath = null;
-                        else
-                        {
-                            var tempImage = ImageC.FromFile(dialog.FileName);
-                            if (tempImage.Size != currentTexture.Image.Size)
-                            {
-                                DarkMessageBox.Show(this, "Selected image file has different size. Please select image with size similar to original texture file.", "Wrong image size", MessageBoxIcon.Error);
-                                currentTexture.BumpPath = null;
-                            }
-                            else
-                                currentTexture.BumpPath = _editor.Level?.Settings?.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
-                        }
-                    }
-                }
-            }
-
-            UpdateDialog();
+        private void lblCustomMapPath_Click(object sender, EventArgs e)
+        {
+            SwitchCustomBumpmap();
         }
     }
 }

@@ -79,11 +79,13 @@ namespace TombEditor.Forms
             // 
             this.lblCustomMapPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCustomMapPath.AutoEllipsis = true;
             this.lblCustomMapPath.ForeColor = System.Drawing.Color.Gray;
             this.lblCustomMapPath.Location = new System.Drawing.Point(108, 512);
             this.lblCustomMapPath.Name = "lblCustomMapPath";
             this.lblCustomMapPath.Size = new System.Drawing.Size(304, 13);
             this.lblCustomMapPath.TabIndex = 16;
+            this.lblCustomMapPath.Click += new System.EventHandler(this.lblCustomMapPath_Click);
             // 
             // FormBumpMaps
             // 
