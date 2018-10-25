@@ -35,7 +35,6 @@ namespace TombEditor.Forms
 
         // Floating tool boxes are placed on 3D view at runtime
         private readonly ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
-        private readonly Dictionary<ToolStripItem, string> _originalShortcutKeyDisplayStrings = new Dictionary<ToolStripItem, string>();
 
         public FormMain(Editor editor)
         {
@@ -266,14 +265,6 @@ namespace TombEditor.Forms
             openRecentToolStripMenuItem.Enabled = openRecentToolStripMenuItem.DropDownItems.Count > 2;
         }
 
-        private void GarbageCollectOoriginalShortcutKeyDisplayStrings()
-        {
-            // Clean up old _originalShortcutKeyDisplayStrings
-            foreach (var key in _originalShortcutKeyDisplayStrings.Keys.ToArray())
-                if (key.IsDisposed)
-                    _originalShortcutKeyDisplayStrings.Remove(key);
-        }
-
         private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
         {
             foreach (object obj in dropDownItems)
@@ -300,19 +291,9 @@ namespace TombEditor.Forms
 
                             var hotkeysForCommand = _editor.Configuration.UI_Hotkeys[subMenu.Tag.ToString()];
 
-                            // Store original shortcut key display strings
-                            string baseShortcutKeyDisplayString;
-                            if (!_originalShortcutKeyDisplayStrings.TryGetValue(subMenu, out baseShortcutKeyDisplayString))
-                            {
-                                _originalShortcutKeyDisplayStrings.Add(subMenu, subMenu.ShortcutKeyDisplayString);
-                                baseShortcutKeyDisplayString = subMenu.ShortcutKeyDisplayString;
-                            }
-
                             // Create new shortcut key display
                             subMenu.ShortcutKeyDisplayString = string.Join(", ",
-                                new[] { baseShortcutKeyDisplayString } // Preserve existing hot keys.
-                                .Concat(hotkeysForCommand.Select(h => h.ToString())) // Add new hot keys
-                                .Where(str => !string.IsNullOrWhiteSpace(str))); // Only those which aren't empty
+                                hotkeysForCommand.Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str))); // Only those which aren't empty
                         }
                     }
                 }
@@ -527,8 +508,6 @@ namespace TombEditor.Forms
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
-
-            GarbageCollectOoriginalShortcutKeyDisplayStrings();
         }
 
         private void ToolBox_Show(bool show)
