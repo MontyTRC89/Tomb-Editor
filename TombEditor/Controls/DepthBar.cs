@@ -457,8 +457,8 @@ namespace TombEditor.Controls
                             // Draw fill color for room
                             using (Brush colorBrush = new SolidBrush(
                                         (room.Block != null && room.Block.Type != BlockType.Floor) ?
-                                                _editor.Configuration.Editor_ColorScheme.ColorWall.ToWinFormsColor() :
-                                                _editor.Configuration.Editor_ColorScheme.ColorFloor.ToWinFormsColor()))
+                                                _editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor() :
+                                                _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor()))
                             {
                                 RectangleF roomRect = new RectangleF(posX0, posY0, posX1 - posX0, posY1 - posY0);
                                 using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))

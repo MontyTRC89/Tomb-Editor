@@ -26,7 +26,7 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             _editor = editor;
-            _currConfig = _editor.Configuration.Window_HotkeySets.Clone();
+            _currConfig = _editor.Configuration.UI_Hotkeys.Clone();
             commandList.DataSource = new SortableBindingList<CommandObj>(CommandHandler.Commands);
             listenKeys.Text = _listenerMessage;
 
@@ -100,7 +100,7 @@ namespace TombEditor.Forms
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            _editor.Configuration.Window_HotkeySets = _currConfig;
+            _editor.Configuration.UI_Hotkeys = _currConfig;
             _editor.ConfigurationChange(true);
             Close();
         }

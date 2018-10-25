@@ -50,7 +50,7 @@ namespace TombEditor.ToolWindows
 
         private void SetSectorColoringInfoPriority(Control button)
         {
-            if (!_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+            if (!_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
                 return;
 
             if (button == butBox)

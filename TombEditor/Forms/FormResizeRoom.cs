@@ -151,7 +151,7 @@ namespace TombEditor.Forms
                         (newArea.Y1 == room.NumZSectors - 1 && z == newArea.Height && room.LocalArea.Inflate(-1, 0).Contains(old) && 0 < x && x < newArea.Width))
                         base.PaintSectorTile(e, sectorArea, old.X, old.Y);
                     else
-                        using(var b = new SolidBrush(Parent._editor.Configuration.Editor_ColorScheme.ColorBorderWall.ToWinFormsColor()))
+                        using(var b = new SolidBrush(Parent._editor.Configuration.UI_ColorScheme.ColorBorderWall.ToWinFormsColor()))
                             e.Graphics.FillRectangle(b, sectorArea);
                     return;
                 }
@@ -165,8 +165,8 @@ namespace TombEditor.Forms
 
                 // Draw new floor
                 using (var b = new SolidBrush(Parent.UseFloor ?
-                                                Parent._editor.Configuration.Editor_ColorScheme.ColorFloor.ToWinFormsColor() :
-                                                Parent._editor.Configuration.Editor_ColorScheme.ColorWall.ToWinFormsColor()))
+                                                Parent._editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor() :
+                                                Parent._editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor()))
                     e.Graphics.FillRectangle(b, sectorArea);
             }
         }

@@ -19,7 +19,7 @@ namespace TombEditor
             _editor = editor;
             _transitionAnimator.Tick += UpdateTransitionAnimation;
 
-            ColoringInfo = new SectorColoringInfo(_editor.Configuration.Editor_ColorScheme);
+            ColoringInfo = new SectorColoringInfo(_editor.Configuration.UI_ColorScheme);
         }
 
         public void Dispose()
