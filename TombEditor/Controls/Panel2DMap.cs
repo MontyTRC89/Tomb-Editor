@@ -38,7 +38,7 @@ namespace TombEditor.Controls
         }
         private float _viewScale = 6.0f;
 
-        private readonly DepthBar _depthBar = new DepthBar();
+        private readonly DepthBar _depthBar;
         private readonly Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
@@ -104,6 +104,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised += EditorEventRaised;
             }
 
+            _depthBar = new DepthBar(_editor);
             _depthBar.InvalidateParent += Invalidate;
             _depthBar.GetParent += () => this;
             _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));

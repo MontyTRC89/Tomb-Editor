@@ -103,6 +103,11 @@ namespace TombEditor.Controls
         }
         private SelectionMode _selectionMode = SelectionMode.None;
 
+        public DepthBar(Editor editor)
+        {
+            _editor = editor;
+        }
+
         public RectangleF getBarArea(Size parentControlSize)
         {
             float barsWidth = _barWidth * (DepthProbes.Count + 1);
