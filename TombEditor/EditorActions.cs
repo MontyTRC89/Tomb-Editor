@@ -3395,8 +3395,11 @@ namespace TombEditor
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
+
                     _editor.Level = newLevel;
                     newLevel = null;
+                    AddProjectToRecent(fileName);
+                    _editor.HasUnsavedChanges = false;
                 }
             }
             catch (Exception exc)
@@ -3411,13 +3414,6 @@ namespace TombEditor
                 }
                 else
                     _editor.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. \nException: " + exc.Message, PopupType.Error);
-            }
-
-            if (newLevel != null)
-            {
-                _editor.Level = newLevel;
-                AddProjectToRecent(fileName);
-                _editor.HasUnsavedChanges = false;
             }
         }
 
