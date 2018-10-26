@@ -66,6 +66,7 @@ namespace TombEditor.Controls
             if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
+                obj is Editor.RoomGeometryChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
             {
                 Invalidate();
