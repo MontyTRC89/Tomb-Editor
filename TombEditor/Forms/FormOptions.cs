@@ -29,6 +29,7 @@ namespace TombEditor.Forms
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(630, 380) + (Size - ClientSize);
+            MaximumSize = new Size(MinimumSize.Width, 0);
             Size = MinimumSize;
 
             _editor = editor;
