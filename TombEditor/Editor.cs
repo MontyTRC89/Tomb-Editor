@@ -721,10 +721,10 @@ namespace TombEditor
 
                 if (!_configurationIsLoadedFromFile)
                     current?.SaveTry();
-                if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
-                    _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
-                if (previous == null || current.AutoSave_Enable != previous.AutoSave_Enable)
-                    _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+
+                _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
+                _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+
                 if (current.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))
                     if (current.Editor_ReloadFilesAutomaticallyWhenChanged)
                     {
