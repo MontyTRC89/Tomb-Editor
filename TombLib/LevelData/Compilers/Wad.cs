@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, bool isWaterfall = false)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, bool isWaterfall = false, bool isOptics = false)
         {
             int currentMeshSize = 0;
 
@@ -138,6 +138,9 @@ namespace TombLib.LevelData.Compilers
                     {
                         //result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
                         result = _textureInfoManager.AddTexture(poly.Texture, false, false, topmostAndUnpadded);
+
+                        // Very ugly hack for TR4-5 binocular/target optics!
+                        if (isOptics) result.Rotation = 0;
                     }
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
@@ -151,6 +154,9 @@ namespace TombLib.LevelData.Compilers
                     {
                         //result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
                         result = _textureInfoManager.AddTexture(poly.Texture, false, true, topmostAndUnpadded);
+
+                        // Very ugly hack for TR4-5 binocular/target optics!
+                        if (isOptics) result.Rotation = 0;
                     }
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
@@ -385,7 +391,7 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion));
+                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), oldMoveable.Id.IsOptics(_level.Settings.WadGameVersion));
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
