@@ -67,14 +67,9 @@ namespace TombEditor
                 GetCommand(hotkeyForCommand.Key).Execute?.Invoke(args);
         }
 
-        private static IEnumerable<Control> AllSubControls(Control control)
-        {
-            return Enumerable.Repeat(control, 1).Union(control.Controls.OfType<Control>().SelectMany(AllSubControls));
-        }
-
         public static void AssignCommandsToControls(Editor editor, Control parent, ToolTip toolTip = null, bool onlyToolTips = false)
         {
-            var controls = AllSubControls(parent).Where(c => c is DarkButton || c is DarkCheckBox).ToList();
+            var controls = WinFormsUtils.AllSubControls(parent).Where(c => c is DarkButton || c is DarkCheckBox).ToList();
             foreach (var control in controls)
             {
                 if (!string.IsNullOrEmpty(control.Tag?.ToString()))
@@ -1089,6 +1084,12 @@ namespace TombEditor
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (FormLevelSettings form = new FormLevelSettings(args.Editor))
+                    form.ShowDialog(args.Window);
+            });
+
+            AddCommand("EditOptions", "Editor options...", CommandType.Settings, delegate (CommandArgs args)
+            {
+                using (FormOptions form = new FormOptions(args.Editor))
                     form.ShowDialog(args.Window);
             });
 

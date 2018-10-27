@@ -122,7 +122,7 @@ namespace TombEditor.Controls
                         ColoringInfo = _editor.SectorColoringManager.ColoringInfo,
                         DrawIllegalSlopes = ShowIllegalSlopes,
                         DrawSlideDirections = ShowSlideDirections,
-                        ProbeAttributesThroughPortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals,
+                        ProbeAttributesThroughPortals = _editor.Configuration.UI_ProbeAttributesThroughPortals,
                     };
 
                     if(_editor.SelectedRoom == room)

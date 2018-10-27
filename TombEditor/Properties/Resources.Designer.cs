@@ -423,6 +423,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_options_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_options_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_plus_math_16 {
             get {
                 object obj = ResourceManager.GetObject("general_plus_math_16", resourceCulture);

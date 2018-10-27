@@ -88,5 +88,10 @@ namespace TombLib.Utils
             else
                 return newObjects;
         }
+
+        public static IEnumerable<Control> AllSubControls(Control control)
+        {
+            return Enumerable.Repeat(control, 1).Union(control.Controls.OfType<Control>().SelectMany(AllSubControls));
+        }
     }
 }
