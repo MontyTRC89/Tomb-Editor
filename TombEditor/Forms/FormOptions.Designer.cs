@@ -63,7 +63,9 @@
             this.tabSubPanel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.darkGroupBox8 = new DarkUI.Controls.DarkGroupBox();
+            this.darkLabel61 = new DarkUI.Controls.DarkLabel();
             this.darkLabel60 = new DarkUI.Controls.DarkLabel();
+            this.panelColorSelector0 = new System.Windows.Forms.Panel();
             this.panelColorSelector19 = new System.Windows.Forms.Panel();
             this.darkLabel59 = new DarkUI.Controls.DarkLabel();
             this.panelColorSelector18 = new System.Windows.Forms.Panel();
@@ -196,8 +198,6 @@
             this.darkLabel32 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown30 = new DarkUI.Controls.DarkNumericUpDown();
             this.cmbSelectionTileSize = new DarkUI.Controls.DarkComboBox();
-            this.darkLabel61 = new DarkUI.Controls.DarkLabel();
-            this.panelColorSelector0 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
@@ -657,14 +657,13 @@
             // 
             // panel2
             // 
-            this.panel2.AutoSize = true;
             this.panel2.Controls.Add(this.darkGroupBox8);
             this.panel2.Controls.Add(this.darkGroupBox6);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(364, 655);
+            this.panel2.Size = new System.Drawing.Size(364, 670);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
@@ -712,11 +711,21 @@
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox8.Location = new System.Drawing.Point(3, 67);
             this.darkGroupBox8.Name = "darkGroupBox8";
-            this.darkGroupBox8.Size = new System.Drawing.Size(358, 585);
+            this.darkGroupBox8.Size = new System.Drawing.Size(358, 600);
             this.darkGroupBox8.TabIndex = 3;
             this.darkGroupBox8.TabStop = false;
             this.darkGroupBox8.Tag = "";
             this.darkGroupBox8.Text = "Color scheme";
+            // 
+            // darkLabel61
+            // 
+            this.darkLabel61.AutoSize = true;
+            this.darkLabel61.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel61.Location = new System.Drawing.Point(12, 23);
+            this.darkLabel61.Name = "darkLabel61";
+            this.darkLabel61.Size = new System.Drawing.Size(57, 13);
+            this.darkLabel61.TabIndex = 30;
+            this.darkLabel61.Text = "Selection:";
             // 
             // darkLabel60
             // 
@@ -727,6 +736,16 @@
             this.darkLabel60.Size = new System.Drawing.Size(94, 13);
             this.darkLabel60.TabIndex = 64;
             this.darkLabel60.Text = "Force solid floor:";
+            // 
+            // panelColorSelector0
+            // 
+            this.panelColorSelector0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelColorSelector0.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector0.Location = new System.Drawing.Point(196, 19);
+            this.panelColorSelector0.Name = "panelColorSelector0";
+            this.panelColorSelector0.Size = new System.Drawing.Size(67, 23);
+            this.panelColorSelector0.TabIndex = 29;
+            this.panelColorSelector0.Tag = "ColorSelection";
             // 
             // panelColorSelector19
             // 
@@ -2566,26 +2585,6 @@
             this.cmbSelectionTileSize.TabIndex = 43;
             this.cmbSelectionTileSize.Tag = "TextureMap_DefaultTileSelectionSize";
             // 
-            // darkLabel61
-            // 
-            this.darkLabel61.AutoSize = true;
-            this.darkLabel61.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel61.Location = new System.Drawing.Point(12, 23);
-            this.darkLabel61.Name = "darkLabel61";
-            this.darkLabel61.Size = new System.Drawing.Size(57, 13);
-            this.darkLabel61.TabIndex = 30;
-            this.darkLabel61.Text = "Selection:";
-            // 
-            // panelColorSelector0
-            // 
-            this.panelColorSelector0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector0.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector0.Location = new System.Drawing.Point(196, 19);
-            this.panelColorSelector0.Name = "panelColorSelector0";
-            this.panelColorSelector0.Size = new System.Drawing.Size(67, 23);
-            this.panelColorSelector0.TabIndex = 29;
-            this.panelColorSelector0.Tag = "ColorSelection";
-            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -2625,7 +2624,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown37)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabSubPanel3.ResumeLayout(false);
-            this.tabSubPanel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.darkGroupBox8.ResumeLayout(false);
             this.darkGroupBox8.PerformLayout();
