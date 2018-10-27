@@ -753,7 +753,7 @@ namespace TombEditor
                 var @event = (ModeChangedEvent)obj;
                 if ((@event.Previous == EditorMode.Map2D) != (@event.Current == EditorMode.Map2D))
                     SendMessage();
-                if (Configuration.Editor_DiscardSelectionOnModeSwitch)
+                if (Configuration.UI_DiscardSelectionOnModeSwitch)
                     SelectedSectors = SectorSelection.None;
 
                 if (@event.Current == EditorMode.Geometry)

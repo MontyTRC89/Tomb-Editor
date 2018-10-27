@@ -34,8 +34,6 @@ namespace TombEditor
         // Global editor options
 
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
-        public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
-        public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
 
         // Item preview options
@@ -125,6 +123,8 @@ namespace TombEditor
 
         // User interface options
 
+        public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;
+        public bool UI_ProbeAttributesThroughPortals { get; set; } = true;
         public bool UI_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
         public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public ColorScheme UI_ColorScheme { get; set; } = new ColorScheme();
