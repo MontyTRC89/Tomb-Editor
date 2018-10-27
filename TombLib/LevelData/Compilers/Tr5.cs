@@ -173,7 +173,7 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(91, "Writing textures");
 
                 // The room texture tile count currently also currently contains the wad textures
-                // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
+                // But lets not bother with those fields too much since they only matter when bump maps are used and we don't use them.
                 writer.Write((ushort)(_texture32Data.GetLength(0) / (256 * 256 * 4)));
                 writer.Write((ushort)0);
                 writer.Write((ushort)0);
