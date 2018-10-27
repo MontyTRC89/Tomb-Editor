@@ -24,21 +24,23 @@ namespace TombEditor
                                      newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        private float RotationQuanization => Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift) ? 22.5f : 0.0f;
+        private float RotationQuanization(bool smoothByDefault = true) =>
+            (Control.ModifierKeys.HasFlag(Keys.Shift) == smoothByDefault) ? 22.5f : 0.0f;
 
         protected override void GizmoRotateY(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
+            bool smoothRotationPreference = !(_editor.SelectedObject is MoveableInstance || _editor.SelectedObject is StaticInstance);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(newAngle * (180 / Math.PI)), RotationQuanization(smoothRotationPreference), false);
         }
 
         protected override void GizmoRotateX(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -(float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -(float)(newAngle * (180 / Math.PI)), RotationQuanization(), false);
         }
 
         protected override void GizmoRotateZ(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(newAngle * (180 / Math.PI)), RotationQuanization(), false);
         }
 
         protected override void GizmoScale(float scale)
