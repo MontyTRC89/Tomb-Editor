@@ -374,7 +374,7 @@
             this.butPageDefaults.Name = "butPageDefaults";
             this.butPageDefaults.Size = new System.Drawing.Size(199, 24);
             this.butPageDefaults.TabIndex = 4;
-            this.butPageDefaults.Text = "Defaults for this page";
+            this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
             // tabbedContainer
