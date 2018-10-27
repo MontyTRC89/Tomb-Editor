@@ -133,7 +133,8 @@ namespace TombEditor.Controls
                 obj is Editor.RoomGeometryChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
                 obj is Editor.RoomPropertiesChangedEvent ||
-                obj is Editor.RoomListChangedEvent)
+                obj is Editor.RoomListChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent)
             {
                 if (_editor.Mode == EditorMode.Map2D)
                     Invalidate();
