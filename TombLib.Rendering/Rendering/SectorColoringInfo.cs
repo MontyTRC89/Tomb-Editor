@@ -157,15 +157,17 @@ namespace TombLib.Rendering
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.Portal:
-                                if (block.IsAnyPortal)
+                                if((room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType != Room.RoomConnectionType.NoPortal) ||
+                                   (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).TraversableType != Room.RoomConnectionType.NoPortal) ||
+                                   (block.WallPortal != null && block.WallPortal.IsTraversable))
                                     return colorScheme.ColorPortal;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null)
+                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable)
                                     return colorScheme.ColorPortalFace;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null)
+                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable)
                                     return colorScheme.ColorPortalFace;
                                 break;
                         }
