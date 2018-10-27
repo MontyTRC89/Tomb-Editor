@@ -19,8 +19,6 @@ namespace TombEditor.Forms
             InitializeComponent();
             InitializeDialog();
 
-            tabbedContainer.LinkedListView = optionsList;
-
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(630, 380) + (Size - ClientSize);
@@ -41,7 +39,9 @@ namespace TombEditor.Forms
 
         private void InitializeDialog()
         {
-            foreach (FontFamily font in System.Drawing.FontFamily.Families)
+            tabbedContainer.LinkedListView = optionsList;
+
+            foreach (var font in FontFamily.Families)
                 cmbRendering3DFont.Items.Add(font.Name);
 
             for (int i = 5; i <= 8; i++)
@@ -51,7 +51,7 @@ namespace TombEditor.Forms
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
-                    using (var colorDialog = new System.Windows.Forms.ColorDialog())
+                    using (var colorDialog = new ColorDialog())
                     {
                         colorDialog.Color = panel.BackColor;
                         colorDialog.FullOpen = true;
@@ -73,10 +73,7 @@ namespace TombEditor.Forms
 
         private Object GetOptionObject(Control control, Configuration configuration)
         {
-            if (control.Tag == null || string.IsNullOrEmpty(control.Tag.ToString()))
-                return null;
-
-            var name = control.Tag.ToString();
+            var name = control.Tag?.ToString();
             var option = configuration.GetType().GetProperty(name)?.GetValue(configuration);
 
             // Try to get sub-option from color scheme
