@@ -124,9 +124,10 @@
             this.gridWallsIn3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridWallsIn5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.editOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keyboardLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1304,21 +1305,13 @@
             this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripMenuItem4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem5,
-            this.toolStripMenuItem6,
-            this.keyboardLayoutToolStripMenuItem});
+            this.editOptionsToolStripMenuItem,
+            this.keyboardLayoutToolStripMenuItem,
+            this.toolStripMenuItem6});
             this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.Size = new System.Drawing.Size(47, 20);
             this.toolStripMenuItem4.Text = "Tools";
-            // 
-            // toolStripMenuItem6
-            // 
-            this.toolStripMenuItem6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem6.Tag = "StartWadTool";
-            this.toolStripMenuItem6.Text = "StartWadTool";
             // 
             // toolStripMenuItem5
             // 
@@ -1330,6 +1323,16 @@
             this.toolStripMenuItem5.Tag = "EditLevelSettings";
             this.toolStripMenuItem5.Text = "EditLevelSettings";
             // 
+            // editOptionsToolStripMenuItem
+            // 
+            this.editOptionsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.editOptionsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.editOptionsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_options_16;
+            this.editOptionsToolStripMenuItem.Name = "editOptionsToolStripMenuItem";
+            this.editOptionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editOptionsToolStripMenuItem.Tag = "EditOptions";
+            this.editOptionsToolStripMenuItem.Text = "EditOptions";
+            // 
             // keyboardLayoutToolStripMenuItem
             // 
             this.keyboardLayoutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1338,6 +1341,15 @@
             this.keyboardLayoutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.keyboardLayoutToolStripMenuItem.Tag = "EditKeyboardLayout";
             this.keyboardLayoutToolStripMenuItem.Text = "EditKeyboardLayout";
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem6.Tag = "StartWadTool";
+            this.toolStripMenuItem6.Text = "StartWadTool";
             // 
             // debugToolStripMenuItem
             // 
@@ -1865,5 +1877,6 @@
         private System.Windows.Forms.ToolStripMenuItem newRoomRightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newRoomFrontToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newRoomBackToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editOptionsToolStripMenuItem;
     }
 }

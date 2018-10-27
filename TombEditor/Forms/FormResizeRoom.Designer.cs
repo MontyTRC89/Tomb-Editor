@@ -314,8 +314,10 @@
             // 
             // FormResizeRoom
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(699, 434);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.optUseFloor);

@@ -721,10 +721,10 @@ namespace TombEditor
 
                 if (!_configurationIsLoadedFromFile)
                     current?.SaveTry();
-                if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
-                    _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
-                if (previous == null || current.AutoSave_Enable != previous.AutoSave_Enable)
-                    _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+
+                _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
+                _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+
                 if (current.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))
                     if (current.Editor_ReloadFilesAutomaticallyWhenChanged)
                     {
@@ -753,7 +753,7 @@ namespace TombEditor
                 var @event = (ModeChangedEvent)obj;
                 if ((@event.Previous == EditorMode.Map2D) != (@event.Current == EditorMode.Map2D))
                     SendMessage();
-                if (Configuration.Editor_DiscardSelectionOnModeSwitch)
+                if (Configuration.UI_DiscardSelectionOnModeSwitch)
                     SelectedSectors = SectorSelection.None;
 
                 if (@event.Current == EditorMode.Geometry)

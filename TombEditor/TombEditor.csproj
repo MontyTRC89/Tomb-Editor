@@ -140,6 +140,12 @@
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormOptions.Designer.cs">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormResizeRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -409,6 +415,9 @@
     <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
       <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormOptions.resx">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPreviewTexture.resx">
       <DependentUpon>FormPreviewTexture.cs</DependentUpon>
     </EmbeddedResource>
@@ -526,6 +535,7 @@
     <Content Include="Editor\Shaders\RoomGeometry.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\icons_general\general_options-16.png" />
     <None Include="Editor\Shaders\Model.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
