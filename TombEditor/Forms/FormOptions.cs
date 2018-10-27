@@ -28,7 +28,7 @@ namespace TombEditor.Forms
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(630, 333) + (Size - ClientSize);
+            MinimumSize = new Size(630, 380) + (Size - ClientSize);
             Size = MinimumSize;
 
             _editor = editor;
@@ -46,7 +46,12 @@ namespace TombEditor.Forms
         private void InitializeDialog()
         {
             foreach (FontFamily font in System.Drawing.FontFamily.Families)
-                cbRendering3DFont.Items.Add(font.Name);
+                cmbRendering3DFont.Items.Add(font.Name);
+
+            cmbSelectionTileSize.Items.Add(32.0f);
+            cmbSelectionTileSize.Items.Add(64.0f);
+            cmbSelectionTileSize.Items.Add(128.0f);
+            cmbSelectionTileSize.Items.Add(256.0f);
 
             var panels = WinFormsUtils.AllSubControls(this).Where(c => c is Panel && !String.IsNullOrEmpty(((Panel)c).Tag?.ToString())).ToList();
             foreach(var panel in panels)
@@ -107,6 +112,8 @@ namespace TombEditor.Forms
                         ((DarkComboBox)control).SelectedItem = (string)option;
                     else if (control is DarkComboBox && option is int)
                         ((DarkComboBox)control).SelectedItem = (int)option;
+                    else if (control is DarkComboBox && option is float)
+                        ((DarkComboBox)control).SelectedItem = (float)option;
                     else if (control is DarkNumericUpDown)
                     {
                         if(option is float)
@@ -142,6 +149,8 @@ namespace TombEditor.Forms
                         _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkComboBox)control).SelectedItem.ToString());
                     else if (control is DarkComboBox && option is int)
                         _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (int)((DarkComboBox)control).SelectedItem);
+                    else if (control is DarkComboBox && option is float)
+                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (float)((DarkComboBox)control).SelectedItem);
                     else if (control is DarkNumericUpDown)
                     {
                         if (option is int)
