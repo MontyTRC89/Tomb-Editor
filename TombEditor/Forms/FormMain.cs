@@ -298,7 +298,7 @@ namespace TombEditor.Forms
                                 }
                             }
 
-                            var hotkeysForCommand = _editor.Configuration.Window_HotkeySets[subMenu.Tag.ToString()];
+                            var hotkeysForCommand = _editor.Configuration.UI_Hotkeys[subMenu.Tag.ToString()];
 
                             // Store original shortcut key display strings
                             string baseShortcutKeyDisplayString;

@@ -499,7 +499,7 @@ namespace TombEditor
             _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
 
-            //if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+            //if (_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
             //    _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
 
@@ -1405,7 +1405,7 @@ namespace TombEditor
                 newArea = newArea.Inflate(1);
 
             bool useFloor;
-            using (FormResizeRoom form = new FormResizeRoom(room, newArea))
+            using (FormResizeRoom form = new FormResizeRoom(_editor, room, newArea))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
@@ -2549,7 +2549,7 @@ namespace TombEditor
                 return false;
             string lockedRoomList = "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
 
-            if (_editor.Configuration.Editor_OnlyShowSmallMessageWhenRoomIsLocked)
+            if (_editor.Configuration.UI_OnlyShowSmallMessageWhenRoomIsLocked)
             {
                 _editor.SendMessage("Can't move rooms because some rooms are locked.\n" + lockedRoomList, PopupType.Info);
                 return true;

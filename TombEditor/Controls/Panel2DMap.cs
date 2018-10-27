@@ -38,7 +38,7 @@ namespace TombEditor.Controls
         }
         private float _viewScale = 6.0f;
 
-        private readonly DepthBar _depthBar = new DepthBar();
+        private readonly DepthBar _depthBar;
         private readonly Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
@@ -80,7 +80,6 @@ namespace TombEditor.Controls
 
         private static readonly SolidBrush _roomsSelectedBrush = new SolidBrush(Color.FromArgb(180, 230, 20, 20));
         private static readonly Brush _roomsMovedBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
-        private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(185, 255, 255, 255));
         private static readonly Brush _selectionAreaBrush = new HatchBrush(HatchStyle.SmallConfetti, Color.FromArgb(90, 20, 20, 190), Color.FromArgb(50, 20, 20, 190));
         private static readonly Pen _selectionAreaPen = new Pen(Color.FromArgb(200, 20, 20, 190), 1.5f) { DashPattern = new[] { 3.0f, 3.0f } };
         private static readonly Pen _roomBorderPen = new Pen(Color.Black, 1);
@@ -104,6 +103,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised += EditorEventRaised;
             }
 
+            _depthBar = new DepthBar(_editor);
             _depthBar.InvalidateParent += Invalidate;
             _depthBar.GetParent += () => this;
             _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
@@ -218,7 +218,7 @@ namespace TombEditor.Controls
             base.OnMouseDown(e);
 
             var clickPos = FromVisualCoord(e.Location);
-            if (!_depthBar.MouseDown(e, Size, _editor.Level, clickPos))
+            if (!_depthBar.MouseDown(e, Size, clickPos))
                 return;
 
             _lastMousePosition = e.Location;
@@ -353,7 +353,7 @@ namespace TombEditor.Controls
             base.OnMouseMove(e);
 
             // Update depth bar...
-            _depthBar.MouseMove(e, Size, _editor.Level);
+            _depthBar.MouseMove(e, Size);
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
             Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X) - 1, (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right) - 1, (int)Math.Ceiling(area.Bottom) - 1));
 
@@ -421,7 +421,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
             Capture = false;
-            _depthBar.MouseUp(e, Size, _editor.Level);
+            _depthBar.MouseUp(e, Size);
 
             switch (e.Button)
             {
@@ -541,7 +541,7 @@ namespace TombEditor.Controls
                 if (!barAreaWithSpace.Contains(e.ClipRectangle))
                 {
                     Rectangle2 visibleArea = FromVisualCoord(e.ClipRectangle);
-                    e.Graphics.Clear(Color.White);
+                    e.Graphics.Clear(_editor.Configuration.UI_ColorScheme.Color2DBackground.ToWinFormsColor());
 
                     // Draw hidden rooms
                     float currentRangeMin = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetLowestCorner();
@@ -558,7 +558,9 @@ namespace TombEditor.Controls
                             DrawRoom(e, room, currentRangeMin, currentRangeMax, true, false);
                         }
                     if (drewAny)
-                        e.Graphics.FillRectangle(_roomsOutsideOverdraw, e.ClipRectangle); // Make the rooms in the background appear faded
+                        using (var b = new SolidBrush(_editor.Configuration.UI_ColorScheme.Color2DBackground.ToWinFormsColor(0.7f)))
+                            e.Graphics.FillRectangle(b, e.ClipRectangle); // Make the rooms in the background appear faded
+                        
 
                     // Draw grid lines
                     Vector2 GridLines0 = FromVisualCoord(new PointF());
@@ -631,7 +633,7 @@ namespace TombEditor.Controls
 
                 // Draw depth bar
                 Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
-                _depthBar.Draw(e, ClientSize, _editor.Level, cursorPos, GetRoomBrush);
+                _depthBar.Draw(e, ClientSize, cursorPos, GetRoomBrush);
 
                 // Invalidation debugger
                 //Random r = new Random();

@@ -240,7 +240,7 @@ namespace TombEditor.ToolWindows
                             if (!onlyLabels)
                                 control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
 
-                            var hotkeyLabel = string.Join(", ", _editor.Configuration.Window_HotkeySets[control.Tag.ToString()]);
+                            var hotkeyLabel = string.Join(", ", _editor.Configuration.UI_Hotkeys[control.Tag.ToString()]);
                             var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
 
                             if (control is ToolStripMenuItem)
