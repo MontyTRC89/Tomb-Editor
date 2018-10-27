@@ -59,8 +59,6 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
 
-        private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
-
         // Overall state
         private readonly Editor _editor;
         private Vector3? _currentRoomLastPos;
@@ -1806,7 +1804,7 @@ namespace TombEditor.Controls
                 skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
-                    skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
+                    skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
@@ -1884,7 +1882,7 @@ namespace TombEditor.Controls
 
                     geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                     if (_editor.SelectedObject == instance)
-                        geometryEffect.Parameters["Color"].SetValue(_selectionColor);
+                        geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                     foreach (var submesh in mesh.Submeshes)
                     {
@@ -1962,7 +1960,7 @@ namespace TombEditor.Controls
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
                 staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 if (_editor.SelectedObject == instance)
-                    staticMeshEffect.Parameters["Color"].SetValue(_selectionColor);
+                    staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {

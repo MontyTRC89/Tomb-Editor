@@ -266,7 +266,7 @@ namespace TombLib.Rendering
             if (SelectionArea.Contains(new VectorInt2(x, z)))
             {
                 SectorTexture = SectorTexture.None;
-                Color = new Vector4(0.998f, 0.0f, 0.0f, 1.0f); // Selection color
+                Color = ColoringInfo.SectorColorScheme.ColorSelection; // Selection color
 
                 switch (face)
                 {

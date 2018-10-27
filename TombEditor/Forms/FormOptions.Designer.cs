@@ -196,6 +196,8 @@
             this.darkLabel32 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown30 = new DarkUI.Controls.DarkNumericUpDown();
             this.cmbSelectionTileSize = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel61 = new DarkUI.Controls.DarkLabel();
+            this.panelColorSelector0 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
@@ -662,12 +664,14 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(364, 643);
+            this.panel2.Size = new System.Drawing.Size(364, 655);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
             // 
+            this.darkGroupBox8.Controls.Add(this.darkLabel61);
             this.darkGroupBox8.Controls.Add(this.darkLabel60);
+            this.darkGroupBox8.Controls.Add(this.panelColorSelector0);
             this.darkGroupBox8.Controls.Add(this.panelColorSelector19);
             this.darkGroupBox8.Controls.Add(this.darkLabel59);
             this.darkGroupBox8.Controls.Add(this.panelColorSelector18);
@@ -708,16 +712,17 @@
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox8.Location = new System.Drawing.Point(3, 67);
             this.darkGroupBox8.Name = "darkGroupBox8";
-            this.darkGroupBox8.Size = new System.Drawing.Size(358, 573);
+            this.darkGroupBox8.Size = new System.Drawing.Size(358, 585);
             this.darkGroupBox8.TabIndex = 3;
             this.darkGroupBox8.TabStop = false;
+            this.darkGroupBox8.Tag = "";
             this.darkGroupBox8.Text = "Color scheme";
             // 
             // darkLabel60
             // 
             this.darkLabel60.AutoSize = true;
             this.darkLabel60.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel60.Location = new System.Drawing.Point(6, 547);
+            this.darkLabel60.Location = new System.Drawing.Point(12, 574);
             this.darkLabel60.Name = "darkLabel60";
             this.darkLabel60.Size = new System.Drawing.Size(94, 13);
             this.darkLabel60.TabIndex = 64;
@@ -727,7 +732,7 @@
             // 
             this.panelColorSelector19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector19.Location = new System.Drawing.Point(190, 543);
+            this.panelColorSelector19.Location = new System.Drawing.Point(196, 570);
             this.panelColorSelector19.Name = "panelColorSelector19";
             this.panelColorSelector19.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector19.TabIndex = 63;
@@ -737,7 +742,7 @@
             // 
             this.darkLabel59.AutoSize = true;
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel59.Location = new System.Drawing.Point(6, 518);
+            this.darkLabel59.Location = new System.Drawing.Point(12, 545);
             this.darkLabel59.Name = "darkLabel59";
             this.darkLabel59.Size = new System.Drawing.Size(122, 13);
             this.darkLabel59.TabIndex = 62;
@@ -747,7 +752,7 @@
             // 
             this.panelColorSelector18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector18.Location = new System.Drawing.Point(190, 514);
+            this.panelColorSelector18.Location = new System.Drawing.Point(196, 541);
             this.panelColorSelector18.Name = "panelColorSelector18";
             this.panelColorSelector18.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector18.TabIndex = 61;
@@ -757,7 +762,7 @@
             // 
             this.darkLabel58.AutoSize = true;
             this.darkLabel58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel58.Location = new System.Drawing.Point(6, 489);
+            this.darkLabel58.Location = new System.Drawing.Point(12, 516);
             this.darkLabel58.Name = "darkLabel58";
             this.darkLabel58.Size = new System.Drawing.Size(70, 13);
             this.darkLabel58.TabIndex = 60;
@@ -767,7 +772,7 @@
             // 
             this.panelColorSelector17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector17.Location = new System.Drawing.Point(190, 485);
+            this.panelColorSelector17.Location = new System.Drawing.Point(196, 512);
             this.panelColorSelector17.Name = "panelColorSelector17";
             this.panelColorSelector17.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector17.TabIndex = 59;
@@ -777,7 +782,7 @@
             // 
             this.darkLabel57.AutoSize = true;
             this.darkLabel57.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel57.Location = new System.Drawing.Point(6, 460);
+            this.darkLabel57.Location = new System.Drawing.Point(12, 487);
             this.darkLabel57.Name = "darkLabel57";
             this.darkLabel57.Size = new System.Drawing.Size(78, 13);
             this.darkLabel57.TabIndex = 58;
@@ -787,7 +792,7 @@
             // 
             this.darkLabel56.AutoSize = true;
             this.darkLabel56.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel56.Location = new System.Drawing.Point(6, 431);
+            this.darkLabel56.Location = new System.Drawing.Point(12, 458);
             this.darkLabel56.Name = "darkLabel56";
             this.darkLabel56.Size = new System.Drawing.Size(41, 13);
             this.darkLabel56.TabIndex = 56;
@@ -797,7 +802,7 @@
             // 
             this.panelColorSelector16.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector16.Location = new System.Drawing.Point(190, 456);
+            this.panelColorSelector16.Location = new System.Drawing.Point(196, 483);
             this.panelColorSelector16.Name = "panelColorSelector16";
             this.panelColorSelector16.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector16.TabIndex = 57;
@@ -807,7 +812,7 @@
             // 
             this.panelColorSelector15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector15.Location = new System.Drawing.Point(190, 427);
+            this.panelColorSelector15.Location = new System.Drawing.Point(196, 454);
             this.panelColorSelector15.Name = "panelColorSelector15";
             this.panelColorSelector15.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector15.TabIndex = 55;
@@ -817,7 +822,7 @@
             // 
             this.darkLabel55.AutoSize = true;
             this.darkLabel55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel55.Location = new System.Drawing.Point(6, 402);
+            this.darkLabel55.Location = new System.Drawing.Point(12, 429);
             this.darkLabel55.Name = "darkLabel55";
             this.darkLabel55.Size = new System.Drawing.Size(29, 13);
             this.darkLabel55.TabIndex = 54;
@@ -827,7 +832,7 @@
             // 
             this.panelColorSelector14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector14.Location = new System.Drawing.Point(190, 398);
+            this.panelColorSelector14.Location = new System.Drawing.Point(196, 425);
             this.panelColorSelector14.Name = "panelColorSelector14";
             this.panelColorSelector14.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector14.TabIndex = 53;
@@ -837,7 +842,7 @@
             // 
             this.darkLabel54.AutoSize = true;
             this.darkLabel54.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel54.Location = new System.Drawing.Point(6, 373);
+            this.darkLabel54.Location = new System.Drawing.Point(12, 400);
             this.darkLabel54.Name = "darkLabel54";
             this.darkLabel54.Size = new System.Drawing.Size(39, 13);
             this.darkLabel54.TabIndex = 52;
@@ -847,7 +852,7 @@
             // 
             this.panelColorSelector13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector13.Location = new System.Drawing.Point(190, 369);
+            this.panelColorSelector13.Location = new System.Drawing.Point(196, 396);
             this.panelColorSelector13.Name = "panelColorSelector13";
             this.panelColorSelector13.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector13.TabIndex = 51;
@@ -857,7 +862,7 @@
             // 
             this.darkLabel53.AutoSize = true;
             this.darkLabel53.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel53.Location = new System.Drawing.Point(6, 344);
+            this.darkLabel53.Location = new System.Drawing.Point(12, 371);
             this.darkLabel53.Name = "darkLabel53";
             this.darkLabel53.Size = new System.Drawing.Size(82, 13);
             this.darkLabel53.TabIndex = 50;
@@ -867,7 +872,7 @@
             // 
             this.panelColorSelector12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector12.Location = new System.Drawing.Point(190, 340);
+            this.panelColorSelector12.Location = new System.Drawing.Point(196, 367);
             this.panelColorSelector12.Name = "panelColorSelector12";
             this.panelColorSelector12.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector12.TabIndex = 49;
@@ -877,7 +882,7 @@
             // 
             this.darkLabel52.AutoSize = true;
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel52.Location = new System.Drawing.Point(6, 315);
+            this.darkLabel52.Location = new System.Drawing.Point(12, 342);
             this.darkLabel52.Name = "darkLabel52";
             this.darkLabel52.Size = new System.Drawing.Size(46, 13);
             this.darkLabel52.TabIndex = 48;
@@ -887,7 +892,7 @@
             // 
             this.panelColorSelector11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector11.Location = new System.Drawing.Point(190, 311);
+            this.panelColorSelector11.Location = new System.Drawing.Point(196, 338);
             this.panelColorSelector11.Name = "panelColorSelector11";
             this.panelColorSelector11.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector11.TabIndex = 47;
@@ -897,7 +902,7 @@
             // 
             this.darkLabel51.AutoSize = true;
             this.darkLabel51.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel51.Location = new System.Drawing.Point(6, 286);
+            this.darkLabel51.Location = new System.Drawing.Point(12, 313);
             this.darkLabel51.Name = "darkLabel51";
             this.darkLabel51.Size = new System.Drawing.Size(106, 13);
             this.darkLabel51.TabIndex = 46;
@@ -907,7 +912,7 @@
             // 
             this.darkLabel50.AutoSize = true;
             this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel50.Location = new System.Drawing.Point(6, 257);
+            this.darkLabel50.Location = new System.Drawing.Point(12, 284);
             this.darkLabel50.Name = "darkLabel50";
             this.darkLabel50.Size = new System.Drawing.Size(105, 13);
             this.darkLabel50.TabIndex = 44;
@@ -917,7 +922,7 @@
             // 
             this.panelColorSelector10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector10.Location = new System.Drawing.Point(190, 282);
+            this.panelColorSelector10.Location = new System.Drawing.Point(196, 309);
             this.panelColorSelector10.Name = "panelColorSelector10";
             this.panelColorSelector10.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector10.TabIndex = 45;
@@ -927,7 +932,7 @@
             // 
             this.panelColorSelector9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector9.Location = new System.Drawing.Point(190, 253);
+            this.panelColorSelector9.Location = new System.Drawing.Point(196, 280);
             this.panelColorSelector9.Name = "panelColorSelector9";
             this.panelColorSelector9.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector9.TabIndex = 43;
@@ -937,7 +942,7 @@
             // 
             this.darkLabel49.AutoSize = true;
             this.darkLabel49.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel49.Location = new System.Drawing.Point(6, 228);
+            this.darkLabel49.Location = new System.Drawing.Point(12, 255);
             this.darkLabel49.Name = "darkLabel49";
             this.darkLabel49.Size = new System.Drawing.Size(108, 13);
             this.darkLabel49.TabIndex = 42;
@@ -947,7 +952,7 @@
             // 
             this.panelColorSelector8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector8.Location = new System.Drawing.Point(190, 224);
+            this.panelColorSelector8.Location = new System.Drawing.Point(196, 251);
             this.panelColorSelector8.Name = "panelColorSelector8";
             this.panelColorSelector8.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector8.TabIndex = 41;
@@ -957,7 +962,7 @@
             // 
             this.darkLabel48.AutoSize = true;
             this.darkLabel48.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel48.Location = new System.Drawing.Point(6, 199);
+            this.darkLabel48.Location = new System.Drawing.Point(12, 226);
             this.darkLabel48.Name = "darkLabel48";
             this.darkLabel48.Size = new System.Drawing.Size(69, 13);
             this.darkLabel48.TabIndex = 40;
@@ -967,7 +972,7 @@
             // 
             this.panelColorSelector7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector7.Location = new System.Drawing.Point(190, 195);
+            this.panelColorSelector7.Location = new System.Drawing.Point(196, 222);
             this.panelColorSelector7.Name = "panelColorSelector7";
             this.panelColorSelector7.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector7.TabIndex = 39;
@@ -977,7 +982,7 @@
             // 
             this.darkLabel47.AutoSize = true;
             this.darkLabel47.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel47.Location = new System.Drawing.Point(6, 170);
+            this.darkLabel47.Location = new System.Drawing.Point(12, 197);
             this.darkLabel47.Name = "darkLabel47";
             this.darkLabel47.Size = new System.Drawing.Size(37, 13);
             this.darkLabel47.TabIndex = 38;
@@ -987,7 +992,7 @@
             // 
             this.panelColorSelector6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector6.Location = new System.Drawing.Point(190, 166);
+            this.panelColorSelector6.Location = new System.Drawing.Point(196, 193);
             this.panelColorSelector6.Name = "panelColorSelector6";
             this.panelColorSelector6.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector6.TabIndex = 37;
@@ -997,7 +1002,7 @@
             // 
             this.darkLabel46.AutoSize = true;
             this.darkLabel46.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel46.Location = new System.Drawing.Point(6, 141);
+            this.darkLabel46.Location = new System.Drawing.Point(12, 168);
             this.darkLabel46.Name = "darkLabel46";
             this.darkLabel46.Size = new System.Drawing.Size(133, 13);
             this.darkLabel46.TabIndex = 36;
@@ -1007,7 +1012,7 @@
             // 
             this.panelColorSelector5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector5.Location = new System.Drawing.Point(190, 137);
+            this.panelColorSelector5.Location = new System.Drawing.Point(196, 164);
             this.panelColorSelector5.Name = "panelColorSelector5";
             this.panelColorSelector5.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector5.TabIndex = 35;
@@ -1017,7 +1022,7 @@
             // 
             this.darkLabel45.AutoSize = true;
             this.darkLabel45.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel45.Location = new System.Drawing.Point(6, 112);
+            this.darkLabel45.Location = new System.Drawing.Point(12, 139);
             this.darkLabel45.Name = "darkLabel45";
             this.darkLabel45.Size = new System.Drawing.Size(109, 13);
             this.darkLabel45.TabIndex = 34;
@@ -1027,7 +1032,7 @@
             // 
             this.panelColorSelector4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector4.Location = new System.Drawing.Point(190, 108);
+            this.panelColorSelector4.Location = new System.Drawing.Point(196, 135);
             this.panelColorSelector4.Name = "panelColorSelector4";
             this.panelColorSelector4.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector4.TabIndex = 33;
@@ -1037,7 +1042,7 @@
             // 
             this.darkLabel44.AutoSize = true;
             this.darkLabel44.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel44.Location = new System.Drawing.Point(6, 83);
+            this.darkLabel44.Location = new System.Drawing.Point(12, 110);
             this.darkLabel44.Name = "darkLabel44";
             this.darkLabel44.Size = new System.Drawing.Size(145, 13);
             this.darkLabel44.TabIndex = 32;
@@ -1047,7 +1052,7 @@
             // 
             this.panelColorSelector3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector3.Location = new System.Drawing.Point(190, 79);
+            this.panelColorSelector3.Location = new System.Drawing.Point(196, 106);
             this.panelColorSelector3.Name = "panelColorSelector3";
             this.panelColorSelector3.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector3.TabIndex = 31;
@@ -1057,7 +1062,7 @@
             // 
             this.darkLabel43.AutoSize = true;
             this.darkLabel43.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel43.Location = new System.Drawing.Point(6, 54);
+            this.darkLabel43.Location = new System.Drawing.Point(12, 81);
             this.darkLabel43.Name = "darkLabel43";
             this.darkLabel43.Size = new System.Drawing.Size(90, 13);
             this.darkLabel43.TabIndex = 30;
@@ -1067,7 +1072,7 @@
             // 
             this.panelColorSelector2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector2.Location = new System.Drawing.Point(190, 50);
+            this.panelColorSelector2.Location = new System.Drawing.Point(196, 77);
             this.panelColorSelector2.Name = "panelColorSelector2";
             this.panelColorSelector2.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector2.TabIndex = 29;
@@ -1077,7 +1082,7 @@
             // 
             this.darkLabel42.AutoSize = true;
             this.darkLabel42.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel42.Location = new System.Drawing.Point(6, 25);
+            this.darkLabel42.Location = new System.Drawing.Point(12, 52);
             this.darkLabel42.Name = "darkLabel42";
             this.darkLabel42.Size = new System.Drawing.Size(90, 13);
             this.darkLabel42.TabIndex = 28;
@@ -1087,7 +1092,7 @@
             // 
             this.panelColorSelector1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector1.Location = new System.Drawing.Point(190, 21);
+            this.panelColorSelector1.Location = new System.Drawing.Point(196, 48);
             this.panelColorSelector1.Name = "panelColorSelector1";
             this.panelColorSelector1.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector1.TabIndex = 16;
@@ -2561,6 +2566,26 @@
             this.cmbSelectionTileSize.TabIndex = 43;
             this.cmbSelectionTileSize.Tag = "TextureMap_DefaultTileSelectionSize";
             // 
+            // darkLabel61
+            // 
+            this.darkLabel61.AutoSize = true;
+            this.darkLabel61.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel61.Location = new System.Drawing.Point(12, 23);
+            this.darkLabel61.Name = "darkLabel61";
+            this.darkLabel61.Size = new System.Drawing.Size(57, 13);
+            this.darkLabel61.TabIndex = 30;
+            this.darkLabel61.Text = "Selection:";
+            // 
+            // panelColorSelector0
+            // 
+            this.panelColorSelector0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelColorSelector0.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector0.Location = new System.Drawing.Point(196, 19);
+            this.panelColorSelector0.Name = "panelColorSelector0";
+            this.panelColorSelector0.Size = new System.Drawing.Size(67, 23);
+            this.panelColorSelector0.TabIndex = 29;
+            this.panelColorSelector0.Tag = "ColorSelection";
+            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -2833,5 +2858,7 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private DarkUI.Controls.DarkButton butPageDefaults;
+        private DarkUI.Controls.DarkLabel darkLabel61;
+        private System.Windows.Forms.Panel panelColorSelector0;
     }
 }

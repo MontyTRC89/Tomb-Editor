@@ -48,26 +48,28 @@ namespace TombLib.Rendering
     }
     public class ColorScheme
     {
-        private static Vector4 DefaultColor3DBackground => new Vector4(165, 165, 165, 255) / 255.0f;
-        private static Vector4 DefaultColorFlipRoom => new Vector4(35, 35, 35, 255) / 255.0f;
-        private static Vector4 DefaultColor2DBackground => new Vector4(255, 255, 255, 255) / 255.0f;
-        private static Vector4 DefaultColorPortal => new Vector4(0, 0, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorPortalFace => new Vector4(255, 255, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorFloor => new Vector4(0, 190, 190, 255) / 255.0f;
-        private static Vector4 DefaultColorBorderWall => new Vector4(128, 128, 128, 255) / 255.0f;
-        private static Vector4 DefaultColorWall => new Vector4(0, 160, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorWallLower => new Vector4(0, 80, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorWallUpper => new Vector4(0, 240, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorTrigger => new Vector4(200, 0, 200, 255) / 255.0f;
-        private static Vector4 DefaultColorMonkey => new Vector4(255, 100, 100, 255) / 255.0f;
-        private static Vector4 DefaultColorClimb => new Vector4(255, 180, 180, 255) / 255.0f;
-        private static Vector4 DefaultColorBox => new Vector4(100, 100, 100, 255) / 255.0f;
-        private static Vector4 DefaultColorDeath => new Vector4(20, 240, 20, 255) / 255.0f;
-        private static Vector4 DefaultColorNotWalkable => new Vector4(0, 0, 150, 255) / 255.0f;
-        private static Vector4 DefaultColorBeetle => new Vector4(100, 100, 100, 255) / 255.0f;
-        private static Vector4 DefaultColorTriggerTriggerer => new Vector4(0, 0, 252, 255) / 255.0f;
-        private static Vector4 DefaultColorForceSolidFloor => Vector4.Lerp(DefaultColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f);
+        private static Vector4 DefaultColorSelection = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
+        private static Vector4 DefaultColor3DBackground = new Vector4(165, 165, 165, 255) / 255.0f;
+        private static Vector4 DefaultColorFlipRoom = new Vector4(35, 35, 35, 255) / 255.0f;
+        private static Vector4 DefaultColor2DBackground = new Vector4(255, 255, 255, 255) / 255.0f;
+        private static Vector4 DefaultColorPortal = new Vector4(0, 0, 0, 255) / 255.0f;
+        private static Vector4 DefaultColorPortalFace = new Vector4(255, 255, 0, 255) / 255.0f;
+        private static Vector4 DefaultColorFloor = new Vector4(0, 190, 190, 255) / 255.0f;
+        private static Vector4 DefaultColorBorderWall = new Vector4(128, 128, 128, 255) / 255.0f;
+        private static Vector4 DefaultColorWall = new Vector4(0, 160, 0, 255) / 255.0f;
+        private static Vector4 DefaultColorWallLower = new Vector4(0, 80, 0, 255) / 255.0f;
+        private static Vector4 DefaultColorWallUpper = new Vector4(0, 240, 0, 255) / 255.0f;
+        private static Vector4 DefaultColorTrigger = new Vector4(200, 0, 200, 255) / 255.0f;
+        private static Vector4 DefaultColorMonkey = new Vector4(255, 100, 100, 255) / 255.0f;
+        private static Vector4 DefaultColorClimb = new Vector4(255, 180, 180, 255) / 255.0f;
+        private static Vector4 DefaultColorBox = new Vector4(100, 100, 100, 255) / 255.0f;
+        private static Vector4 DefaultColorDeath = new Vector4(20, 240, 20, 255) / 255.0f;
+        private static Vector4 DefaultColorNotWalkable = new Vector4(0, 0, 150, 255) / 255.0f;
+        private static Vector4 DefaultColorBeetle = new Vector4(100, 100, 100, 255) / 255.0f;
+        private static Vector4 DefaultColorTriggerTriggerer = new Vector4(0, 0, 252, 255) / 255.0f;
+        private static Vector4 DefaultColorForceSolidFloor = Vector4.Lerp(DefaultColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f);
 
+        public Vector4 ColorSelection = DefaultColorSelection;
         public Vector4 Color3DBackground = DefaultColor3DBackground;
         public Vector4 Color2DBackground = DefaultColor2DBackground;
         public Vector4 ColorFlipRoom = DefaultColorFlipRoom;
