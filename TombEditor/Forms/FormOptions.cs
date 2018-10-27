@@ -35,13 +35,13 @@ namespace TombEditor.Forms
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            ReadConfigIntoControls();
+            ReadConfigIntoControls(this);
         }
 
         private void EditorEventRaised(IEditorEvent obj)
         {
             if (obj is Editor.ConfigurationChangedEvent)
-                ReadConfigIntoControls();
+                ReadConfigIntoControls(this);
         }
 
         private void InitializeDialog()
@@ -49,14 +49,11 @@ namespace TombEditor.Forms
             foreach (FontFamily font in System.Drawing.FontFamily.Families)
                 cmbRendering3DFont.Items.Add(font.Name);
 
-            cmbSelectionTileSize.Items.Add(32.0f);
-            cmbSelectionTileSize.Items.Add(64.0f);
-            cmbSelectionTileSize.Items.Add(128.0f);
-            cmbSelectionTileSize.Items.Add(256.0f);
+            for (int i = 5; i <= 8; i++)
+                cmbSelectionTileSize.Items.Add((float)(Math.Pow(2, i)));
 
-            var panels = WinFormsUtils.AllSubControls(this).Where(c => c is Panel && !String.IsNullOrEmpty(((Panel)c).Tag?.ToString())).ToList();
+            var panels = AllOptionControls(this).Where(c => c is Panel && c.Tag != null).ToList();
             foreach(var panel in panels)
-            {
                 panel.Click += (sender, e) =>
                 {
                     using (var colorDialog = new System.Windows.Forms.ColorDialog())
@@ -68,59 +65,75 @@ namespace TombEditor.Forms
                         panel.BackColor = colorDialog.Color;
                     }
                 };
-            }
         }
 
-        private Object GetOptionObjectFromControl(Control control)
+        private IEnumerable<Control> AllOptionControls(Control control)
+        {
+            return WinFormsUtils.AllSubControls(control).Where(c => (c is DarkCheckBox ||
+                                                                     c is DarkTextBox ||
+                                                                     c is DarkComboBox ||
+                                                                     c is DarkNumericUpDown ||
+                                                                     c is Panel) && c.Tag != null).ToList();
+        }
+
+        private Object GetOptionObject(Control control, Configuration configuration)
         {
             if (control.Tag == null || string.IsNullOrEmpty(control.Tag.ToString()))
                 return null;
 
             var name = control.Tag.ToString();
-            var option = _editor.Configuration.GetType().GetProperty(name)?.GetValue(_editor.Configuration);
+            var option = configuration.GetType().GetProperty(name)?.GetValue(configuration);
+
             // Try to get sub-option from color scheme
             if (option == null)
             {
-                var type = _editor.Configuration.UI_ColorScheme.GetType();
+                var type = configuration.UI_ColorScheme.GetType();
                 var prop = type.GetField(name);
 
                 if (prop != null)
-                    option = prop.GetValue(_editor.Configuration.UI_ColorScheme);
+                    option = prop.GetValue(configuration.UI_ColorScheme);
             }
 
             return option;
         }
 
-        private void ReadConfigIntoControls()
+        private void SetOptionValue(String name, Object obj, Object value)
         {
-            var options = _editor.Configuration.GetType().GetProperties().Select(p => p.Name).ToList();
+            var prop = obj.GetType().GetProperty(name);
+            if(prop != null)
+                prop.SetValue(obj, value);
+            else
+            {
+                var field = obj.GetType().GetField(name);
+                if (field != null)
+                    field.SetValue(obj, value);
+            }
+        }
 
-            var controls = WinFormsUtils.AllSubControls(this).Where(c => c is DarkCheckBox ||
-                                                                         c is DarkTextBox ||
-                                                                         c is DarkComboBox ||
-                                                                         c is DarkNumericUpDown ||
-                                                                         c is Panel).ToList();
+        private void ReadConfigIntoControls(Control parent, bool resetToDefault = false)
+        {
+            var controls    = AllOptionControls(parent);
+            var configToUse = resetToDefault ? new Configuration() : _editor.Configuration;
+
             foreach (var control in controls)
             {
-                var option = GetOptionObjectFromControl(control);
+                var option = GetOptionObject(control, configToUse);
                 if(option != null)
                 {
                     if (control is DarkCheckBox && option is bool)
                         ((DarkCheckBox)control).Checked = (bool)option;
                     else if (control is DarkTextBox && option is string)
                         ((DarkTextBox)control).Text = (string)option;
-                    else if (control is DarkComboBox && option is string)
-                        ((DarkComboBox)control).SelectedItem = (string)option;
-                    else if (control is DarkComboBox && option is int)
-                        ((DarkComboBox)control).SelectedItem = (int)option;
-                    else if (control is DarkComboBox && option is float)
-                        ((DarkComboBox)control).SelectedItem = (float)option;
+                    else if (control is DarkComboBox)
+                    {
+                             if (option is string) ((DarkComboBox)control).SelectedItem = (string)option;
+                        else if (option is int)    ((DarkComboBox)control).SelectedItem = (int)option;
+                        else if (option is float)  ((DarkComboBox)control).SelectedItem = (float)option;
+                    }
                     else if (control is DarkNumericUpDown)
                     {
-                        if(option is float)
-                            ((DarkNumericUpDown)control).Value = (decimal)(float)option;
-                        else if(option is int)
-                            ((DarkNumericUpDown)control).Value = (decimal)(int)option;
+                             if(option is float) ((DarkNumericUpDown)control).Value = (decimal)(float)option;
+                        else if(option is int)   ((DarkNumericUpDown)control).Value = (decimal)(int)option;
                     }
                     else if (control is Panel && option is Vector4)
                         ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
@@ -130,42 +143,37 @@ namespace TombEditor.Forms
 
         private void WriteConfigFromControls()
         {
-            var controls = WinFormsUtils.AllSubControls(this).Where(c => c is DarkCheckBox ||
-                                                                         c is DarkTextBox ||
-                                                                         c is DarkComboBox ||
-                                                                         c is DarkNumericUpDown ||
-                                                                         c is Panel).ToList();
+            var controls = AllOptionControls(this);
+            var config   = _editor.Configuration;
+
             foreach (var control in controls)
             {
-                var option = GetOptionObjectFromControl(control);
+                var option = GetOptionObject(control, config);
                 if (option != null)
                 {
                     var name = control.Tag.ToString();
 
                     if (control is DarkCheckBox && option is bool)
-                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkCheckBox)control).Checked);
+                        SetOptionValue(name, config, ((DarkCheckBox)control).Checked);
                     else if (control is DarkTextBox && option is string)
-                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkTextBox)control).Text);
-                    else if (control is DarkComboBox && option is string)
-                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkComboBox)control).SelectedItem.ToString());
-                    else if (control is DarkComboBox && option is int)
-                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (int)((DarkComboBox)control).SelectedItem);
-                    else if (control is DarkComboBox && option is float)
-                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (float)((DarkComboBox)control).SelectedItem);
+                        SetOptionValue(name, config, ((DarkTextBox)control).Text);
+                    else if (control is DarkComboBox)
+                    {
+                             if (option is string) SetOptionValue(name, config, ((DarkComboBox)control).SelectedItem.ToString());
+                        else if (option is int)    SetOptionValue(name, config, (int)((DarkComboBox)control).SelectedItem);
+                        else if (option is float)  SetOptionValue(name, config, (float)((DarkComboBox)control).SelectedItem);
+                    }
                     else if (control is DarkNumericUpDown)
                     {
-                        if (option is int)
-                            _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (int)((DarkNumericUpDown)control).Value);
-                        else if (option is float)
-                            _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (float)((DarkNumericUpDown)control).Value);
+                             if (option is int)   SetOptionValue(name, config,   (int)((DarkNumericUpDown)control).Value);
+                        else if (option is float) SetOptionValue(name, config, (float)((DarkNumericUpDown)control).Value);
                     }
                     else if (control is Panel && option is Vector4)
                     {
-                        var saveAlpha = ((Vector4)option).W;
                         var panelColor = ((Panel)control).BackColor;
-                        var newColor = new Vector4((float)(panelColor.R / 255.0), (float)(panelColor.G / 255.0), (float)(panelColor.B / 255.0), saveAlpha);
-
-                        _editor.Configuration.UI_ColorScheme.GetType().GetField(name).SetValue(_editor.Configuration.UI_ColorScheme, newColor);
+                        var newColor = new Vector4(panelColor.R, panelColor.G, panelColor.B, 0) / 255.0f;
+                        newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
+                        SetOptionValue(name, config.UI_ColorScheme, newColor);
                     }
                 }
             }
@@ -187,6 +195,11 @@ namespace TombEditor.Forms
         private void butCancel_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void butPageDefaults_Click(object sender, EventArgs e)
+        {
+            ReadConfigIntoControls(tabbedContainer.SelectedTab, true);
         }
     }
 }
