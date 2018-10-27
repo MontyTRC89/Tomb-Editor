@@ -40,13 +40,19 @@ namespace TombLib.Wad
 
         public bool IsWaterfall(WadGameVersion gameVersion)
         {
-            return gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 423 && TypeId <= 425 ||
-                   gameVersion == WadGameVersion.TR5 && TypeId >= 410 && TypeId <= 415;
+            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 423 && TypeId <= 425) ||
+                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 410 && TypeId <= 415);
+        }
+        public bool IsOptics(WadGameVersion gameVersion)
+        {
+            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 461 && TypeId <= 462) ||
+                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 456 && TypeId <= 457);
         }
 
         public bool IsAI(WadGameVersion gameVersion)
         {
-            return TypeId >= 398 && TypeId <= 406;
+            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 398 && TypeId <= 406) ||
+                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 378 && TypeId <= 386);
         }
     }
 
