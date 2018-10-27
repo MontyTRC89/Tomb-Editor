@@ -27,7 +27,6 @@ namespace TombEditor.Controls
         private static readonly Pen _gridPen = Pens.Black;
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
-        private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
 
         public static readonly HashSet<SectorColoringType> IgnoredHighlights = new HashSet<SectorColoringType>
         {
@@ -288,7 +287,8 @@ namespace TombEditor.Controls
                 if (DrawSelection)
                 {
                     if (_editor.SelectedSectors.Valid)
-                        e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
+                        using(var p = new Pen(_editor.Configuration.UI_ColorScheme.ColorSelection.ToWinFormsColor(), 2))
+                            e.Graphics.DrawRectangle(p, ToVisualCoord(_editor.SelectedSectors.Area));
 
                     var instance = _editor.SelectedObject as SectorBasedObjectInstance;
                     if (instance != null && instance.Room == Room)
