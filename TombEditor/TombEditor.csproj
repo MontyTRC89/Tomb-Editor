@@ -140,6 +140,12 @@
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormOptions.Designer.cs">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormResizeRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -408,6 +414,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
       <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormOptions.resx">
+      <DependentUpon>FormOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPreviewTexture.resx">
       <DependentUpon>FormPreviewTexture.cs</DependentUpon>
