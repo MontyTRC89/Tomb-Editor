@@ -30,12 +30,6 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.darkSectionPanel5 = new System.Windows.Forms.Panel();
@@ -194,10 +188,14 @@
             this.darkLabel32 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown30 = new DarkUI.Controls.DarkNumericUpDown();
             this.cmbSelectionTileSize = new DarkUI.Controls.DarkComboBox();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel11.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.darkSectionPanel5.SuspendLayout();
@@ -258,6 +256,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown28)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown29)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown30)).BeginInit();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -288,72 +288,6 @@
             this.darkSectionPanel2.SectionHeader = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(397, 360);
             this.darkSectionPanel2.TabIndex = 2;
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 360);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 358);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel11
-            // 
-            this.panel11.Controls.Add(this.butApply);
-            this.panel11.Controls.Add(this.butOk);
-            this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel11.Location = new System.Drawing.Point(209, 369);
-            this.panel11.Name = "panel11";
-            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel11.Size = new System.Drawing.Size(397, 28);
-            this.panel11.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(140, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(226, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "OK";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(312, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // tabbedContainer
             // 
@@ -1846,7 +1780,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown6.Location = new System.Drawing.Point(172, 147);
+            this.darkNumericUpDown6.Location = new System.Drawing.Point(165, 147);
             this.darkNumericUpDown6.Maximum = new decimal(new int[] {
             200,
             0,
@@ -1887,7 +1821,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown5.Location = new System.Drawing.Point(172, 119);
+            this.darkNumericUpDown5.Location = new System.Drawing.Point(165, 119);
             this.darkNumericUpDown5.MousewheelSingleIncrement = true;
             this.darkNumericUpDown5.Name = "darkNumericUpDown5";
             this.darkNumericUpDown5.Size = new System.Drawing.Size(64, 22);
@@ -1913,7 +1847,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown4.Location = new System.Drawing.Point(172, 91);
+            this.darkNumericUpDown4.Location = new System.Drawing.Point(165, 91);
             this.darkNumericUpDown4.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -1944,7 +1878,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown3.Location = new System.Drawing.Point(172, 63);
+            this.darkNumericUpDown3.Location = new System.Drawing.Point(165, 63);
             this.darkNumericUpDown3.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -1965,7 +1899,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown2.Location = new System.Drawing.Point(172, 35);
+            this.darkNumericUpDown2.Location = new System.Drawing.Point(165, 35);
             this.darkNumericUpDown2.MousewheelSingleIncrement = true;
             this.darkNumericUpDown2.Name = "darkNumericUpDown2";
             this.darkNumericUpDown2.Size = new System.Drawing.Size(64, 22);
@@ -2322,7 +2256,7 @@
             0,
             0,
             131072});
-            this.darkNumericUpDown31.Location = new System.Drawing.Point(166, 175);
+            this.darkNumericUpDown31.Location = new System.Drawing.Point(165, 175);
             this.darkNumericUpDown31.MousewheelSingleIncrement = true;
             this.darkNumericUpDown31.Name = "darkNumericUpDown31";
             this.darkNumericUpDown31.Size = new System.Drawing.Size(64, 22);
@@ -2354,7 +2288,7 @@
             0,
             0,
             131072});
-            this.darkNumericUpDown25.Location = new System.Drawing.Point(166, 119);
+            this.darkNumericUpDown25.Location = new System.Drawing.Point(165, 119);
             this.darkNumericUpDown25.MousewheelSingleIncrement = true;
             this.darkNumericUpDown25.Name = "darkNumericUpDown25";
             this.darkNumericUpDown25.Size = new System.Drawing.Size(64, 22);
@@ -2380,7 +2314,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown26.Location = new System.Drawing.Point(166, 147);
+            this.darkNumericUpDown26.Location = new System.Drawing.Point(165, 147);
             this.darkNumericUpDown26.Maximum = new decimal(new int[] {
             500,
             0,
@@ -2407,7 +2341,7 @@
             0,
             0,
             196608});
-            this.darkNumericUpDown27.Location = new System.Drawing.Point(166, 91);
+            this.darkNumericUpDown27.Location = new System.Drawing.Point(165, 91);
             this.darkNumericUpDown27.MousewheelSingleIncrement = true;
             this.darkNumericUpDown27.Name = "darkNumericUpDown27";
             this.darkNumericUpDown27.Size = new System.Drawing.Size(64, 22);
@@ -2449,7 +2383,7 @@
             0,
             0,
             262144});
-            this.darkNumericUpDown28.Location = new System.Drawing.Point(166, 63);
+            this.darkNumericUpDown28.Location = new System.Drawing.Point(165, 63);
             this.darkNumericUpDown28.MousewheelSingleIncrement = true;
             this.darkNumericUpDown28.Name = "darkNumericUpDown28";
             this.darkNumericUpDown28.Size = new System.Drawing.Size(64, 22);
@@ -2471,7 +2405,7 @@
             0,
             0,
             196608});
-            this.darkNumericUpDown29.Location = new System.Drawing.Point(166, 7);
+            this.darkNumericUpDown29.Location = new System.Drawing.Point(165, 7);
             this.darkNumericUpDown29.Minimum = new decimal(new int[] {
             1,
             0,
@@ -2517,7 +2451,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown30.Location = new System.Drawing.Point(166, 35);
+            this.darkNumericUpDown30.Location = new System.Drawing.Point(165, 35);
             this.darkNumericUpDown30.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -2532,11 +2466,77 @@
             // cmbSelectionTileSize
             // 
             this.cmbSelectionTileSize.FormattingEnabled = true;
-            this.cmbSelectionTileSize.Location = new System.Drawing.Point(166, 203);
+            this.cmbSelectionTileSize.Location = new System.Drawing.Point(165, 203);
             this.cmbSelectionTileSize.Name = "cmbSelectionTileSize";
             this.cmbSelectionTileSize.Size = new System.Drawing.Size(64, 23);
             this.cmbSelectionTileSize.TabIndex = 43;
             this.cmbSelectionTileSize.Tag = "TextureMap_DefaultTileSelectionSize";
+            // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 360);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 358);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel11
+            // 
+            this.panel11.Controls.Add(this.butApply);
+            this.panel11.Controls.Add(this.butOk);
+            this.panel11.Controls.Add(this.butCancel);
+            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel11.Location = new System.Drawing.Point(209, 369);
+            this.panel11.Name = "panel11";
+            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel11.Size = new System.Drawing.Size(397, 28);
+            this.panel11.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(140, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(226, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "OK";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(312, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // FormOptions
             // 
@@ -2554,8 +2554,6 @@
             this.Text = "Options";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -2632,6 +2630,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown28)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown29)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown30)).EndInit();
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
