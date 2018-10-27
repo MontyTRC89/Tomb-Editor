@@ -67,6 +67,7 @@ namespace TombEditor.Controls
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
                 obj is Editor.RoomGeometryChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
             {
                 Invalidate();

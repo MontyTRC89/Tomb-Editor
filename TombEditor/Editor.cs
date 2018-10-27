@@ -740,7 +740,11 @@ namespace TombEditor
                         _levelSettingsWatcher?.Dispose();
                         _levelSettingsWatcher = null;
                     }
+
+                // Update coloring info
+                SectorColoringManager.ColoringInfo.SectorColorScheme = current.UI_ColorScheme;
             }
+
 
             // Reset notifications, when changeing between 2D and 3D mode
             // Also reset selected sectors if wanted and restore last tool for desired mode
