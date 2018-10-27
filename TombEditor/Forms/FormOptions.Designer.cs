@@ -38,11 +38,23 @@
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
+            this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox3 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.panel11.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.darkGroupBox1.SuspendLayout();
+            this.darkGroupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -78,6 +90,7 @@
             // tabbedContainer
             // 
             this.tabbedContainer.Controls.Add(this.tabPage8);
+            this.tabbedContainer.Controls.Add(this.tabPage2);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
@@ -159,6 +172,101 @@
             this.butCancel.TabIndex = 3;
             this.butCancel.Text = "Cancel";
             // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage2.Controls.Add(this.darkGroupBox2);
+            this.tabPage2.Controls.Add(this.darkGroupBox1);
+            this.tabPage2.Controls.Add(this.darkLabel2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(594, 288);
+            this.tabPage2.TabIndex = 9;
+            this.tabPage2.Text = "System and Logging";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(3, 50);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(184, 13);
+            this.darkLabel1.TabIndex = 0;
+            this.darkLabel1.Text = "Number of daily log files in history";
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(6, 14);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(0, 13);
+            this.darkLabel2.TabIndex = 1;
+            // 
+            // cbEnableLogging
+            // 
+            this.cbEnableLogging.AutoSize = true;
+            this.cbEnableLogging.Location = new System.Drawing.Point(6, 21);
+            this.cbEnableLogging.Name = "cbEnableLogging";
+            this.cbEnableLogging.Size = new System.Drawing.Size(105, 17);
+            this.cbEnableLogging.TabIndex = 2;
+            this.cbEnableLogging.Tag = "Log_WriteToFile";
+            this.cbEnableLogging.Text = "Enable logging";
+            // 
+            // darkGroupBox1
+            // 
+            this.darkGroupBox1.Controls.Add(this.cbEnableLogging);
+            this.darkGroupBox1.Controls.Add(this.darkLabel1);
+            this.darkGroupBox1.Location = new System.Drawing.Point(6, 136);
+            this.darkGroupBox1.Name = "darkGroupBox1";
+            this.darkGroupBox1.Size = new System.Drawing.Size(582, 146);
+            this.darkGroupBox1.TabIndex = 3;
+            this.darkGroupBox1.TabStop = false;
+            this.darkGroupBox1.Text = "Logging";
+            // 
+            // darkGroupBox2
+            // 
+            this.darkGroupBox2.Controls.Add(this.darkCheckBox3);
+            this.darkGroupBox2.Controls.Add(this.darkCheckBox2);
+            this.darkGroupBox2.Controls.Add(this.darkCheckBox1);
+            this.darkGroupBox2.Location = new System.Drawing.Point(6, 6);
+            this.darkGroupBox2.Name = "darkGroupBox2";
+            this.darkGroupBox2.Size = new System.Drawing.Size(582, 124);
+            this.darkGroupBox2.TabIndex = 4;
+            this.darkGroupBox2.TabStop = false;
+            this.darkGroupBox2.Text = "System";
+            // 
+            // darkCheckBox1
+            // 
+            this.darkCheckBox1.AutoSize = true;
+            this.darkCheckBox1.Location = new System.Drawing.Point(6, 21);
+            this.darkCheckBox1.Name = "darkCheckBox1";
+            this.darkCheckBox1.Size = new System.Drawing.Size(265, 17);
+            this.darkCheckBox1.TabIndex = 3;
+            this.darkCheckBox1.Tag = "Editor_ReloadFilesAutomaticallyWhenChanged";
+            this.darkCheckBox1.Text = "Reload resources automatically when changed";
+            // 
+            // darkCheckBox2
+            // 
+            this.darkCheckBox2.AutoSize = true;
+            this.darkCheckBox2.Location = new System.Drawing.Point(6, 44);
+            this.darkCheckBox2.Name = "darkCheckBox2";
+            this.darkCheckBox2.Size = new System.Drawing.Size(198, 17);
+            this.darkCheckBox2.TabIndex = 4;
+            this.darkCheckBox2.Tag = "Editor_DiscardSelectionOnModeSwitch";
+            this.darkCheckBox2.Text = "Discard selection on mode switch";
+            // 
+            // darkCheckBox3
+            // 
+            this.darkCheckBox3.AutoSize = true;
+            this.darkCheckBox3.Location = new System.Drawing.Point(6, 67);
+            this.darkCheckBox3.Name = "darkCheckBox3";
+            this.darkCheckBox3.Size = new System.Drawing.Size(198, 17);
+            this.darkCheckBox3.TabIndex = 5;
+            this.darkCheckBox3.Tag = "Editor_DiscardSelectionOnModeSwitch";
+            this.darkCheckBox3.Text = "Discard selection on mode switch";
+            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -174,6 +282,12 @@
             this.tabbedContainer.ResumeLayout(false);
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.darkGroupBox1.ResumeLayout(false);
+            this.darkGroupBox1.PerformLayout();
+            this.darkGroupBox2.ResumeLayout(false);
+            this.darkGroupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -190,5 +304,14 @@
         private DarkUI.Controls.DarkButton butApply;
         private DarkUI.Controls.DarkButton butOk;
         private DarkUI.Controls.DarkButton butCancel;
+        private System.Windows.Forms.TabPage tabPage2;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
+        private DarkUI.Controls.DarkCheckBox cbEnableLogging;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox3;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox1;
     }
 }
