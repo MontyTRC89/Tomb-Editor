@@ -123,7 +123,7 @@ namespace TombEditor.ToolWindows
 
         private void butAddTrigger_MouseEnter(object sender, EventArgs e)
         {
-            if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+            if (_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
                 _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
     }

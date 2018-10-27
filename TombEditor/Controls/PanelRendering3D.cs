@@ -2110,8 +2110,8 @@ namespace TombEditor.Controls
 
         protected override Vector4 ClearColor =>
             _editor?.SelectedRoom?.AlternateBaseRoom != null ?
-                _editor.Configuration.Rendering3D_BackgroundColorFlipRoom :
-                _editor.Configuration.Rendering3D_BackgroundColor;
+                _editor.Configuration.UI_ColorScheme.ColorFlipRoom :
+                _editor.Configuration.UI_ColorScheme.Color3DBackground;
 
         // Do NOT call this method to redraw the scene!
         // Call Invalidate() instead to schedule a redraw in the message loop.

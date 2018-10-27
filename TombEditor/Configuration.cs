@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using TombLib.Rendering;
 
 namespace TombEditor
 {
@@ -30,20 +31,23 @@ namespace TombEditor
         public bool Log_WriteToFile { get; set; } = true;
         public int Log_ArchiveN { get; set; } = 4;
 
+        // Global editor options
+
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
-        public bool Editor_AutoSwitchSectorColoringInfo { get; set; } = true;
-        public bool Editor_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
+
+        // Item preview options
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
-        public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
         public bool RenderingItem_Antialias { get; set; } = false;
+
+        // Main 3D window options
 
         public int Rendering3D_DrawRoomsMaxDepth { get; set; } = 6;
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.30f;
@@ -56,8 +60,6 @@ namespace TombEditor
         public bool Rendering3D_InvertMouseZoom { get; set; } = false;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
-        public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
-        public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
         public bool Rendering3D_DisablePickingForImportedGeometry { get; set; } = false;
@@ -80,6 +82,8 @@ namespace TombEditor
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
 
+        // 2D Map options 
+
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
         public float Map2D_NavigationSpeedMouseWheelZoom { get; set; } = 0.001f;
@@ -87,6 +91,8 @@ namespace TombEditor
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
         public int Map2D_ShowTimes { get; set; } = 0;
+
+        // Texture map options
 
         public float TextureMap_NavigationMinZoom { get; set; } = 0.02f;
         public float TextureMap_NavigationMaxZoom { get; set; } = 2000.0f;
@@ -99,11 +105,15 @@ namespace TombEditor
         public bool TextureMap_DrawSelectionDirectionIndicators { get; set; } = true;
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
 
+        // Gizmo options
+
         public float Gizmo_Size { get; set; } = 1536.0f;
         public float Gizmo_TranslationConeSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
         public float Gizmo_LineThickness { get; set; } = 45.0f;
+
+        // Autosave options
 
         public bool AutoSave_Enable { get; set; } = true;
         public int AutoSave_TimeInSeconds { get; set; } = 500;
@@ -113,11 +123,20 @@ namespace TombEditor
         public bool AutoSave_NamePutDateFirst { get; set; } = true;
         public string AutoSave_NameSeparator { get; set; } = " ";
 
-        public HotkeySets Window_HotkeySets { get; set; } = new HotkeySets();
+        // User interface options
+
+        public bool UI_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
+        public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
+        public ColorScheme UI_ColorScheme { get; set; } = new ColorScheme();
+        public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
+
+        // Window options
+
         public Point Window_Position { get; set; } = new Point(32, 32);
         public Size Window_Size { get; set; } = Window_SizeDefault;
         public bool Window_Maximized { get; set; } = true;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
+
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
         {

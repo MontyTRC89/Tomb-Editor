@@ -38,7 +38,7 @@ namespace TombEditor.Forms
         {
             public Editor Editor { get; set; }
 
-            protected override Vector4 ClearColor => Editor.Configuration.RenderingItem_BackgroundColor;
+            protected override Vector4 ClearColor => Editor.Configuration.UI_ColorScheme.Color3DBackground;
             public override float FieldOfView => Editor.Configuration.RenderingItem_FieldOfView;
             public override float NavigationSpeedMouseWheelZoom => Editor.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom;
             public override float NavigationSpeedMouseZoom => Editor.Configuration.RenderingItem_NavigationSpeedMouseZoom;

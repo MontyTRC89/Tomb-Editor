@@ -67,6 +67,7 @@ namespace TombEditor.Controls
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
                 obj is Editor.RoomGeometryChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
             {
                 Invalidate();
@@ -268,7 +269,9 @@ namespace TombEditor.Controls
                 float gridStep = GetGridStep();
                 VectorInt2 roomSize = RoomSize;
 
-                e.Graphics.FillRectangle(Brushes.White, totalArea);
+                // Draw background
+                using(var b = new SolidBrush(_editor.Configuration.UI_ColorScheme.Color2DBackground.ToWinFormsColor()))
+                    e.Graphics.FillRectangle(b, totalArea);
 
                 // Draw tiles
                 for (int x = 0; x < roomSize.X; x++)
@@ -306,7 +309,7 @@ namespace TombEditor.Controls
 
         protected virtual void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
         {
-            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, IgnoredHighlights);
+            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(_editor.Configuration.UI_ColorScheme, Room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, IgnoredHighlights);
             if (currentSectorColoringInfos == null)
                 return;
 

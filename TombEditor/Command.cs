@@ -62,7 +62,7 @@ namespace TombEditor
 
         public static void ExecuteHotkey(CommandArgs args)
         {
-            var hotkeyForCommands = args.Editor.Configuration.Window_HotkeySets.Where(set => set.Value.Contains(args.KeyData));
+            var hotkeyForCommands = args.Editor.Configuration.UI_Hotkeys.Where(set => set.Value.Contains(args.KeyData));
             foreach (var hotkeyForCommand in hotkeyForCommands)
                 GetCommand(hotkeyForCommand.Key).Execute?.Invoke(args);
         }
@@ -83,7 +83,7 @@ namespace TombEditor
 
                     if (command != null)
                     {
-                        var hotkeyLabel = string.Join(", ", editor.Configuration.Window_HotkeySets[control.Tag.ToString()]);
+                        var hotkeyLabel = string.Join(", ", editor.Configuration.UI_Hotkeys[control.Tag.ToString()]);
                         var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
 
                         if(!onlyToolTips)

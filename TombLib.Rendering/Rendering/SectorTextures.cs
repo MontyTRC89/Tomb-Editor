@@ -117,9 +117,9 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeX_ED:
                 case BlockFace.PositiveX_ED:
                 case BlockFace.DiagonalED:
-                    Color = SectorColoringInfo.ColorWallLower;
+                    Color = ColoringInfo.SectorColorScheme.ColorWallLower;
                     if (room.Blocks[x, z].WallPortal != null)
-                        Color = SectorColoringInfo.ColorPortalFace;
+                        Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
                     break;
 
                 case BlockFace.PositiveZ_Middle:
@@ -127,9 +127,9 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeX_Middle:
                 case BlockFace.PositiveX_Middle:
                 case BlockFace.DiagonalMiddle:
-                    Color = SectorColoringInfo.ColorWall;
+                    Color = ColoringInfo.SectorColorScheme.ColorWall;
                     if (room.Blocks[x, z].WallPortal != null)
-                        Color = SectorColoringInfo.ColorPortalFace;
+                        Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
                     break;
 
                 case BlockFace.PositiveZ_WS:
@@ -142,19 +142,19 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeX_RF:
                 case BlockFace.PositiveX_RF:
                 case BlockFace.DiagonalRF:
-                    Color = SectorColoringInfo. ColorWallUpper;
+                    Color = ColoringInfo.SectorColorScheme.ColorWallUpper;
                     if (room.Blocks[x, z].WallPortal != null)
-                        Color = SectorColoringInfo.ColorPortalFace;
+                        Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
                     break;
 
                 case BlockFace.Floor:
                 case BlockFace.FloorTriangle2:
                     // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
-                    var currentHighlights = ColoringInfo.GetColors(room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForFloor, UsedShapes);
+                    var currentHighlights = ColoringInfo.GetColors(ColoringInfo.SectorColorScheme, room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForFloor, UsedShapes);
                     if (currentHighlights != null)
                         Color = currentHighlights[0].Color;
                     else
-                        Color = SectorColoringInfo.ColorFloor;
+                        Color = ColoringInfo.SectorColorScheme.ColorFloor;
 
                     if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
@@ -167,11 +167,11 @@ namespace TombLib.Rendering
                 case BlockFace.Ceiling:
                 case BlockFace.CeilingTriangle2:
                     // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
-                    var currentHighlights2 = ColoringInfo.GetColors(room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForCeiling, UsedShapes);
+                    var currentHighlights2 = ColoringInfo.GetColors(ColoringInfo.SectorColorScheme, room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForCeiling, UsedShapes);
                     if (currentHighlights2 != null)
                         Color = currentHighlights2[0].Color;
                     else
-                        Color = SectorColoringInfo.ColorFloor;
+                        Color = ColoringInfo.SectorColorScheme.ColorFloor;
 
                     if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                     {
@@ -195,7 +195,7 @@ namespace TombLib.Rendering
                     {
                         Room.RoomBlockPair lookupBlock = room.ProbeLowestBlock(x + 1, z, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeX))
-                            Color = SectorColoringInfo.ColorClimb;
+                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
                         break;
                     }
                 case BlockFace.NegativeX_ED:
@@ -206,7 +206,7 @@ namespace TombLib.Rendering
                     {
                         Room.RoomBlockPair lookupBlock = room.ProbeLowestBlock(x - 1, z, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveX))
-                            Color = SectorColoringInfo.ColorClimb;
+                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
                         break;
                     }
                 case BlockFace.NegativeZ_ED:
@@ -217,7 +217,7 @@ namespace TombLib.Rendering
                     {
                         Room.RoomBlockPair lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
-                            Color = SectorColoringInfo.ColorClimb;
+                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
                         break;
                     }
                 case BlockFace.PositiveZ_ED:
@@ -228,7 +228,7 @@ namespace TombLib.Rendering
                     {
                         Room.RoomBlockPair lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeZ))
-                            Color = SectorColoringInfo.ColorClimb;
+                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
                         break;
                     }
             }
