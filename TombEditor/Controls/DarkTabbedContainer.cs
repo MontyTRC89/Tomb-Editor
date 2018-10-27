@@ -62,6 +62,7 @@ namespace TombEditor.Controls
         private void linkedListView_SelectionChanged(object sender, EventArgs e)
         {
             SelectedIndex = _linkedListView.SelectedIndices.First();
+            _linkedListView.Focus(); // Return focus back to list
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
