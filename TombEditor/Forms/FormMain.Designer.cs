@@ -405,6 +405,7 @@
             this.bookmarkObjectToolStripMenuItem.Enabled = false;
             this.bookmarkObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.bookmarkObjectToolStripMenuItem.Name = "bookmarkObjectToolStripMenuItem";
+            this.bookmarkObjectToolStripMenuItem.ShortcutKeyDisplayString = "Shift+\"click on obj.\"";
             this.bookmarkObjectToolStripMenuItem.Size = new System.Drawing.Size(316, 22);
             this.bookmarkObjectToolStripMenuItem.Tag = "BookmarkObject";
             this.bookmarkObjectToolStripMenuItem.Text = "BookmarkObject";
@@ -415,6 +416,7 @@
             this.bookmarkRestoreObjectToolStripMenuItem.Enabled = false;
             this.bookmarkRestoreObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.bookmarkRestoreObjectToolStripMenuItem.Name = "bookmarkRestoreObjectToolStripMenuItem";
+            this.bookmarkRestoreObjectToolStripMenuItem.ShortcutKeyDisplayString = "Shift+\"Add trigger\"";
             this.bookmarkRestoreObjectToolStripMenuItem.Size = new System.Drawing.Size(316, 22);
             this.bookmarkRestoreObjectToolStripMenuItem.Tag = "SelectBookmarkedObject";
             this.bookmarkRestoreObjectToolStripMenuItem.Text = "SelectBookmarkedObject";
