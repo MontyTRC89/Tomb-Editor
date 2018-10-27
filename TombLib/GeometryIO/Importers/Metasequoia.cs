@@ -26,14 +26,14 @@ namespace TombLib.GeometryIO.Importers
             var textures = new Dictionary<int, Texture>();
 
             // TODO: to remove after presets refactoring
-            _settings = new IOGeometrySettings
+            /*_settings = new IOGeometrySettings
             {
                 PremultiplyUV = true,
                 Scale = 1024.0f,
                 FlipX = false,
                 FlipZ = true,
                 FlipUV_V = false
-            };
+            };*/
 
             using (var reader = new StreamReader(File.OpenRead(filename)))
             {
@@ -183,7 +183,7 @@ namespace TombLib.GeometryIO.Importers
                                     {
                                         for (var k = 0; k < numVerticesInFace; k++)
                                         {
-                                            var color = ApplyColorTransform(new Vector4() );
+                                            var color = ApplyColorTransform(new Vector4(1.0f) );
                                             mesh.Colors.Add(color);
                                         }
                                     }
