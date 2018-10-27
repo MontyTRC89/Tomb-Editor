@@ -22,10 +22,13 @@ namespace TombEditor.Forms
         public FormOptions(Editor editor)
         {
             InitializeComponent();
+            InitializeDialog();
+
+            tabbedContainer.LinkedListView = optionsList;
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(793, 533) + (Size - ClientSize);
+            MinimumSize = new Size(630, 333) + (Size - ClientSize);
             Size = MinimumSize;
 
             _editor = editor;
@@ -44,6 +47,42 @@ namespace TombEditor.Forms
         {
             foreach (FontFamily font in System.Drawing.FontFamily.Families)
                 cbRendering3DFont.Items.Add(font.Name);
+
+            var panels = WinFormsUtils.AllSubControls(this).Where(c => c is Panel && !String.IsNullOrEmpty(((Panel)c).Tag?.ToString())).ToList();
+            foreach(var panel in panels)
+            {
+                panel.Click += (sender, e) =>
+                {
+                    using (var colorDialog = new System.Windows.Forms.ColorDialog())
+                    {
+                        colorDialog.Color = panel.BackColor;
+                        colorDialog.FullOpen = true;
+                        if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                            return;
+                        panel.BackColor = colorDialog.Color;
+                    }
+                };
+            }
+        }
+
+        private Object GetOptionObjectFromControl(Control control)
+        {
+            if (control.Tag == null || string.IsNullOrEmpty(control.Tag.ToString()))
+                return null;
+
+            var name = control.Tag.ToString();
+            var option = _editor.Configuration.GetType().GetProperty(name)?.GetValue(_editor.Configuration);
+            // Try to get sub-option from color scheme
+            if (option == null)
+            {
+                var type = _editor.Configuration.UI_ColorScheme.GetType();
+                var prop = type.GetField(name);
+
+                if (prop != null)
+                    option = prop.GetValue(_editor.Configuration.UI_ColorScheme);
+            }
+
+            return option;
         }
 
         private void ReadConfigIntoControls()
@@ -57,23 +96,17 @@ namespace TombEditor.Forms
                                                                          c is Panel).ToList();
             foreach (var control in controls)
             {
-                if (!string.IsNullOrEmpty(control.Tag?.ToString()))
+                var option = GetOptionObjectFromControl(control);
+                if(option != null)
                 {
-                    var name = control.Tag.ToString();
-
-                    if (!options.Contains(name))
-                        continue;
-
-                    var option = _editor.Configuration.GetType().GetProperty(name)?.GetValue(_editor.Configuration);
-                    if (option == null)
-                        continue;
-
                     if (control is DarkCheckBox && option is bool)
                         ((DarkCheckBox)control).Checked = (bool)option;
                     else if (control is DarkTextBox && option is string)
                         ((DarkTextBox)control).Text = (string)option;
                     else if (control is DarkComboBox && option is string)
                         ((DarkComboBox)control).SelectedItem = (string)option;
+                    else if (control is DarkComboBox && option is int)
+                        ((DarkComboBox)control).SelectedItem = (int)option;
                     else if (control is DarkNumericUpDown)
                     {
                         if(option is float)
@@ -81,12 +114,8 @@ namespace TombEditor.Forms
                         else if(option is int)
                             ((DarkNumericUpDown)control).Value = (decimal)(int)option;
                     }
-                    else if (control is Panel && option is ColorScheme)
-                    {
-                        var color = _editor.Configuration.UI_ColorScheme.GetType().GetProperty(name).GetValue(_editor.Configuration.UI_ColorScheme);
-                        if (color is Vector4)
-                            ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
-                    }
+                    else if (control is Panel && option is Vector4)
+                        ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
                 }
             }
         }
@@ -100,41 +129,38 @@ namespace TombEditor.Forms
                                                                          c is Panel).ToList();
             foreach (var control in controls)
             {
-                if (!string.IsNullOrEmpty(control.Tag?.ToString()))
+                var option = GetOptionObjectFromControl(control);
+                if (option != null)
                 {
                     var name = control.Tag.ToString();
-                    var option = _editor.Configuration.GetType().GetProperty(name)?.GetValue(_editor.Configuration);
-                    if (option == null)
-                        continue;
 
                     if (control is DarkCheckBox && option is bool)
-                        option = ((DarkCheckBox)control).Checked;
+                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkCheckBox)control).Checked);
                     else if (control is DarkTextBox && option is string)
-                        option = ((DarkCheckBox)control).Text;
+                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkTextBox)control).Text);
                     else if (control is DarkComboBox && option is string)
-                        option = ((DarkComboBox)control).SelectedItem.ToString();
+                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, ((DarkComboBox)control).SelectedItem.ToString());
+                    else if (control is DarkComboBox && option is int)
+                        _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (int)((DarkComboBox)control).SelectedItem);
                     else if (control is DarkNumericUpDown)
                     {
                         if (option is int)
-                            option = (int)((DarkNumericUpDown)control).Value;
+                            _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (int)((DarkNumericUpDown)control).Value);
                         else if (option is float)
-                        option = (float)((DarkNumericUpDown)control).Value;
+                            _editor.Configuration.GetType().GetProperty(name).SetValue(_editor.Configuration, (float)((DarkNumericUpDown)control).Value);
                     }
-                    else if (control is Panel && option is ColorScheme)
+                    else if (control is Panel && option is Vector4)
                     {
-                        var color = _editor.Configuration.GetType().GetProperty("ColorScheme").GetType().GetProperty(name).GetValue(_editor.Configuration.UI_ColorScheme);
+                        var saveAlpha = ((Vector4)option).W;
+                        var panelColor = ((Panel)control).BackColor;
+                        var newColor = new Vector4((float)(panelColor.R / 255.0), (float)(panelColor.G / 255.0), (float)(panelColor.B / 255.0), saveAlpha);
 
-                        if(color != null && color is Vector4)
-                        {
-                            var saveAlpha = ((Vector4)color).W;
-                            var panelColor = ((Panel)control).BackColor;
-                            var newColor = new Vector4((float)(panelColor.R / 255.0), (float)(panelColor.G / 255.0), (float)(panelColor.B / 255.0), saveAlpha);
-
-                            _editor.Configuration.UI_ColorScheme.GetType().GetProperty(name).SetValue(_editor.Configuration.UI_ColorScheme, newColor);
-                        }
+                        _editor.Configuration.UI_ColorScheme.GetType().GetField(name).SetValue(_editor.Configuration.UI_ColorScheme, newColor);
                     }
                 }
             }
+
+            _editor.ConfigurationChange();
         }
 
         private void butApply_Click(object sender, EventArgs e)
