@@ -268,7 +268,9 @@ namespace TombEditor.Controls
                 float gridStep = GetGridStep();
                 VectorInt2 roomSize = RoomSize;
 
-                e.Graphics.FillRectangle(Brushes.White, totalArea);
+                // Draw background
+                using(var b = new SolidBrush(_editor.Configuration.UI_ColorScheme.Color2DBackground.ToWinFormsColor()))
+                    e.Graphics.FillRectangle(b, totalArea);
 
                 // Draw tiles
                 for (int x = 0; x < roomSize.X; x++)

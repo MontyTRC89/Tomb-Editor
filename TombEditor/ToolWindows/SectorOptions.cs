@@ -3,6 +3,7 @@ using NLog;
 using System;
 using System.Windows.Forms;
 using TombLib.Rendering;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {
@@ -17,7 +18,9 @@ namespace TombEditor.ToolWindows
             CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
+            _editor.EditorEventRaised += EditorEventRaised;EditorEventRaised(new Editor.InitEvent());
+            EditorEventRaised(new Editor.InitEvent());
+
             panel2DGrid.Room = _editor.SelectedRoom;
         }
 
@@ -40,6 +43,20 @@ namespace TombEditor.ToolWindows
             {
                 if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
+            }
+
+            // Update color scheme on buttons
+            if (obj is Editor.ConfigurationChangedEvent ||
+                obj is Editor.InitEvent)
+            {
+                butFloor.BackColor = _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor();
+                butCeiling.BackColor = _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor();
+                butBox.BackColor = _editor.Configuration.UI_ColorScheme.ColorBox.ToWinFormsColor();
+                butNotWalkableBox.BackColor = _editor.Configuration.UI_ColorScheme.ColorNotWalkable.ToWinFormsColor();
+                butMonkey.BackColor = _editor.Configuration.UI_ColorScheme.ColorMonkey.ToWinFormsColor();
+                butDeath.BackColor = _editor.Configuration.UI_ColorScheme.ColorDeath.ToWinFormsColor();
+                butPortal.BackColor = _editor.Configuration.UI_ColorScheme.ColorPortal.ToWinFormsColor();
+                butWall.BackColor = _editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor();
             }
         }
 

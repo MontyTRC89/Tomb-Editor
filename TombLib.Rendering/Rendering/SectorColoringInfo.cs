@@ -48,6 +48,9 @@ namespace TombLib.Rendering
     }
     public class ColorScheme
     {
+        private static Vector4 DefaultColor3DBackground => new Vector4(165, 165, 165, 255) / 255.0f;
+        private static Vector4 DefaultColorFlipRoom => new Vector4(35, 35, 35, 255) / 255.0f;
+        private static Vector4 DefaultColor2DBackground => new Vector4(255, 255, 255, 255) / 255.0f;
         private static Vector4 DefaultColorPortal => new Vector4(0, 0, 0, 255) / 255.0f;
         private static Vector4 DefaultColorPortalFace => new Vector4(255, 255, 0, 255) / 255.0f;
         private static Vector4 DefaultColorFloor => new Vector4(0, 190, 190, 255) / 255.0f;
@@ -65,6 +68,9 @@ namespace TombLib.Rendering
         private static Vector4 DefaultColorTriggerTriggerer => new Vector4(0, 0, 252, 255) / 255.0f;
         private static Vector4 DefaultColorForceSolidFloor => Vector4.Lerp(DefaultColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f);
 
+        public Vector4 Color3DBackground = DefaultColor3DBackground;
+        public Vector4 Color2DBackground = DefaultColor2DBackground;
+        public Vector4 ColorFlipRoom = DefaultColorFlipRoom;
         public Vector4 ColorPortal = DefaultColorPortal;
         public Vector4 ColorPortalFace = DefaultColorPortalFace;
         public Vector4 ColorFloor = DefaultColorFloor;

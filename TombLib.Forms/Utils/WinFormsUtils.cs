@@ -27,10 +27,10 @@ namespace TombLib.Utils
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
         }
 
-        public static Color ToWinFormsColor(this Vector4 color)
+        public static Color ToWinFormsColor(this Vector4 color, float? alpha = null)
         {
             return Color.FromArgb(
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round((alpha.HasValue ? MathC.Clamp(alpha.Value, 0.0, 1.0) : color.W) * 255.0f))),
                     (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
                     (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
                     (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));

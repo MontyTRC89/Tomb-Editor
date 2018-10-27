@@ -45,7 +45,6 @@ namespace TombEditor
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
-        public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
         public bool RenderingItem_Antialias { get; set; } = false;
 
         // Main 3D window options
@@ -61,8 +60,6 @@ namespace TombEditor
         public bool Rendering3D_InvertMouseZoom { get; set; } = false;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
-        public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
-        public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
         public bool Rendering3D_DisablePickingForImportedGeometry { get; set; } = false;
@@ -128,8 +125,8 @@ namespace TombEditor
 
         // User interface options
 
-        public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public bool UI_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
+        public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public ColorScheme UI_ColorScheme { get; set; } = new ColorScheme();
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
