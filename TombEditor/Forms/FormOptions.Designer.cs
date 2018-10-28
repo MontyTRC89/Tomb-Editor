@@ -121,6 +121,7 @@
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox16 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox8 = new DarkUI.Controls.DarkCheckBox();
             this.darkNumericUpDown15 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
@@ -198,7 +199,6 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox16 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -1418,6 +1418,16 @@
             this.darkGroupBox4.TabStop = false;
             this.darkGroupBox4.Text = "Rendering";
             // 
+            // darkCheckBox16
+            // 
+            this.darkCheckBox16.AutoSize = true;
+            this.darkCheckBox16.Location = new System.Drawing.Point(6, 67);
+            this.darkCheckBox16.Name = "darkCheckBox16";
+            this.darkCheckBox16.Size = new System.Drawing.Size(156, 17);
+            this.darkCheckBox16.TabIndex = 30;
+            this.darkCheckBox16.Tag = "Rendering3D_ShowLevelInfo";
+            this.darkCheckBox16.Text = "Show rendering statistics";
+            // 
             // darkCheckBox8
             // 
             this.darkCheckBox8.AutoSize = true;
@@ -2592,16 +2602,6 @@
             this.butPageDefaults.TabIndex = 4;
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
-            // 
-            // darkCheckBox16
-            // 
-            this.darkCheckBox16.AutoSize = true;
-            this.darkCheckBox16.Location = new System.Drawing.Point(6, 67);
-            this.darkCheckBox16.Name = "darkCheckBox16";
-            this.darkCheckBox16.Size = new System.Drawing.Size(128, 17);
-            this.darkCheckBox16.TabIndex = 30;
-            this.darkCheckBox16.Tag = "Rendering3D_ShowLevelInfo";
-            this.darkCheckBox16.Text = "Show level statistics";
             // 
             // FormOptions
             // 
