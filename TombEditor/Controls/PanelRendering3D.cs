@@ -2271,7 +2271,10 @@ namespace TombEditor.Controls
             string DebugString = "";
             if (_editor.Configuration.Rendering3D_ShowFPS)
                 DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Rooms vertices: " + roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count) + "\n";
-            DebugString += "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n";
+
+            if (_editor.Configuration.Rendering3D_ShowLevelInfo)
+                DebugString += "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n";
+
             if (_editor.SelectedObject != null)
                 DebugString += "Selected Object: " + _editor.SelectedObject;
 
