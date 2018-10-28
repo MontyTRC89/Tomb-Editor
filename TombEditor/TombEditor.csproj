@@ -535,6 +535,14 @@
     <Content Include="Editor\Shaders\RoomGeometry.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\icons_sectortype\sectortype_Box_neg-16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_Death_neg-16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_Floor_neg-16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_Monkey_neg-16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_NotWalkable_neg-16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_Portal_neg -16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_Roof_neg-16.png" />
+    <None Include="Resources\icons_sectortype\sectortype_Wall_neg-16.png" />
     <None Include="Resources\icons_general\general_options-16.png" />
     <None Include="Editor\Shaders\Model.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
