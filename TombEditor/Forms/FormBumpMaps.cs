@@ -37,7 +37,7 @@ namespace TombEditor.Forms
             MinimumSize = new Size(440, 180) + (Size - ClientSize);
 
             // Initialize texture map
-            if (editor.SelectedTexture.TextureIsInvisble)
+            if (editor.SelectedTexture.TextureIsInvisible)
                 textureMap.ResetVisibleTexture(texture);
             else
                 textureMap.ShowTexture(editor.SelectedTexture);

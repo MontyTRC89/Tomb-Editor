@@ -772,10 +772,16 @@ namespace TombEditor
         public static void PickTexture(Room room, VectorInt2 pos, BlockFace face)
         {
             var area = room.GetBlock(pos).GetFaceTexture(face);
-            if (area == null || area.TextureIsInvisble || area.Texture == null)
+
+            if (area == null || area.TextureIsUnavailable)
                 return;
-            if(face >= BlockFace.Ceiling) area.Mirror();
-            _editor.SelectTextureAndCenterView(area);
+            else if (area.TextureIsInvisible)
+                _editor.SelectedTexture = TextureArea.Invisible;
+            else
+            {
+                if (face >= BlockFace.Ceiling) area.Mirror();
+                _editor.SelectTextureAndCenterView(area);
+            }
         }
 
         private static bool ApplyTextureAutomaticallyNoUpdated(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
@@ -3152,7 +3158,7 @@ namespace TombEditor
                                         for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
                                         {
                                             var faceTexture = block.GetFaceTexture((BlockFace)faceType);
-                                            if (faceTexture.TextureIsInvisble || faceTexture.TextureIsUnavailable)
+                                            if (faceTexture.TextureIsInvisible)
                                                 continue;
                                             var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, (BlockFace)faceType));
                                             var shape = room.GetFaceShape(x, z, (BlockFace)faceType);

@@ -197,7 +197,7 @@ namespace TombLib.LevelData.Compilers
                                 continue;
 
                             TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                            if (texture.TextureIsInvisble)
+                            if (texture.TextureIsInvisible)
                                 continue;
 
                             if(texture.TextureIsUnavailable )
