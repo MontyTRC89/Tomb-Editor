@@ -463,8 +463,35 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-            ReportProgress(45, "    Number of items: " + _items.Count);
             ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
+            ReportProgress(45, "    Number of items: " + _items.Count);
+
+            int maxSafeItemCount, maxItemCount;
+            switch(_level.Settings.GameVersion)
+            {
+                case GameVersion.TRNG:
+                    maxSafeItemCount = 255;
+                    maxItemCount = 1023;
+                    break;
+                case GameVersion.TR5Main:
+                    maxSafeItemCount = 1023;
+                    maxItemCount = 32767;
+                    break;
+                default:
+                    maxSafeItemCount = 255;
+                    maxItemCount = 255;
+                    break;
+            }
+
+            if (_items.Count > maxItemCount)
+            {
+                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash" +
+                                 (_level.Settings.GameVersion == GameVersion.TR4 ? ", unless you're using TREP." : ".");
+                _progressReporter.ReportWarn(warnString);
+            }
+
+            if (_items.Count > maxSafeItemCount)
+                _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
         }
 
         public string GetTRNGVersion()

@@ -1425,7 +1425,7 @@
             this.darkCheckBox16.Name = "darkCheckBox16";
             this.darkCheckBox16.Size = new System.Drawing.Size(156, 17);
             this.darkCheckBox16.TabIndex = 30;
-            this.darkCheckBox16.Tag = "Rendering3D_ShowLevelInfo";
+            this.darkCheckBox16.Tag = "Rendering3D_ShowRenderingStatistics";
             this.darkCheckBox16.Text = "Show rendering statistics";
             // 
             // darkCheckBox8
