@@ -2045,7 +2045,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true)
+        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
             if (!SectorSelection.IsEmpty(selection) && !selection.Valid)
             {
@@ -2160,7 +2160,8 @@ namespace TombEditor
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
-                    FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling);
+                    if(clearAdjoiningArea)
+                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling);
                     break;
             }
 
