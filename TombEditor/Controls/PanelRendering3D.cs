@@ -449,7 +449,8 @@ namespace TombEditor.Controls
                                     newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
                                         newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, 
-                                        (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control));
+                                        (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control),
+                                        ModifierKeys.HasFlag(Keys.Alt));
                                 }
 
                                 if(newRoom != null)
