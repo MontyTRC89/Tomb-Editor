@@ -48,7 +48,7 @@ namespace TombLib.Rendering
     }
     public class ColorScheme
     {
-        private static Vector4 DefaultColorSelection = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
+        private static Vector4 DefaultColorSelection = new Vector4(255, 35, 35, 255) / 255.0f;
         private static Vector4 DefaultColor3DBackground = new Vector4(165, 165, 165, 255) / 255.0f;
         private static Vector4 DefaultColorFlipRoom = new Vector4(35, 35, 35, 255) / 255.0f;
         private static Vector4 DefaultColor2DBackground = new Vector4(255, 255, 255, 255) / 255.0f;
