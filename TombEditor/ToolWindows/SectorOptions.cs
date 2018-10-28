@@ -12,6 +12,8 @@ namespace TombEditor.ToolWindows
         private readonly Editor _editor;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private const float iconSwitchBrightnessThreshold = 0.8f;
+
         public SectorOptions()
         {
             InitializeComponent();
@@ -50,13 +52,21 @@ namespace TombEditor.ToolWindows
                 obj is Editor.InitEvent)
             {
                 butFloor.BackColor = _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor();
+                butFloor.Image = (butFloor.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Floor_neg_16 : Properties.Resources.sectortype_Floor_1_16;
                 butCeiling.BackColor = _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor();
+                butCeiling.Image = (butCeiling.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Roof_neg_16 : Properties.Resources.sectortype_Roof_16;
                 butBox.BackColor = _editor.Configuration.UI_ColorScheme.ColorBox.ToWinFormsColor();
+                butBox.Image = (butBox.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Box_neg_16 : Properties.Resources.sectortype_Box_16;
                 butNotWalkableBox.BackColor = _editor.Configuration.UI_ColorScheme.ColorNotWalkable.ToWinFormsColor();
+                butNotWalkableBox.Image = (butNotWalkableBox.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_NotWalkable_neg_16 : Properties.Resources.sectortype_NotWalkable_16;
                 butMonkey.BackColor = _editor.Configuration.UI_ColorScheme.ColorMonkey.ToWinFormsColor();
+                butMonkey.Image = (butMonkey.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Monkey_neg_16 : Properties.Resources.sectortype_Monkey_16;
                 butDeath.BackColor = _editor.Configuration.UI_ColorScheme.ColorDeath.ToWinFormsColor();
+                butDeath.Image = (butDeath.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Death_neg_16 : Properties.Resources.sectortype_Death_16;
                 butPortal.BackColor = _editor.Configuration.UI_ColorScheme.ColorPortal.ToWinFormsColor();
+                butPortal.Image = (butPortal.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Portal_neg__16 : Properties.Resources.sectortype_Portal__16;
                 butWall.BackColor = _editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor();
+                butWall.Image = (butWall.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Wall_neg_16 : Properties.Resources.sectortype_Wall_1_16;
             }
         }
 
