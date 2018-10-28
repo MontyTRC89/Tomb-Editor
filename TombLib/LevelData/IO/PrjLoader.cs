@@ -1943,7 +1943,7 @@ namespace TombLib.LevelData.IO
                     block.SetFaceTexture(face, new TextureArea());
                     return;
                 case 0x0003: // TYPE_TEXTURE_COLOR
-                    block.SetFaceTexture(face, new TextureArea { Texture = TextureInvisible.Instance });
+                    block.SetFaceTexture(face, TextureArea.Invisible);
                     return;
                 case 0x0007: // TYPE_TEXTURE_TILE
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;

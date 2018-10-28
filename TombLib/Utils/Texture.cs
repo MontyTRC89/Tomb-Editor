@@ -59,6 +59,7 @@ namespace TombLib.Utils
     {
         public const float SafetyMargin = 0.45f;
         public static readonly TextureArea None;
+        public static readonly TextureArea Invisible = new TextureArea { Texture = TextureInvisible.Instance };
 
         public Texture Texture;
         public Rectangle2 ParentArea;
