@@ -122,7 +122,7 @@ namespace TombEditor.Forms
                 comboAnimatedTextureSets.SelectedIndex = 0;
 
             // Setup texture map
-            if (_editor.SelectedTexture.TextureIsInvisble)
+            if (_editor.SelectedTexture.TextureIsInvisible)
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
             else
                 textureMap.ShowTexture(_editor.SelectedTexture);
