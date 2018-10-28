@@ -192,9 +192,7 @@ namespace TombEditor
 
             AddCommand("SetTextureInvisible", "Set invisibility attribute", CommandType.Textures, delegate (CommandArgs args)
             {
-                var texture = args.Editor.SelectedTexture;
-                texture.Texture = TextureInvisible.Instance;
-                args.Editor.SelectedTexture = texture;
+                args.Editor.SelectedTexture = TextureArea.Invisible;
             });
 
             AddCommand("RotateObjectLeft", "Rotate object left", CommandType.Objects, delegate (CommandArgs args)

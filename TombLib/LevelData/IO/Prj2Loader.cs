@@ -541,7 +541,7 @@ namespace TombLib.LevelData.IO
                                     else if (id4 == Prj2Chunks.TextureInvisible)
                                     {
                                         BlockFace face = (BlockFace)LEB128.ReadLong(chunkIO.Raw);
-                                        block.SetFaceTexture(face, new TextureArea { Texture = TextureInvisible.Instance });
+                                        block.SetFaceTexture(face, TextureArea.Invisible);
                                     }
                                     else
                                         return false;

@@ -197,12 +197,12 @@ namespace TombEditor.Controls
 
         private void toolInvisibility_Click(object sender, EventArgs e)
         {
-            _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
+            _editor.SelectedTexture = TextureArea.Invisible;
         }
 
         private void toolEraser_Click(object sender, EventArgs e)
         {
-            _editor.SelectedTexture = new TextureArea { Texture = null };
+            _editor.SelectedTexture = TextureArea.None;
         }
 
         private void toolUVFixer_Click(object sender, EventArgs e)
