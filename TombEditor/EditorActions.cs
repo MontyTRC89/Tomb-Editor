@@ -796,8 +796,11 @@ namespace TombEditor
                         break;
                     if (surface.SplitDirectionIsXEqualsZ)
                     {
-                        Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                        processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                        if(surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
+                        {
+                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                        }
                     }
                     else
                     {
@@ -818,6 +821,14 @@ namespace TombEditor
                         processedTexture.TexCoord2 = processedTexture.TexCoord1;
                         processedTexture.TexCoord1 = processedTexture.TexCoord0;
                         processedTexture.TexCoord0 = processedTexture.TexCoord3;
+                    }
+                    else
+                    {
+                        if (surface2.DiagonalSplit == DiagonalSplit.XnZp || surface2.DiagonalSplit == DiagonalSplit.XpZn)
+                        {
+                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                        }
                     }
                     processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     break;
