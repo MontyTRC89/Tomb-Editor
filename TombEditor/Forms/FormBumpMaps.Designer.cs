@@ -81,7 +81,7 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCustomMapPath.AutoEllipsis = true;
             this.lblCustomMapPath.ForeColor = System.Drawing.Color.Gray;
-            this.lblCustomMapPath.Location = new System.Drawing.Point(108, 511);
+            this.lblCustomMapPath.Location = new System.Drawing.Point(108, 512);
             this.lblCustomMapPath.Name = "lblCustomMapPath";
             this.lblCustomMapPath.Size = new System.Drawing.Size(304, 13);
             this.lblCustomMapPath.TabIndex = 16;
