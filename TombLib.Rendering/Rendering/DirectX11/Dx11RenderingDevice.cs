@@ -14,6 +14,7 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 using Format = SharpDX.DXGI.Format;
 using SampleDescription = SharpDX.DXGI.SampleDescription;
 using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace TombLib.Rendering.DirectX11
 {
@@ -79,8 +80,9 @@ namespace TombLib.Rendering.DirectX11
             {
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0),
-                new InputElement("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 2, InputClassification.PerVertexData, 0),
-                new InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 3, InputClassification.PerVertexData, 0)
+                new InputElement("OVERLAY", 0, Format.R8G8B8A8_UNorm, 0, 2, InputClassification.PerVertexData, 0),
+                new InputElement("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 3, InputClassification.PerVertexData, 0),
+                new InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 4, InputClassification.PerVertexData, 0)
             });
             RasterizerBackCulling = new RasterizerState(Device, new RasterizerStateDescription
             {
@@ -226,6 +228,14 @@ namespace TombLib.Rendering.DirectX11
                 Context.Dispose();
                 Device.Dispose();
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint CompressColor(Vector3 color, bool average = true)
+        {
+            if (average) color = Vector3.Max(new Vector3(), Vector3.Min(new Vector3(255.0f), color * 128.0f + new Vector3(0.5f)));
+            else color *= color * 255.0f;
+            return ((uint)color.X) | (((uint)color.Y) << 8) | (((uint)color.Z) << 16) | 0xff000000;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
