@@ -73,13 +73,13 @@ namespace TombEditor.Controls
         }
         private SelectionArea _selectionArea;
 
-        private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(180, 20, 200, 200));
-        private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));
-        private static readonly Brush _roomsNormalBelowBrush = new SolidBrush(Color.FromArgb(180, 85, 85, 85));
-        private static readonly Brush _roomsLockedBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Color.FromArgb(50, 20, 20, 20));
+        private SolidBrush _roomsNormalBrush;
+        private SolidBrush _roomsNormalAboveBrush;
+        private SolidBrush _roomsNormalBelowBrush;
+        private SolidBrush _roomsSelectedBrush;
+        private SolidBrush _roomsMovedBrush;
 
-        private static readonly SolidBrush _roomsSelectedBrush = new SolidBrush(Color.FromArgb(180, 230, 20, 20));
-        private static readonly Brush _roomsMovedBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
+        private static readonly Brush _roomsLockedBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Color.FromArgb(50, 20, 20, 20));
         private static readonly Brush _selectionAreaBrush = new HatchBrush(HatchStyle.SmallConfetti, Color.FromArgb(90, 20, 20, 190), Color.FromArgb(50, 20, 20, 190));
         private static readonly Pen _selectionAreaPen = new Pen(Color.FromArgb(200, 20, 20, 190), 1.5f) { DashPattern = new[] { 3.0f, 3.0f } };
         private static readonly Pen _roomBorderPen = new Pen(Color.Black, 1);
@@ -110,6 +110,7 @@ namespace TombEditor.Controls
 
             _movementTimer = new MovementTimer(MoveTimerTick);
 
+            UpdateBrushes();
             ResetView();
         }
 
@@ -136,6 +137,8 @@ namespace TombEditor.Controls
                 obj is Editor.RoomListChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
             {
+                UpdateBrushes();
+
                 if (_editor.Mode == EditorMode.Map2D)
                     Invalidate();
             }
@@ -151,6 +154,23 @@ namespace TombEditor.Controls
                     _editor.Configuration.Map2D_ShowTimes++;
                     _editor.ConfigurationChange();
                 }
+        }
+
+        private void UpdateBrushes()
+        {
+            if (_roomsNormalBrush != null) _roomsNormalBrush.Dispose();
+            if (_roomsNormalAboveBrush != null) _roomsNormalAboveBrush.Dispose();
+            if (_roomsNormalBelowBrush != null) _roomsNormalBelowBrush.Dispose();
+            if (_roomsSelectedBrush != null) _roomsSelectedBrush.Dispose();
+            if (_roomsMovedBrush != null) _roomsMovedBrush.Dispose();
+
+            _roomsNormalBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor(0.7f));
+            _roomsNormalBelowBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.Color2DRoomsBelow.ToWinFormsColor(0.7f));
+            _roomsNormalAboveBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.Color2DRoomsAbove.ToWinFormsColor(0.47f));
+            _roomsSelectedBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorSelection.ToWinFormsColor(0.7f));
+            _roomsMovedBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.Color2DRoomsMoved.ToWinFormsColor(0.28f));
+
+            _depthBar.UpdateBrushes();
         }
 
         public void ResetView()

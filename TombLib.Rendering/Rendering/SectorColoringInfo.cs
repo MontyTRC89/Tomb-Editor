@@ -48,51 +48,31 @@ namespace TombLib.Rendering
     }
     public class ColorScheme
     {
-        private static Vector4 DefaultColorSelection = new Vector4(255, 0, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorIllegalSlope = new Vector4(255, 132, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorSlideDirection = new Vector4(160, 64, 190, 255) / 255.0f;
-        private static Vector4 DefaultColor3DBackground = new Vector4(165, 165, 165, 255) / 255.0f;
-        private static Vector4 DefaultColorFlipRoom = new Vector4(35, 35, 35, 255) / 255.0f;
-        private static Vector4 DefaultColor2DBackground = new Vector4(255, 255, 255, 255) / 255.0f;
-        private static Vector4 DefaultColorPortal = new Vector4(0, 0, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorPortalFace = new Vector4(255, 255, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorFloor = new Vector4(0, 190, 190, 255) / 255.0f;
-        private static Vector4 DefaultColorBorderWall = new Vector4(128, 128, 128, 255) / 255.0f;
-        private static Vector4 DefaultColorWall = new Vector4(0, 160, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorWallLower = new Vector4(0, 80, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorWallUpper = new Vector4(0, 240, 0, 255) / 255.0f;
-        private static Vector4 DefaultColorTrigger = new Vector4(200, 0, 200, 255) / 255.0f;
-        private static Vector4 DefaultColorMonkey = new Vector4(255, 100, 100, 255) / 255.0f;
-        private static Vector4 DefaultColorClimb = new Vector4(255, 180, 180, 255) / 255.0f;
-        private static Vector4 DefaultColorBox = new Vector4(100, 100, 100, 255) / 255.0f;
-        private static Vector4 DefaultColorDeath = new Vector4(20, 240, 20, 255) / 255.0f;
-        private static Vector4 DefaultColorNotWalkable = new Vector4(0, 0, 150, 255) / 255.0f;
-        private static Vector4 DefaultColorBeetle = new Vector4(100, 100, 100, 255) / 255.0f;
-        private static Vector4 DefaultColorTriggerTriggerer = new Vector4(0, 0, 252, 255) / 255.0f;
-        private static Vector4 DefaultColorForceSolidFloor = Vector4.Lerp(DefaultColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f);
-
-        public Vector4 ColorSelection = DefaultColorSelection;
-        public Vector4 ColorIllegalSlope = DefaultColorIllegalSlope;
-        public Vector4 ColorSlideDirection = DefaultColorSlideDirection;
-        public Vector4 Color3DBackground = DefaultColor3DBackground;
-        public Vector4 Color2DBackground = DefaultColor2DBackground;
-        public Vector4 ColorFlipRoom = DefaultColorFlipRoom;
-        public Vector4 ColorPortal = DefaultColorPortal;
-        public Vector4 ColorPortalFace = DefaultColorPortalFace;
-        public Vector4 ColorFloor = DefaultColorFloor;
-        public Vector4 ColorBorderWall = DefaultColorBorderWall;
-        public Vector4 ColorWall = DefaultColorWall;
-        public Vector4 ColorWallLower = DefaultColorWallLower;
-        public Vector4 ColorWallUpper = DefaultColorWallUpper;
-        public Vector4 ColorTrigger = DefaultColorTrigger;
-        public Vector4 ColorMonkey = DefaultColorMonkey;
-        public Vector4 ColorClimb = DefaultColorClimb;
-        public Vector4 ColorBox = DefaultColorBox;
-        public Vector4 ColorDeath = DefaultColorDeath;
-        public Vector4 ColorNotWalkable = DefaultColorNotWalkable;
-        public Vector4 ColorBeetle = DefaultColorBeetle;
-        public Vector4 ColorTriggerTriggerer = DefaultColorTriggerTriggerer;
-        public Vector4 ColorForceSolidFloor = DefaultColorForceSolidFloor;
+        public Vector4 ColorSelection = new Vector4(255, 0, 0, 255) / 255.0f;
+        public Vector4 ColorIllegalSlope = new Vector4(255, 132, 0, 255) / 255.0f;
+        public Vector4 ColorSlideDirection = new Vector4(160, 64, 190, 255) / 255.0f;
+        public Vector4 Color3DBackground = new Vector4(165, 165, 165, 255) / 255.0f;
+        public Vector4 Color2DBackground = new Vector4(255, 255, 255, 255) / 255.0f;
+        public Vector4 ColorFlipRoom = new Vector4(35, 35, 35, 255) / 255.0f;
+        public Vector4 ColorPortal = new Vector4(0, 0, 0, 255) / 255.0f;
+        public Vector4 ColorPortalFace = new Vector4(255, 255, 0, 255) / 255.0f;
+        public Vector4 ColorFloor = new Vector4(0, 190, 190, 255) / 255.0f;
+        public Vector4 ColorBorderWall = new Vector4(128, 128, 128, 255) / 255.0f;
+        public Vector4 ColorWall = new Vector4(0, 160, 0, 255) / 255.0f;
+        public Vector4 ColorWallLower = new Vector4(0, 80, 0, 255) / 255.0f;
+        public Vector4 ColorWallUpper = new Vector4(0, 240, 0, 255) / 255.0f;
+        public Vector4 ColorTrigger = new Vector4(200, 0, 200, 255) / 255.0f;
+        public Vector4 ColorMonkey = new Vector4(255, 100, 100, 255) / 255.0f;
+        public Vector4 ColorClimb = new Vector4(255, 180, 180, 255) / 255.0f;
+        public Vector4 ColorBox = new Vector4(100, 100, 100, 255) / 255.0f;
+        public Vector4 ColorDeath = new Vector4(20, 240, 20, 255) / 255.0f;
+        public Vector4 ColorNotWalkable = new Vector4(0, 0, 150, 255) / 255.0f;
+        public Vector4 ColorBeetle = new Vector4(100, 100, 100, 255) / 255.0f;
+        public Vector4 ColorTriggerTriggerer = new Vector4(0, 0, 252, 255) / 255.0f;
+        public Vector4 ColorForceSolidFloor = new Vector4(0, 170, 170, 255) / 255.0f;
+        public Vector4 Color2DRoomsAbove = new Vector4(50, 50, 200, 255) / 255.0f;
+        public Vector4 Color2DRoomsBelow = new Vector4(85, 85, 85, 255) / 255.0f;
+        public Vector4 Color2DRoomsMoved = new Vector4(230, 230, 20, 255) / 255.0f;
     }
 
     public class SectorColoringInfo
