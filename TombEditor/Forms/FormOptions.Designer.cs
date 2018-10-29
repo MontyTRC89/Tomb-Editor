@@ -203,6 +203,12 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
+            this.darkLabel64 = new DarkUI.Controls.DarkLabel();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.darkLabel65 = new DarkUI.Controls.DarkLabel();
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.darkLabel66 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -585,12 +591,18 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(364, 727);
+            this.panel2.Size = new System.Drawing.Size(364, 814);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
             // 
+            this.darkGroupBox8.Controls.Add(this.darkLabel66);
+            this.darkGroupBox8.Controls.Add(this.darkLabel65);
+            this.darkGroupBox8.Controls.Add(this.darkLabel64);
             this.darkGroupBox8.Controls.Add(this.darkLabel63);
+            this.darkGroupBox8.Controls.Add(this.panel10);
+            this.darkGroupBox8.Controls.Add(this.panel9);
+            this.darkGroupBox8.Controls.Add(this.panel8);
             this.darkGroupBox8.Controls.Add(this.darkLabel62);
             this.darkGroupBox8.Controls.Add(this.panel7);
             this.darkGroupBox8.Controls.Add(this.darkLabel61);
@@ -637,7 +649,7 @@
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox8.Location = new System.Drawing.Point(3, 67);
             this.darkGroupBox8.Name = "darkGroupBox8";
-            this.darkGroupBox8.Size = new System.Drawing.Size(358, 657);
+            this.darkGroupBox8.Size = new System.Drawing.Size(358, 744);
             this.darkGroupBox8.TabIndex = 3;
             this.darkGroupBox8.TabStop = false;
             this.darkGroupBox8.Tag = "";
@@ -2651,6 +2663,66 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
+            // darkLabel64
+            // 
+            this.darkLabel64.AutoSize = true;
+            this.darkLabel64.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel64.Location = new System.Drawing.Point(12, 661);
+            this.darkLabel64.Name = "darkLabel64";
+            this.darkLabel64.Size = new System.Drawing.Size(165, 13);
+            this.darkLabel64.TabIndex = 70;
+            this.darkLabel64.Text = "2D map - rooms above current:";
+            // 
+            // panel8
+            // 
+            this.panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel8.Location = new System.Drawing.Point(196, 657);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(67, 23);
+            this.panel8.TabIndex = 69;
+            this.panel8.Tag = "Color2DRoomsAbove";
+            // 
+            // panel9
+            // 
+            this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel9.Location = new System.Drawing.Point(196, 686);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(67, 23);
+            this.panel9.TabIndex = 69;
+            this.panel9.Tag = "Color2DRoomsBelow";
+            // 
+            // darkLabel65
+            // 
+            this.darkLabel65.AutoSize = true;
+            this.darkLabel65.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel65.Location = new System.Drawing.Point(12, 690);
+            this.darkLabel65.Name = "darkLabel65";
+            this.darkLabel65.Size = new System.Drawing.Size(166, 13);
+            this.darkLabel65.TabIndex = 70;
+            this.darkLabel65.Text = "2D map - rooms below current:";
+            // 
+            // panel10
+            // 
+            this.panel10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel10.Location = new System.Drawing.Point(196, 715);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(67, 23);
+            this.panel10.TabIndex = 69;
+            this.panel10.Tag = "Color2DRoomsMoved";
+            // 
+            // darkLabel66
+            // 
+            this.darkLabel66.AutoSize = true;
+            this.darkLabel66.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel66.Location = new System.Drawing.Point(12, 719);
+            this.darkLabel66.Name = "darkLabel66";
+            this.darkLabel66.Size = new System.Drawing.Size(128, 13);
+            this.darkLabel66.TabIndex = 70;
+            this.darkLabel66.Text = "2D map - moved rooms:";
+            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -2930,5 +3002,11 @@
         private System.Windows.Forms.Panel panel6;
         private DarkUI.Controls.DarkLabel darkLabel63;
         private System.Windows.Forms.Panel panel7;
+        private DarkUI.Controls.DarkLabel darkLabel65;
+        private DarkUI.Controls.DarkLabel darkLabel64;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.Panel panel8;
+        private DarkUI.Controls.DarkLabel darkLabel66;
+        private System.Windows.Forms.Panel panel10;
     }
 }

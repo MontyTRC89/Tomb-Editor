@@ -73,6 +73,8 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
         private static readonly Brush _roomsLockedBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Color.FromArgb(50, 20, 20, 20));
 
+        private Brush _roomsNormalBrush;
+        private Brush _roomsWallBrush;
 
         public class DepthProbe
         {
@@ -106,6 +108,16 @@ namespace TombEditor.Controls
         public DepthBar(Editor editor)
         {
             _editor = editor;
+            UpdateBrushes();
+        }
+
+        public void UpdateBrushes()
+        {
+            if (_roomsNormalBrush != null) _roomsNormalBrush.Dispose();
+            if (_roomsWallBrush != null) _roomsWallBrush.Dispose();
+
+            _roomsNormalBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor());
+            _roomsWallBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor());
         }
 
         public RectangleF getBarArea(Size parentControlSize)
@@ -455,19 +467,16 @@ namespace TombEditor.Controls
                                 continue;
 
                             // Draw fill color for room
-                            using (Brush colorBrush = new SolidBrush(
-                                        (room.Block != null && room.Block.Type != BlockType.Floor) ?
-                                                _editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor() :
-                                                _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor()))
-                            {
-                                RectangleF roomRect = new RectangleF(posX0, posY0, posX1 - posX0, posY1 - posY0);
-                                using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))
-                                    e.Graphics.FillRectangle(colorBrush2, roomRect);
-                                if (!CheckRoom(room.MinDepth, room.MaxDepth))
-                                    e.Graphics.FillRectangle(_roomsOutsideOverdraw, roomRect);
-                                if (room.Room.Locked)
-                                    e.Graphics.FillRectangle(_roomsLockedBrush, roomRect);
-                            }
+                            Brush colorBrush = _roomsNormalBrush;
+                            RectangleF roomRect = new RectangleF(posX0, posY0, posX1 - posX0, posY1 - posY0);
+                            if (room.Block != null && room.Block.Type != BlockType.Floor)
+                                colorBrush = _roomsWallBrush;
+                            using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))
+                                e.Graphics.FillRectangle(colorBrush2, roomRect);
+                            if (!CheckRoom(room.MinDepth, room.MaxDepth))
+                                e.Graphics.FillRectangle(_roomsOutsideOverdraw, roomRect);
+                            if (room.Room.Locked)
+                                e.Graphics.FillRectangle(_roomsLockedBrush, roomRect);
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;
