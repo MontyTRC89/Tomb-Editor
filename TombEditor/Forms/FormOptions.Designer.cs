@@ -1637,7 +1637,7 @@
             65536});
             this.darkNumericUpDown7.Location = new System.Drawing.Point(291, 173);
             this.darkNumericUpDown7.Maximum = new decimal(new int[] {
-            200,
+            179,
             0,
             0,
             0});
