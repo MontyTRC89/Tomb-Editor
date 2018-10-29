@@ -47,6 +47,7 @@ namespace TombLib.Rendering
     public struct SectorTextureResult
     {
         public Vector4 Color;
+        public Vector4 Overlay;
         public SectorTexture SectorTexture;
         public bool Selected;
         public bool Highlighted;
@@ -102,6 +103,7 @@ namespace TombLib.Rendering
         {
             SectorTexture SectorTexture = SectorTexture.None;
             Vector4 Color;
+            Vector4 Overlay = new Vector4();
             bool Dimmed = false;
 
             // Choose base color
@@ -254,19 +256,26 @@ namespace TombLib.Rendering
                             SectorTexture = flipped ? SectorTexture.slide_south_flip : SectorTexture.slide_south;
                             break;
                     }
+
+                    if(slopeDirection != Direction.None)
+                        Overlay = ColoringInfo.SectorColorScheme.ColorSlideDirection;
                 }
 
             // Draw illegal slopes
             if (DrawIllegalSlopes)
                 if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
                     if (room.IsIllegalSlope(x, z))
+                    {
                         SectorTexture = SectorTexture.illegal_slope;
+                        Overlay = ColoringInfo.SectorColorScheme.ColorIllegalSlope;
+                    }
 
             // Draw selection
             if (SelectionArea.Contains(new VectorInt2(x, z)))
             {
                 SectorTexture = SectorTexture.None;
                 Color = ColoringInfo.SectorColorScheme.ColorSelection; // Selection color
+                Overlay = Color; // Overlay is the same as color if sector is selected
 
                 switch (face)
                 {
@@ -481,9 +490,11 @@ namespace TombLib.Rendering
                         break;
                 }
             }
+
             return new SectorTextureResult
             {
                 Color = Color,
+                Overlay = Overlay,
                 SectorTexture = SectorTexture,
                 Dimmed = Dimmed,
                 Selected = (SelectionArea.Contains(new VectorInt2(x, z))),

@@ -36,23 +36,20 @@ namespace TombLib.Rendering.DirectX11
             int vertexCount = VertexCount = singleSidedVertexCount + roomGeometry.DoubleSidedTriangleCount * 3;
             if (vertexCount == 0)
                 return;
-            VertexBufferSize = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
+            VertexBufferSize = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
             fixed (byte* data = new byte[VertexBufferSize])
             {
                 Vector3* positions = (Vector3*)(data);
                 uint* colors = (uint*)(data + vertexCount * sizeof(Vector3));
-                ulong* uvwAndBlendModes = (ulong*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint)));
-                uint* editorUVAndSectorTexture = (uint*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(ulong)));
+                uint* overlays = (uint*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint)));
+                ulong* uvwAndBlendModes = (ulong*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint)));
+                uint* editorUVAndSectorTexture = (uint*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint) + sizeof(ulong)));
 
                 // Setup vertices
                 for (int i = 0; i < singleSidedVertexCount; ++i)
                     positions[i] = roomGeometry.VertexPositions[i] + worldPos;
                 for (int i = 0; i < singleSidedVertexCount; ++i)
-                {
-                    Vector3 vertexColor = roomGeometry.VertexColors[i];
-                    vertexColor = Vector3.Max(new Vector3(), Vector3.Min(new Vector3(255.0f), vertexColor * 128.0f + new Vector3(0.5f)));
-                    colors[i] = ((uint)vertexColor.X) | (((uint)vertexColor.Y) << 8) | (((uint)vertexColor.Z) << 16) | 0xff000000;
-                }
+                    colors[i] = Dx11RenderingDevice.CompressColor(roomGeometry.VertexColors[i]);
                 for (int i = 0; i < singleSidedVertexCount; ++i)
                 {
                     Vector2 vertexEditorUv = roomGeometry.VertexEditorUVs[i];
@@ -64,6 +61,7 @@ namespace TombLib.Rendering.DirectX11
                 {
                     SectorInfo lastSectorInfo = new SectorInfo(-1, -1, BlockFace.Floor);
                     uint lastSectorTexture = 0;
+                    uint overlay = 0;
                     for (int i = 0, triangleCount = singleSidedVertexCount / 3; i < triangleCount; ++i)
                     {
                         SectorInfo currentSectorInfo = roomGeometry.TriangleSectorInfo[i];
@@ -90,10 +88,17 @@ namespace TombLib.Rendering.DirectX11
                             // Indicate selected textured faces
                             if (result.Selected && roomGeometry.TriangleTextureAreas[i].Texture != null)
                                 lastSectorTexture |= 0x80;
+
+                            // Assign overlay color which will be used in geometry mode if face has service texture (e.g. arrows)
+                            overlay = Dx11RenderingDevice.CompressColor(new Vector3(result.Overlay.X, result.Overlay.Y, result.Overlay.Z), false);
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;
                         editorUVAndSectorTexture[i * 3 + 1] |= lastSectorTexture;
                         editorUVAndSectorTexture[i * 3 + 2] |= lastSectorTexture;
+
+                        overlays[i * 3 + 0] = overlay;
+                        overlays[i * 3 + 1] = overlay;
+                        overlays[i * 3 + 2] = overlay;
                     }
                 }
 
@@ -148,16 +153,19 @@ namespace TombLib.Rendering.DirectX11
                             {
                                 positions[doubleSidedVertexIndex] = positions[i * 3 + 2];
                                 colors[doubleSidedVertexIndex] = colors[i * 3 + 2];
+                                overlays[doubleSidedVertexIndex] = overlays[i * 3 + 2];
                                 uvwAndBlendModes[doubleSidedVertexIndex] = uvwAndBlendModes[i * 3 + 2];
                                 editorUVAndSectorTexture[doubleSidedVertexIndex++] = editorUVAndSectorTexture[i * 3 + 2];
 
                                 positions[doubleSidedVertexIndex] = positions[i * 3 + 1];
                                 colors[doubleSidedVertexIndex] = colors[i * 3 + 1];
+                                overlays[doubleSidedVertexIndex] = overlays[i * 3 + 1];
                                 uvwAndBlendModes[doubleSidedVertexIndex] = uvwAndBlendModes[i * 3 + 1];
                                 editorUVAndSectorTexture[doubleSidedVertexIndex++] = editorUVAndSectorTexture[i * 3 + 1];
 
                                 positions[doubleSidedVertexIndex] = positions[i * 3 + 0];
                                 colors[doubleSidedVertexIndex] = colors[i * 3 + 0];
+                                overlays[doubleSidedVertexIndex] = overlays[i * 3 + 0];
                                 uvwAndBlendModes[doubleSidedVertexIndex] = uvwAndBlendModes[i * 3 + 0];
                                 editorUVAndSectorTexture[doubleSidedVertexIndex++] = editorUVAndSectorTexture[i * 3 + 0];
                             }
@@ -181,6 +189,7 @@ namespace TombLib.Rendering.DirectX11
                 VertexBufferBindings = new VertexBufferBinding[] {
                     new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
                     new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data)),
+                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)overlays - data)),
                     new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvwAndBlendModes - data)),
                     new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)editorUVAndSectorTexture - data))
                 };
@@ -205,7 +214,7 @@ namespace TombLib.Rendering.DirectX11
 
             byte[] data = Device.ReadBuffer(VertexBuffer, VertexBufferSize);
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
-            int uvwAndBlendModesOffset = VertexBufferBindings[2].Offset;
+            int uvwAndBlendModesOffset = VertexBufferBindings[3].Offset;
 
             // Collect all used textures
             fixed (byte* dataPtr = data)

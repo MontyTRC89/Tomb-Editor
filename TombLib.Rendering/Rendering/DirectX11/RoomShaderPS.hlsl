@@ -11,6 +11,7 @@ struct PixelInputType
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR;
+	float4 Overlay : OVERLAY;
     float3 Uvw : UVW;
 	int BlendMode : BLENDMODE;
     float2 EditorUv : EDITORUV;
@@ -20,7 +21,6 @@ struct PixelInputType
 Texture2DArray RoomTexture : register(t0);
 Texture2DArray SectorTexture : register(t1);
 SamplerState DefaultSampler : register(s0);
-
 
 
 float ddAny(float value)
@@ -86,8 +86,8 @@ float4 main(PixelInputType input) : SV_TARGET
             result = float4(0.0f, 0.0f, 0.0f, 0.0f);
         else
 		{
-			if (input.EditorSectorTexture & 0x40) // Textured or colored?
-				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 8)));
+			if (input.EditorSectorTexture & 0x40) // Overlay or native color?
+				result = input.Overlay;
 			else
 				result = float4(
 					((input.EditorSectorTexture >> 8) & 0xff) * (1.0f / 255.0f),
@@ -96,13 +96,20 @@ float4 main(PixelInputType input) : SV_TARGET
 					1.0f);
 		}
         
-        if ((input.EditorSectorTexture & 0x20) && !(result.x > 0.85f && result.y > 0.85f && result.z > 0.85f)) // Dim?
+        if (input.EditorSectorTexture & 0x20) // Dim?
             result.xyz *= 0.70f;
+
+		// Apply texture on top, if exists
+		if (input.EditorSectorTexture & 0x40)
+		{
+			float4 texColor = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 8)));
+			result.xyz = saturate(result.xyz + texColor.xyz);
+		}
 	}
 
 	if (input.EditorSectorTexture & 0x80 && !RoomGridForce) // Selected and textured?
 	{
-		result.x = saturate(result.x + 0.1f * result.w);
+		result.xyz = saturate(result.xyz + (input.Overlay.xyz * 0.1f) * result.w);
 		drawOutline = 2;
 	}
     
@@ -132,7 +139,7 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		result.xyz *= sectorAreaStrength;
 		if (drawOutline == 2)
-			result.x -= sectorAreaStrength - 1.0f;
+			result.xyz -= (sectorAreaStrength - 1.0f) * input.Overlay.xyz;
 
 		result.w = 1.0f - (1.0f - result.w) * sectorAreaStrength;
 	}

@@ -4,12 +4,15 @@ cbuffer WorldData
     float RoomGridLineWidth;
 	bool RoomGridForce;
 	bool RoomDisableVertexColors;
+	bool ShowExtraBlendingModes;
 };
 
 struct VertexInputType
 {
     float4 Position : POSITION;
     float4 Color : COLOR;
+	// Overlay for geometry mode symbols, e.g. arrows
+	float4 Overlay : OVERLAY;
 	// Bit 0 - 24; U coordinate fixed point 0 - 1
 	// Bit 24 - 48; V coordinate fixed point 0 - 1
 	// Bit 48 - 60; W coordinate integer
@@ -28,6 +31,7 @@ struct PixelInputType
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR;
+	float4 Overlay : OVERLAY;
     float3 Uvw : UVW;
 	int BlendMode : BLENDMODE;
     float2 EditorUv : EDITORUV;
@@ -50,6 +54,7 @@ PixelInputType main(VertexInputType input)
 		(int)(input.EditorUv << 30) >> 30, // Sign extend
 		(int)((input.EditorUv >> 2) << 30) >> 30); // Sign extend;
 	output.EditorSectorTexture = input.EditorUv;
+	output.Overlay = input.Overlay;
     return output;
 }
 
