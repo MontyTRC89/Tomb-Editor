@@ -351,9 +351,9 @@ namespace TombEditor
             var pos = config.GetType().GetProperty(name + "_Position")?.GetValue(config);
             var max = config.GetType().GetProperty(name + "_Maximized")?.GetValue(config);
 
-            if (size != null && size is Size) form.Size = (Size)size;
-            if (pos != null && pos is Point) form.Location = (Point)pos;
-            if (max != null && max is bool) form.WindowState = (bool)max ? FormWindowState.Maximized : FormWindowState.Normal;
+            if (size is Size)  form.Size = (Size)size;
+            if (pos  is Point) form.Location = (Point)pos;
+            if (max  is bool)  form.WindowState = (bool)max ? FormWindowState.Maximized : FormWindowState.Normal;
 
             if (form.Location.X == -1 && form.Location.Y == -1)
                 form.StartPosition = FormStartPosition.CenterParent;
