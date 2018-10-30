@@ -22,6 +22,11 @@ Texture2DArray RoomTexture : register(t0);
 Texture2DArray SectorTexture : register(t1);
 SamplerState DefaultSampler : register(s0);
 
+float brightness(float4 value)
+{
+	// ITU BT.601 perceived brigthess formula
+	return sqrt(pow(value.r, 2) * 0.299f + pow(value.g, 2) * 0.587f + pow(value.b, 2) * 0.114f);
+}
 
 float ddAny(float value)
 {
@@ -103,7 +108,10 @@ float4 main(PixelInputType input) : SV_TARGET
 		if (input.EditorSectorTexture & 0x40)
 		{
 			float4 texColor = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 8)));
-			result.xyz = saturate(result.xyz + texColor.xyz);
+			if (brightness(result) > 0.8f)
+				result.xyz = saturate(result.xyz - texColor.xyz);
+			else
+				result.xyz = saturate(result.xyz + texColor.xyz);
 		}
 	}
 

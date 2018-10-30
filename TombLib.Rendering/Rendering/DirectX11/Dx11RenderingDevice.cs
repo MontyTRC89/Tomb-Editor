@@ -233,8 +233,8 @@ namespace TombLib.Rendering.DirectX11
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint CompressColor(Vector3 color, bool average = true)
         {
-            if (average) color = Vector3.Max(new Vector3(), Vector3.Min(new Vector3(255.0f), color * 128.0f + new Vector3(0.5f)));
-            else color *= color * 255.0f;
+            float multiplier = average ? 128.0f : 255.0f;
+            color = Vector3.Max(new Vector3(), Vector3.Min(new Vector3(255.0f), color * multiplier + new Vector3(0.5f)));
             return ((uint)color.X) | (((uint)color.Y) << 8) | (((uint)color.Z) << 16) | 0xff000000;
         }
 
