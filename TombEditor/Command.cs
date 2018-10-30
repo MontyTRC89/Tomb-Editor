@@ -704,7 +704,7 @@ namespace TombEditor
                     existingWindow.Focus();
             });
 
-            AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("DeleteRooms", "Delete rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Map2D)
                     EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
