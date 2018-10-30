@@ -786,10 +786,11 @@ namespace TombEditor
 
         private static bool ApplyTextureAutomaticallyNoUpdated(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
-            Block block = room.GetBlock(pos);
+            var block = room.GetBlock(pos);
+            var shape = room.GetFaceShape(pos.X, pos.Y, face);
 
             if (!_editor.Tool.TextureUVFixer ||
-                (room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle && texture.TextureIsTriangle))
+                (shape == BlockFaceShape.Triangle && texture.TextureIsTriangle))
                 return block.SetFaceTexture(face, texture);
 
             TextureArea processedTexture = texture;
@@ -798,9 +799,11 @@ namespace TombEditor
                 case BlockFace.Floor:
                 case BlockFace.Ceiling:
                     BlockSurface surface = face == BlockFace.Floor ? block.Floor : block.Ceiling;
-                    if (surface.IsQuad)
+                    if (shape == BlockFaceShape.Quad)
                         break;
-                    if (surface.SplitDirectionIsXEqualsZ)
+                    if (surface.DiagonalSplit != DiagonalSplit.XnZn && 
+                        surface.DiagonalSplit != DiagonalSplit.XpZp && 
+                        surface.SplitDirectionIsXEqualsZ)
                     {
                         if(surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
                         {
@@ -820,9 +823,11 @@ namespace TombEditor
                 case BlockFace.FloorTriangle2:
                 case BlockFace.CeilingTriangle2:
                     BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
-                    if (surface2.IsQuad)
+                    if (shape == BlockFaceShape.Quad)
                         break;
-                    if (!surface2.SplitDirectionIsXEqualsZ)
+                    if (surface2.DiagonalSplit == DiagonalSplit.XnZn || 
+                        surface2.DiagonalSplit == DiagonalSplit.XpZp || 
+                        !surface2.SplitDirectionIsXEqualsZ)
                     {
                         processedTexture.TexCoord2 = processedTexture.TexCoord1;
                         processedTexture.TexCoord1 = processedTexture.TexCoord0;
