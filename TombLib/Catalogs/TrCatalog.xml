@@ -2307,7 +2307,7 @@
       <sound id="6" name="Lara draw" fixed_by_default="true"/>
       <sound id="7" name="Lara holster" fixed_by_default="true"/>
       <sound id="8" name="Lara fire" fixed_by_default="true"/>
-      <sound id="9" name="Lara reload"/>
+      <sound id="9" name="Lara reload" fixed_by_default="true"/>
       <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
       <sound id="11" name="Push block end" fixed_by_default="true"/>
       <sound id="12" name="Metal scrape loop" fixed_by_default="true"/>
@@ -2403,18 +2403,18 @@
       <sound id="101" name="Beetle clk whirr" fixed_by_default="true"/>
       <sound id="102" name="Beetle clk exp" fixed_by_default="true"/>
       <sound id="103" name="Mine exp overlay" fixed_by_default="true"/>
-      <sound id="104" name="Hecklerandkoch stop"/>
+      <sound id="104" name="Hecklerandkoch stop" fixed_by_default="true"/>
       <sound id="105" name="Explosion1" fixed_by_default="true"/>
       <sound id="106" name="Explosion2 volwas80" fixed_by_default="true"/>
       <sound id="107" name="Earthquake loop" fixed_by_default="true"/>
       <sound id="108" name="Menu rotate" fixed_by_default="true"/>
       <sound id="109" name="Menu select" fixed_by_default="true"/>
-      <sound id="110" name="Menu empty 1"/>
+      <sound id="110" name="Menu empty 1" fixed_by_default="true"/>
       <sound id="111" name="Menu choose" fixed_by_default="true"/>
-      <sound id="112" name="Tick tock"/>
-      <sound id="113" name="Menu empty 2"/>
+      <sound id="112" name="Tick tock" fixed_by_default="true"/>
+      <sound id="113" name="Menu empty 2" fixed_by_default="true"/>
       <sound id="114" name="Menu combine" fixed_by_default="true"/>
-      <sound id="115" name="Menu empty 3"/>
+      <sound id="115" name="Menu empty 3" fixed_by_default="true"/>
       <sound id="116" name="Menu medi" fixed_by_default="true"/>
       <sound id="117" name="Lara climb walls noise"/>
       <sound id="118" name="Water loop"/>
@@ -3863,9 +3863,9 @@
       <sound id="40" name="Lara push2 nonrnd"/>
       <sound id="41" name="Lara general death"/>
       <sound id="42" name="Lara knees death"/>
-      <sound id="43" name="Lara uzi fire"/>
-      <sound id="44" name="Lara uzi stop"/>
-      <sound id="45" name="Lara shotgun"/>
+      <sound id="43" name="Lara uzi fire" fixed_by_default="true"/>
+      <sound id="44" name="Lara uzi stop" fixed_by_default="true"/>
+      <sound id="45" name="Lara shotgun" fixed_by_default="true"/>
       <sound id="46" name="Lara push1"/>
       <sound id="47" name="Lara push2 rnd"/>
       <sound id="48" name="Lara random pushfx"/>
@@ -3932,7 +3932,7 @@
       <sound id="109" name="Menu select" fixed_by_default="true"/>
       <sound id="110" name="Menu empty" fixed_by_default="true"/>
       <sound id="111" name="Menu choose" fixed_by_default="true"/>
-      <sound id="112" name="Tick tock"/>
+      <sound id="112" name="Tick tock" fixed_by_default="true"/>
       <sound id="113" name="Menu empty" fixed_by_default="true"/>
       <sound id="114" name="Menu combine" fixed_by_default="true"/>
       <sound id="115" name="Menu empty" fixed_by_default="true"/>
@@ -4766,7 +4766,7 @@
       <sound id="6" name="Lara holster draw" fixed_by_default="true"/>
       <sound id="7" name="Lara holster away" fixed_by_default="true"/>
       <sound id="8" name="Lara fire" fixed_by_default="true"/>
-      <sound id="9" name="Lara reload"/>
+      <sound id="9" name="Lara reload" fixed_by_default="true"/>
       <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
       <sound id="11" name="Push block end" fixed_by_default="true"/>
       <sound id="12" name="Smash glass" fixed_by_default="true"/>
@@ -4800,9 +4800,9 @@
       <sound id="40" name="Lara push2 nonrnd"/>
       <sound id="41" name="Lara general death"/>
       <sound id="42" name="Lara knees death"/>
-      <sound id="43" name="Lara uzi fire"/>
-      <sound id="44" name="Lara uzi stop"/>
-      <sound id="45" name="Lara shotgun"/>
+      <sound id="43" name="Lara uzi fire" fixed_by_default="true"/>
+      <sound id="44" name="Lara uzi stop" fixed_by_default="true"/>
+      <sound id="45" name="Lara shotgun" fixed_by_default="true"/>
       <sound id="46" name="Lara push1"/>
       <sound id="47" name="Lara push2 rnd"/>
       <sound id="48" name="Lara random pushfx"/>
@@ -4869,7 +4869,7 @@
       <sound id="109" name="Menu select" fixed_by_default="true"/>
       <sound id="110" name="Menu empty" fixed_by_default="true"/>
       <sound id="111" name="Menu choose" fixed_by_default="true"/>
-      <sound id="112" name="Tick tock"/>
+      <sound id="112" name="Tick tock" fixed_by_default="true"/>
       <sound id="113" name="Menu empty" fixed_by_default="true"/>
       <sound id="114" name="Menu combine" fixed_by_default="true"/>
       <sound id="115" name="Menu empty" fixed_by_default="true"/>
