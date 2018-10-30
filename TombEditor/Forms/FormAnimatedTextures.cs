@@ -94,10 +94,12 @@ namespace TombEditor.Forms
         public FormAnimatedTextures(Editor editor, LevelTexture levelTextureToOpen)
         {
             InitializeComponent();
-            _previewTimer.Tick += _previewTimer_Tick;
-            previewImage.Paint += _onPicturePreviewPaint;
+
             _editor = editor;
             _editor.EditorEventRaised += _editor_EditorEventRaised;
+
+            _previewTimer.Tick += _previewTimer_Tick;
+            previewImage.Paint += _onPicturePreviewPaint;
 
             // Setup image cache
             _imageCache = new Cache<CachedImageInfo, Bitmap>(512, subsection =>
@@ -230,6 +232,9 @@ namespace TombEditor.Forms
 
         private void SetupControls()
         {
+            // Define tile selection size
+            textureMap.TileSelectionSize = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
+
             // Clear previous elements
             comboEffect.Items.Clear();
             comboUvRotate.Items.Clear();
