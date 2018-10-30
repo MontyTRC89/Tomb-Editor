@@ -51,17 +51,9 @@ namespace TombEditor.Forms
             _editor.EditorEventRaised += _editor_EditorEventRaised;
             InitializeComponent();
 
-            // Set position and size
-            Size = _editor.Configuration.Window_FormSearch_Size;
-            Location = _editor.Configuration.Window_FormSearch_Position;
-            WindowState = _editor.Configuration.Window_FormSearch_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            if (Location.X == -1000 && Location.Y == -1000)
-                StartPosition = FormStartPosition.CenterParent;
-            else
-                StartPosition = FormStartPosition.Manual;
-
-            if (Location.X == -1000) StartPosition = FormStartPosition.CenterParent;
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
 
             // Populate scope combo box
             comboScope.Items.AddRange(Enum.GetValues(typeof(ScopeMode)).Cast<object>().ToArray());
@@ -430,16 +422,6 @@ namespace TombEditor.Forms
                 foreach (WadMoveable obj in _editor.Level.Settings.WadGetAllMoveables().Values)
                     yield return new ItemType(obj.Id, _editor?.Level?.Settings);
             }
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            // Set position and size
-            _editor.Configuration.Window_FormSearch_Size = Size;
-            _editor.Configuration.Window_FormSearch_Position = Location;
-            _editor.Configuration.Window_FormSearch_Maximized = WindowState == FormWindowState.Maximized;
-
-            base.OnClosing(e);
         }
     }
 }

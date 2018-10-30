@@ -108,15 +108,9 @@ namespace TombEditor.Forms
 
             _isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
 
-            // Set position and size
-            Size = _editor.Configuration.Window_FormAnimatedTextures_Size;
-            Location = _editor.Configuration.Window_FormAnimatedTextures_Position;
-            WindowState = _editor.Configuration.Window_FormAnimatedTextures_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            if (Location.X == -1000 && Location.Y == -1000)
-                StartPosition = FormStartPosition.CenterParent;
-            else
-                StartPosition = FormStartPosition.Manual;
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
 
             // Setup controls
             SetupControls();
@@ -1159,16 +1153,6 @@ namespace TombEditor.Forms
         private void butAddProcAnim_Click(object sender, EventArgs e)
         {
             GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.AddFrames);
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            // Set position and size
-            _editor.Configuration.Window_FormAnimatedTextures_Size = Size;
-            _editor.Configuration.Window_FormAnimatedTextures_Position = Location;
-            _editor.Configuration.Window_FormAnimatedTextures_Maximized = WindowState == FormWindowState.Maximized;
-
-            base.OnClosing(e);
         }
     }
 }

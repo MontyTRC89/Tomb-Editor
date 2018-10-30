@@ -60,8 +60,9 @@ namespace TombEditor.Forms
             // Initialize panels
             MainView.InitializeRendering(_editor.RenderingDevice);
             ItemBrowser.InitializeRendering(_editor.RenderingDevice);
-
+            
             // Restore window settings
+            Configuration.LoadWindowProperties(this, _editor.Configuration);
             LoadWindowLayout(_editor.Configuration);
             GenerateMenusRecursive(menuStrip.Items);
 
@@ -203,10 +204,7 @@ namespace TombEditor.Forms
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var @event = (Editor.ConfigurationChangedEvent)obj;
-                if (@event.Current.Window_Maximized != @event.Previous.Window_Maximized ||
-                    @event.Current.Window_Position != @event.Previous.Window_Position ||
-                    @event.Current.Window_Size != @event.Previous.Window_Size ||
-                    @event.Current.Window_Layout != @event.Previous.Window_Layout)
+                if (@event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
 
                 if(@event.UpdateKeyboardShortcuts)
@@ -361,8 +359,6 @@ namespace TombEditor.Forms
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            _editor.ConfigurationChange(); // Always save on exit
-
             switch (e.CloseReason)
             {
                 case CloseReason.None:
@@ -371,6 +367,14 @@ namespace TombEditor.Forms
                         e.Cancel = true;
                     break;
             }
+
+            if(!e.Cancel)
+            {
+                // Always save window properties on exit and resave config!
+                Configuration.SaveWindowProperties(this, _editor.Configuration);
+                _editor.ConfigurationChange();
+            }
+
             base.OnFormClosing(e);
         }
 
@@ -379,10 +383,6 @@ namespace TombEditor.Forms
             dockArea.RemoveContent();
             dockArea.RestoreDockPanelState(configuration.Window_Layout, FindDockContentByKey);
 
-            Size = configuration.Window_Size;
-            Location = configuration.Window_Position;
-            WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
             floatingToolStripMenuItem.Checked = configuration.Rendering3D_ToolboxVisible;
             ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
         }
@@ -390,10 +390,6 @@ namespace TombEditor.Forms
         private void SaveWindowLayout(Configuration configuration)
         {
             configuration.Window_Layout = dockArea.GetDockPanelState();
-
-            configuration.Window_Size = Size;
-            configuration.Window_Position = Location;
-            configuration.Window_Maximized = WindowState == FormWindowState.Maximized;
 
             configuration.Rendering3D_ToolboxVisible = floatingToolStripMenuItem.Checked;
             configuration.Rendering3D_ToolboxPosition = ToolBox.Location;

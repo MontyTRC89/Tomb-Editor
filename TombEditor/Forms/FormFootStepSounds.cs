@@ -47,16 +47,10 @@ namespace TombEditor.Forms
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(440, 180) + (Size - ClientSize);
-
-            // Set position and size
-            Size = _editor.Configuration.Window_FormFootStepSounds_Size;
-            Location = _editor.Configuration.Window_FormFootStepSounds_Position;
-            WindowState = _editor.Configuration.Window_FormFootStepSounds_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            if (Location.X == -1000 && Location.Y == -1000)
-                StartPosition = FormStartPosition.CenterParent;
-            else
-                StartPosition = FormStartPosition.Manual;
+            
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
 
             // Initialize texture map
             if (editor.SelectedTexture.TextureIsInvisible)
@@ -162,16 +156,6 @@ namespace TombEditor.Forms
 
                 base.OnPaintSelection(e);
             }
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            // Set position and size
-            Editor.Instance.Configuration.Window_FormFootStepSounds_Size = Size;
-            Editor.Instance.Configuration.Window_FormFootStepSounds_Position = Location;
-            Editor.Instance.Configuration.Window_FormFootStepSounds_Maximized = WindowState == FormWindowState.Maximized;
-
-            base.OnClosing(e);
         }
     }
 }

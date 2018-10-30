@@ -25,15 +25,9 @@ namespace TombEditor.Forms
             tbMeshFilter.Text = instance.MeshFilter;
             UpdateCurrentModelDisplay();
 
-            // Set position and size
-            Size = Editor.Instance.Configuration.Window_FormImportedGeometry_Size;
-            Location = Editor.Instance.Configuration.Window_FormImportedGeometry_Position;
-            WindowState = Editor.Instance.Configuration.Window_FormImportedGeometry_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            if (Location.X == -1000 && Location.Y == -1000)
-                StartPosition = FormStartPosition.CenterParent;
-            else
-                StartPosition = FormStartPosition.Manual;
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
         }
 
         private void UpdateCurrentModelDisplay()
@@ -66,16 +60,6 @@ namespace TombEditor.Forms
         {
             DialogResult = DialogResult.Cancel;
             Close();
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            // Set position and size
-            Editor.Instance.Configuration.Window_FormImportedGeometry_Size = Size;
-            Editor.Instance.Configuration.Window_FormImportedGeometry_Position = Location;
-            Editor.Instance.Configuration.Window_FormImportedGeometry_Maximized = WindowState == FormWindowState.Maximized;
-
-            base.OnClosing(e);
         }
     }
 }

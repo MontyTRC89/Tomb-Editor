@@ -223,16 +223,10 @@ namespace TombEditor.Forms
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(793, 533) + (Size - ClientSize);
-
-            // Set position and size
-            Size = _editor.Configuration.Window_FormLevelSettings_Size;
-            Location = _editor.Configuration.Window_FormLevelSettings_Position;
-            WindowState = _editor.Configuration.Window_FormLevelSettings_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            if (Location.X == -1000 && Location.Y == -1000)
-                StartPosition = FormStartPosition.CenterParent;
-            else
-                StartPosition = FormStartPosition.Manual;
+            
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
 
             // Remember colors
             _correctColor = gameLevelFilePathTxt.BackColor;
@@ -1001,16 +995,6 @@ namespace TombEditor.Forms
         private void numPadding_ValueChanged(object sender, EventArgs e)
         {
              _levelSettings.TexturePadding = (int)numPadding.Value;
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            // Set position and size
-            _editor.Configuration.Window_FormLevelSettings_Size = Size;
-            _editor.Configuration.Window_FormLevelSettings_Position = Location;
-            _editor.Configuration.Window_FormLevelSettings_Maximized = WindowState == FormWindowState.Maximized;
-
-            base.OnClosing(e);
         }
     }
 }

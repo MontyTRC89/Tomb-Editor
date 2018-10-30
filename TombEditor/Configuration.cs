@@ -1,4 +1,5 @@
 ﻿using DarkUI.Docking;
+using DarkUI.Forms;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -132,31 +133,31 @@ namespace TombEditor
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
         // Window options
-        public Point Window_FormAnimatedTextures_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormMain_Position { get; set; } = new Point(0);
+        public Size Window_FormMain_Size { get; set; } = Window_SizeDefault;
+        public bool Window_FormMain_Maximized { get; set; } = true;
+        public Point Window_FormAnimatedTextures_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormAnimatedTextures_Size { get; set; } = new Size(885, 694);
         public bool Window_FormAnimatedTextures_Maximized { get; set; } = false;
-        public Point Window_FormBumpMaps_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormBumpMaps_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormBumpMaps_Size { get; set; } = new Size(440, 600);
         public bool Window_FormBumpMaps_Maximized { get; set; } = false;
-        public Point Window_FormFootStepSounds_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormFootStepSounds_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormFootStepSounds_Size { get; set; } = new Size(440, 600);
         public bool Window_FormFootStepSounds_Maximized { get; set; } = false;
-        public Point Window_FormImportedGeometry_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormImportedGeometry_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormImportedGeometry_Size { get; set; } = new Size(756, 488);
         public bool Window_FormImportedGeometry_Maximized { get; set; } = false;
-        public Point Window_FormLevelSettings_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormLevelSettings_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormLevelSettings_Size { get; set; } = new Size(800, 540);
         public bool Window_FormLevelSettings_Maximized { get; set; } = false;
-        public Point Window_FormSearch_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormSearch_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormSearch_Size { get; set; } = new Size(650, 350);
         public bool Window_FormSearch_Maximized { get; set; } = false;
-        public Point Window_FormTrigger_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Point Window_FormTrigger_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
         public bool Window_FormTrigger_Maximized { get; set; } = false;
 
-        public Point Window_Position { get; set; } = new Point(32, 32);
-        public Size Window_Size { get; set; } = Window_SizeDefault;
-        public bool Window_Maximized { get; set; } = true;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
@@ -331,6 +332,33 @@ namespace TombEditor
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
                 return new Configuration();
             }
+        }
+
+        public static void SaveWindowProperties(DarkForm form, Configuration config)
+        {
+            var name = "Window_" + form.Name;
+
+            config.GetType().GetProperty(name + "_Size")?.SetValue(config, form.Size);
+            config.GetType().GetProperty(name + "_Position")?.SetValue(config, form.Location);
+            config.GetType().GetProperty(name + "_Maximized")?.SetValue(config, form.WindowState == FormWindowState.Maximized);
+        }
+
+        public static void LoadWindowProperties(DarkForm form, Configuration config)
+        {
+            var name = "Window_" + form.Name;
+
+            var size = config.GetType().GetProperty(name + "_Size")?.GetValue(config);
+            var pos = config.GetType().GetProperty(name + "_Position")?.GetValue(config);
+            var max = config.GetType().GetProperty(name + "_Maximized")?.GetValue(config);
+
+            if (size != null && size is Size) form.Size = (Size)size;
+            if (pos != null && pos is Point) form.Location = (Point)pos;
+            if (max != null && max is bool) form.WindowState = (bool)max ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            if (form.Location.X == -1 && form.Location.Y == -1)
+                form.StartPosition = FormStartPosition.CenterParent;
+            else
+                form.StartPosition = FormStartPosition.Manual;
         }
     }
 }
