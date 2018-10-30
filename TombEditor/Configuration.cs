@@ -132,6 +132,27 @@ namespace TombEditor
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
         // Window options
+        public Point Window_FormAnimatedTextures_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormAnimatedTextures_Size { get; set; } = new Size(885, 694);
+        public bool Window_FormAnimatedTextures_Maximized { get; set; } = false;
+        public Point Window_FormBumpMaps_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormBumpMaps_Size { get; set; } = new Size(440, 600);
+        public bool Window_FormBumpMaps_Maximized { get; set; } = false;
+        public Point Window_FormFootStepSounds_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormFootStepSounds_Size { get; set; } = new Size(440, 600);
+        public bool Window_FormFootStepSounds_Maximized { get; set; } = false;
+        public Point Window_FormImportedGeometry_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormImportedGeometry_Size { get; set; } = new Size(756, 488);
+        public bool Window_FormImportedGeometry_Maximized { get; set; } = false;
+        public Point Window_FormLevelSettings_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormLevelSettings_Size { get; set; } = new Size(800, 540);
+        public bool Window_FormLevelSettings_Maximized { get; set; } = false;
+        public Point Window_FormSearch_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormSearch_Size { get; set; } = new Size(650, 350);
+        public bool Window_FormSearch_Maximized { get; set; } = false;
+        public Point Window_FormTrigger_Position { get; set; } = new Point(-1000, -1000); // Center by default
+        public Size Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
+        public bool Window_FormTrigger_Maximized { get; set; } = false;
 
         public Point Window_Position { get; set; } = new Point(32, 32);
         public Size Window_Size { get; set; } = Window_SizeDefault;

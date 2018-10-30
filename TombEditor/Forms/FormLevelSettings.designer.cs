@@ -57,6 +57,10 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.objectFileDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.objectFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
@@ -122,10 +126,6 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.objectFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -157,6 +157,7 @@
             this.panel10.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.panel11.SuspendLayout();
             this.SuspendLayout();
@@ -168,14 +169,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -202,7 +203,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(785, 506);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 502);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // darkSectionPanel2
@@ -213,7 +214,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(209, 3);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(573, 466);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(573, 462);
             this.darkSectionPanel2.TabIndex = 2;
             // 
             // tabbedContainer
@@ -231,7 +232,7 @@
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
             this.tabbedContainer.Name = "tabbedContainer";
             this.tabbedContainer.SelectedIndex = 0;
-            this.tabbedContainer.Size = new System.Drawing.Size(571, 464);
+            this.tabbedContainer.Size = new System.Drawing.Size(571, 460);
             this.tabbedContainer.TabIndex = 2;
             // 
             // tabPage5
@@ -244,7 +245,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(563, 438);
+            this.tabPage5.Size = new System.Drawing.Size(563, 434);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Game";
             // 
@@ -259,7 +260,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(3, 153);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(557, 282);
+            this.panel3.Size = new System.Drawing.Size(557, 278);
             this.panel3.TabIndex = 3;
             // 
             // lblGameEnableQuickStartFeature2
@@ -613,6 +614,40 @@
             this.objectFileDataGridView.TabIndex = 4;
             this.objectFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.objectFileDataGridView_CellContentClick);
             this.objectFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectFileDataGridView_CellFormatting);
+            // 
+            // objectFileDataGridViewPathColumn
+            // 
+            this.objectFileDataGridViewPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.objectFileDataGridViewPathColumn.DataPropertyName = "Path";
+            this.objectFileDataGridViewPathColumn.FillWeight = 60F;
+            this.objectFileDataGridViewPathColumn.HeaderText = "Path";
+            this.objectFileDataGridViewPathColumn.Name = "objectFileDataGridViewPathColumn";
+            // 
+            // objectFileDataGridViewSearchColumn
+            // 
+            this.objectFileDataGridViewSearchColumn.HeaderText = "";
+            this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
+            this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.objectFileDataGridViewSearchColumn.Text = "Search";
+            this.objectFileDataGridViewSearchColumn.Width = 80;
+            // 
+            // objectFileDataGridViewShowColumn
+            // 
+            this.objectFileDataGridViewShowColumn.HeaderText = "Show";
+            this.objectFileDataGridViewShowColumn.Name = "objectFileDataGridViewShowColumn";
+            this.objectFileDataGridViewShowColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.objectFileDataGridViewShowColumn.Text = "◀";
+            this.objectFileDataGridViewShowColumn.Width = 45;
+            // 
+            // objectFileDataGridViewMessageColumn
+            // 
+            this.objectFileDataGridViewMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.objectFileDataGridViewMessageColumn.DataPropertyName = "Message";
+            this.objectFileDataGridViewMessageColumn.FillWeight = 40F;
+            this.objectFileDataGridViewMessageColumn.HeaderText = "Message";
+            this.objectFileDataGridViewMessageColumn.Name = "objectFileDataGridViewMessageColumn";
+            this.objectFileDataGridViewMessageColumn.ReadOnly = true;
+            this.objectFileDataGridViewMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
             // darkLabel5
             // 
@@ -1256,7 +1291,7 @@
             this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 466);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 462);
             this.darkSectionPanel1.TabIndex = 7;
             // 
             // optionsList
@@ -1265,7 +1300,7 @@
             this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.optionsList.Location = new System.Drawing.Point(1, 1);
             this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 464);
+            this.optionsList.Size = new System.Drawing.Size(198, 460);
             this.optionsList.TabIndex = 6;
             // 
             // panel11
@@ -1274,7 +1309,7 @@
             this.panel11.Controls.Add(this.butApply);
             this.panel11.Controls.Add(this.butOk);
             this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(522, 475);
+            this.panel11.Location = new System.Drawing.Point(522, 471);
             this.panel11.Name = "panel11";
             this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
             this.panel11.Size = new System.Drawing.Size(260, 28);
@@ -1319,47 +1354,13 @@
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
             // 
-            // objectFileDataGridViewPathColumn
-            // 
-            this.objectFileDataGridViewPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.objectFileDataGridViewPathColumn.DataPropertyName = "Path";
-            this.objectFileDataGridViewPathColumn.FillWeight = 60F;
-            this.objectFileDataGridViewPathColumn.HeaderText = "Path";
-            this.objectFileDataGridViewPathColumn.Name = "objectFileDataGridViewPathColumn";
-            // 
-            // objectFileDataGridViewSearchColumn
-            // 
-            this.objectFileDataGridViewSearchColumn.HeaderText = "";
-            this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
-            this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.objectFileDataGridViewSearchColumn.Text = "Search";
-            this.objectFileDataGridViewSearchColumn.Width = 80;
-            // 
-            // objectFileDataGridViewShowColumn
-            // 
-            this.objectFileDataGridViewShowColumn.HeaderText = "Show";
-            this.objectFileDataGridViewShowColumn.Name = "objectFileDataGridViewShowColumn";
-            this.objectFileDataGridViewShowColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.objectFileDataGridViewShowColumn.Text = "◀";
-            this.objectFileDataGridViewShowColumn.Width = 45;
-            // 
-            // objectFileDataGridViewMessageColumn
-            // 
-            this.objectFileDataGridViewMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.objectFileDataGridViewMessageColumn.DataPropertyName = "Message";
-            this.objectFileDataGridViewMessageColumn.FillWeight = 40F;
-            this.objectFileDataGridViewMessageColumn.HeaderText = "Message";
-            this.objectFileDataGridViewMessageColumn.Name = "objectFileDataGridViewMessageColumn";
-            this.objectFileDataGridViewMessageColumn.ReadOnly = true;
-            this.objectFileDataGridViewMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(785, 506);
+            this.ClientSize = new System.Drawing.Size(784, 502);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
@@ -1410,6 +1411,7 @@
             this.panel6.PerformLayout();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);

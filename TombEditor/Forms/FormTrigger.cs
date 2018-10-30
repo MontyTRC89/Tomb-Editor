@@ -42,15 +42,25 @@ namespace TombEditor.Forms
 
             if (_level.Settings.GameVersion != GameVersion.TR5Main)
             {
-                FormBorderStyle = FormBorderStyle.FixedSingle;
                 panelLuaScript.Visible = false;
                 MaximizeBox = false;
                 Height = panelClassicTriggerControls.Height + panelButtons.Height + panelMain.Padding.Top + panelMain.Padding.Bottom;
+                MaximumSize = new Size(2000, Height);
             }
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(611, Size.Height) + (Size - ClientSize);
+
+            // Set position and size
+            Size = Editor.Instance.Configuration.Window_FormTrigger_Size;
+            Location = Editor.Instance.Configuration.Window_FormTrigger_Position;
+            WindowState = Editor.Instance.Configuration.Window_FormTrigger_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            if (Location.X == -1000 && Location.Y == -1000)
+                StartPosition = FormStartPosition.CenterParent;
+            else
+                StartPosition = FormStartPosition.Manual;
 
             // Update the dialog
             UpdateDialog();
@@ -261,6 +271,16 @@ namespace TombEditor.Forms
         {
             foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
                 control.RawMode = cbRawMode.Checked;
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // Set position and size
+            Editor.Instance.Configuration.Window_FormTrigger_Size = Size;
+            Editor.Instance.Configuration.Window_FormTrigger_Position = Location;
+            Editor.Instance.Configuration.Window_FormTrigger_Maximized = WindowState == FormWindowState.Maximized;
+
+            base.OnClosing(e);
         }
     }
 }

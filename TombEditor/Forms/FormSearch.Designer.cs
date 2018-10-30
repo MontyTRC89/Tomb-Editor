@@ -30,7 +30,7 @@
             this.comboScope.FormattingEnabled = true;
             this.comboScope.Location = new System.Drawing.Point(94, 36);
             this.comboScope.Name = "comboScope";
-            this.comboScope.Size = new System.Drawing.Size(538, 23);
+            this.comboScope.Size = new System.Drawing.Size(532, 23);
             this.comboScope.TabIndex = 1;
             this.comboScope.SelectedIndexChanged += new System.EventHandler(this.comboScope_SelectedIndexChanged);
             // 
@@ -63,7 +63,7 @@
             this.txtKeywords.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtKeywords.Location = new System.Drawing.Point(94, 9);
             this.txtKeywords.Name = "txtKeywords";
-            this.txtKeywords.Size = new System.Drawing.Size(538, 22);
+            this.txtKeywords.Size = new System.Drawing.Size(532, 22);
             this.txtKeywords.TabIndex = 0;
             this.txtKeywords.TextChanged += new System.EventHandler(this.txtKeywords_TextChanged);
             // 
@@ -87,7 +87,7 @@
             this.objectList.Name = "objectList";
             this.objectList.ReadOnly = true;
             this.objectList.RowHeadersWidth = 41;
-            this.objectList.Size = new System.Drawing.Size(625, 160);
+            this.objectList.Size = new System.Drawing.Size(619, 211);
             this.objectList.TabIndex = 2;
             this.objectList.VirtualMode = true;
             this.objectList.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectList_CellFormatting);
@@ -119,7 +119,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butOk.Location = new System.Drawing.Point(552, 231);
+            this.butOk.Location = new System.Drawing.Point(546, 282);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 3;
@@ -132,7 +132,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
-            this.ClientSize = new System.Drawing.Size(640, 261);
+            this.ClientSize = new System.Drawing.Size(634, 312);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.objectList);
             this.Controls.Add(this.txtKeywords);

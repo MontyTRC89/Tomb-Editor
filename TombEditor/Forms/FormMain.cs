@@ -361,6 +361,8 @@ namespace TombEditor.Forms
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            _editor.ConfigurationChange(); // Always save on exit
+
             switch (e.CloseReason)
             {
                 case CloseReason.None:
