@@ -1763,7 +1763,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw)
+        private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
@@ -1804,7 +1804,7 @@ namespace TombEditor.Controls
 
                 skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                if (_editor.SelectedObject == instance) // Selection
+                if (!disableSelection && _editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
@@ -1850,7 +1850,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw)
+        private void DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             var geometryEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
 
@@ -1882,7 +1882,7 @@ namespace TombEditor.Controls
                     geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
                     geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                    if (_editor.SelectedObject == instance)
+                    if (!disableSelection && _editor.SelectedObject == instance)
                         geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                     foreach (var submesh in mesh.Submeshes)
@@ -1929,7 +1929,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawStatics(Matrix4x4 viewProjection, List<StaticInstance> staticsToDraw, List<Text> textToDraw)
+        private void DrawStatics(Matrix4x4 viewProjection, List<StaticInstance> staticsToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
@@ -1960,7 +1960,7 @@ namespace TombEditor.Controls
 
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
                 staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                if (_editor.SelectedObject == instance)
+                if (!disableSelection && _editor.SelectedObject == instance)
                     staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
@@ -2214,6 +2214,11 @@ namespace TombEditor.Controls
                     StateBuffer = _renderingStateBuffer
                 });
 
+            // Determine the window we're currently in. If no window is selected, it means
+            // we're in color dialog and have to disable selection highlight for convinience.
+
+            var drawSelection = Form.ActiveForm == null;
+
 
             // Draw moveables and static meshes
             {
@@ -2221,9 +2226,9 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 if (ShowMoveables)
-                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw);
+                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, drawSelection);
                 if (ShowStatics)
-                    DrawStatics(viewProjection, staticsToDraw, textToDraw);
+                    DrawStatics(viewProjection, staticsToDraw, textToDraw, drawSelection);
 
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
@@ -2239,7 +2244,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 // Draw imported geometry
-                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw);
+                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, drawSelection);
 
                 // Reset GPU states
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);

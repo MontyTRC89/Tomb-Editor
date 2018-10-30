@@ -893,6 +893,7 @@ namespace TombEditor
                 if (selectedObj.ScriptId == null)
                     selectedObj.AllocateNewScriptId();
                 Clipboard.SetText(selectedObj.ScriptId.Value.ToString());
+                args.Editor.SendMessage("Script ID for selected ID is " + selectedObj.ScriptId + ".\nCopied to clipboard.", PopupType.Info);
             });
 
             AddCommand("SplitSectorObjectOnSelection", "Split sector based object on selection", CommandType.Objects, delegate (CommandArgs args)
