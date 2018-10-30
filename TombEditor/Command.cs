@@ -884,10 +884,16 @@ namespace TombEditor
 
             AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard", CommandType.Objects, delegate (CommandArgs args)
             {
+                if(args.Editor.SelectedObject == null)
+                {
+                    args.Editor.SendMessage("Select an object first.", PopupType.Warning);
+                    return;
+                }
+
                 var selectedObj = args.Editor.SelectedObject as IHasScriptID;
                 if (selectedObj == null)
                 {
-                    args.Editor.SendMessage("The selected object does not have a script ID.");
+                    args.Editor.SendMessage("The selected object does not have a script ID.", PopupType.Warning);
                     return;
                 }
                 if (selectedObj.ScriptId == null)
