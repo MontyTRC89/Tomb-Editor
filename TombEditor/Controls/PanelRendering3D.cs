@@ -557,11 +557,15 @@ namespace TombEditor.Controls
                 }
                 else if (newPicking is PickingResultObject)
                 {
+                    var obj = ((PickingResultObject)newPicking).ObjectInstance;
+
                     // Select or bookmark object
                     if (ModifierKeys.HasFlag(Keys.Shift))
-                        EditorActions.BookmarkObject(((PickingResultObject)newPicking).ObjectInstance);
+                        EditorActions.BookmarkObject(obj);
+                    else if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
+                        _editor.ChosenItem = ((ItemInstance)obj).ItemType;
                     else
-                        _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
+                        _editor.SelectedObject = obj;
                 }
                 else if (newPicking is PickingResultGizmo)
                 {
