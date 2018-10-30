@@ -9,6 +9,19 @@ namespace TombLib.Utils
 {
     public static class WinFormsUtils
     {
+        public static Color ToWinFormsColor(this Vector3 color) => new Vector4(color, 255.0f).ToWinFormsColor();
+        public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;
+        public static Vector4 ToFloat4Color(this Color color) => new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
+
+        public static Color ToWinFormsColor(this Vector4 color, float? alpha = null)
+        {
+            return Color.FromArgb(
+                    (int)Math.Max(0, Math.Min(255, Math.Round((alpha.HasValue ? MathC.Clamp(alpha.Value, 0.0, 1.0) : color.W) * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
+        }
+
         public static Color MixWith(this Color firstColor, Color secondColor, double mixFactor)
         {
             if (mixFactor > 1)
@@ -25,25 +38,6 @@ namespace TombLib.Utils
         public static void DrawRectangle(this System.Drawing.Graphics g, Pen pen, RectangleF rectangle)
         {
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
-        }
-
-        public static Color ToWinFormsColor(this Vector4 color, float? alpha = null)
-        {
-            return Color.FromArgb(
-                    (int)Math.Max(0, Math.Min(255, Math.Round((alpha.HasValue ? MathC.Clamp(alpha.Value, 0.0, 1.0) : color.W) * 255.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
-        }
-
-        public static Color ToWinFormsColor(this Vector3 color)
-        {
-            return new Vector4(color, 255.0f).ToWinFormsColor();
-        }
-
-        public static Vector3 ToFloatColor(this Color color)
-        {
-            return new Vector3(color.R, color.G, color.B) / 255.0f;
         }
 
         public static Rectangle ToRectangle(this RectangleF area, float margin, Rectangle maxArea)

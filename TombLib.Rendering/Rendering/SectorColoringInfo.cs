@@ -73,6 +73,8 @@ namespace TombLib.Rendering
         public Vector4 Color2DRoomsAbove = new Vector4(50, 50, 200, 255) / 255.0f;
         public Vector4 Color2DRoomsBelow = new Vector4(85, 85, 85, 255) / 255.0f;
         public Vector4 Color2DRoomsMoved = new Vector4(230, 230, 20, 255) / 255.0f;
+
+        public Vector4[] CustomColors = new Vector4[16];
     }
 
     public class SectorColoringInfo
