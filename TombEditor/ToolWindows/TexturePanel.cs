@@ -30,8 +30,13 @@ namespace TombEditor.ToolWindows
             panelTextureMap.SelectedTextureChanged += delegate
             { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
+            // Populate selection tile size 
+            for (int i = 5; i <= 8; i++)
+                cmbTileSize.Items.Add((float)(Math.Pow(2, i)));
+
             cmbBlending.SelectedIndex = 0;
-            cmbTileSize.SelectedIndex = 1;
+            cmbTileSize.SelectedItem = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
+
         }
 
         protected override void Dispose(bool disposing)
@@ -141,22 +146,7 @@ namespace TombEditor.ToolWindows
 
         private void cmbTileSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch(cmbTileSize.SelectedIndex)
-            {
-                case 0:
-                    panelTextureMap.TileSelectionSize = 32.0f;
-                    break;
-                default:
-                case 1:
-                    panelTextureMap.TileSelectionSize = 64.0f;
-                    break;
-                case 2:
-                    panelTextureMap.TileSelectionSize = 128.0f;
-                    break;
-                case 3:
-                    panelTextureMap.TileSelectionSize = 256.0f;
-                    break;
-            }
+            panelTextureMap.TileSelectionSize = (float)cmbTileSize.SelectedItem;
         }
 
         private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)

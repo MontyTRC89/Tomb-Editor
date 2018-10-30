@@ -113,11 +113,6 @@ namespace TombEditor.ToolWindows
             // 
             this.cmbTileSize.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cmbTileSize.FormattingEnabled = true;
-            this.cmbTileSize.Items.AddRange(new object[] {
-            "32",
-            "64",
-            "128",
-            "256"});
             this.cmbTileSize.Location = new System.Drawing.Point(201, 3);
             this.cmbTileSize.Name = "cmbTileSize";
             this.cmbTileSize.Size = new System.Drawing.Size(82, 23);
