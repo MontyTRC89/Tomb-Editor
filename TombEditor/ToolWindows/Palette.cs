@@ -22,7 +22,7 @@ namespace TombEditor.ToolWindows
                 LightInstance light = _editor.SelectedObject as LightInstance;
                 if (light == null)
                     return;
-                light.Color = lightPalette.SelectedColor.ToFloatColor();
+                light.Color = lightPalette.SelectedColor.ToFloat3Color();
                 _editor.SelectedRoom.BuildGeometry();
                 _editor.ObjectChange(light, ObjectChangeType.Change);
             };

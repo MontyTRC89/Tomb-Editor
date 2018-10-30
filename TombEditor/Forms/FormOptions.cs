@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
@@ -51,7 +52,7 @@ namespace TombEditor.Forms
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
-                    using (var colorDialog = new ColorDialog())
+                    using (var colorDialog = new RealtimeColorDialog(null, _editor.Configuration.UI_ColorScheme))
                     {
                         colorDialog.Color = panel.BackColor;
                         colorDialog.FullOpen = true;

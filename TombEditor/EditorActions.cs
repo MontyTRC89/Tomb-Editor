@@ -2625,8 +2625,8 @@ namespace TombEditor
                     using (var colorDialog = new RealtimeColorDialog(c =>
                     {
                         UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
-                        l => { return c.ToFloatColor() * 2.0f; });
-                    }))
+                        l => { return c.ToFloat3Color() * 2.0f; });
+                    }, _editor.Configuration.UI_ColorScheme))
                     {
                         colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
 
@@ -2634,7 +2634,7 @@ namespace TombEditor
                         if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                             colorDialog.Color = oldLightColor;
 
-                        return colorDialog.Color.ToFloatColor() * 2.0f;
+                        return colorDialog.Color.ToFloat3Color() * 2.0f;
                     }
                 });
         }

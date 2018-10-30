@@ -113,9 +113,9 @@ namespace TombEditor.ToolWindows
             using (var colorDialog = new RealtimeColorDialog(c =>
             {
                 panelStaticMeshColor.BackColor = c;
-                instance.Color = c.ToFloatColor() * 2.0f;
+                instance.Color = c.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
-            }))
+            }, _editor.Configuration.UI_ColorScheme))
             {
                 colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
@@ -124,7 +124,7 @@ namespace TombEditor.ToolWindows
                     colorDialog.Color = oldLightColor;
 
                 panelStaticMeshColor.BackColor = colorDialog.Color;
-                instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
+                instance.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
         }

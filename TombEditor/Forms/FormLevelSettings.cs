@@ -941,7 +941,7 @@ namespace TombEditor.Forms
             if (colorDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            _levelSettings.DefaultAmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+            _levelSettings.DefaultAmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
             UpdateDialog();
         }
 

@@ -4,6 +4,8 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Numerics;
+using TombLib.Rendering;
 
 namespace TombLib.Controls
 {
@@ -24,10 +26,44 @@ namespace TombLib.Controls
         private Color _previousColor;
         private Action<Color> _onColorChange;
 
-        public RealtimeColorDialog(Action<Color> onColorChange)
+        private ColorScheme _colorScheme;
+
+        public RealtimeColorDialog(Action<Color> onColorChange, ColorScheme colorScheme = null)
         {
             FullOpen = true;
             _onColorChange = onColorChange;
+            _colorScheme = colorScheme;
+        }
+
+        protected override bool RunDialog(IntPtr hwndOwner)
+        {
+            if(_colorScheme != null)
+            {
+                // ColorDialog doesn't allow rewriting every entry in its CustomColors dialog, only
+                // reference to new int[] array will work.
+
+                var newCustomColors = new int[16];
+                for (int i = 0; i < CustomColors.Length && i < _colorScheme.CustomColors.Length; i++)
+                    newCustomColors[i] = (int)Math.Max(0, Math.Min(255, Math.Round(_colorScheme.CustomColors[i].X * 255.0f)))      |
+                                         (int)Math.Max(0, Math.Min(255, Math.Round(_colorScheme.CustomColors[i].Y * 255.0f))) << 8 |
+                                         (int)Math.Max(0, Math.Min(255, Math.Round(_colorScheme.CustomColors[i].Z * 255.0f))) << 16;
+
+                CustomColors = newCustomColors;
+            }
+
+            var result = base.RunDialog(hwndOwner);
+
+            if (result == true && _colorScheme != null) 
+                for (int i = 0; i < CustomColors.Length && i < _colorScheme.CustomColors.Length; i++)
+                {
+                    var B = (CustomColors[i] & 0xFF0000) >> 16;
+                    var G = (CustomColors[i] & 0xFF00) >> 8;
+                    var R = (CustomColors[i] & 0xFF);
+
+                    _colorScheme.CustomColors[i] = new Vector4(R, G, B, 255) / 255.0f;
+                }
+
+            return result;
         }
 
         protected override IntPtr HookProc(IntPtr hWnd, int msg, IntPtr wparam, IntPtr lparam)
@@ -61,7 +97,7 @@ namespace TombLib.Controls
                     if(currentColor != _previousColor)
                     {
                         _previousColor = currentColor;
-                        _onColorChange.Invoke(currentColor);
+                        _onColorChange?.Invoke(currentColor);
                     }
                 }
             }
