@@ -77,7 +77,17 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 StaticInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
-                panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * 0.5f).ToWinFormsColor();
+                if(itemInstance != null)
+                {
+                    panelStaticMeshColor.BackColor = (itemInstance.Color * 0.5f).ToWinFormsColor();
+                    lblStaticMeshColor.Visible = true;
+                    panelStaticMeshColor.Visible = true;
+                }
+                else
+                {
+                    lblStaticMeshColor.Visible = false;
+                    panelStaticMeshColor.Visible = false;
+                }
             }
 
             // Update tooltip texts
