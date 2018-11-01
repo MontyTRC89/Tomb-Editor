@@ -62,6 +62,7 @@ namespace TombEditor.Controls
         // Overall state
         private readonly Editor _editor;
         private Vector3? _currentRoomLastPos;
+        private Vector3 _lastCameraPos;
 
         // Mouse interaction state
         private Point _lastMousePosition;
@@ -305,6 +306,10 @@ namespace TombEditor.Controls
             // Center camera
             if (obj is Editor.ResetCameraEvent)
                 ResetCamera();
+
+            // Stop camera animation if level is changing
+            if (obj is Editor.LevelChangedEvent)
+                _movementTimer.Stop(true);
 
             // Move camera to sector
             if (obj is Editor.MoveCameraToSectorEvent)
@@ -605,7 +610,14 @@ namespace TombEditor.Controls
                     {
                         var pickedRoom = ((PickingResultBlock)newPicking).Room;
                         if (pickedRoom != _editor.SelectedRoom)
+                        {
                             _editor.SelectedRoom = pickedRoom;
+                            if(_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && (ModifierKeys == Keys.None))
+                            {
+                                _lastCameraPos = Camera.Target;
+                                _movementTimer.Animate(0.5f);
+                            }
+                        }
                     }
                     break;
 
@@ -640,6 +652,10 @@ namespace TombEditor.Controls
             {
                 case MouseButtons.Middle:
                 case MouseButtons.Right:
+                    // Don't do anything while camera is animating!
+                    if (_movementTimer.Animating)
+                        break;
+
                     // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                     float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                     float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
@@ -1107,37 +1123,45 @@ namespace TombEditor.Controls
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
-            switch (_movementTimer.MoveKey)
+            if(_movementTimer.Animating)
             {
-                case Keys.Up:
-                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
-                    Invalidate();
-                    break;
+                Camera.Target = Vector3.Lerp(_lastCameraPos, _editor.SelectedRoom.WorldPos + _editor.SelectedRoom.GetLocalCenter(), _movementTimer.MoveMultiplier);
+                Invalidate();
+            }
+            else
+            {
+                switch (_movementTimer.MoveKey)
+                {
+                    case Keys.Up:
+                        Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
+                        Invalidate();
+                        break;
 
-                case Keys.Down:
-                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
-                    Invalidate();
-                    break;
+                    case Keys.Down:
+                        Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
+                        Invalidate();
+                        break;
 
-                case Keys.Left:
-                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
-                    Invalidate();
-                    break;
+                    case Keys.Left:
+                        Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
+                        Invalidate();
+                        break;
 
-                case Keys.Right:
-                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
-                    Invalidate();
-                    break;
+                    case Keys.Right:
+                        Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
+                        Invalidate();
+                        break;
 
-                case Keys.PageUp:
-                    Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
-                    Invalidate();
-                    break;
+                    case Keys.PageUp:
+                        Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                        Invalidate();
+                        break;
 
-                case Keys.PageDown:
-                    Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
-                    Invalidate();
-                    break;
+                    case Keys.PageDown:
+                        Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                        Invalidate();
+                        break;
+                }
             }
         }
 

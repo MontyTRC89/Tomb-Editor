@@ -81,6 +81,7 @@ namespace TombEditor
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
+        public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
 
         // 2D Map options 
 
