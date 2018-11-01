@@ -100,7 +100,6 @@ float4 main(PixelInputType input) : SV_TARGET
 					((input.EditorSectorTexture >> 24) & 0xff) * (1.0f / 255.0f),
 					1.0f);
 
-
 			if (input.EditorSectorTexture & 0x20) // Dim?
 				result.xyz *= 0.70f;
 
