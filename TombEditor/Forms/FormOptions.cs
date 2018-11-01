@@ -43,7 +43,9 @@ namespace TombEditor.Forms
             tabbedContainer.LinkedListView = optionsList;
 
             foreach (var font in FontFamily.Families)
-                cmbRendering3DFont.Items.Add(font.Name);
+                try { var ff = new FontFamily(font.Name);
+                      cmbRendering3DFont.Items.Add(font.Name); }
+                catch { throw; }
 
             for (int i = 5; i <= 8; i++)
                 cmbSelectionTileSize.Items.Add((float)(Math.Pow(2, i)));
