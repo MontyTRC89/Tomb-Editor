@@ -60,7 +60,7 @@ namespace TombLib.Rendering.DirectX11
                 DataBox box;
                 box.DataPointer = ptr + (texture.From.X + texture.Image.Width * texture.From.Y) * ImageC.PixelSize;
                 box.RowPitch = texture.Image.Width * ImageC.PixelSize;
-                box.SlicePitch = box.RowPitch * texture.Image.Height;
+                box.SlicePitch = 0;
                 Context.UpdateSubresource(box, Texture, subresourceIndex, region);
             });
         }
