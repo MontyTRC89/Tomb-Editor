@@ -629,6 +629,10 @@ namespace TombEditor
             }
             else if (instance is StaticInstance)
             {
+                // Use static editing dialog only for NG levels for now
+                if (_editor.Level.Settings.GameVersion != GameVersion.TRNG)
+                    return;
+
                 using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
                     if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
                         return;
