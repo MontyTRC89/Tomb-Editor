@@ -99,19 +99,20 @@ float4 main(PixelInputType input) : SV_TARGET
 					((input.EditorSectorTexture >> 16) & 0xff) * (1.0f / 255.0f),
 					((input.EditorSectorTexture >> 24) & 0xff) * (1.0f / 255.0f),
 					1.0f);
-		}
-        
-        if (input.EditorSectorTexture & 0x20) // Dim?
-            result.xyz *= 0.70f;
 
-		// Apply texture on top, if exists
-		if (input.EditorSectorTexture & 0x40)
-		{
-			float4 texColor = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 8)));
-			if (brightness(result) > 0.8f)
-				result.xyz = saturate(result.xyz - texColor.xyz);
-			else
-				result.xyz = saturate(result.xyz + texColor.xyz);
+
+			if (input.EditorSectorTexture & 0x20) // Dim?
+				result.xyz *= 0.70f;
+
+			// Apply texture on top, if exists
+			if (input.EditorSectorTexture & 0x40)
+			{
+				float4 texColor = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 8)));
+				if (brightness(result) > 0.8f)
+					result.xyz = saturate(result.xyz - texColor.xyz);
+				else
+					result.xyz = saturate(result.xyz + texColor.xyz);
+			}
 		}
 	}
 
