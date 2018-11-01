@@ -147,10 +147,11 @@ namespace TombLib.Rendering
             }
             else
             { // Allocate a part of the image...
-                var textureRect = texture.ParentArea.IsZero ? texture.GetRect().Round() : texture.ParentArea.Round();
 
-                VectorInt2 minInt = VectorInt2.Min(new VectorInt2((int)textureRect.Start.X, (int)textureRect.Start.Y), imageSize);
-                VectorInt2 maxInt = VectorInt2.Min(new VectorInt2((int)textureRect.End.X, (int)textureRect.End.Y), imageSize);
+                Vector2 min = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2);
+                Vector2 max = Vector2.Max(Vector2.Max(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2) + new Vector2(254.0f / 256.0f);
+                VectorInt2 minInt = VectorInt2.Min(new VectorInt2((int)min.X, (int)min.Y), imageSize);
+                VectorInt2 maxInt = VectorInt2.Min(new VectorInt2((int)max.X, (int)max.Y), imageSize);
 
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
