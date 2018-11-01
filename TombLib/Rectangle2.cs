@@ -48,7 +48,7 @@ namespace TombLib
         public float Width => End.X - Start.X;
         public float Height => End.Y - Start.Y;
 
-        public bool IsZero => MathC.IsZero(Size.X) && MathC.IsZero(Size.Y);
+        public bool IsZero => MathC.IsZero(Size.X) || MathC.IsZero(Size.Y);
 
         public Rectangle2 Intersect(Rectangle2 other) =>
             new Rectangle2(Vector2.Max(Start, other.Start), Vector2.Min(End, other.End));
