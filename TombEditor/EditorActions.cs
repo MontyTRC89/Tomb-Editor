@@ -1408,6 +1408,7 @@ namespace TombEditor
                 .Distinct()
                 .Except(rooms)
                 .ToList();
+
             foreach (Room room in rooms)
                 _editor.Level.DeleteAlternateRoom(room);
 
@@ -1417,9 +1418,12 @@ namespace TombEditor
                 adjoiningRoom?.BuildGeometry();
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
+
             if (rooms.Contains(_editor.SelectedRoom))
                 _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+
             _editor.RoomListChange();
+            _editor.RoomGeometryChange(_editor.SelectedRoom);
         }
 
         public static void CropRoom(Room room, RectangleInt2 newArea, IWin32Window owner)
