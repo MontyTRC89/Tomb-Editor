@@ -147,25 +147,16 @@ namespace TombLib.Rendering
             }
             else
             { // Allocate a part of the image...
+
                 Vector2 min = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2);
                 Vector2 max = Vector2.Max(Vector2.Max(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2) + new Vector2(254.0f / 256.0f);
                 VectorInt2 minInt = VectorInt2.Min(new VectorInt2((int)min.X, (int)min.Y), imageSize);
                 VectorInt2 maxInt = VectorInt2.Min(new VectorInt2((int)max.X, (int)max.Y), imageSize);
 
-                // @FIXME: The code above was faulty for allocating actual texture region, because in some cases
-                // it produced garbage visible output. See: https://github.com/MontyTRC89/Tomb-Editor/issues/299
-                // For this reason, I am allocating either whole parent area (to prevent border bleeding at least for group
-                // texturing), or texture's own parent area. Result uses same values as before (calculated below),
-                // because otherwise I get complete mess up of visible texture data.  -- Lwmte
-
-                var areaRect = texture.ParentArea.IsZero ? texture.GetRect().Round() : texture.ParentArea.Round();
-                VectorInt2 minArea = VectorInt2.Min(new VectorInt2((int)areaRect.Start.X, (int)areaRect.Start.Y), imageSize);
-                VectorInt2 maxArea = VectorInt2.Min(new VectorInt2((int)areaRect.End.X, (int)areaRect.End.Y), imageSize);
-
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
-                    From = minArea,
-                    To = maxArea,
+                    From = minInt,
+                    To = maxInt,
                     Image = texture.Texture.Image
                 });
 
