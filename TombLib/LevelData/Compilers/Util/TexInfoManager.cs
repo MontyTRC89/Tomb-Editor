@@ -189,7 +189,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Compare parent's properties with incoming texture properties.
             public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom)
-                => Texture.Image == incomingTexture.Texture.Image && IsForRoom == isForRoom;
+                => Texture.Equals(incomingTexture.Texture) && IsForRoom == isForRoom;
 
             // Check if bumpmapping could be assigned to parent.
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
@@ -403,9 +403,9 @@ namespace TombLib.LevelData.Compilers.Util
                     TexCoord[3] = TexCoord[2];
             }
 
-            public Rectangle2 GetRect(bool isTriangle)
+            public Rectangle2 GetRect()
             {
-                if (isTriangle)
+                if (IsForTriangle)
                     return Rectangle2.FromCoordinates(TexCoord[0], TexCoord[1], TexCoord[2]);
                 else
                     return Rectangle2.FromCoordinates(TexCoord[0], TexCoord[1], TexCoord[2], TexCoord[3]);
@@ -524,15 +524,15 @@ namespace TombLib.LevelData.Compilers.Util
 
         private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f)
         {
+            var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
+            for (int i = 0; i < lookupCoordinates.Length; i++)
+                lookupCoordinates[i] = areaToLook.GetTexCoord(i);
+
             foreach (var parent in parentList)
             {
                 // Parents with different attributes are quickly discarded
                 if (checkParameters && !parent.ParametersSimilar(areaToLook, isForRoom))
                     continue;
-
-                var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
-                for (int i = 0; i < lookupCoordinates.Length; i++)
-                    lookupCoordinates[i] = areaToLook.GetTexCoord(i);
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
                 foreach (var child in parent.Children)
@@ -1253,7 +1253,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 if (level.Settings.GameVersion >= GameVersion.TR4)
                 {
-                    var rect = texture.GetRect(texture.IsForTriangle);
+                    var rect = texture.GetRect();
                     writer.Write((int)0);
                     writer.Write((int)0);
                     writer.Write(rect.Width - 1);
