@@ -157,13 +157,13 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 // Write animated textures
-                _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
+                _textureInfoManager.WriteAnimatedTextures(writer);
 
                 // Write object textures
-                writer.Write(checked((byte)_objectTextureManager.UvRotateCount));
+                writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
                 writer.Write(new byte[] { 0x54, 0x45, 0x58, 0x00 });
 
-                _objectTextureManager.WriteObjectTextures(writer, _level);
+                _textureInfoManager.WriteTextureInfos(writer, _level);
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
@@ -194,9 +194,10 @@ namespace TombLib.LevelData.Compilers
 
                     // The room texture tile count currently also currently contains the wad textures
                     // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
-                    writer.Write((ushort)(_texture32Data.GetLength(0) / (256 * 256 * 4)));
-                    writer.Write((ushort)0);
-                    writer.Write((ushort)0);
+                    writer.Write((ushort)_textureInfoManager.NumRoomPages);
+                    writer.Write((ushort)_textureInfoManager.NumObjectsPages);
+                    // Bump map pages must be multiplied by 2 or tile index will be wrong
+                    writer.Write((ushort)(_textureInfoManager.NumBumpPages * 2));
 
                     // Compress data
                     ReportProgress(95, "Compressing data");

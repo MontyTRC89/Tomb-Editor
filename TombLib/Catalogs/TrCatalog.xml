@@ -4692,18 +4692,18 @@
       <moveable id="456" name="Binoculars graphics"/>
       <moveable id="457" name="Target graphics"/>
       <moveable id="460" name="Object 460"/>
-      <moveable id="461" name="Custom slot 461"/>
-      <moveable id="462" name="Custom slot 462"/>
-      <moveable id="463" name="Custom slot 463"/>
-      <moveable id="464" name="Custom slot 464"/>
-      <moveable id="465" name="Custom slot 465"/>
-      <moveable id="466" name="Custom slot 466"/>
-      <moveable id="467" name="Custom slot 467"/>
-      <moveable id="468" name="Custom slot 468"/>
-      <moveable id="469" name="Custom slot 469"/>
-      <moveable id="470" name="Custom slot 470"/>
-      <moveable id="471" name="Custom slot 471"/>
-      <moveable id="472" name="Custom slot 472"/>
+      <moveable id="461" name="Grenade launcher"/>
+      <moveable id="462" name="Grenade ammo"/>
+      <moveable id="463" name="Grenade item"/>
+      <moveable id="464" name="Lara grenade anims"/>
+      <moveable id="465" name="Harpoon gun"/>
+      <moveable id="466" name="Harpoon ammo"/>
+      <moveable id="467" name="Harpoon item"/>
+      <moveable id="468" name="Lara harpoon anims"/>
+      <moveable id="469" name="Rocket launcher"/>
+      <moveable id="470" name="Rocket ammo"/>
+      <moveable id="471" name="Rocket item"/>
+      <moveable id="472" name="Lara rocket anims"/>
       <moveable id="473" name="Custom slot 473"/>
       <moveable id="474" name="Custom slot 474"/>
       <moveable id="475" name="Custom slot 475"/>
