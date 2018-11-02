@@ -1331,7 +1331,9 @@ namespace TombEditor.Controls
 
         private void DrawDebugLines(Matrix4x4 viewProjection)
         {
-            if (!_drawFlybyPath && !_drawHeightLine && !((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && ShowPortals))
+            var drawRoomBounds = (_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms);
+
+            if (!_drawFlybyPath && !_drawHeightLine && !drawRoomBounds)
                 return;
 
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -1359,7 +1361,7 @@ namespace TombEditor.Controls
                 _legacyDevice.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
             }
 
-            if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && ShowPortals)
+            if (drawRoomBounds)
             {
                 // Draw room bounding box
                 _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);

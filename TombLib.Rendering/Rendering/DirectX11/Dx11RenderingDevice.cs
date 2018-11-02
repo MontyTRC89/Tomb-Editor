@@ -51,8 +51,14 @@ namespace TombLib.Rendering.DirectX11
 #else
             const DeviceCreationFlags DebugFlags = DeviceCreationFlags.None;
 #endif
-
-            Device = new Device(DriverType.Hardware, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
+            try
+            {
+                Device = new Device(DriverType.Hardware, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
+            }
+            catch (Exception exc)
+            {
+                throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
+            }
 #if DEBUG
             using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
             {
@@ -60,77 +66,84 @@ namespace TombLib.Rendering.DirectX11
             }
 #endif
 
-            Context = Device.ImmediateContext;
-            TestShader = new Dx11PipelineState(this, "TestShader", new InputElement[]
+            try
             {
+                Context = Device.ImmediateContext;
+                TestShader = new Dx11PipelineState(this, "TestShader", new InputElement[]
+                {
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0)
-            });
-            TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
-            {
+                });
+                TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
+                {
                 new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
-            });
-            SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
-            {
+                });
+                SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
+                {
                 new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
-            });
-            RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]
-            {
+                });
+                RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]
+                {
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0),
                 new InputElement("OVERLAY", 0, Format.R8G8B8A8_UNorm, 0, 2, InputClassification.PerVertexData, 0),
                 new InputElement("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 3, InputClassification.PerVertexData, 0),
                 new InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 4, InputClassification.PerVertexData, 0)
-            });
-            RasterizerBackCulling = new RasterizerState(Device, new RasterizerStateDescription
-            {
-                CullMode = CullMode.Back,
-                FillMode = FillMode.Solid,
-            });
-            SamplerDefault = new SamplerState(Device, new SamplerStateDescription
-            {
-                AddressU = TextureAddressMode.Mirror,
-                AddressV = TextureAddressMode.Mirror,
-                AddressW = TextureAddressMode.Wrap,
-                Filter = Filter.Anisotropic,
-                MaximumAnisotropy = 4,
-            });
-            SamplerRoundToNearest = new SamplerState(Device, new SamplerStateDescription
-            {
-                AddressU = TextureAddressMode.Wrap,
-                AddressV = TextureAddressMode.Wrap,
-                AddressW = TextureAddressMode.Wrap,
-                Filter = Filter.MinMagMipPoint,
-                MaximumAnisotropy = 4,
-            });
-            {
-                DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                desc.DepthComparison = Comparison.LessEqual;
-                desc.DepthWriteMask = DepthWriteMask.All;
-                desc.IsDepthEnabled = true;
-                desc.IsStencilEnabled = false;
-                DepthStencilDefault = new DepthStencilState(Device, desc);
+                });
+                RasterizerBackCulling = new RasterizerState(Device, new RasterizerStateDescription
+                {
+                    CullMode = CullMode.Back,
+                    FillMode = FillMode.Solid,
+                });
+                SamplerDefault = new SamplerState(Device, new SamplerStateDescription
+                {
+                    AddressU = TextureAddressMode.Mirror,
+                    AddressV = TextureAddressMode.Mirror,
+                    AddressW = TextureAddressMode.Wrap,
+                    Filter = Filter.Anisotropic,
+                    MaximumAnisotropy = 4,
+                });
+                SamplerRoundToNearest = new SamplerState(Device, new SamplerStateDescription
+                {
+                    AddressU = TextureAddressMode.Wrap,
+                    AddressV = TextureAddressMode.Wrap,
+                    AddressW = TextureAddressMode.Wrap,
+                    Filter = Filter.MinMagMipPoint,
+                    MaximumAnisotropy = 4,
+                });
+                {
+                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
+                    desc.DepthComparison = Comparison.LessEqual;
+                    desc.DepthWriteMask = DepthWriteMask.All;
+                    desc.IsDepthEnabled = true;
+                    desc.IsStencilEnabled = false;
+                    DepthStencilDefault = new DepthStencilState(Device, desc);
+                }
+                {
+                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
+                    desc.DepthComparison = Comparison.Always;
+                    desc.DepthWriteMask = DepthWriteMask.Zero;
+                    desc.IsDepthEnabled = false;
+                    desc.IsStencilEnabled = false;
+                    DepthStencilNoZBuffer = new DepthStencilState(Device, desc);
+                }
+                BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
+                {
+                    BlendStateDescription desc = BlendStateDescription.Default();
+                    //desc.AlphaToCoverageEnable = true;
+                    desc.RenderTarget[0].IsBlendEnabled = true;
+                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
+                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
+                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+                    BlendingPremultipliedAlpha = new BlendState(Device, desc);
+                }
             }
+            catch (Exception exc)
             {
-                DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                desc.DepthComparison = Comparison.Always;
-                desc.DepthWriteMask = DepthWriteMask.Zero;
-                desc.IsDepthEnabled = false;
-                desc.IsStencilEnabled = false;
-                DepthStencilNoZBuffer = new DepthStencilState(Device, desc);
-            }
-            BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
-            {
-                BlendStateDescription desc = BlendStateDescription.Default();
-                //desc.AlphaToCoverageEnable = true;
-                desc.RenderTarget[0].IsBlendEnabled = true;
-                desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
-                desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
-                desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-                desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-                BlendingPremultipliedAlpha = new BlendState(Device, desc);
+                throw new Exception("Can't assign needed Direct3D parameters! Exception: " + exc);
             }
 
             // Sector textures
