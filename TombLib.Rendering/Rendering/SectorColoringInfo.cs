@@ -143,11 +143,11 @@ namespace TombLib.Rendering
                                     return colorScheme.ColorWall;
                                 break;
                             case SectorColoringType.Floor:
-                                if (!(block.Floor.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall) && block.FloorPortal == null)
+                                if (!(block.Floor.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall))
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.Ceiling:
-                                if (!(block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall) && block.CeilingPortal == null)
+                                if (!(block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall))
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.Portal:
