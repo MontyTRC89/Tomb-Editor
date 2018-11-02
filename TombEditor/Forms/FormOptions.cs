@@ -42,6 +42,7 @@ namespace TombEditor.Forms
         {
             tabbedContainer.LinkedListView = optionsList;
 
+			// Filter out non-TrueType fonts by catching an exception on font creation
             foreach (var font in FontFamily.Families)
                 try { var ff = new FontFamily(font.Name);
                       cmbRendering3DFont.Items.Add(font.Name); }
@@ -50,7 +51,7 @@ namespace TombEditor.Forms
             for (int i = 5; i <= 8; i++)
                 cmbSelectionTileSize.Items.Add((float)(Math.Pow(2, i)));
 
-            var panels = AllOptionControls(this).Where(c => c is Panel && c.Tag != null).ToList();
+            var panels = AllOptionControls(this).Where(c => c is Panel).ToList();
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
@@ -65,22 +66,19 @@ namespace TombEditor.Forms
                 };
         }
 
-        private IEnumerable<Control> AllOptionControls(Control control)
-        {
-            return WinFormsUtils.AllSubControls(control).Where(c => (c is DarkCheckBox ||
-                                                                     c is DarkTextBox ||
-                                                                     c is DarkComboBox ||
-                                                                     c is DarkNumericUpDown ||
-                                                                     c is Panel) && c.Tag != null).ToList();
-        }
+        private IEnumerable<Control> AllOptionControls(Control control) =>
+            WinFormsUtils.AllSubControls(control).Where(c => (c is DarkCheckBox ||
+                                                              c is DarkTextBox ||
+                                                              c is DarkComboBox ||
+                                                              c is DarkNumericUpDown ||
+                                                              c is Panel) && c.Tag != null).ToList();
 
         private Object GetOptionObject(Control control, Configuration configuration)
         {
             var name = control.Tag?.ToString();
             var option = configuration.GetType().GetProperty(name)?.GetValue(configuration);
 
-            // Try to get sub-option from color scheme
-            if (option == null)
+            if (option == null) // Try to get sub-option from color scheme
             {
                 var type = configuration.UI_ColorScheme.GetType();
                 var prop = type.GetField(name);
@@ -165,36 +163,22 @@ namespace TombEditor.Forms
                     }
                     else if (control is Panel && option is Vector4)
                     {
-                        var panelColor = ((Panel)control).BackColor;
-                        var newColor = new Vector4(panelColor.R, panelColor.G, panelColor.B, 0) / 255.0f;
+                        var newColor = ((Panel)control).BackColor.ToFloat4Color();
                         newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
                         SetOptionValue(name, config.UI_ColorScheme, newColor);
                     }
                 }
             }
-
             _editor.ConfigurationChange();
         }
 
-        private void butApply_Click(object sender, EventArgs e)
-        {
-            WriteConfigFromControls();
-        }
+        private void butApply_Click(object sender, EventArgs e) => WriteConfigFromControls();
+        private void butPageDefaults_Click(object sender, EventArgs e) => ReadConfigIntoControls(tabbedContainer.SelectedTab, true);
 
         private void butOk_Click(object sender, EventArgs e)
         {
             WriteConfigFromControls();
             Close();
-        }
-
-        private void butCancel_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void butPageDefaults_Click(object sender, EventArgs e)
-        {
-            ReadConfigIntoControls(tabbedContainer.SelectedTab, true);
         }
     }
 }
