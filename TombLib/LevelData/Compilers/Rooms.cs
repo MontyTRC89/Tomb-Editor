@@ -6,7 +6,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TombLib.Utils;
-using static TombLib.LevelData.Compilers.Util.TexInfoManager;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -237,13 +236,12 @@ namespace TombLib.LevelData.Compilers
                                         vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     }
 
-                                    Result result;
-                                    lock (_objectTextureManager)
-                                    {
-                                        result = _textureInfoManager.AddTexture(texture, true, false);
-                                        //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
-                                    }
+                                    // lock (_objectTextureManager)
+                                    // {
+                                    //      result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
+                                    // }
 
+                                    var result = _textureInfoManager.AddTexture(texture, true, false);
                                     roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                     texture.DoubleSided, 0));
                                     i += 3;
@@ -256,14 +254,13 @@ namespace TombLib.LevelData.Compilers
                                     vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                     vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                   
-                                    Result result;
-                                    lock (_objectTextureManager)
-                                    {
-                                        result = _textureInfoManager.AddTexture(texture, true, true);
-                                        //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                                    }
 
+                                    // lock (_objectTextureManager)
+                                    // {
+                                    //     result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+                                    // }
+
+                                    var result = _textureInfoManager.AddTexture(texture, true, true);
                                     roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
                                                     texture.DoubleSided, 0));
                                 }
@@ -335,12 +332,12 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = new Vector2();
 
-                                Result result;
-                                lock (_objectTextureManager)
-                                {
-                                    result = _textureInfoManager.AddTexture(texture, true, true);
-                                    //result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                                }
+                                // lock (_objectTextureManager)
+                                // {
+                                //     result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+                                // }
+
+                                var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
 
