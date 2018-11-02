@@ -82,6 +82,9 @@ namespace TombEditor
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
+        public bool Rendering3D_AnimateCameraOnRelocation { get; set; } = true;
+        public bool Rendering3D_AllowTexturingInLightingMode { get; set; } = true;
+        public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
 
         // 2D Map options 
 

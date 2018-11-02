@@ -63,6 +63,7 @@ namespace TombEditor.Controls
         private readonly Editor _editor;
         private Vector3? _currentRoomLastPos;
         private Vector3 _lastCameraPos;
+        private Vector3 _nextCameraPos;
 
         // Mouse interaction state
         private Point _lastMousePosition;
@@ -317,8 +318,19 @@ namespace TombEditor.Controls
                 var e = (Editor.MoveCameraToSectorEvent)obj;
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-                Camera.Target = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
-                Invalidate();
+                var nextPos = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
+
+                if(_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
+                {
+                    _nextCameraPos = nextPos;
+                    _lastCameraPos = Camera.Target;
+                    _movementTimer.Animate(0.5f);
+                }
+                else
+                {
+                    Camera.Target = nextPos;
+                    Invalidate();
+                }
             }
         }
 
@@ -473,6 +485,11 @@ namespace TombEditor.Controls
 
                         case EditorMode.Lighting:
                         case EditorMode.FaceEdit:
+                            // Disable texturing in lighting mode, if option is set
+                            if (_editor.Mode == EditorMode.Lighting && 
+                                !_editor.Configuration.Rendering3D_AllowTexturingInLightingMode)
+                                break;
+
                             // Do texturing
                             if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.Paint2x2)
                             {
@@ -615,6 +632,7 @@ namespace TombEditor.Controls
                             if(_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && (ModifierKeys == Keys.None))
                             {
                                 _lastCameraPos = Camera.Target;
+                                _nextCameraPos = _editor.SelectedRoom.WorldPos + _editor.SelectedRoom.GetLocalCenter();
                                 _movementTimer.Animate(0.5f);
                             }
                         }
@@ -867,32 +885,39 @@ namespace TombEditor.Controls
                                     }
                                 }
                             }
-                            else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None && !_objectPlaced)
+                            else
                             {
-                                if (_editor.Tool.Tool == EditorToolType.Brush)
+                                // Disable texturing in lighting mode, if option is set
+                                if (_editor.Mode == EditorMode.Lighting &&
+                                    !_editor.Configuration.Rendering3D_AllowTexturingInLightingMode)
+                                    break;
+                                else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None && !_objectPlaced)
                                 {
-                                    if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
-                                        _editor.SelectedSectors == SectorSelection.None)
-                                        redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
-                                }
-                                else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
-                                {
-                                    var point = new VectorInt2
-                                        ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % 2)) % 2)),
-                                            (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % 2)) % 2)));
-                                    var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One };
-
-                                    if (_editor.HighlightedSectors != newSelection)
+                                    if (_editor.Tool.Tool == EditorToolType.Brush)
                                     {
-                                        _editor.HighlightedSectors = newSelection;
-                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, 
-                                            _editor.HighlightedSectors,
-                                            _editor.SelectedSectors,
-                                            _editor.SelectedTexture, 
-                                            _toolHandler.ReferencePicking.Face, 
-                                            ModifierKeys.HasFlag(Keys.Control), 
-                                            !ModifierKeys.HasFlag(Keys.Shift));
-                                        redrawWindow = true;
+                                        if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
+                                            _editor.SelectedSectors == SectorSelection.None)
+                                            redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                    }
+                                    else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
+                                    {
+                                        var point = new VectorInt2
+                                            ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % 2)) % 2)),
+                                                (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % 2)) % 2)));
+                                        var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One };
+
+                                        if (_editor.HighlightedSectors != newSelection)
+                                        {
+                                            _editor.HighlightedSectors = newSelection;
+                                            EditorActions.TexturizeGroup(_editor.SelectedRoom,
+                                                _editor.HighlightedSectors,
+                                                _editor.SelectedSectors,
+                                                _editor.SelectedTexture,
+                                                _toolHandler.ReferencePicking.Face,
+                                                ModifierKeys.HasFlag(Keys.Control),
+                                                !ModifierKeys.HasFlag(Keys.Shift));
+                                            redrawWindow = true;
+                                        }
                                     }
                                 }
                             }
@@ -902,6 +927,11 @@ namespace TombEditor.Controls
                 default:
                     if(_editor.Tool.Tool == EditorToolType.Paint2x2)
                     {
+                        // Disable highlight in lighting mode, if option is set
+                        if (_editor.Mode == EditorMode.Lighting &&
+                            !_editor.Configuration.Rendering3D_AllowTexturingInLightingMode)
+                            break;
+
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null)
                         {
@@ -1125,7 +1155,7 @@ namespace TombEditor.Controls
         {
             if(_movementTimer.Animating)
             {
-                Camera.Target = Vector3.Lerp(_lastCameraPos, _editor.SelectedRoom.WorldPos + _editor.SelectedRoom.GetLocalCenter(), _movementTimer.MoveMultiplier);
+                Camera.Target = Vector3.Lerp(_lastCameraPos, _nextCameraPos, _movementTimer.MoveMultiplier);
                 Invalidate();
             }
             else
@@ -1331,7 +1361,8 @@ namespace TombEditor.Controls
 
         private void DrawDebugLines(Matrix4x4 viewProjection)
         {
-            var drawRoomBounds = (_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms);
+            var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds || 
+                ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms));
 
             if (!_drawFlybyPath && !_drawHeightLine && !drawRoomBounds)
                 return;

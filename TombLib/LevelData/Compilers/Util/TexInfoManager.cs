@@ -189,7 +189,22 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Compare parent's properties with incoming texture properties.
             public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom)
-                => Texture.Equals(incomingTexture.Texture) && IsForRoom == isForRoom;
+            {
+                if (IsForRoom != isForRoom)
+                    return false;
+
+                TextureHashed incoming = incomingTexture.Texture as TextureHashed;
+                TextureHashed current  = Texture as TextureHashed;
+
+                // First case here should never happen, unless we find a way to texture rooms
+                // with WAD textures or vice versa.
+                if ((incoming == null) != (current == null))
+                    return false;
+                else if (incoming != null)
+                    return incoming.Hash == current.Hash;
+                else
+                    return incomingTexture.Texture.GetHashCode() == Texture.GetHashCode();
+            }
 
             // Check if bumpmapping could be assigned to parent.
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
