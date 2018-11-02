@@ -149,28 +149,28 @@ namespace TombEditor
 
 
                 // Smoothly change sectors on the corners
-                smoothEdit(room.GetBlockTry(area.X0 - 1, area.Y1 + 1), BlockEdge.XpZn);
-                smoothEdit(room.GetBlockTry(area.X1 + 1, area.Y1 + 1), BlockEdge.XnZn);
-                smoothEdit(room.GetBlockTry(area.X1 + 1, area.Y0 - 1), BlockEdge.XnZp);
-                smoothEdit(room.GetBlockTry(area.X0 - 1, area.Y0 - 1), BlockEdge.XpZp);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block, BlockEdge.XpZn);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block, BlockEdge.XnZn);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block, BlockEdge.XnZp);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block, BlockEdge.XpZp);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
                 {
-                    smoothEdit(room.GetBlockTry(x, area.Y0 - 1), BlockEdge.XnZp);
-                    smoothEdit(room.GetBlockTry(x, area.Y0 - 1), BlockEdge.XpZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XnZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XpZp);
 
-                    smoothEdit(room.GetBlockTry(x, area.Y1 + 1), BlockEdge.XnZn);
-                    smoothEdit(room.GetBlockTry(x, area.Y1 + 1), BlockEdge.XpZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XnZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XpZn);
                 }
 
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    smoothEdit(room.GetBlockTry(area.X0 - 1, z), BlockEdge.XpZp);
-                    smoothEdit(room.GetBlockTry(area.X0 - 1, z), BlockEdge.XpZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZn);
 
-                    smoothEdit(room.GetBlockTry(area.X1 + 1, z), BlockEdge.XnZp);
-                    smoothEdit(room.GetBlockTry(area.X1 + 1, z), BlockEdge.XnZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn);
                 }
             }
 
