@@ -65,8 +65,8 @@ namespace TombLib.LevelData.Compilers
         private readonly List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
         private Util.SoundManager _soundManager;
-        private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
         private Util.TexInfoManager _textureInfoManager;
+        //private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -90,9 +90,9 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-            _textureInfoManager = new Util.TexInfoManager(256, _level, _progressReporter);
+            //_objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
 
+            _textureInfoManager = new Util.TexInfoManager(256, _level, _progressReporter);
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
             // Prepare level data in parallel to the sounds
@@ -128,12 +128,13 @@ namespace TombLib.LevelData.Compilers
             //Write the level
             switch (_level.Settings.GameVersion)
             {
-                case GameVersion.TR2:
-                    WriteLevelTr2();
-                    break;
-                case GameVersion.TR3:
-                    WriteLevelTr3();
-                    break;
+                // case GameVersion.TR2:
+                //     WriteLevelTr2();
+                //     break;
+                // case GameVersion.TR3:
+                //     WriteLevelTr3();
+                //     break;
+
                 case GameVersion.TR4:
                     WriteLevelTr4();
                     break;

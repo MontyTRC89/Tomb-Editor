@@ -170,8 +170,6 @@
     <Compile Include="LevelData\Compilers\Rooms.cs" />
     <Compile Include="LevelData\Compilers\Structs.cs" />
     <Compile Include="LevelData\Compilers\Textures.cs" />
-    <Compile Include="LevelData\Compilers\Tr2.cs" />
-    <Compile Include="LevelData\Compilers\Tr3.cs" />
     <Compile Include="LevelData\Compilers\Tr4.cs" />
     <Compile Include="LevelData\Compilers\Tr5.cs" />
     <Compile Include="LevelData\Compilers\Tr5Main.cs" />

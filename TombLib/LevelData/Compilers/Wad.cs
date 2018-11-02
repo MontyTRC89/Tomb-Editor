@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TombLib.LevelData.Compilers.Util;
 using TombLib.Utils;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -133,15 +131,13 @@ namespace TombLib.LevelData.Compilers
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
-                    TexInfoManager.Result result;
-                    lock (_objectTextureManager)
-                    {
-                        //result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        result = _textureInfoManager.AddTexture(poly.Texture, false, false, topmostAndUnpadded);
+                    // lock (_objectTextureManager)
+                    // {
+                    //     result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
+                    // }
 
-                        // Very ugly hack for TR4-5 binocular/target optics!
-                        if (isOptics) result.Rotation = 0;
-                    }
+                    var result = _textureInfoManager.AddTexture(poly.Texture, false, false, topmostAndUnpadded);
+                    if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
                         poly.Texture.DoubleSided, lightingEffect);
@@ -149,15 +145,13 @@ namespace TombLib.LevelData.Compilers
                 }
                 else
                 {
-                    TexInfoManager.Result result;
-                    lock (_objectTextureManager)
-                    {
-                        //result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-                        result = _textureInfoManager.AddTexture(poly.Texture, false, true, topmostAndUnpadded);
+                    // lock (_objectTextureManager)
+                    // {
+                    //     result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
+                    // }
 
-                        // Very ugly hack for TR4-5 binocular/target optics!
-                        if (isOptics) result.Rotation = 0;
-                    }
+                    var result = _textureInfoManager.AddTexture(poly.Texture, false, true, topmostAndUnpadded);
+                    if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
                         poly.Texture.DoubleSided, lightingEffect);
