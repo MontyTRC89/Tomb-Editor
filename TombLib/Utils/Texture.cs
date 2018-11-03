@@ -117,9 +117,9 @@ namespace TombLib.Utils
             }
         }
 
-        public Rectangle2 GetRect(bool isTriangle = false)
+        public Rectangle2 GetRect()
         {
-            if (isTriangle)
+            if (TextureIsTriangle)
                 return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2);
             else
                 return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
@@ -140,7 +140,7 @@ namespace TombLib.Utils
         // and also puts rotational difference into Rotation out parameter
         public TextureArea GetCanonicalTexture(bool isTriangle)
         {
-            var minY = GetRect(isTriangle).Start.Y;
+            var minY = GetRect().Start.Y;
             var transformedTexture = this;
 
             while (transformedTexture.TexCoord0.Y != minY)
