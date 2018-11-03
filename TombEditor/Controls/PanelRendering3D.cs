@@ -889,6 +889,9 @@ namespace TombEditor.Controls
                                                 break;
 
                                             case EditorToolType.Smooth:
+                                                if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
+                                                    break;
+
                                                 EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling);
                                                 break;
 
@@ -897,6 +900,9 @@ namespace TombEditor.Controls
                                                 break;
 
                                             default:
+                                                if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
+                                                    break;
+
                                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                                     new RectangleInt2(pos, pos),
                                                     ArrowType.EntireFace,
