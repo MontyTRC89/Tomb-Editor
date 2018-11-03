@@ -2301,8 +2301,8 @@
       <sound id="0" name="Lara feet"/>
       <sound id="1" name="Lara climb2"/>
       <sound id="2" name="Lara no" fixed_by_default="true"/>
-      <sound id="3" name="Lara slipping"/>
-      <sound id="4" name="Lara land"/>
+      <sound id="3" name="Lara slipping" fixed_by_default="true"/>
+      <sound id="4" name="Lara land" fixed_by_default="true"/>
       <sound id="5" name="Lara climb1"/>
       <sound id="6" name="Lara draw" fixed_by_default="true"/>
       <sound id="7" name="Lara holster" fixed_by_default="true"/>
@@ -2315,8 +2315,8 @@
       <sound id="14" name="Big scarab attack"/>
       <sound id="15" name="Big scarab death"/>
       <sound id="16" name="Big scarab flying"/>
-      <sound id="17" name="Lara wet feet"/>
-      <sound id="18" name="Lara wade"/>
+      <sound id="17" name="Lara wet feet" fixed_by_default="true"/>
+      <sound id="18" name="Lara wade" fixed_by_default="true"/>
       <sound id="19" name="Rumble loop"/>
       <sound id="20" name="Metal scrape loop" fixed_by_default="true"/>
       <sound id="21" name="Cricket loop"/>

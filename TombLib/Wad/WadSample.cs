@@ -27,13 +27,13 @@ namespace TombLib.Wad
 
         public WadSample(byte[] data)
         {
-            if (!CheckSampleDataForFormat(data))
+            if (CheckSampleDataForFormat(data) < 0)
                 throw new NotSupportedException("Sample data is of an unsupported format.");
             Data = data;
             Hash = Hash.FromByteArray(Data);
         }
 
-        public static bool CheckSampleDataForFormat(byte[] data)
+        public static int CheckSampleDataForFormat(byte[] data)
         {
             // Based on: https://de.wikipedia.org/wiki/RIFF_WAVE
             // Just a very simple, ceap but strict checking routine to make sure
@@ -45,11 +45,11 @@ namespace TombLib.Wad
                 uint fileSize = BitConverter.ToUInt32(data, 4);
                 uint waveSignature = BitConverter.ToUInt32(data, 8);
                 if (riffSignature != 0x46464952)
-                    return false;
+                    return -1;
                 if (fileSize != (data.Length - 8))
-                    return false;
+                    return -1;
                 if (waveSignature != 0x45564157)
-                    return false;
+                    return -1;
 
                 uint fmt_Signature = BitConverter.ToUInt32(data, 12);
                 uint fmtLength = BitConverter.ToUInt32(data, 16);
@@ -60,33 +60,33 @@ namespace TombLib.Wad
                 ushort blockAlign = BitConverter.ToUInt16(data, 32);
                 ushort bitsPerSample = BitConverter.ToUInt16(data, 34);
                 if (fmt_Signature != 0x20746D66)
-                    return false;
+                    return -1;
                 if (fmtLength != 16) // File generated with NAudio have a 18 bit header. Tomb Raider does not support this!
-                    return false;
+                    return -1;
                 if (formatTag != 1) // We want default PCM
-                    return false;
+                    return -1;
                 if (channelCount != 1) // We want mono audio
-                    return false;
+                    return -1;
                 // if (requiredSampleRate != 22050) // We allow custom sample rates
                 //    return false;
                 if (bytesPerSecond != (sampleRate * blockAlign))
-                    return false;
+                    return -1;
                 if (blockAlign != ((bitsPerSample * channelCount) / 8))
-                    return false;
+                    return -1;
                 if (bitsPerSample != 16) // We want 16 bit audio
-                    return false;
+                    return -1;
 
                 uint dataSignature = BitConverter.ToUInt32(data, 20 + (int)fmtLength);
                 uint dataLength = BitConverter.ToUInt32(data, 24 + (int)fmtLength);
                 if (dataSignature != 0x61746164)
-                    return false;
+                    return -1;
                 if (dataLength != (data.Length - (28 + (int)fmtLength)))
-                    return false;
-                return true;
+                    return (int)dataLength + (28 + (int)fmtLength);
+                return data.Length;
             }
             catch
             {
-                return false;
+                return -1;
             }
         }
 
@@ -115,7 +115,8 @@ namespace TombLib.Wad
         {
             // Check if the format is actually already correct.
             ResampleInfo? resampleInfo = null;
-            if (CheckSampleDataForFormat(data))
+            var checkFormatResult = CheckSampleDataForFormat(data);
+            if (checkFormatResult >= 0)
             {
                 // Performance: We could have a special case if it's just the file size in the WAVE header that's wrong
                 // like with the original TR4 samples that have some garbage data at the end.
@@ -123,8 +124,24 @@ namespace TombLib.Wad
                 uint sampleRate = BitConverter.ToUInt32(data, SampleRateOffset);
                 resampleInfo = negotiateSampleRate(sampleRate);
                 if (sampleRate == resampleInfo.Value.SampleRate)
-                    return data;
+                {
+                    if (data.Length != checkFormatResult)
+                    {
+                        byte[] arrayClone = new byte[checkFormatResult];
+                        Array.Copy(data, arrayClone, checkFormatResult);
+                        checkFormatResult -= 8;
 
+                        arrayClone[4]     = unchecked((byte)(checkFormatResult));
+                        arrayClone[4 + 1] = unchecked((byte)(checkFormatResult >> 8));
+                        arrayClone[4 + 2] = unchecked((byte)(checkFormatResult >> 16));
+                        arrayClone[4 + 3] = unchecked((byte)(checkFormatResult >> 24));
+
+                        return arrayClone;
+                    }
+                    else
+                        return data;
+                }
+                    
                 // If we don't need to resample we can just replace the sample rate in place without NAudio.
                 if (!resampleInfo.Value.Resample)
                 {
