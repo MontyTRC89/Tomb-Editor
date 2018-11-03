@@ -2315,8 +2315,8 @@
       <sound id="14" name="Big scarab attack"/>
       <sound id="15" name="Big scarab death"/>
       <sound id="16" name="Big scarab flying"/>
-      <sound id="17" name="Lara wet feet"/>
-      <sound id="18" name="Lara wade"/>
+      <sound id="17" name="Lara wet feet" fixed_by_default="true"/>
+      <sound id="18" name="Lara wade" fixed_by_default="true"/>
       <sound id="19" name="Rumble loop"/>
       <sound id="20" name="Metal scrape loop" fixed_by_default="true"/>
       <sound id="21" name="Cricket loop"/>
