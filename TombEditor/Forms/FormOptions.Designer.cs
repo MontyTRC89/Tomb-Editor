@@ -1638,7 +1638,7 @@
             this.darkCheckBox20.Name = "darkCheckBox20";
             this.darkCheckBox20.Size = new System.Drawing.Size(256, 17);
             this.darkCheckBox20.TabIndex = 34;
-            this.darkCheckBox20.Tag = "Rendering3D_AlwaysShorCurrentRoomBounds";
+            this.darkCheckBox20.Tag = "Rendering3D_AlwaysShowCurrentRoomBounds";
             this.darkCheckBox20.Text = "Always show current room bounds rectangle";
             // 
             // darkCheckBox19
