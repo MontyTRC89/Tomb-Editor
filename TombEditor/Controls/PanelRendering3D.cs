@@ -327,7 +327,7 @@ namespace TombEditor.Controls
                 var nextPos = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
 
                 if(_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
-                    AnimateCamera(nextPos, 0.5f);
+                    AnimateCamera(nextPos);
                 else
                 {
                     Camera.Target = nextPos;
@@ -410,8 +410,11 @@ namespace TombEditor.Controls
         {
             base.OnMouseWheel(e);
 
-            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
-            Invalidate();
+            if(!_movementTimer.Animating)
+            {
+                Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
+                Invalidate();
+            }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
