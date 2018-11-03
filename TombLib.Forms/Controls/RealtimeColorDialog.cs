@@ -89,7 +89,8 @@ namespace TombLib.Controls
                     for(int i = 0; i < 3; i++)
                     {
                         GetWindowText(childWindows[i+3], str, str.Capacity);
-                        colours[i] = Int32.Parse(str.ToString());
+                        if (!Int32.TryParse(str.ToString(), out colours[i]))
+                            colours[i] = 0; // In case user accidentally types in random char
                     }
 
                     // Prevent endless updates of color unless real RGB color is changed
