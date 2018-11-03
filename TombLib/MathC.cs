@@ -233,6 +233,9 @@ namespace TombLib
             return new Vector3((float)pitch, (float)yaw, (float)roll);
         }
 
+        public static double Lerp(double value1, double value2, double amount)
+            => value1 * (1 - amount) + value2 * amount;
+
         // Code taken from XnaGeometry library, Copyright В© 2006 The Mono.Xna Team (MIT License)
         public static double SmoothStep(double value1, double value2, double amount)
         {
