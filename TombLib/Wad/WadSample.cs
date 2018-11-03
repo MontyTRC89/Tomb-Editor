@@ -124,8 +124,24 @@ namespace TombLib.Wad
                 uint sampleRate = BitConverter.ToUInt32(data, SampleRateOffset);
                 resampleInfo = negotiateSampleRate(sampleRate);
                 if (sampleRate == resampleInfo.Value.SampleRate)
-                    return data;
+                {
+                    if (data.Length != checkFormatResult)
+                    {
+                        byte[] arrayClone = new byte[checkFormatResult];
+                        Array.Copy(data, arrayClone, checkFormatResult);
+                        checkFormatResult -= 8;
 
+                        arrayClone[4]     = unchecked((byte)(checkFormatResult));
+                        arrayClone[4 + 1] = unchecked((byte)(checkFormatResult >> 8));
+                        arrayClone[4 + 2] = unchecked((byte)(checkFormatResult >> 16));
+                        arrayClone[4 + 3] = unchecked((byte)(checkFormatResult >> 24));
+
+                        return arrayClone;
+                    }
+                    else
+                        return data;
+                }
+                    
                 // If we don't need to resample we can just replace the sample rate in place without NAudio.
                 if (!resampleInfo.Value.Resample)
                 {
