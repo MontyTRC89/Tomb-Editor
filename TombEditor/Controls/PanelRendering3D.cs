@@ -62,8 +62,14 @@ namespace TombEditor.Controls
         // Overall state
         private readonly Editor _editor;
         private Vector3? _currentRoomLastPos;
+
+        // Camera state (needed only for animations)
         private Vector3 _lastCameraPos;
         private Vector3 _nextCameraPos;
+        private Vector2 _lastCameraRot;
+        private Vector2 _nextCameraRot;
+        private float _lastCameraDist;
+        private float _nextCameraDist;
 
         // Mouse interaction state
         private Point _lastMousePosition;
@@ -229,7 +235,7 @@ namespace TombEditor.Controls
 
                 _gizmo = new Gizmo(device, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
 
-                ResetCamera();
+                ResetCamera(true);
             }
         }
 
@@ -306,7 +312,7 @@ namespace TombEditor.Controls
 
             // Center camera
             if (obj is Editor.ResetCameraEvent)
-                ResetCamera();
+                ResetCamera(((Editor.ResetCameraEvent)obj).NewCamera);
 
             // Stop camera animation if level is changing
             if (obj is Editor.LevelChangedEvent)
@@ -321,11 +327,7 @@ namespace TombEditor.Controls
                 var nextPos = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
 
                 if(_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
-                {
-                    _nextCameraPos = nextPos;
-                    _lastCameraPos = Camera.Target;
-                    _movementTimer.Animate(0.5f);
-                }
+                    AnimateCamera(nextPos, 0.5f);
                 else
                 {
                     Camera.Target = nextPos;
@@ -334,7 +336,7 @@ namespace TombEditor.Controls
             }
         }
 
-        public void ResetCamera()
+        public void ResetCamera(bool forceNewCamera = false)
         {
             Room room = _editor?.SelectedRoom;
 
@@ -345,11 +347,19 @@ namespace TombEditor.Controls
 
             // Calculate camera distance
             Vector2 roomDiagonal = new Vector2(room?.NumXSectors ?? 0, room?.NumZSectors ?? 0);
-            float cameraDistance = (roomDiagonal.Length() * 0.8f + 2.1f) * 1024.0f;
+
+            var dist = (roomDiagonal.Length() * 0.8f + 2.1f) * 1024.0f;
+            var rotX = 0.6f;
+            var rotY = (float)Math.PI;
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, 0.6f, (float)Math.PI, -(float)Math.PI / 2, (float)Math.PI / 2, cameraDistance, 2750, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
-            Invalidate();
+            if (Camera == null || forceNewCamera || !_editor.Configuration.Rendering3D_AnimateCameraOnReset)
+            {
+                Camera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 2750, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
+                Invalidate();
+            }
+            else
+                AnimateCamera(target, new Vector2(rotX, rotY), dist);
         }
 
         public int TranslateCameraMouseMovement(Point value, bool horizontal = false)
@@ -365,6 +375,22 @@ namespace TombEditor.Controls
             else
                 return horizontal ? value.X : value.Y;
         }
+        
+        private void AnimateCamera(Vector3 oldPos, Vector3 newPos, Vector2 oldRot, Vector2 newRot, float oldDist, float newDist, float speed = 0.5f)
+        {
+            _nextCameraPos = newPos;
+            _lastCameraPos = oldPos;
+            _lastCameraRot = oldRot;
+            _nextCameraRot = newRot;
+            _lastCameraDist = oldDist;
+            _nextCameraDist = newDist;
+
+            _movementTimer.Animate(speed);
+        }
+        private void AnimateCamera(Vector3 newPos, Vector2 newRot, float newDist, float speed = 0.5f)
+            => AnimateCamera(Camera.Target, newPos, new Vector2(Camera.RotationX, Camera.RotationY), newRot, Camera.Distance, newDist, speed);
+        private void AnimateCamera(Vector3 newPos, float speed = 0.5f)
+            => AnimateCamera(newPos, new Vector2(Camera.RotationX, Camera.RotationY), Camera.Distance, speed);
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
@@ -630,11 +656,7 @@ namespace TombEditor.Controls
                         {
                             _editor.SelectedRoom = pickedRoom;
                             if(_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && (ModifierKeys == Keys.None))
-                            {
-                                _lastCameraPos = Camera.Target;
-                                _nextCameraPos = _editor.SelectedRoom.WorldPos + _editor.SelectedRoom.GetLocalCenter();
-                                _movementTimer.Animate(0.5f);
-                            }
+                                AnimateCamera(_editor.SelectedRoom.WorldPos + _editor.SelectedRoom.GetLocalCenter());
                         }
                     }
                     break;
@@ -1155,7 +1177,11 @@ namespace TombEditor.Controls
         {
             if(_movementTimer.Animating)
             {
+                var lerpedRot = Vector2.Lerp(_lastCameraRot, _nextCameraRot, _movementTimer.MoveMultiplier);
                 Camera.Target = Vector3.Lerp(_lastCameraPos, _nextCameraPos, _movementTimer.MoveMultiplier);
+                Camera.RotationX = lerpedRot.X;
+                Camera.RotationY = lerpedRot.Y;
+                Camera.Distance = (float)MathC.Lerp(_lastCameraDist, _nextCameraDist, _movementTimer.MoveMultiplier);
                 Invalidate();
             }
             else

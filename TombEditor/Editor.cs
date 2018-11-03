@@ -92,7 +92,7 @@ namespace TombEditor
                 EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 RoomListChange();
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
-                ResetCamera();
+                ResetCamera(true);
                 LoadedWadsChange(false);
                 LoadedTexturesChange(null, false);
                 LoadedImportedGeometriesChange(false);
@@ -557,10 +557,13 @@ namespace TombEditor
         }
 
         // Center the camera inside the current room.
-        public class ResetCameraEvent : IEditorCameraEvent { }
-        public void ResetCamera()
+        public class ResetCameraEvent : IEditorCameraEvent
         {
-            RaiseEvent(new ResetCameraEvent());
+            public bool NewCamera { get; set; }
+        }
+        public void ResetCamera(bool newCamera = false)
+        {
+            RaiseEvent(new ResetCameraEvent { NewCamera = newCamera });
         }
 
         // Select a texture and center the view
@@ -612,7 +615,7 @@ namespace TombEditor
             SelectedRoom = newRoom;
 
             if(Configuration.Rendering3D_ResetCameraOnRoomSwitch)
-                ResetCamera();
+                ResetCamera(true);
         }
 
         // Select rooms
@@ -629,7 +632,7 @@ namespace TombEditor
             SelectRooms(newRooms);
             Room newRoom = SelectedRoom;
             if (oldRoom != newRoom)
-                ResetCamera();
+                ResetCamera(true);
         }
 
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
