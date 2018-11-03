@@ -47,6 +47,8 @@ namespace TombLib.LevelData
         }
 
         public override Texture Clone() => new ImportedGeometryTexture(this);
+
+        public override int GetHashCode() => AbsolutePath.GetHashCode();
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

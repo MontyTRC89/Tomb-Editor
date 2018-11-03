@@ -18,6 +18,9 @@ namespace TombLib.LevelData.IO
         private static readonly Encoding _encodingCodepageWindows = Encoding.GetEncoding(1252);
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private static float _texStartCoord;
+        private static float _texEndCoord;
+
         private struct PrjFace
         {
             public short _txtType;
@@ -89,9 +92,13 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true)
+        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true, bool doNotCropUV = true)
         {
             var level = new Level();
+
+            // Set-up texture conversion variables
+            _texStartCoord = doNotCropUV ? 0.0f : 0.5f;
+            _texEndCoord = doNotCropUV ? 64.0f : 63.5f;
 
             // Setup paths
             level.Settings.LevelFilePath = Path.ChangeExtension(filename, "prj2");
@@ -1438,10 +1445,10 @@ namespace TombLib.LevelData.IO
                         animatedTextureSet.Frames.Add(new AnimatedTextureFrame
                         {
                             Texture = texture,
-                            TexCoord0 = new Vector2(x + 0.5f, y + 63.5f),
-                            TexCoord1 = new Vector2(x + 0.5f, y + 0.5f),
-                            TexCoord2 = new Vector2(x + 63.5f, y + 0.5f),
-                            TexCoord3 = new Vector2(x + 63.5f, y + 63.5f)
+                            TexCoord0 = new Vector2(x + _texStartCoord, y + _texEndCoord),
+                            TexCoord1 = new Vector2(x + _texStartCoord, y + _texStartCoord),
+                            TexCoord2 = new Vector2(x + _texEndCoord, y + _texStartCoord),
+                            TexCoord3 = new Vector2(x + _texEndCoord, y + _texEndCoord)
                         });
                     }
                     if (animatedTextureSet.Frames.Count <= 2)
@@ -1952,17 +1959,17 @@ namespace TombLib.LevelData.IO
                     var uv = new[]
                     {
                         new Vector2(
-                            texInfo._x + 0.5f,
-                            texInfo._y + 0.5f),
+                            texInfo._x + _texStartCoord,
+                            texInfo._y + _texStartCoord),
                         new Vector2(
-                            texInfo._x + texInfo._width + 0.5f, // Must be + as well, even though it seems weird.
-                            texInfo._y + 0.5f),
+                            texInfo._x + texInfo._width + (1.0f - _texStartCoord), // Must be + as well, even though it seems weird.
+                            texInfo._y + _texStartCoord),
                         new Vector2(
-                            texInfo._x + texInfo._width + 0.5f,
-                            texInfo._y + texInfo._height + 0.5f),
+                            texInfo._x + texInfo._width + (1.0f - _texStartCoord),
+                            texInfo._y + texInfo._height + (1.0f - _texStartCoord)),
                         new Vector2(
-                            texInfo._x + 0.5f,
-                            texInfo._y + texInfo._height + 0.5f)
+                            texInfo._x + _texStartCoord,
+                            texInfo._y + texInfo._height + (1.0f - _texStartCoord))
                     };
 
                     TextureArea texture = new TextureArea();

@@ -468,8 +468,9 @@ namespace TombEditor.Forms
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
 
-            // Update padding
+            // Update texture packing options
             numPadding.Value = _levelSettings.TexturePadding;
+            cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
 
             // Hide version-specific controls
 
@@ -995,6 +996,13 @@ namespace TombEditor.Forms
         private void numPadding_ValueChanged(object sender, EventArgs e)
         {
              _levelSettings.TexturePadding = (int)numPadding.Value;
+            UpdateDialog();
+        }
+
+        private void cbAgressiveTexturePacking_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.AgressiveTexturePacking = cbAgressiveTexturePacking.Checked;
+            UpdateDialog();
         }
     }
 }

@@ -30,14 +30,6 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.butPageDefaults = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabSubPanel2 = new System.Windows.Forms.Panel();
@@ -139,6 +131,7 @@
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox21 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox20 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox19 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox18 = new DarkUI.Controls.DarkCheckBox();
@@ -213,12 +206,17 @@
             this.darkLabel32 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown30 = new DarkUI.Controls.DarkNumericUpDown();
             this.cmbSelectionTileSize = new DarkUI.Controls.DarkComboBox();
-            this.darkCheckBox21 = new DarkUI.Controls.DarkCheckBox();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.butPageDefaults = new DarkUI.Controls.DarkButton();
+            this.darkCheckBox22 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabSubPanel2.SuspendLayout();
@@ -279,6 +277,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown28)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown29)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown30)).BeginInit();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -310,89 +311,6 @@
             this.darkSectionPanel2.SectionHeader = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(397, 360);
             this.darkSectionPanel2.TabIndex = 2;
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 360);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 358);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.butApply);
-            this.panel5.Controls.Add(this.butOk);
-            this.panel5.Controls.Add(this.butCancel);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(209, 369);
-            this.panel5.Name = "panel5";
-            this.panel5.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel5.Size = new System.Drawing.Size(397, 28);
-            this.panel5.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(140, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(226, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "OK";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(312, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.butPageDefaults);
-            this.panel4.Location = new System.Drawing.Point(3, 369);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(200, 28);
-            this.panel4.TabIndex = 8;
-            // 
-            // butPageDefaults
-            // 
-            this.butPageDefaults.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butPageDefaults.Location = new System.Drawing.Point(1, 1);
-            this.butPageDefaults.Name = "butPageDefaults";
-            this.butPageDefaults.Size = new System.Drawing.Size(199, 24);
-            this.butPageDefaults.TabIndex = 4;
-            this.butPageDefaults.Text = "Set page to default";
-            this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
             // tabbedContainer
             // 
@@ -443,7 +361,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel1.Size = new System.Drawing.Size(381, 311);
+            this.panel1.Size = new System.Drawing.Size(364, 327);
             this.panel1.TabIndex = 9;
             // 
             // darkGroupBox1
@@ -452,9 +370,9 @@
             this.darkGroupBox1.Controls.Add(this.cbEnableLogging);
             this.darkGroupBox1.Controls.Add(this.darkLabel1);
             this.darkGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox1.Location = new System.Drawing.Point(3, 228);
+            this.darkGroupBox1.Location = new System.Drawing.Point(3, 247);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(375, 80);
+            this.darkGroupBox1.Size = new System.Drawing.Size(358, 77);
             this.darkGroupBox1.TabIndex = 6;
             this.darkGroupBox1.TabStop = false;
             this.darkGroupBox1.Text = "Logging";
@@ -497,12 +415,13 @@
             // 
             // darkGroupBox2
             // 
+            this.darkGroupBox2.Controls.Add(this.darkCheckBox22);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox2);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox1);
             this.darkGroupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox2.Location = new System.Drawing.Point(3, 156);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(375, 72);
+            this.darkGroupBox2.Size = new System.Drawing.Size(358, 91);
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "System";
@@ -540,7 +459,7 @@
             this.darkGroupBox7.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox7.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox7.Name = "darkGroupBox7";
-            this.darkGroupBox7.Size = new System.Drawing.Size(375, 156);
+            this.darkGroupBox7.Size = new System.Drawing.Size(358, 156);
             this.darkGroupBox7.TabIndex = 8;
             this.darkGroupBox7.TabStop = false;
             this.darkGroupBox7.Text = "Autosave";
@@ -1630,6 +1549,16 @@
             this.darkGroupBox4.TabIndex = 19;
             this.darkGroupBox4.TabStop = false;
             this.darkGroupBox4.Text = "Rendering";
+            // 
+            // darkCheckBox21
+            // 
+            this.darkCheckBox21.AutoSize = true;
+            this.darkCheckBox21.Location = new System.Drawing.Point(6, 113);
+            this.darkCheckBox21.Name = "darkCheckBox21";
+            this.darkCheckBox21.Size = new System.Drawing.Size(152, 17);
+            this.darkCheckBox21.TabIndex = 35;
+            this.darkCheckBox21.Tag = "Rendering3D_AnimateCameraOnReset";
+            this.darkCheckBox21.Text = "Animate camera on reset";
             // 
             // darkCheckBox20
             // 
@@ -2772,15 +2701,98 @@
             this.cmbSelectionTileSize.TabIndex = 43;
             this.cmbSelectionTileSize.Tag = "TextureMap_DefaultTileSelectionSize";
             // 
-            // darkCheckBox21
+            // darkSectionPanel1
             // 
-            this.darkCheckBox21.AutoSize = true;
-            this.darkCheckBox21.Location = new System.Drawing.Point(6, 113);
-            this.darkCheckBox21.Name = "darkCheckBox21";
-            this.darkCheckBox21.Size = new System.Drawing.Size(152, 17);
-            this.darkCheckBox21.TabIndex = 35;
-            this.darkCheckBox21.Tag = "Rendering3D_AnimateCameraOnReset";
-            this.darkCheckBox21.Text = "Animate camera on reset";
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 360);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 358);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.butApply);
+            this.panel5.Controls.Add(this.butOk);
+            this.panel5.Controls.Add(this.butCancel);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(209, 369);
+            this.panel5.Name = "panel5";
+            this.panel5.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel5.Size = new System.Drawing.Size(397, 28);
+            this.panel5.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(140, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(226, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "OK";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(312, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.butPageDefaults);
+            this.panel4.Location = new System.Drawing.Point(3, 369);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(200, 28);
+            this.panel4.TabIndex = 8;
+            // 
+            // butPageDefaults
+            // 
+            this.butPageDefaults.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butPageDefaults.Location = new System.Drawing.Point(1, 1);
+            this.butPageDefaults.Name = "butPageDefaults";
+            this.butPageDefaults.Size = new System.Drawing.Size(199, 24);
+            this.butPageDefaults.TabIndex = 4;
+            this.butPageDefaults.Text = "Set page to default";
+            this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
+            // 
+            // darkCheckBox22
+            // 
+            this.darkCheckBox22.AutoSize = true;
+            this.darkCheckBox22.Location = new System.Drawing.Point(6, 67);
+            this.darkCheckBox22.Name = "darkCheckBox22";
+            this.darkCheckBox22.Size = new System.Drawing.Size(289, 17);
+            this.darkCheckBox22.TabIndex = 5;
+            this.darkCheckBox22.Tag = "Editor_DoNotCropTextureCoordinates";
+            this.darkCheckBox22.Text = "Don\'t crop textures by half-pixel (requires padding)";
             // 
             // FormOptions
             // 
@@ -2801,9 +2813,6 @@
             this.Text = "Options";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -2880,6 +2889,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown28)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown29)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown30)).EndInit();
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3072,5 +3084,6 @@
         private DarkUI.Controls.DarkCheckBox darkCheckBox19;
         private DarkUI.Controls.DarkCheckBox darkCheckBox20;
         private DarkUI.Controls.DarkCheckBox darkCheckBox21;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox22;
     }
 }
