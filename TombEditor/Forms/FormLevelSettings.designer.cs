@@ -1364,7 +1364,7 @@
             this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(330, 17);
             this.cbAgressiveTexturePacking.TabIndex = 104;
             this.cbAgressiveTexturePacking.Tag = "";
-            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures)";
+            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures, use with caution)";
             this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // FormLevelSettings

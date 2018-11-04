@@ -1155,8 +1155,11 @@ namespace TombLib.LevelData.Compilers.Util
                     objectsTextures.Add(ParentTextures[i]);
             }
 
-            // Sort objects textures by their TopmostAndUnpadded property (waterfalls first!)
-            objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ToList();
+            // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
+            if(_level.Settings.AgressiveTexturePacking)
+                roomTextures = roomTextures.OrderBy(item => !item.TopmostAndUnpadded).ToList();
+            else
+                objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ToList();
 
             for (int n = 0; n < ActualAnimTextures.Count; n++)
             {
