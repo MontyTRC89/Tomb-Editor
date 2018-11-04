@@ -132,6 +132,9 @@ namespace TombLib.LevelData
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
+
+        // Texture options
+        public bool AgressiveTexturePacking { get; set; } = false;
         public int TexturePadding { get; set; } = 8;
 
         // For TR5 only

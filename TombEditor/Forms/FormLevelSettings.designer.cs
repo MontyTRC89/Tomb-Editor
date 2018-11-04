@@ -126,6 +126,7 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -443,7 +444,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(563, 438);
+            this.tabPage8.Size = new System.Drawing.Size(563, 434);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "Texture Files";
             // 
@@ -576,7 +577,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(563, 438);
+            this.tabPage1.Size = new System.Drawing.Size(563, 434);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Object Files";
             // 
@@ -667,7 +668,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(563, 438);
+            this.tabPage4.Size = new System.Drawing.Size(563, 434);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Imported Geometry";
             // 
@@ -702,7 +703,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(563, 438);
+            this.tabPage2.Size = new System.Drawing.Size(563, 434);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Sky & Font";
             // 
@@ -946,7 +947,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(563, 438);
+            this.tabPage3.Size = new System.Drawing.Size(563, 434);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "*.wad Sound Paths";
             // 
@@ -1015,7 +1016,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(563, 438);
+            this.tabPage6.Size = new System.Drawing.Size(563, 434);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Path Placeholders";
             // 
@@ -1077,7 +1078,7 @@
             this.tabPage7.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(563, 438);
+            this.tabPage7.Size = new System.Drawing.Size(563, 434);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Misc";
             // 
@@ -1086,7 +1087,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 226);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 247);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(563, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1115,7 +1116,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 175);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 196);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(563, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1145,7 +1146,7 @@
             this.panel10.Controls.Add(this.darkLabel15);
             this.panel10.Controls.Add(this.tbScriptPath);
             this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel10.Location = new System.Drawing.Point(0, 125);
+            this.panel10.Location = new System.Drawing.Point(0, 146);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(563, 50);
             this.panel10.TabIndex = 95;
@@ -1183,7 +1184,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 73);
+            this.panel6.Location = new System.Drawing.Point(0, 94);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(563, 52);
             this.panel6.TabIndex = 94;
@@ -1217,6 +1218,7 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cbAgressiveTexturePacking);
             this.panel12.Controls.Add(this.darkLabel13);
             this.panel12.Controls.Add(this.darkLabel16);
             this.panel12.Controls.Add(this.numPadding);
@@ -1225,7 +1227,7 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(563, 73);
+            this.panel12.Size = new System.Drawing.Size(563, 94);
             this.panel12.TabIndex = 91;
             // 
             // darkLabel13
@@ -1353,6 +1355,17 @@
             // 
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
+            // 
+            // cbAgressiveTexturePacking
+            // 
+            this.cbAgressiveTexturePacking.AutoSize = true;
+            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 70);
+            this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
+            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(330, 17);
+            this.cbAgressiveTexturePacking.TabIndex = 104;
+            this.cbAgressiveTexturePacking.Tag = "";
+            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures, use with caution)";
+            this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // FormLevelSettings
             // 
@@ -1528,5 +1541,6 @@
         private DarkUI.Controls.DarkLabel darkLabel13;
         private DarkUI.Controls.DarkNumericUpDown numPadding;
         private DarkUI.Controls.DarkLabel darkLabel12;
+        private DarkUI.Controls.DarkCheckBox cbAgressiveTexturePacking;
     }
 }

@@ -129,6 +129,9 @@ namespace TombLib.LevelData.Compilers
                 // Very quirky way to identify 1st face of a waterfall in TR4-TR5 wads.
                 bool topmostAndUnpadded = (j == 0) ? isWaterfall : false;
 
+                // Check if we should merge object and room textures in same texture tiles.
+                bool agressivePacking = _level.Settings.AgressiveTexturePacking;
+
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
                     // lock (_objectTextureManager)
@@ -136,7 +139,7 @@ namespace TombLib.LevelData.Compilers
                     //     result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
                     // }
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, false, false, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, false, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
@@ -150,7 +153,7 @@ namespace TombLib.LevelData.Compilers
                     //     result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
                     // }
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, false, true, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, true, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
