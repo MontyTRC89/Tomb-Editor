@@ -36,6 +36,7 @@ namespace TombEditor
 
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
+        public bool Editor_UseHalfPixelCorrection { get; set; } = false;
 
         // Item preview options
 
