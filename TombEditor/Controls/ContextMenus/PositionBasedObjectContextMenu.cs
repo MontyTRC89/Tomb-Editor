@@ -44,7 +44,7 @@ namespace TombEditor.Controls.ContextMenus
 
             if (targetObject is ImportedGeometryInstance)
             {
-                Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.general_Open_16, (o, e) =>
+                Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.actions_refresh_16, (o, e) =>
                 {
                     _editor.Level.Settings.ImportedGeometryUpdate(
                         ((ImportedGeometryInstance)targetObject).Model,
