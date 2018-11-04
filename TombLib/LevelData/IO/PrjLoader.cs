@@ -92,13 +92,13 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true, bool doNotCropUV = true)
+        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true, bool adjustUV = false)
         {
             var level = new Level();
 
-            // Set-up texture conversion variables
-            _texStartCoord = doNotCropUV ? 0.0f : 0.5f;
-            _texEndCoord = doNotCropUV ? 64.0f : 63.5f;
+            // Set-up texture UV adjustment variables
+            _texStartCoord = adjustUV ? 0.5f : 0.0f;
+            _texEndCoord = adjustUV ? 63.5f : 64.0f;
 
             // Setup paths
             level.Settings.LevelFilePath = Path.ChangeExtension(filename, "prj2");

@@ -17,6 +17,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         private const int NoTexInfo = -1;
         private const int DummyTexInfo = -2;
+        private const int MinimumPadding = 1;
         private const float AnimTextureLookupMargin = 5.0f;
 
         // Mapping correction compensation coordinate sets.
@@ -78,6 +79,11 @@ namespace TombLib.LevelData.Compilers.Util
         // inflation is allowed.
 
         private ushort MaxTileSize = 256;
+
+        // If padding value is 0, 1 px padding will be forced on object textures anyway,
+        // because yet we don't have a mechanism to specify UV adjustment in converted WADs.
+
+        private ushort Padding = 8;
 
         // TexInfoCount is internally a "reference counter" which is also used to get new TexInfo IDs.
         // Since generation of TexInfos is an one-off serialized process, we can safely use it in
@@ -427,11 +433,17 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public TexInfoManager(ushort maxTileSize, Level level, IProgressReporter progressReporter)
+        public TexInfoManager(Level level, IProgressReporter progressReporter)
         {
             _level = level;
+            Padding = (ushort)level.Settings.TexturePadding;
             _progressReporter = progressReporter;
-            MaxTileSize = maxTileSize;
+
+            if(level.Settings.GameVersion == GameVersion.TR5Main)
+                MaxTileSize = 256; // Change later...
+            else
+                MaxTileSize = 256;
+
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
             GenerateTexInfos = true;    // Set manager ready state 
         }
@@ -693,7 +705,7 @@ namespace TombLib.LevelData.Compilers.Util
             });
         }
 
-        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures)
+        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures, bool forceMinimumPadding = false)
         {
             if (textures.Count == 0)
                 return 0;
@@ -708,7 +720,8 @@ namespace TombLib.LevelData.Compilers.Util
                 int h = (int)(textures[i].Area.Height);
 
                 // Calculate adaptive padding at all sides
-                int padding = _level.Settings.TexturePadding;
+                int padding = (Padding == 0 && forceMinimumPadding) ? MinimumPadding : Padding;
+
                 int tP = textures[i].TopmostAndUnpadded ? 0 : padding; // Ugly, but needed for tomb4 UVRotate
                 int bP = padding;
                 int lP = padding;
@@ -871,10 +884,12 @@ namespace TombLib.LevelData.Compilers.Util
             ActualAnimTextures.Add(refCopy);
         }
 
-        private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, bool bump)
+        private ImageC BuildTextureMap(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding = false)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
             var image = ImageC.CreateNew(256, numPages * 256 * (bump ? 2 : 1));
+
+            var actualPadding = (Padding == 0 && forceMinimumPadding) ? MinimumPadding : Padding;
 
             for (int i = 0; i < textures.Count; i++)
             {
@@ -911,12 +926,12 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // Copy squeezed-and-duplicated image to texture map and add padding
                     image.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
-                    AddPadding(p, originalImage, image, 0, _level.Settings.TexturePadding, 0, 0);
+                    AddPadding(p, originalImage, image, 0, actualPadding, 0, 0);
                 }
                 else
                 {
                     image.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
-                    AddPadding(p, p.Texture.Image, image, 0, _level.Settings.TexturePadding);
+                    AddPadding(p, p.Texture.Image, image, 0, actualPadding);
                 }
 
                 // Do the bump map if needed
@@ -946,7 +961,7 @@ namespace TombLib.LevelData.Compilers.Util
                         }
 
                         image.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
-                        AddPadding(p, image, image, numPages, _level.Settings.TexturePadding, bumpX, bumpY);
+                        AddPadding(p, image, image, numPages, actualPadding, bumpX, bumpY);
                     }
                     else
                     {
@@ -978,7 +993,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                             bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
                             image.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
-                            AddPadding(p, image, image, numPages, _level.Settings.TexturePadding, bumpX, bumpY);
+                            AddPadding(p, image, image, numPages, actualPadding, bumpX, bumpY);
                         }
                     }
                 }
@@ -1162,12 +1177,12 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Calculate new X, Y of each texture area
             NumRoomPages = PlaceTexturesInMap(ref roomTextures);
-            NumObjectsPages = PlaceTexturesInMap(ref objectsTextures);
+            NumObjectsPages = PlaceTexturesInMap(ref objectsTextures, true);
             NumBumpPages = PlaceTexturesInMap(ref bumpedTextures);
 
             // Place all the textures areas in the maps
             RoomPages = BuildTextureMap(ref roomTextures, NumRoomPages, false);
-            ObjectsPages = BuildTextureMap(ref objectsTextures, NumObjectsPages, false);
+            ObjectsPages = BuildTextureMap(ref objectsTextures, NumObjectsPages, false, true);
             BumpPages = BuildTextureMap(ref bumpedTextures, NumBumpPages, true);
         }
 

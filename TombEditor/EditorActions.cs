@@ -3483,7 +3483,7 @@ namespace TombEditor
 
             Level newLevel = null;
             using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
-                newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport)))
+                newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrection)))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                     return;

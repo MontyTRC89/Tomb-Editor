@@ -23,7 +23,7 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths, IDialogHandler progressReporter, bool doNotCropUV = true)
+        public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths, IDialogHandler progressReporter)
         {
             logger.Info("Converting TR4 WAD to Wad2");
 
@@ -64,12 +64,12 @@ namespace TombLib.Wad.Tr4Wad
 
             // Convert moveables
             for (int i = 0; i < oldWad.Moveables.Count; i++)
-                ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures, soundInfos, doNotCropUV);
+                ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures, soundInfos);
             logger.Info("Moveables read.");
 
             // Convert statics
             for (int i = 0; i < oldWad.Statics.Count; i++)
-                ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, textures, doNotCropUV);
+                ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, textures);
             logger.Info("Statics read.");
 
             // Convert sprites
@@ -154,7 +154,7 @@ namespace TombLib.Wad.Tr4Wad
         }
 
         private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures,
-                                                       wad_mesh oldMesh, int objectID, bool doNotCropUV)
+                                                       wad_mesh oldMesh, int objectID)
         {
             WadMesh mesh = new WadMesh();
             var meshIndex = oldWad.Meshes.IndexOf(oldMesh);
@@ -196,7 +196,7 @@ namespace TombLib.Wad.Tr4Wad
                 poly.ShineStrength = (byte)((oldPoly.Attributes & 0x7c) >> 2);
 
                 // Add the texture
-                poly.Texture = CalculateTr4UVCoordinates(wad, oldWad, oldPoly, textures, doNotCropUV);
+                poly.Texture = CalculateTr4UVCoordinates(wad, oldWad, oldPoly, textures);
 
                 mesh.Polys.Add(poly);
             }
@@ -337,8 +337,7 @@ namespace TombLib.Wad.Tr4Wad
         internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
                                                                     /*List<WadMesh> meshes, */
                                                                     Dictionary<int, WadTexture> textures,
-                                                                    WadSoundInfo[] soundInfos,
-                                                                    bool doNotCropUV)
+                                                                    WadSoundInfo[] soundInfos)
         {
             wad_moveable oldMoveable = oldWad.Moveables[moveableIndex];
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
@@ -350,8 +349,7 @@ namespace TombLib.Wad.Tr4Wad
             {
                 meshes.Add(ConvertTr4MeshToWadMesh(wad, oldWad, textures,
                                                                oldWad.Meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + j]],
-                                                               (int)oldMoveable.ObjectID,
-                                                               doNotCropUV));
+                                                               (int)oldMoveable.ObjectID));
             }
 
             // Build the skeleton
@@ -674,7 +672,7 @@ namespace TombLib.Wad.Tr4Wad
         }
 
         internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex, /*List<WadMesh> meshes*/
-                                                                  Dictionary<int, WadTexture> textures, bool doNotCropUV)
+                                                                  Dictionary<int, WadTexture> textures)
         {
             var oldStaticMesh = oldWad.Statics[staticIndex];
             var staticMesh = new WadStatic(new WadStaticId(oldStaticMesh.ObjectId));
@@ -698,14 +696,14 @@ namespace TombLib.Wad.Tr4Wad
 
             staticMesh.Mesh = ConvertTr4MeshToWadMesh(wad, oldWad, textures,
                                                       oldWad.Meshes[(int)oldWad.RealPointers[oldStaticMesh.PointersIndex]],
-                                                      (int)oldStaticMesh.ObjectId, doNotCropUV);
+                                                      (int)oldStaticMesh.ObjectId);
 
             wad.Statics.Add(staticMesh.Id, staticMesh);
 
             return staticMesh;
         }
 
-        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> textures, bool doNotCropUV)
+        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> textures, bool adjustUV = false)
         {
             TextureArea textureArea = new TextureArea();
             textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
@@ -720,7 +718,9 @@ namespace TombLib.Wad.Tr4Wad
 
             wad_object_texture texture = oldWad.Textures[textureId];
 
-            float alignUV = doNotCropUV ? 0.0f : 0.5f;
+            // For now, 0.5px alignment is disabled, because we now use padding
+            // which prevents border bleeding (yet to solve in renderer).
+            float alignUV = adjustUV ? 0.5f : 0.0f;
 
             Vector2 nw = new Vector2(alignUV, alignUV);
             Vector2 ne = new Vector2(texture.Width + (1.0f - alignUV), alignUV);

@@ -92,7 +92,7 @@ namespace TombLib.LevelData.Compilers
 
             //_objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
 
-            _textureInfoManager = new Util.TexInfoManager(256, _level, _progressReporter);
+            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
             // Prepare level data in parallel to the sounds
