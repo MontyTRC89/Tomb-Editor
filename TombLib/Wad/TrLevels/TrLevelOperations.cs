@@ -129,7 +129,7 @@ namespace TombLib.Wad.TrLevels
                 textureArea.TexCoord0 = coords[0] - start;
                 textureArea.TexCoord1 = coords[1] - start;
                 textureArea.TexCoord2 = coords[2] - start;
-                textureArea.TexCoord3 = isTriangle ? new Vector2() : (coords[3] - start);
+                textureArea.TexCoord3 = isTriangle ? textureArea.TexCoord2 : (coords[3] - start);
                 textureArea.Texture = texture;
 
                 objectTextures[i] = textureArea;

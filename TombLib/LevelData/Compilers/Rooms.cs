@@ -330,7 +330,7 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
                                 texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
-                                texture.TexCoord3 = new Vector2();
+                                texture.TexCoord3 = texture.TexCoord2;
 
                                 // lock (_objectTextureManager)
                                 // {
