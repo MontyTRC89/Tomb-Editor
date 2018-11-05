@@ -1851,10 +1851,14 @@ namespace TombLib.LevelData.IO
                 }
             }
 
+            if (adjustUV)
+                progressReporter.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, turn off 'Half-pixel UV correction' in editor options and re-import project.");
+
             // Update level geometry
             progressReporter.ReportProgress(95, "Building rooms");
             Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.BuildGeometry());
             progressReporter.ReportProgress(100, "Level loaded correctly!");
+
             return level;
         }
 

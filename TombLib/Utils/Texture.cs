@@ -55,6 +55,123 @@ namespace TombLib.Utils
         Lighten = 10
     }
 
+    public enum TextureShapeType
+    {
+        XnYnClockwise = 0,
+        QuadClockwise = 0,
+        XpYnClockwise = 1,
+        QuadCounterclockwise = 1,
+        XpYpClockwise = 2,
+        XnYpClockwise = 3,
+        XpYnCounterclockwise = 4,
+        XnYnCounterclockwise = 5,
+        XnYpCounterclockwise = 6,
+        XpYpCounterclockwise = 7
+    }
+
+    public static class TextureExtensions
+    {
+        // Mapping correction compensation coordinate sets.
+        // Used to counterbalance TR4/5 internal mapping correction applied in regard to NewFlags
+        // value.
+
+        public static readonly Vector2[,] CompensationTris = new Vector2[,]
+        {
+            { new Vector2( 0.5f,  0.5f), new Vector2(-0.5f,  0.5f), new Vector2( 0.5f, -0.5f) },
+            { new Vector2(-0.5f,  0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f,  0.5f) },
+            { new Vector2(-0.5f, -0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f,  0.5f) },
+            { new Vector2( 0.5f, -0.5f), new Vector2( 0.5f,  0.5f), new Vector2(-0.5f, -0.5f) },
+            { new Vector2(-0.5f,  0.5f), new Vector2( 0.5f,  0.5f), new Vector2(-0.5f, -0.5f) },
+            { new Vector2( 0.5f,  0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f,  0.5f) },
+            { new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f,  0.5f) },
+            { new Vector2(-0.5f, -0.5f), new Vector2(-0.5f,  0.5f), new Vector2( 0.5f, -0.5f) }
+        };
+
+        public static readonly Vector2[,] CompensationQuads = new Vector2[,]
+        {
+            { new Vector2( 0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f, -0.5f) },
+            { new Vector2(-0.5f, 0.5f), new Vector2( 0.5f, 0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f) }
+        };
+
+        public static TextureShapeType GetTextureShapeType(Vector2[] texCoords)
+        {
+            bool isClockwise = !(MathC.CalculateArea(texCoords) > 0.0f);
+
+            if (texCoords.Length == 3 || texCoords[2] == texCoords[3])
+            {
+                Vector2 midPoint = (texCoords[0] + texCoords[1] + texCoords[2]) * (1.0f / 3.0f);
+
+                // Determine closest edge to the mid
+                float distance0 = (texCoords[0] - midPoint).LengthSquared();
+                float distance1 = (texCoords[1] - midPoint).LengthSquared();
+                float distance2 = (texCoords[2] - midPoint).LengthSquared();
+
+                byte closeEdgeIndex = 0;
+                if (distance1 < Math.Min(distance0, distance2))
+                    closeEdgeIndex = 1;
+                if (distance2 < Math.Min(distance0, distance1))
+                    closeEdgeIndex = 2;
+
+                // Determine case
+                Vector2 toClosestEdge = texCoords[closeEdgeIndex] - midPoint;
+                if (toClosestEdge.X < 0)
+                    if (toClosestEdge.Y < 0)
+                    { // Negative X, Negative Y
+                        // +---+
+                        // |  /
+                        // | /
+                        // |/
+                        // +
+                        if (isClockwise)
+                            return (TextureShapeType)0; //static constexpr Diverse::Vec<2, float> Triangle0[3] = { { 0.5f, 0.5f }, { -0.5f, 0.5f }, { 0.5f, -0.5f } };
+                        else
+                            return (TextureShapeType)5; //static constexpr Diverse::Vec<2, float> Triangle5[3] = { { 0.5f, 0.5f }, { 0.5f, -0.5f }, { -0.5f, 0.5f } };
+                    }
+                    else
+                    { // Negative X, Postive Y
+                        // +
+                        // |\
+                        // | \
+                        // |  \
+                        // +---+
+                        if (isClockwise)
+                            return (TextureShapeType)3; //static constexpr Diverse::Vec<2, float> Triangle3[3] = { { 0.5f, -0.5f }, { 0.5f, 0.5f }, { -0.5f, -0.5f } };
+                        else
+                            return (TextureShapeType)6; //static constexpr Diverse::Vec<2, float> Triangle6[3] = { { 0.5f, -0.5f }, { -0.5f, -0.5f }, { 0.5f, 0.5f } };
+                    }
+                else
+                    if (toClosestEdge.Y < 0)
+                { // Postive X, Negative Y
+                  // +---+
+                  //  \  |
+                  //   \ |
+                  //    \|
+                  //     +
+                    if (isClockwise)
+                        return (TextureShapeType)1; //static constexpr Diverse::Vec<2, float> Triangle1[3] = { { -0.5f, 0.5f }, { -0.5f, -0.5f }, { 0.5f, 0.5f } };
+                    else
+                        return (TextureShapeType)4; //static constexpr Diverse::Vec<2, float> Triangle4[3] = { { -0.5f, 0.5f }, { 0.5f, 0.5f }, { -0.5f, -0.5f } };
+                }
+                else
+                { // Postive X, Postive Y
+                  //     +
+                  //    /|
+                  //   / |
+                  //  /  |
+                  // +---+
+                    if (isClockwise)
+                        return (TextureShapeType)2; //static constexpr Diverse::Vec<2, float> Triangle2[3] = { { -0.5f, -0.5f }, { 0.5f, -0.5f }, { -0.5f, 0.5f } };
+                    else
+                        return (TextureShapeType)7; //static constexpr Diverse::Vec<2, float> Triangle7[3] = { { -0.5f, -0.5f }, { -0.5f, 0.5f }, { 0.5f, -0.5f } };
+                }
+            }
+            else if (!isClockwise)
+                return (TextureShapeType)1;
+            else
+                return (TextureShapeType)0;
+        }
+    }
+
     public struct TextureArea : IEquatable<TextureArea>
     {
         public static readonly TextureArea None;
@@ -128,14 +245,22 @@ namespace TombLib.Utils
                 return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
         }
 
-        public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
+        public TextureShapeType GetShape()
+        {
+            return TextureExtensions.GetTextureShapeType(TexCoords);
+        }
+
+        public Vector2[] TexCoords
         {
             get
             {
-                yield return new KeyValuePair<int, Vector2>(0, TexCoord0);
-                yield return new KeyValuePair<int, Vector2>(1, TexCoord1);
-                yield return new KeyValuePair<int, Vector2>(2, TexCoord2);
-                yield return new KeyValuePair<int, Vector2>(3, TexCoord3);
+                return new Vector2[]
+                {
+                TexCoord0,
+                TexCoord1,
+                TexCoord2,
+                TexCoord3
+                };
             }
         }
 

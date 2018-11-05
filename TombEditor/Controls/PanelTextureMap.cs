@@ -302,14 +302,17 @@ namespace TombEditor.Controls
                     // Check if mouse was on existing texture
                     if (SelectedTexture.Texture == VisibleTexture)
                     {
-                        var texCoords = SelectedTexture.TexCoords
-                            .Where(texCoordPair => Vector2.Distance(texCoordPair.Value, mousePos) < textureSelectionPointSelectionRadius)
-                            .OrderBy(texCoordPair => Vector2.Distance(texCoordPair.Value, mousePos))
+                        var coords = SelectedTexture.TexCoords;
+
+                        var sortedCoords = coords
+                            .Where(coord => Vector2.Distance(coord, mousePos) < textureSelectionPointSelectionRadius)
+                            .OrderBy(coord => Vector2.Distance(coord, mousePos))
                             .ToList();
-                        if (texCoords.Count != 0)
+
+                        if (sortedCoords.Count != 0)
                         {
                             // Select texture coords
-                            _selectedTexCoordIndex = texCoords.First().Key;
+                            _selectedTexCoordIndex = Array.FindIndex(coords, coord => coord == sortedCoords.First());
                             Invalidate();
                             break;
                         }
