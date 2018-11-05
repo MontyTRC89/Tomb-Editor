@@ -59,11 +59,13 @@ namespace TombLib.Wad
                 var textures = new HashSet<WadTexture>();
                 foreach (var moveable in Moveables)
                     foreach (var mesh in moveable.Value.Meshes)
-                        foreach (WadPolygon polygon in mesh.Polys)
-                            textures.Add((WadTexture)polygon.Texture.Texture);
+                        if (mesh != null)
+                            foreach (WadPolygon polygon in mesh.Polys)
+                                textures.Add((WadTexture)polygon.Texture.Texture);
                 foreach (var stat in Statics)
-                    foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
-                        textures.Add((WadTexture)polygon.Texture.Texture);
+                    if (stat.Value.Mesh != null)
+                        foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
+                            textures.Add((WadTexture)polygon.Texture.Texture);
                 return textures;
             }
         }
