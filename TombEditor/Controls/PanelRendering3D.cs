@@ -506,7 +506,7 @@ namespace TombEditor.Controls
                                     _toolHandler.Engage(e.X, e.Y, newBlockPicking, false, newRoom);
 
                                     if (!ShowPortals && !ShowAllRooms)
-                                        _editor.SendMessage("Parent is invisible. Turn on Draw Doors mode.", TombLib.Forms.PopupType.Info);
+                                        _editor.SendMessage("Parent is invisible. Turn on Draw Portals mode.", TombLib.Forms.PopupType.Info);
                                 }
                                 return;
                             }

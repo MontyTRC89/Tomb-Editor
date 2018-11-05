@@ -20,28 +20,6 @@ namespace TombLib.LevelData.Compilers.Util
         private const int MinimumPadding = 1;
         private const float AnimTextureLookupMargin = 5.0f;
 
-        // Mapping correction compensation coordinate sets.
-        // Used to counterbalance TR4/5 internal mapping correction applied in regard to NewFlags
-        // value.
-
-        private static readonly Vector2[,] _compensationTris = new Vector2[,]
-        {
-            { new Vector2( 0.5f,  0.5f), new Vector2(-0.5f,  0.5f), new Vector2( 0.5f, -0.5f) },
-            { new Vector2(-0.5f,  0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f,  0.5f) },
-            { new Vector2(-0.5f, -0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f,  0.5f) },
-            { new Vector2( 0.5f, -0.5f), new Vector2( 0.5f,  0.5f), new Vector2(-0.5f, -0.5f) },
-            { new Vector2(-0.5f,  0.5f), new Vector2( 0.5f,  0.5f), new Vector2(-0.5f, -0.5f) },
-            { new Vector2( 0.5f,  0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f,  0.5f) },
-            { new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f,  0.5f) },
-            { new Vector2(-0.5f, -0.5f), new Vector2(-0.5f,  0.5f), new Vector2( 0.5f, -0.5f) }
-        };
-
-        private static readonly Vector2[,] _compensationQuads = new Vector2[,]
-        {
-            { new Vector2( 0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2( 0.5f, -0.5f) },
-            { new Vector2(-0.5f, 0.5f), new Vector2( 0.5f, 0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f) }
-        };
-
         // We need to keep level reference for padding and bumpmap references.
 
         protected readonly Level _level;
@@ -400,7 +378,7 @@ namespace TombLib.LevelData.Compilers.Util
                 IsForRoom = parent.IsForRoom;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
-                UVAdjustmentFlag = GetUVAdjustmentFlag(child.RelCoord);
+                UVAdjustmentFlag = (ushort)TextureExtensions.GetTextureShapeType(child.RelCoord);
 
                 for (int i = 0; i < child.RelCoord.Length; i++)
                 {
@@ -409,7 +387,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
                     if (version >= GameVersion.TR4)
-                        coord -= IsForTriangle ? _compensationTris[UVAdjustmentFlag, i] : _compensationQuads[UVAdjustmentFlag, i];
+                        coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
 
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
@@ -1055,84 +1033,6 @@ namespace TombLib.LevelData.Compilers.Util
                         to.SetPixel(p.PositionInPage.X + xP + width + p.Padding[0], dataOffset + p.PositionInPage.Y + yP + height + p.Padding[1], bottomRight);
                 }
             }
-        }
-
-        private static ushort GetUVAdjustmentFlag(Vector2[] texCoords)
-        {
-            bool isClockwise = !(MathC.CalculateArea(texCoords) > 0.0f);
-
-            if (texCoords.Length == 3)
-            {
-                Vector2 midPoint = (texCoords[0] + texCoords[1] + texCoords[2]) * (1.0f / 3.0f);
-
-                // Determine closest edge to the mid
-                float distance0 = (texCoords[0] - midPoint).LengthSquared();
-                float distance1 = (texCoords[1] - midPoint).LengthSquared();
-                float distance2 = (texCoords[2] - midPoint).LengthSquared();
-
-                byte closeEdgeIndex = 0;
-                if (distance1 < Math.Min(distance0, distance2))
-                    closeEdgeIndex = 1;
-                if (distance2 < Math.Min(distance0, distance1))
-                    closeEdgeIndex = 2;
-
-                // Determine case
-                Vector2 toClosestEdge = texCoords[closeEdgeIndex] - midPoint;
-                if (toClosestEdge.X < 0)
-                    if (toClosestEdge.Y < 0)
-                    { // Negative X, Negative Y
-                        // +---+
-                        // |  /
-                        // | /
-                        // |/
-                        // +
-                        if (isClockwise)
-                            return 0; //static constexpr Diverse::Vec<2, float> Triangle0[3] = { { 0.5f, 0.5f }, { -0.5f, 0.5f }, { 0.5f, -0.5f } };
-                        else
-                            return 5; //static constexpr Diverse::Vec<2, float> Triangle5[3] = { { 0.5f, 0.5f }, { 0.5f, -0.5f }, { -0.5f, 0.5f } };
-                    }
-                    else
-                    { // Negative X, Postive Y
-                        // +
-                        // |\
-                        // | \
-                        // |  \
-                        // +---+
-                        if (isClockwise)
-                            return 3; //static constexpr Diverse::Vec<2, float> Triangle3[3] = { { 0.5f, -0.5f }, { 0.5f, 0.5f }, { -0.5f, -0.5f } };
-                        else
-                            return 6; //static constexpr Diverse::Vec<2, float> Triangle6[3] = { { 0.5f, -0.5f }, { -0.5f, -0.5f }, { 0.5f, 0.5f } };
-                    }
-                else
-                    if (toClosestEdge.Y < 0)
-                { // Postive X, Negative Y
-                  // +---+
-                  //  \  |
-                  //   \ |
-                  //    \|
-                  //     +
-                    if (isClockwise)
-                        return 1; //static constexpr Diverse::Vec<2, float> Triangle1[3] = { { -0.5f, 0.5f }, { -0.5f, -0.5f }, { 0.5f, 0.5f } };
-                    else
-                        return 4; //static constexpr Diverse::Vec<2, float> Triangle4[3] = { { -0.5f, 0.5f }, { 0.5f, 0.5f }, { -0.5f, -0.5f } };
-                }
-                else
-                { // Postive X, Postive Y
-                  //     +
-                  //    /|
-                  //   / |
-                  //  /  |
-                  // +---+
-                    if (isClockwise)
-                        return 2; //static constexpr Diverse::Vec<2, float> Triangle2[3] = { { -0.5f, -0.5f }, { 0.5f, -0.5f }, { -0.5f, 0.5f } };
-                    else
-                        return 7; //static constexpr Diverse::Vec<2, float> Triangle7[3] = { { -0.5f, -0.5f }, { -0.5f, 0.5f }, { 0.5f, -0.5f } };
-                }
-            }
-            else if (!isClockwise)
-                return 1;
-            else
-                return 0;
         }
 
         public void PackTextures()
