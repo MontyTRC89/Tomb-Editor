@@ -856,7 +856,7 @@ namespace TombEditor
                     if (string.IsNullOrEmpty(level.Settings.LevelFilePath))
                     {
                         path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                        fileNameBase = "Unnamed";
+                        fileNameBase = "Untitled";
                     }
                     else
                     {
