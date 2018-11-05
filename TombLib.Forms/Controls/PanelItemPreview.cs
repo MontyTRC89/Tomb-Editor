@@ -181,6 +181,11 @@ namespace TombLib.Controls
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (CurrentObject is WadMoveable)
             {
+                // HACK: new moveables have one bone with null mesh
+                var moveable = (WadMoveable)CurrentObject;
+                if (moveable.Meshes.Count == 0 || (moveable.Meshes.Count == 1 && moveable.Meshes[0] == null))
+                    return;
+
                 AnimatedModel model = _wadRenderer.GetMoveable((WadMoveable)CurrentObject);
                 // We don't need to rebuilt it everytime necessarily, but it's cheap to so and
                 // simpler than trying to figure out when it may be necessary.

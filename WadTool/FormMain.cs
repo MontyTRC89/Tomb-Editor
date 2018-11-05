@@ -50,9 +50,15 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is InitEvent)
+            {
+                // At startup initialise a new Wad2
+                _tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
+                _tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
+            }
             if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
             {
-
+                
             }
             if (obj is WadToolClass.DestinationWadChangedEvent || obj is InitEvent)
             {
