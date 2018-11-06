@@ -1433,7 +1433,7 @@ namespace TombEditor
         {
             // Figure out new room area
             if (newArea.X0 <= 0 || newArea.Y0 <= 0 || newArea.X1 <= 0 || newArea.Y1 <= 0)
-                newArea = new RectangleInt2(new VectorInt2(), room.SectorSize - new VectorInt2(1, 1));
+                newArea = new RectangleInt2(new VectorInt2(), room.SectorSize - VectorInt2.One);
             else
                 newArea = newArea.Inflate(1);
 
@@ -2300,7 +2300,7 @@ namespace TombEditor
             // Create new room and start merging
             var relevantRooms = new HashSet<Room>(rooms.SelectMany(room => room.Portals).Select(portal => portal.AdjoiningRoom));
             Room newRoom = alternated ? rooms.First(room => room.Alternated) : rooms.First();
-            var resizeParameter = RectangleInt2.FromLTRB(minSectorPos - newRoom.SectorPos - new VectorInt2(1, 1), size);
+            var resizeParameter = RectangleInt2.FromLTRB(minSectorPos - newRoom.SectorPos - VectorInt2.One, size);
             if (alternated)
                 newRoom.AlternateOpposite.Resize(_editor.Level, resizeParameter,
                     checked((short)rooms.Min(room => (room.AlternateOpposite ?? room).GetLowestCorner())),

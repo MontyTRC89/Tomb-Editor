@@ -79,7 +79,7 @@ namespace TombLib.Rendering
                 throw new ArgumentOutOfRangeException(); // Avoid totally currupted texture allocator state.
             for (int i = 0; i < Pages.Length; ++i)
             {
-                VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(VectorInt2.Max(texture.To - texture.From, new VectorInt2(1, 1)));
+                VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(VectorInt2.Max(texture.To - texture.From, VectorInt2.One));
                 if (allocatedPos != null)
                 {
                     VectorInt3 pos = new VectorInt3(allocatedPos.Value.X, allocatedPos.Value.Y, i);

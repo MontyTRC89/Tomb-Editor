@@ -128,17 +128,17 @@ namespace TombLib.Rendering.DirectX11
                             { // Texture is unvailable (i.e. file couldn't be loaded.
                                 ImageC image = Dx11RenderingDevice.TextureUnavailable;
                                 VectorInt3 position = TextureAllocator.Get(image);
-                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
-                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
-                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
                             }
                             else if (texture.TriangleCoordsOutOfBounds)
                             { // Texture is available but coordinates are ouf of bounds
                                 ImageC image = Dx11RenderingDevice.TextureCoordOutOfBounds;
                                 VectorInt3 position = TextureAllocator.Get(image);
-                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
-                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
-                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
                             }
                             else
                             { // Texture is available
