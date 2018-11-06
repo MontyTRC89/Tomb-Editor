@@ -131,7 +131,7 @@ namespace TombEditor.Forms
             protected override void OnKeyUp(KeyEventArgs e) { }
             protected override void OnKeyPress(KeyPressEventArgs e) { }
 
-            protected override VectorInt2 RoomSize => Parent.NewArea.Size + new VectorInt2(1, 1);
+            protected override VectorInt2 RoomSize => Parent.NewArea.Size + VectorInt2.One;
             protected override bool DrawSelection => false;
             protected override VectorInt2 GetGridDimensions() => RoomSize;
 

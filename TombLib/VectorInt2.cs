@@ -16,6 +16,12 @@ namespace TombLib
             Y = y;
         }
 
+        public VectorInt2(int value)
+        {
+            X = value;
+            Y = value;
+        }
+
         public static VectorInt2 Max(VectorInt2 first, VectorInt2 second) => new VectorInt2(Math.Max(first.X, second.X), Math.Max(first.Y, second.Y));
         public static VectorInt2 Min(VectorInt2 first, VectorInt2 second) => new VectorInt2(Math.Min(first.X, second.X), Math.Min(first.Y, second.Y));
         public static VectorInt2 operator +(VectorInt2 first, VectorInt2 second) => new VectorInt2(first.X + second.X, first.Y + second.Y);
@@ -29,8 +35,8 @@ namespace TombLib
         public static bool operator !=(VectorInt2 first, VectorInt2 second) => first.X != second.X || first.Y != second.Y;
         public static implicit operator Vector2(VectorInt2 value) => new Vector2(value.X, value.Y);
         public static explicit operator VectorInt2(Vector2 value) => FromRounded(value);
-        public static VectorInt2 Zero => new VectorInt2(0, 0);
-        public static VectorInt2 One => new VectorInt2(1, 1);
+        public static VectorInt2 Zero => new VectorInt2(0);
+        public static VectorInt2 One => new VectorInt2(1);
 
         public static VectorInt2 FromRounded(Vector2 value) => new VectorInt2(
             (int)Math.Min(Math.Max(Math.Round(value.X), int.MinValue), int.MaxValue),
