@@ -44,6 +44,8 @@ namespace TombEditor.Controls
         private int _scrollSize => DarkUI.Config.Consts.ScrollBarSize;
         private int _scrollSizeTotal => _scrollSize + 1;
 
+        protected bool _allowFreeCornerEdit = true;
+
         public PanelTextureMap()
         {
             // Change default state
@@ -133,7 +135,7 @@ namespace TombEditor.Controls
                (pos.X - (ClientSize.Width - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.X,
                (pos.Y - (ClientSize.Height - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.Y);
             if (limited)
-                textureCoord = Vector2.Min(VisibleTexture.Image.Size - new Vector2(0.5f), Vector2.Max(new Vector2(0.5f), textureCoord));
+                textureCoord = Vector2.Min(VisibleTexture.Image.Size /*- new Vector2(0.5f)*/, Vector2.Max(Vector2.Zero /*new Vector2(0.5f)*/, textureCoord));
             return textureCoord;
         }
 
@@ -302,19 +304,22 @@ namespace TombEditor.Controls
                     // Check if mouse was on existing texture
                     if (SelectedTexture.Texture == VisibleTexture)
                     {
-                        var coords = SelectedTexture.TexCoords;
-
-                        var sortedCoords = coords
-                            .Where(coord => Vector2.Distance(coord, mousePos) < textureSelectionPointSelectionRadius)
-                            .OrderBy(coord => Vector2.Distance(coord, mousePos))
-                            .ToList();
-
-                        if (sortedCoords.Count != 0)
+                        if (_allowFreeCornerEdit)
                         {
-                            // Select texture coords
-                            _selectedTexCoordIndex = Array.FindIndex(coords, coord => coord == sortedCoords.First());
-                            Invalidate();
-                            break;
+                            var coords = SelectedTexture.TexCoords;
+
+                            var sortedCoords = coords
+                                .Where(coord => Vector2.Distance(coord, mousePos) < textureSelectionPointSelectionRadius)
+                                .OrderBy(coord => Vector2.Distance(coord, mousePos))
+                                .ToList();
+
+                            if (sortedCoords.Count != 0)
+                            {
+                                // Select texture coords
+                                _selectedTexCoordIndex = Array.FindIndex(coords, coord => coord == sortedCoords.First());
+                                Invalidate();
+                                break;
+                            }
                         }
                     }
                     if (_selectedTexCoordIndex != null)
