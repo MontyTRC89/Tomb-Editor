@@ -259,7 +259,8 @@ namespace WadTool
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            //WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
