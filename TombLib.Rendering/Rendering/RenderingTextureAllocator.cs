@@ -148,8 +148,7 @@ namespace TombLib.Rendering
             else
             { // Allocate a part of the image...
 
-                var origRect = texture.ParentArea.IsZero ? texture.GetRect().Round() : texture.ParentArea.Round();
-
+                var origRect = texture.GetRect(true).Round();
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
                     From = VectorInt2.FromRounded(origRect.Start),
