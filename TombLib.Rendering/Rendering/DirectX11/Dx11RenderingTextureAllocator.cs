@@ -49,19 +49,15 @@ namespace TombLib.Rendering.DirectX11
             var originalImage = ImageC.CreateNew(width+2, height+2);
             originalImage.CopyFrom(1, 1, texture.Image, texture.From.X, texture.From.Y, width, height);
 
-            // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
-
+            // Add 1px padding to prevent border bleeding
             originalImage.SetPixel(0, 0, originalImage.GetPixel(1, 1));
             originalImage.SetPixel(width + 1, 0, originalImage.GetPixel(width, 1));
             originalImage.SetPixel(0, height + 1, originalImage.GetPixel(1, height));
             originalImage.SetPixel(width + 1, height + 1, originalImage.GetPixel(width, height));
-
             originalImage.CopyFrom(0, 1, originalImage, 1, 1, 1, height);
             originalImage.CopyFrom(width + 1, 1, originalImage, width, 1, 1, height);
             originalImage.CopyFrom(1, 0, originalImage, 1, 1, width, 1);
             originalImage.CopyFrom(1, height + 1, originalImage, 1, height, width, 1);
-
-            originalImage.Save("shit.png");
 
             originalImage.GetIntPtr(ptr =>
             {
