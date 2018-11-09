@@ -79,7 +79,7 @@ namespace TombLib.Rendering
                 throw new ArgumentOutOfRangeException(); // Avoid totally currupted texture allocator state.
             for (int i = 0; i < Pages.Length; ++i)
             {
-                VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(VectorInt2.Max(texture.To - texture.From, VectorInt2.One));
+                VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(VectorInt2.Max((texture.To - texture.From) + new VectorInt2(2), VectorInt2.One));
                 if (allocatedPos != null)
                 {
                     VectorInt3 pos = new VectorInt3(allocatedPos.Value.X, allocatedPos.Value.Y, i);
@@ -87,8 +87,8 @@ namespace TombLib.Rendering
                         UploadTexture(ImageC.CreateNew(1, 1), pos); // Attempt to handle this situation
                     else
                         UploadTexture(texture, pos);
-                    AvailableTextures.Add(texture, pos);
-                    return pos;
+                    AvailableTextures.Add(texture, pos + new VectorInt3(1, 1, 0));
+                    return pos + new VectorInt3(1, 1, 0);
                 }
             }
             return null;
@@ -148,19 +148,15 @@ namespace TombLib.Rendering
             else
             { // Allocate a part of the image...
 
-                Vector2 min = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2);
-                Vector2 max = Vector2.Max(Vector2.Max(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2) + new Vector2(254.0f / 256.0f);
-                VectorInt2 minInt = VectorInt2.Min(new VectorInt2((int)min.X, (int)min.Y), imageSize);
-                VectorInt2 maxInt = VectorInt2.Min(new VectorInt2((int)max.X, (int)max.Y), imageSize);
-
+                var origRect = texture.GetRect(true).Round();
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
-                    From = minInt,
-                    To = maxInt,
+                    From = VectorInt2.FromRounded(origRect.Start),
+                    To = VectorInt2.FromRounded(origRect.End),
                     Image = texture.Texture.Image
                 });
 
-                return allocatedTexture - new VectorInt3(minInt.X, minInt.Y, 0);
+                return allocatedTexture - new VectorInt3((int)origRect.Start.X, (int)origRect.Start.Y, 0);
             }
         }
 
