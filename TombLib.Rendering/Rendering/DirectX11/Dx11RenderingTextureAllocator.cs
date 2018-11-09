@@ -42,15 +42,36 @@ namespace TombLib.Rendering.DirectX11
 
         protected override void UploadTexture(RenderingTexture texture, VectorInt3 pos)
         {
-            texture.Image.GetIntPtr(ptr =>
+            var width  = texture.To.X - texture.From.X;
+            var height = texture.To.Y - texture.From.Y;
+
+            // Copy original region to new image
+            var originalImage = ImageC.CreateNew(width+2, height+2);
+            originalImage.CopyFrom(1, 1, texture.Image, texture.From.X, texture.From.Y, width, height);
+
+            // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
+
+            originalImage.SetPixel(0, 0, originalImage.GetPixel(1, 1));
+            originalImage.SetPixel(width + 1, 0, originalImage.GetPixel(width, 1));
+            originalImage.SetPixel(0, height + 1, originalImage.GetPixel(1, height));
+            originalImage.SetPixel(width + 1, height + 1, originalImage.GetPixel(width, height));
+
+            originalImage.CopyFrom(0, 1, originalImage, 1, 1, 1, height);
+            originalImage.CopyFrom(width + 1, 1, originalImage, width, 1, 1, height);
+            originalImage.CopyFrom(1, 0, originalImage, 1, 1, width, 1);
+            originalImage.CopyFrom(1, height + 1, originalImage, 1, height, width, 1);
+
+            originalImage.Save("shit.png");
+
+            originalImage.GetIntPtr(ptr =>
             {
                 const int mipLevelToUpload = 0;
                 int subresourceIndex = MipLevelCount * pos.Z + mipLevelToUpload;
                 ResourceRegion region;
                 region.Left = pos.X;
-                region.Right = pos.X + (texture.To.X - texture.From.X);
+                region.Right = pos.X + originalImage.Width;
                 region.Top = pos.Y;
-                region.Bottom = pos.Y + (texture.To.Y - texture.From.Y);
+                region.Bottom = pos.Y + originalImage.Height;
                 region.Front = 0;
                 region.Back = 1;
                 if (0 > region.Left || region.Left >= region.Right || region.Right > Size.X ||
@@ -58,8 +79,8 @@ namespace TombLib.Rendering.DirectX11
                     throw new ArgumentOutOfRangeException(); // This check is important, otherwise the graphics driver may crash the entire system as it turned out.
 
                 DataBox box;
-                box.DataPointer = ptr + (texture.From.X + texture.Image.Width * texture.From.Y) * ImageC.PixelSize;
-                box.RowPitch = texture.Image.Width * ImageC.PixelSize;
+                box.DataPointer = ptr;
+                box.RowPitch = originalImage.Width * ImageC.PixelSize;
                 box.SlicePitch = 0;
                 Context.UpdateSubresource(box, Texture, subresourceIndex, region);
             });
