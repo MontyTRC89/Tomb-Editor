@@ -131,10 +131,13 @@ namespace TombLib.Rendering
 
         public VectorInt3 GetForTriangle(TextureArea texture)
         {
-            const int MaxDirectImageArea = 196 * 196;
+            const int MaxDirectImageArea = 256 * 256;   // @FIXME: why the hell it was 196 * 196 before?
+
+            // @FIXME: MaxDirectImageArea GREATER comparison against image size area made no sense,
+            // so I changed it to LESS-OR-EQUAL. Addressed to TRTomb. -- Lwmte
 
             VectorInt2 imageSize = texture.Texture.Image.Size;
-            if ((imageSize.X * imageSize.Y) > MaxDirectImageArea &&
+            if ((imageSize.X * imageSize.Y) <= MaxDirectImageArea &&
                 Size.X >= imageSize.X && Size.Y >= imageSize.Y)
             { // If the image is small enough, allocate the entire image...
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
@@ -148,7 +151,12 @@ namespace TombLib.Rendering
             else
             { // Allocate a part of the image...
 
+                // @FIXME: replace origRect calculation with commented line when bug with texture allocator atlas
+                // corruption is fixed. Addressed to TRTomb. -- Lwmte
+
+                // var origRect = texture.ParentArea.IsZero ? texture.GetRect(true).Round() : texture.ParentArea.Round();
                 var origRect = texture.GetRect(true).Round();
+
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
                     From = VectorInt2.FromRounded(origRect.Start),
