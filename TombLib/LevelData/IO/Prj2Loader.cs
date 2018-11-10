@@ -182,6 +182,8 @@ namespace TombLib.LevelData.IO
                     settings.TexturePadding = chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.AgressiveFloordataPacking)
+                    settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)

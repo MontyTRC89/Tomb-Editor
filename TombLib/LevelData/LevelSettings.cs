@@ -133,7 +133,8 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
 
-        // Texture options
+        // Compiler options
+        public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
         public int TexturePadding { get; set; } = 8;
 
