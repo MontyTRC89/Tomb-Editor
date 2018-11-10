@@ -1004,5 +1004,11 @@ namespace TombEditor.Forms
             _levelSettings.AgressiveTexturePacking = cbAgressiveTexturePacking.Checked;
             UpdateDialog();
         }
+
+        private void cbAgressiveFloordataPacking_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
+            UpdateDialog();
+        }
     }
 }

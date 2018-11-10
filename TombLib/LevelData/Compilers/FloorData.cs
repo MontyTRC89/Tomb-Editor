@@ -7,6 +7,41 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
+        // Floordata sequence class is used OPTIONALLY, if agressive floordata
+        // packing is enabled in level settings. In this case, similar floordata
+        // sequences will be hashed and compared on compiling, which allows several
+        // sectors to reference same floordata entry, which in turn DRASTICALLY
+        // reduces floordata size (up to 4-5 times).
+
+        private class FloordataSequence
+        {
+            public List<ushort> FDList { get; private set; } = new List<ushort>();
+            private int _hash;
+
+            public void Add(ushort entry)
+            {
+                FDList.Add(entry);
+                RecalculateHash();
+            }
+
+            public void AddRange(List<ushort> entry)
+            {
+                FDList.AddRange(entry);
+                RecalculateHash();
+            }
+
+            private void RecalculateHash()
+            {
+                int hc = FDList.Count;
+                for (int i = 0; i < FDList.Count; ++i)
+                    hc = unchecked(hc * 17 + FDList[i]);
+                _hash = hc;
+            }
+
+            public override int GetHashCode() => _hash;
+            public override bool Equals(object obj) => (obj != null) && (obj is FloordataSequence) && (((FloordataSequence)obj)._hash == _hash);
+        }
+
         private bool IsWallSurroundedByWalls(int x, int z, Room room)
         {
             if (x > 0 && !room.Blocks[x - 1, z].IsAnyWall)
@@ -24,12 +59,26 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(53, "Building floordata");
 
+            // Floordata sequence dictionary is used OPTIONALLY, if agressive floordata packing is on!
+            var floorDataDictionary = new Dictionary<FloordataSequence, ushort>();
+
             // Prepare LUA triggers eventually
             if (_level.Settings.GameVersion == GameVersion.TR5Main)
                 PrepareLuaTriggers();
 
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-            _floorData.Add(0x0000);
+
+            if (_level.Settings.AgressiveFloordataPacking)
+            {
+                if (!floorDataDictionary.ContainsValue(0))
+                {
+                    var dummy = new FloordataSequence();
+                    dummy.Add(0x0000);
+                    floorDataDictionary.Add(dummy, 0);
+                }
+            }
+            else
+                _floorData.Add(0x0000);
 
             for (var i = 0; i < _level.Rooms.Length; i++)
             {
@@ -140,28 +189,22 @@ namespace TombLib.LevelData.Compilers
                         sector.RoomBelow = 255;
                         sector.RoomAbove = 255;
 
-                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None || block.Type == BlockType.BorderWall)
+                        var newEntry = new FloordataSequence();
+
+                        if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
                         { // Sector is a complete wall
                             if (block.WallPortal != null)
                             { // Sector is a wall portal
                                 if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                                 { // Only if the portal is not a Toggle Opacity 1
-                                    const ushort data1 = 0x8001;
-                                    var data2 = (ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
-
-                                    sector.FloorDataIndex = checked((ushort)_floorData.Count);
-                                    _floorData.Add(data1);
-                                    _floorData.Add(data2);
+                                    newEntry.Add(0x8001);
+                                    newEntry.Add((ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom]);
                                 }
                             }
                             else if (isWallWithCeilingPortal != null)
                             { // Sector has a ceiling portal on it or near it
-                                const ushort data1 = 0x8001;
-                                var data2 = (ushort)_roomsRemappingDictionary[isWallWithCeilingPortal];
-
-                                sector.FloorDataIndex = checked((ushort)_floorData.Count);
-                                _floorData.Add(data1);
-                                _floorData.Add(data2);
+                                newEntry.Add(0x8001);
+                                newEntry.Add((ushort)_roomsRemappingDictionary[isWallWithCeilingPortal]);
                             }
                         }
                         else
@@ -203,10 +246,24 @@ namespace TombLib.LevelData.Compilers
                             tempFloorData.Clear();
                             BuildFloorDataForSector(room, block, new VectorInt2(x, z), floorShape, ceilingShape, tempFloorData);
                             if (tempFloorData.Count != 0)
+                                newEntry.AddRange(tempFloorData);
+                        }
+
+                        // Try to find similar floordata sequence and use it (ONLY if agressive FD packing is enabled)
+                        if(_level.Settings.AgressiveFloordataPacking)
+                        {
+                            ushort index = 0;
+                            if (newEntry.FDList.Count != 0 && !floorDataDictionary.TryGetValue(newEntry, out index))
                             {
-                                sector.FloorDataIndex = checked((ushort)_floorData.Count);
-                                _floorData.AddRange(tempFloorData);
+                                index = (ushort)floorDataDictionary.Keys.Sum(list => list.FDList.Count);
+                                floorDataDictionary.Add(newEntry, index);
                             }
+                            sector.FloorDataIndex = checked(index);
+                        }
+                        else if (newEntry.FDList.Count != 0)
+                        {
+                            sector.FloorDataIndex = checked((ushort)_floorData.Count);
+                            _floorData.AddRange(newEntry.FDList);
                         }
 
                         // Update the sector
@@ -214,6 +271,10 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
             }
+
+            // Build final floordata block
+            if (_level.Settings.AgressiveFloordataPacking)
+                floorDataDictionary.ToList().ForEach(entry => _floorData.AddRange(entry.Key.FDList));
 
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }

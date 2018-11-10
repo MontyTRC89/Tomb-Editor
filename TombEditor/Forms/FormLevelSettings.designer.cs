@@ -114,6 +114,7 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.levelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
@@ -126,7 +127,7 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
+            this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -1087,7 +1088,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 247);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 271);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(563, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1116,7 +1117,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 196);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 220);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(563, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1146,7 +1147,7 @@
             this.panel10.Controls.Add(this.darkLabel15);
             this.panel10.Controls.Add(this.tbScriptPath);
             this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel10.Location = new System.Drawing.Point(0, 146);
+            this.panel10.Location = new System.Drawing.Point(0, 170);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(563, 50);
             this.panel10.TabIndex = 95;
@@ -1184,7 +1185,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 94);
+            this.panel6.Location = new System.Drawing.Point(0, 118);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(563, 52);
             this.panel6.TabIndex = 94;
@@ -1218,6 +1219,7 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cbAgressiveFloordataPacking);
             this.panel12.Controls.Add(this.cbAgressiveTexturePacking);
             this.panel12.Controls.Add(this.darkLabel13);
             this.panel12.Controls.Add(this.darkLabel16);
@@ -1227,8 +1229,19 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(563, 94);
+            this.panel12.Size = new System.Drawing.Size(563, 118);
             this.panel12.TabIndex = 91;
+            // 
+            // cbAgressiveTexturePacking
+            // 
+            this.cbAgressiveTexturePacking.AutoSize = true;
+            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 70);
+            this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
+            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(422, 17);
+            this.cbAgressiveTexturePacking.TabIndex = 104;
+            this.cbAgressiveTexturePacking.Tag = "";
+            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures, use with caution)";
+            this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // darkLabel13
             // 
@@ -1356,16 +1369,16 @@
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
             // 
-            // cbAgressiveTexturePacking
+            // cbAgressiveFloordataPacking
             // 
-            this.cbAgressiveTexturePacking.AutoSize = true;
-            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 70);
-            this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
-            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(330, 17);
-            this.cbAgressiveTexturePacking.TabIndex = 104;
-            this.cbAgressiveTexturePacking.Tag = "";
-            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures, use with caution)";
-            this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
+            this.cbAgressiveFloordataPacking.AutoSize = true;
+            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 93);
+            this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
+            this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(323, 17);
+            this.cbAgressiveFloordataPacking.TabIndex = 105;
+            this.cbAgressiveFloordataPacking.Tag = "";
+            this.cbAgressiveFloordataPacking.Text = "Agressive floordata packing (breaks meta2tr compatibility)";
+            this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
             // 
             // FormLevelSettings
             // 
@@ -1542,5 +1555,6 @@
         private DarkUI.Controls.DarkNumericUpDown numPadding;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkCheckBox cbAgressiveTexturePacking;
+        private DarkUI.Controls.DarkCheckBox cbAgressiveFloordataPacking;
     }
 }
