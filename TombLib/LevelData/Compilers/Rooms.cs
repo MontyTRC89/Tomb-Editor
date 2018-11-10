@@ -793,17 +793,17 @@ namespace TombLib.LevelData.Compilers
                     break;
                 case PortalDirection.WallNegativeZ:
                     normal = new tr_vertex(0, 0, 1);
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + 1024));
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + 1024));
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + 1024));
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + 1024));
+                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + 1023));
+                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + 1023));
+                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + 1023));
+                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + 1023));
                     break;
                 case PortalDirection.WallNegativeX:
                     normal = new tr_vertex(1, 0, 0);
-                    portalVertices[0] = new tr_vertex((short)(xMin + 1024), (short)-yMin, (short)zMin);
-                    portalVertices[1] = new tr_vertex((short)(xMin + 1024), (short)-yMax, (short)zMin);
-                    portalVertices[2] = new tr_vertex((short)(xMin + 1024), (short)-yMax, (short)zMax);
-                    portalVertices[3] = new tr_vertex((short)(xMin + 1024), (short)-yMin, (short)zMax);
+                    portalVertices[0] = new tr_vertex((short)(xMin + 1023), (short)-yMin, (short)zMin);
+                    portalVertices[1] = new tr_vertex((short)(xMin + 1023), (short)-yMax, (short)zMin);
+                    portalVertices[2] = new tr_vertex((short)(xMin + 1023), (short)-yMax, (short)zMax);
+                    portalVertices[3] = new tr_vertex((short)(xMin + 1023), (short)-yMin, (short)zMax);
                     break;
                 default:
                     throw new ApplicationException("Unknown PortalDirection");

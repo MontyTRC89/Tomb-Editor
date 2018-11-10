@@ -93,11 +93,11 @@ namespace TombLib.Utils
             { new Vector2(-0.5f, 0.5f), new Vector2( 0.5f, 0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f) }
         };
 
-        public static TextureShapeType GetTextureShapeType(Vector2[] texCoords)
+        public static TextureShapeType GetTextureShapeType(Vector2[] texCoords, bool isForTriangle)
         {
             bool isClockwise = !(MathC.CalculateArea(texCoords) > 0.0f);
 
-            if (texCoords.Length == 3 || texCoords[2] == texCoords[3])
+            if (isForTriangle)
             {
                 Vector2 midPoint = (texCoords[0] + texCoords[1] + texCoords[2]) * (1.0f / 3.0f);
 
@@ -243,11 +243,6 @@ namespace TombLib.Utils
                 return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2);
             else
                 return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
-        }
-
-        public TextureShapeType GetShape()
-        {
-            return TextureExtensions.GetTextureShapeType(TexCoords);
         }
 
         public Vector2[] TexCoords
