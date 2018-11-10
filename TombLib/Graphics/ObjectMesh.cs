@@ -114,7 +114,7 @@ namespace TombLib.Graphics
 
                 // Do half-pixel correction on texture to prevent bleeding
                 var coords = poly.Texture.TexCoords;
-                var shape = (int)poly.Texture.GetShape();
+                var shape = (int)TextureExtensions.GetTextureShapeType(poly.Texture.TexCoords, poly.Shape == WadPolygonShape.Triangle);
 
                 for(int i = 0; i < (poly.Texture.TextureIsTriangle ? 3 : 4); i++)
                     if (poly.Texture.TextureIsTriangle)

@@ -378,7 +378,7 @@ namespace TombLib.LevelData.Compilers.Util
                 IsForRoom = parent.IsForRoom;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
-                UVAdjustmentFlag = (ushort)TextureExtensions.GetTextureShapeType(child.RelCoord);
+                UVAdjustmentFlag = (ushort)TextureExtensions.GetTextureShapeType(child.RelCoord, IsForTriangle);
 
                 for (int i = 0; i < child.RelCoord.Length; i++)
                 {
