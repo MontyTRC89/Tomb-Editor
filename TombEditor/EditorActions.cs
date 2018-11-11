@@ -546,11 +546,11 @@ namespace TombEditor
                 return;
 
             // Limit movement precision
-            if (precision.X > 0.0f)
+            if (precision.X > 0.0f && pos.X != instance.Position.X)
                 pos.X = (float)Math.Round(pos.X / precision.X) * precision.X;
-            if (precision.Y > 0.0f)
+            if (precision.Y > 0.0f && pos.Y != instance.Position.Y)
                 pos.Y = (float)Math.Round(pos.Y / precision.Y) * precision.Y;
-            if (precision.Z > 0.0f)
+            if (precision.Z > 0.0f && pos.Z != instance.Position.Z)
                 pos.Z = (float)Math.Round(pos.Z / precision.Z) * precision.Z;
 
             // Limit movement area
