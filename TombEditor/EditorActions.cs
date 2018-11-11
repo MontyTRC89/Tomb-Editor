@@ -127,7 +127,6 @@ namespace TombEditor
                         area = new RectangleInt2(area.X0 + 1, area.Y0, area.X1, area.Y1 - 1);
                         break;
                 }
-                arrow = ArrowType.EntireFace;
 
                 Action<Block, BlockEdge, Block, BlockEdge> smoothEdit = (Block origin, BlockEdge originEdge, Block block, BlockEdge edge) =>
                 {
@@ -141,7 +140,7 @@ namespace TombEditor
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
-                            if(origin.GetHeight(vertical, originEdge) == block.GetHeight(vertical, edge))
+                            if(arrow != ArrowType.EntireFace || origin.GetHeight(vertical, originEdge) == block.GetHeight(vertical, edge))
                             {
                                 block.ChangeHeight(vertical, edge, increment);
                                 block.FixHeights(vertical);
@@ -175,6 +174,8 @@ namespace TombEditor
                     smoothEdit(room.Blocks[area.X1, z], BlockEdge.XpZp, room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp);
                     smoothEdit(room.Blocks[area.X1, z], BlockEdge.XpZn, room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn);
                 }
+
+                arrow = ArrowType.EntireFace;
             }
 
             for (int x = area.X0; x <= area.X1; x++)
