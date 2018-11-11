@@ -363,7 +363,7 @@ namespace TombEditor.Forms
             this.tbLuaScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbLuaScript.Location = new System.Drawing.Point(491, 19);
             this.tbLuaScript.Name = "tbLuaScript";
-            this.tbLuaScript.Size = new System.Drawing.Size(441, 364);
+            this.tbLuaScript.Size = new System.Drawing.Size(444, 364);
             this.tbLuaScript.TabIndex = 82;
             // 
             // FormFlybyCamera

@@ -54,7 +54,15 @@ namespace TombEditor.Forms
             tbRotationX.Text = _flyByCamera.RotationX.ToString();
             tbRotationY.Text = _flyByCamera.RotationY.ToString();
 
-            if (_editor.Level.Settings.GameVersion== GameVersion.TR5Main)
+            if(_editor.Level.Settings.GameVersion >= GameVersion.TR5)
+            {
+                cbBit1.Text = "Vignette";
+                cbBit4.Text = "Hide Lara";
+                cbBit12.Text = "Make fade-in";
+                cbBit13.Text = "Make fade-out";
+            }
+
+            if (_editor.Level.Settings.GameVersion == GameVersion.TR5Main)
             {
                 Width = 960;
                 tbLuaScript.Enabled = true;
