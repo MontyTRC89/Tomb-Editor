@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using TombLib.Utils;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Format = SharpDX.DXGI.Format;
@@ -57,6 +58,23 @@ namespace TombLib.Rendering.DirectX11
             }
             catch (Exception exc)
             {
+                switch((uint)exc.HResult)
+                {
+                    case 0x887A0004:
+                        MessageBox.Show("Your DirectX version, videocard or drivers are out of date.\nDirectX 11 installation and videocard with DirectX 10 support is required.");
+                        break;
+                    case 0x887A002D:
+                        MessageBox.Show("Warning: provided build is a debug build.\nPlease install DirectX SDK or request release build from QA team.");
+                        break;
+                    case 0x887A0005:
+                    case 0x887A0020:
+                        MessageBox.Show("There was a serious video system error while initializing Direct3D device.\nShutting down now.");
+                        break;
+                    default:
+                        MessageBox.Show("Unknown error while creating Direct3D device!\nShutting down now.");
+                        break;
+                }
+                    
                 throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
             }
 #if DEBUG
