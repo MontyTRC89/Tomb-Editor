@@ -575,7 +575,7 @@ namespace TombEditor.Controls
 
                                     case EditorToolType.Brush:
                                     case EditorToolType.Pencil:
-                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                        EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                         break;
 
                                     default:
@@ -928,7 +928,7 @@ namespace TombEditor.Controls
                                     {
                                         if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                             _editor.SelectedSectors == SectorSelection.None)
-                                            redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                            redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                     }
                                     else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                                     {
