@@ -791,7 +791,7 @@ namespace TombEditor
             }
         }
 
-        private static bool ApplyTextureAutomaticallyNoUpdated(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
+        private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             var block = room.GetBlock(pos);
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
@@ -964,10 +964,10 @@ namespace TombEditor
             return block.SetFaceTexture(face, processedTexture);
         }
 
-        public static bool ApplyTextureAutomatically(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
+        public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             if (face >= BlockFace.Ceiling) texture.Mirror();
-            var textureApplied = ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
+            var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
             if (textureApplied)
             {
                 room.BuildGeometry();
@@ -1198,7 +1198,7 @@ namespace TombEditor
                     }
                 }
 
-                ApplyTextureAutomaticallyNoUpdated(room, pos, segment.Key, processedTexture);
+                ApplyTextureWithoutUpdate(room, pos, segment.Key, processedTexture);
             }
         }
 
@@ -1319,14 +1319,14 @@ namespace TombEditor
                         {
                             case BlockFace.Floor:
                             case BlockFace.FloorTriangle2:
-                                ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.Floor, currentTexture);
-                                ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, currentTexture);
                                 break;
 
                             case BlockFace.Ceiling:
                             case BlockFace.CeilingTriangle2:
-                                ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.Ceiling, currentTexture);
-                                ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, currentTexture);
                                 break;
                         }
                     }
@@ -1348,19 +1348,19 @@ namespace TombEditor
                     switch (type)
                     {
                         case BlockFaceType.Floor:
-                            ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.Floor, texture);
-                            ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, texture);
+                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor, texture);
+                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, texture);
                             break;
 
                         case BlockFaceType.Ceiling:
-                            ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.Ceiling, texture);
-                            ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, texture);
+                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, texture);
+                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, texture);
                             break;
 
                         case BlockFaceType.Wall:
                             for (BlockFace face = BlockFace.PositiveZ_QA; face <= BlockFace.DiagonalRF; face++)
                                 if (room.IsFaceDefined(x, z, face))
-                                    ApplyTextureAutomaticallyNoUpdated(room, new VectorInt2(x, z), face, texture);
+                                    ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), face, texture);
                             break;
                     }
 
