@@ -127,55 +127,51 @@ namespace TombEditor
                         area = new RectangleInt2(area.X0 + 1, area.Y0, area.X1, area.Y1 - 1);
                         break;
                 }
+                arrow = ArrowType.EntireFace;
 
-                Action<Block, BlockEdge, Block, BlockEdge> smoothEdit = (Block origin, BlockEdge originEdge, Block block, BlockEdge edge) =>
+                Action<Block, BlockEdge> smoothEdit = (Block block, BlockEdge edge) =>
                 {
-                    if (block == null || origin == null)
+                    if (block == null)
                         return;
 
-                    if (vertical.IsOnFloor() && block.Floor.DiagonalSplit == DiagonalSplit.None && block.FloorPortal == null ||
-                        vertical.IsOnCeiling() && block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.CeilingPortal == null)
+                    if (vertical.IsOnFloor() && block.Floor.DiagonalSplit == DiagonalSplit.None ||
+                       vertical.IsOnCeiling() && block.Ceiling.DiagonalSplit == DiagonalSplit.None)
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
-                            if(arrow != ArrowType.EntireFace || origin.GetHeight(vertical, originEdge) == block.GetHeight(vertical, edge))
-                            {
-                                block.ChangeHeight(vertical, edge, increment);
-                                block.FixHeights(vertical);
-                            }
+                            block.ChangeHeight(vertical, edge, increment);
+                            block.FixHeights(vertical);
                         }
                     }
                 };
 
 
                 // Smoothly change sectors on the corners
-                smoothEdit(room.Blocks[area.X0, area.Y1], BlockEdge.XnZp, room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block, BlockEdge.XpZn);
-                smoothEdit(room.Blocks[area.X1, area.Y1], BlockEdge.XpZp, room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block, BlockEdge.XnZn);
-                smoothEdit(room.Blocks[area.X1, area.Y0], BlockEdge.XpZn, room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block, BlockEdge.XnZp);
-                smoothEdit(room.Blocks[area.X0, area.Y0], BlockEdge.XnZn, room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block, BlockEdge.XpZp);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block, BlockEdge.XpZn);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block, BlockEdge.XnZn);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block, BlockEdge.XnZp);
+                smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block, BlockEdge.XpZp);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
                 {
-                    smoothEdit(room.Blocks[x, area.Y0], BlockEdge.XnZn, room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XnZp);
-                    smoothEdit(room.Blocks[x, area.Y0], BlockEdge.XpZn, room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XpZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XnZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XpZp);
 
-                    smoothEdit(room.Blocks[x, area.Y1], BlockEdge.XnZp, room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XnZn);
-                    smoothEdit(room.Blocks[x, area.Y1], BlockEdge.XpZp, room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XpZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XnZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XpZn);
                 }
 
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    smoothEdit(room.Blocks[area.X0, z], BlockEdge.XnZp, room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZp);
-                    smoothEdit(room.Blocks[area.X0, z], BlockEdge.XnZn, room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZn);
 
-                    smoothEdit(room.Blocks[area.X1, z], BlockEdge.XpZp, room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp);
-                    smoothEdit(room.Blocks[area.X1, z], BlockEdge.XpZn, room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn);
                 }
-
-                arrow = ArrowType.EntireFace;
             }
 
             for (int x = area.X0; x <= area.X1; x++)
