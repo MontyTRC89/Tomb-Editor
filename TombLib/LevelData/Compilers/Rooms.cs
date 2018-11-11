@@ -690,16 +690,20 @@ namespace TombLib.LevelData.Compilers
                 switch (portal.Direction)
                 {
                     case PortalDirection.WallNegativeZ:
-                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XnZn, BlockEdge.XpZn);
+                        ConvertWallPortal(room, portal, newRoom.Portals, new BlockEdge[] { BlockEdge.XnZn, BlockEdge.XpZn },
+                            new BlockEdge[] { BlockEdge.XnZp, BlockEdge.XpZp });
                         break;
                     case PortalDirection.WallNegativeX:
-                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XnZn, BlockEdge.XnZp);
+                        ConvertWallPortal(room, portal, newRoom.Portals, new BlockEdge[] { BlockEdge.XnZn, BlockEdge.XnZp },
+                             new BlockEdge[] { BlockEdge.XpZn, BlockEdge.XpZp });
                         break;
                     case PortalDirection.WallPositiveZ:
-                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XpZp, BlockEdge.XnZp);
+                        ConvertWallPortal(room, portal, newRoom.Portals, new BlockEdge[] { BlockEdge.XpZp, BlockEdge.XnZp },
+                            new BlockEdge[] { BlockEdge.XpZn, BlockEdge.XnZn });
                         break;
                     case PortalDirection.WallPositiveX:
-                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XpZp, BlockEdge.XpZn);
+                        ConvertWallPortal(room, portal, newRoom.Portals, new BlockEdge[] { BlockEdge.XpZp, BlockEdge.XpZn },
+                            new BlockEdge[] { BlockEdge.XnZp, BlockEdge.XnZn });
                         break;
                     case PortalDirection.Floor:
                         ConvertFloorCeilingPortal(room, portal, newRoom.Portals, false);
@@ -713,7 +717,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, params BlockEdge[] relevantEdges)
+        private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, BlockEdge[] relevantEdges, BlockEdge[] oppositeRelevantEdges)
         {
             // Calculate dimensions of portal
             var yMin = float.MaxValue;
@@ -724,6 +728,11 @@ namespace TombLib.LevelData.Compilers
             var startZ = 0;
             var endZ = 0;
 
+            var oppositeStartX = 0;
+            var oppositeEndX = 0;
+            var oppositeStartZ = 0;
+            var oppositeEndZ = 0;
+
             switch (portal.Direction)
             {
                 case PortalDirection.WallNegativeX:
@@ -731,35 +740,84 @@ namespace TombLib.LevelData.Compilers
                     endX = 1;
                     startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
                     endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
+
+                    oppositeStartX = portal.AdjoiningRoom.NumXSectors - 2;
+                    oppositeEndX = portal.AdjoiningRoom.NumXSectors - 2;
+                    oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) + 
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+                    oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+
                     break;
+
                 case PortalDirection.WallPositiveX:
                     startX = room.NumXSectors - 2;
                     endX = room.NumXSectors - 2;
                     startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
                     endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
+
+                    oppositeStartX = 1;
+                    oppositeEndX = 1;
+                    oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+                    oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+
                     break;
+
                 case PortalDirection.WallNegativeZ:
                     startX = Math.Min(portal.Area.X0, portal.Area.X1);
                     endX = Math.Max(portal.Area.X0, portal.Area.X1);
                     startZ = 1;
                     endZ = 1;
+
+                    oppositeStartX = Math.Min(portal.Area.X0, portal.Area.X1) +
+                        portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeEndX = Math.Max(portal.Area.X0, portal.Area.X1) +
+                        portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeStartZ = portal.AdjoiningRoom.NumZSectors - 2;
+                    oppositeEndZ = portal.AdjoiningRoom.NumZSectors - 2;
+
                     break;
+
                 case PortalDirection.WallPositiveZ:
                     startX = Math.Min(portal.Area.X0, portal.Area.X1);
                     endX = Math.Max(portal.Area.X0, portal.Area.X1);
                     startZ = room.NumZSectors - 2;
                     endZ = room.NumZSectors - 2;
+
+                    oppositeStartX = Math.Min(portal.Area.X0, portal.Area.X1) +
+                       portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeEndX = Math.Max(portal.Area.X0, portal.Area.X1) +
+                        portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeStartZ = 1;
+                    oppositeEndZ = 1;
+
                     break;
             }
 
-            for (var z = startZ; z <= endZ; ++z)
-                for (var x = startX; x <= endX; ++x)
+            for (var z = 0; z <= endZ - startZ; ++z)
+                for (var x = 0; x <= endX - startX; ++x)
                 {
-                    Block block = room.Blocks[x, z];
-                    foreach (var relevantDirection in relevantEdges)
+                    Block block = room.Blocks[x + startX, z + startZ];
+                    Block oppositeBlock = portal.AdjoiningRoom.Blocks[x + oppositeStartX, z + oppositeStartZ];
+
+                    for (int i = 0; i < relevantEdges.Length; i++)
                     {
+                        // We need to check both the current block and the opposite block and choose 
+                        // the largest area possible for avoiding strange rendering bugs
+                        var relevantDirection = relevantEdges[i];
+                        var oppositeRelevantDirection = oppositeRelevantEdges[i];
+
                         var floor = 256.0f * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
                         var ceiling = 256.0f * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
+
+                        var floorOpposite = 256.0f * oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var ceilingOpposite = 256.0f * oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+
+                        floor = Math.Min(floor, floorOpposite);
+                        ceiling = Math.Max(ceiling, ceilingOpposite);
+
                         yMin = Math.Min(yMin, Math.Min(floor, ceiling));
                         yMax = Math.Max(yMax, Math.Max(floor, ceiling));
                     }
