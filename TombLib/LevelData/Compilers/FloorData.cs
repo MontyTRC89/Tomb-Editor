@@ -206,8 +206,8 @@ namespace TombLib.LevelData.Compilers
 
                                 // Convert sector type to floor with maxed out floor height, as tom2pc/winroomedit does it.
                                 // Otherwise, even if tomb4 will work correctly, meta2tr or other custom tools may fail here.
-                                sector.Floor = (sbyte)0;
-                                sector.Ceiling = (sbyte)0;
+                                sector.Floor = (sbyte)(-room.Position.Y - block.Ceiling.Min);
+                                sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomsRemappingDictionary[isWallWithCeilingPortal]);
