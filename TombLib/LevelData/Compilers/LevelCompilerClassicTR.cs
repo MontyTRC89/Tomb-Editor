@@ -151,6 +151,10 @@ namespace TombLib.LevelData.Compilers
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
 
+            // Throw a warning about zero padding and agressive texture packing
+            if(_level.Settings.AgressiveTexturePacking && _level.Settings.TexturePadding == 0)
+                _progressReporter.ReportWarn("Agressive texture packing was used with zero padding. This will lead to dramatic texture border bleeding.\nPlease turn off agressive texture packing or increase padding to at least 1px.");
+            
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
 
