@@ -98,6 +98,9 @@ namespace TombEditor
                         break;
                 }
 
+                VectorInt2 startCoord = area.Start;
+                bool[] corners = new bool[4] { true, true, true, true };
+
                 // Adjust editing area to exclude the side on which the arrow starts
                 // This is a superset of the behaviour of the old editor to smooth edit a single edge or side.
                 switch (arrow)
@@ -127,19 +130,17 @@ namespace TombEditor
                         area = new RectangleInt2(area.X0 + 1, area.Y0, area.X1, area.Y1 - 1);
                         break;
                 }
-                arrow = ArrowType.EntireFace;
 
                 Action<Block, BlockEdge> smoothEdit = (Block block, BlockEdge edge) =>
                 {
-                    if (block == null)
-                        return;
+                    if (block == null) return;
 
-                    if (vertical.IsOnFloor() && block.Floor.DiagonalSplit == DiagonalSplit.None ||
-                       vertical.IsOnCeiling() && block.Ceiling.DiagonalSplit == DiagonalSplit.None)
+                    if (vertical.IsOnFloor()   && block.Floor.DiagonalSplit   == DiagonalSplit.None ||
+                        vertical.IsOnCeiling() && block.Ceiling.DiagonalSplit == DiagonalSplit.None)
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
-                           !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
+                            block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
                             block.ChangeHeight(vertical, edge, increment);
                             block.FixHeights(vertical);
@@ -147,12 +148,32 @@ namespace TombEditor
                     }
                 };
 
+                var cornerBlocks = new Block[4]
+                {
+                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block,
+                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block,
+                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block,
+                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block
+                };
+
+                // Unique case of editing single corner
+                if(area.Width == -1 && area.Height == -1 && arrow > ArrowType.EdgeW)
+                {
+                    BlockEdge origin = BlockEdge.XnZn;
+                    switch(arrow)
+                    {
+                        case ArrowType.CornerNE: origin = BlockEdge.XpZp; break;
+                        case ArrowType.CornerNW: origin = BlockEdge.XnZp; break;
+                        case ArrowType.CornerSE: origin = BlockEdge.XpZn; break;
+                    }
+                    var originHeight = room.GetBlockTryThroughPortal(startCoord).Block.GetHeight(vertical, origin);
+                    for(int i = 0; i < 4; i++)
+                        corners[i] = originHeight == cornerBlocks[i].GetHeight(vertical, (BlockEdge)i);
+                }
 
                 // Smoothly change sectors on the corners
-                smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block, BlockEdge.XpZn);
-                smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block, BlockEdge.XnZn);
-                smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block, BlockEdge.XnZp);
-                smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block, BlockEdge.XpZp);
+                for (int i = 0; i < 4; i++)
+                    if (corners[i]) smoothEdit(cornerBlocks[i], (BlockEdge)i);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
@@ -172,6 +193,8 @@ namespace TombEditor
                     smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp);
                     smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn);
                 }
+
+                arrow = ArrowType.EntireFace;
             }
 
             for (int x = area.X0; x <= area.X1; x++)
