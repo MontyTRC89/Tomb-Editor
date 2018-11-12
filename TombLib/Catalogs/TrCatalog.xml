@@ -3823,13 +3823,13 @@
       <sound id="0" name="Lara feet"/>
       <sound id="1" name="Lara climb2"/>
       <sound id="2" name="Lara no" fixed_by_default="true"/>
-      <sound id="3" name="Lara slipping"/>
-      <sound id="4" name="Lara land"/>
+      <sound id="3" name="Lara slipping" fixed_by_default="true"/>
+      <sound id="4" name="Lara land" fixed_by_default="true"/>
       <sound id="5" name="Lara climb1"/>
       <sound id="6" name="Lara holster draw" fixed_by_default="true"/>
       <sound id="7" name="Lara holster away" fixed_by_default="true"/>
       <sound id="8" name="Lara fire" fixed_by_default="true"/>
-      <sound id="9" name="Lara reload"/>
+      <sound id="9" name="Lara reload" fixed_by_default="true"/>
       <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
       <sound id="11" name="Push block end" fixed_by_default="true"/>
       <sound id="12" name="Smash glass" fixed_by_default="true"/>
@@ -3837,8 +3837,8 @@
       <sound id="14" name="Hk silenced" fixed_by_default="true"/>
       <sound id="15" name="Office door open"/>
       <sound id="16" name="Office door clse"/>
-      <sound id="17" name="Lara wet feet"/>
-      <sound id="18" name="Lara wade"/>
+      <sound id="17" name="Lara wet feet" fixed_by_default="true"/>
+      <sound id="18" name="Lara wade" fixed_by_default="true"/>
       <sound id="19" name="Smash wood"/>
       <sound id="20" name="Lara injury nonrnd" fixed_by_default="true"/>
       <sound id="21" name="Cricket loop"/>
@@ -4760,8 +4760,8 @@
       <sound id="0" name="Lara feet"/>
       <sound id="1" name="Lara climb2"/>
       <sound id="2" name="Lara no" fixed_by_default="true"/>
-      <sound id="3" name="Lara slipping"/>
-      <sound id="4" name="Lara land"/>
+      <sound id="3" name="Lara slipping" fixed_by_default="true"/>
+      <sound id="4" name="Lara land" fixed_by_default="true"/>
       <sound id="5" name="Lara climb1"/>
       <sound id="6" name="Lara holster draw" fixed_by_default="true"/>
       <sound id="7" name="Lara holster away" fixed_by_default="true"/>
@@ -4774,8 +4774,8 @@
       <sound id="14" name="Hk silenced" fixed_by_default="true"/>
       <sound id="15" name="Office door open"/>
       <sound id="16" name="Office door clse"/>
-      <sound id="17" name="Lara wet feet"/>
-      <sound id="18" name="Lara wade"/>
+      <sound id="17" name="Lara wet feet" fixed_by_default="true"/>
+      <sound id="18" name="Lara wade" fixed_by_default="true"/>
       <sound id="19" name="Smash wood"/>
       <sound id="20" name="Lara injury nonrnd" fixed_by_default="true"/>
       <sound id="21" name="Cricket loop"/>
