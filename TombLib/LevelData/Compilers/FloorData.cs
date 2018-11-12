@@ -32,10 +32,9 @@ namespace TombLib.LevelData.Compilers
 
             private void RecalculateHash()
             {
-                int hc = FDList.Count;
-                for (int i = 0; i < FDList.Count; ++i)
-                    hc = unchecked(hc * 17 + FDList[i]);
-                _hash = hc;
+                string hash = "";
+                FDList.ForEach(entry => hash += entry.ToString() + " ");
+                _hash = hash.GetHashCode();
             }
 
             public override int GetHashCode() => _hash;
