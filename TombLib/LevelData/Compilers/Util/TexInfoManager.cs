@@ -220,7 +220,8 @@ namespace TombLib.LevelData.Compilers.Util
                         return true;
                     else if (allowOverlaps)
                     {
-                        if (!_area.Contains(rect) && rect.Intersects(_area))
+                        var intersection = rect.Intersect(_area);
+                        if (!_area.Contains(rect) && intersection.Width > 0 && intersection.Height > 0)
                         {
                             var potentialNewArea = rect.Union(_area);
                             return ((potentialNewArea.Width <= maxOverlappedSize) &&
