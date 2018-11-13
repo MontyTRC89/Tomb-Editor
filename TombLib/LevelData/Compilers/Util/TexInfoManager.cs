@@ -1056,12 +1056,6 @@ namespace TombLib.LevelData.Compilers.Util
                     objectsTextures.Add(ParentTextures[i]);
             }
 
-            // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
-            if(_level.Settings.AgressiveTexturePacking)
-                roomTextures = roomTextures.OrderBy(item => !item.TopmostAndUnpadded).ToList();
-            else
-                objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ToList();
-
             for (int n = 0; n < ActualAnimTextures.Count; n++)
             {
                 var parentTextures = ActualAnimTextures[n].CompiledAnimation;
@@ -1078,6 +1072,12 @@ namespace TombLib.LevelData.Compilers.Util
                         objectsTextures.Add(parentTextures[i]);
                 }
             }
+
+            // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
+            if (_level.Settings.AgressiveTexturePacking)
+                roomTextures = roomTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
+            else
+                objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
 
             // Calculate new X, Y of each texture area
             NumRoomPages = PlaceTexturesInMap(ref roomTextures);
