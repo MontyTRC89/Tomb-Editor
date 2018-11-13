@@ -537,7 +537,7 @@ namespace TombLib.LevelData.Compilers.Util
             foreach (var parent in parentList)
             {
                 // Parents with different attributes are quickly discarded
-                if (checkParameters && !parent.ParametersSimilar(areaToLook, isForRoom))
+                if (!parent.ParametersSimilar(areaToLook, isForRoom))
                     continue;
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
