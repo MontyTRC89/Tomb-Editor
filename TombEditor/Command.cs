@@ -717,6 +717,16 @@ namespace TombEditor
                 EditorActions.DuplicateRooms(args.Window);
             });
 
+            AddCommand("BackupRoom", "Backup room", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.BackupRoom(args.Window);
+            });
+
+            AddCommand("RestoreRoom", "Restore room", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.RestoreRoom(args.Window);
+            });
+
             AddCommand("SelectConnectedRooms", "Select connected rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SelectConnectedRooms();

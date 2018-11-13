@@ -227,13 +227,17 @@ namespace TombLib.LevelData
             return newRoom;
         }
 
-        public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy)
+        public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy, bool fullCopy = false)
         {
             // Copy most variables
             var result = (Room)MemberwiseClone();
-            result.AlternateBaseRoom = null;
-            result.AlternateRoom = null;
-            result.AlternateGroup = -1;
+
+            if(!fullCopy)
+            {
+                result.AlternateBaseRoom = null;
+                result.AlternateRoom = null;
+                result.AlternateGroup = -1;
+            }
 
             result.RoomGeometry = null;
 
@@ -243,11 +247,15 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; ++x)
                     result.Blocks[x, z] = Blocks[x, z].Clone();
 
-            // Copy objects
-            result._objects = new List<PositionBasedObjectInstance>();
-            foreach (var instance in AnyObjects)
-                if (decideToCopy(instance))
-                    result.AddObjectAndSingularPortal(level, instance.Clone());
+            if(decideToCopy != null)
+            {
+                // Copy objects
+                result._objects = new List<PositionBasedObjectInstance>();
+                foreach (var instance in AnyObjects)
+                    if (decideToCopy(instance))
+                        result.AddObjectAndSingularPortal(level, instance.Clone());
+            }
+
             return result;
         }
 

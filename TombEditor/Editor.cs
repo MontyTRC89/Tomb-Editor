@@ -163,6 +163,8 @@ namespace TombEditor
             }
         }
 
+        public Room BackupRoom;
+
         public class ToolChangedEvent : IEditorPropertyChangedEvent
         {
             public EditorTool Previous { get; internal set; }
