@@ -101,17 +101,17 @@ namespace TombEditor.Controls
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
-            }
 
-            _depthBar = new DepthBar(_editor);
-            _depthBar.InvalidateParent += Invalidate;
-            _depthBar.GetParent += () => this;
-            _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
+                _depthBar = new DepthBar(_editor);
+                _depthBar.InvalidateParent += Invalidate;
+                _depthBar.GetParent += () => this;
+                _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
 
-            _movementTimer = new MovementTimer(MoveTimerTick);
+                _movementTimer = new MovementTimer(MoveTimerTick);
 
-            UpdateBrushes();
-            ResetView();
+                UpdateBrushes();
+                ResetView();
+                }
         }
 
         protected override void Dispose(bool disposing)

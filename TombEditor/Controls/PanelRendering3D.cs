@@ -115,7 +115,6 @@ namespace TombEditor.Controls
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
-            }
 
             _toolHandler = new ToolHandler(this);
             _movementTimer = new MovementTimer(MoveTimer_Tick);
@@ -146,6 +145,7 @@ namespace TombEditor.Controls
                              SectorTextureGet = sectorTextures.Get
                          });
                 });
+            }
         }
 
         protected override void Dispose(bool disposing)
