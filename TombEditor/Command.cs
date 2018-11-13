@@ -722,7 +722,7 @@ namespace TombEditor
                 EditorActions.BackupRoom(args.Window);
             });
 
-            AddCommand("RestoreRoom", "Restore room", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("Undo", "Undo", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.RestoreRoom(args.Window);
             });
