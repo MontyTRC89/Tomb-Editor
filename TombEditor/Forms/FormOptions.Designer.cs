@@ -2792,7 +2792,7 @@
             this.darkCheckBox22.Size = new System.Drawing.Size(289, 17);
             this.darkCheckBox22.TabIndex = 5;
             this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrection";
-            this.darkCheckBox22.Text = "Half-pixel UV correction (use only without padding)";
+            this.darkCheckBox22.Text = "Half-pixel UV correction (legacy option)";
             // 
             // FormOptions
             // 

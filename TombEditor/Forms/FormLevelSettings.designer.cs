@@ -1240,7 +1240,7 @@
             this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(422, 17);
             this.cbAgressiveTexturePacking.TabIndex = 104;
             this.cbAgressiveTexturePacking.Tag = "";
-            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures, use with caution)";
+            this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures)";
             this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // darkLabel13
@@ -1377,7 +1377,7 @@
             this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(323, 17);
             this.cbAgressiveFloordataPacking.TabIndex = 105;
             this.cbAgressiveFloordataPacking.Tag = "";
-            this.cbAgressiveFloordataPacking.Text = "Agressive floordata packing (breaks meta2tr compatibility)";
+            this.cbAgressiveFloordataPacking.Text = "Agressive floordata packing";
             this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
             // 
             // FormLevelSettings
