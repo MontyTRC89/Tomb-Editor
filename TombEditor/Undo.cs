@@ -1,4 +1,5 @@
 ﻿using System;
+using TombLib;
 using TombLib.LevelData;
 
 namespace TombEditor
@@ -13,15 +14,49 @@ namespace TombEditor
     // In complicated cases, such as removing previously created object, UndoAction will
     // differ from RedoAction, hence 2 separate actions will be needed.
 
-    public abstract class UndoInstance
+    public abstract class UndoRedoInstance
     {
         public UndoManager Parent { get; set; }
         public Action UndoAction { get; set; }
-        public Action RedoAction { get; set; }
-        protected UndoInstance(UndoManager parent) { Parent = parent; }
+        public Func<UndoRedoInstance> RedoInstance { get; set; }
+        protected UndoRedoInstance(UndoManager parent) { Parent = parent; }
     }
 
-    public class RoomUndoInstance : UndoInstance
+    public class ObjectUndoInstance : UndoRedoInstance
+    {
+        public PositionBasedObjectInstance UndoObject;
+        public Room Room;
+        public bool Created;
+
+        public ObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent)
+        {
+            Created = created;
+            UndoObject = obj;
+            Room = obj.Room;
+
+            UndoAction = delegate ()
+            {
+                if (Created)
+                    EditorActions.DeleteObjectWithoutUpdate(UndoObject);
+                else
+                {
+                    var backupPos = obj.Position;
+                    VectorInt2 pos = new VectorInt2((int)((obj.Position.X - 512.0f) / 1024.0f), (int)((obj.Position.Z - 512.0f) / 1024.0f));
+                    EditorActions.PlaceObjectWithoutUpdate(Room, pos, UndoObject);
+                    EditorActions.MoveObject(UndoObject, backupPos);
+                }
+            };
+
+            RedoInstance = delegate ()
+            {
+                var result = new ObjectUndoInstance(Parent, UndoObject, !Created);
+                if (result.Room == null) result.Room = Room;
+                return result;
+            };
+        }
+    }
+
+    public class RoomUndoInstance : UndoRedoInstance
     {
         public int RoomIndex; // Needed to put resulting room in appropriate slot.
         public Room UndoRoom;
@@ -36,7 +71,7 @@ namespace TombEditor
                 if (UndoRoom == null) return;
                 var roomIsCurrent = Parent.Editor.Level.Rooms[RoomIndex] == Parent.Editor.SelectedRoom;
 
-                Parent.Editor.Level.Rooms[RoomIndex] = UndoRoom;
+                Room.Replace(ref Parent.Editor.Level.Rooms[RoomIndex], ref UndoRoom);
 
                 if (roomIsCurrent)
                     Parent.Editor.SelectedRoom = Parent.Editor.Level.Rooms[RoomIndex];
@@ -44,7 +79,11 @@ namespace TombEditor
                 Parent.Editor.Level.Rooms[RoomIndex].BuildGeometry();
                 Parent.Editor.RoomGeometryChange(Parent.Editor.Level.Rooms[RoomIndex]);
             };
-            RedoAction = UndoAction;
+
+            RedoInstance = delegate ()
+            {
+                return new RoomUndoInstance(Parent, Parent.Editor.Level.Rooms[RoomIndex]);
+            };
         }
     }
 
@@ -52,7 +91,7 @@ namespace TombEditor
     {
         private class UndoRedoStack
         {
-            private UndoInstance[] items;
+            private UndoRedoInstance[] items;
             private int top = -1;
 
             public bool Empty => top == -1;
@@ -60,10 +99,10 @@ namespace TombEditor
 
             public UndoRedoStack(int capacity)
             {
-                items = new UndoInstance[capacity];
+                items = new UndoRedoInstance[capacity];
             }
 
-            public void Push(UndoInstance item)
+            public void Push(UndoRedoInstance item)
             {
                 // Rotate stack if full
                 var c = items.Length - 1;
@@ -76,7 +115,7 @@ namespace TombEditor
                 items[top] = item;
             }
 
-            public UndoInstance Pop()
+            public UndoRedoInstance Pop()
             {
                 if (top == -1) return null;
                 return items[top--];
@@ -101,7 +140,7 @@ namespace TombEditor
             _redoStack = new UndoRedoStack(Math.Abs(undoDepth));
         }
 
-        public void Push(UndoInstance instance)
+        public void Push(UndoRedoInstance instance)
         {
             if (!StackValid(_undoStack)) return;
 
@@ -118,6 +157,7 @@ namespace TombEditor
         }
 
         public void Push(Room room) => Push(new RoomUndoInstance(this, room));
+        public void Push(PositionBasedObjectInstance obj, bool created = true) => Push(new ObjectUndoInstance(this, obj, created));
         public void Redo() => Engage(_redoStack);
         public void Undo() => Engage(_undoStack);
         public void UndoClear() => Clear(_undoStack);
@@ -141,15 +181,12 @@ namespace TombEditor
             var instance = stack.Pop();
             if (instance == null) return;
 
-            UndoInstance back = null;
-            if (instance is RoomUndoInstance)
-            {
-                back = new RoomUndoInstance(this, Editor.Level.Rooms[((RoomUndoInstance)instance).RoomIndex]);
-            }
+            // Generate and push redo instance
+            var redo = instance.RedoInstance();
+            if (redo != null) (stack == _undoStack ? _redoStack : _undoStack).Push(redo);
 
-            var isUndo = stack == _undoStack;
-            if (back != null) (isUndo ? _redoStack : _undoStack).Push(back);
-            (isUndo ? instance.UndoAction : instance.RedoAction)?.Invoke();
+            // Invoke original undo instance
+            instance.UndoAction?.Invoke();
             Editor.UndoStackChanged();
         }
     }

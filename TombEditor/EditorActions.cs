@@ -726,10 +726,13 @@ namespace TombEditor
                     "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            DeleteObject(instance);
+            if (instance is PositionBasedObjectInstance)
+                _editor.UndoManager.Push((PositionBasedObjectInstance)instance, false);
+
+            DeleteObjectWithoutUpdate(instance);
         }
 
-        public static void DeleteObject(ObjectInstance instance)
+        public static void DeleteObjectWithoutUpdate(ObjectInstance instance)
         {
             var room = instance.Room;
             var adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
@@ -1391,6 +1394,13 @@ namespace TombEditor
         }
 
         public static void PlaceObject(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
+        {
+            PlaceObjectWithoutUpdate(room, pos, instance);
+            _editor.UndoManager.Push(instance);
+        }
+
+
+        public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
             int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;

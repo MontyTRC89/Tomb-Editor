@@ -82,7 +82,7 @@ namespace TombEditor.ToolWindows
         {
             if (_editor.SelectedRoom == null || !(_editor.SelectedObject is TriggerInstance))
                 return;
-            EditorActions.DeleteObject(_editor.SelectedObject);
+            EditorActions.DeleteObjectWithoutUpdate(_editor.SelectedObject);
         }
 
         private void lstTriggers_KeyDown(object sender, KeyEventArgs e)
