@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.LevelData;
 
 namespace TombEditor
@@ -12,6 +8,7 @@ namespace TombEditor
         public UndoManager Parent { get; set; }
         public Action UndoAction { get; set; }
         public Action RedoAction { get; set; }
+        protected UndoInstance(UndoManager parent) { Parent = parent; }
     }
 
     public class RoomUndoInstance : UndoInstance
@@ -19,26 +16,25 @@ namespace TombEditor
         public int RoomIndex;
         public Room UndoRoom;
 
-        public RoomUndoInstance(UndoManager parent, Room room)
+        public RoomUndoInstance(UndoManager parent, Room room) : base(parent)
         {
-            Parent = parent;
             RoomIndex = Array.FindIndex(Parent.Editor.Level.Rooms, r => r == room);
             UndoRoom = room.Clone(Parent.Editor.Level, null, true);
 
             UndoAction = delegate ()
             {
-                if (UndoRoom == null)
-                    return;
-
+                if (UndoRoom == null) return;
                 var roomIsCurrent = Parent.Editor.Level.Rooms[RoomIndex] == Parent.Editor.SelectedRoom;
 
                 Parent.Editor.Level.Rooms[RoomIndex] = UndoRoom;
 
                 if (roomIsCurrent)
                     Parent.Editor.SelectedRoom = Parent.Editor.Level.Rooms[RoomIndex];
+
                 Parent.Editor.Level.Rooms[RoomIndex].BuildGeometry();
                 Parent.Editor.RoomGeometryChange(Parent.Editor.Level.Rooms[RoomIndex]);
             };
+            RedoAction = UndoAction;
         }
     }
 
@@ -50,6 +46,7 @@ namespace TombEditor
             private int top = -1;
 
             public bool Empty => top == -1;
+            public int Count => items.Length;
 
             public UndoRedoStack(int capacity)
             {
@@ -58,25 +55,21 @@ namespace TombEditor
 
             public void Push(UndoInstance item)
             {
-                if (top == -1)
-                    top = 0;
+                // Rotate stack if full
+                var c = items.Length - 1;
+                if (top == c)
+                    for (int i = 1; i <= c; i++)
+                        items[i - 1] = items[i];
+                else
+                    top++;
 
                 items[top] = item;
-                top = (top + 1) % items.Length;
             }
+
             public UndoInstance Pop()
             {
-                if (top == -1)
-                    return null;
-
-                top = (items.Length + top - 1) % items.Length;
-                if (top == 0)
-                {
-                    top = -1;
-                    return items[0];
-                }
-                else
-                    return items[top];
+                if (top == -1) return null;
+                return items[top--];
             }
 
             public void Clear()
@@ -88,58 +81,65 @@ namespace TombEditor
         }
 
         public Editor Editor;
-        private UndoRedoStack _undoStack = new UndoRedoStack(10);
-        private UndoRedoStack _redoStack = new UndoRedoStack(10);
+        private UndoRedoStack _undoStack;
+        private UndoRedoStack _redoStack;
 
-        public UndoManager(Editor editor)
+        public UndoManager(Editor editor, int undoDepth)
         {
             Editor = editor;
+            _undoStack = new UndoRedoStack(Math.Abs(undoDepth));
+            _redoStack = new UndoRedoStack(Math.Abs(undoDepth));
         }
 
         public void Push(UndoInstance instance)
         {
+            if (!StackValid(_undoStack)) return;
+
             _undoStack.Push(instance);
-            _redoStack.Clear();
-            Editor.UndoStackChanged();
-        }
-
-        public void Push(Room room) => Push(new RoomUndoInstance(this, room));
-        public void Redo() => Engage(_redoStack);
-        public void Undo() => Engage(_undoStack);
-        public bool UndoPossible => !_undoStack.Empty;
-        public bool RedoPossible => !_redoStack.Empty;
-
-        public void ClearUndo()
-        {
-            _undoStack.Clear();
-            Editor.UndoStackChanged();
-        }
-
-        public void ClearRedo()
-        {
             _redoStack.Clear();
             Editor.UndoStackChanged();
         }
 
         public void ClearAll()
         {
-            _undoStack.Clear();
-            _redoStack.Clear();
+            Clear(_undoStack, true);
+            Clear(_redoStack, true);
             Editor.UndoStackChanged();
+        }
+
+        public void Push(Room room) => Push(new RoomUndoInstance(this, room));
+        public void Redo() => Engage(_redoStack);
+        public void Undo() => Engage(_undoStack);
+        public void UndoClear() => Clear(_undoStack);
+        public void RedoClear() => Clear(_redoStack);
+        public bool UndoPossible => StackValid(_undoStack) && !_undoStack.Empty;
+        public bool RedoPossible => StackValid(_redoStack) && !_redoStack.Empty;
+
+        private bool StackValid(UndoRedoStack stack) => (stack != null && stack.Count > 0);
+
+        private void Clear(UndoRedoStack stack, bool silent = false)
+        {
+            if (!StackValid(stack)) return;
+            stack.Clear();
+            if (!silent) Editor.UndoStackChanged();
         }
 
         private void Engage(UndoRedoStack stack)
         {
+            if (!StackValid(stack)) return;
+
             var instance = stack.Pop();
             if (instance == null) return;
 
+            UndoInstance back = null;
             if (instance is RoomUndoInstance)
             {
-                UndoInstance back = new RoomUndoInstance(this, Editor.Level.Rooms[((RoomUndoInstance)instance).RoomIndex]);
-                (stack == _undoStack ? _redoStack : _undoStack).Push(back);
+                back = new RoomUndoInstance(this, Editor.Level.Rooms[((RoomUndoInstance)instance).RoomIndex]);
             }
 
-            instance.UndoAction.Invoke();
+            var isUndo = stack == _undoStack;
+            if (back != null) (isUndo ? _redoStack : _undoStack).Push(back);
+            (isUndo ? instance.UndoAction : instance.RedoAction)?.Invoke();
             Editor.UndoStackChanged();
         }
     }

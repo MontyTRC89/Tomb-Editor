@@ -39,6 +39,7 @@
             this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox22 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
             this.darkGroupBox7 = new DarkUI.Controls.DarkGroupBox();
@@ -214,7 +215,8 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox22 = new DarkUI.Controls.DarkCheckBox();
+            this.darkNumericUpDown39 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel67 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -280,6 +282,7 @@
             this.darkSectionPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -361,7 +364,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel1.Size = new System.Drawing.Size(364, 327);
+            this.panel1.Size = new System.Drawing.Size(364, 358);
             this.panel1.TabIndex = 9;
             // 
             // darkGroupBox1
@@ -370,7 +373,7 @@
             this.darkGroupBox1.Controls.Add(this.cbEnableLogging);
             this.darkGroupBox1.Controls.Add(this.darkLabel1);
             this.darkGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox1.Location = new System.Drawing.Point(3, 247);
+            this.darkGroupBox1.Location = new System.Drawing.Point(3, 278);
             this.darkGroupBox1.Name = "darkGroupBox1";
             this.darkGroupBox1.Size = new System.Drawing.Size(358, 77);
             this.darkGroupBox1.TabIndex = 6;
@@ -415,16 +418,28 @@
             // 
             // darkGroupBox2
             // 
+            this.darkGroupBox2.Controls.Add(this.darkNumericUpDown39);
+            this.darkGroupBox2.Controls.Add(this.darkLabel67);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox22);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox2);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox1);
             this.darkGroupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox2.Location = new System.Drawing.Point(3, 156);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(358, 91);
+            this.darkGroupBox2.Size = new System.Drawing.Size(358, 122);
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "System";
+            // 
+            // darkCheckBox22
+            // 
+            this.darkCheckBox22.AutoSize = true;
+            this.darkCheckBox22.Location = new System.Drawing.Point(6, 67);
+            this.darkCheckBox22.Name = "darkCheckBox22";
+            this.darkCheckBox22.Size = new System.Drawing.Size(227, 17);
+            this.darkCheckBox22.TabIndex = 5;
+            this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrection";
+            this.darkCheckBox22.Text = "Half-pixel UV correction (legacy option)";
             // 
             // darkCheckBox2
             // 
@@ -2784,15 +2799,36 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkCheckBox22
+            // darkNumericUpDown39
             // 
-            this.darkCheckBox22.AutoSize = true;
-            this.darkCheckBox22.Location = new System.Drawing.Point(6, 67);
-            this.darkCheckBox22.Name = "darkCheckBox22";
-            this.darkCheckBox22.Size = new System.Drawing.Size(289, 17);
-            this.darkCheckBox22.TabIndex = 5;
-            this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrection";
-            this.darkCheckBox22.Text = "Half-pixel UV correction (legacy option)";
+            this.darkNumericUpDown39.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.darkNumericUpDown39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkNumericUpDown39.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.darkNumericUpDown39.Location = new System.Drawing.Point(254, 92);
+            this.darkNumericUpDown39.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown39.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown39.Name = "darkNumericUpDown39";
+            this.darkNumericUpDown39.Size = new System.Drawing.Size(64, 22);
+            this.darkNumericUpDown39.TabIndex = 8;
+            this.darkNumericUpDown39.Tag = "Editor_UndoDepth";
+            // 
+            // darkLabel67
+            // 
+            this.darkLabel67.AutoSize = true;
+            this.darkLabel67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel67.Location = new System.Drawing.Point(3, 94);
+            this.darkLabel67.Name = "darkLabel67";
+            this.darkLabel67.Size = new System.Drawing.Size(194, 13);
+            this.darkLabel67.TabIndex = 7;
+            this.darkLabel67.Text = "Undo / redo depth (requires restart):";
             // 
             // FormOptions
             // 
@@ -2892,6 +2928,7 @@
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -3085,5 +3122,7 @@
         private DarkUI.Controls.DarkCheckBox darkCheckBox20;
         private DarkUI.Controls.DarkCheckBox darkCheckBox21;
         private DarkUI.Controls.DarkCheckBox darkCheckBox22;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown39;
+        private DarkUI.Controls.DarkLabel darkLabel67;
     }
 }
