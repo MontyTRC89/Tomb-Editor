@@ -378,6 +378,8 @@ namespace TombEditor
             this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.G | Keys.Control | Keys.Alt };
             this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.H | Keys.Control | Keys.Alt };
             this["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
+            this["Undo"] = new SortedSet<Hotkey> { Keys.Control | Z };
+            this["Redo"] = new SortedSet<Hotkey> { Keys.Control | Y };
 
             // Check for conflicts
             var hotkeyList = _list
