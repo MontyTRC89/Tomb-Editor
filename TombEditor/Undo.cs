@@ -3,6 +3,16 @@ using TombLib.LevelData;
 
 namespace TombEditor
 {
+    // Basic class for any undo type.
+    // Any new undo type must be based on this base class!
+    
+    // According to command-based pattern, each undo instance has undo and redo command.
+    // In simple cases, redo command simply does back-to-back push-pop operation on both
+    // undo and redo stacks. In this situation UndoAction must be equal to RedoAction
+    // (see RoomUndoInstance as example).
+    // In complicated cases, such as removing previously created object, UndoAction will
+    // differ from RedoAction, hence 2 separate actions will be needed.
+
     public abstract class UndoInstance
     {
         public UndoManager Parent { get; set; }
@@ -13,7 +23,7 @@ namespace TombEditor
 
     public class RoomUndoInstance : UndoInstance
     {
-        public int RoomIndex;
+        public int RoomIndex; // Needed to put resulting room in appropriate slot.
         public Room UndoRoom;
 
         public RoomUndoInstance(UndoManager parent, Room room) : base(parent)
