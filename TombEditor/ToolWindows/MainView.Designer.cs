@@ -180,6 +180,7 @@
             // 
             this.butUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butUndo.Enabled = false;
             this.butUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butUndo.Image = global::TombEditor.Properties.Resources.general_undo_16;
             this.butUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -191,12 +192,13 @@
             // 
             this.butRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butRedo.Enabled = false;
             this.butRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butRedo.Image = global::TombEditor.Properties.Resources.general_redo_16;
             this.butRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butRedo.Name = "butRedo";
             this.butRedo.Size = new System.Drawing.Size(23, 25);
-            this.butRedo.Tag = "BackupRoom";
+            this.butRedo.Tag = "Redo";
             // 
             // toolStripSeparator3
             // 

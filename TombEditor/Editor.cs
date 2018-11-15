@@ -85,6 +85,7 @@ namespace TombEditor
                 Action = null;
                 HasUnsavedChanges = false;
                 SelectedTexture = TextureArea.None;
+                UndoManager?.ClearAll();
 
                 // Delete old level after the new level is set
                 var previousLevel = Level;
@@ -598,6 +599,19 @@ namespace TombEditor
         public class InitEvent : IEditorEvent { }
 
 
+        // Undo-redo manager
+        public UndoManager UndoManager { get; private set; }
+
+        public class UndoStackChangedEvent : IEditorEvent
+        {
+            public bool UndoPossible { get; set; }
+            public bool RedoPossible { get; set; }
+        }
+        public void UndoStackChanged()
+        {
+            RaiseEvent(new UndoStackChangedEvent() { UndoPossible = UndoManager.UndoPossible, RedoPossible = UndoManager.RedoPossible });
+        }
+
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }
 
@@ -919,8 +933,9 @@ namespace TombEditor
                 throw new ArgumentNullException(nameof(synchronizationContext));
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
-            Level = level;
             SectorColoringManager = new SectorColoringManager(this);
+            UndoManager = new UndoManager(this);
+            Level = level;
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();

@@ -464,6 +464,7 @@ namespace TombEditor.Controls
                             if (_editor.Tool.Tool != EditorToolType.Selection && _editor.Tool.Tool != EditorToolType.PortalDigger)
                             {
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
+                                _editor.UndoManager.Push(_editor.SelectedRoom);
 
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
@@ -524,11 +525,13 @@ namespace TombEditor.Controls
                             {
                                 if (ModifierKeys.HasFlag(Keys.Control))
                                 {
+                                    _editor.UndoManager.Push(_editor.SelectedRoom);
                                     EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
                                 else if (ModifierKeys.HasFlag(Keys.Shift))
                                 {
+                                    _editor.UndoManager.Push(_editor.SelectedRoom);
                                     EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
@@ -540,6 +543,7 @@ namespace TombEditor.Controls
                             }
                             else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                             {
+                                _editor.UndoManager.Push(_editor.SelectedRoom);
                                 EditorActions.TexturizeGroup(_editor.SelectedRoom,
                                     _editor.HighlightedSectors,
                                     _editor.SelectedSectors,
@@ -551,6 +555,8 @@ namespace TombEditor.Controls
                             }
                             else if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None)
                             {
+                                _editor.UndoManager.Push(_editor.SelectedRoom);
+
                                 switch (_editor.Tool.Tool)
                                 {
                                     case EditorToolType.Fill:

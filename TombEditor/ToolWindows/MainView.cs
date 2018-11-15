@@ -177,6 +177,13 @@ namespace TombEditor.ToolWindows
                         break;
                 }
             }
+
+            if (obj is Editor.UndoStackChangedEvent)
+            {
+                var state = (Editor.UndoStackChangedEvent)obj;
+                butUndo.Enabled = state.UndoPossible;
+                butRedo.Enabled = state.RedoPossible;
+            }
         }
 
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)

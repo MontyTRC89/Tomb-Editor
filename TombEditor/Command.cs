@@ -293,6 +293,8 @@ namespace TombEditor
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
+                args.Editor.UndoManager.Push(args.Editor.SelectedRoom);
+
                 if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
                     EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false);
                 else if (args.Editor.SelectedObject is PositionBasedObjectInstance)
@@ -717,14 +719,14 @@ namespace TombEditor
                 EditorActions.DuplicateRooms(args.Window);
             });
 
-            AddCommand("BackupRoom", "Backup room", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("Redo", "Redo", CommandType.General, delegate (CommandArgs args)
             {
-                EditorActions.BackupRoom(args.Window);
+                args.Editor.UndoManager.Redo();
             });
 
-            AddCommand("Undo", "Undo", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("Undo", "Undo", CommandType.General, delegate (CommandArgs args)
             {
-                EditorActions.RestoreRoom(args.Window);
+                args.Editor.UndoManager.Undo();
             });
 
             AddCommand("SelectConnectedRooms", "Select connected rooms", CommandType.Rooms, delegate (CommandArgs args)
