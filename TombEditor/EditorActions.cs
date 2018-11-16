@@ -3273,7 +3273,7 @@ namespace TombEditor
                                         for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
                                         {
                                             var faceTexture = block.GetFaceTexture((BlockFace)faceType);
-                                            if (faceTexture.TextureIsInvisible)
+                                            if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)
                                                 continue;
                                             var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, (BlockFace)faceType));
                                             var shape = room.GetFaceShape(x, z, (BlockFace)faceType);

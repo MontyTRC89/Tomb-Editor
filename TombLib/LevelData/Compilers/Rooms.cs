@@ -196,10 +196,10 @@ namespace TombLib.LevelData.Compilers
                                 continue;
 
                             TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                            if (texture.TextureIsInvisible)
+                            if(texture.TextureIsInvisible)
                                 continue;
 
-                            if(texture.TextureIsUnavailable )
+                            if(texture.TextureIsUnavailable)
                             {
                                 _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
                                 continue;

@@ -206,14 +206,14 @@ namespace TombLib.Utils
         public override int GetHashCode() => base.GetHashCode();
 
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
-        public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null || Texture.IsUnavailable;
+        public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;
         public bool TextureIsTriangle => TexCoord2 == TexCoord3 || (TexCoord3.X == 0 && TexCoord3.Y == 0);
 
         public bool TriangleCoordsOutOfBounds
         {
             get
             {
-                if (TextureIsInvisible)
+                if (TextureIsInvisible || TextureIsUnavailable)
                     return false;
 
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
@@ -226,7 +226,7 @@ namespace TombLib.Utils
         {
             get
             {
-                if (TextureIsInvisible)
+                if (TextureIsInvisible || TextureIsUnavailable)
                     return false;
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
                 Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
