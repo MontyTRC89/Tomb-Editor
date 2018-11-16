@@ -152,7 +152,7 @@ namespace TombEditor
                             for (BlockFace face = 0; face < BlockFace.Count; face++)
                             {
                                 var texture = replacement.GetFaceTexture(face);
-                                if (Parent.Editor.Level.Settings.Textures.Contains(texture.Texture))
+                                if (texture.TextureIsInvisible || Parent.Editor.Level.Settings.Textures.Contains(texture.Texture))
                                     origin.SetFaceTexture(face, texture);
                             }
 
