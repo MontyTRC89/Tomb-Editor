@@ -2257,7 +2257,7 @@ namespace TombEditor
 
                     // Reset parent floor or ceiling to adjoin new portal
                     if(clearAdjoiningArea)
-                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling, false, false);
+                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling, false, false, true);
                     break;
             }
 
