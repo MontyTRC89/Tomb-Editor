@@ -485,7 +485,9 @@ namespace TombEditor.Controls
                             if (_editor.Tool.Tool != EditorToolType.Selection && _editor.Tool.Tool != EditorToolType.PortalDigger)
                             {
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
-                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+                                if (_editor.Tool.Tool < EditorToolType.Drag)
+                                    _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
@@ -733,6 +735,9 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.Tool.Tool >= EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection)
                     {
+                        if (!_toolHandler.Dragged && _toolHandler.PositionDiffers(e.X, e.Y))
+                            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y,
                             _editor.Tool.Tool == EditorToolType.Drag || _editor.Tool.Tool == EditorToolType.PortalDigger, 
                             _editor.Tool.Tool != EditorToolType.PortalDigger);
@@ -2564,11 +2569,14 @@ namespace TombEditor.Controls
             private Point _referencePosition;
             private Point _newPosition;
 
+            private Point GetQuantizedPosition(int x, int y) => new Point((int)(x * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(y * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
+
             // Terrain map resolution must be ALWAYS POWER OF 2 PLUS 1 - this is the requirement of diamond square algorithm.
             public float[,] RandomHeightMap;
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
+            public bool PositionDiffers(int x, int y) => _newPosition == GetQuantizedPosition(x, y);
 
             public PickingResultBlock ReferencePicking { get; private set; }
             public Room ReferenceRoom { get; private set; }
@@ -2903,7 +2911,7 @@ namespace TombEditor.Controls
 
             public Point? UpdateDragState(int newX, int newY, bool relative, bool highlightSelection = true)
             {
-                var newPosition = new Point((int)(newX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(newY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
+                var newPosition = GetQuantizedPosition(newX, newY);
 
                 if (newPosition != _newPosition)
                 {
