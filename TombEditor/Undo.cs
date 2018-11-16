@@ -52,7 +52,7 @@ namespace TombEditor
             RedoInstance =()=>
             {
                 var result = new AddRemoveObjectUndoInstance(Parent, UndoObject, !Created);
-                if (result.Room == null) result.Room = Room; // Relink parent room
+                result.Room = Room; // Relink parent room
                 return result;
             };
         }
