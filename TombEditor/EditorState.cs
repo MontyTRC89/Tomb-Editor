@@ -52,8 +52,7 @@ namespace TombEditor
         public ArrowType Arrow { get; set; }
 
         public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, -1), End = new VectorInt2(-1, -1) };
-        public static bool IsEmpty(SectorSelection selection) => selection == None;
-
+        
         public static bool operator ==(SectorSelection first, SectorSelection second)
         {
             return first.Start == second.Start && first.End == second.End && first.Arrow == second.Arrow;
@@ -91,6 +90,8 @@ namespace TombEditor
             }
         }
 
+        public VectorInt2 Size => new VectorInt2(End.X - Start.X);
+        public bool Empty => this == None;
         public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
         public bool ValidOrNone => Valid || this == None;
 

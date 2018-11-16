@@ -405,7 +405,6 @@ namespace TombLib.LevelData
             result.Ceiling = Ceiling;
             return result;
         }
-
         object ICloneable.Clone() => Clone();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -416,6 +415,25 @@ namespace TombLib.LevelData
 
         public bool IsAnyWall => Type != BlockType.Floor;
         public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
+
+        public void ReplaceGeometryData(Block replacement)
+        {
+            if(Type != BlockType.BorderWall) Type = replacement.Type;
+
+            Flags = replacement.Flags;
+            ForceFloorSolid = replacement.ForceFloorSolid;
+
+            for (BlockFace face = 0; face < BlockFace.Count; face++)
+                _faceTextures[(int)face] = replacement._faceTextures[(int)face];
+
+            for (int i = 0; i < 4; i++)
+                _ed[i] = replacement._ed[i];
+            for (int i = 0; i < 4; i++)
+                _rf[i] = replacement._rf[i];
+
+            Floor = replacement.Floor;
+            Ceiling = replacement.Ceiling;
+        }
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {

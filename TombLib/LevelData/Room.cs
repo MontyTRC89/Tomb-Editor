@@ -227,23 +227,6 @@ namespace TombLib.LevelData
             return newRoom;
         }
 
-        public static void Replace(Level level, ref Room oldRoom, ref Room newRoom)
-        {
-            var portals = oldRoom.Portals.ToList();
-            var objects = oldRoom.Objects.ToList();
-
-            foreach (var portal in portals)
-            {
-                oldRoom.RemoveObjectAndSingularPortalAndKeepAlive(level, portal);
-                newRoom.AddObjectAndSingularPortal(level, portal);
-            }
-
-            foreach (var obj in objects)
-                newRoom.MoveObjectFrom(level, oldRoom, obj);
-
-            oldRoom = newRoom;
-        }
-
         public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy, bool fullCopy = false)
         {
             // Copy most variables

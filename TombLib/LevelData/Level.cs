@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
@@ -17,6 +16,8 @@ namespace TombLib.LevelData
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
+
+        public bool RoomExists(Room room) => Array.IndexOf(Rooms, room) != -1;
 
         public static Level CreateSimpleLevel()
         {

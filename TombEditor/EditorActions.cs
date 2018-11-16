@@ -73,7 +73,7 @@ namespace TombEditor
         public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
             if(!disableUndo)
-                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             if (smooth)
             {
@@ -331,7 +331,7 @@ namespace TombEditor
                 return;
 
             if (!disableUndo)
-                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
             {
@@ -798,7 +798,7 @@ namespace TombEditor
 
         public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
         {
-            _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             Block blocks = room.GetBlock(pos);
 
@@ -1002,7 +1002,7 @@ namespace TombEditor
         public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool disableUndo = false)
         {
             if(!disableUndo)
-                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             if (face >= BlockFace.Ceiling) texture.Mirror();
             var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
@@ -1243,7 +1243,7 @@ namespace TombEditor
         public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, BlockFace pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
         {
             if(!disableUndo)
-                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
             RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
@@ -1380,7 +1380,7 @@ namespace TombEditor
 
         public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, BlockFaceType type)
         {
-            _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             if (type == BlockFaceType.Ceiling) texture.Mirror();
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
@@ -2119,13 +2119,13 @@ namespace TombEditor
 
         public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
-            if (!SectorSelection.IsEmpty(selection) && !selection.Valid)
+            if (!selection.Empty && !selection.Valid)
             {
                 _editor.SendMessage("Selection is invalid. Can't create new room.", PopupType.Error);
                 return null;
             }
 
-            var clampedSelection = (SectorSelection.IsEmpty(selection) ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, PortalInstance.GetDirection(direction));
+            var clampedSelection = (selection.Empty ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, PortalInstance.GetDirection(direction));
             if (!clampedSelection.HasValue)
             {
                 _editor.SendMessage("Can't create adjoining room. \nSelection is inside border walls.", PopupType.Error);

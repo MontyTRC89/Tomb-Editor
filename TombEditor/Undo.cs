@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
 
@@ -22,13 +24,15 @@ namespace TombEditor
         public Action UndoAction { get; set; }
         public Func<UndoRedoInstance> RedoInstance { get; set; }
         protected UndoRedoInstance(UndoManager parent) { Parent = parent; }
+
+        public void BrokenWarning() => Parent.Editor.SendMessage("Level state changed. Undo action ignored.", TombLib.Forms.PopupType.Warning);
     }
 
     public class AddRemoveObjectUndoInstance : UndoRedoInstance
     {
-        public PositionBasedObjectInstance UndoObject;
-        public Room Room;
-        public bool Created;
+        private PositionBasedObjectInstance UndoObject;
+        private Room Room;
+        private bool Created;
 
         public AddRemoveObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent)
         {
@@ -39,13 +43,24 @@ namespace TombEditor
             UndoAction =()=>
             {
                 if (Created)
-                    EditorActions.DeleteObjectWithoutUpdate(UndoObject);
+                {
+                    if (UndoObject.Room != null)
+                        EditorActions.DeleteObjectWithoutUpdate(UndoObject);
+                    else
+                        BrokenWarning();
+                }
                 else
                 {
-                    var backupPos = obj.Position; // Preserve original position and reassign it after placement
-                    VectorInt2 pos = new VectorInt2((int)((obj.Position.X - 512.0f) / 1024.0f), (int)((obj.Position.Z - 512.0f) / 1024.0f));
-                    EditorActions.PlaceObjectWithoutUpdate(Room, pos, UndoObject);
-                    EditorActions.MoveObject(UndoObject, backupPos);
+                    if (Parent.Editor.Level.RoomExists(Room))
+                    {
+                        var backupPos = obj.Position; // Preserve original position and reassign it after placement
+                        VectorInt2 pos = new VectorInt2((int)((obj.Position.X - 512.0f) / 1024.0f), (int)((obj.Position.Z - 512.0f) / 1024.0f));
+                        EditorActions.PlaceObjectWithoutUpdate(Room, pos, UndoObject);
+                        EditorActions.MoveObject(UndoObject, backupPos);
+                    }
+                    else
+                        BrokenWarning();
+
                 }
             };
 
@@ -60,15 +75,15 @@ namespace TombEditor
 
     public class TransformObjectUndoInstance : UndoRedoInstance
     {
-        public PositionBasedObjectInstance UndoObject;
-        public Vector3 Position;
+        private PositionBasedObjectInstance UndoObject;
+        private Vector3 Position;
 
         // Optional fields for various interface types
 
-        public float? Scale     = null;
-        public float? RotationY = null;
-        public float? RotationX = null;
-        public float? Roll      = null;
+        private float? Scale     = null;
+        private float? RotationY = null;
+        private float? RotationX = null;
+        private float? Roll      = null;
 
         public TransformObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj) : base(parent)
         {
@@ -82,49 +97,64 @@ namespace TombEditor
 
             UndoAction =()=>
             {
-                UndoObject.Position = Position;
+                if (UndoObject.Room != null)
+                {
+                    UndoObject.Position = Position;
+                    if (UndoObject is IScaleable && Scale.HasValue) ((IScaleable)obj).Scale = Scale.Value;
+                    if (UndoObject is IRotateableY && RotationY.HasValue) ((IRotateableY)obj).RotationY = RotationY.Value;
+                    if (UndoObject is IRotateableYX && RotationX.HasValue) ((IRotateableYX)obj).RotationX = RotationX.Value;
+                    if (UndoObject is IRotateableYXRoll && Roll.HasValue) ((IRotateableYXRoll)obj).Roll = Roll.Value;
 
-                if (UndoObject is IScaleable && Scale.HasValue) ((IScaleable)obj).Scale = Scale.Value;
-                if (UndoObject is IRotateableY && RotationY.HasValue) ((IRotateableY)obj).RotationY = RotationY.Value;
-                if (UndoObject is IRotateableYX && RotationX.HasValue) ((IRotateableYX)obj).RotationX = RotationX.Value;
-                if (UndoObject is IRotateableYXRoll && Roll.HasValue) ((IRotateableYXRoll)obj).Roll = Roll.Value;
-
-                Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
+                    Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
+                }
+                else
+                    BrokenWarning();
             };
 
             RedoInstance =()=> new TransformObjectUndoInstance(Parent, UndoObject);
         }
     }
 
-    public class RoomUndoInstance : UndoRedoInstance
+    public class GeometryUndoInstance : UndoRedoInstance
     {
-        public int RoomIndex; // Needed to put resulting room in appropriate slot.
-        public Room UndoRoom;
+        private Room UndoRoom;
+        private RectangleInt2 Area;
+        private Block[,] Blocks;
 
-        public RoomUndoInstance(UndoManager parent, Room room) : base(parent)
+        public GeometryUndoInstance(UndoManager parent, Room room) : base(parent)
         {
-            RoomIndex = Array.FindIndex(Parent.Editor.Level.Rooms, r => r == room);
-            UndoRoom = room.Clone(Parent.Editor.Level, null, true);
+            UndoRoom = room;
+            Area.Start = VectorInt2.Zero;
+            Area.End = new VectorInt2(room.NumXSectors, room.NumZSectors);
+
+            Blocks = new Block[Area.Size.X + 1, Area.Size.Y + 1];
+
+            for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
+                for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
+                    Blocks[i, j] = UndoRoom.Blocks[x, z].Clone();
 
             UndoAction =()=>
             {
-                if (UndoRoom == null) return;
-                var roomIsCurrent = Parent.Editor.Level.Rooms[RoomIndex] == Parent.Editor.SelectedRoom;
-
-                Room.Replace(Parent.Editor.Level, ref Parent.Editor.Level.Rooms[RoomIndex], ref UndoRoom);
-
-                if (roomIsCurrent)
+                if (UndoRoom != null && Parent.Editor.Level.RoomExists(UndoRoom) &&
+                    UndoRoom.NumXSectors == Area.Size.X && UndoRoom.NumZSectors == Area.Size.Y)
                 {
-                    var selection = Parent.Editor.SelectedSectors;
-                    Parent.Editor.SelectedRoom = Parent.Editor.Level.Rooms[RoomIndex];
-                    Parent.Editor.SelectedSectors = selection;
-                }
+                    for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
+                        for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
+                            UndoRoom.Blocks[x, z].ReplaceGeometryData(Blocks[i, j]);
 
-                Parent.Editor.Level.Rooms[RoomIndex].BuildGeometry();
-                Parent.Editor.RoomGeometryChange(Parent.Editor.Level.Rooms[RoomIndex]);
+                    Parent.Editor.RoomGeometryChange(UndoRoom);
+                    var relevantRooms = room.Portals.Select(p => p.AdjoiningRoom);
+                    Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+
+                    UndoRoom.BuildGeometry();
+                    foreach (Room relevantRoom in relevantRooms)
+                        Parent.Editor.RoomGeometryChange(relevantRoom);
+                }
+                else
+                    BrokenWarning();
             };
 
-            RedoInstance =()=> new RoomUndoInstance(Parent, Parent.Editor.Level.Rooms[RoomIndex]);
+            RedoInstance =()=> new GeometryUndoInstance(Parent, UndoRoom);
         }
     }
 
@@ -188,7 +218,7 @@ namespace TombEditor
             Editor.UndoStackChanged();
         }
 
-        public void PushRoomChanged(Room room) => Push(new RoomUndoInstance(this, room));
+        public void PushGeometryChanged(Room room, SectorSelection? selection = null) => Push(new GeometryUndoInstance(this, room));
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
         public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
@@ -201,7 +231,7 @@ namespace TombEditor
         public bool RedoPossible => StackValid(_redoStack) && !_redoStack.Empty;
 
         private bool StackValid(UndoRedoStack stack) => (stack != null && stack.Count > 0);
-
+        
         private void Push(UndoRedoInstance instance)
         {
             if (!StackValid(_undoStack)) return;

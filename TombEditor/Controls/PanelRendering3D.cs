@@ -464,7 +464,7 @@ namespace TombEditor.Controls
                             if (_editor.Tool.Tool != EditorToolType.Selection && _editor.Tool.Tool != EditorToolType.PortalDigger)
                             {
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
-                                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
+                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
@@ -476,7 +476,8 @@ namespace TombEditor.Controls
                                             ArrowType.EntireFace,
                                             belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
                                             (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
-                                            _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel);
+                                            _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
+                                            false, false, true, true);
                                 }
                             }
                             else if (_editor.Tool.Tool == EditorToolType.PortalDigger && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
