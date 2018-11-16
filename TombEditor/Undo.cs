@@ -140,7 +140,31 @@ namespace TombEditor
                 {
                     for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                         for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
-                            UndoRoom.Blocks[x, z].ReplaceGeometryData(Blocks[i, j]);
+                        {
+                            var origin = UndoRoom.Blocks[x, z];
+                            var replacement = Blocks[i, j];
+
+                            if (origin.Type != BlockType.BorderWall) origin.Type = replacement.Type;
+
+                            origin.Flags = replacement.Flags;
+                            origin.ForceFloorSolid = replacement.ForceFloorSolid;
+
+                            for (BlockFace face = 0; face < BlockFace.Count; face++)
+                            {
+                                var texture = replacement.GetFaceTexture(face);
+                                if (Parent.Editor.Level.Settings.Textures.Contains(texture.Texture))
+                                    origin.SetFaceTexture(face, texture);
+                            }
+
+                            for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
+                            {
+                                origin.SetHeight(BlockVertical.Ed, edge, replacement.GetHeight(BlockVertical.Ed, edge));
+                                origin.SetHeight(BlockVertical.Rf, edge, replacement.GetHeight(BlockVertical.Rf, edge));
+                            }
+
+                            origin.Floor = replacement.Floor;
+                            origin.Ceiling = replacement.Ceiling;
+                        }
 
                     Parent.Editor.RoomGeometryChange(UndoRoom);
                     Parent.Editor.RoomSectorPropertiesChange(UndoRoom);
