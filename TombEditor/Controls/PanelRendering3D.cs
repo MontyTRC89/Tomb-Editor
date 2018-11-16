@@ -458,7 +458,6 @@ namespace TombEditor.Controls
                     VectorInt2 pos = newBlockPicking.Pos;
 
                     // Handle face selection
-
                     if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag)
                          && ModifierKeys == Keys.None)
                     {

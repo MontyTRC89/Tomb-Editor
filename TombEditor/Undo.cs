@@ -77,6 +77,7 @@ namespace TombEditor
     {
         private PositionBasedObjectInstance UndoObject;
         private Vector3 Position;
+        private Room Room;
 
         // Optional fields for various interface types
 
@@ -89,6 +90,7 @@ namespace TombEditor
         {
             UndoObject = obj;
             Position = obj.Position;
+            Room = obj.Room;
 
             if (obj is IScaleable) Scale = ((IScaleable)obj).Scale;
             if (obj is IRotateableY) RotationY = ((IRotateableY)obj).RotationY;
@@ -99,13 +101,31 @@ namespace TombEditor
             {
                 if (UndoObject.Room != null)
                 {
+                    bool roomChanged = false;
+
+                    if(UndoObject.Room != Room)
+                    {
+                        var oldRoom = UndoObject.Room;
+                        oldRoom.RemoveObject(Parent.Editor.Level, UndoObject);
+                        Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Remove, oldRoom);
+
+                        Room.AddObject(Parent.Editor.Level, UndoObject);
+                        Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Add);
+
+                        roomChanged = true;
+                    }
+
                     UndoObject.Position = Position;
                     if (UndoObject is IScaleable && Scale.HasValue) ((IScaleable)obj).Scale = Scale.Value;
                     if (UndoObject is IRotateableY && RotationY.HasValue) ((IRotateableY)obj).RotationY = RotationY.Value;
                     if (UndoObject is IRotateableYX && RotationX.HasValue) ((IRotateableYX)obj).RotationX = RotationX.Value;
                     if (UndoObject is IRotateableYXRoll && Roll.HasValue) ((IRotateableYXRoll)obj).Roll = Roll.Value;
 
-                    Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
+                    if (UndoObject is LightInstance)
+                        Room.BuildGeometry(); // Rebuild lighting!
+
+                    if(!roomChanged)
+                        Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
                 }
                 else
                     BrokenWarning();
