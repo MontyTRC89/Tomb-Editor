@@ -1528,6 +1528,8 @@ namespace TombEditor
 
         public static void SetDiagonalFloorSplit(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1602,6 +1604,8 @@ namespace TombEditor
 
         public static void SetDiagonalCeilingSplit(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1676,6 +1680,8 @@ namespace TombEditor
 
         public static void SetDiagonalWall(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1752,6 +1758,8 @@ namespace TombEditor
 
         public static void RotateSectors(Room room, RectangleInt2 area, bool floor)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             bool wallsRotated = false;
 
             for (int x = area.X0; x <= area.X1; x++)
@@ -1774,6 +1782,8 @@ namespace TombEditor
 
         public static void SetWall(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1789,6 +1799,8 @@ namespace TombEditor
 
         public static void SetFloor(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1805,6 +1817,8 @@ namespace TombEditor
 
         public static void SetCeiling(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1840,6 +1854,8 @@ namespace TombEditor
 
         public static void ToggleForceFloorSolid(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     room.Blocks[x, z].ForceFloorSolid = !room.Blocks[x, z].ForceFloorSolid;
@@ -2016,6 +2032,8 @@ namespace TombEditor
 
         public static void SmoothRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             float[,] changes = new float[area.Width + 2, area.Height + 2];
             Random rng = new Random();
             for (int x = 1; x <= area.Width; x++)
@@ -2033,6 +2051,8 @@ namespace TombEditor
 
         public static void SharpRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             Random rng = new Random();
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
@@ -2045,6 +2065,8 @@ namespace TombEditor
 
         public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -2060,6 +2082,8 @@ namespace TombEditor
 
         public static void GridWalls(Room room, RectangleInt2 area, bool fiveDivisions = false)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -2233,7 +2257,7 @@ namespace TombEditor
 
                     // Reset parent floor or ceiling to adjoin new portal
                     if(clearAdjoiningArea)
-                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling);
+                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling, false, false);
                     break;
             }
 
@@ -2260,8 +2284,11 @@ namespace TombEditor
             return newRoom;
         }
 
-        public static void FlattenRoomArea(Room room, RectangleInt2 area, int? height = null, bool ceiling = false, bool includeWalls = false, bool rebuild = false)
+        public static void FlattenRoomArea(Room room, RectangleInt2 area, int? height, bool ceiling, bool includeWalls, bool rebuild, bool disableUndo = false)
         {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             if (!height.HasValue)
                 height = ceiling ? room.GetHighestCorner(area) : room.GetLowestCorner(area);
 

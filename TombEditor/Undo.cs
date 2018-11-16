@@ -143,12 +143,16 @@ namespace TombEditor
                             UndoRoom.Blocks[x, z].ReplaceGeometryData(Blocks[i, j]);
 
                     Parent.Editor.RoomGeometryChange(UndoRoom);
+                    Parent.Editor.RoomSectorPropertiesChange(UndoRoom);
                     var relevantRooms = room.Portals.Select(p => p.AdjoiningRoom);
                     Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
 
                     UndoRoom.BuildGeometry();
                     foreach (Room relevantRoom in relevantRooms)
+                    {
                         Parent.Editor.RoomGeometryChange(relevantRoom);
+                        Parent.Editor.RoomSectorPropertiesChange(relevantRoom);
+                    }
                 }
                 else
                     BrokenWarning();
