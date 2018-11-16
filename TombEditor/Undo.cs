@@ -74,7 +74,11 @@ namespace TombEditor
                 Room.Replace(ref Parent.Editor.Level.Rooms[RoomIndex], ref UndoRoom);
 
                 if (roomIsCurrent)
+                {
+                    var selection = Parent.Editor.SelectedSectors;
                     Parent.Editor.SelectedRoom = Parent.Editor.Level.Rooms[RoomIndex];
+                    Parent.Editor.SelectedSectors = selection;
+                }
 
                 Parent.Editor.Level.Rooms[RoomIndex].BuildGeometry();
                 Parent.Editor.RoomGeometryChange(Parent.Editor.Level.Rooms[RoomIndex]);

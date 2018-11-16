@@ -293,8 +293,6 @@ namespace TombEditor
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                args.Editor.UndoManager.Push(args.Editor.SelectedRoom);
-
                 if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
                     EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false);
                 else if (args.Editor.SelectedObject is PositionBasedObjectInstance)

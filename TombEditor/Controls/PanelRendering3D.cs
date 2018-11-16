@@ -476,8 +476,7 @@ namespace TombEditor.Controls
                                             ArrowType.EntireFace,
                                             belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
                                             (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
-                                            _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
-                                            false);
+                                            _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel);
                                 }
                             }
                             else if (_editor.Tool.Tool == EditorToolType.PortalDigger && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
@@ -525,13 +524,11 @@ namespace TombEditor.Controls
                             {
                                 if (ModifierKeys.HasFlag(Keys.Control))
                                 {
-                                    _editor.UndoManager.Push(_editor.SelectedRoom);
                                     EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
                                 else if (ModifierKeys.HasFlag(Keys.Shift))
                                 {
-                                    _editor.UndoManager.Push(_editor.SelectedRoom);
                                     EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
@@ -543,7 +540,6 @@ namespace TombEditor.Controls
                             }
                             else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                             {
-                                _editor.UndoManager.Push(_editor.SelectedRoom);
                                 EditorActions.TexturizeGroup(_editor.SelectedRoom,
                                     _editor.HighlightedSectors,
                                     _editor.SelectedSectors,
@@ -555,8 +551,6 @@ namespace TombEditor.Controls
                             }
                             else if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None)
                             {
-                                _editor.UndoManager.Push(_editor.SelectedRoom);
-
                                 switch (_editor.Tool.Tool)
                                 {
                                     case EditorToolType.Fill:
@@ -817,7 +811,7 @@ namespace TombEditor.Controls
                                             subdivisionToEdit,
                                             (short)Math.Sign(dragValue.Value.Y),
                                             ModifierKeys.HasFlag(Keys.Alt),
-                                            _toolHandler.ReferenceIsOppositeDiagonalStep, true);
+                                            _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
                                         break;
                                     case EditorToolType.Terrain:
                                         _toolHandler.DiscardEditedGeometry();
@@ -902,7 +896,7 @@ namespace TombEditor.Controls
                                                 if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                                     break;
 
-                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling);
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, true);
                                                 break;
 
                                             case EditorToolType.Drag:
@@ -919,7 +913,7 @@ namespace TombEditor.Controls
                                                     belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
                                                     (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
                                                     _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
-                                                    false);
+                                                    false, false, true, true);
                                                 break;
                                         }
                                         redrawWindow = true;
@@ -938,7 +932,7 @@ namespace TombEditor.Controls
                                     {
                                         if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                             _editor.SelectedSectors == SectorSelection.None)
-                                            redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                            redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
                                     }
                                     else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                                     {
@@ -956,7 +950,8 @@ namespace TombEditor.Controls
                                                 _editor.SelectedTexture,
                                                 _toolHandler.ReferencePicking.Face,
                                                 ModifierKeys.HasFlag(Keys.Control),
-                                                !ModifierKeys.HasFlag(Keys.Shift));
+                                                !ModifierKeys.HasFlag(Keys.Shift),
+                                                false);
                                             redrawWindow = true;
                                         }
                                     }
