@@ -6,13 +6,14 @@ namespace TombEditor
 {
     // Basic class for any undo type.
     // Any new undo type must be based on this base class!
-    
-    // According to command-based pattern, each undo instance has undo and redo command.
-    // In simple cases, redo command simply does back-to-back push-pop operation on both
-    // undo and redo stacks. In this situation UndoAction must be equal to RedoAction
-    // (see RoomUndoInstance as example).
+
+    // According to command-based pattern, each undo instance has undo and complementary 
+    // redo instance. In simple cases, redo command simply does back-to-back push-pop 
+    // operation on both undo and redo stacks. In this situation UndoAction's UndoInstance
+    // must mirror RedoInstance (see RoomUndoInstance as example).
     // In complicated cases, such as removing previously created object, UndoAction will
-    // differ from RedoAction, hence 2 separate actions will be needed.
+    // differ from RedoAction (in case of objects, we need to re-link room to newly created
+    // instance), hence RedoInstance delegate has more complicated code.
 
     public abstract class UndoRedoInstance
     {
@@ -22,13 +23,13 @@ namespace TombEditor
         protected UndoRedoInstance(UndoManager parent) { Parent = parent; }
     }
 
-    public class ObjectUndoInstance : UndoRedoInstance
+    public class AddRemoveObjectUndoInstance : UndoRedoInstance
     {
         public PositionBasedObjectInstance UndoObject;
         public Room Room;
         public bool Created;
 
-        public ObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent)
+        public AddRemoveObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent)
         {
             Created = created;
             UndoObject = obj;
@@ -47,10 +48,10 @@ namespace TombEditor
                 }
             };
 
-            RedoInstance = delegate ()
+            RedoInstance = () =>
             {
-                var result = new ObjectUndoInstance(Parent, UndoObject, !Created);
-                if (result.Room == null) result.Room = Room;
+                var result = new AddRemoveObjectUndoInstance(Parent, UndoObject, !Created);
+                if (result.Room == null) result.Room = Room; // Relink parent room
                 return result;
             };
         }
@@ -84,10 +85,7 @@ namespace TombEditor
                 Parent.Editor.RoomGeometryChange(Parent.Editor.Level.Rooms[RoomIndex]);
             };
 
-            RedoInstance = delegate ()
-            {
-                return new RoomUndoInstance(Parent, Parent.Editor.Level.Rooms[RoomIndex]);
-            };
+            RedoInstance = () => new RoomUndoInstance(Parent, Parent.Editor.Level.Rooms[RoomIndex]);
         }
     }
 
@@ -161,7 +159,7 @@ namespace TombEditor
         }
 
         public void Push(Room room) => Push(new RoomUndoInstance(this, room));
-        public void Push(PositionBasedObjectInstance obj, bool created = true) => Push(new ObjectUndoInstance(this, obj, created));
+        public void Push(PositionBasedObjectInstance obj, bool created = true) => Push(new AddRemoveObjectUndoInstance(this, obj, created));
         public void Redo() => Engage(_redoStack);
         public void Undo() => Engage(_undoStack);
         public void UndoClear() => Clear(_undoStack);
