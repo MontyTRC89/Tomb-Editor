@@ -785,6 +785,8 @@ namespace TombEditor
 
         public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             Block blocks = room.GetBlock(pos);
 
             TextureArea newTexture = blocks.GetFaceTexture(face);
