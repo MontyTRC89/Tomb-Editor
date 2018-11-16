@@ -455,9 +455,31 @@ namespace TombEditor.Controls
                         return;
                     }
 
-                    // Act based on editor mode
                     VectorInt2 pos = newBlockPicking.Pos;
+
+                    // Handle face selection
+
+                    if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag)
+                         && ModifierKeys == Keys.None)
+                    {
+                        if (!_editor.SelectedSectors.Valid || !_editor.SelectedSectors.Area.Contains(pos))
+                        {
+                            // Select rectangle
+                            if (ModifierKeys.HasFlag(Keys.Control))
+                            {
+                                // Multiple separate tile selection - To Be Implemented...
+                                _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                            }
+                            else
+                                _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                            _doSectorSelection = true;
+                            return;
+                        }
+                    }
+
+                    // Act based on editor mode
                     bool belongsToFloor = newBlockPicking.BelongsToFloor;
+
                     switch (_editor.Mode)
                     {
                         case EditorMode.Geometry:
@@ -586,26 +608,6 @@ namespace TombEditor.Controls
                             }
                             break;
                     }
-
-                    // Handle face selection
-
-                    if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag)
-                         && ModifierKeys == Keys.None)
-                    {
-                        if (!_editor.SelectedSectors.Valid || !_editor.SelectedSectors.Area.Contains(pos))
-                        {
-                            // Select rectangle
-                            if (ModifierKeys.HasFlag(Keys.Control))
-                            {
-                                // Multiple separate tile selection - To Be Implemented...
-                                _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
-                            }
-                            else
-                                _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
-                            _doSectorSelection = true;
-                        }
-                    }
-
                 }
                 else if (newPicking is PickingResultObject)
                 {
@@ -955,7 +957,7 @@ namespace TombEditor.Controls
                                                 _toolHandler.ReferencePicking.Face,
                                                 ModifierKeys.HasFlag(Keys.Control),
                                                 !ModifierKeys.HasFlag(Keys.Shift),
-                                                false);
+                                                true);
                                             redrawWindow = true;
                                         }
                                     }
