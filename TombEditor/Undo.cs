@@ -111,7 +111,7 @@ namespace TombEditor
                 if (UndoRoom == null) return;
                 var roomIsCurrent = Parent.Editor.Level.Rooms[RoomIndex] == Parent.Editor.SelectedRoom;
 
-                Room.Replace(ref Parent.Editor.Level.Rooms[RoomIndex], ref UndoRoom);
+                Room.Replace(Parent.Editor.Level, ref Parent.Editor.Level.Rooms[RoomIndex], ref UndoRoom);
 
                 if (roomIsCurrent)
                 {
