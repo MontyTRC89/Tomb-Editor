@@ -73,7 +73,7 @@ namespace TombEditor
         public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
             if(!disableUndo)
-                _editor.UndoManager.Push(_editor.SelectedRoom);
+                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
             if (smooth)
             {
@@ -331,7 +331,7 @@ namespace TombEditor
                 return;
 
             if (!disableUndo)
-                _editor.UndoManager.Push(_editor.SelectedRoom);
+                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
             Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
             {
@@ -605,6 +605,7 @@ namespace TombEditor
 
         public static void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
+            _editor.UndoManager.PushObjectTransformed(instance);
             MoveObject(instance, instance.Position + pos, precision, canGoOutsideRoom);
         }
 
@@ -616,8 +617,11 @@ namespace TombEditor
             None
         }
 
-        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true)
+        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true, bool disableUndo = false)
         {
+            if(!disableUndo && instance is PositionBasedObjectInstance)
+                _editor.UndoManager.PushObjectTransformed((PositionBasedObjectInstance)instance);
+
             if (quantization != 0.0f)
                 angleInDegrees = (float)(Math.Round(angleInDegrees / quantization) * quantization);
 
@@ -733,7 +737,7 @@ namespace TombEditor
                 return;
 
             if (instance is PositionBasedObjectInstance)
-                _editor.UndoManager.Push((PositionBasedObjectInstance)instance, false);
+                _editor.UndoManager.PushObjectDeleted((PositionBasedObjectInstance)instance);
 
             DeleteObjectWithoutUpdate(instance);
         }
@@ -794,7 +798,7 @@ namespace TombEditor
 
         public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
         {
-            _editor.UndoManager.Push(_editor.SelectedRoom);
+            _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
             Block blocks = room.GetBlock(pos);
 
@@ -998,7 +1002,7 @@ namespace TombEditor
         public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool disableUndo = false)
         {
             if(!disableUndo)
-                _editor.UndoManager.Push(_editor.SelectedRoom);
+                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
             if (face >= BlockFace.Ceiling) texture.Mirror();
             var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
@@ -1239,7 +1243,7 @@ namespace TombEditor
         public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, BlockFace pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
         {
             if(!disableUndo)
-                _editor.UndoManager.Push(_editor.SelectedRoom);
+                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
             if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
             RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
@@ -1376,7 +1380,7 @@ namespace TombEditor
 
         public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, BlockFaceType type)
         {
-            _editor.UndoManager.Push(_editor.SelectedRoom);
+            _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
             if (type == BlockFaceType.Ceiling) texture.Mirror();
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
@@ -1412,7 +1416,7 @@ namespace TombEditor
         public static void PlaceObject(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
             PlaceObjectWithoutUpdate(room, pos, instance);
-            _editor.UndoManager.Push(instance);
+            _editor.UndoManager.PushObjectCreated(instance);
         }
 
 

@@ -3,7 +3,6 @@ using DarkUI.Docking;
 using System;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Controls;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;

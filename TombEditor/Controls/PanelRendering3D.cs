@@ -464,7 +464,7 @@ namespace TombEditor.Controls
                             if (_editor.Tool.Tool != EditorToolType.Selection && _editor.Tool.Tool != EditorToolType.PortalDigger)
                             {
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
-                                _editor.UndoManager.Push(_editor.SelectedRoom);
+                                _editor.UndoManager.PushRoomChanged(_editor.SelectedRoom);
 
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
@@ -620,6 +620,9 @@ namespace TombEditor.Controls
                 }
                 else if (newPicking is PickingResultGizmo)
                 {
+                    if (_editor.SelectedObject is PositionBasedObjectInstance)
+                        _editor.UndoManager.PushObjectTransformed((PositionBasedObjectInstance)_editor.SelectedObject);
+
                     // Set gizmo axis
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
                     _gizmoEnabled = true;
