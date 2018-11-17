@@ -1435,7 +1435,7 @@ namespace TombEditor
             _editor.SelectedObject = instance;
         }
 
-        public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner)
+        public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
         {
             rooms_ = rooms_.SelectMany(room => room.Versions).Distinct();
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
@@ -1448,8 +1448,8 @@ namespace TombEditor
                 return;
             }
 
-            // Ask for confirmation
-            if (DarkMessageBox.Show(owner,
+            // Ask for confirmation. No owner = silent mode!
+            if (owner != null && DarkMessageBox.Show(owner,
                     "Do you really want to delete rooms? All objects (including portals) inside rooms will be deleted and " +
                     "triggers pointing to them will be removed.",
                     "Delete rooms", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
@@ -2283,6 +2283,7 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(newRoom);
             }
 
+            _editor.UndoManager.PushAdjoiningRoomCreated(newRoom);
             return newRoom;
         }
 

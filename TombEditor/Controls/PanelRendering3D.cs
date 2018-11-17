@@ -735,7 +735,7 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.Tool.Tool >= EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection)
                     {
-                        if (!_toolHandler.Dragged && _toolHandler.PositionDiffers(e.X, e.Y))
+                        if (_editor.Tool.Tool != EditorToolType.PortalDigger && !_toolHandler.Dragged && _toolHandler.PositionDiffers(e.X, e.Y))
                             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y,

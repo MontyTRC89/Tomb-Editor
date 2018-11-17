@@ -27,6 +27,29 @@ namespace TombEditor
         protected UndoRedoInstance(UndoManager parent) { Parent = parent; }
     }
 
+    public class AddRemoveAdjoiningRoomUndoInstance : UndoRedoInstance
+    {
+        private Room Room;
+        private Room ParentRoom;
+
+        public AddRemoveAdjoiningRoomUndoInstance(UndoManager parent, Room room) : base(parent)
+        {
+            Room = room;
+            ParentRoom = room.Portals.Count() == 1 ? room.Portals.First().AdjoiningRoom : null;
+
+            Valid =()=> Room != null && ParentRoom != null &&
+                        Parent.Editor.Level.RoomExists(Room) && Parent.Editor.Level.RoomExists(ParentRoom) &&
+                        Room.Portals.Count(p => p.AdjoiningRoom == ParentRoom) == 1 && Room.AnyObjects.Count(obj => (obj is PortalInstance)) == 1 &&
+                        Room.AnyObjects.Count(obj => !(obj is PortalInstance)) == 0;
+
+            UndoAction =()=>
+            {
+                Parent.Editor.SelectedRoom = ParentRoom;
+                EditorActions.DeleteRooms(new[] { Room });
+            };
+        }
+    }
+
     public class AddRemoveObjectUndoInstance : UndoRedoInstance
     {
         private PositionBasedObjectInstance UndoObject;
@@ -250,7 +273,8 @@ namespace TombEditor
             Editor.UndoStackChanged();
         }
 
-        public void PushGeometryChanged(Room room, SectorSelection? selection = null) => Push(new GeometryUndoInstance(this, room));
+        public void PushAdjoiningRoomCreated(Room room) => Push(new AddRemoveAdjoiningRoomUndoInstance(this, room));
+        public void PushGeometryChanged(Room room) => Push(new GeometryUndoInstance(this, room));
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
         public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
@@ -292,8 +316,8 @@ namespace TombEditor
             if(instance.Valid())
             {
                 // Generate and push redo instance
-                var redo = instance.RedoInstance();
-                if (redo != null) counterStack.Push(redo);
+                var redo = instance.RedoInstance;
+                if (redo != null) counterStack.Push(redo());
 
                 // Invoke original undo instance
                 instance.UndoAction?.Invoke();
