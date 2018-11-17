@@ -763,7 +763,7 @@ namespace TombEditor
                 EditorActions.SplitRoom(args.Window);
             });
 
-            AddCommand("CropRoom", "Crop room", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("CropRoom", "Crop room...", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.CropRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window);
             });
