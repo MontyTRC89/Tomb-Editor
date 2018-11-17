@@ -17,6 +17,7 @@ namespace TombEditor
     // In complicated cases, such as removing previously created object, UndoAction will
     // differ from RedoAction (in case of objects, we need to re-link room to newly created
     // instance), hence RedoInstance delegate has more complicated code.
+    // In case redo action is impossible, just don't define RedoInstance.
 
     public abstract class UndoRedoInstance
     {
@@ -230,7 +231,8 @@ namespace TombEditor
                 if (newSize == items.Length) return;
                 newSize = newSize< 1 ? 1 : newSize;
 
-                if(top != -1 && top > newSize - 1 && items.Length > newSize)
+                // In case new size is smaller, cut stack from bottom
+                if (top != -1 && top > newSize - 1 && items.Length > newSize)
                 {
                     var newItems = new UndoRedoInstance[newSize];
                     Array.Copy(items, top - newSize + 1, newItems, 0, newSize);
@@ -270,7 +272,7 @@ namespace TombEditor
 
         private const int MaxUndoDepth = 1000;
 
-        public Editor Editor;
+        public Editor Editor { get; private set; }
         private UndoRedoStack _undoStack;
         private UndoRedoStack _redoStack;
 
@@ -283,19 +285,28 @@ namespace TombEditor
             _redoStack = new UndoRedoStack(undoDepth);
         }
 
-        public void ClearAll()
+        public void Push(UndoRedoInstance instance)
         {
-            Clear(_undoStack, true);
-            Clear(_redoStack, true);
+            if (!StackValid(_undoStack)) return;
+
+            _undoStack.Push(instance);
+            _redoStack.Clear();
             Editor.UndoStackChanged();
         }
 
         public void Resize(int newSize)
         {
-            newSize = MathC.Clamp(newSize, 1, MaxUndoDepth);
             if (newSize == _undoStack.Count) return;
+            newSize = MathC.Clamp(newSize, 1, MaxUndoDepth);
             _undoStack.Resize(newSize);
             _redoStack.Resize(newSize);
+            Editor.UndoStackChanged();
+        }
+
+        public void ClearAll()
+        {
+            Clear(_undoStack, true);
+            Clear(_redoStack, true);
             Editor.UndoStackChanged();
         }
 
@@ -313,15 +324,6 @@ namespace TombEditor
         public bool RedoPossible => StackValid(_redoStack) && !_redoStack.Empty;
 
         private bool StackValid(UndoRedoStack stack) => (stack != null && stack.Count > 0);
-        
-        private void Push(UndoRedoInstance instance)
-        {
-            if (!StackValid(_undoStack)) return;
-
-            _undoStack.Push(instance);
-            _redoStack.Clear();
-            Editor.UndoStackChanged();
-        }
 
         private void Clear(UndoRedoStack stack, bool silent = false)
         {
@@ -338,7 +340,7 @@ namespace TombEditor
             var instance = stack.Pop();
             if (instance == null) return;
 
-            if(instance.Valid())
+            if(instance.Valid == null || instance.Valid())
             {
                 // Generate and push redo instance
                 var redo = instance.RedoInstance;
