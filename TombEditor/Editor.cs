@@ -762,6 +762,9 @@ namespace TombEditor
 
                 // Update coloring info
                 SectorColoringManager.ColoringInfo.SectorColorScheme = current.UI_ColorScheme;
+
+                // Resize undo stack if needed
+                UndoManager.Resize(current.Editor_UndoDepth);
             }
 
 

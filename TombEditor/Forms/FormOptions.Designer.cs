@@ -39,6 +39,8 @@
             this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            this.darkNumericUpDown39 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel67 = new DarkUI.Controls.DarkLabel();
             this.darkCheckBox22 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
@@ -215,8 +217,6 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkNumericUpDown39 = new DarkUI.Controls.DarkNumericUpDown();
-            this.darkLabel67 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -226,6 +226,7 @@
             this.darkGroupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown1)).BeginInit();
             this.darkGroupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).BeginInit();
             this.darkGroupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown38)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown37)).BeginInit();
@@ -282,7 +283,6 @@
             this.darkSectionPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -430,6 +430,47 @@
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "System";
+            // 
+            // darkNumericUpDown39
+            // 
+            this.darkNumericUpDown39.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.darkNumericUpDown39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkNumericUpDown39.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.darkNumericUpDown39.Location = new System.Drawing.Point(254, 92);
+            this.darkNumericUpDown39.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown39.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown39.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown39.Name = "darkNumericUpDown39";
+            this.darkNumericUpDown39.Size = new System.Drawing.Size(64, 22);
+            this.darkNumericUpDown39.TabIndex = 8;
+            this.darkNumericUpDown39.Tag = "Editor_UndoDepth";
+            this.darkNumericUpDown39.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // darkLabel67
+            // 
+            this.darkLabel67.AutoSize = true;
+            this.darkLabel67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel67.Location = new System.Drawing.Point(3, 94);
+            this.darkLabel67.Name = "darkLabel67";
+            this.darkLabel67.Size = new System.Drawing.Size(107, 13);
+            this.darkLabel67.TabIndex = 7;
+            this.darkLabel67.Text = "Undo / redo depth:";
             // 
             // darkCheckBox22
             // 
@@ -2799,37 +2840,6 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkNumericUpDown39
-            // 
-            this.darkNumericUpDown39.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkNumericUpDown39.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.darkNumericUpDown39.Location = new System.Drawing.Point(254, 92);
-            this.darkNumericUpDown39.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.darkNumericUpDown39.MousewheelSingleIncrement = true;
-            this.darkNumericUpDown39.Name = "darkNumericUpDown39";
-            this.darkNumericUpDown39.Size = new System.Drawing.Size(64, 22);
-            this.darkNumericUpDown39.TabIndex = 8;
-            this.darkNumericUpDown39.Tag = "Editor_UndoDepth";
-            // 
-            // darkLabel67
-            // 
-            this.darkLabel67.AutoSize = true;
-            this.darkLabel67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel67.Location = new System.Drawing.Point(3, 94);
-            this.darkLabel67.Name = "darkLabel67";
-            this.darkLabel67.Size = new System.Drawing.Size(194, 13);
-            this.darkLabel67.TabIndex = 7;
-            this.darkLabel67.Text = "Undo / redo depth (requires restart):";
-            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -2860,6 +2870,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown1)).EndInit();
             this.darkGroupBox2.ResumeLayout(false);
             this.darkGroupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).EndInit();
             this.darkGroupBox7.ResumeLayout(false);
             this.darkGroupBox7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown38)).EndInit();
@@ -2928,7 +2939,6 @@
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).EndInit();
             this.ResumeLayout(false);
 
         }

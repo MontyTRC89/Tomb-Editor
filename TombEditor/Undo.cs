@@ -225,6 +225,22 @@ namespace TombEditor
 
             public UndoRedoStack(int capacity) { items = new UndoRedoInstance[capacity]; }
 
+            public void Resize(int newSize)
+            {
+                if (newSize == items.Length) return;
+                newSize = newSize< 1 ? 1 : newSize;
+
+                if(top != -1 && top > newSize - 1 && items.Length > newSize)
+                {
+                    var newItems = new UndoRedoInstance[newSize];
+                    Array.Copy(items, top - newSize + 1, newItems, 0, newSize);
+                    top = newSize - 1;
+                    items = newItems;
+                }
+                else
+                    Array.Resize(ref items, newSize);
+            }
+
             public void Push(UndoRedoInstance item)
             {
                 // Rotate stack if full
@@ -252,21 +268,34 @@ namespace TombEditor
             }
         }
 
+        private const int MaxUndoDepth = 1000;
+
         public Editor Editor;
         private UndoRedoStack _undoStack;
         private UndoRedoStack _redoStack;
 
         public UndoManager(Editor editor, int undoDepth)
         {
+            undoDepth = MathC.Clamp(undoDepth, 1, MaxUndoDepth);
+
             Editor = editor;
-            _undoStack = new UndoRedoStack(Math.Abs(undoDepth));
-            _redoStack = new UndoRedoStack(Math.Abs(undoDepth));
+            _undoStack = new UndoRedoStack(undoDepth);
+            _redoStack = new UndoRedoStack(undoDepth);
         }
 
         public void ClearAll()
         {
             Clear(_undoStack, true);
             Clear(_redoStack, true);
+            Editor.UndoStackChanged();
+        }
+
+        public void Resize(int newSize)
+        {
+            newSize = MathC.Clamp(newSize, 1, MaxUndoDepth);
+            if (newSize == _undoStack.Count) return;
+            _undoStack.Resize(newSize);
+            _redoStack.Resize(newSize);
             Editor.UndoStackChanged();
         }
 
