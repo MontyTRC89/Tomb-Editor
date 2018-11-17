@@ -105,15 +105,6 @@ namespace TombEditor.ToolWindows
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
 
-            if (obj is Editor.SelectedSectorsChangedEvent)
-            {
-                bool validSectorSelection = _editor.SelectedSectors.Valid;
-
-                butTextureFloor.Enabled = validSectorSelection;
-                butTextureCeiling.Enabled = validSectorSelection;
-                butTextureWalls.Enabled = validSectorSelection;
-            }
-
             // Update editor mode
             if (obj is Editor.ModeChangedEvent)
             {
@@ -128,10 +119,6 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
-
-                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
-                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
-                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
