@@ -39,6 +39,9 @@
             this.commandListColumnAdd = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.commandListColumnDelete = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.commandListColumnHotkeys = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tbSearch = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.butSearch = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.commandList)).BeginInit();
             this.SuspendLayout();
             // 
@@ -121,11 +124,11 @@
             this.commandListColumnDelete,
             this.commandListColumnHotkeys});
             this.commandList.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.commandList.Location = new System.Drawing.Point(7, 7);
+            this.commandList.Location = new System.Drawing.Point(7, 36);
             this.commandList.MultiSelect = false;
             this.commandList.Name = "commandList";
             this.commandList.RowHeadersWidth = 41;
-            this.commandList.Size = new System.Drawing.Size(594, 432);
+            this.commandList.Size = new System.Drawing.Size(594, 403);
             this.commandList.TabIndex = 0;
             this.commandList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.commandList_CellContentClick);
             this.commandList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.commandList_CellDoubleClick);
@@ -174,13 +177,46 @@
             this.commandListColumnHotkeys.Name = "commandListColumnHotkeys";
             this.commandListColumnHotkeys.ReadOnly = true;
             // 
+            // tbSearch
+            // 
+            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbSearch.Location = new System.Drawing.Point(55, 7);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(515, 23);
+            this.tbSearch.TabIndex = 8;
+            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(5, 10);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(44, 13);
+            this.darkLabel1.TabIndex = 9;
+            this.darkLabel1.Text = "Search:";
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(576, 7);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 107;
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
             // FormKeyboardLayout
             // 
-            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(608, 498);
+            this.Controls.Add(this.butSearch);
+            this.Controls.Add(this.darkLabel1);
+            this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.commandList);
             this.Controls.Add(this.lblConflicts);
             this.Controls.Add(this.butDefaults);
@@ -215,5 +251,8 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn commandListColumnAdd;
         private DarkUI.Controls.DarkDataGridViewButtonColumn commandListColumnDelete;
         private System.Windows.Forms.DataGridViewTextBoxColumn commandListColumnHotkeys;
+        private DarkUI.Controls.DarkTextBox tbSearch;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkButton butSearch;
     }
 }
