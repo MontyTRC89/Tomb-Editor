@@ -1437,7 +1437,7 @@ namespace TombEditor.Controls
             {
                 _legacyDevice.SetVertexBuffer(_objectHeightLineVertexBuffer);
                 _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _objectHeightLineVertexBuffer));
-                Matrix4x4 model2 = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos);
+                Matrix4x4 model2 = Matrix4x4.CreateTranslation(_editor.SelectedObject.Room.WorldPos);
                 solidEffect.Parameters["ModelViewProjection"].SetValue((model2 * viewProjection).ToSharpDX());
                 solidEffect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.LineList, 2);
