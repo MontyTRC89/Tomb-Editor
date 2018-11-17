@@ -276,7 +276,7 @@ namespace TombEditor.Controls
             if (obj is Editor.SelectedRoomChangedEvent)
                 _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
             if (obj is Editor.ObjectChangedEvent && ((Editor.ObjectChangedEvent)obj).Object is LightInstance)
-                _renderingCachedRooms.Remove(_editor.SelectedRoom);
+                _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||
