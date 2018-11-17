@@ -488,7 +488,7 @@
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Resize Room";
+            this.Text = "Crop Room";
             ((System.ComponentModel.ISupportInitialize)(this.numericZn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericZp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericXp)).EndInit();
