@@ -2402,7 +2402,7 @@ namespace TombEditor.Controls
                 DebugString += "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n";
 
             if (_editor.SelectedObject != null)
-                DebugString += "Selected Object: " + _editor.SelectedObject;
+                DebugString += "Selected Object: " + _editor.SelectedObject.ToShortString();
 
             // Draw debug string
             textToDraw.Add(new Text

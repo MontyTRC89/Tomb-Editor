@@ -96,6 +96,16 @@ namespace TombLib.LevelData
         { }
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
+
+        public string ToShortString()
+        {
+            var shortName = GetType().GetMethod("ShortName");
+
+            if (shortName != null)
+                return shortName.Invoke(this, null).ToString();
+            else
+                return ToString();
+        }
     }
 
     public abstract class SectorBasedObjectInstance : ObjectInstance
