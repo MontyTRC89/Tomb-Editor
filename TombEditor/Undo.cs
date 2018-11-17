@@ -259,7 +259,9 @@ namespace TombEditor
             public UndoRedoInstance Pop()
             {
                 if (top == -1) return null;
-                return items[top--];
+                var result = items[top];
+                items[top--] = null;
+                return result;
             }
 
             public void Clear()
