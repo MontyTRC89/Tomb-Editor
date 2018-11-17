@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -218,13 +219,13 @@ namespace TombEditor
     {
         private class UndoRedoStack
         {
-            private UndoRedoInstance[] items;
+            private List<UndoRedoInstance>[] items;
             private int top = -1;
 
             public bool Empty => top == -1;
             public int Count => items.Length;
 
-            public UndoRedoStack(int capacity) { items = new UndoRedoInstance[capacity]; }
+            public UndoRedoStack(int capacity) { items = new List<UndoRedoInstance>[capacity]; }
 
             public void Resize(int newSize)
             {
@@ -234,7 +235,7 @@ namespace TombEditor
                 // In case new size is smaller, cut stack from bottom
                 if (top != -1 && top > newSize - 1 && items.Length > newSize)
                 {
-                    var newItems = new UndoRedoInstance[newSize];
+                    var newItems = new List<UndoRedoInstance>[newSize];
                     Array.Copy(items, top - newSize + 1, newItems, 0, newSize);
                     top = newSize - 1;
                     items = newItems;
@@ -243,7 +244,7 @@ namespace TombEditor
                     Array.Resize(ref items, newSize);
             }
 
-            public void Push(UndoRedoInstance item)
+            public void Push(List<UndoRedoInstance> item)
             {
                 // Rotate stack if full
                 var c = items.Length - 1;
@@ -256,7 +257,7 @@ namespace TombEditor
                 items[top] = item;
             }
 
-            public UndoRedoInstance Pop()
+            public List<UndoRedoInstance> Pop()
             {
                 if (top == -1) return null;
                 var result = items[top];
@@ -287,7 +288,7 @@ namespace TombEditor
             _redoStack = new UndoRedoStack(undoDepth);
         }
 
-        public void Push(UndoRedoInstance instance)
+        public void Push(List<UndoRedoInstance> instance)
         {
             if (!StackValid(_undoStack)) return;
 
@@ -295,6 +296,7 @@ namespace TombEditor
             _redoStack.Clear();
             Editor.UndoStackChanged();
         }
+        public void Push(UndoRedoInstance instance) => Push(new List<UndoRedoInstance> { instance });
 
         public void Resize(int newSize)
         {
@@ -314,6 +316,7 @@ namespace TombEditor
 
         public void PushAdjoiningRoomCreated(Room room) => Push(new AddRemoveAdjoiningRoomUndoInstance(this, room));
         public void PushGeometryChanged(Room room) => Push(new GeometryUndoInstance(this, room));
+        public void PushGeometryChanged(List<Room> rooms) => Push(rooms.Select(item => (new GeometryUndoInstance(this, item)) as UndoRedoInstance).ToList());
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
         public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
@@ -342,14 +345,14 @@ namespace TombEditor
             var instance = stack.Pop();
             if (instance == null) return;
 
-            if(instance.Valid == null || instance.Valid())
+            if(instance.All(item => item.Valid == null || item.Valid()))
             {
                 // Generate and push redo instance
-                var redo = instance.RedoInstance;
-                if (redo != null) counterStack.Push(redo());
+                var redoList = instance.Where(item => item.RedoInstance != null).ToList().ConvertAll(item => item.RedoInstance());
+                if (redoList.Count > 0) counterStack.Push(redoList);
 
                 // Invoke original undo instance
-                instance.UndoAction?.Invoke();
+                instance.ForEach(item => item.UndoAction?.Invoke());
             }
             else
                 Editor.SendMessage("Level state changed. " + (counterStack == _redoStack ? "Undo" : "Redo") + " action ignored.", TombLib.Forms.PopupType.Warning);

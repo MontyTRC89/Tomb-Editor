@@ -1275,6 +1275,11 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
+        public List<Room> AndAdjoiningRooms => new List<Room>(Portals.ToList()
+                                                                     .GroupBy(item => item.AdjoiningRoom)
+                                                                     .Select(group => group.First())
+                                                                     .Select(item => item.AdjoiningRoom)
+                                                                     .ToList()) { this };
         public void SmartBuildGeometry(RectangleInt2 area)
         {
             area = area.Inflate(1); // Add margin

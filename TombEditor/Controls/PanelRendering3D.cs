@@ -486,7 +486,9 @@ namespace TombEditor.Controls
                             {
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
 
-                                if (_editor.Tool.Tool < EditorToolType.Drag)
+                                if (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel)
+                                    _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom.AndAdjoiningRooms);
+                                else if (_editor.Tool.Tool < EditorToolType.Drag)
                                     _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
@@ -2508,9 +2510,6 @@ namespace TombEditor.Controls
 
             _drawFlybyPath = true;
         }
-
-
-
 
         private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>
         {
