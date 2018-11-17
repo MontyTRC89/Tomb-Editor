@@ -2576,7 +2576,7 @@ namespace TombEditor.Controls
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
-            public bool PositionDiffers(int x, int y) => _newPosition == GetQuantizedPosition(x, y);
+            public bool PositionDiffers(int x, int y) => _newPosition != GetQuantizedPosition(x, y);
 
             public PickingResultBlock ReferencePicking { get; private set; }
             public Room ReferenceRoom { get; private set; }
