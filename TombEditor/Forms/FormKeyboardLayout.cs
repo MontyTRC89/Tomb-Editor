@@ -49,7 +49,7 @@ namespace TombEditor.Forms
 
         private bool CheckForConflicts(CommandObj commandToCheck = null)
         {
-            if(commandToCheck == null)
+            if (commandToCheck == null)
             {
                 foreach (var left in _currConfig)
                     foreach (var right in _currConfig)
@@ -130,7 +130,7 @@ namespace TombEditor.Forms
                 e.Value = string.Join(", ", _currConfig[entry].Select(h => h.ToString()));
 
             if (CheckForConflicts(entry))
-                    e.CellStyle.BackColor = _columnMessageWrongColor;
+                e.CellStyle.BackColor = _columnMessageWrongColor;
         }
 
         private void commandList_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
@@ -177,7 +177,7 @@ namespace TombEditor.Forms
             else if (commandList.Columns[e.ColumnIndex].Name == commandListColumnDelete.Name)
             {
                 _currConfig[command].Clear();
-                commandList.InvalidateCell(commandList.Columns[commandListColumnHotkeys.Name].Index, e.RowIndex);
+                RedrawList();
             }
         }
 
@@ -266,5 +266,33 @@ namespace TombEditor.Forms
         {
             StartListening((CommandObj)(commandList.Rows[e.RowIndex].DataBoundItem), true);
         }
+
+        private void SearchForCommand()
+        {
+            var currentRow = commandList.CurrentRow.Index;
+            if (currentRow == -1 || currentRow == commandList.Rows.Count - 1) currentRow = 0;
+
+            RestartSearch:
+            for (int i = currentRow + 1; i < commandList.Rows.Count; i++)
+            {
+                var item = (CommandObj)commandList.Rows[i].DataBoundItem;
+                if (item.FriendlyName.IndexOf(tbSearch.Text, StringComparison.InvariantCultureIgnoreCase) >= 0 ||
+                    item.Name.IndexOf(tbSearch.Text, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                {
+                    commandList.Rows[i].Selected = true;
+                    commandList.CurrentCell = commandList.Rows[i].Cells[0];
+                    return;
+                }
+            }
+
+            if (currentRow > 0)
+            {
+                currentRow = 0;
+                goto RestartSearch;
+            }
+        }
+
+        private void butSearch_Click(object sender, EventArgs e) { SearchForCommand(); }
+        private void tbSearch_KeyDown(object sender, KeyEventArgs e) { if (e.KeyCode == Keys.Enter) SearchForCommand(); }
     }
 }
