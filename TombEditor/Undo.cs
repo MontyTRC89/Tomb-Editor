@@ -62,7 +62,7 @@ namespace TombEditor
             UndoObject = obj;
             Room = obj.Room;
 
-            Valid =()=> UndoObject.Room != null && Parent.Editor.Level.RoomExists(Room);
+            Valid =()=> (Created && UndoObject.Room != null) || (!Created && Parent.Editor.Level.RoomExists(Room));
 
             UndoAction =()=>
             {
@@ -223,10 +223,7 @@ namespace TombEditor
             public bool Empty => top == -1;
             public int Count => items.Length;
 
-            public UndoRedoStack(int capacity)
-            {
-                items = new UndoRedoInstance[capacity];
-            }
+            public UndoRedoStack(int capacity) { items = new UndoRedoInstance[capacity]; }
 
             public void Push(UndoRedoInstance item)
             {
@@ -307,7 +304,6 @@ namespace TombEditor
         private void Engage(UndoRedoStack stack)
         {
             if (!StackValid(stack)) return;
-
             var counterStack = stack == _undoStack ? _redoStack : _undoStack;
 
             var instance = stack.Pop();
@@ -323,7 +319,7 @@ namespace TombEditor
                 instance.UndoAction?.Invoke();
             }
             else
-                Editor.SendMessage("Level state changed. Undo action ignored.", TombLib.Forms.PopupType.Warning);
+                Editor.SendMessage("Level state changed. " + (counterStack == _redoStack ? "Undo" : "Redo") + " action ignored.", TombLib.Forms.PopupType.Warning);
 
             Editor.UndoStackChanged();
         }
