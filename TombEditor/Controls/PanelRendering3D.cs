@@ -610,18 +610,6 @@ namespace TombEditor.Controls
                             break;
                     }
                 }
-                else if (newPicking is PickingResultObject)
-                {
-                    var obj = ((PickingResultObject)newPicking).ObjectInstance;
-
-                    // Select or bookmark object
-                    if (ModifierKeys.HasFlag(Keys.Shift))
-                        EditorActions.BookmarkObject(obj);
-                    else if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
-                        _editor.ChosenItem = ((ItemInstance)obj).ItemType;
-                    else
-                        _editor.SelectedObject = obj;
-                }
                 else if (newPicking is PickingResultGizmo)
                 {
                     if (_editor.SelectedObject is PositionBasedObjectInstance)
@@ -631,10 +619,32 @@ namespace TombEditor.Controls
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
                     _gizmoEnabled = true;
                 }
-                else if (newPicking == null)
+                else if (newPicking is PickingResultObject || newPicking == null)
                 {
-                    // Click outside room; if mouse is released without action, unselect all
-                    _noSelectionConfirm = true;
+                    if(newPicking == null)
+                    {
+                        // Try to pick objects in other rooms
+                        newPicking = DoPicking(GetRay(e.X, e.Y), true);
+
+                        if (newPicking == null)
+                        {
+                            // Click outside room; if mouse is released without action, unselect all
+                            _noSelectionConfirm = true;
+                            return;
+                        }
+                        else if (!(newPicking is PickingResultObject) || !_editor.Configuration.Rendering3D_SelectObjectsInAnyRoom)
+                            return; // Do nothing if we've landed somewhere in other room
+                    }
+
+                    var obj = ((PickingResultObject)newPicking).ObjectInstance;
+
+                    // Select or bookmark object
+                    if (ModifierKeys.HasFlag(Keys.Shift))
+                        EditorActions.BookmarkObject(obj);
+                    else if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
+                        _editor.ChosenItem = ((ItemInstance)obj).ItemType;
+                    else
+                        _editor.SelectedObject = obj;
                 }
             }
             else if (e.Button == MouseButtons.Right)

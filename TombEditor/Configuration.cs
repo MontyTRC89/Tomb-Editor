@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
@@ -88,6 +86,7 @@ namespace TombEditor
         public bool Rendering3D_AnimateCameraOnReset { get; set; } = true;
         public bool Rendering3D_AllowTexturingInLightingMode { get; set; } = true;
         public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
+        public bool Rendering3D_SelectObjectsInAnyRoom { get; set; } = true;
 
         // 2D Map options 
 
