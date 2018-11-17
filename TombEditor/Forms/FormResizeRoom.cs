@@ -30,6 +30,8 @@ namespace TombEditor.Forms
             _editor = editor;
             _roomToResize = roomToResize;
 
+            roomIcon.Image = Properties.Resources.misc_North;
+
             try
             {
                 _alreadyUpdatingGui = true;
@@ -64,6 +66,17 @@ namespace TombEditor.Forms
                 numericZp.Maximum = (maxDimensions - _roomToResize.NumZSectors) - numericZn.Value;
 
                 gridControl.Invalidate();
+
+                if (cbAllowOversizedRooms.Checked && (NewArea.Width > Room.MaxRecommendedRoomDimensions || NewArea.Height > Room.MaxRecommendedRoomDimensions))
+                {
+                    roomIcon.BackColor = Color.Firebrick;
+                    toolTip.SetToolTip(roomIcon, "Room bigger than 32x32 will have in-game rendering issues!");
+                }
+                else
+                {
+                    roomIcon.BackColor = BackColor;
+                    toolTip.SetToolTip(roomIcon, "");
+                }
             }
             finally
             {
@@ -83,9 +96,6 @@ namespace TombEditor.Forms
 
         private void cbAllowOversizedRooms_CheckedChanged(object sender, System.EventArgs e)
         {
-            if (cbAllowOversizedRooms.Checked)
-                if (DarkMessageBox.Show(this, "You are about to make a room bigger than 32 by 32. This will probably cause issues with rendering in game. Are you sure?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                    cbAllowOversizedRooms.Checked = false;
             UpdateGui();
         }
 

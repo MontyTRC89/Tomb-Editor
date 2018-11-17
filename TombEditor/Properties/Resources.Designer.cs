@@ -543,6 +543,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap misc_North {
+            get {
+                object obj = ResourceManager.GetObject("misc_North", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap misc_TransparentBackground {
             get {
                 object obj = ResourceManager.GetObject("misc_TransparentBackground", resourceCulture);
