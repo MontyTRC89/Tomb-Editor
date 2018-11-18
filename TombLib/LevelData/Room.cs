@@ -399,13 +399,6 @@ namespace TombLib.LevelData
             return values;
         }
 
-        public struct RoomBlockPair
-        {
-            public Room Room { get; set; }
-            public Block Block { get; set; }
-            public VectorInt2 Pos { get; set; }
-        }
-
         public RoomBlockPair ProbeLowestBlock(VectorInt2 pos, bool doProbe = true)
         {
             Block block = GetBlockTry(pos);

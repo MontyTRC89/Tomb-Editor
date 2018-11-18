@@ -156,6 +156,13 @@ namespace TombLib.LevelData
         None = 0, PositiveZ = 1, PositiveX = 2, NegativeZ = 3, NegativeX = 4, Diagonal = 5
     }
 
+    public struct RoomBlockPair
+    {
+        public Room Room { get; set; }
+        public Block Block { get; set; }
+        public VectorInt2 Pos { get; set; }
+    }
+
     [Serializable]
     public struct BlockSurface
     {

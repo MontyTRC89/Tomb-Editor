@@ -156,12 +156,12 @@ namespace TombEditor
                     }
                 };
 
-                var cornerBlocks = new Block[4]
+                var cornerBlocks = new RoomBlockPair[4]
                 {
-                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block,
-                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block,
-                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block,
-                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block
+                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1),
+                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1),
+                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1),
+                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1)
                 };
 
                 // Unique case of editing single corner
@@ -174,14 +174,15 @@ namespace TombEditor
                         case ArrowType.CornerNW: origin = BlockEdge.XnZp; break;
                         case ArrowType.CornerSE: origin = BlockEdge.XpZn; break;
                     }
-                    var originHeight = room.GetBlockTryThroughPortal(startCoord).Block.GetHeight(vertical, origin);
+                    var originBlock = room.GetBlockTryThroughPortal(startCoord);
+                    var originHeight = originBlock.Block.GetHeight(vertical, origin) + originBlock.Room.Position.Y;
                     for (int i = 0; i < 4; i++)
-                        corners[i] = originHeight == cornerBlocks[i].GetHeight(vertical, (BlockEdge)i);
+                        corners[i] = originHeight == cornerBlocks[i].Block.GetHeight(vertical, (BlockEdge)i) + cornerBlocks[i].Room.Position.Y;
                 }
 
                 // Smoothly change sectors on the corners
                 for (int i = 0; i < 4; i++)
-                    if (corners[i]) smoothEdit(cornerBlocks[i], (BlockEdge)i);
+                    if (corners[i]) smoothEdit(cornerBlocks[i].Block, (BlockEdge)i);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
@@ -208,8 +209,8 @@ namespace TombEditor
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    Block block = room.Blocks[x, z];
-                    Room.RoomBlockPair lookupBlock = room.GetBlockTryThroughPortal(x, z);
+                    var block = room.Blocks[x, z];
+                    var lookupBlock = room.GetBlockTryThroughPortal(x, z);
 
                     EditBlock:
                     {
@@ -338,7 +339,7 @@ namespace TombEditor
             if (!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
-            Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
+            var lookupBlocks = new RoomBlockPair[8]
             {
                 room.GetBlockTryThroughPortal(x - 1, z + 1),
                 room.GetBlockTryThroughPortal(x, z + 1),
@@ -1865,7 +1866,7 @@ namespace TombEditor
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                    var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
                     if (!roomsToUpdate.Contains(currentBlock.Room))
                         roomsToUpdate.Add(currentBlock.Room);
                 }
@@ -1877,7 +1878,7 @@ namespace TombEditor
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                    var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
                     currentBlock.Block.Flags ^= flag;
                 }
 
