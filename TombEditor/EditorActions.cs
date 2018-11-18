@@ -3067,6 +3067,8 @@ namespace TombEditor
 
         public static void TryPasteSectors(SectorsClipboardData data, IWin32Window owner)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             int x0 = _editor.SelectedSectors.Area.X0;
             int z0 = _editor.SelectedSectors.Area.Y0;
             int x1 = Math.Min(_editor.SelectedRoom.NumXSectors - 1, x0 + data.Width);
@@ -3076,9 +3078,9 @@ namespace TombEditor
 
             for (int x = x0; x < x1; x++)
                 for (int z = z0; z < z1; z++)
-                {
-                    _editor.SelectedRoom.Blocks[x, z] = sectors[x - x0, z - z0].Clone();
-                }
+                    if(_editor.SelectedSectors == SectorSelection.None || 
+                        _editor.SelectedSectors.Area.Contains(new VectorInt2(x, z)))
+                            _editor.SelectedRoom.Blocks[x, z] = sectors[x - x0, z - z0].Clone();
 
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
