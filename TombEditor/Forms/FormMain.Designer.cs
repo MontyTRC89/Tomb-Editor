@@ -744,7 +744,6 @@
             this.exportRoomToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.exportRoomToolStripMenuItem.Tag = "ExportRooms";
             this.exportRoomToolStripMenuItem.Text = "ExportRooms";
-            this.exportRoomToolStripMenuItem.Visible = false;
             // 
             // importRoomsToolStripMenuItem
             // 
@@ -755,7 +754,6 @@
             this.importRoomsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.importRoomsToolStripMenuItem.Tag = "ImportRooms";
             this.importRoomsToolStripMenuItem.Text = "ImportRooms";
-            this.importRoomsToolStripMenuItem.Visible = false;
             // 
             // toolStripMenuItem2
             // 
