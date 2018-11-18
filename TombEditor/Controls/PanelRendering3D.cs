@@ -581,7 +581,7 @@ namespace TombEditor.Controls
                                     !ModifierKeys.HasFlag(Keys.Shift));
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
                             }
-                            else if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None)
+                            else if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors.Empty)
                             {
                                 switch (_editor.Tool.Tool)
                                 {
@@ -959,7 +959,7 @@ namespace TombEditor.Controls
                                     if (_editor.Tool.Tool == EditorToolType.Brush)
                                     {
                                         if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
-                                            _editor.SelectedSectors == SectorSelection.None)
+                                            _editor.SelectedSectors.Empty)
                                             redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
                                     }
                                     else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
@@ -1037,22 +1037,23 @@ namespace TombEditor.Controls
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null && !_toolHandler.Dragged)
                         {
-                            VectorInt2 pos = newBlockPicking.Pos;
+                            var pos = newBlockPicking.Pos;
+                            var zone = _editor.SelectedSectors.Empty ? new RectangleInt2(pos, pos) : _editor.SelectedSectors.Area;
                             bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
-                            if (ModifierKeys.HasFlag(Keys.Alt))
+                            if (ModifierKeys.HasFlag(Keys.Alt) && zone.Contains(pos))
                             {
                                 // Split the faces
                                 if (belongsToFloor)
-                                    EditorActions.FlipFloorSplit(_editor.SelectedRoom, new RectangleInt2(pos, pos));
+                                    EditorActions.FlipFloorSplit(_editor.SelectedRoom, zone);
                                 else
-                                    EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new RectangleInt2(pos, pos));
+                                    EditorActions.FlipCeilingSplit(_editor.SelectedRoom, zone);
                                 return;
                             }
-                            else if (ModifierKeys.HasFlag(Keys.Shift))
+                            else if (ModifierKeys.HasFlag(Keys.Shift) && zone.Contains(pos))
                             {
                                 // Rotate sector
-                                EditorActions.RotateSectors(_editor.SelectedRoom, new RectangleInt2(pos, pos), belongsToFloor);
+                                EditorActions.RotateSectors(_editor.SelectedRoom, zone, belongsToFloor);
                                 return;
                             }
                             else if (_editor.Tool.Tool == EditorToolType.Selection || (_editor.Tool.Tool >= EditorToolType.Drag && _editor.Tool.Tool < EditorToolType.PortalDigger))
@@ -2915,7 +2916,7 @@ namespace TombEditor.Controls
 
             public bool Process(int x, int y)
             {
-                if ((_parent._editor.SelectedSectors.Valid && _parent._editor.SelectedSectors.Area.Contains(new VectorInt2(x, y)) || _parent._editor.SelectedSectors == SectorSelection.None) && !_actionGrid[x, y].Processed)
+                if ((_parent._editor.SelectedSectors.Valid && _parent._editor.SelectedSectors.Area.Contains(new VectorInt2(x, y)) || _parent._editor.SelectedSectors.Empty) && !_actionGrid[x, y].Processed)
                 {
                     _actionGrid[x, y].Processed = true;
                     return true;

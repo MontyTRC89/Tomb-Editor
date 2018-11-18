@@ -3084,7 +3084,7 @@ namespace TombEditor
                     if (currentSector.Type == BlockType.BorderWall && _editor.SelectedRoom.Blocks[x, z].Type != BlockType.BorderWall)
                         continue;
 
-                    if (_editor.SelectedSectors == SectorSelection.None ||
+                    if (_editor.SelectedSectors.Empty ||
                         _editor.SelectedSectors.Single ||
                         _editor.SelectedSectors.Area.Contains(new VectorInt2(x, z)))
                         _editor.SelectedRoom.Blocks[x, z] = currentSector.Clone();
