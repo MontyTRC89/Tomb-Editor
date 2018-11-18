@@ -123,6 +123,7 @@ namespace TombLib.LevelData
                 if (Convert512PixelsToDoubleRows && image.Width == 512)
                 {
                     ImageC newImage = ImageC.CreateNew(256, image.Height * 2);
+                    newImage.FileName = image.FileName;
                     for (int oldY = 0; oldY < image.Height; oldY += 64)
                     {
                         newImage.CopyFrom(0, oldY * 2, image, 0, oldY, 256, 64);

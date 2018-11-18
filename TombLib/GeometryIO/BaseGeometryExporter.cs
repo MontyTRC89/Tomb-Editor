@@ -74,6 +74,9 @@ namespace TombLib.GeometryIO
 
         protected Vector2 ApplyUVTransform(Vector2 uv, int w, int h)
         {
+            uv.X = (float)Math.Round(uv.X);
+            uv.Y = (float)Math.Round(uv.Y);
+
             if (_settings.PremultiplyUV)
             {
                 uv.X /= w;
