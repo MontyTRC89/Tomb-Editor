@@ -253,6 +253,7 @@ namespace TombEditor
             private List<UndoRedoInstance>[] items;
             private int top = -1;
 
+            public bool Reversible => !Empty && items[top].Any(item => item.RedoInstance != null);
             public bool Empty => top == -1;
             public int Count => items.Length;
 
@@ -361,6 +362,8 @@ namespace TombEditor
         public void RedoClear() => Clear(_redoStack);
         public bool UndoPossible => StackValid(_undoStack) && !_undoStack.Empty;
         public bool RedoPossible => StackValid(_redoStack) && !_redoStack.Empty;
+        public bool UndoReversible => _undoStack.Reversible;
+        public bool RedoReversible => _redoStack.Reversible;
 
         private bool StackValid(UndoRedoStack stack) => (stack != null && stack.Count > 0);
 

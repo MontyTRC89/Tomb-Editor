@@ -168,6 +168,7 @@ namespace TombEditor.ToolWindows
             {
                 var state = (Editor.UndoStackChangedEvent)obj;
                 butUndo.Enabled = state.UndoPossible;
+                butUndo.Image = state.UndoPossible && !state.UndoReversible ? Properties.Resources.general_undo_irreversible_16 : Properties.Resources.general_undo_16;
                 butRedo.Enabled = state.RedoPossible;
             }
         }

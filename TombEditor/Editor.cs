@@ -606,10 +606,13 @@ namespace TombEditor
         {
             public bool UndoPossible { get; set; }
             public bool RedoPossible { get; set; }
+            public bool UndoReversible { get; set; }
+            public bool RedoReversible { get; set; }
         }
         public void UndoStackChanged()
         {
-            RaiseEvent(new UndoStackChangedEvent() { UndoPossible = UndoManager.UndoPossible, RedoPossible = UndoManager.RedoPossible });
+            RaiseEvent(new UndoStackChangedEvent() { UndoPossible = UndoManager.UndoPossible, RedoPossible = UndoManager.RedoPossible,
+                                                     UndoReversible = UndoManager.UndoReversible, RedoReversible = UndoManager.UndoReversible });
         }
 
         // Change sector highlights
