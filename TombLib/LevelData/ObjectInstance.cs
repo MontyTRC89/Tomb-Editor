@@ -196,7 +196,7 @@ namespace TombLib.LevelData
     {
         public Vector3 Position { get; set; }
 
-        public Vector3 SectorPosition => Position / 1024;
+        public VectorInt2 SectorPosition => new VectorInt2((int)(Position.X / 1024.0f), (int)(Position.Z / 1024.0f));
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {

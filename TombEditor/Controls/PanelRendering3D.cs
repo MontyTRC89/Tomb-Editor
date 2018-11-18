@@ -270,13 +270,17 @@ namespace TombEditor.Controls
                     foreach (var portal in ((Editor.RoomGeometryChangedEvent)obj).Room.Portals)
                         _renderingCachedRooms.Remove(portal.AdjoiningRoom);
             }
+            if (obj is Editor.ObjectChangedEvent)
+            {
+                var value = (Editor.ObjectChangedEvent)obj;
+                if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
+                    _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
+            }
             if (obj is Editor.SelectedSectorsChangedEvent || 
                 obj is Editor.HighlightedSectorChangedEvent)
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
             if (obj is Editor.SelectedRoomChangedEvent)
                 _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
-            if (obj is Editor.ObjectChangedEvent && ((Editor.ObjectChangedEvent)obj).Object is LightInstance)
-                _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
             if (obj is Editor.RoomSectorPropertiesChangedEvent)
                 _renderingCachedRooms.Remove(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
             if (obj is Editor.LoadedTexturesChangedEvent ||
@@ -2436,7 +2440,7 @@ namespace TombEditor.Controls
             float height = instance.Position.Y - GetFloorHeight(room, instance.Position);
 
             string message = "Position: [" + instance.Position.X + ", " + instance.Position.Y + ", " + instance.Position.Z + "]";
-            message += "\nSector Position: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + ", " + instance.SectorPosition.Z + "]";
+            message += "\nSector Position: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "]";
             message += "\nHeight: " + Math.Round(height) + " units(" + height / 256.0f +
                        " clicks)";
 

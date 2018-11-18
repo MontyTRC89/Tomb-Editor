@@ -76,12 +76,17 @@ namespace TombEditor
     {
         VectorInt3 Delta;
         List<Room> Rooms;
+        Dictionary<Room, VectorInt2> Sizes;
 
         public MoveRoomsUndoInstance(UndoManager parent, List<Room> rooms, VectorInt3 delta) : base(parent)
         {
             Delta = -delta;
             Rooms = rooms;
-            Valid =()=> Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Locked);
+            Rooms.ForEach(room => Sizes.Add(room, room.SectorSize));
+
+            Valid =()=> Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Locked) && 
+                                         Rooms.All(room => !Parent.Editor.Level.GetConnectedRooms(room).Except(Rooms).Any()) &&
+                                         Rooms.All(room => Sizes.ContainsKey(room) && room.SectorSize == Sizes[room]);
             UndoAction =()=> EditorActions.MoveRooms(Delta, Rooms, true);
             RedoInstance =()=> new MoveRoomsUndoInstance(Parent, Rooms, Delta);
         }
@@ -97,7 +102,8 @@ namespace TombEditor
             Created = created;
             UndoObject = obj;
 
-            Valid =()=> UndoObject != null && ((Created && UndoObject.Room != null) || (!Created && Room.ExistsInLevel));
+            Valid =()=> UndoObject != null && ((Created && UndoObject.Room != null) || 
+                       (!Created && Room.ExistsInLevel && Room.LocalArea.Width > UndoObject.SectorPosition.X && Room.LocalArea.Height > UndoObject.SectorPosition.Y));
 
             UndoAction =()=>
             {
@@ -106,8 +112,7 @@ namespace TombEditor
                 else
                 {
                     var backupPos = obj.Position; // Preserve original position and reassign it after placement
-                    VectorInt2 pos = new VectorInt2((int)((obj.Position.X - 512.0f) / 1024.0f), (int)((obj.Position.Z - 512.0f) / 1024.0f));
-                    EditorActions.PlaceObjectWithoutUpdate(Room, pos, UndoObject);
+                    EditorActions.PlaceObjectWithoutUpdate(Room, obj.SectorPosition, UndoObject);
                     EditorActions.MoveObject(UndoObject, backupPos);
                 }
             };
@@ -193,8 +198,7 @@ namespace TombEditor
                 for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
                     Blocks[i, j] = Room.Blocks[x, z].Clone();
 
-            Valid =()=> (Room != null && Room.ExistsInLevel &&
-                         Room.NumXSectors == Area.Size.X && Room.NumZSectors == Area.Size.Y);
+            Valid =()=> (Room != null && Room.ExistsInLevel && Room.SectorSize == Area.Size);
 
             UndoAction =()=>
             {
