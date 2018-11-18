@@ -115,6 +115,7 @@ namespace TombEditor.ToolWindows
                                         "Room " + comboRoom.SelectedIndex);
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
                 _editor.RoomListChange();
+                _editor.UndoManager.PushRoomCreated(selectedRoom);
             }
             _editor.SelectRoom(selectedRoom);
         }

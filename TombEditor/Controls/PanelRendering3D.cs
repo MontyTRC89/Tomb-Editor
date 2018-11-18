@@ -277,6 +277,8 @@ namespace TombEditor.Controls
                 _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
             if (obj is Editor.ObjectChangedEvent && ((Editor.ObjectChangedEvent)obj).Object is LightInstance)
                 _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
+            if (obj is Editor.RoomSectorPropertiesChangedEvent)
+                _renderingCachedRooms.Remove(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||
@@ -813,7 +815,7 @@ namespace TombEditor.Controls
                                     bool? operateOnFloor = null;
                                     if (_toolHandler.ReferencePicking.IsVerticalPlane) operateOnFloor = true;
                                     currRoom.Resize(_editor.Level, resizeArea, resizeHeight[0], resizeHeight[1], operateOnFloor);
-                                    EditorActions.MoveRooms(move, currRoom.Versions);
+                                    EditorActions.MoveRooms(move, currRoom.Versions, true);
                                     if(_toolHandler.ReferenceRoom == _editor.SelectedRoom)
                                         _editor.HighlightedSectors = new SectorSelection() { Area = _toolHandler.ReferenceRoom.LocalArea };
                                 }

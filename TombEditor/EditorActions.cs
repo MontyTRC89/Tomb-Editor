@@ -533,6 +533,9 @@ namespace TombEditor
             _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
 
+            // Undo
+            _editor.UndoManager.PushSectorObjectCreated(trigger);
+
             //if (_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
             //    _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
@@ -779,9 +782,22 @@ namespace TombEditor
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
-                adjoiningRoom?.BuildGeometry();
-                room.AlternateOpposite?.BuildGeometry();
-                adjoiningRoom?.AlternateOpposite?.BuildGeometry();
+                if (adjoiningRoom != null)
+                {
+                    adjoiningRoom.BuildGeometry();
+                    _editor.RoomSectorPropertiesChange(adjoiningRoom);
+
+                    if (adjoiningRoom.AlternateOpposite != null)
+                    {
+                        adjoiningRoom.AlternateOpposite.BuildGeometry();
+                        _editor.RoomSectorPropertiesChange(adjoiningRoom.AlternateOpposite);
+                    }
+                }
+                if (room.AlternateOpposite != null)
+                {
+                    room.AlternateOpposite.BuildGeometry();
+                    _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
+                }
             }
 
             // Avoid having the removed object still selected
@@ -1845,14 +1861,24 @@ namespace TombEditor
             List<Room> roomsToUpdate = new List<Room>();
             roomsToUpdate.Add(room);
 
+            // Collect all affected rooms for undo
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                    if (!roomsToUpdate.Contains(currentBlock.Room))
+                        roomsToUpdate.Add(currentBlock.Room);
+                }
+
+            // Do undo
+            _editor.UndoManager.PushGeometryChanged(roomsToUpdate);
+
+            // Do actual flag editing
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
                     Room.RoomBlockPair currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
                     currentBlock.Block.Flags ^= flag;
-
-                    if (!roomsToUpdate.Contains(currentBlock.Room))
-                        roomsToUpdate.Add(currentBlock.Room);
                 }
 
             foreach (var currentRoom in roomsToUpdate)
@@ -1974,7 +2000,8 @@ namespace TombEditor
             Room destination = candidates[0].Item2;
 
             // Create portals
-            var portals = room.AddObject(_editor.Level, new PortalInstance(area, destinationDirection, destination)).Cast<PortalInstance>();
+            var mainPortal = new PortalInstance(area, destinationDirection, destination);
+            var portals = room.AddObject(_editor.Level, mainPortal).Cast<PortalInstance>();
 
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
@@ -1990,6 +2017,9 @@ namespace TombEditor
 
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
+
+            // Undo
+            _editor.UndoManager.PushSectorObjectCreated(mainPortal);
         }
 
         public static void AlternateRoomEnable(Room room, short AlternateGroup)
@@ -2288,7 +2318,9 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(newRoom);
             }
 
+            // Undo
             _editor.UndoManager.PushAdjoiningRoomCreated(newRoom);
+
             return newRoom;
         }
 
@@ -3602,8 +3634,11 @@ namespace TombEditor
             }
         }
 
-        public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms)
+        public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms, bool disableUndo = false)
         {
+            if (!disableUndo)
+                _editor.UndoManager.PushRoomsMoved(rooms.ToList(), positionDelta);
+
             HashSet<Room> roomsToMove = new HashSet<Room>(rooms);
 
             // Update position of all rooms

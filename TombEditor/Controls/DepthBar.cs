@@ -48,6 +48,7 @@ namespace TombEditor.Controls
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private float _roomMouseOffset; // Relative depth difference to where it was clicked.
         private float _barMouseOffset;
+        private int _overallDelta;
 
         public static readonly Color[] ProbeColors = {
             Color.Crimson,
@@ -154,6 +155,7 @@ namespace TombEditor.Controls
         public bool MouseDown(MouseEventArgs e, Size parentControlSize, Vector2 clickPos)
         {
             _selectionMode = SelectionMode.None;
+            _overallDelta = 0;
 
             // check if the mouse click was in the bar area
             RectangleF barArea = getBarArea(parentControlSize);
@@ -344,7 +346,11 @@ namespace TombEditor.Controls
                     }
 
                     // do movement
-                    EditorActions.MoveRooms(new VectorInt3(0, delta, 0), _roomsToMove);
+                    if (delta != 0)
+                    {
+                        _overallDelta += delta;
+                        EditorActions.MoveRooms(new VectorInt3(0, delta, 0), _roomsToMove, true);
+                    }
                     break;
             }
         }
@@ -353,8 +359,11 @@ namespace TombEditor.Controls
         {
             _selectionMode = SelectionMode.None;
             if (_roomsToMove != null)
+            {
+                _editor.UndoManager.PushRoomsMoved(_roomsToMove.ToList(), new VectorInt3(0, _overallDelta, 0));
                 InvalidateParent?.Invoke();
-            _roomsToMove = null;
+                _roomsToMove = null;
+            }
             _roomMouseClicked = null;
         }
 

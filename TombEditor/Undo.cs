@@ -22,25 +22,45 @@ namespace TombEditor
 
     public abstract class UndoRedoInstance
     {
+        public Room Room { get; internal set; }
         public UndoManager Parent { get; set; }
         public Action UndoAction { get; set; }
         public Func<UndoRedoInstance> RedoInstance { get; set; }
         public Func<bool> Valid { get; set; }
-        protected UndoRedoInstance(UndoManager parent) { Parent = parent; }
+        protected UndoRedoInstance(UndoManager parent, Room room = null) { Parent = parent; Room = room; }
     }
 
-    public class AddRemoveAdjoiningRoomUndoInstance : UndoRedoInstance
+    public class AddSectorBasedObjectUndoInstance : UndoRedoInstance
     {
-        private Room Room;
+        private SectorBasedObjectInstance SectorObject;
+
+        public AddSectorBasedObjectUndoInstance(UndoManager parent, SectorBasedObjectInstance obj) : base(parent, obj.Room)
+        {
+            SectorObject = obj;
+            Valid =()=> SectorObject != null && SectorObject.Room != null && Room != null && SectorObject.Room == Room && Room.ExistsInLevel;
+            UndoAction =()=> EditorActions.DeleteObjectWithoutUpdate(SectorObject);
+        }
+    }
+
+    public class AddRoomUndoInstance : UndoRedoInstance
+    {
+        public AddRoomUndoInstance(UndoManager parent, Room room) : base(parent, room)
+        {
+            Valid =()=> Room != null && Room.ExistsInLevel && Room.AnyObjects.Count() == 0;
+            UndoAction =()=> EditorActions.DeleteRooms(new[] { Room });
+        }
+    }
+
+    public class AddAdjoiningRoomUndoInstance : UndoRedoInstance
+    {
         private Room ParentRoom;
 
-        public AddRemoveAdjoiningRoomUndoInstance(UndoManager parent, Room room) : base(parent)
+        public AddAdjoiningRoomUndoInstance(UndoManager parent, Room room) : base(parent, room)
         {
-            Room = room;
             ParentRoom = room.Portals.Count() == 1 ? room.Portals.First().AdjoiningRoom : null;
 
             Valid =()=> Room != null && ParentRoom != null &&
-                        Parent.Editor.Level.RoomExists(Room) && Parent.Editor.Level.RoomExists(ParentRoom) &&
+                        Room.ExistsInLevel && ParentRoom.ExistsInLevel &&
                         Room.Portals.Count(p => p.AdjoiningRoom == ParentRoom) == 1 && Room.AnyObjects.Count(obj => (obj is PortalInstance)) == 1 &&
                         Room.AnyObjects.Count(obj => !(obj is PortalInstance)) == 0;
 
@@ -52,19 +72,32 @@ namespace TombEditor
         }
     }
 
+    public class MoveRoomsUndoInstance : UndoRedoInstance
+    {
+        VectorInt3 Delta;
+        List<Room> Rooms;
+
+        public MoveRoomsUndoInstance(UndoManager parent, List<Room> rooms, VectorInt3 delta) : base(parent)
+        {
+            Delta = -delta;
+            Rooms = rooms;
+            Valid =()=> Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Locked);
+            UndoAction =()=> EditorActions.MoveRooms(Delta, Rooms, true);
+            RedoInstance =()=> new MoveRoomsUndoInstance(Parent, Rooms, Delta);
+        }
+    }
+
     public class AddRemoveObjectUndoInstance : UndoRedoInstance
     {
         private PositionBasedObjectInstance UndoObject;
-        private Room Room;
         private bool Created;
 
-        public AddRemoveObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent)
+        public AddRemoveObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent, obj.Room)
         {
             Created = created;
             UndoObject = obj;
-            Room = obj.Room;
 
-            Valid =()=> (Created && UndoObject.Room != null) || (!Created && Parent.Editor.Level.RoomExists(Room));
+            Valid =()=> UndoObject != null && ((Created && UndoObject.Room != null) || (!Created && Room.ExistsInLevel));
 
             UndoAction =()=>
             {
@@ -92,7 +125,6 @@ namespace TombEditor
     {
         private PositionBasedObjectInstance UndoObject;
         private Vector3 Position;
-        private Room Room;
 
         // Optional fields for various interface types
 
@@ -101,18 +133,17 @@ namespace TombEditor
         private float? RotationX = null;
         private float? Roll      = null;
 
-        public TransformObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj) : base(parent)
+        public TransformObjectUndoInstance(UndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
         {
             UndoObject = obj;
             Position = obj.Position;
-            Room = obj.Room;
 
             if (obj is IScaleable) Scale = ((IScaleable)obj).Scale;
             if (obj is IRotateableY) RotationY = ((IRotateableY)obj).RotationY;
             if (obj is IRotateableYX) RotationX = ((IRotateableYX)obj).RotationX;
             if (obj is IRotateableYXRoll) Roll = ((IRotateableYXRoll)obj).Roll;
 
-            Valid =()=> UndoObject.Room != null && Parent.Editor.Level.RoomExists(Room);
+            Valid =()=> UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
 
             UndoAction =()=>
             {
@@ -142,20 +173,17 @@ namespace TombEditor
                 if(!roomChanged)
                     Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
             };
-
             RedoInstance =()=> new TransformObjectUndoInstance(Parent, UndoObject);
         }
     }
 
     public class GeometryUndoInstance : UndoRedoInstance
     {
-        private Room UndoRoom;
         private RectangleInt2 Area;
         private Block[,] Blocks;
 
-        public GeometryUndoInstance(UndoManager parent, Room room) : base(parent)
+        public GeometryUndoInstance(UndoManager parent, Room room) : base(parent, room)
         {
-            UndoRoom = room;
             Area.Start = VectorInt2.Zero;
             Area.End = new VectorInt2(room.NumXSectors, room.NumZSectors);
 
@@ -163,17 +191,17 @@ namespace TombEditor
 
             for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                 for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
-                    Blocks[i, j] = UndoRoom.Blocks[x, z].Clone();
+                    Blocks[i, j] = Room.Blocks[x, z].Clone();
 
-            Valid =()=> (UndoRoom != null && Parent.Editor.Level.RoomExists(UndoRoom) &&
-                         UndoRoom.NumXSectors == Area.Size.X && UndoRoom.NumZSectors == Area.Size.Y);
+            Valid =()=> (Room != null && Room.ExistsInLevel &&
+                         Room.NumXSectors == Area.Size.X && Room.NumZSectors == Area.Size.Y);
 
             UndoAction =()=>
             {
                 for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                     for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
                     {
-                        var origin = UndoRoom.Blocks[x, z];
+                        var origin = Room.Blocks[x, z];
                         var replacement = Blocks[i, j];
 
                         if (origin.Type != BlockType.BorderWall) origin.Type = replacement.Type;
@@ -198,20 +226,19 @@ namespace TombEditor
                         origin.Ceiling = replacement.Ceiling;
                     }
 
-                Parent.Editor.RoomGeometryChange(UndoRoom);
-                Parent.Editor.RoomSectorPropertiesChange(UndoRoom);
+                Parent.Editor.RoomGeometryChange(Room);
+                Parent.Editor.RoomSectorPropertiesChange(Room);
                 var relevantRooms = room.Portals.Select(p => p.AdjoiningRoom);
                 Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
 
-                UndoRoom.BuildGeometry();
+                Room.BuildGeometry();
                 foreach (Room relevantRoom in relevantRooms)
                 {
                     Parent.Editor.RoomGeometryChange(relevantRoom);
                     Parent.Editor.RoomSectorPropertiesChange(relevantRoom);
                 }
             };
-
-            RedoInstance =()=> new GeometryUndoInstance(Parent, UndoRoom);
+            RedoInstance =()=> new GeometryUndoInstance(Parent, Room);
         }
     }
 
@@ -230,7 +257,7 @@ namespace TombEditor
             public void Resize(int newSize)
             {
                 if (newSize == items.Length) return;
-                newSize = newSize< 1 ? 1 : newSize;
+                newSize = newSize < 1 ? 1 : newSize;
 
                 // In case new size is smaller, cut stack from bottom
                 if (top != -1 && top > newSize - 1 && items.Length > newSize)
@@ -314,9 +341,12 @@ namespace TombEditor
             Editor.UndoStackChanged();
         }
 
-        public void PushAdjoiningRoomCreated(Room room) => Push(new AddRemoveAdjoiningRoomUndoInstance(this, room));
+        public void PushRoomCreated(Room room) => Push(new AddRoomUndoInstance(this, room));
+        public void PushAdjoiningRoomCreated(Room room) => Push(new AddAdjoiningRoomUndoInstance(this, room));
+        public void PushRoomsMoved(List<Room> rooms, VectorInt3 delta) { if(delta != VectorInt3.Zero) Push(new MoveRoomsUndoInstance(this, rooms, delta)); }
+        public void PushSectorObjectCreated(SectorBasedObjectInstance obj) => Push(new AddSectorBasedObjectUndoInstance(this, obj));
         public void PushGeometryChanged(Room room) => Push(new GeometryUndoInstance(this, room));
-        public void PushGeometryChanged(List<Room> rooms) => Push(rooms.Select(item => (new GeometryUndoInstance(this, item)) as UndoRedoInstance).ToList());
+        public void PushGeometryChanged(List<Room> rooms) => Push(rooms.Select(room => (new GeometryUndoInstance(this, room)) as UndoRedoInstance).ToList());
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
         public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
@@ -347,9 +377,12 @@ namespace TombEditor
 
             if(instance.All(item => item.Valid == null || item.Valid()))
             {
-                // Generate and push redo instance
+                // Generate and push redo instance, if exists. If not, reset redo stack, since action is irreversible.
                 var redoList = instance.Where(item => item.RedoInstance != null).ToList().ConvertAll(item => item.RedoInstance());
-                if (redoList.Count > 0) counterStack.Push(redoList);
+                if (redoList.Count > 0)
+                    counterStack.Push(redoList);
+                else
+                    counterStack.Clear();
 
                 // Invoke original undo instance
                 instance.ForEach(item => item.UndoAction?.Invoke());
