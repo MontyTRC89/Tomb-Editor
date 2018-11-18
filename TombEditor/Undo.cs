@@ -76,7 +76,7 @@ namespace TombEditor
     {
         VectorInt3 Delta;
         List<Room> Rooms;
-        Dictionary<Room, VectorInt2> Sizes;
+        Dictionary<Room, VectorInt2> Sizes = new Dictionary<Room, VectorInt2>();
 
         public MoveRoomsUndoInstance(UndoManager parent, List<Room> rooms, VectorInt3 delta) : base(parent)
         {
