@@ -712,9 +712,9 @@ namespace TombEditor
                     EditorActions.DeleteRooms(new[] { args.Editor.SelectedRoom }, args.Window);
             });
 
-            AddCommand("DuplicateRooms", "Duplicate rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("DuplicateRoom", "Duplicate rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.DuplicateRooms(args.Window);
+                EditorActions.DuplicateRoom(args.Window);
             });
 
             AddCommand("Redo", "Redo", CommandType.General, delegate (CommandArgs args)

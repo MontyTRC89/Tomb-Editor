@@ -90,8 +90,9 @@ namespace TombEditor
             }
         }
 
-        public VectorInt2 Size => new VectorInt2(End.X - Start.X);
+        public VectorInt2 Size => End - Start;
         public bool Empty => this == None;
+        public bool Single => Size == VectorInt2.Zero;
         public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
         public bool ValidOrNone => Valid || this == None;
 

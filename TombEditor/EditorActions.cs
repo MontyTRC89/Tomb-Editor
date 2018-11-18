@@ -2650,7 +2650,7 @@ namespace TombEditor
             _editor.SelectRooms(_editor.Level.GetConnectedRooms(_editor.SelectedRooms).ToList());
         }
 
-        public static void DuplicateRooms(IWin32Window owner)
+        public static void DuplicateRoom(IWin32Window owner)
         {
             // Prevent "Copy of Copy of Copy" situation
             int foundPostfixPos = _editor.SelectedRoom.Name.IndexOf(" (copy");
@@ -2681,6 +2681,7 @@ namespace TombEditor
             newRoom.BuildGeometry();
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
+            _editor.UndoManager.PushRoomCreated(newRoom);
             _editor.SelectedRoom = newRoom;
         }
 
@@ -3078,9 +3079,16 @@ namespace TombEditor
 
             for (int x = x0; x < x1; x++)
                 for (int z = z0; z < z1; z++)
-                    if(_editor.SelectedSectors == SectorSelection.None || 
+                {
+                    var currentSector = sectors[x - x0, z - z0];
+                    if (currentSector.Type == BlockType.BorderWall && _editor.SelectedRoom.Blocks[x, z].Type != BlockType.BorderWall)
+                        continue;
+
+                    if (_editor.SelectedSectors == SectorSelection.None ||
+                        _editor.SelectedSectors.Single ||
                         _editor.SelectedSectors.Area.Contains(new VectorInt2(x, z)))
-                            _editor.SelectedRoom.Blocks[x, z] = sectors[x - x0, z - z0].Clone();
+                        _editor.SelectedRoom.Blocks[x, z] = currentSector.Clone();
+                }
 
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);

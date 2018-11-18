@@ -408,7 +408,7 @@
             this.butDublicateRoom.Name = "butDublicateRoom";
             this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
             this.butDublicateRoom.TabIndex = 104;
-            this.butDublicateRoom.Tag = "DuplicateRooms";
+            this.butDublicateRoom.Tag = "DuplicateRoom";
             // 
             // butDeleteRoom
             // 

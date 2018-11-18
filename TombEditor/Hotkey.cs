@@ -343,7 +343,7 @@ namespace TombEditor
             this["SelectAll"] = new SortedSet<Hotkey> { A | Keys.Control };
             this["Search"] = new SortedSet<Hotkey> { Keys.F | Keys.Control };
             this["DeleteRooms"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift | Keys.Alt };
-            this["DuplicateRooms"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift | Keys.Alt };
+            this["DuplicateRoom"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift | Keys.Alt };
             this["SelectConnectedRooms"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift | Keys.Alt };
             this["RotateRoomsClockwise"] = new SortedSet<Hotkey> { Keys.F1 | Keys.Control };
             this["RotateRoomsCounterClockwise"] = new SortedSet<Hotkey> { Keys.F2 | Keys.Control };
