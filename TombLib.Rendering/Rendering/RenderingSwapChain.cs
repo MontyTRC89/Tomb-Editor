@@ -13,6 +13,7 @@ namespace TombLib.Rendering
         public Vector2 TextAlignment = new Vector2(0.5f);
         public Vector2 ScreenAlignment = new Vector2(0.5f);
         public Vector2 Alignment { set { TextAlignment = ScreenAlignment = value; } }
+        public bool Overlay;
     }
 
     public class Sprite
@@ -44,18 +45,21 @@ namespace TombLib.Rendering
         public abstract void Resize(VectorInt2 newSize);
         public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, params Sprite[] sprites);
         /// <summary>Note that all fonts used in one call must be in the same texture allocator!</summary>
-        public abstract void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos);
+        public abstract void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays);
         public void RenderText(IEnumerable<Text> texts)
         {
             // Collect actual glyphs to render
-            List<RenderingFont.GlyphRenderInfo> glyphRenderInfos = new List<RenderingFont.GlyphRenderInfo>();
+            var glyphRenderInfos = new List<RenderingFont.GlyphRenderInfo>();
+            var overlayRectangles = new List<RectangleInt2>();
             RenderingTextureAllocator textureAllocator = null;
+
             foreach (Text text in texts)
             {
                 // Build glyphs using the right font
                 Vector2 pixelPos = text.PixelPos + text.Pos * Size * 0.5f;
                 pixelPos += (text.ScreenAlignment * 2 - new Vector2(1)) * Size * new Vector2(0.5f, -0.5f);
-                text.Font.ParseString(text.String, glyphRenderInfos, VectorInt2.FromRounded(pixelPos), text.TextAlignment);
+                RectangleInt2 rect = text.Font.ParseString(text.String, text.Overlay, glyphRenderInfos, VectorInt2.FromRounded(pixelPos), text.TextAlignment);
+                if (rect != RectangleInt2.Zero) overlayRectangles.Add(rect);
 
                 // Check texture allocator
                 if (textureAllocator == null)
@@ -65,7 +69,7 @@ namespace TombLib.Rendering
             }
             if (glyphRenderInfos.Count == 0)
                 return;
-            RenderGlyphs(textureAllocator, glyphRenderInfos);
+            RenderGlyphs(textureAllocator, glyphRenderInfos, overlayRectangles);
         }
         public void RenderText(params Text[] text) => RenderText((IEnumerable<Text>)text);
     }

@@ -12,6 +12,7 @@ struct PixelInputType
 {
     float4 Position : SV_POSITION;
     float3 Uvw : UVW;
+	int BlendMode : BLENDMODE;
 };
 
 PixelInputType main(VertexInputType input)
@@ -23,6 +24,7 @@ PixelInputType main(VertexInputType input)
         (float)(input.Uvw.x & 0xffffff) / 16777216.0f,
         (float)((input.Uvw.x >> 24) | ((input.Uvw.y & 0xffff) << 8)) / 16777216.0f,
         (float)((input.Uvw.y >> 16) & 0xfff));
+	output.BlendMode = input.Uvw.y >> 28;
 
     return output;
 }

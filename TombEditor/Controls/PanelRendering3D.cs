@@ -2141,6 +2141,7 @@ namespace TombEditor.Controls
                 TextAlignment = new Vector2(0.0f, 0.0f),
                 PixelPos = new VectorInt2(10, -10),
                 Pos = matrix.TransformPerspectively(new Vector3()).To2(),
+                Overlay = true,
                 String = message
             };
         }
@@ -2304,6 +2305,7 @@ namespace TombEditor.Controls
                     {
                         Font = _fontDefault,
                         Pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter()).To2(),
+                        Overlay = true,
                         String = roomsToDraw[i].Name
                     });
             }
@@ -2327,6 +2329,7 @@ namespace TombEditor.Controls
                     {
                         Font = _fontDefault,
                         Pos = matrix.TransformPerspectively(center + positions[i]).To2(),
+                        Overlay = true,
                         String = messages[i]
                     });
             }
@@ -2419,6 +2422,7 @@ namespace TombEditor.Controls
                 Font = _fontDefault,
                 PixelPos = new Vector2(10, -5),
                 Alignment = new Vector2(0.0f, 0.0f),
+                Overlay = true,
                 String = DebugString
             });
 

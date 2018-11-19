@@ -193,14 +193,14 @@ namespace TombLib.Rendering.DirectX11
             }
         }
 
-        public override unsafe void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos)
+        public override unsafe void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays)
         {
             Vector2 posScaling = new Vector2(1.0f) / (Size / 2); // Divide the integer coordinates to avoid pixel mishmash.
             Vector2 posOffset = VectorInt2.FromRounded(posScaling * 0.5f);
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
 
             // Build vertex buffer
-            int vertexCount = glyphRenderInfos.Count * 6;
+            int vertexCount = glyphRenderInfos.Count * 6 + overlays.Count * 6;
             int bufferSize = vertexCount * (sizeof(Vector2) + sizeof(ulong));
             fixed (byte* data = new byte[bufferSize])
             {
@@ -208,22 +208,38 @@ namespace TombLib.Rendering.DirectX11
                 ulong* uvws = (ulong*)(data + vertexCount * sizeof(Vector2));
 
                 // Setup vertices
-                int count = glyphRenderInfos.Count;
-                for (int i = 0; i < count; ++i)
+                int c = 0;
+                for (int i = 0; i < overlays.Count; ++i, ++c)
+                {
+                    var overlay = overlays[i];
+                    Vector2 posStart = overlay.Start * posScaling + posOffset;
+                    Vector2 posEnd = (overlay.End - new Vector2(1)) * posScaling + posOffset;
+
+                    positions[c * 6 + 0] = new Vector2(posStart.X, posStart.Y);
+                    positions[c * 6 + 2] = positions[c * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
+                    positions[c * 6 + 1] = positions[c * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
+                    positions[c * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
+
+                    uvws[c * 6 + 2] = uvws[c * 6 + 3] =
+                    uvws[c * 6 + 1] = uvws[c * 6 + 4] =
+                    uvws[c * 6 + 5] = uvws[c * 6 + 0] = Dx11RenderingDevice.CompressUvw(VectorInt3.Zero, Vector2.Zero, Vector2.Zero, 1);
+                }
+
+                for (int i = 0; i < glyphRenderInfos.Count; ++i, ++c)
                 {
                     RenderingFont.GlyphRenderInfo info = glyphRenderInfos[i];
                     Vector2 posStart = info.PosStart * posScaling + posOffset;
                     Vector2 posEnd = (info.PosEnd - new Vector2(1)) * posScaling + posOffset;
 
-                    positions[i * 6 + 0] = new Vector2(posStart.X, posStart.Y);
-                    positions[i * 6 + 2] = positions[i * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
-                    positions[i * 6 + 1] = positions[i * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
-                    positions[i * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
+                    positions[c * 6 + 0] = new Vector2(posStart.X, posStart.Y);
+                    positions[c * 6 + 2] = positions[c * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
+                    positions[c * 6 + 1] = positions[c * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
+                    positions[c * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
 
-                    uvws[i * 6 + 0] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, 0.5f));
-                    uvws[i * 6 + 2] = uvws[i * 6 + 3] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, 0.5f));
-                    uvws[i * 6 + 1] = uvws[i * 6 + 4] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, info.TexSize.Y - 0.5f));
-                    uvws[i * 6 + 5] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, info.TexSize.Y - 0.5f));
+                    uvws[c * 6 + 0] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, 0.5f));
+                    uvws[c * 6 + 2] = uvws[c * 6 + 3] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, 0.5f));
+                    uvws[c * 6 + 1] = uvws[c * 6 + 4] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, info.TexSize.Y - 0.5f));
+                    uvws[c * 6 + 5] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, info.TexSize.Y - 0.5f));
                 }
 
                 // Create GPU resources

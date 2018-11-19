@@ -63,7 +63,7 @@ namespace TombLib.Rendering
                 _gdiHdc = GDI.CreateCompatibleDC(IntPtr.Zero);
                 if (_gdiHdc == IntPtr.Zero)
                     throw new GDI.GDIException("CreateCompatibleDC");
-                _gdiFont = GDI.CreateFontW((int)(description.FontSize + 0.5f), 0, 0, 0, description.FontIsBold ? 700 : 400,
+                _gdiFont = GDI.CreateFontW((int)(description.FontSize + 0.5f), 0, 0, 0, description.FontIsBold ? 700 : 0,
                     description.FontIsItalic ? 1u : 0u, description.FontIsUnderline ? 1u : 0u, description.FontIsStrikeout ? 1u : 0u, 0, 0, 0,
                     GDI.FontQuality.CLEARTYPE_QUALITY, 0, description.FontName);
                 if (_gdiFont == IntPtr.Zero)
@@ -83,7 +83,7 @@ namespace TombLib.Rendering
                     throw new GDI.GDIException("SetBkColor");
 
                 // Preload characters
-                ParseString(description.PreLoadedCharacters, new List<GlyphRenderInfo>());
+                ParseString(description.PreLoadedCharacters, false, new List<GlyphRenderInfo>());
             }
             catch
             {
@@ -147,7 +147,7 @@ namespace TombLib.Rendering
                         uint r = 255 - (pixel & 0xff);
                         uint g = 255 - ((pixel >> 8) & 0xff);
                         uint b = 255 - ((pixel >> 16) & 0xff);
-                        uint a = Math.Max(r, Math.Max(g, b));
+                        uint a = 255;
                         uint factor = a == 0 ? 0xff0000 : (0xff0000 / a);
                         r = Math.Min((r * factor + 0x8000) >> 16, 255);
                         g = Math.Min((g * factor + 0x8000) >> 16, 255);
@@ -213,8 +213,10 @@ namespace TombLib.Rendering
             public VectorInt2 TexSize;
         };
 
-        public unsafe void ParseString(string str, List<GlyphRenderInfo> outGlyphRenderInfos, VectorInt2 offsetedPos = new VectorInt2(), Vector2 alignment = new Vector2())
+        public unsafe RectangleInt2 ParseString(string str, bool buildOverlay, List<GlyphRenderInfo> outGlyphRenderInfos, VectorInt2 offsetedPos = new VectorInt2(), Vector2 alignment = new Vector2())
         {
+            RectangleInt2? result = null;
+
             // Do line breaking
             List<string> lines = new List<string>();
             int lineStart = 0;
@@ -264,16 +266,31 @@ namespace TombLib.Rendering
 
                     GlyphData glyphData = GetOrCreateGlyph(glyphIndex);
                     VectorInt3 texPosition = TextureAllocator.Get(new RenderingTexture(glyphData.Image) { Tag = glyphData }); // Tag the glyph data to keep the weak reference alive
+
+                    var posStart = pos + glyphData.Offset + new VectorInt2(0, -glyphData.Image.Size.Y);
+                    var posEnd = pos + glyphData.Offset + new VectorInt2(glyphData.Image.Size.X, 0);
+
+                    // Generate rectangular font overlay
+                    if(buildOverlay)
+                    {
+                        var rect = new RectangleInt2(posStart, posEnd);
+                        if (!result.HasValue) result = rect;
+                        else result = result.Value.Union(rect);
+                    }
+
                     outGlyphRenderInfos.Add(new GlyphRenderInfo
                     {
-                        PosStart = pos + glyphData.Offset + new VectorInt2(0, -glyphData.Image.Size.Y),
-                        PosEnd = pos + glyphData.Offset + new VectorInt2(glyphData.Image.Size.X, 0),
+                        PosStart = posStart,
+                        PosEnd = posEnd,
                         TexStart = texPosition,
                         TexSize = glyphData.Image.Size
                     });
+
                     pos.X += dx;
                 }
             }
+
+            return result.HasValue ? result.Value.Inflate(2) : RectangleInt2.Zero;
         }
 
         public void Dispose()
