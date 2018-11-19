@@ -739,10 +739,11 @@ namespace TombEditor
                 PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
         }
 
-        public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
+        public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
         {
-            if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
-                    "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            // No owner = silent mode!
+            if (owner != null && DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
+                                 "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             if (instance is PositionBasedObjectInstance)
@@ -779,7 +780,10 @@ namespace TombEditor
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
+            {
                 room.BuildGeometry();
+                _editor.RoomGeometryChange(room);
+            }
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
@@ -3046,7 +3050,7 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
+                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can cut or copy it.", PopupType.Info);
                 return;
             }
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));

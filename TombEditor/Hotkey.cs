@@ -336,6 +336,7 @@ namespace TombEditor
             this["SaveLevelAs"] = new SortedSet<Hotkey> { Keys.S | Keys.Control | Keys.Shift };
             this["BuildLevel"] = new SortedSet<Hotkey> { Keys.F5 | Keys.Shift };
             this["BuildAndPlay"] = new SortedSet<Hotkey> { Keys.F5 };
+            this["Cut"] = new SortedSet<Hotkey> { Keys.X | Keys.Control };
             this["Copy"] = new SortedSet<Hotkey> { Keys.C | Keys.Control };
             this["Paste"] = new SortedSet<Hotkey> { Keys.V | Keys.Control };
             this["StampObject"] = new SortedSet<Hotkey> { Keys.B | Keys.Control };

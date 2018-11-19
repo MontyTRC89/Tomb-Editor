@@ -34,7 +34,7 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Delete", Properties.Resources.toolbox_Eraser_16, (o, e) =>
             {
-                EditorActions.DeleteObjectWithWarning(targetObject, this);
+                EditorActions.DeleteObject(targetObject, this);
             }));
 
             Items.Add(new ToolStripMenuItem("Bookmark object", null, (o, e) =>
