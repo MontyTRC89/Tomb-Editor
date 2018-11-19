@@ -730,13 +730,13 @@ namespace TombEditor
                 EditLightColor(owner);
         }
 
-        public static void PasteObject(VectorInt2 pos)
+        public static void PasteObject(VectorInt2 pos, Room room)
         {
             ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
             if (data == null)
                 _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
             else
-                PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
+                PlaceObject(room, pos, data.MergeGetSingleObject(_editor));
         }
 
         public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
@@ -3115,7 +3115,7 @@ namespace TombEditor
             return false;
         }
 
-        public static void MoveLara(IWin32Window owner, VectorInt2 p)
+        public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her
             MoveableInstance lara;
@@ -3131,13 +3131,13 @@ namespace TombEditor
                         _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
 
                         // Move lara to current sector
-                        PlaceObjectWithoutUpdate(_editor.SelectedRoom, p, lara);
+                        PlaceObjectWithoutUpdate(targetRoom, p, lara);
                         return;
                     }
                 }
 
             // Add lara to current sector
-            PlaceObject(_editor.SelectedRoom, p, new MoveableInstance { WadObjectId = WadMoveableId.Lara });
+            PlaceObject(targetRoom, p, new MoveableInstance { WadObjectId = WadMoveableId.Lara });
         }
 
         public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)

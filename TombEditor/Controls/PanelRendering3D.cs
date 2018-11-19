@@ -1097,7 +1097,7 @@ namespace TombEditor.Controls
                         _currentContextMenu?.Dispose();
                         _currentContextMenu = null;
 
-                        PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
+                        PickingResult newPicking = DoPicking(GetRay(e.X, e.Y), true);
                         if (newPicking is PickingResultObject)
                         {
                             ObjectInstance target = ((PickingResultObject)newPicking).ObjectInstance;
@@ -1108,9 +1108,9 @@ namespace TombEditor.Controls
                         {
                             var pickedBlock = newPicking as PickingResultBlock;
                             if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedBlock.Pos))
-                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, _editor.SelectedRoom, _editor.SelectedSectors.Area);
+                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, pickedBlock.Room, _editor.SelectedSectors.Area);
                             else
-                                _currentContextMenu = new BlockContextMenu(_editor, this, _editor.SelectedRoom, pickedBlock.Pos);
+                                _currentContextMenu = new BlockContextMenu(_editor, this, pickedBlock.Room, pickedBlock.Pos);
                         }
                         _currentContextMenu?.Show(PointToScreen(e.Location));
                     }

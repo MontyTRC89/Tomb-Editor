@@ -910,7 +910,7 @@ namespace TombEditor
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
 
-                EditorActions.MoveLara(args.Window, args.Editor.SelectedSectors.Start);
+                EditorActions.MoveLara(args.Window, args.Editor.SelectedRoom, args.Editor.SelectedSectors.Start);
             });
 
             AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard", CommandType.Objects, delegate (CommandArgs args)
