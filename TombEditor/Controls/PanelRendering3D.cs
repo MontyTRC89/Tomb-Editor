@@ -542,6 +542,8 @@ namespace TombEditor.Controls
                                 }
                                 return;
                             }
+                            else if (ModifierKeys.HasFlag(Keys.Alt) || ModifierKeys.HasFlag(Keys.Shift)) // Undo for flip/rotate sector
+                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
                             break;
 
                         case EditorMode.Lighting:
