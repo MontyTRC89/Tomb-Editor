@@ -426,7 +426,7 @@ namespace TombLib.LevelData
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
-            if (texture.TriangleArea == 0 || texture.QuadArea == 0)
+            if (texture != TextureArea.None && (texture.TriangleArea == 0 || texture.QuadArea == 0))
                 texture = TextureArea.Invisible;
 
             if (_faceTextures[(int)face] != texture)

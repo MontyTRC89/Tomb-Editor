@@ -277,6 +277,9 @@ namespace TombLib.Utils
 
         public TextureArea RestoreQuad()
         {
+            if (!TextureIsTriangle)
+                return this;
+
             var area = GetRect(true);
             var triangleCoords = TexCoords;
             var corners = new bool[4];
