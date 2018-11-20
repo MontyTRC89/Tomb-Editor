@@ -620,15 +620,15 @@ namespace TombEditor
                 }
                 else
                 {
-                        if(args.Editor.SelectedObject == null && args.Editor.SelectedSectors.Valid)
-                        {
-                            EditorActions.SetSurfaceWithoutUpdate(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, false);
-                            EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, null, false, true, true);
-                            EditorActions.SetSurfaceWithoutUpdate(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, true);
-                            EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, null, true, true, true, true);
-                        }
-                        else if (args.Editor.SelectedObject != null && !(args.Editor.SelectedObject is PortalInstance) && !(args.Editor.SelectedObject is TriggerInstance))
-                            EditorActions.DeleteObject(args.Editor.SelectedObject);
+                    if(args.Editor.SelectedObject == null && args.Editor.SelectedSectors.Valid)
+                    {
+                        EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, null, false, true, false);
+                        EditorActions.SetSurfaceWithoutUpdate(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, false);
+                        EditorActions.SetSurfaceWithoutUpdate(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, true);
+                        EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, null, true, true, true, true);
+                    }
+                    else if (args.Editor.SelectedObject != null && !(args.Editor.SelectedObject is PortalInstance) && !(args.Editor.SelectedObject is TriggerInstance))
+                        EditorActions.DeleteObject(args.Editor.SelectedObject);
                 }
             });
 
