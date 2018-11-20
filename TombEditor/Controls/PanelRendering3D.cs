@@ -556,14 +556,14 @@ namespace TombEditor.Controls
                             // Do texturing
                             if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.Paint2x2)
                             {
-                                if (ModifierKeys.HasFlag(Keys.Control))
+                                if (ModifierKeys.HasFlag(Keys.Shift))
                                 {
-                                    EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                    EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control));
                                     break;
                                 }
-                                else if (ModifierKeys.HasFlag(Keys.Shift))
+                                else if (ModifierKeys.HasFlag(Keys.Control))
                                 {
-                                    EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                    EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
                             }

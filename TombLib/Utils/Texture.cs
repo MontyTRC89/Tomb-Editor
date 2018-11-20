@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace TombLib.Utils
@@ -276,6 +275,33 @@ namespace TombLib.Utils
             return transformedTexture;
         }
 
+        public TextureArea RestoreQuad()
+        {
+            var area = GetRect(true);
+            var triangleCoords = TexCoords;
+            var corners = new bool[4];
+            var restoredTexture = this;
+            var shape = (int)TextureExtensions.GetTextureShapeType(triangleCoords, true);
+
+            restoredTexture.TexCoord3 = restoredTexture.TexCoord2; // Just in case...
+
+            var coords = new Vector2[4]
+            {
+                area.Start,
+                new Vector2(area.X1, area.Y0),
+                new Vector2(area.X0, area.Y1),
+                area.End
+            };
+
+            for(int i = 0; i < 4; i++)
+                for(int j = 0; j < 3; j++)
+                    if (triangleCoords[j] == coords[i])
+                        corners[i] = true;
+
+            restoredTexture.TexCoord3 = coords[Array.FindIndex(corners, corner => !corner)];
+            return restoredTexture;
+        }
+
         public Vector2 GetTexCoord(int index)
         {
             switch (index)
@@ -322,7 +348,10 @@ namespace TombLib.Utils
                 Swap.Do(ref TexCoord1, ref TexCoord2);
             }
             else
+            {
                 Swap.Do(ref TexCoord0, ref TexCoord2);
+                TexCoord3 = TexCoord2;
+            }
         }
 
         public void Rotate(int iter = 1, bool isTriangle = false)

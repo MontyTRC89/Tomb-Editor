@@ -809,15 +809,49 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
+        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face, bool fullFace = false)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
-            Block blocks = room.GetBlock(pos);
+            Block block = room.GetBlock(pos);
+            TextureArea newTexture = block.GetFaceTexture(face);
+            bool isTriangle = room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle;
+        
+            if(fullFace && newTexture.TextureIsTriangle && isTriangle && face >= BlockFace.Floor)
+            {
+                newTexture = block.GetFaceTexture(face).RestoreQuad();
+                BlockFace opposite = BlockFace.Floor;
+                int rotation = 1;
 
-            TextureArea newTexture = blocks.GetFaceTexture(face);
-            newTexture.Rotate(1, room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle);
-            blocks.SetFaceTexture(face, newTexture);
+                switch (face)
+                {
+                    case BlockFace.Floor:
+                        opposite = BlockFace.FloorTriangle2;
+                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 2 : 1;
+                        break;
+                    case BlockFace.FloorTriangle2:
+                        opposite = BlockFace.Floor;
+                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 0 : 3;
+                        break;
+                    case BlockFace.Ceiling:
+                        opposite = BlockFace.CeilingTriangle2;
+                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 2 : 1;
+                        break;
+                    case BlockFace.CeilingTriangle2:
+                        opposite = BlockFace.Ceiling;
+                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 0 : 3;
+                        break;
+                }
+
+                newTexture.Rotate(rotation, false);
+                if (!block.GetFaceTexture(face).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, face, newTexture);
+                if (!block.GetFaceTexture(opposite).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, opposite, newTexture);
+            }
+            else
+            {
+                newTexture.Rotate(1, isTriangle);
+                block.SetFaceTexture(face, newTexture);
+            }
 
             // Update state
             room.BuildGeometry();
