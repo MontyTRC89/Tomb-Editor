@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using TombLib.Utils;
@@ -450,6 +451,30 @@ namespace TombLib.LevelData
                 if (FloorPortal != null)
                     yield return FloorPortal;
             }
+        }
+
+        public void ReplaceGeometry(Level level, Block replacement)
+        {
+            if (Type != BlockType.BorderWall) Type = replacement.Type;
+
+            Flags = replacement.Flags;
+            ForceFloorSolid = replacement.ForceFloorSolid;
+
+            for (BlockFace face = 0; face < BlockFace.Count; face++)
+            {
+                var texture = replacement.GetFaceTexture(face);
+                if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))
+                    SetFaceTexture(face, texture);
+            }
+
+            for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
+            {
+                SetHeight(BlockVertical.Ed, edge, replacement.GetHeight(BlockVertical.Ed, edge));
+                SetHeight(BlockVertical.Rf, edge, replacement.GetHeight(BlockVertical.Rf, edge));
+            }
+
+            Floor = replacement.Floor;
+            Ceiling = replacement.Ceiling;
         }
 
         public short GetHeight(BlockVertical vertical, BlockEdge edge)

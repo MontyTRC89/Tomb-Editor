@@ -1828,17 +1828,7 @@ namespace TombEditor
         public static void SetFloor(Room room, RectangleInt2 area)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
-                        continue;
-
-                    room.Blocks[x, z].Type = BlockType.Floor;
-                    room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
-                }
-
+            SetSurfaceWithoutUpdate(room, area, true);
             SmartBuildGeometry(room, area);
             _editor.RoomSectorPropertiesChange(room);
         }
@@ -1846,7 +1836,13 @@ namespace TombEditor
         public static void SetCeiling(Room room, RectangleInt2 area)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+            SetSurfaceWithoutUpdate(room, area, false);
+            SmartBuildGeometry(room, area);
+            _editor.RoomSectorPropertiesChange(room);
+        }
 
+        public static void SetSurfaceWithoutUpdate(Room room, RectangleInt2 area, bool ceiling)
+        {
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1854,11 +1850,12 @@ namespace TombEditor
                         continue;
 
                     room.Blocks[x, z].Type = BlockType.Floor;
-                    room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
-                }
 
-            SmartBuildGeometry(room, area);
-            _editor.RoomSectorPropertiesChange(room);
+                    if (ceiling)
+                        room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
+                    else
+                        room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
+                }
         }
 
         public static void ToggleBlockFlag(Room room, RectangleInt2 area, BlockFlags flag)
@@ -2343,9 +2340,9 @@ namespace TombEditor
                     if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type == BlockType.Wall))
                     {
 
-                        if (ceiling && room.Blocks[x, z].CeilingPortal == null)
+                        if (ceiling)
                             room.Blocks[x, z].Ceiling.SetHeight(height.Value);
-                        else if(!ceiling && room.Blocks[x, z].FloorPortal == null)
+                        else
                             room.Blocks[x, z].Floor.SetHeight(height.Value);
                     }
                 }
@@ -3082,6 +3079,8 @@ namespace TombEditor
 
             var sectors = data.GetSectors();
 
+            var portals = new List<PortalInstance>();
+
             for (int x = x0; x < x1; x++)
                 for (int z = z0; z < z1; z++)
                 {
@@ -3092,8 +3091,14 @@ namespace TombEditor
                     if (_editor.SelectedSectors.Empty ||
                         _editor.SelectedSectors.Single ||
                         _editor.SelectedSectors.Area.Contains(new VectorInt2(x, z)))
-                        _editor.SelectedRoom.Blocks[x, z] = currentSector.Clone();
+                    {
+                        portals.AddRange(_editor.SelectedRoom.Blocks[x, z].Portals);
+                        _editor.SelectedRoom.Blocks[x, z].ReplaceGeometry(_editor.Level, currentSector);
+                    }
                 }
+
+            // Redraw rooms in portals
+            portals.Select(p => p.AdjoiningRoom).ToList().ForEach(room => { room.BuildGeometry(); _editor.RoomGeometryChange(room); });
 
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
