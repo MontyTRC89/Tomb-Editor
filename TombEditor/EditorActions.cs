@@ -3078,7 +3078,6 @@ namespace TombEditor
             int z1 = Math.Min(_editor.SelectedRoom.NumZSectors - 1, z0 + data.Height);
 
             var sectors = data.GetSectors();
-
             var portals = new List<PortalInstance>();
 
             for (int x = x0; x < x1; x++)
