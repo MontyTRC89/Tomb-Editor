@@ -1828,7 +1828,7 @@ namespace TombEditor
         public static void SetFloor(Room room, RectangleInt2 area)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-            SetSurfaceWithoutUpdate(room, area, true);
+            SetSurfaceWithoutUpdate(room, area, false);
             SmartBuildGeometry(room, area);
             _editor.RoomSectorPropertiesChange(room);
         }
@@ -1836,7 +1836,7 @@ namespace TombEditor
         public static void SetCeiling(Room room, RectangleInt2 area)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-            SetSurfaceWithoutUpdate(room, area, false);
+            SetSurfaceWithoutUpdate(room, area, true);
             SmartBuildGeometry(room, area);
             _editor.RoomSectorPropertiesChange(room);
         }
