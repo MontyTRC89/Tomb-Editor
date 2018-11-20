@@ -14,7 +14,7 @@ namespace TombEditor
     // According to command-based pattern, each undo instance has undo and complementary 
     // redo instance. In simple cases, redo command simply does back-to-back push-pop 
     // operation on both undo and redo stacks. In this situation UndoAction's UndoInstance
-    // must mirror RedoInstance (see RoomUndoInstance as example).
+    // must mirror RedoInstance (see MoveRoomsUndoInstance as example).
     // In complicated cases, such as removing previously created object, UndoAction will
     // differ from RedoAction (in case of objects, we need to re-link room to newly created
     // instance), hence RedoInstance delegate has more complicated code.
