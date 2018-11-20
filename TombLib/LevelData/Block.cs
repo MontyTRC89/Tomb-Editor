@@ -463,7 +463,7 @@ namespace TombLib.LevelData
             for (BlockFace face = 0; face < BlockFace.Count; face++)
             {
                 var texture = replacement.GetFaceTexture(face);
-                if (!texture.TextureIsInvisible && level.Settings.Textures.Contains(texture.Texture))
+                if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))
                     SetFaceTexture(face, texture);
             }
 

@@ -284,7 +284,6 @@ namespace TombLib.Utils
             var shape = (int)TextureExtensions.GetTextureShapeType(triangleCoords, true);
 
             restoredTexture.TexCoord3 = restoredTexture.TexCoord2; // Just in case...
-
             var coords = new Vector2[4]
             {
                 area.Start,
@@ -298,7 +297,9 @@ namespace TombLib.Utils
                     if (triangleCoords[j] == coords[i])
                         corners[i] = true;
 
-            restoredTexture.TexCoord3 = coords[Array.FindIndex(corners, corner => !corner)];
+            int coord = Array.FindIndex(corners, corner => !corner);
+            if (coord == -1) return this;
+            restoredTexture.TexCoord3 = coords[coord];
             return restoredTexture;
         }
 
