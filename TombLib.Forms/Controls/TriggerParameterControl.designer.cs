@@ -42,6 +42,7 @@ namespace TombLib.Controls
             // 
             this.colorPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.colorPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.colorPreview.Enabled = false;
             this.colorPreview.Location = new System.Drawing.Point(187, 0);
             this.colorPreview.Name = "colorPreview";
             this.colorPreview.Size = new System.Drawing.Size(55, 23);
