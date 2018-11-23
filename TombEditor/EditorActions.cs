@@ -3329,6 +3329,49 @@ namespace TombEditor
                             var model = new IOModel();
                             var texture = _editor.Level.Settings.Textures[0];
 
+                            // Collect all used textures
+                            var usedTextures = new List<Texture>();
+                            foreach (var room in rooms)
+                            {
+                                for (int x = 0; x < room.NumXSectors; x++)
+                                {
+                                    for (int z = 0; z < room.NumZSectors; z++)
+                                    {
+                                        var block = room.GetBlock(new VectorInt2(x, z));
+
+                                        for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
+                                        {
+                                            var faceTexture = block.GetFaceTexture((BlockFace)faceType);
+                                            if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable || faceTexture.Texture == null)
+                                                continue;
+                                            if (!usedTextures.Contains(faceTexture.Texture))
+                                                usedTextures.Add(faceTexture.Texture);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Now fragment textures in pages
+                            foreach (var t in usedTextures)
+                            {
+                                string baseName = Path.GetFileNameWithoutExtension(t.Image.FileName);
+                                int pageSize = t.Image.Width;
+                                int numPages = (int)Math.Ceiling((float)t.Image.Height / pageSize);
+
+                                for (int i = 0; i < numPages; i++)
+                                {
+                                    string fileName = baseName + "_" + i + ".png";
+                                    int startX = 0;
+                                    int width = pageSize;
+                                    int startY = i * pageSize;
+                                    int height = (i * pageSize + pageSize > t.Image.Height ? t.Image.Height - i * pageSize : pageSize);
+
+                                    ImageC newImage = ImageC.CreateNew(pageSize, pageSize);
+                                    newImage.CopyFrom(0, 0, t.Image, startX, startY, width, height);
+                                    newImage.Save(fileName);
+                                }
+                            }
+
                             // Create various materials
                             var materialOpaque = new IOMaterial(Material.Material_Opaque + "_0_0_0_0", texture, false, false, 0);
                             var materialOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_0_0_1_0", texture, false, true, 0);
@@ -3369,7 +3412,8 @@ namespace TombEditor
                                         for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
                                         {
                                             var faceTexture = block.GetFaceTexture((BlockFace)faceType);
-                                            if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)
+                                            
+                                            if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable || faceTexture.Texture == null)
                                                 continue;
                                             var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, (BlockFace)faceType));
                                             var shape = room.GetFaceShape(x, z, (BlockFace)faceType);
@@ -3380,6 +3424,11 @@ namespace TombEditor
 
                                                 var textureArea1 = room.RoomGeometry.TriangleTextureAreas[i / 3];
                                                 var textureArea2 = room.RoomGeometry.TriangleTextureAreas[(i + 3) / 3];
+
+                                                if (textureArea1.TextureIsUnavailable || textureArea1.TextureIsInvisible || textureArea1.Texture == null)
+                                                    continue;
+                                                if (textureArea2.TextureIsUnavailable || textureArea2.TextureIsInvisible || textureArea2.Texture == null)
+                                                    continue;
 
                                                 var poly = new IOPolygon(IOPolygonShape.Quad);
                                                 poly.Indices.Add(lastIndex + 0);
@@ -3427,6 +3476,9 @@ namespace TombEditor
                                                 int i = range.Start;
 
                                                 var textureArea = room.RoomGeometry.TriangleTextureAreas[i / 3];
+                                                if (textureArea.TextureIsUnavailable || textureArea.TextureIsInvisible || textureArea.Texture == null)
+                                                    continue;
+
                                                 var poly = new IOPolygon(IOPolygonShape.Triangle); //indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
                                                 poly.Indices.Add(lastIndex);
                                                 poly.Indices.Add(lastIndex + 1);

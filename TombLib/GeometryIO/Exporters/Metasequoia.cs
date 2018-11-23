@@ -101,7 +101,7 @@ namespace TombLib.GeometryIO.Exporters
                             indices.Add(poly.Indices[1]);
                             indices.Add(poly.Indices[2]);
                             if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3]);
-
+                            
                             // Change vertex winding
                             if (_settings.InvertFaces) indices.Reverse();
 

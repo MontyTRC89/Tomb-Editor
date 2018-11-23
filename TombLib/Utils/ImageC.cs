@@ -62,6 +62,7 @@ namespace TombLib.Utils
         public static ImageC Transparent { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0 });
         public const int PixelSize = 4;
 
+        public string FileName { get; set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
         private byte[] _data { get; set; }
@@ -71,6 +72,7 @@ namespace TombLib.Utils
             Width = width;
             Height = height;
             _data = data;
+            FileName = "";
         }
 
         public static bool operator ==(ImageC first, ImageC second) =>
@@ -317,7 +319,11 @@ namespace TombLib.Utils
         public static ImageC FromFile(string path)
         {
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return FromStream(stream);
+            {
+                var result = FromStream(stream);
+                result.FileName = path;
+                return result;
+            }
         }
 
         public static IReadOnlyList<FileFormat> FromFileFileExtensions { get; } = new List<FileFormat>()
