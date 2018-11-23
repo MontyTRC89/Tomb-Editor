@@ -342,14 +342,12 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagOutside, room.FlagOutside);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagNoLensflare, room.FlagNoLensflare);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagExcludeFromPathFinding, room.FlagExcludeFromPathFinding);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomWaterLevel, room.WaterLevel);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomMistLevel, room.MistLevel);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomReflectionLevel, room.ReflectionLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomType, (int)room.Type);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomTypeStrength, room.TypeStrength);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffect, (int)room.LightEffect);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffectStrength, room.LightEffectStrength);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Reverberation);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Locked);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomRainLevel, room.RainLevel);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomSnowLevel, room.SnowLevel);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomQuickSandLevel, room.QuickSandLevel);
                         if (room.AlternateRoom != null && rooms.ContainsKey(room.AlternateRoom))
                             using (var chunkRoomAlternate = chunkIO.WriteChunk(Prj2Chunks.RoomAlternate, LEB128.MaximumSize1Byte))
                             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using TombLib.Utils;
@@ -154,6 +155,13 @@ namespace TombLib.LevelData
     public enum Direction : byte
     {
         None = 0, PositiveZ = 1, PositiveX = 2, NegativeZ = 3, NegativeX = 4, Diagonal = 5
+    }
+
+    public struct RoomBlockPair
+    {
+        public Room Room { get; set; }
+        public Block Block { get; set; }
+        public VectorInt2 Pos { get; set; }
     }
 
     [Serializable]
@@ -405,7 +413,6 @@ namespace TombLib.LevelData
             result.Ceiling = Ceiling;
             return result;
         }
-
         object ICloneable.Clone() => Clone();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -419,6 +426,9 @@ namespace TombLib.LevelData
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
+            if (texture != TextureArea.None && (texture.TriangleArea == 0 || texture.QuadArea == 0))
+                texture = TextureArea.Invisible;
+
             if (_faceTextures[(int)face] != texture)
             {
                 _faceTextures[(int)face] = texture;
@@ -444,6 +454,30 @@ namespace TombLib.LevelData
                 if (FloorPortal != null)
                     yield return FloorPortal;
             }
+        }
+
+        public void ReplaceGeometry(Level level, Block replacement)
+        {
+            if (Type != BlockType.BorderWall) Type = replacement.Type;
+
+            Flags = replacement.Flags;
+            ForceFloorSolid = replacement.ForceFloorSolid;
+
+            for (BlockFace face = 0; face < BlockFace.Count; face++)
+            {
+                var texture = replacement.GetFaceTexture(face);
+                if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))
+                    SetFaceTexture(face, texture);
+            }
+
+            for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
+            {
+                SetHeight(BlockVertical.Ed, edge, replacement.GetHeight(BlockVertical.Ed, edge));
+                SetHeight(BlockVertical.Rf, edge, replacement.GetHeight(BlockVertical.Rf, edge));
+            }
+
+            Floor = replacement.Floor;
+            Ceiling = replacement.Ceiling;
         }
 
         public short GetHeight(BlockVertical vertical, BlockEdge edge)

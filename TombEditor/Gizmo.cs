@@ -30,17 +30,17 @@ namespace TombEditor
         protected override void GizmoRotateY(float newAngle)
         {
             bool smoothRotationPreference = !(_editor.SelectedObject is MoveableInstance || _editor.SelectedObject is StaticInstance);
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(newAngle * (180 / Math.PI)), RotationQuanization(smoothRotationPreference), false);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(newAngle * (180 / Math.PI)), RotationQuanization(smoothRotationPreference), false, true);
         }
 
         protected override void GizmoRotateX(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -(float)(newAngle * (180 / Math.PI)), RotationQuanization(), false);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -(float)(newAngle * (180 / Math.PI)), RotationQuanization(), false, true);
         }
 
         protected override void GizmoRotateZ(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(newAngle * (180 / Math.PI)), RotationQuanization(), false);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(newAngle * (180 / Math.PI)), RotationQuanization(), false, true);
         }
 
         protected override void GizmoScale(float scale)

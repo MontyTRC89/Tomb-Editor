@@ -186,19 +186,61 @@ namespace TombLib.LevelData
             }
         }
 
-        public override void AddToRoom(Level level, Room room)
+        public bool IsValid(Room room)
         {
-            base.AddToRoom(level, room);
-
-            // Set sector information to this portal ...
             switch (Direction)
             {
                 case PortalDirection.Floor:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].FloorPortal != null)
-                                throw new ApplicationException("Floor portal overlaps another (" + room.Blocks[x, z].FloorPortal.Area + ")");
+                                return false;
+                    break;
 
+                case PortalDirection.Ceiling:
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
+                            if (room.Blocks[x, z].CeilingPortal != null)
+                                return false;
+                    break;
+
+                default:
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
+                            if (room.Blocks[x, z].WallPortal != null)
+                                return false;
+                    break;
+            }
+
+            return true;
+        }
+
+        public bool PositionOnPortal(VectorInt3 pos, bool detectInside, bool nonPlaneResult)
+        {
+            if (((Direction == PortalDirection.Floor && pos.Y == -(Room.GetLowestCorner() * 256 + Room.WorldPos.Y)) ||
+                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * 256 + Room.WorldPos.Y))))
+            {
+                if(detectInside)
+                    return (pos.X >= ((Area.X0 - 1) * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && pos.Z >= ((Area.Y0 - 1) * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024));
+                else
+                    return ((pos.X >= (Area.X0 * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && (pos.Z == (Area.Y0 * 1024) || pos.Z == ((Area.Y1 + 1) * 1024))) ||
+                             pos.Z >= (Area.Y0 * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024) && (pos.X == (Area.X0 * 1024) || pos.X == ((Area.X1 + 1) * 1024)));
+            }
+            else
+                return nonPlaneResult;
+        }
+
+        public override void AddToRoom(Level level, Room room)
+        {
+            base.AddToRoom(level, room);
+
+            if (!IsValid(room))
+                throw new ApplicationException("Portal overlaps another");
+
+            // Set sector information to this portal ...
+            switch (Direction)
+            {
+                case PortalDirection.Floor:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].FloorPortal = this;
@@ -207,20 +249,10 @@ namespace TombLib.LevelData
                 case PortalDirection.Ceiling:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            if (room.Blocks[x, z].CeilingPortal != null)
-                                throw new ApplicationException("Ceiling portal overlaps another (" + room.Blocks[x, z].CeilingPortal.Area + ")");
-
-                    for (int z = Area.Y0; z <= Area.Y1; ++z)
-                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].CeilingPortal = this;
                     break;
 
                 default:
-                    for (int z = Area.Y0; z <= Area.Y1; ++z)
-                        for (int x = Area.X0; x <= Area.X1; ++x)
-                            if (room.Blocks[x, z].WallPortal != null)
-                                throw new ApplicationException("Wall portal overlaps another (" + room.Blocks[x, z].WallPortal.Area + ")");
-
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].WallPortal = this;

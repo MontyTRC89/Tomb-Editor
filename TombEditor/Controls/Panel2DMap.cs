@@ -51,6 +51,7 @@ namespace TombEditor.Controls
         private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;
         private Point _startMousePosition;
+        private VectorInt3 _overallDelta;
 
         private class SelectionArea
         {
@@ -101,17 +102,17 @@ namespace TombEditor.Controls
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
-            }
 
-            _depthBar = new DepthBar(_editor);
-            _depthBar.InvalidateParent += Invalidate;
-            _depthBar.GetParent += () => this;
-            _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
+                _depthBar = new DepthBar(_editor);
+                _depthBar.InvalidateParent += Invalidate;
+                _depthBar.GetParent += () => this;
+                _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
 
-            _movementTimer = new MovementTimer(MoveTimerTick);
+                _movementTimer = new MovementTimer(MoveTimerTick);
 
-            UpdateBrushes();
-            ResetView();
+                UpdateBrushes();
+                ResetView();
+                }
         }
 
         protected override void Dispose(bool disposing)
@@ -275,6 +276,7 @@ namespace TombEditor.Controls
                     }
                     else
                     {
+                        _overallDelta = VectorInt3.Zero;
                         _roomMouseClicked = DoPicking(clickPos);
                         if (_roomMouseClicked == null)
                         {
@@ -400,7 +402,7 @@ namespace TombEditor.Controls
                         if (_roomsToMove == null)
                             _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
 
-                        if (_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove))
+                        if (_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked))
                         {
                             foreach (Room room in _roomsToMove)
                                 _editor.RoomPropertiesChange(room);
@@ -449,8 +451,13 @@ namespace TombEditor.Controls
                 case MouseButtons.Left:
                     if (_roomMouseClicked != null)
                     {
+                        if(_roomsToMove != null)
+                        {
+                            _editor.UndoManager.PushRoomsMoved(_roomsToMove.ToList(), _overallDelta);
+                            _roomsToMove = null;
+                        }
+
                         _roomMouseClicked = null;
-                        _roomsToMove = null;
                         Invalidate();
                     }
                     break;
@@ -810,7 +817,7 @@ namespace TombEditor.Controls
                 return baseBrush;
         }
 
-        private bool UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
+        private bool UpdateRoomPosition(Vector2 newRoomPos, Room roomReference)
         {
             VectorInt2 newRoomPosInt = VectorInt2.FromRounded(newRoomPos);
             VectorInt2 roomMovement = newRoomPosInt - roomReference.SectorPos;
@@ -821,8 +828,14 @@ namespace TombEditor.Controls
                     _roomMouseClicked = null;
                 else
                 {
-                    EditorActions.MoveRooms(new VectorInt3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
-                    return true;
+                    var delta = new VectorInt3(roomMovement.X, 0, roomMovement.Y);
+
+                    if (roomMovement.X != 0 || roomMovement.Y != 0)
+                    {
+                        _overallDelta += delta;
+                        EditorActions.MoveRooms(delta, _roomsToMove, true);
+                        return true;
+                    }
                 }
             }
             return false;

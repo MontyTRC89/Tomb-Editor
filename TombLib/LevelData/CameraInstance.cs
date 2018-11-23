@@ -11,8 +11,7 @@
             return "Camera " + (Fixed ? "Fixed" : "") +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
-                ", Y = " + SectorPosition.Y +
-                ", Z = " + SectorPosition.Z;
+                ", Z = " + SectorPosition.Y;
         }
 
         public string ShortName() => (Fixed ? "Fixed camera" : "Camera") + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");

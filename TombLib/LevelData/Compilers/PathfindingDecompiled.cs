@@ -315,7 +315,7 @@ namespace TombLib.LevelData.Compilers
             if (floor == 0x7fff) return false;
 
             box.Room = dec_currentRoom;
-            box.Water = room.WaterLevel != 0;
+            box.Water = room.Type == RoomType.Water;
 
             if (dec_flipped)
             {
@@ -681,7 +681,7 @@ namespace TombLib.LevelData.Compilers
                 while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-                    if (room.WaterLevel != 0 != (adjoiningRoom.WaterLevel != 0))
+                    if (room.Type == RoomType.Water != (adjoiningRoom.Type == RoomType.Water))
                         break;
 
                     dec_currentRoom = adjoiningRoom;
@@ -772,7 +772,7 @@ namespace TombLib.LevelData.Compilers
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
-                if (room.WaterLevel != 0 != (adjoiningRoom2.WaterLevel != 0))
+                if (room.Type == RoomType.Water != (adjoiningRoom2.Type == RoomType.Water))
                     break;
 
                 dec_currentRoom = adjoiningRoom2;
@@ -833,12 +833,12 @@ namespace TombLib.LevelData.Compilers
             int floorHeight = meanFloorCornerHeight + room.Position.Y;
             int ceiling = block.Ceiling.Max + room.Position.Y;
 
-            if (dec_water && room.WaterLevel != 0 && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
+            if (dec_water && room.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {
                 Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
-                if (adjoiningRoom3.WaterLevel == 0)
+                if (adjoiningRoom3.Type != RoomType.Water)
                 {
                     dec_water = false;
                 }
@@ -848,7 +848,7 @@ namespace TombLib.LevelData.Compilers
 
             if (slope1 + slope2 + slope4 + slope3 >= 3 || slope1 + slope3 == 2 || slope2 + slope4 == 2)
             {
-                if (dec_water && room.WaterLevel == 0) return 0x7fff;
+                if (dec_water && room.Type != RoomType.Water) return 0x7fff;
             }
             else
             {
@@ -860,14 +860,14 @@ namespace TombLib.LevelData.Compilers
                     }
                     else
                     {
-                        if (dec_water && room.WaterLevel == 0) return 0x7fff;
+                        if (dec_water && room.Type != RoomType.Water) return 0x7fff;
                     }
                 }
                 else
                 {
                     if (slope1 + slope4 == 2 || slope2 + slope3 == 2)
                     {
-                        if (dec_water && room.WaterLevel == 0) return 0x7fff;
+                        if (dec_water && room.Type != RoomType.Water) return 0x7fff;
                     }
                 }
             }

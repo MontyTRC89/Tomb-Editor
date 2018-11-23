@@ -13,6 +13,16 @@ namespace TombLib.LevelData
         Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
     }
 
+    public enum RoomType : byte
+    {
+        Normal, Rain, Snow, Water, Quicksand
+    }
+
+    public enum RoomLightEffect : byte
+    {
+        None, Default, Reflection, Glow, Movement, GlowAndMovement
+    }
+
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -32,12 +42,12 @@ namespace TombLib.LevelData
         public short AlternateGroup { get; set; } = -1;
 
         public Vector3 AmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
-        public byte WaterLevel { get; set; }
-        public byte MistLevel { get; set; }
-        public byte ReflectionLevel { get; set; }
-        public byte RainLevel { get; set; }
-        public byte SnowLevel { get; set; }
-        public byte QuickSandLevel { get; set; }
+
+        public RoomType Type { get; set; } = RoomType.Normal;
+        public byte TypeStrength { get; set; } = 0;
+        public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
+        public byte LightEffectStrength { get; set; } = 0;
+
         public bool FlagCold { get; set; }
         public bool FlagDamage { get; set; }
         public bool FlagOutside { get; set; }
@@ -227,13 +237,17 @@ namespace TombLib.LevelData
             return newRoom;
         }
 
-        public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy)
+        public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy, bool fullCopy = false)
         {
             // Copy most variables
             var result = (Room)MemberwiseClone();
-            result.AlternateBaseRoom = null;
-            result.AlternateRoom = null;
-            result.AlternateGroup = -1;
+
+            if(!fullCopy)
+            {
+                result.AlternateBaseRoom = null;
+                result.AlternateRoom = null;
+                result.AlternateGroup = -1;
+            }
 
             result.RoomGeometry = null;
 
@@ -243,11 +257,15 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; ++x)
                     result.Blocks[x, z] = Blocks[x, z].Clone();
 
-            // Copy objects
-            result._objects = new List<PositionBasedObjectInstance>();
-            foreach (var instance in AnyObjects)
-                if (decideToCopy(instance))
-                    result.AddObjectAndSingularPortal(level, instance.Clone());
+            if(decideToCopy != null)
+            {
+                // Copy objects
+                result._objects = new List<PositionBasedObjectInstance>();
+                foreach (var instance in AnyObjects)
+                    if (decideToCopy(instance))
+                        result.AddObjectAndSingularPortal(level, instance.Clone());
+            }
+
             return result;
         }
 
@@ -273,6 +291,13 @@ namespace TombLib.LevelData
             DeletedEvent?.Invoke(this);
         }
 
+        public List<Room> AndAdjoiningRooms => new List<Room>(Portals.ToList()
+                                                                     .GroupBy(item => item.AdjoiningRoom)
+                                                                     .Select(group => group.First())
+                                                                     .Select(item => item.AdjoiningRoom)
+                                                                     .ToList()) { this };
+
+        public bool ExistsInLevel => Level != null && Array.IndexOf(Level.Rooms, this) != -1;
         public bool Alternated => AlternateRoom != null || AlternateBaseRoom != null;
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
@@ -384,13 +409,6 @@ namespace TombLib.LevelData
             return values;
         }
 
-        public struct RoomBlockPair
-        {
-            public Room Room { get; set; }
-            public Block Block { get; set; }
-            public VectorInt2 Pos { get; set; }
-        }
-
         public RoomBlockPair ProbeLowestBlock(VectorInt2 pos, bool doProbe = true)
         {
             Block block = GetBlockTry(pos);
@@ -474,7 +492,7 @@ namespace TombLib.LevelData
         {
             Block sector = GetBlockTry(x, z);
 
-            if (WaterLevel > 0 || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
+            if (Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
                 return false;
 
             const int lowestPassableHeight = 4;

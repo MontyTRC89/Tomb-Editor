@@ -61,8 +61,7 @@ namespace TombLib.LevelData
                 ", Number = " + Number +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
-                ", Y = " + SectorPosition.Y +
-                ", Z = " + SectorPosition.Z;
+                ", Z = " + SectorPosition.Y;
         }
 
         public string ShortName() => "Flyby cam {" + Sequence + ":" + Number + "}" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");

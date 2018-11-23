@@ -154,20 +154,7 @@ namespace TombLib.LevelData.Compilers
             for (var i = 0; i < _roomsUnmapping.Count; i++)
             {
                 Room room = _roomsUnmapping[i];
-
-                byte waterLevel = 0;
-                if (room.RainLevel != 0)
-                    waterLevel = (byte)(room.RainLevel - 1);
-                else if (room.SnowLevel != 0)
-                    waterLevel = (byte)(room.SnowLevel - 1);
-                else if (room.QuickSandLevel != 0)
-                    waterLevel = (byte)(room.QuickSandLevel - 1);
-                else if (room.WaterLevel != 0)
-                    waterLevel = (byte)(room.WaterLevel - 1);
-                else if (room.MistLevel != 0)
-                    waterLevel = (byte)(room.MistLevel - 1);
-
-                var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+                var buffer = new byte[] { room.TypeStrength, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
                 writer.Write(buffer);
             }
         }

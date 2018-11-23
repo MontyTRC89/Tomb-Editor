@@ -61,19 +61,30 @@ namespace TombEditor.ToolWindows
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 // Update the state of other controls
-                if (room.QuickSandLevel > 0)
-                    comboRoomType.SelectedIndex = 12 + room.QuickSandLevel;
-                else if (room.SnowLevel > 0)
-                    comboRoomType.SelectedIndex = 8 + room.SnowLevel;
-                else if (room.RainLevel > 0)
-                    comboRoomType.SelectedIndex = 4 + room.RainLevel;
-                else
-                    comboRoomType.SelectedIndex = room.WaterLevel;
+                switch (room.Type)
+                {
+                    case RoomType.Normal:
+                        comboRoomType.SelectedIndex = 0;
+                        break;
+                    case RoomType.Water:
+                        comboRoomType.SelectedIndex = 1;
+                        break;
+                    case RoomType.Quicksand:
+                        comboRoomType.SelectedIndex = 2;
+                        break;
+                    case RoomType.Rain:
+                        comboRoomType.SelectedIndex = 3 + room.TypeStrength;
+                        break;
+                    case RoomType.Snow:
+                        comboRoomType.SelectedIndex = 7 + room.TypeStrength;
+                        break;
+                }
 
                 panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
 
-                comboMist.SelectedIndex = room.MistLevel;
-                comboReflection.SelectedIndex = room.ReflectionLevel;
+                comboLightEffect.SelectedIndex = (int)room.LightEffect;
+                numLightEffectStrength.Value = room.LightEffectStrength;
+
                 comboReverberation.SelectedIndex = (int)room.Reverberation;
 
                 cbFlagCold.Checked = room.FlagCold;
@@ -115,6 +126,7 @@ namespace TombEditor.ToolWindows
                                         "Room " + comboRoom.SelectedIndex);
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
                 _editor.RoomListChange();
+                _editor.UndoManager.PushRoomCreated(selectedRoom);
             }
             _editor.SelectRoom(selectedRoom);
         }
@@ -168,78 +180,9 @@ namespace TombEditor.ToolWindows
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
-        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
+        private void numLightEffectStrength_ValueChanged(object sender, EventArgs e)
         {
-            byte waterLevel, rainLevel, snowLevel, quicksandLevel;
-
-            var i = (byte)comboRoomType.SelectedIndex;
-
-            if (i == 0)
-            {
-                waterLevel = 0;
-                rainLevel = 0;
-                snowLevel = 0;
-                quicksandLevel = 0;
-            }
-            else if (i >= 1 && i <= 4)
-            {
-                waterLevel = i;
-                rainLevel = 0;
-                snowLevel = 0;
-                quicksandLevel = 0;
-            }
-            else if (i >= 5 && i <= 8)
-            {
-                waterLevel = 0;
-                rainLevel = (byte)(i - 4);
-                snowLevel = 0;
-                quicksandLevel = 0;
-            }
-            else if (i >= 9 && i <= 12)
-            {
-                waterLevel = 0;
-                rainLevel = 0;
-                snowLevel = (byte)(i - 8);
-                quicksandLevel = 0;
-            }
-            else
-            {
-                waterLevel = 0;
-                rainLevel = 0;
-                snowLevel = 0;
-                quicksandLevel = (byte)(i - 12);
-            }
-
-            if (_editor.SelectedRoom.WaterLevel == waterLevel &&
-                _editor.SelectedRoom.RainLevel == rainLevel &&
-                _editor.SelectedRoom.SnowLevel == snowLevel &&
-                _editor.SelectedRoom.QuickSandLevel == quicksandLevel)
-                return;
-
-            _editor.SelectedRoom.WaterLevel = waterLevel;
-            _editor.SelectedRoom.RainLevel = rainLevel;
-            _editor.SelectedRoom.SnowLevel = snowLevel;
-            _editor.SelectedRoom.QuickSandLevel = quicksandLevel;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void comboReflection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            byte reflectionLevel = unchecked((byte)comboReflection.SelectedIndex);
-            if (_editor.SelectedRoom.ReflectionLevel == reflectionLevel)
-                return;
-
-            _editor.SelectedRoom.ReflectionLevel = reflectionLevel;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void comboMist_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            byte mistLevel = unchecked((byte)comboMist.SelectedIndex);
-            if (_editor.SelectedRoom.MistLevel == mistLevel)
-                return;
-
-            _editor.SelectedRoom.MistLevel = mistLevel;
+            _editor.SelectedRoom.LightEffectStrength = (byte)numLightEffectStrength.Value;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -272,6 +215,44 @@ namespace TombEditor.ToolWindows
         {
             var searchPopUp = new PopUpSearch(comboRoom);
             searchPopUp.Show(this);
+        }
+
+        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.SelectedRoom.TypeStrength = 0;
+
+            // Update the state of other controls
+            switch (comboRoomType.SelectedIndex)
+            {
+                case 0:
+                    _editor.SelectedRoom.Type = RoomType.Normal;
+                    break;
+                case 1:
+                    _editor.SelectedRoom.Type = RoomType.Water;
+                    break;
+                case 2:
+                    _editor.SelectedRoom.Type = RoomType.Quicksand;
+                    break;
+                default:
+                    if (comboRoomType.SelectedIndex <= 6)
+                    {
+                        _editor.SelectedRoom.Type = RoomType.Rain;
+                        _editor.SelectedRoom.TypeStrength = (byte)(comboRoomType.SelectedIndex - 3);
+                    }
+                    else
+                    {
+                        _editor.SelectedRoom.Type = RoomType.Snow;
+                        _editor.SelectedRoom.TypeStrength = (byte)(comboRoomType.SelectedIndex - 7);
+                    }
+                    break;
+            }
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
+        }
+
+        private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
 }

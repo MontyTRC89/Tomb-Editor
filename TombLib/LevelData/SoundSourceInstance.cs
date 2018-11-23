@@ -56,8 +56,7 @@ namespace TombLib.LevelData
             return "Sound source " + SoundNameToDisplay +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
-                ", Y = " + SectorPosition.Y +
-                ", Z = " + SectorPosition.Z;
+                ", Z = " + SectorPosition.Y;
         }
 
         public string ShortName => "Sound source" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");

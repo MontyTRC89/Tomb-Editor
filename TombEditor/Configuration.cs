@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
@@ -34,6 +32,7 @@ namespace TombEditor
 
         // Global editor options
 
+        public int Editor_UndoDepth { get; set; } = 20;
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
         public bool Editor_UseHalfPixelCorrection { get; set; } = false;
@@ -78,7 +77,7 @@ namespace TombEditor
         public bool Rendering3D_ShowCardinalDirections { get; set; } = true;
         public bool Rendering3D_ShowExtraBlendingModes { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
-        public int Rendering3D_FontSize { get; set; } = 24;
+        public int Rendering3D_FontSize { get; set; } = 20;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
@@ -87,6 +86,7 @@ namespace TombEditor
         public bool Rendering3D_AnimateCameraOnReset { get; set; } = true;
         public bool Rendering3D_AllowTexturingInLightingMode { get; set; } = true;
         public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
+        public bool Rendering3D_SelectObjectsInAnyRoom { get; set; } = true;
 
         // 2D Map options 
 
@@ -211,7 +211,7 @@ namespace TombEditor
                             Contents = new List<string> { "RoomOptions" },
                             VisibleContent = "RoomOptions",
                             Order = 1,
-                            Size = new Size(284,194)
+                            Size = new Size(284,187)
                         },
                         new DockGroupState
                         {

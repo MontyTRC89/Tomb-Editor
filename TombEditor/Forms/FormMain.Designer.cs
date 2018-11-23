@@ -43,7 +43,7 @@
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.roomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.duplicateRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectConnectedRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.rotateRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -455,7 +455,7 @@
             this.roomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.roomsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteRoomsToolStripMenuItem,
-            this.duplicateRoomsToolStripMenuItem,
+            this.duplicateRoomToolStripMenuItem,
             this.selectConnectedRoomsToolStripMenuItem,
             this.toolStripSeparator3,
             this.rotateRoomsToolStripMenuItem,
@@ -488,15 +488,15 @@
             this.deleteRoomsToolStripMenuItem.Tag = "DeleteRooms";
             this.deleteRoomsToolStripMenuItem.Text = "DeleteRooms";
             // 
-            // duplicateRoomsToolStripMenuItem
+            // duplicateRoomToolStripMenuItem
             // 
-            this.duplicateRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.duplicateRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.duplicateRoomsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.duplicateRoomsToolStripMenuItem.Name = "duplicateRoomsToolStripMenuItem";
-            this.duplicateRoomsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.duplicateRoomsToolStripMenuItem.Tag = "DuplicateRooms";
-            this.duplicateRoomsToolStripMenuItem.Text = "DuplicateRooms";
+            this.duplicateRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.duplicateRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.duplicateRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.duplicateRoomToolStripMenuItem.Name = "duplicateRoomToolStripMenuItem";
+            this.duplicateRoomToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.duplicateRoomToolStripMenuItem.Tag = "DuplicateRoom";
+            this.duplicateRoomToolStripMenuItem.Text = "DuplicateRoom";
             // 
             // selectConnectedRoomsToolStripMenuItem
             // 
@@ -1771,7 +1771,7 @@
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator12;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem duplicateRoomsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem duplicateRoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem splitRoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cropRoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;

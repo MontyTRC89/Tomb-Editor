@@ -336,6 +336,7 @@ namespace TombEditor
             this["SaveLevelAs"] = new SortedSet<Hotkey> { Keys.S | Keys.Control | Keys.Shift };
             this["BuildLevel"] = new SortedSet<Hotkey> { Keys.F5 | Keys.Shift };
             this["BuildAndPlay"] = new SortedSet<Hotkey> { Keys.F5 };
+            this["Cut"] = new SortedSet<Hotkey> { Keys.X | Keys.Control };
             this["Copy"] = new SortedSet<Hotkey> { Keys.C | Keys.Control };
             this["Paste"] = new SortedSet<Hotkey> { Keys.V | Keys.Control };
             this["StampObject"] = new SortedSet<Hotkey> { Keys.B | Keys.Control };
@@ -343,7 +344,7 @@ namespace TombEditor
             this["SelectAll"] = new SortedSet<Hotkey> { A | Keys.Control };
             this["Search"] = new SortedSet<Hotkey> { Keys.F | Keys.Control };
             this["DeleteRooms"] = new SortedSet<Hotkey> { Keys.D | Keys.Control | Keys.Shift | Keys.Alt };
-            this["DuplicateRooms"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift | Keys.Alt };
+            this["DuplicateRoom"] = new SortedSet<Hotkey> { Keys.U | Keys.Control | Keys.Shift | Keys.Alt };
             this["SelectConnectedRooms"] = new SortedSet<Hotkey> { Keys.C | Keys.Control | Keys.Shift | Keys.Alt };
             this["RotateRoomsClockwise"] = new SortedSet<Hotkey> { Keys.F1 | Keys.Control };
             this["RotateRoomsCounterClockwise"] = new SortedSet<Hotkey> { Keys.F2 | Keys.Control };
@@ -378,6 +379,8 @@ namespace TombEditor
             this["SharpRandomCeilingUp"] = new SortedSet<Hotkey> { Keys.G | Keys.Control | Keys.Alt };
             this["SharpRandomCeilingDown"] = new SortedSet<Hotkey> { Keys.H | Keys.Control | Keys.Alt };
             this["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
+            this["Undo"] = new SortedSet<Hotkey> { Keys.Control | Z };
+            this["Redo"] = new SortedSet<Hotkey> { Keys.Control | Y };
 
             // Check for conflicts
             var hotkeyList = _list

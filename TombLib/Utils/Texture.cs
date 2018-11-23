@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace TombLib.Utils
@@ -206,14 +205,14 @@ namespace TombLib.Utils
         public override int GetHashCode() => base.GetHashCode();
 
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
-        public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null || Texture.IsUnavailable;
+        public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;
         public bool TextureIsTriangle => TexCoord2 == TexCoord3 || (TexCoord3.X == 0 && TexCoord3.Y == 0);
 
         public bool TriangleCoordsOutOfBounds
         {
             get
             {
-                if (TextureIsInvisible)
+                if (TextureIsInvisible || TextureIsUnavailable)
                     return false;
 
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
@@ -226,7 +225,7 @@ namespace TombLib.Utils
         {
             get
             {
-                if (TextureIsInvisible)
+                if (TextureIsInvisible || TextureIsUnavailable)
                     return false;
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
                 Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
@@ -276,6 +275,37 @@ namespace TombLib.Utils
             return transformedTexture;
         }
 
+        public TextureArea RestoreQuad()
+        {
+            if (!TextureIsTriangle)
+                return this;
+
+            var area = GetRect(true);
+            var triangleCoords = TexCoords;
+            var corners = new bool[4];
+            var restoredTexture = this;
+            var shape = (int)TextureExtensions.GetTextureShapeType(triangleCoords, true);
+
+            restoredTexture.TexCoord3 = restoredTexture.TexCoord2; // Just in case...
+            var coords = new Vector2[4]
+            {
+                area.Start,
+                new Vector2(area.X1, area.Y0),
+                new Vector2(area.X0, area.Y1),
+                area.End
+            };
+
+            for(int i = 0; i < 4; i++)
+                for(int j = 0; j < 3; j++)
+                    if (triangleCoords[j] == coords[i])
+                        corners[i] = true;
+
+            int coord = Array.FindIndex(corners, corner => !corner);
+            if (coord == -1) return this;
+            restoredTexture.TexCoord3 = coords[coord];
+            return restoredTexture;
+        }
+
         public Vector2 GetTexCoord(int index)
         {
             switch (index)
@@ -322,7 +352,10 @@ namespace TombLib.Utils
                 Swap.Do(ref TexCoord1, ref TexCoord2);
             }
             else
+            {
                 Swap.Do(ref TexCoord0, ref TexCoord2);
+                TexCoord3 = TexCoord2;
+            }
         }
 
         public void Rotate(int iter = 1, bool isTriangle = false)

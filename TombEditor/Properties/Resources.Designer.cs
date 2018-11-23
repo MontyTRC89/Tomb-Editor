@@ -523,6 +523,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_undo_irreversible_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_undo_irreversible_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_Warning_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Warning_16", resourceCulture);
