@@ -100,9 +100,9 @@
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(79, 145);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(65, 13);
+            this.darkLabel16.Size = new System.Drawing.Size(125, 13);
             this.darkLabel16.TabIndex = 96;
-            this.darkLabel16.Text = "Light effect";
+            this.darkLabel16.Text = "Light / transform effect";
             // 
             // cbFlagOutside
             // 
