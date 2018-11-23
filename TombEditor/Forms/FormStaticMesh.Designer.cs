@@ -44,7 +44,8 @@ namespace TombEditor.Forms
             this.cbDamageLaraOnContact = new DarkUI.Controls.DarkCheckBox();
             this.cbGlassTrasparency = new DarkUI.Controls.DarkCheckBox();
             this.cbScalable = new DarkUI.Controls.DarkCheckBox();
-            this.tbScalable = new DarkUI.Controls.DarkTextBox();
+            this.numScalable = new DarkUI.Controls.DarkNumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numScalable)).BeginInit();
             this.SuspendLayout();
             // 
             // butOK
@@ -170,13 +171,25 @@ namespace TombEditor.Forms
             this.cbScalable.Text = "Scalable";
             this.cbScalable.CheckedChanged += new System.EventHandler(this.cbScalable_CheckedChanged);
             // 
-            // tbScalable
+            // numScalable
             // 
-            this.tbScalable.Location = new System.Drawing.Point(86, 251);
-            this.tbScalable.Name = "tbScalable";
-            this.tbScalable.Size = new System.Drawing.Size(53, 22);
-            this.tbScalable.TabIndex = 25;
-            this.tbScalable.Text = "0";
+            this.numScalable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numScalable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numScalable.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numScalable.Location = new System.Drawing.Point(83, 251);
+            this.numScalable.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numScalable.MousewheelSingleIncrement = true;
+            this.numScalable.Name = "numScalable";
+            this.numScalable.Size = new System.Drawing.Size(53, 22);
+            this.numScalable.TabIndex = 26;
             // 
             // FormStaticMesh
             // 
@@ -185,7 +198,7 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(228, 318);
-            this.Controls.Add(this.tbScalable);
+            this.Controls.Add(this.numScalable);
             this.Controls.Add(this.cbScalable);
             this.Controls.Add(this.cbGlassTrasparency);
             this.Controls.Add(this.cbDamageLaraOnContact);
@@ -209,6 +222,7 @@ namespace TombEditor.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Static mesh";
             this.Load += new System.EventHandler(this.FormObject_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numScalable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -230,6 +244,6 @@ namespace TombEditor.Forms
         private DarkCheckBox cbDamageLaraOnContact;
         private DarkCheckBox cbGlassTrasparency;
         private DarkCheckBox cbScalable;
-        private DarkTextBox tbScalable;
+        private DarkNumericUpDown numScalable;
     }
 }

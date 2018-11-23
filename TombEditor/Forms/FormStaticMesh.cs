@@ -37,24 +37,12 @@ namespace TombEditor.Forms
 
             if (cbScalable.Checked)
             {
-                cbBurnLaraOnCollision.Checked = false;
-                cbDamageLaraOnContact.Checked = false;
-                cbDisableCollision.Checked = false;
-                cbExplodeKillingOnCollision.Checked = false;
-                cbGlassTrasparency.Checked = false;
-                cbHardShatter.Checked = false;
-                cbHeavyTriggerOnCollision.Checked = false;
-                cbHugeCollision.Checked = false;
-                cbIceTrasparency.Checked = false;
-                cbPoisonLaraOnCollision.Checked = false;
-
-                tbScalable.Visible = true;
-
-                tbScalable.Text = ((_staticMesh.Ocb - 4096) / 4).ToString();
+                numScalable.Visible = true;
+                numScalable.Value = (decimal)((_staticMesh.Ocb - 4096) / 4.0f);
             }
             else
             {
-                tbScalable.Visible = false;
+                numScalable.Visible = false;
             }
         }
 
@@ -76,11 +64,7 @@ namespace TombEditor.Forms
                 if (cbPoisonLaraOnCollision.Checked) ocb += (ushort)StaticMeshFlags.PoisonLaraOnCollision;
             }
             else
-            {
-                int percentage = 0;
-                Int32.TryParse(tbScalable.Text, out percentage);
-                ocb = (ushort)((ushort)StaticMeshFlags.Scalable + 4 * percentage);
-            }
+                ocb = (ushort)((ushort)StaticMeshFlags.Scalable + 4 * (int)numScalable.Value);
 
             _staticMesh.Ocb = ocb;
 
@@ -90,25 +74,19 @@ namespace TombEditor.Forms
 
         private void cbScalable_CheckedChanged(object sender, EventArgs e)
         {
-            if (cbScalable.Checked)
-            {
-                cbBurnLaraOnCollision.Checked = false;
-                cbDamageLaraOnContact.Checked = false;
-                cbDisableCollision.Checked = false;
-                cbExplodeKillingOnCollision.Checked = false;
-                cbGlassTrasparency.Checked = false;
-                cbHardShatter.Checked = false;
-                cbHeavyTriggerOnCollision.Checked = false;
-                cbHugeCollision.Checked = false;
-                cbIceTrasparency.Checked = false;
-                cbPoisonLaraOnCollision.Checked = false;
+            var otherEnabled = !cbScalable.Checked;
 
-                tbScalable.Visible = true;
-            }
-            else
-            {
-                tbScalable.Visible = false;
-            }
+            cbBurnLaraOnCollision.Enabled = otherEnabled;
+            cbDamageLaraOnContact.Enabled = otherEnabled;
+            cbDisableCollision.Enabled = otherEnabled;
+            cbExplodeKillingOnCollision.Enabled = otherEnabled;
+            cbGlassTrasparency.Enabled = otherEnabled;
+            cbHardShatter.Enabled = otherEnabled;
+            cbHeavyTriggerOnCollision.Enabled = otherEnabled;
+            cbHugeCollision.Enabled = otherEnabled;
+            cbIceTrasparency.Enabled = otherEnabled;
+            cbPoisonLaraOnCollision.Enabled = otherEnabled;
+            numScalable.Visible = !otherEnabled;
         }
     }
 }
