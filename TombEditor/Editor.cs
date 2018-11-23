@@ -85,6 +85,7 @@ namespace TombEditor
                 Action = null;
                 HasUnsavedChanges = false;
                 SelectedTexture = TextureArea.None;
+                UndoManager?.ClearAll();
 
                 // Delete old level after the new level is set
                 var previousLevel = Level;
@@ -162,6 +163,8 @@ namespace TombEditor
                 RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
             }
         }
+
+        public Room BackupRoom;
 
         public class ToolChangedEvent : IEditorPropertyChangedEvent
         {
@@ -596,6 +599,22 @@ namespace TombEditor
         public class InitEvent : IEditorEvent { }
 
 
+        // Undo-redo manager
+        public UndoManager UndoManager { get; private set; }
+
+        public class UndoStackChangedEvent : IEditorEvent
+        {
+            public bool UndoPossible { get; set; }
+            public bool RedoPossible { get; set; }
+            public bool UndoReversible { get; set; }
+            public bool RedoReversible { get; set; }
+        }
+        public void UndoStackChanged()
+        {
+            RaiseEvent(new UndoStackChangedEvent() { UndoPossible = UndoManager.UndoPossible, RedoPossible = UndoManager.RedoPossible,
+                                                     UndoReversible = UndoManager.UndoReversible, RedoReversible = UndoManager.UndoReversible });
+        }
+
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }
 
@@ -746,6 +765,9 @@ namespace TombEditor
 
                 // Update coloring info
                 SectorColoringManager.ColoringInfo.SectorColorScheme = current.UI_ColorScheme;
+
+                // Resize undo stack if needed
+                UndoManager.Resize(current.Editor_UndoDepth);
             }
 
 
@@ -917,8 +939,9 @@ namespace TombEditor
                 throw new ArgumentNullException(nameof(synchronizationContext));
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
-            Level = level;
             SectorColoringManager = new SectorColoringManager(this);
+            UndoManager = new UndoManager(this, configuration.Editor_UndoDepth);
+            Level = level;
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();

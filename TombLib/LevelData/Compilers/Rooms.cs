@@ -118,8 +118,6 @@ namespace TombLib.LevelData.Compilers
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
 
             // Room flags
-            if (room.QuickSandLevel > 0)
-                newRoom.Flags |= 0x0004;
             if (room.FlagHorizon)
                 newRoom.Flags |= 0x0008;
             if (room.FlagDamage)
@@ -130,48 +128,83 @@ namespace TombLib.LevelData.Compilers
                 newRoom.Flags |= 0x0080;
             if (room.FlagCold)
                 newRoom.Flags |= 0x1000;
-            if (room.SnowLevel > 0)
-                newRoom.Flags |= 0x0400;
-            if (room.RainLevel > 0)
-                newRoom.Flags |= 0x0800;
 
-            // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of
-            // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
-            var waterPortals = new List<PortalInstance>();
-
-            if (room.WaterLevel > 0)
-                newRoom.Flags |= 0x0001;
-            if (room.ReflectionLevel > 0)
-                newRoom.Flags |= 0x0200;
-            if (room.WaterLevel <= 0)
+            // Room type
+            switch (room.Type)
             {
-                foreach (PortalInstance portal in room.Portals)
-                    if (portal.Direction == PortalDirection.Floor && portal.AdjoiningRoom.WaterLevel != 0)
-                        if (!waterPortals.Contains(portal))
-                            waterPortals.Add(portal);
+                case RoomType.Water:
+                    newRoom.Flags |= 0x0001;
+                    break;
+                case RoomType.Quicksand:
+                    newRoom.Flags |= 0x0300;
+                    break;
+                case RoomType.Rain:
+                    newRoom.Flags |= 0x0800;
+                    break;
+                case RoomType.Snow:
+                    newRoom.Flags |= 0x0400;
+                    break;
+            }
 
-                if (waterPortals.Count > 0)
+            var lightEffect = room.LightEffect;
+            var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Type >= RoomType.Water).ToList();
+
+            // Calculate bottom room-based water scheme, if mode is default or reflection
+            if (waterPortals.Count > 0 && room.Type < RoomType.Water && 
+                (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection))
+            {
+                var waterRoom = waterPortals.First().AdjoiningRoom;
+                int effectiveReflectionLevel = room.LightEffectStrength;
+                if (effectiveReflectionLevel <= 0)
+                    effectiveReflectionLevel = 2;
+                if (effectiveReflectionLevel > 4)
+                    effectiveReflectionLevel = 4;
+
+                int effectiveWaterLevel = Math.Min(Math.Max(waterRoom.LightEffectStrength, (byte)1), (byte)4);
+                newRoom.WaterScheme = (byte)(effectiveWaterLevel * 4 + effectiveReflectionLevel);
+            }
+            else
+            {
+                if (room.Type == RoomType.Water && lightEffect == RoomLightEffect.Default) // Reset water scheme for default water room effect
+                    newRoom.WaterScheme = 0;
+                else
+                    newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5); // Normal calculation
+            }
+
+            // Force different effect type 
+            if (lightEffect == RoomLightEffect.Default)
+            {
+                switch (room.Type)
                 {
-                    var waterRoom = waterPortals[0].AdjoiningRoom;
-
-                    int effectiveReflectionLevel = room.ReflectionLevel;
-                    if (effectiveReflectionLevel <= 0)
-                        effectiveReflectionLevel = 2;
-                    if (effectiveReflectionLevel > 4)
-                        effectiveReflectionLevel = 4;
-
-                    int effectiveWaterLevel = Math.Min(Math.Max(waterRoom.WaterLevel, (byte)1), (byte)4);
-                    newRoom.WaterScheme = (byte)(effectiveWaterLevel * 4 + effectiveReflectionLevel);
+                    case RoomType.Water:
+                        lightEffect = RoomLightEffect.Glow;
+                        break;
+                    case RoomType.Quicksand:
+                        lightEffect = RoomLightEffect.Movement;
+                        break;
+                    default:
+                        lightEffect = RoomLightEffect.None;
+                        break;
                 }
             }
 
-            // Setup mist
-            if (room.MistLevel != 0)
-            {
-                newRoom.Flags |= 0x0100;
-                newRoom.WaterScheme += room.MistLevel;
-            }
+            // Clamp water scheme to maximum possible un-garbaged value for movement effect
+            if((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 12)
+                newRoom.WaterScheme = 12;
 
+            // Light effect
+            switch (lightEffect)
+            {
+                case RoomLightEffect.Glow:
+                case RoomLightEffect.Movement:
+                case RoomLightEffect.GlowAndMovement:
+                    newRoom.Flags |= 0x0100;
+                    break;
+
+                case RoomLightEffect.Reflection:
+                    newRoom.Flags |= 0x0200;
+                    break;
+            }
 
             // Generate geometry
             {
@@ -196,10 +229,10 @@ namespace TombLib.LevelData.Compilers
                                 continue;
 
                             TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                            if (texture.TextureIsInvisible)
+                            if(texture.TextureIsInvisible)
                                 continue;
 
-                            if(texture.TextureIsUnavailable )
+                            if(texture.TextureIsUnavailable)
                             {
                                 _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
                                 continue;
@@ -346,73 +379,81 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-                // Assign water effects
-                if (room.WaterLevel != 0)
+                for (int i = 0; i < roomVertices.Count; ++i)
                 {
-                    for (int i = 0; i < roomVertices.Count; ++i)
-                    {
-                        var trVertex = roomVertices[i];
-                        trVertex.Attributes = 0x4000;
-                        roomVertices[i] = trVertex;
-                    }
-                }
-                if (room.MistLevel != 0)
-                {
-                    for (int i = 0; i < roomVertices.Count; ++i)
-                    {
-                        var trVertex = roomVertices[i];
-                        var xv = trVertex.Position.X / 1024;
-                        var zv = trVertex.Position.Z / 1024;
+                    var trVertex = roomVertices[i];
+                    ushort flags = 0x0000;
 
-                        // For a better effect (see City of the dead) I don't set this effect to border walls (TODO: tune this)
-                        //if (xv > 1 && zv > 1 && xv < room.NumXSectors - 2 && zv < room.NumZSectors - 2)
-                        trVertex.Attributes = 0x4000;
+                    ///@FIXME: commented code by Monty for MIST light type
+                    //var xv = trVertex.Position.X / 1024;
+                    //var zv = trVertex.Position.Z / 1024;
+                    // For a better effect (see City of the dead) I don't set this effect to border walls (TODO: tune this)
+                    //if (xv > 1 && zv > 1 && xv < room.NumXSectors - 2 && zv < room.NumZSectors - 2)
 
-                        roomVertices[i] = trVertex;
-                    }
-                }
-                else if (waterPortals.Count > 0)
-                {
-                    for (int i = 0; i < roomVertices.Count; ++i)
+                    if (lightEffect == RoomLightEffect.Glow ||
+                        lightEffect == RoomLightEffect.GlowAndMovement)
+                        flags |= 0x4000;
+
+                    bool allowMovement = true;
+
+                    foreach (var portal in room.Portals)
                     {
-                        var trVertex = roomVertices[i];
-                        foreach (var portal in waterPortals)
+                        // Assign movement from bottom water or quicksand room
+                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
                         {
-                            if (trVertex.Position.X > portal.Area.X0 * 1024 && trVertex.Position.X <= portal.Area.X1 * 1024 &&
-                                trVertex.Position.Z > portal.Area.Y0 * 1024 && trVertex.Position.Z <= portal.Area.Y1 * 1024 &&
-                                trVertex.Position.Y == -(room.GetLowestCorner() * 256 + room.WorldPos.Y))
+                            var xv = trVertex.Position.X / 1024;
+                            var zv = trVertex.Position.Z / 1024;
+
+                            var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
+                            var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
+                            var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
+                            var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
+
+                            // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
+                            if (connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
+                                !room.Blocks[xv, zv].IsAnyWall &&
+                                connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal && 
+                                connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal && 
+                                !room.Blocks[xv - 1, zv].IsAnyWall && 
+                                connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal && 
+                                connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal && 
+                                !room.Blocks[xv, zv - 1].IsAnyWall && 
+                                connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal && 
+                                connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal && 
+                                !room.Blocks[xv - 1, zv - 1].IsAnyWall && 
+                                connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal)
                             {
-                                var xv = trVertex.Position.X / 1024;
-                                var zv = trVertex.Position.Z / 1024;
-
-                                var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
-                                var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
-                                var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
-                                var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
-
-                                // A ccandidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
-                                if (connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
-                                    !room.Blocks[xv, zv].IsAnyWall &&
-                                    connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv - 1, zv].IsAnyWall && connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv, zv - 1].IsAnyWall && connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv - 1, zv - 1].IsAnyWall && connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal)
-                                {
-                                    trVertex.Attributes = 0xE000;
-                                }
-                            }
-                            else
-                            {
-                                if (room.ReflectionLevel == 0)
-                                    continue;
-
-                                if (trVertex.Position.X >= (portal.Area.X0 - 1) * 1024 && trVertex.Position.X <= (portal.Area.X1 + 1) * 1024 &&
-                                    trVertex.Position.Z >= (portal.Area.Y0 - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Y1 + 1) * 1024 &&
-                                    -(room.GetLowestCorner() * 256 + room.WorldPos.Y) - 512.0f <= trVertex.Position.Y)
-                                {
-                                    trVertex.Attributes = 0x4000;
-                                }
+                                flags |= 0x2000;
+                                break;
                             }
                         }
-                        roomVertices[i] = trVertex;
+
+                        // Enable reflection for dry room above water/quicksand room or vice versa
+                        if (lightEffect == RoomLightEffect.Reflection && 
+                            ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
+                        {
+                            // Assign reflection, if set, for all enclosed portal faces
+                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                            {
+                                flags |= 0x4000;
+                                break;
+                            }
+                        }
+                        // Disable movement for portal faces
+                        else 
+                        {
+                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                allowMovement = false;
+                        }
                     }
+
+                    if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
+                        flags |= 0x2000;
+
+                    trVertex.Attributes = flags;
+                    roomVertices[i] = trVertex;
                 }
 
                 newRoom.Vertices = roomVertices;
@@ -633,12 +674,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.WaterLevel == 0 && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
-                                            Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
-                                            Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
-                                            Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
+                    if (room.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (room.WaterLevel == 0 && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;

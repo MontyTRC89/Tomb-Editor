@@ -571,18 +571,77 @@ namespace TombLib.LevelData.IO
                         room.FlagNoLensflare = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagExcludeFromPathFinding)
                         room.FlagExcludeFromPathFinding = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomWaterLevel)
-                        room.WaterLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomRainLevel)
-                        room.RainLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomSnowLevel)
-                        room.SnowLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomQuickSandLevel)
-                        room.QuickSandLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomMistLevel)
-                        room.MistLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomReflectionLevel)
-                        room.ReflectionLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomWaterLevel) // DEPRECATED
+                    {
+                        var val = chunkIO.ReadChunkByte(chunkSize2);
+                        if(val > 0)
+                        {
+                            room.Type = RoomType.Water;
+                            room.LightEffect = RoomLightEffect.Default;
+                            room.LightEffectStrength = val;
+                        }
+                    }
+                    else if (id2 == Prj2Chunks.RoomRainLevel) // DEPRECATED
+                    {
+                        var val = chunkIO.ReadChunkByte(chunkSize2);
+                        if (val > 0)
+                        {
+                            room.Type = RoomType.Rain;
+                            room.LightEffect = RoomLightEffect.Default;
+                            room.LightEffectStrength = val;
+                        }
+                    }
+                    else if (id2 == Prj2Chunks.RoomSnowLevel) // DEPRECATED
+                    {
+                        var val = chunkIO.ReadChunkByte(chunkSize2);
+                        if (val > 0)
+                        {
+                            room.Type = RoomType.Snow;
+                            room.LightEffect = RoomLightEffect.Default;
+                            room.LightEffectStrength = val;
+                        }
+                    }
+                    else if (id2 == Prj2Chunks.RoomQuickSandLevel) // DEPRECATED
+                    {
+                        var val = chunkIO.ReadChunkByte(chunkSize2);
+                        if (val > 0)
+                        {
+                            room.Type = RoomType.Quicksand;
+                            room.LightEffect = RoomLightEffect.Default;
+                            room.LightEffectStrength = val;
+                        }
+                    }
+                    else if (id2 == Prj2Chunks.RoomMistLevel) // DEPRECATED
+                    {
+                        var val = chunkIO.ReadChunkByte(chunkSize2);
+                        if (val > 0)
+                        {
+                            room.LightEffect = RoomLightEffect.Glow;
+                            room.LightEffectStrength = val;
+                        }
+                    }
+                    else if (id2 == Prj2Chunks.RoomReflectionLevel) // DEPRECATED
+                    {
+                        var val = chunkIO.ReadChunkByte(chunkSize2);
+
+                        // HACK: prioritize mist setting over reflection one.
+                        // Comment: this was VERY bad design choice to keep MistLevel/ReflectionLevel separately.
+                        // Let's hope people won't be confused on opening their old prj2s.
+
+                        if (val > 0 && room.LightEffect != RoomLightEffect.Glow)
+                        {
+                            room.LightEffect = RoomLightEffect.Reflection;
+                            room.LightEffectStrength = val;
+                        }
+                    }
+                    else if (id2 == Prj2Chunks.RoomType)
+                        room.Type = (RoomType)chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomTypeStrength)
+                        room.TypeStrength = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomLightEffect)
+                        room.LightEffect = (RoomLightEffect)chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomLightEffectStrength)
+                        room.LightEffectStrength = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomReverberation)
                         room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLocked)

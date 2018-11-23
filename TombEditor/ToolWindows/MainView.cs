@@ -3,7 +3,6 @@ using DarkUI.Docking;
 using System;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Controls;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -106,15 +105,6 @@ namespace TombEditor.ToolWindows
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
 
-            if (obj is Editor.SelectedSectorsChangedEvent)
-            {
-                bool validSectorSelection = _editor.SelectedSectors.Valid;
-
-                butTextureFloor.Enabled = validSectorSelection;
-                butTextureCeiling.Enabled = validSectorSelection;
-                butTextureWalls.Enabled = validSectorSelection;
-            }
-
             // Update editor mode
             if (obj is Editor.ModeChangedEvent)
             {
@@ -129,10 +119,6 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
-
-                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
-                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
-                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
@@ -176,6 +162,14 @@ namespace TombEditor.ToolWindows
                         popup.ShowError(this, msg.Message);
                         break;
                 }
+            }
+
+            if (obj is Editor.UndoStackChangedEvent)
+            {
+                var state = (Editor.UndoStackChangedEvent)obj;
+                butUndo.Enabled = state.UndoPossible;
+                butUndo.Image = state.UndoPossible && !state.UndoReversible ? Properties.Resources.general_undo_irreversible_16 : Properties.Resources.general_undo_16;
+                butRedo.Enabled = state.RedoPossible;
             }
         }
 

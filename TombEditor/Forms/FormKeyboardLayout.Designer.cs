@@ -182,9 +182,9 @@
             this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbSearch.Location = new System.Drawing.Point(55, 7);
+            this.tbSearch.Location = new System.Drawing.Point(121, 7);
             this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(515, 23);
+            this.tbSearch.Size = new System.Drawing.Size(449, 23);
             this.tbSearch.TabIndex = 8;
             this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
             // 
@@ -194,9 +194,9 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(5, 10);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(44, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(115, 13);
             this.darkLabel1.TabIndex = 9;
-            this.darkLabel1.Text = "Search:";
+            this.darkLabel1.Text = "Search for command:";
             // 
             // butSearch
             // 

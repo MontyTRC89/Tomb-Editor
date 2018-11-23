@@ -609,6 +609,29 @@ namespace TombEditor
                 EditorActions.BuildLevelAndPlay(args.Window);
             });
 
+            AddCommand("Cut", "Cut", CommandType.Edit, delegate (CommandArgs args)
+            {
+                GetCommand("Copy").Execute.Invoke(args);
+
+                if (args.Editor.Mode == EditorMode.Map2D)
+                {
+                    if (args.Editor.SelectedObject == null)
+                        EditorActions.DeleteRooms(args.Editor.SelectedRooms);
+                }
+                else
+                {
+                    if(args.Editor.SelectedObject == null && args.Editor.SelectedSectors.Valid)
+                    {
+                        EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, null, false, true, false);
+                        EditorActions.SetSurfaceWithoutUpdate(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, false);
+                        EditorActions.SetSurfaceWithoutUpdate(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, true);
+                        EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, null, true, true, true, true);
+                    }
+                    else if (args.Editor.SelectedObject != null && !(args.Editor.SelectedObject is PortalInstance) && !(args.Editor.SelectedObject is TriggerInstance))
+                        EditorActions.DeleteObject(args.Editor.SelectedObject);
+                }
+            });
+
             AddCommand("Copy", "Copy", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode != EditorMode.Map2D)
@@ -662,13 +685,13 @@ namespace TombEditor
             {
                 if (args.Editor.Mode == EditorMode.Map2D)
                     if (args.Editor.SelectedObject != null && (args.Editor.SelectedObject is PortalInstance || args.Editor.SelectedObject is TriggerInstance))
-                        EditorActions.DeleteObjectWithWarning(args.Editor.SelectedObject, args.Window);
+                        EditorActions.DeleteObject(args.Editor.SelectedObject, args.Window);
                     else
                         EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
                 else
                 {
                     if (args.Editor.SelectedObject != null)
-                        EditorActions.DeleteObjectWithWarning(args.Editor.SelectedObject, args.Window);
+                        EditorActions.DeleteObject(args.Editor.SelectedObject, args.Window);
                     else
                         args.Editor.SendMessage("No object selected. Nothing to delete.", PopupType.Warning);
                 }
@@ -712,9 +735,19 @@ namespace TombEditor
                     EditorActions.DeleteRooms(new[] { args.Editor.SelectedRoom }, args.Window);
             });
 
-            AddCommand("DuplicateRooms", "Duplicate rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("DuplicateRoom", "Duplicate rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.DuplicateRooms(args.Window);
+                EditorActions.DuplicateRoom(args.Window);
+            });
+
+            AddCommand("Redo", "Redo", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.UndoManager.Redo();
+            });
+
+            AddCommand("Undo", "Undo", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.UndoManager.Undo();
             });
 
             AddCommand("SelectConnectedRooms", "Select connected rooms", CommandType.Rooms, delegate (CommandArgs args)
@@ -879,7 +912,7 @@ namespace TombEditor
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
 
-                EditorActions.MoveLara(args.Window, args.Editor.SelectedSectors.Start);
+                EditorActions.MoveLara(args.Window, args.Editor.SelectedRoom, args.Editor.SelectedSectors.Start);
             });
 
             AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard", CommandType.Objects, delegate (CommandArgs args)

@@ -1,6 +1,5 @@
 ﻿using NLog;
 using System;
-using System.IO;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;

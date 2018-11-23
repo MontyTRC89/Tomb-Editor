@@ -70,8 +70,16 @@ namespace TombEditor
             Any
         }
 
-        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
+        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
+            if(!disableUndo)
+            {
+                if(smooth)
+                    _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom.AndAdjoiningRooms);
+                else
+                    _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+            }
+
             if (smooth)
             {
                 // Scan selection and decide if the selected zone is wall-only, floor-only, or both.
@@ -148,12 +156,12 @@ namespace TombEditor
                     }
                 };
 
-                var cornerBlocks = new Block[4]
+                var cornerBlocks = new RoomBlockPair[4]
                 {
-                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1).Block,
-                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1).Block,
-                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1).Block,
-                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1).Block
+                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y0 - 1),
+                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y0 - 1),
+                    room.GetBlockTryThroughPortal(area.X0 - 1, area.Y1 + 1),
+                    room.GetBlockTryThroughPortal(area.X1 + 1, area.Y1 + 1)
                 };
 
                 // Unique case of editing single corner
@@ -166,21 +174,22 @@ namespace TombEditor
                         case ArrowType.CornerNW: origin = BlockEdge.XnZp; break;
                         case ArrowType.CornerSE: origin = BlockEdge.XpZn; break;
                     }
-                    var originHeight = room.GetBlockTryThroughPortal(startCoord).Block.GetHeight(vertical, origin);
-                    for(int i = 0; i < 4; i++)
-                        corners[i] = originHeight == cornerBlocks[i].GetHeight(vertical, (BlockEdge)i);
+                    var originBlock = room.GetBlockTryThroughPortal(startCoord);
+                    var originHeight = originBlock.Block.GetHeight(vertical, origin) + originBlock.Room.Position.Y;
+                    for (int i = 0; i < 4; i++)
+                        corners[i] = originHeight == cornerBlocks[i].Block.GetHeight(vertical, (BlockEdge)i) + cornerBlocks[i].Room.Position.Y;
                 }
 
                 // Smoothly change sectors on the corners
                 for (int i = 0; i < 4; i++)
-                    if (corners[i]) smoothEdit(cornerBlocks[i], (BlockEdge)i);
+                    if (corners[i]) smoothEdit(cornerBlocks[i].Block, (BlockEdge)i);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
                 {
                     smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XnZp);
                     smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XpZp);
-
+                    
                     smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XnZn);
                     smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XpZn);
                 }
@@ -200,8 +209,8 @@ namespace TombEditor
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    Block block = room.Blocks[x, z];
-                    Room.RoomBlockPair lookupBlock = room.GetBlockTryThroughPortal(x, z);
+                    var block = room.Blocks[x, z];
+                    var lookupBlock = room.GetBlockTryThroughPortal(x, z);
 
                     EditBlock:
                     {
@@ -318,7 +327,7 @@ namespace TombEditor
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
-        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical)
+        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false)
         {
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
@@ -327,7 +336,10 @@ namespace TombEditor
                 vertical.IsOnCeiling() && currBlock.Block.Ceiling.DiagonalSplit != DiagonalSplit.None)
                 return;
 
-            Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+            var lookupBlocks = new RoomBlockPair[8]
             {
                 room.GetBlockTryThroughPortal(x - 1, z + 1),
                 room.GetBlockTryThroughPortal(x, z + 1),
@@ -522,6 +534,9 @@ namespace TombEditor
             _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
 
+            // Undo
+            _editor.UndoManager.PushSectorObjectCreated(trigger);
+
             //if (_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
             //    _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
@@ -599,6 +614,7 @@ namespace TombEditor
 
         public static void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
+            _editor.UndoManager.PushObjectTransformed(instance);
             MoveObject(instance, instance.Position + pos, precision, canGoOutsideRoom);
         }
 
@@ -610,8 +626,11 @@ namespace TombEditor
             None
         }
 
-        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true)
+        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true, bool disableUndo = false)
         {
+            if(!disableUndo && instance is PositionBasedObjectInstance)
+                _editor.UndoManager.PushObjectTransformed((PositionBasedObjectInstance)instance);
+
             if (quantization != 0.0f)
                 angleInDegrees = (float)(Math.Round(angleInDegrees / quantization) * quantization);
 
@@ -711,25 +730,29 @@ namespace TombEditor
                 EditLightColor(owner);
         }
 
-        public static void PasteObject(VectorInt2 pos)
+        public static void PasteObject(VectorInt2 pos, Room room)
         {
             ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
             if (data == null)
                 _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
             else
-                PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
+                PlaceObject(room, pos, data.MergeGetSingleObject(_editor));
         }
 
-        public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
+        public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
         {
-            if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
-                    "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            // No owner = silent mode!
+            if (owner != null && DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
+                                 "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            DeleteObject(instance);
+            if (instance is PositionBasedObjectInstance)
+                _editor.UndoManager.PushObjectDeleted((PositionBasedObjectInstance)instance);
+
+            DeleteObjectWithoutUpdate(instance);
         }
 
-        public static void DeleteObject(ObjectInstance instance)
+        public static void DeleteObjectWithoutUpdate(ObjectInstance instance)
         {
             var room = instance.Room;
             var adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
@@ -757,26 +780,78 @@ namespace TombEditor
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
+            {
                 room.BuildGeometry();
+                _editor.RoomGeometryChange(room);
+            }
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
-                adjoiningRoom?.BuildGeometry();
-                room.AlternateOpposite?.BuildGeometry();
-                adjoiningRoom?.AlternateOpposite?.BuildGeometry();
+                if (adjoiningRoom != null)
+                {
+                    adjoiningRoom.BuildGeometry();
+                    _editor.RoomSectorPropertiesChange(adjoiningRoom);
+
+                    if (adjoiningRoom.AlternateOpposite != null)
+                    {
+                        adjoiningRoom.AlternateOpposite.BuildGeometry();
+                        _editor.RoomSectorPropertiesChange(adjoiningRoom.AlternateOpposite);
+                    }
+                }
+                if (room.AlternateOpposite != null)
+                {
+                    room.AlternateOpposite.BuildGeometry();
+                    _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
+                }
             }
 
             // Avoid having the removed object still selected
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
+        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face, bool fullFace = false)
         {
-            Block blocks = room.GetBlock(pos);
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
-            TextureArea newTexture = blocks.GetFaceTexture(face);
-            newTexture.Rotate(1, room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle);
-            blocks.SetFaceTexture(face, newTexture);
+            Block block = room.GetBlock(pos);
+            TextureArea newTexture = block.GetFaceTexture(face);
+            bool isTriangle = room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle;
+        
+            if(fullFace && isTriangle && face >= BlockFace.Floor)
+            {
+                if(newTexture.TextureIsTriangle) newTexture = newTexture.RestoreQuad();
+                BlockFace opposite = BlockFace.Floor;
+                int rotation = 1;
+
+                switch (face)
+                {
+                    case BlockFace.Floor:
+                        opposite = BlockFace.FloorTriangle2;
+                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 2 : 1;
+                        break;
+                    case BlockFace.FloorTriangle2:
+                        opposite = BlockFace.Floor;
+                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 0 : 3;
+                        break;
+                    case BlockFace.Ceiling:
+                        opposite = BlockFace.CeilingTriangle2;
+                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 2 : 1;
+                        break;
+                    case BlockFace.CeilingTriangle2:
+                        opposite = BlockFace.Ceiling;
+                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 0 : 3;
+                        break;
+                }
+
+                newTexture.Rotate(rotation, false);
+                if (!block.GetFaceTexture(face).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, face, newTexture);
+                if (!block.GetFaceTexture(opposite).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, opposite, newTexture);
+            }
+            else
+            {
+                newTexture.Rotate(1, isTriangle);
+                block.SetFaceTexture(face, newTexture);
+            }
 
             // Update state
             room.BuildGeometry();
@@ -785,6 +860,8 @@ namespace TombEditor
 
         public static void MirrorTexture(Room room, VectorInt2 pos, BlockFace face)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             Block blocks = room.GetBlock(pos);
 
             TextureArea newTexture = blocks.GetFaceTexture(face);
@@ -984,8 +1061,11 @@ namespace TombEditor
             return block.SetFaceTexture(face, processedTexture);
         }
 
-        public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
+        public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool disableUndo = false)
         {
+            if(!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             if (face >= BlockFace.Ceiling) texture.Mirror();
             var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
             if (textureApplied)
@@ -1222,8 +1302,11 @@ namespace TombEditor
             }
         }
 
-        public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, BlockFace pickedFace, bool subdivideWalls, bool unifyHeight)
+        public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, BlockFace pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
         {
+            if(!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
             RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
 
@@ -1359,6 +1442,8 @@ namespace TombEditor
 
         public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, BlockFaceType type)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             if (type == BlockFaceType.Ceiling) texture.Mirror();
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
 
@@ -1392,6 +1477,13 @@ namespace TombEditor
 
         public static void PlaceObject(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
+            PlaceObjectWithoutUpdate(room, pos, instance);
+            _editor.UndoManager.PushObjectCreated(instance);
+        }
+
+
+        public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
+        {
             Block block = room.GetBlock(pos);
             int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
 
@@ -1403,7 +1495,7 @@ namespace TombEditor
             _editor.SelectedObject = instance;
         }
 
-        public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner)
+        public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
         {
             rooms_ = rooms_.SelectMany(room => room.Versions).Distinct();
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
@@ -1416,8 +1508,8 @@ namespace TombEditor
                 return;
             }
 
-            // Ask for confirmation
-            if (DarkMessageBox.Show(owner,
+            // Ask for confirmation. No owner = silent mode!
+            if (owner != null && DarkMessageBox.Show(owner,
                     "Do you really want to delete rooms? All objects (including portals) inside rooms will be deleted and " +
                     "triggers pointing to them will be removed.",
                     "Delete rooms", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
@@ -1498,6 +1590,8 @@ namespace TombEditor
 
         public static void SetDiagonalFloorSplit(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1572,6 +1666,8 @@ namespace TombEditor
 
         public static void SetDiagonalCeilingSplit(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1646,6 +1742,8 @@ namespace TombEditor
 
         public static void SetDiagonalWall(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1722,6 +1820,8 @@ namespace TombEditor
 
         public static void RotateSectors(Room room, RectangleInt2 area, bool floor)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             bool wallsRotated = false;
 
             for (int x = area.X0; x <= area.X1; x++)
@@ -1744,6 +1844,8 @@ namespace TombEditor
 
         public static void SetWall(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -1759,21 +1861,21 @@ namespace TombEditor
 
         public static void SetFloor(Room room, RectangleInt2 area)
         {
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
-                        continue;
-
-                    room.Blocks[x, z].Type = BlockType.Floor;
-                    room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
-                }
-
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+            SetSurfaceWithoutUpdate(room, area, false);
             SmartBuildGeometry(room, area);
             _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void SetCeiling(Room room, RectangleInt2 area)
+        {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+            SetSurfaceWithoutUpdate(room, area, true);
+            SmartBuildGeometry(room, area);
+            _editor.RoomSectorPropertiesChange(room);
+        }
+
+        public static void SetSurfaceWithoutUpdate(Room room, RectangleInt2 area, bool ceiling)
         {
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
@@ -1782,11 +1884,12 @@ namespace TombEditor
                         continue;
 
                     room.Blocks[x, z].Type = BlockType.Floor;
-                    room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
-                }
 
-            SmartBuildGeometry(room, area);
-            _editor.RoomSectorPropertiesChange(room);
+                    if (ceiling)
+                        room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
+                    else
+                        room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
+                }
         }
 
         public static void ToggleBlockFlag(Room room, RectangleInt2 area, BlockFlags flag)
@@ -1794,14 +1897,24 @@ namespace TombEditor
             List<Room> roomsToUpdate = new List<Room>();
             roomsToUpdate.Add(room);
 
+            // Collect all affected rooms for undo
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
-                    currentBlock.Block.Flags ^= flag;
-
+                    var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
                     if (!roomsToUpdate.Contains(currentBlock.Room))
                         roomsToUpdate.Add(currentBlock.Room);
+                }
+
+            // Do undo
+            _editor.UndoManager.PushGeometryChanged(roomsToUpdate);
+
+            // Do actual flag editing
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                    currentBlock.Block.Flags ^= flag;
                 }
 
             foreach (var currentRoom in roomsToUpdate)
@@ -1810,6 +1923,8 @@ namespace TombEditor
 
         public static void ToggleForceFloorSolid(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     room.Blocks[x, z].ForceFloorSolid = !room.Blocks[x, z].ForceFloorSolid;
@@ -1921,7 +2036,8 @@ namespace TombEditor
             Room destination = candidates[0].Item2;
 
             // Create portals
-            var portals = room.AddObject(_editor.Level, new PortalInstance(area, destinationDirection, destination)).Cast<PortalInstance>();
+            var mainPortal = new PortalInstance(area, destinationDirection, destination);
+            var portals = room.AddObject(_editor.Level, mainPortal).Cast<PortalInstance>();
 
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
@@ -1937,6 +2053,9 @@ namespace TombEditor
 
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
+
+            // Undo
+            _editor.UndoManager.PushSectorObjectCreated(mainPortal);
         }
 
         public static void AlternateRoomEnable(Room room, short AlternateGroup)
@@ -1986,6 +2105,8 @@ namespace TombEditor
 
         public static void SmoothRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             float[,] changes = new float[area.Width + 2, area.Height + 2];
             Random rng = new Random();
             for (int x = 1; x <= area.Width; x++)
@@ -2003,6 +2124,8 @@ namespace TombEditor
 
         public static void SharpRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             Random rng = new Random();
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
@@ -2015,6 +2138,8 @@ namespace TombEditor
 
         public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -2030,6 +2155,8 @@ namespace TombEditor
 
         public static void GridWalls(Room room, RectangleInt2 area, bool fiveDivisions = false)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -2089,13 +2216,13 @@ namespace TombEditor
 
         public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
-            if (!SectorSelection.IsEmpty(selection) && !selection.Valid)
+            if (!selection.Empty && !selection.Valid)
             {
                 _editor.SendMessage("Selection is invalid. Can't create new room.", PopupType.Error);
                 return null;
             }
 
-            var clampedSelection = (SectorSelection.IsEmpty(selection) ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, PortalInstance.GetDirection(direction));
+            var clampedSelection = (selection.Empty ? new SectorSelection { Area = room.LocalArea } : selection).ClampToRoom(room, PortalInstance.GetDirection(direction));
             if (!clampedSelection.HasValue)
             {
                 _editor.SendMessage("Can't create adjoining room. \nSelection is inside border walls.", PopupType.Error);
@@ -2203,7 +2330,7 @@ namespace TombEditor
 
                     // Reset parent floor or ceiling to adjoin new portal
                     if(clearAdjoiningArea)
-                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling);
+                        FlattenRoomArea(room, clampedSelection.Value.Area, null, direction == PortalDirection.Ceiling, false, false);
                     break;
             }
 
@@ -2227,11 +2354,17 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(newRoom);
             }
 
+            // Undo
+            _editor.UndoManager.PushAdjoiningRoomCreated(newRoom);
+
             return newRoom;
         }
 
-        public static void FlattenRoomArea(Room room, RectangleInt2 area, int? height = null, bool ceiling = false, bool includeWalls = false, bool rebuild = false)
+        public static void FlattenRoomArea(Room room, RectangleInt2 area, int? height, bool ceiling, bool includeWalls, bool rebuild, bool disableUndo = false)
         {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             if (!height.HasValue)
                 height = ceiling ? room.GetHighestCorner(area) : room.GetLowestCorner(area);
 
@@ -2241,9 +2374,9 @@ namespace TombEditor
                     if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type == BlockType.Wall))
                     {
 
-                        if (ceiling && room.Blocks[x, z].CeilingPortal == null)
+                        if (ceiling)
                             room.Blocks[x, z].Ceiling.SetHeight(height.Value);
-                        else if(!ceiling && room.Blocks[x, z].FloorPortal == null)
+                        else
                             room.Blocks[x, z].Floor.SetHeight(height.Value);
                     }
                 }
@@ -2553,7 +2686,7 @@ namespace TombEditor
             _editor.SelectRooms(_editor.Level.GetConnectedRooms(_editor.SelectedRooms).ToList());
         }
 
-        public static void DuplicateRooms(IWin32Window owner)
+        public static void DuplicateRoom(IWin32Window owner)
         {
             // Prevent "Copy of Copy of Copy" situation
             int foundPostfixPos = _editor.SelectedRoom.Name.IndexOf(" (copy");
@@ -2584,8 +2717,31 @@ namespace TombEditor
             newRoom.BuildGeometry();
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
+            _editor.UndoManager.PushRoomCreated(newRoom);
             _editor.SelectedRoom = newRoom;
         }
+
+        public static void BackupRoom(IWin32Window owner)
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+
+            _editor.BackupRoom = _editor.SelectedRoom.Clone(_editor.Level, null, true);
+        }
+
+        public static void RestoreRoom(IWin32Window owner)
+        {
+            if (_editor.BackupRoom == null)
+                return;
+
+            var index = Array.FindIndex(_editor.Level.Rooms, r => r == _editor.SelectedRoom);
+
+            _editor.Level.Rooms[index] = _editor.BackupRoom;
+            _editor.SelectedRoom = _editor.Level.Rooms[index];
+            _editor.SelectedRoom.BuildGeometry();
+            _editor.RoomGeometryChange(_editor.SelectedRoom);
+        }
+
 
         public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
         {
@@ -2925,7 +3081,7 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
+                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can cut or copy it.", PopupType.Info);
                 return;
             }
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));
@@ -2948,18 +3104,34 @@ namespace TombEditor
 
         public static void TryPasteSectors(SectorsClipboardData data, IWin32Window owner)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             int x0 = _editor.SelectedSectors.Area.X0;
             int z0 = _editor.SelectedSectors.Area.Y0;
             int x1 = Math.Min(_editor.SelectedRoom.NumXSectors - 1, x0 + data.Width);
             int z1 = Math.Min(_editor.SelectedRoom.NumZSectors - 1, z0 + data.Height);
 
             var sectors = data.GetSectors();
+            var portals = new List<PortalInstance>();
 
             for (int x = x0; x < x1; x++)
                 for (int z = z0; z < z1; z++)
                 {
-                    _editor.SelectedRoom.Blocks[x, z] = sectors[x - x0, z - z0].Clone();
+                    var currentSector = sectors[x - x0, z - z0];
+                    if (currentSector.Type == BlockType.BorderWall && _editor.SelectedRoom.Blocks[x, z].Type != BlockType.BorderWall)
+                        continue;
+
+                    if (_editor.SelectedSectors.Empty ||
+                        _editor.SelectedSectors.Single ||
+                        _editor.SelectedSectors.Area.Contains(new VectorInt2(x, z)))
+                    {
+                        portals.AddRange(_editor.SelectedRoom.Blocks[x, z].Portals);
+                        _editor.SelectedRoom.Blocks[x, z].ReplaceGeometry(_editor.Level, currentSector);
+                    }
                 }
+
+            // Redraw rooms in portals
+            portals.Select(p => p.AdjoiningRoom).ToList().ForEach(room => { room.BuildGeometry(); _editor.RoomGeometryChange(room); });
 
             _editor.SelectedRoom.BuildGeometry();
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
@@ -2981,7 +3153,7 @@ namespace TombEditor
             return false;
         }
 
-        public static void MoveLara(IWin32Window owner, VectorInt2 p)
+        public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her
             MoveableInstance lara;
@@ -2991,16 +3163,19 @@ namespace TombEditor
                     lara = instance as MoveableInstance;
                     if (lara != null && lara.WadObjectId == WadMoveableId.Lara)
                     {
+                        _editor.UndoManager.PushObjectTransformed(lara);
+
                         room.RemoveObject(_editor.Level, instance);
                         _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
-                        goto FoundLara;
+
+                        // Move lara to current sector
+                        PlaceObjectWithoutUpdate(targetRoom, p, lara);
+                        return;
                     }
                 }
-            lara = new MoveableInstance { WadObjectId = WadMoveableId.Lara }; // Lara
-            FoundLara:
 
             // Add lara to current sector
-            PlaceObject(_editor.SelectedRoom, p, lara);
+            PlaceObject(targetRoom, p, new MoveableInstance { WadObjectId = WadMoveableId.Lara });
         }
 
         public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
@@ -3237,6 +3412,7 @@ namespace TombEditor
                                         for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
                                         {
                                             var faceTexture = block.GetFaceTexture((BlockFace)faceType);
+                                            
                                             if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable || faceTexture.Texture == null)
                                                 continue;
                                             var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, (BlockFace)faceType));
@@ -3563,8 +3739,11 @@ namespace TombEditor
             }
         }
 
-        public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms)
+        public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms, bool disableUndo = false)
         {
+            if (!disableUndo)
+                _editor.UndoManager.PushRoomsMoved(rooms.ToList(), positionDelta);
+
             HashSet<Room> roomsToMove = new HashSet<Room>(rooms);
 
             // Update position of all rooms

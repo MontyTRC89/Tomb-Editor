@@ -365,8 +365,8 @@ namespace TombLib.Graphics
             _rotationPickAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationPickAngleOffset = SimplifyAngle(
                 (pickingResult.Mode == GizmoMode.RotateY ? RotationY :
-                pickingResult.Mode == GizmoMode.RotateX ? RotationX :
-                pickingResult.Mode == GizmoMode.RotateZ ? RotationZ : 0.0f) - pickingResult.RotationPickAngle);
+                 pickingResult.Mode == GizmoMode.RotateX ? RotationX :
+                 pickingResult.Mode == GizmoMode.RotateZ ? RotationZ : 0.0f) - pickingResult.RotationPickAngle);
             _rotationLastMouseAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationLastMouseRadius = pickingResult.Distance;
         }

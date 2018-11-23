@@ -632,17 +632,39 @@ namespace TombLib.LevelData.IO
                     byte reverb = reader.ReadByte();
                     tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
-                    room.WaterLevel = (flags1 & 0x0001) != 0 ? (byte)(waterLevel + 1) : (byte)0;
+                    if ((flags1 & 0x0001) != 0)
+                        room.Type = RoomType.Water;
+                    else if ((flags1 & 0x0004) != 0)
+                        room.Type = RoomType.Quicksand;
+                    else if ((flags1 & 0x0400) != 0)
+                        room.Type = RoomType.Snow;
+                    else if ((flags1 & 0x0800) != 0)
+                        room.Type = RoomType.Rain;
+                    else
+                        room.Type = RoomType.Normal;
+
+                    if ((flags1 & 0x0200) != 0)
+                        room.LightEffect = RoomLightEffect.Reflection;
+                    else if ((flags1 & 0x0100) != 0)
+                        room.LightEffect = RoomLightEffect.Glow;
+                    else
+                        room.LightEffect = RoomLightEffect.Default;
+
+                    if (room.Type == RoomType.Water || room.Type == RoomType.Quicksand)
+                        room.LightEffectStrength = waterLevel;
+                    else
+                        room.LightEffectStrength = mistOrReflectionLevel;
+
+                    if (room.Type == RoomType.Snow || room.Type == RoomType.Rain)
+                        room.TypeStrength = waterLevel;
+                    else
+                        room.TypeStrength = 0;
+
                     room.Reverberation = (Reverberation)reverb;
-                    room.ReflectionLevel = (flags1 & 0x0200) != 0 ? (byte)(mistOrReflectionLevel + 1) : (byte)0;
-                    room.MistLevel = (flags1 & 0x0100) != 0 ? mistOrReflectionLevel : (byte)0;
-                    room.QuickSandLevel = (flags1 & 0x0004) != 0 ? (byte)(waterLevel + 1) : (byte)0;
                     room.FlagHorizon = (flags1 & 0x0008) != 0;
                     room.FlagDamage = (flags1 & 0x0010) != 0;
                     room.FlagOutside = (flags1 & 0x0020) != 0;
                     room.FlagNoLensflare = (flags1 & 0x0080) != 0;
-                    room.SnowLevel = (flags1 & 0x0400) != 0 ? (byte)(waterLevel + 1) : (byte)0;
-                    room.RainLevel = (flags1 & 0x0800) != 0 ? (byte)(waterLevel + 1) : (byte)0;
 
                     // Read blocks
                     tempRoom._blocks = new PrjBlock[numXBlocks, numZBlocks];
@@ -1084,7 +1106,7 @@ namespace TombLib.LevelData.IO
                             {
                                 case PortalDirection.Ceiling:
                                 case PortalDirection.Floor:
-                                    if (room.WaterLevel != 0 != (portal.AdjoiningRoom.WaterLevel != 0) && portal.Opacity == PortalOpacity.SolidFaces)
+                                    if (room.Type == RoomType.Water != (portal.AdjoiningRoom.Type == RoomType.Water) && portal.Opacity == PortalOpacity.SolidFaces)
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                             }

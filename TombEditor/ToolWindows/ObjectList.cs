@@ -67,7 +67,7 @@ namespace TombEditor.ToolWindows
         {
             var instance = lstObjects.SelectedItem as ObjectInstance;
             if (instance != null)
-                EditorActions.DeleteObject(instance);
+                EditorActions.DeleteObjectWithoutUpdate(instance);
         }
 
         private void butEditObject_Click(object sender, EventArgs e)

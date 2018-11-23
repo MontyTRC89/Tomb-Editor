@@ -19,13 +19,16 @@ namespace TombLib.Controls
 
         public virtual void InitializeRendering(RenderingDevice device, bool antialias = false)
         {
-            Device = device;
-            SwapChain = device.CreateSwapChain(new RenderingSwapChain.Description
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
-                Size = new VectorInt2(ClientSize.Width, ClientSize.Height),
-                WindowHandle = Handle,
-                Antialias = antialias
-            });
+                Device = device;
+                SwapChain = device.CreateSwapChain(new RenderingSwapChain.Description
+                {
+                    Size = new VectorInt2(ClientSize.Width, ClientSize.Height),
+                    WindowHandle = Handle,
+                    Antialias = antialias
+                });
+            }
         }
 
         protected override void OnResize(EventArgs e)
