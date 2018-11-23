@@ -68,12 +68,10 @@
             // optionPlaySoundFromWad
             // 
             this.optionPlaySoundFromWad.AutoSize = true;
-            this.optionPlaySoundFromWad.Checked = true;
             this.optionPlaySoundFromWad.Location = new System.Drawing.Point(12, 12);
             this.optionPlaySoundFromWad.Name = "optionPlaySoundFromWad";
             this.optionPlaySoundFromWad.Size = new System.Drawing.Size(133, 17);
             this.optionPlaySoundFromWad.TabIndex = 1;
-            this.optionPlaySoundFromWad.TabStop = true;
             this.optionPlaySoundFromWad.Text = "Play sound from wad";
             this.optionPlaySoundFromWad.CheckedChanged += new System.EventHandler(this.optionPlaySoundFromWad_CheckedChanged);
             // 

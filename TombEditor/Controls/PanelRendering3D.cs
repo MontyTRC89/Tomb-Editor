@@ -676,8 +676,7 @@ namespace TombEditor.Controls
                     if (newPicking is PickingResultObject)
                     {
                         var pickedObject = ((PickingResultObject)newPicking).ObjectInstance;
-                        if(pickedObject.Room == _editor.SelectedRoom)
-                            EditorActions.EditObject(pickedObject, Parent);
+                        EditorActions.EditObject(pickedObject, Parent);
                     }
                     else if (newPicking is PickingResultBlock)
                     {
