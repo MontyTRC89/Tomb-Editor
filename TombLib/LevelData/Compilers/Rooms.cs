@@ -435,6 +435,7 @@ namespace TombLib.LevelData.Compilers
                         }
                         else if (room.LightEffect == RoomLightEffect.Wibble || room.LightEffect == RoomLightEffect.GlowAndWibble)
                         {
+                            ///@FIXME: BROKEN ON PORTALS!!!
                             if (!portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false))
                                 flags |= 0x2000;
                         }
