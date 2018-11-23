@@ -20,7 +20,7 @@ namespace TombLib.LevelData
 
     public enum RoomLightEffect : byte
     {
-        Default, Reflection, Glow, Wibble, GlowAndWibble, None
+        None, Default, Reflection, Glow, Movement, GlowAndMovement
     }
 
     public class Room : ITriggerParameter

@@ -75,7 +75,7 @@
             this.darkLabel19.AutoSize = true;
             this.darkLabel19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel19.Location = new System.Drawing.Point(0, 55);
+            this.darkLabel19.Location = new System.Drawing.Point(87, 55);
             this.darkLabel19.Name = "darkLabel19";
             this.darkLabel19.Size = new System.Drawing.Size(48, 13);
             this.darkLabel19.TabIndex = 103;
@@ -86,7 +86,7 @@
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(144, 55);
+            this.darkLabel18.Location = new System.Drawing.Point(148, 54);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(42, 13);
             this.darkLabel18.TabIndex = 100;
@@ -143,7 +143,7 @@
             this.darkLabel15.AutoSize = true;
             this.darkLabel15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(61, 55);
+            this.darkLabel15.Location = new System.Drawing.Point(0, 55);
             this.darkLabel15.Name = "darkLabel15";
             this.darkLabel15.Size = new System.Drawing.Size(62, 13);
             this.darkLabel15.TabIndex = 91;
@@ -283,7 +283,7 @@
             "13",
             "14",
             "15"});
-            this.comboFlipMap.Location = new System.Drawing.Point(3, 71);
+            this.comboFlipMap.Location = new System.Drawing.Point(90, 71);
             this.comboFlipMap.Name = "comboFlipMap";
             this.comboFlipMap.Size = new System.Drawing.Size(55, 23);
             this.comboFlipMap.TabIndex = 7;
@@ -300,9 +300,9 @@
             "Medium",
             "Large",
             "Pipe"});
-            this.comboReverberation.Location = new System.Drawing.Point(147, 71);
+            this.comboReverberation.Location = new System.Drawing.Point(151, 71);
             this.comboReverberation.Name = "comboReverberation";
-            this.comboReverberation.Size = new System.Drawing.Size(75, 23);
+            this.comboReverberation.Size = new System.Drawing.Size(71, 23);
             this.comboReverberation.TabIndex = 18;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
@@ -312,12 +312,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboLightEffect.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboLightEffect.Items.AddRange(new object[] {
+            "None",
             "Default",
             "Reflection",
             "Glow",
             "Movement",
-            "Glow & Movement",
-            "None"});
+            "Glow & Movement"});
             this.comboLightEffect.Location = new System.Drawing.Point(82, 161);
             this.comboLightEffect.Name = "comboLightEffect";
             this.comboLightEffect.Size = new System.Drawing.Size(140, 23);
@@ -339,9 +339,9 @@
             "Snow 2",
             "Snow 3",
             "Snow 4"});
-            this.comboRoomType.Location = new System.Drawing.Point(64, 71);
+            this.comboRoomType.Location = new System.Drawing.Point(3, 71);
             this.comboRoomType.Name = "comboRoomType";
-            this.comboRoomType.Size = new System.Drawing.Size(77, 23);
+            this.comboRoomType.Size = new System.Drawing.Size(81, 23);
             this.comboRoomType.TabIndex = 8;
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 

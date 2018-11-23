@@ -179,7 +179,7 @@ namespace TombLib.LevelData.Compilers
                         room.LightEffect = RoomLightEffect.Glow;
                         break;
                     case RoomType.Quicksand:
-                        room.LightEffect = RoomLightEffect.Wibble;
+                        room.LightEffect = RoomLightEffect.Movement;
                         break;
                     default:
                         room.LightEffect = RoomLightEffect.None;
@@ -187,16 +187,16 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            // Clamp water scheme to maximum possible un-garbaged value for wibble effect
-            if((room.LightEffect == RoomLightEffect.Wibble || room.LightEffect == RoomLightEffect.GlowAndWibble) && newRoom.WaterScheme > 12)
+            // Clamp water scheme to maximum possible un-garbaged value for movement effect
+            if((room.LightEffect == RoomLightEffect.Movement || room.LightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 12)
                 newRoom.WaterScheme = 12;
 
             // Light effect
             switch (room.LightEffect)
             {
                 case RoomLightEffect.Glow:
-                case RoomLightEffect.Wibble:
-                case RoomLightEffect.GlowAndWibble:
+                case RoomLightEffect.Movement:
+                case RoomLightEffect.GlowAndMovement:
                     newRoom.Flags |= 0x0100;
                     break;
 
@@ -390,14 +390,16 @@ namespace TombLib.LevelData.Compilers
                     //if (xv > 1 && zv > 1 && xv < room.NumXSectors - 2 && zv < room.NumZSectors - 2)
 
                     if (room.LightEffect == RoomLightEffect.Glow ||
-                        room.LightEffect == RoomLightEffect.GlowAndWibble)
+                        room.LightEffect == RoomLightEffect.GlowAndMovement)
                         flags |= 0x4000;
+
+                    bool disableMovement = false;
 
                     foreach (var portal in room.Portals)
                     {
-                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
+                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false)))
                         {
-                            // Assign wibble from bottom water room
+                            // Assign movement from bottom water room
 
                             var xv = trVertex.Position.X / 1024;
                             var zv = trVertex.Position.Z / 1024;
@@ -431,13 +433,22 @@ namespace TombLib.LevelData.Compilers
                             // Assign reflection, if set, for all enclosed portal faces
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
                                 portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
-                                    flags |= 0x4000;
+                            {
+                                flags |= 0x4000;
+                                break;
+                            }
                         }
-                        else if (room.LightEffect == RoomLightEffect.Wibble || room.LightEffect == RoomLightEffect.GlowAndWibble)
+                        else if (room.LightEffect == RoomLightEffect.Movement || room.LightEffect == RoomLightEffect.GlowAndMovement)
                         {
-                            ///@FIXME: BROKEN ON PORTALS!!!
-                            if (!portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false))
-                                flags |= 0x2000;
+                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                            {
+                                disableMovement = true;
+                            }
+                            else
+                            {
+                                if(!disableMovement) flags |= 0x2000;
+                            }
                         }
                     }
 

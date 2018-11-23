@@ -225,7 +225,6 @@ namespace TombEditor.ToolWindows
             switch (comboRoomType.SelectedIndex)
             {
                 case 0:
-                case -1:
                     _editor.SelectedRoom.Type = RoomType.Normal;
                     break;
                 case 1:
@@ -252,7 +251,7 @@ namespace TombEditor.ToolWindows
 
         private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.LightEffect = (RoomLightEffect)(comboLightEffect.SelectedIndex < 0 ? 0 : comboLightEffect.SelectedIndex);
+            _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
