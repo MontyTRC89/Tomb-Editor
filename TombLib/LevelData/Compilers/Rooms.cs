@@ -146,11 +146,12 @@ namespace TombLib.LevelData.Compilers
                     break;
             }
 
+            var lightEffect = room.LightEffect;
             var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Type >= RoomType.Water).ToList();
 
             // Calculate bottom room-based water scheme, if mode is default or reflection
             if (waterPortals.Count > 0 && room.Type < RoomType.Water && 
-                (room.LightEffect == RoomLightEffect.Default || room.LightEffect == RoomLightEffect.Reflection))
+                (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection))
             {
                 var waterRoom = waterPortals.First().AdjoiningRoom;
                 int effectiveReflectionLevel = room.LightEffectStrength;
@@ -164,35 +165,35 @@ namespace TombLib.LevelData.Compilers
             }
             else
             {
-                if (room.Type == RoomType.Water && room.LightEffect == RoomLightEffect.Default)
+                if (room.Type == RoomType.Water && lightEffect == RoomLightEffect.Default)
                     newRoom.WaterScheme = 0;
                 else
                     newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5); // Normal calculation
             }
 
             // Force different effect type 
-            if (room.LightEffect == RoomLightEffect.Default)
+            if (lightEffect == RoomLightEffect.Default)
             {
                 switch (room.Type)
                 {
                     case RoomType.Water:
-                        room.LightEffect = RoomLightEffect.Glow;
+                        lightEffect = RoomLightEffect.Glow;
                         break;
                     case RoomType.Quicksand:
-                        room.LightEffect = RoomLightEffect.Movement;
+                        lightEffect = RoomLightEffect.Movement;
                         break;
                     default:
-                        room.LightEffect = RoomLightEffect.None;
+                        lightEffect = RoomLightEffect.None;
                         break;
                 }
             }
 
             // Clamp water scheme to maximum possible un-garbaged value for movement effect
-            if((room.LightEffect == RoomLightEffect.Movement || room.LightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 12)
+            if((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 12)
                 newRoom.WaterScheme = 12;
 
             // Light effect
-            switch (room.LightEffect)
+            switch (lightEffect)
             {
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Movement:
@@ -389,18 +390,17 @@ namespace TombLib.LevelData.Compilers
                     // For a better effect (see City of the dead) I don't set this effect to border walls (TODO: tune this)
                     //if (xv > 1 && zv > 1 && xv < room.NumXSectors - 2 && zv < room.NumZSectors - 2)
 
-                    if (room.LightEffect == RoomLightEffect.Glow ||
-                        room.LightEffect == RoomLightEffect.GlowAndMovement)
+                    if (lightEffect == RoomLightEffect.Glow ||
+                        lightEffect == RoomLightEffect.GlowAndMovement)
                         flags |= 0x4000;
 
                     bool disableMovement = false;
 
                     foreach (var portal in room.Portals)
                     {
-                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false)))
+                        // Assign movement from bottom water or quicksand room
+                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
                         {
-                            // Assign movement from bottom water room
-
                             var xv = trVertex.Position.X / 1024;
                             var zv = trVertex.Position.Z / 1024;
 
@@ -428,7 +428,8 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        if (room.LightEffect == RoomLightEffect.Reflection)
+                        // Enable reflection for dry room above water room or vice versa
+                        if (lightEffect == RoomLightEffect.Reflection && ((room.Type == RoomType.Water) != (portal.AdjoiningRoom.Type == RoomType.Water)))
                         {
                             // Assign reflection, if set, for all enclosed portal faces
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
@@ -438,7 +439,8 @@ namespace TombLib.LevelData.Compilers
                                 break;
                             }
                         }
-                        else if (room.LightEffect == RoomLightEffect.Movement || room.LightEffect == RoomLightEffect.GlowAndMovement)
+                        // Enable movement only for non-portal faces
+                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
                         {
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
                                 portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
