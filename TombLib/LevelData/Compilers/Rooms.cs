@@ -394,7 +394,7 @@ namespace TombLib.LevelData.Compilers
                         lightEffect == RoomLightEffect.GlowAndMovement)
                         flags |= 0x4000;
 
-                    bool disableMovement = false;
+                    bool allowMovement = true;
 
                     foreach (var portal in room.Portals)
                     {
@@ -428,8 +428,9 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        // Enable reflection for dry room above water room or vice versa
-                        if (lightEffect == RoomLightEffect.Reflection && ((room.Type == RoomType.Water) != (portal.AdjoiningRoom.Type == RoomType.Water)))
+                        // Enable reflection for dry room above water/quicksand room or vice versa
+                        if (lightEffect == RoomLightEffect.Reflection && 
+                            ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                         {
                             // Assign reflection, if set, for all enclosed portal faces
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
@@ -439,20 +440,17 @@ namespace TombLib.LevelData.Compilers
                                 break;
                             }
                         }
-                        // Enable movement only for non-portal faces
-                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                        // Disable movement for portal faces
+                        else 
                         {
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
                                 portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
-                            {
-                                disableMovement = true;
-                            }
-                            else
-                            {
-                                if(!disableMovement) flags |= 0x2000;
-                            }
+                                allowMovement = false;
                         }
                     }
+
+                    if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
+                        flags |= 0x2000;
 
                     trVertex.Attributes = flags;
                     roomVertices[i] = trVertex;
