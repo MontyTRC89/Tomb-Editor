@@ -13,6 +13,16 @@ namespace TombLib.LevelData
         Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
     }
 
+    public enum RoomType : byte
+    {
+        Normal, Rain, Snow, Water, Quicksand
+    }
+
+    public enum RoomLightEffect : byte
+    {
+        Default, Reflection, Glow, Wibble, GlowAndWibble, None
+    }
+
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -32,12 +42,12 @@ namespace TombLib.LevelData
         public short AlternateGroup { get; set; } = -1;
 
         public Vector3 AmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
-        public byte WaterLevel { get; set; }
-        public byte MistLevel { get; set; }
-        public byte ReflectionLevel { get; set; }
-        public byte RainLevel { get; set; }
-        public byte SnowLevel { get; set; }
-        public byte QuickSandLevel { get; set; }
+
+        public RoomType Type { get; set; } = RoomType.Normal;
+        public byte TypeStrength { get; set; } = 0;
+        public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
+        public byte LightEffectStrength { get; set; } = 0;
+
         public bool FlagCold { get; set; }
         public bool FlagDamage { get; set; }
         public bool FlagOutside { get; set; }
@@ -482,7 +492,7 @@ namespace TombLib.LevelData
         {
             Block sector = GetBlockTry(x, z);
 
-            if (WaterLevel > 0 || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
+            if (Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
                 return false;
 
             const int lowestPassableHeight = 4;

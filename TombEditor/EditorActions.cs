@@ -817,9 +817,9 @@ namespace TombEditor
             TextureArea newTexture = block.GetFaceTexture(face);
             bool isTriangle = room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle;
         
-            if(fullFace && newTexture.TextureIsTriangle && isTriangle && face >= BlockFace.Floor)
+            if(fullFace && isTriangle && face >= BlockFace.Floor)
             {
-                newTexture = block.GetFaceTexture(face).RestoreQuad();
+                if(newTexture.TextureIsTriangle) newTexture = newTexture.RestoreQuad();
                 BlockFace opposite = BlockFace.Floor;
                 int rotation = 1;
 

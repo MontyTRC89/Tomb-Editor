@@ -215,6 +215,21 @@ namespace TombLib.LevelData
             return true;
         }
 
+        public bool PositionOnPortal(VectorInt3 pos, bool detectInside, bool nonPlaneResult)
+        {
+            if (((Direction == PortalDirection.Floor && pos.Y == -(Room.GetLowestCorner() * 256 + Room.WorldPos.Y)) ||
+                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * 256 + Room.WorldPos.Y))))
+            {
+                if(detectInside)
+                    return (pos.X >= ((Area.X0 - 1) * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && pos.Z >= ((Area.Y0 - 1) * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024));
+                else
+                    return ((pos.X >= (Area.X0 * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && (pos.Z == (Area.Y0 * 1024) || pos.Z == ((Area.Y1 + 1) * 1024))) ||
+                             pos.Z >= (Area.Y0 * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024) && (pos.X == (Area.X0 * 1024) || pos.X == ((Area.X1 + 1) * 1024)));
+            }
+            else
+                return nonPlaneResult;
+        }
+
         public override void AddToRoom(Level level, Room room)
         {
             base.AddToRoom(level, room);

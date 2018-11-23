@@ -20,7 +20,6 @@
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.cbFlagOutside = new DarkUI.Controls.DarkCheckBox();
             this.cbFlagCold = new DarkUI.Controls.DarkCheckBox();
@@ -39,33 +38,32 @@
             this.butCropRoom = new DarkUI.Controls.DarkButton();
             this.comboFlipMap = new DarkUI.Controls.DarkComboBox();
             this.comboReverberation = new DarkUI.Controls.DarkComboBox();
-            this.comboMist = new DarkUI.Controls.DarkComboBox();
-            this.comboReflection = new DarkUI.Controls.DarkComboBox();
+            this.comboLightEffect = new DarkUI.Controls.DarkComboBox();
             this.comboRoomType = new DarkUI.Controls.DarkComboBox();
             this.comboRoom = new DarkUI.Controls.DarkComboBox();
             this.butDublicateRoom = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
+            this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
             // cbNoPathfinding
             // 
-            this.cbNoPathfinding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbNoPathfinding.AutoCheck = false;
-            this.cbNoPathfinding.AutoSize = true;
             this.cbNoPathfinding.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbNoPathfinding.Location = new System.Drawing.Point(105, 127);
+            this.cbNoPathfinding.Location = new System.Drawing.Point(129, 100);
             this.cbNoPathfinding.Name = "cbNoPathfinding";
-            this.cbNoPathfinding.Size = new System.Drawing.Size(106, 17);
+            this.cbNoPathfinding.Size = new System.Drawing.Size(96, 17);
             this.cbNoPathfinding.TabIndex = 12;
             this.cbNoPathfinding.Tag = "SetRoomNoPathfinding";
             this.cbNoPathfinding.Text = "No pathfinding";
             // 
             // cbHorizon
             // 
-            this.cbHorizon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbHorizon.AutoCheck = false;
             this.cbHorizon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbHorizon.Location = new System.Drawing.Point(105, 81);
+            this.cbHorizon.Location = new System.Drawing.Point(3, 100);
             this.cbHorizon.Name = "cbHorizon";
             this.cbHorizon.Size = new System.Drawing.Size(58, 17);
             this.cbHorizon.TabIndex = 10;
@@ -85,46 +83,32 @@
             // 
             // darkLabel18
             // 
-            this.darkLabel18.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(199, 152);
+            this.darkLabel18.Location = new System.Drawing.Point(144, 55);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(42, 13);
             this.darkLabel18.TabIndex = 100;
             this.darkLabel18.Text = "Reverb";
             // 
-            // darkLabel17
-            // 
-            this.darkLabel17.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.darkLabel17.AutoSize = true;
-            this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(141, 152);
-            this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(29, 13);
-            this.darkLabel17.TabIndex = 98;
-            this.darkLabel17.Text = "Mist";
-            // 
             // darkLabel16
             // 
-            this.darkLabel16.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(83, 152);
+            this.darkLabel16.Location = new System.Drawing.Point(79, 145);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(59, 13);
+            this.darkLabel16.Size = new System.Drawing.Size(65, 13);
             this.darkLabel16.TabIndex = 96;
-            this.darkLabel16.Text = "Reflection";
+            this.darkLabel16.Text = "Light effect";
             // 
             // cbFlagOutside
             // 
-            this.cbFlagOutside.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagOutside.AutoCheck = false;
             this.cbFlagOutside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagOutside.Location = new System.Drawing.Point(177, 81);
+            this.cbFlagOutside.Location = new System.Drawing.Point(3, 119);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(50, 17);
             this.cbFlagOutside.TabIndex = 14;
@@ -133,11 +117,10 @@
             // 
             // cbFlagCold
             // 
-            this.cbFlagCold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagCold.AutoCheck = false;
             this.cbFlagCold.AutoSize = true;
             this.cbFlagCold.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagCold.Location = new System.Drawing.Point(177, 58);
+            this.cbFlagCold.Location = new System.Drawing.Point(64, 119);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 13;
@@ -146,12 +129,11 @@
             // 
             // cbFlagDamage
             // 
-            this.cbFlagDamage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagDamage.AutoCheck = false;
             this.cbFlagDamage.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagDamage.Location = new System.Drawing.Point(105, 58);
+            this.cbFlagDamage.Location = new System.Drawing.Point(64, 100);
             this.cbFlagDamage.Name = "cbFlagDamage";
-            this.cbFlagDamage.Size = new System.Drawing.Size(60, 17);
+            this.cbFlagDamage.Size = new System.Drawing.Size(64, 17);
             this.cbFlagDamage.TabIndex = 9;
             this.cbFlagDamage.Tag = "SetRoomDamage";
             this.cbFlagDamage.Text = "Damage";
@@ -161,7 +143,7 @@
             this.darkLabel15.AutoSize = true;
             this.darkLabel15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(0, 99);
+            this.darkLabel15.Location = new System.Drawing.Point(61, 55);
             this.darkLabel15.Name = "darkLabel15";
             this.darkLabel15.Size = new System.Drawing.Size(62, 13);
             this.darkLabel15.TabIndex = 91;
@@ -169,10 +151,10 @@
             // 
             // panelRoomAmbientLight
             // 
-            this.panelRoomAmbientLight.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.panelRoomAmbientLight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panelRoomAmbientLight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelRoomAmbientLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 168);
+            this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 161);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 23);
             this.panelRoomAmbientLight.TabIndex = 15;
@@ -180,11 +162,11 @@
             // 
             // darkLabel3
             // 
-            this.darkLabel3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.darkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(0, 152);
+            this.darkLabel3.Location = new System.Drawing.Point(0, 145);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(77, 13);
             this.darkLabel3.TabIndex = 88;
@@ -192,10 +174,9 @@
             // 
             // cbNoLensflare
             // 
-            this.cbNoLensflare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbNoLensflare.AutoCheck = false;
             this.cbNoLensflare.AutoSize = true;
-            this.cbNoLensflare.Location = new System.Drawing.Point(105, 104);
+            this.cbNoLensflare.Location = new System.Drawing.Point(129, 119);
             this.cbNoLensflare.Name = "cbNoLensflare";
             this.cbNoLensflare.Size = new System.Drawing.Size(88, 17);
             this.cbNoLensflare.TabIndex = 11;
@@ -283,11 +264,9 @@
             // 
             // comboFlipMap
             // 
-            this.comboFlipMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboFlipMap.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboFlipMap.Items.AddRange(new object[] {
-            "Not flipped",
+            "None",
             "0",
             "1",
             "2",
@@ -306,13 +285,14 @@
             "15"});
             this.comboFlipMap.Location = new System.Drawing.Point(3, 71);
             this.comboFlipMap.Name = "comboFlipMap";
-            this.comboFlipMap.Size = new System.Drawing.Size(93, 23);
+            this.comboFlipMap.Size = new System.Drawing.Size(55, 23);
             this.comboFlipMap.TabIndex = 7;
             this.comboFlipMap.SelectedIndexChanged += new System.EventHandler(this.comboFlipMap_SelectedIndexChanged);
             // 
             // comboReverberation
             // 
-            this.comboReverberation.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.comboReverberation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboReverberation.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboReverberation.Items.AddRange(new object[] {
             "None",
@@ -320,55 +300,37 @@
             "Medium",
             "Large",
             "Pipe"});
-            this.comboReverberation.Location = new System.Drawing.Point(202, 168);
+            this.comboReverberation.Location = new System.Drawing.Point(147, 71);
             this.comboReverberation.Name = "comboReverberation";
-            this.comboReverberation.Size = new System.Drawing.Size(81, 23);
+            this.comboReverberation.Size = new System.Drawing.Size(75, 23);
             this.comboReverberation.TabIndex = 18;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
-            // comboMist
+            // comboLightEffect
             // 
-            this.comboMist.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.comboMist.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboMist.Items.AddRange(new object[] {
-            "No",
-            "1",
-            "2",
-            "3",
-            "4"});
-            this.comboMist.Location = new System.Drawing.Point(144, 168);
-            this.comboMist.Name = "comboMist";
-            this.comboMist.Size = new System.Drawing.Size(52, 23);
-            this.comboMist.TabIndex = 17;
-            this.comboMist.SelectedIndexChanged += new System.EventHandler(this.comboMist_SelectedIndexChanged);
-            // 
-            // comboReflection
-            // 
-            this.comboReflection.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.comboReflection.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboReflection.Items.AddRange(new object[] {
-            "No",
-            "1",
-            "2",
-            "3",
-            "4"});
-            this.comboReflection.Location = new System.Drawing.Point(86, 168);
-            this.comboReflection.Name = "comboReflection";
-            this.comboReflection.Size = new System.Drawing.Size(52, 23);
-            this.comboReflection.TabIndex = 16;
-            this.comboReflection.SelectedIndexChanged += new System.EventHandler(this.comboReflection_SelectedIndexChanged);
+            this.comboLightEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboLightEffect.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboLightEffect.Items.AddRange(new object[] {
+            "Default",
+            "Reflection",
+            "Glow",
+            "Movement",
+            "Glow & Movement",
+            "None"});
+            this.comboLightEffect.Location = new System.Drawing.Point(82, 161);
+            this.comboLightEffect.Name = "comboLightEffect";
+            this.comboLightEffect.Size = new System.Drawing.Size(140, 23);
+            this.comboLightEffect.TabIndex = 16;
+            this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
             // 
             // comboRoomType
             // 
-            this.comboRoomType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboRoomType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboRoomType.Items.AddRange(new object[] {
             "Normal",
-            "Water 1",
-            "Water 2",
-            "Water 3",
-            "Water 4",
+            "Water",
+            "Quicksand",
             "Rain 1",
             "Rain 2",
             "Rain 3",
@@ -376,14 +338,10 @@
             "Snow 1",
             "Snow 2",
             "Snow 3",
-            "Snow 4",
-            "Quicksand 1",
-            "Quicksand 2",
-            "Quicksand 3",
-            "Quicksand 4"});
-            this.comboRoomType.Location = new System.Drawing.Point(3, 115);
+            "Snow 4"});
+            this.comboRoomType.Location = new System.Drawing.Point(64, 71);
             this.comboRoomType.Name = "comboRoomType";
-            this.comboRoomType.Size = new System.Drawing.Size(93, 23);
+            this.comboRoomType.Size = new System.Drawing.Size(77, 23);
             this.comboRoomType.TabIndex = 8;
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 
@@ -420,10 +378,47 @@
             this.butDeleteRoom.TabIndex = 105;
             this.butDeleteRoom.Tag = "DeleteRooms";
             // 
+            // numLightEffectStrength
+            // 
+            this.numLightEffectStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.numLightEffectStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numLightEffectStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numLightEffectStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numLightEffectStrength.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numLightEffectStrength.Location = new System.Drawing.Point(228, 161);
+            this.numLightEffectStrength.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.numLightEffectStrength.MousewheelSingleIncrement = true;
+            this.numLightEffectStrength.Name = "numLightEffectStrength";
+            this.numLightEffectStrength.Size = new System.Drawing.Size(54, 23);
+            this.numLightEffectStrength.TabIndex = 107;
+            this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(225, 145);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(52, 13);
+            this.darkLabel1.TabIndex = 108;
+            this.darkLabel1.Text = "Strength";
+            // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.darkLabel1);
+            this.Controls.Add(this.numLightEffectStrength);
             this.Controls.Add(this.butSearch);
             this.Controls.Add(this.butDeleteRoom);
             this.Controls.Add(this.butDublicateRoom);
@@ -436,9 +431,7 @@
             this.Controls.Add(this.butRoomUp);
             this.Controls.Add(this.comboReverberation);
             this.Controls.Add(this.darkLabel18);
-            this.Controls.Add(this.comboMist);
-            this.Controls.Add(this.darkLabel17);
-            this.Controls.Add(this.comboReflection);
+            this.Controls.Add(this.comboLightEffect);
             this.Controls.Add(this.darkLabel16);
             this.Controls.Add(this.cbFlagOutside);
             this.Controls.Add(this.cbFlagCold);
@@ -454,10 +447,11 @@
             this.Controls.Add(this.butSplitRoom);
             this.DockText = "Room Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 194);
+            this.MinimumSize = new System.Drawing.Size(284, 187);
             this.Name = "RoomOptions";
             this.SerializationKey = "RoomOptions";
-            this.Size = new System.Drawing.Size(284, 194);
+            this.Size = new System.Drawing.Size(284, 187);
+            ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -472,9 +466,7 @@
         private DarkUI.Controls.DarkButton butRoomUp;
         private DarkUI.Controls.DarkComboBox comboReverberation;
         private DarkUI.Controls.DarkLabel darkLabel18;
-        private DarkUI.Controls.DarkComboBox comboMist;
-        private DarkUI.Controls.DarkLabel darkLabel17;
-        private DarkUI.Controls.DarkComboBox comboReflection;
+        private DarkUI.Controls.DarkComboBox comboLightEffect;
         private DarkUI.Controls.DarkLabel darkLabel16;
         private DarkUI.Controls.DarkCheckBox cbFlagOutside;
         private DarkUI.Controls.DarkCheckBox cbFlagCold;
@@ -494,5 +486,7 @@
         private DarkUI.Controls.DarkButton butDublicateRoom;
         private DarkUI.Controls.DarkButton butDeleteRoom;
         private DarkUI.Controls.DarkButton butSearch;
+        private DarkUI.Controls.DarkNumericUpDown numLightEffectStrength;
+        private DarkUI.Controls.DarkLabel darkLabel1;
     }
 }
