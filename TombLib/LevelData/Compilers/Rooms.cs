@@ -165,7 +165,7 @@ namespace TombLib.LevelData.Compilers
             }
             else
             {
-                if (room.Type == RoomType.Water && lightEffect == RoomLightEffect.Default)
+                if (room.Type == RoomType.Water && lightEffect == RoomLightEffect.Default) // Reset water scheme for default water room effect
                     newRoom.WaterScheme = 0;
                 else
                     newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5); // Normal calculation
