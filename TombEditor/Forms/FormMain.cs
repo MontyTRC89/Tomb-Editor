@@ -93,7 +93,9 @@ namespace TombEditor.Forms
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Gray out menu options that do not apply
-            if (obj is Editor.SelectedObjectChangedEvent || obj is Editor.ModeChangedEvent)
+            if (obj is Editor.SelectedObjectChangedEvent || 
+                obj is Editor.ModeChangedEvent ||
+                obj is Editor.SelectedSectorsChangedEvent)
             {
                 ObjectInstance selectedObject = _editor.SelectedObject;
 
@@ -114,13 +116,12 @@ namespace TombEditor.Forms
             {
                 var stackEvent = (Editor.UndoStackChangedEvent)obj;
                 undoToolStripMenuItem.Enabled = stackEvent.UndoPossible;
-                undoToolStripMenuItem.Enabled = stackEvent.RedoPossible;
+                redoToolStripMenuItem.Enabled = stackEvent.RedoPossible;
             }
 
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
                 bool validSectorSelection = _editor.SelectedSectors.Valid;
-                copyToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Geometry || validSectorSelection;
                 smoothRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
