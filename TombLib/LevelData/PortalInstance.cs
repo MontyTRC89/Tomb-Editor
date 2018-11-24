@@ -218,10 +218,13 @@ namespace TombLib.LevelData
         public bool PositionOnPortal(VectorInt3 pos, bool detectInside, bool nonPlaneResult)
         {
             if (((Direction == PortalDirection.Floor && pos.Y == -(Room.GetLowestCorner() * 256 + Room.WorldPos.Y)) ||
-                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * 256 + Room.WorldPos.Y))))
+                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * 256 + Room.WorldPos.Y))) ||
+                  Direction >  PortalDirection.Ceiling)
             {
-                if(detectInside)
-                    return (pos.X >= ((Area.X0 - 1) * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && pos.Z >= ((Area.Y0 - 1) * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024));
+                ///@FIXME: I am not sure if 1 plane subtraction is needed for horizontal portals --Lwmte
+                int planeSub = Direction > PortalDirection.Ceiling ? 0 : 1;
+                if (detectInside)
+                    return (pos.X >= ((Area.X0 - planeSub) * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && pos.Z >= ((Area.Y0 - planeSub) * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024));
                 else
                     return ((pos.X >= (Area.X0 * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && (pos.Z == (Area.Y0 * 1024) || pos.Z == ((Area.Y1 + 1) * 1024))) ||
                              pos.Z >= (Area.Y0 * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024) && (pos.X == (Area.X0 * 1024) || pos.X == ((Area.X1 + 1) * 1024)));
