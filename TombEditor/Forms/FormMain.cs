@@ -35,7 +35,6 @@ namespace TombEditor.Forms
 
         // Floating tool boxes are placed on 3D view at runtime
         private readonly ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
-        private readonly Dictionary<ToolStripItem, string> _originalShortcutKeyDisplayStrings = new Dictionary<ToolStripItem, string>();
 
         public FormMain(Editor editor)
         {
@@ -97,14 +96,25 @@ namespace TombEditor.Forms
             if (obj is Editor.SelectedObjectChangedEvent || obj is Editor.ModeChangedEvent)
             {
                 ObjectInstance selectedObject = _editor.SelectedObject;
-                copyToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject is PositionBasedObjectInstance;
+
+                bool enableCutCopy = _editor.Mode == EditorMode.Map2D || selectedObject is PositionBasedObjectInstance || _editor.SelectedSectors.Valid;
+                copyToolStripMenuItem.Enabled = enableCutCopy;
+                cutToolStripMenuItem.Enabled = enableCutCopy;
+                deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
+
                 stampToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
                 if (obj is Editor.ModeChangedEvent)
                     ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
-                deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
                 bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
+            }
+
+            if(obj is Editor.UndoStackChangedEvent)
+            {
+                var stackEvent = (Editor.UndoStackChangedEvent)obj;
+                undoToolStripMenuItem.Enabled = stackEvent.UndoPossible;
+                undoToolStripMenuItem.Enabled = stackEvent.RedoPossible;
             }
 
             if (obj is Editor.SelectedSectorsChangedEvent)
@@ -264,14 +274,6 @@ namespace TombEditor.Forms
             openRecentToolStripMenuItem.Enabled = openRecentToolStripMenuItem.DropDownItems.Count > 2;
         }
 
-        private void GarbageCollectOoriginalShortcutKeyDisplayStrings()
-        {
-            // Clean up old _originalShortcutKeyDisplayStrings
-            foreach (var key in _originalShortcutKeyDisplayStrings.Keys.ToArray())
-                if (key.IsDisposed)
-                    _originalShortcutKeyDisplayStrings.Remove(key);
-        }
-
         private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
         {
             foreach (object obj in dropDownItems)
@@ -297,20 +299,7 @@ namespace TombEditor.Forms
                             }
 
                             var hotkeysForCommand = _editor.Configuration.UI_Hotkeys[subMenu.Tag.ToString()];
-
-                            // Store original shortcut key display strings
-                            string baseShortcutKeyDisplayString;
-                            if (!_originalShortcutKeyDisplayStrings.TryGetValue(subMenu, out baseShortcutKeyDisplayString))
-                            {
-                                _originalShortcutKeyDisplayStrings.Add(subMenu, subMenu.ShortcutKeyDisplayString);
-                                baseShortcutKeyDisplayString = subMenu.ShortcutKeyDisplayString;
-                            }
-
-                            // Create new shortcut key display
-                            subMenu.ShortcutKeyDisplayString = string.Join(", ",
-                                new[] { baseShortcutKeyDisplayString } // Preserve existing hot keys.
-                                .Concat(hotkeysForCommand.Select(h => h.ToString())) // Add new hot keys
-                                .Where(str => !string.IsNullOrWhiteSpace(str))); // Only those which aren't empty
+                            subMenu.ShortcutKeyDisplayString = string.Join(", ", hotkeysForCommand.Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
                         }
                     }
                 }
@@ -525,8 +514,6 @@ namespace TombEditor.Forms
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
-
-            GarbageCollectOoriginalShortcutKeyDisplayStrings();
         }
 
         private void ToolBox_Show(bool show)
