@@ -49,22 +49,30 @@ namespace TombEditor.Forms
             this.cbBit15 = new DarkUI.Controls.DarkCheckBox();
             this.cbBit14 = new DarkUI.Controls.DarkCheckBox();
             this.label1 = new DarkUI.Controls.DarkLabel();
-            this.tbSequence = new DarkUI.Controls.DarkTextBox();
-            this.tbNumber = new DarkUI.Controls.DarkTextBox();
             this.label2 = new DarkUI.Controls.DarkLabel();
-            this.tbFOV = new DarkUI.Controls.DarkTextBox();
             this.label3 = new DarkUI.Controls.DarkLabel();
-            this.tbRoll = new DarkUI.Controls.DarkTextBox();
             this.label4 = new DarkUI.Controls.DarkLabel();
-            this.tbTimer = new DarkUI.Controls.DarkTextBox();
             this.label5 = new DarkUI.Controls.DarkLabel();
-            this.tbSpeed = new DarkUI.Controls.DarkTextBox();
             this.label6 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.tbRotationX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.tbRotationY = new DarkUI.Controls.DarkTextBox();
+            this.numSequence = new DarkUI.Controls.DarkNumericUpDown();
+            this.numNumber = new DarkUI.Controls.DarkNumericUpDown();
+            this.numTimer = new DarkUI.Controls.DarkNumericUpDown();
+            this.numSpeed = new DarkUI.Controls.DarkNumericUpDown();
+            this.numFOV = new DarkUI.Controls.DarkNumericUpDown();
+            this.numRoll = new DarkUI.Controls.DarkNumericUpDown();
+            this.numRotationX = new DarkUI.Controls.DarkNumericUpDown();
+            this.numRotationY = new DarkUI.Controls.DarkNumericUpDown();
             this.tbLuaScript = new TombLib.Controls.LuaTextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.numSequence)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numNumber)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTimer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFOV)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRoll)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRotationX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRotationY)).BeginInit();
             this.SuspendLayout();
             // 
             // butCancel
@@ -222,99 +230,57 @@ namespace TombEditor.Forms
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(16, 22);
+            this.label1.Location = new System.Drawing.Point(12, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 18;
             this.label1.Text = "Sequence:";
             // 
-            // tbSequence
-            // 
-            this.tbSequence.Location = new System.Drawing.Point(81, 19);
-            this.tbSequence.Name = "tbSequence";
-            this.tbSequence.Size = new System.Drawing.Size(71, 22);
-            this.tbSequence.TabIndex = 19;
-            // 
-            // tbNumber
-            // 
-            this.tbNumber.Location = new System.Drawing.Point(81, 45);
-            this.tbNumber.Name = "tbNumber";
-            this.tbNumber.Size = new System.Drawing.Size(71, 22);
-            this.tbNumber.TabIndex = 21;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label2.Location = new System.Drawing.Point(16, 48);
+            this.label2.Location = new System.Drawing.Point(12, 48);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(51, 13);
             this.label2.TabIndex = 20;
             this.label2.Text = "Number:";
             // 
-            // tbFOV
-            // 
-            this.tbFOV.Location = new System.Drawing.Point(81, 124);
-            this.tbFOV.Name = "tbFOV";
-            this.tbFOV.Size = new System.Drawing.Size(71, 22);
-            this.tbFOV.TabIndex = 23;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label3.Location = new System.Drawing.Point(16, 127);
+            this.label3.Location = new System.Drawing.Point(12, 126);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 22;
             this.label3.Text = "FOV:";
             // 
-            // tbRoll
-            // 
-            this.tbRoll.Location = new System.Drawing.Point(81, 151);
-            this.tbRoll.Name = "tbRoll";
-            this.tbRoll.Size = new System.Drawing.Size(71, 22);
-            this.tbRoll.TabIndex = 25;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label4.Location = new System.Drawing.Point(16, 154);
+            this.label4.Location = new System.Drawing.Point(12, 152);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(30, 13);
             this.label4.TabIndex = 24;
             this.label4.Text = "Roll:";
             // 
-            // tbTimer
-            // 
-            this.tbTimer.Location = new System.Drawing.Point(81, 71);
-            this.tbTimer.Name = "tbTimer";
-            this.tbTimer.Size = new System.Drawing.Size(71, 22);
-            this.tbTimer.TabIndex = 27;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label5.Location = new System.Drawing.Point(16, 74);
+            this.label5.Location = new System.Drawing.Point(12, 74);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 26;
             this.label5.Text = "Timer:";
             // 
-            // tbSpeed
-            // 
-            this.tbSpeed.Location = new System.Drawing.Point(81, 97);
-            this.tbSpeed.Name = "tbSpeed";
-            this.tbSpeed.Size = new System.Drawing.Size(71, 22);
-            this.tbSpeed.TabIndex = 29;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label6.Location = new System.Drawing.Point(16, 100);
+            this.label6.Location = new System.Drawing.Point(12, 100);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(42, 13);
             this.label6.TabIndex = 28;
@@ -324,35 +290,179 @@ namespace TombEditor.Forms
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(16, 181);
+            this.darkLabel1.Location = new System.Drawing.Point(12, 178);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(64, 13);
             this.darkLabel1.TabIndex = 22;
             this.darkLabel1.Text = "Rotation X:";
             // 
-            // tbRotationX
-            // 
-            this.tbRotationX.Location = new System.Drawing.Point(81, 178);
-            this.tbRotationX.Name = "tbRotationX";
-            this.tbRotationX.Size = new System.Drawing.Size(71, 22);
-            this.tbRotationX.TabIndex = 23;
-            // 
             // darkLabel2
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(16, 208);
+            this.darkLabel2.Location = new System.Drawing.Point(12, 204);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(63, 13);
             this.darkLabel2.TabIndex = 24;
             this.darkLabel2.Text = "Rotation Y:";
             // 
-            // tbRotationY
+            // numSequence
             // 
-            this.tbRotationY.Location = new System.Drawing.Point(81, 205);
-            this.tbRotationY.Name = "tbRotationY";
-            this.tbRotationY.Size = new System.Drawing.Size(71, 22);
-            this.tbRotationY.TabIndex = 25;
+            this.numSequence.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numSequence.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numSequence.Location = new System.Drawing.Point(82, 20);
+            this.numSequence.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numSequence.MousewheelSingleIncrement = true;
+            this.numSequence.Name = "numSequence";
+            this.numSequence.Size = new System.Drawing.Size(71, 22);
+            this.numSequence.TabIndex = 83;
+            // 
+            // numNumber
+            // 
+            this.numNumber.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numNumber.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numNumber.Location = new System.Drawing.Point(82, 46);
+            this.numNumber.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numNumber.MousewheelSingleIncrement = true;
+            this.numNumber.Name = "numNumber";
+            this.numNumber.Size = new System.Drawing.Size(71, 22);
+            this.numNumber.TabIndex = 84;
+            // 
+            // numTimer
+            // 
+            this.numTimer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numTimer.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numTimer.Location = new System.Drawing.Point(82, 72);
+            this.numTimer.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numTimer.MousewheelSingleIncrement = true;
+            this.numTimer.Name = "numTimer";
+            this.numTimer.Size = new System.Drawing.Size(71, 22);
+            this.numTimer.TabIndex = 85;
+            // 
+            // numSpeed
+            // 
+            this.numSpeed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numSpeed.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numSpeed.Location = new System.Drawing.Point(82, 98);
+            this.numSpeed.MousewheelSingleIncrement = true;
+            this.numSpeed.Name = "numSpeed";
+            this.numSpeed.Size = new System.Drawing.Size(71, 22);
+            this.numSpeed.TabIndex = 86;
+            // 
+            // numFOV
+            // 
+            this.numFOV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numFOV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numFOV.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numFOV.Location = new System.Drawing.Point(82, 124);
+            this.numFOV.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.numFOV.MousewheelSingleIncrement = true;
+            this.numFOV.Name = "numFOV";
+            this.numFOV.Size = new System.Drawing.Size(71, 22);
+            this.numFOV.TabIndex = 87;
+            // 
+            // numRoll
+            // 
+            this.numRoll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numRoll.DecimalPlaces = 2;
+            this.numRoll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numRoll.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numRoll.Location = new System.Drawing.Point(82, 150);
+            this.numRoll.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.numRoll.MousewheelSingleIncrement = true;
+            this.numRoll.Name = "numRoll";
+            this.numRoll.Size = new System.Drawing.Size(71, 22);
+            this.numRoll.TabIndex = 88;
+            // 
+            // numRotationX
+            // 
+            this.numRotationX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numRotationX.DecimalPlaces = 2;
+            this.numRotationX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numRotationX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numRotationX.Location = new System.Drawing.Point(82, 176);
+            this.numRotationX.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.numRotationX.MousewheelSingleIncrement = true;
+            this.numRotationX.Name = "numRotationX";
+            this.numRotationX.Size = new System.Drawing.Size(71, 22);
+            this.numRotationX.TabIndex = 89;
+            // 
+            // numRotationY
+            // 
+            this.numRotationY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numRotationY.DecimalPlaces = 2;
+            this.numRotationY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numRotationY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numRotationY.Location = new System.Drawing.Point(82, 202);
+            this.numRotationY.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.numRotationY.MousewheelSingleIncrement = true;
+            this.numRotationY.Name = "numRotationY";
+            this.numRotationY.Size = new System.Drawing.Size(71, 22);
+            this.numRotationY.TabIndex = 90;
             // 
             // tbLuaScript
             // 
@@ -373,22 +483,22 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(940, 418);
+            this.Controls.Add(this.numRotationY);
+            this.Controls.Add(this.numRotationX);
+            this.Controls.Add(this.numRoll);
+            this.Controls.Add(this.numFOV);
+            this.Controls.Add(this.numSpeed);
+            this.Controls.Add(this.numTimer);
+            this.Controls.Add(this.numNumber);
+            this.Controls.Add(this.numSequence);
             this.Controls.Add(this.tbLuaScript);
-            this.Controls.Add(this.tbSpeed);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.tbTimer);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.tbRotationY);
-            this.Controls.Add(this.tbRoll);
             this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.tbRotationX);
             this.Controls.Add(this.darkLabel1);
-            this.Controls.Add(this.tbFOV);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.tbNumber);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.tbSequence);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbBit15);
             this.Controls.Add(this.cbBit14);
@@ -418,6 +528,14 @@ namespace TombEditor.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Flyby camera";
             this.Load += new System.EventHandler(this.FormFlybyCamera_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numSequence)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numNumber)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTimer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFOV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRoll)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRotationX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRotationY)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -444,21 +562,21 @@ namespace TombEditor.Forms
         private DarkCheckBox cbBit15;
         private DarkCheckBox cbBit14;
         private DarkLabel label1;
-        private DarkTextBox tbSequence;
-        private DarkTextBox tbNumber;
         private DarkLabel label2;
-        private DarkTextBox tbFOV;
         private DarkLabel label3;
-        private DarkTextBox tbRoll;
         private DarkLabel label4;
-        private DarkTextBox tbTimer;
         private DarkLabel label5;
-        private DarkTextBox tbSpeed;
         private DarkLabel label6;
         private DarkLabel darkLabel1;
-        private DarkTextBox tbRotationX;
         private DarkLabel darkLabel2;
-        private DarkTextBox tbRotationY;
         private TombLib.Controls.LuaTextBox tbLuaScript;
+        private DarkNumericUpDown numSequence;
+        private DarkNumericUpDown numNumber;
+        private DarkNumericUpDown numTimer;
+        private DarkNumericUpDown numSpeed;
+        private DarkNumericUpDown numFOV;
+        private DarkNumericUpDown numRoll;
+        private DarkNumericUpDown numRotationX;
+        private DarkNumericUpDown numRotationY;
     }
 }

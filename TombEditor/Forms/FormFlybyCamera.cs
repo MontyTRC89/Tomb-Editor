@@ -45,14 +45,14 @@ namespace TombEditor.Forms
             cbBit14.Checked = (_flyByCamera.Flags & (1 << 14)) != 0;
             cbBit15.Checked = (_flyByCamera.Flags & (1 << 15)) != 0;
 
-            tbSequence.Text = _flyByCamera.Sequence.ToString();
-            tbNumber.Text = _flyByCamera.Number.ToString();
-            tbTimer.Text = _flyByCamera.Timer.ToString();
-            tbSpeed.Text = _flyByCamera.Speed.ToString();
-            tbFOV.Text = _flyByCamera.Fov.ToString();
-            tbRoll.Text = _flyByCamera.Roll.ToString();
-            tbRotationX.Text = _flyByCamera.RotationX.ToString();
-            tbRotationY.Text = _flyByCamera.RotationY.ToString();
+            numSequence.Value = _flyByCamera.Sequence;
+            numNumber.Value = _flyByCamera.Number;
+            numTimer.Value = _flyByCamera.Timer;
+            numSpeed.Value = (decimal)_flyByCamera.Speed;
+            numFOV.Value = (decimal)_flyByCamera.Fov;
+            numRoll.Value = (decimal)_flyByCamera.Roll;
+            numRotationX.Value = (decimal)_flyByCamera.RotationX;
+            numRotationY.Value = (decimal)_flyByCamera.RotationY;
 
             if(_editor.Level.Settings.GameVersion >= GameVersion.TR5)
             {
@@ -77,63 +77,6 @@ namespace TombEditor.Forms
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            // Check inputs
-            byte sequence;
-            if (!byte.TryParse(tbSequence.Text, out sequence))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for sequence", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            byte number;
-            if (!byte.TryParse(tbNumber.Text, out number))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for number", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            short timer;
-            if (!short.TryParse(tbTimer.Text, out timer))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for timer", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            float speed;
-            if (!float.TryParse(tbSpeed.Text, out speed))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for speed", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            float fov;
-            if (!float.TryParse(tbFOV.Text, out fov))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for FOV", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            float roll;
-            if (!float.TryParse(tbRoll.Text, out roll))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for roll", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            float rotationX;
-            if (!float.TryParse(tbRotationX.Text, out rotationX))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for rotation X", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            float rotationY;
-            if (!float.TryParse(tbRotationY.Text, out rotationY))
-            {
-                DarkMessageBox.Show(this, "You must insert a valid value for rotation Y", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
             ushort flags = 0;
             flags |= (ushort)(cbBit0.Checked ? 1 << 0 : 0);
             flags |= (ushort)(cbBit1.Checked ? 1 << 1 : 0);
@@ -153,14 +96,14 @@ namespace TombEditor.Forms
             flags |= (ushort)(cbBit15.Checked ? 1 << 15 : 0);
             _flyByCamera.Flags = flags;
 
-            _flyByCamera.Sequence = sequence;
-            _flyByCamera.Number = number;
-            _flyByCamera.Timer = timer;
-            _flyByCamera.Speed = speed;
-            _flyByCamera.Fov = fov;
-            _flyByCamera.Roll = roll;
-            _flyByCamera.RotationX = rotationX;
-            _flyByCamera.RotationY = rotationY;
+            _flyByCamera.Sequence = (ushort)numSequence.Value;
+            _flyByCamera.Number = (ushort)numNumber.Value;
+            _flyByCamera.Timer = (short)numTimer.Value;
+            _flyByCamera.Speed = (float)numSpeed.Value;
+            _flyByCamera.Fov = (float)numFOV.Value;
+            _flyByCamera.Roll = (float)numRoll.Value;
+            _flyByCamera.RotationX = (float)numRotationX.Value;
+            _flyByCamera.RotationY = (float)numRotationY.Value;
 
             if (_editor.Level.Settings.GameVersion == GameVersion.TR5Main)
             {
