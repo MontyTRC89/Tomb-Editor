@@ -437,7 +437,7 @@ namespace TombLib.LevelData.Compilers
                     if (_level.Settings.GameVersion == GameVersion.TRNG)
                     {
                         // NG flipeffects store timer and extra in additional ushort
-                        if (found.TargetType == TriggerTargetType.FlipEffect && ((TriggerParameterUshort)found.Timer).Key > 46)
+                        if (found.TargetType == TriggerTargetType.FlipEffect && (found.Target as TriggerParameterUshort)?.Key > 46)
                             triggerSetup = 0;
                         // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
                         else if (found.TriggerType == TriggerType.ConditionNg)
