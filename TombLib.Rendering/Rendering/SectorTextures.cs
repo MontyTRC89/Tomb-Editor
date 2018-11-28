@@ -217,7 +217,7 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeZ_RF:
                 case BlockFace.NegativeZ_WS:
                     {
-                        var lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
+                        var lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
                             Color = ColoringInfo.SectorColorScheme.ColorClimb;
                         break;
@@ -228,7 +228,7 @@ namespace TombLib.Rendering
                 case BlockFace.PositiveZ_RF:
                 case BlockFace.PositiveZ_WS:
                     {
-                        var lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
+                        var lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeZ))
                             Color = ColoringInfo.SectorColorScheme.ColorClimb;
                         break;
