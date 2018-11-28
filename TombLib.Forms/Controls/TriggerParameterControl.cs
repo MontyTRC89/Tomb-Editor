@@ -216,6 +216,7 @@ namespace TombLib.Controls
                     combo.Visible = false;
                     butSearch.Visible = false;
                     numericUpDown.Visible = false;
+                    colorPreview.Visible = false;
                     label.Visible = true;
                 }
             }
