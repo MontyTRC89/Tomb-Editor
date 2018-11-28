@@ -202,7 +202,7 @@ namespace TombLib.LevelData.Compilers
                         frameCount++;
                     }
 
-            // TRNG Magic! Commented for now, probably will need it later...
+            // FIXME: TRNG Magic! Commented for now, probably will need it later...
 
             //animFrameList.Sort((x, y) => x.Value.CompareTo(y.Value));
             //animFrameList[animFrameList.Count - 1] = new KeyValuePair<int, int>(1034, animFrameList[animFrameList.Count - 1].Value);
