@@ -2721,28 +2721,6 @@ namespace TombEditor
             _editor.SelectedRoom = newRoom;
         }
 
-        public static void BackupRoom(IWin32Window owner)
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-
-            _editor.BackupRoom = _editor.SelectedRoom.Clone(_editor.Level, null, true);
-        }
-
-        public static void RestoreRoom(IWin32Window owner)
-        {
-            if (_editor.BackupRoom == null)
-                return;
-
-            var index = Array.FindIndex(_editor.Level.Rooms, r => r == _editor.SelectedRoom);
-
-            _editor.Level.Rooms[index] = _editor.BackupRoom;
-            _editor.SelectedRoom = _editor.Level.Rooms[index];
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.RoomGeometryChange(_editor.SelectedRoom);
-        }
-
-
         public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
         {
             if (_editor.SelectedRoom == null || !_editor.SelectedSectors.Valid)
