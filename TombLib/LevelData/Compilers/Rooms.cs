@@ -547,8 +547,7 @@ namespace TombLib.LevelData.Compilers
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
                 // If target game is <= TR4 then ignore all special lights and fog bulbs
-                if (!(_level.Settings.GameVersion == GameVersion.TR4 || _level.Settings.GameVersion == GameVersion.TRNG ||
-                      _level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main) &&
+                if (_level.Settings.GameVersion < GameVersion.TR4 &&
                       (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
                     continue;
 
