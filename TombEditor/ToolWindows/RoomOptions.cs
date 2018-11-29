@@ -219,38 +219,48 @@ namespace TombEditor.ToolWindows
 
         private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.TypeStrength = 0;
-
+            RoomType newType;
+            byte newStrength = 0;
+            
             // Update the state of other controls
             switch (comboRoomType.SelectedIndex)
             {
                 case 0:
-                    _editor.SelectedRoom.Type = RoomType.Normal;
+                    newType = RoomType.Normal;
                     break;
                 case 1:
-                    _editor.SelectedRoom.Type = RoomType.Water;
+                    newType = RoomType.Water;
                     break;
                 case 2:
-                    _editor.SelectedRoom.Type = RoomType.Quicksand;
+                    newType = RoomType.Quicksand;
                     break;
                 default:
                     if (comboRoomType.SelectedIndex <= 6)
                     {
-                        _editor.SelectedRoom.Type = RoomType.Rain;
-                        _editor.SelectedRoom.TypeStrength = (byte)(comboRoomType.SelectedIndex - 3);
+                        newType = RoomType.Rain;
+                        newStrength = (byte)(comboRoomType.SelectedIndex - 3);
                     }
                     else
                     {
-                        _editor.SelectedRoom.Type = RoomType.Snow;
-                        _editor.SelectedRoom.TypeStrength = (byte)(comboRoomType.SelectedIndex - 7);
+                        newType = RoomType.Snow;
+                        newStrength = (byte)(comboRoomType.SelectedIndex - 7);
                     }
                     break;
             }
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
+
+            if(_editor.SelectedRoom.Type != newType || _editor.SelectedRoom.TypeStrength != newStrength)
+            {
+                _editor.SelectedRoom.Type = newType;
+                _editor.SelectedRoom.TypeStrength = newStrength;
+                _editor.RoomPropertiesChange(_editor.SelectedRoom);
+            }
         }
 
         private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.LightEffect == (RoomLightEffect)comboLightEffect.SelectedIndex)
+                return;
+
             _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }

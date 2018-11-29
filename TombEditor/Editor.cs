@@ -83,7 +83,6 @@ namespace TombEditor
                 ChosenItem = null;
                 SelectedSectors = SectorSelection.None;
                 Action = null;
-                HasUnsavedChanges = false;
                 SelectedTexture = TextureArea.None;
                 UndoManager?.ClearAll();
 
@@ -102,6 +101,9 @@ namespace TombEditor
                 // Start watching for file changes
                 _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
                 _levelSettingsWatcher?.RestartReloading();
+
+                // Reset unsaved changes flag (needed to be last cause certain events override it)
+                HasUnsavedChanges = false;
             }
         }
 
