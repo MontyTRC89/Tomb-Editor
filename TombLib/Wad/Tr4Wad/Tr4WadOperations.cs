@@ -292,7 +292,7 @@ namespace TombLib.Wad.Tr4Wad
             for (int i = 0; i < soundMapSize; i++)
             {
                 // Check if sound is defined at all
-                if (oldWad.SoundMap[i] == -1)
+                if (oldWad.SoundMap[i] == -1 || oldWad.SoundMap[i] >= oldWad.SoundInfo.Count)
                     continue;
 
                 // Fill the new sound info

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO
 {
@@ -36,6 +37,17 @@ namespace TombLib.GeometryIO
                 float radius = (boundingBox.Maximum - center).Length();
                 return new BoundingSphere(center, radius);
             }
+        }
+
+        public IOMaterial GetMaterial(Texture texture, int page, bool blending, bool doubleSided, int shininess)
+        {
+            foreach (var mat in Materials)
+            {
+                if (mat.Texture == texture && mat.Page == page && mat.AdditiveBlending == blending &&
+                    mat.DoubleSided == doubleSided && mat.Shininess == shininess)
+                    return mat;
+            }
+            return null;
         }
     }
 }

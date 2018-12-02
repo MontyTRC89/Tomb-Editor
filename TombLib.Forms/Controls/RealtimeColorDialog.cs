@@ -93,6 +93,11 @@ namespace TombLib.Controls
                             colours[i] = 0; // In case user accidentally types in random char
                     }
 
+                    if (colours[0] < 0 || colours[0] > 255 ||
+                        colours[1] < 0 || colours[1] > 255 ||
+                        colours[2] < 0 || colours[2] > 255)
+                        return base.HookProc(hWnd, msg, wparam, lparam);
+
                     // Prevent endless updates of color unless real RGB color is changed
                     var currentColor = Color.FromArgb(colours[0], colours[1], colours[2]);
                     if(currentColor != _previousColor)

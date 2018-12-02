@@ -9,19 +9,23 @@ namespace TombLib.GeometryIO
         public bool AdditiveBlending { get; set; }
         public bool DoubleSided { get; set; }
         public int Shininess { get; set; }
+        public int Page { get; set; }
+        public string TexturePath { get; set; }
 
         public IOMaterial(string name)
         {
             Name = name;
         }
 
-        public IOMaterial(string name, Texture texture, bool additiveBlending, bool doubleSided, int shininess)
+        public IOMaterial(string name, Texture texture, string texturePath, int page, bool additiveBlending, bool doubleSided, int shininess)
         {
             Name = name;
             Texture = texture;
             AdditiveBlending = additiveBlending;
             DoubleSided = doubleSided;
             Shininess = shininess;
+            Page = page;
+            TexturePath = texturePath;
         }
     }
 }

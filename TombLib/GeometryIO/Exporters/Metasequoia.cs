@@ -32,7 +32,7 @@ namespace TombLib.GeometryIO.Exporters
                 foreach (var material in model.Materials)
                 {
                     writer.Write("\t\"" + material.Name + "\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
-                    writer.Write("tex(\"" + GetTexturePath(path, material.Texture) + "\") ");
+                    writer.Write("tex(\"" + material.TexturePath /*GetTexturePath(path, material.Texture)*/ + "\") ");
                     writer.WriteLine("shader(4) vcol(1) ");
                 }
 
@@ -111,9 +111,9 @@ namespace TombLib.GeometryIO.Exporters
                             var v4 = poly.Shape == IOPolygonShape.Quad ? indices[3] : 0;
 
                             var texture = submesh.Value.Material.Texture;
-                            var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], texture.Image.Width, texture.Image.Height));
-                            var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], texture.Image.Width, texture.Image.Height));
-                            var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], texture.Image.Width, texture.Image.Height));
+                            var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], texture.Image.Width, texture.Image.Width));
+                            var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], texture.Image.Width, texture.Image.Width));
+                            var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], texture.Image.Width, texture.Image.Width));
 
                             var color1 = GetColor(ApplyColorTransform(mesh.Colors[v1]));
                             var color2 = GetColor(ApplyColorTransform(mesh.Colors[v2]));
