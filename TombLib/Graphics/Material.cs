@@ -4,10 +4,10 @@ namespace TombLib.Graphics
 {
     public class Material
     {
-        public const string Material_Opaque = "TeOpaque";
-        public const string Material_OpaqueDoubleSided = "TeOpaqueDoubleSided";
-        public const string Material_AdditiveBlending = "TeAdditiveBlend";
-        public const string Material_AdditiveBlendingDoubleSided = "TeAdditiveBlendDoubleSided";
+        public const string Material_Opaque = "TeOp";
+        public const string Material_OpaqueDoubleSided = "TeOpDS";
+        public const string Material_AdditiveBlending = "TeBl";
+        public const string Material_AdditiveBlendingDoubleSided = "TeBlDS";
 
         public string Name { get; private set; }
         public Texture Texture { get; set; }
