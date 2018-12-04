@@ -136,7 +136,7 @@ namespace TombLib.LevelData.Compilers
                     newRoom.Flags |= 0x0001;
                     break;
                 case RoomType.Quicksand:
-                    newRoom.Flags |= 0x0300;
+                    newRoom.Flags |= 0x0004;
                     break;
                 case RoomType.Rain:
                     newRoom.Flags |= 0x0800;
