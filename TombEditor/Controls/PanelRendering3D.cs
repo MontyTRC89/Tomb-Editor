@@ -1044,6 +1044,8 @@ namespace TombEditor.Controls
 
                             if (ModifierKeys.HasFlag(Keys.Alt) && zone.Contains(pos))
                             {
+                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
                                 // Split the faces
                                 if (belongsToFloor)
                                     EditorActions.FlipFloorSplit(_editor.SelectedRoom, zone);
@@ -1053,6 +1055,8 @@ namespace TombEditor.Controls
                             }
                             else if (ModifierKeys.HasFlag(Keys.Shift) && zone.Contains(pos))
                             {
+                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
                                 // Rotate sector
                                 EditorActions.RotateSectors(_editor.SelectedRoom, zone, belongsToFloor);
                                 return;
