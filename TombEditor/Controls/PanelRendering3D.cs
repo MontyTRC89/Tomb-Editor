@@ -542,8 +542,6 @@ namespace TombEditor.Controls
                                 }
                                 return;
                             }
-                            else if (ModifierKeys.HasFlag(Keys.Alt) || ModifierKeys.HasFlag(Keys.Shift)) // Undo for flip/rotate sector
-                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
                             break;
 
                         case EditorMode.Lighting:
@@ -1044,8 +1042,6 @@ namespace TombEditor.Controls
 
                             if (ModifierKeys.HasFlag(Keys.Alt) && zone.Contains(pos))
                             {
-                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
                                 // Split the faces
                                 if (belongsToFloor)
                                     EditorActions.FlipFloorSplit(_editor.SelectedRoom, zone);
@@ -1055,8 +1051,6 @@ namespace TombEditor.Controls
                             }
                             else if (ModifierKeys.HasFlag(Keys.Shift) && zone.Contains(pos))
                             {
-                                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
                                 // Rotate sector
                                 EditorActions.RotateSectors(_editor.SelectedRoom, zone, belongsToFloor);
                                 return;
