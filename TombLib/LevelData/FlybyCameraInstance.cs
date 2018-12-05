@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace TombLib.LevelData
 {
@@ -16,6 +17,26 @@ namespace TombLib.LevelData
         private float _roll { get; set; }
         private float _rotationX { get; set; }
         private float _rotationY { get; set; }
+
+        public FlybyCameraInstance(ObjectInstance selectedObject = null)
+        {
+            if(selectedObject != null && selectedObject is FlybyCameraInstance)
+            {
+                var prevCam = (FlybyCameraInstance)selectedObject;
+                var currSeq = prevCam.Sequence;
+                var currNum = (ushort)(prevCam.Number + 1);
+
+                // Push next cameras in sequence forward
+                var level = selectedObject.Room.Level;
+                foreach (var room in level.Rooms.Where(room => room != null))
+                    foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
+                        if (instance.Sequence == currSeq && instance.Number >= currNum)
+                            instance.Number++;
+
+                Sequence = currSeq;
+                Number = currNum;
+            }
+        }
 
         /// <summary> Spped in the range [0, Infinity). </summary>
         public float Speed

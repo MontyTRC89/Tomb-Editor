@@ -868,7 +868,7 @@ namespace TombEditor
 
             AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance(args.Editor.SelectedObject));
             });
 
             AddCommand("AddSink", "Add sink", CommandType.Objects, delegate (CommandArgs args)
