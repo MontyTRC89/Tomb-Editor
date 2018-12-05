@@ -465,6 +465,8 @@ namespace TombEditor
 
         public static void FlipFloorSplit(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!room.Blocks[x, z].Floor.IsQuad && room.Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None)
@@ -475,6 +477,8 @@ namespace TombEditor
 
         public static void FlipCeilingSplit(Room room, RectangleInt2 area)
         {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!room.Blocks[x, z].Ceiling.IsQuad && room.Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
