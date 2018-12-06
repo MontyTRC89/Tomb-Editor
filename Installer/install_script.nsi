@@ -14,21 +14,22 @@
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
 !define MUI_WELCOMEPAGE_TEXT \
-"Welcome to Tomb Editor installation!$\r$\n \
-$\r$\n \
-Please make sure your system complies with following system requirements:$\r$\n \
-$\r$\n \
- - Windows 7 or later (preferably 64-bit)$\r$\n \
- - Installed .NET Framework 4.5$\r$\n \
- - Videocard with DirectX 10 support$\r$\n \
- - At least 2 gigabytes of RAM$\r$\n \
-$\r$\n \
-Enjoy!$\r$\n \
-Tomb Editor dev team.$\r$\n"
+"Welcome to Tomb Editor installation! $\r$\n\
+$\r$\n\
+Please make sure your system complies with following system requirements: $\r$\n\
+$\r$\n\
+  ${U+2022} Windows 7 or later (preferably 64-bit) $\r$\n\
+  ${U+2022} Installed .NET Framework 4.5 $\r$\n\
+  ${U+2022} Videocard with DirectX 10 support $\r$\n\
+  ${U+2022} At least 2 gigabytes of RAM $\r$\n\
+$\r$\n\
+Enjoy! $\r$\n\
+Tomb Editor dev team."
 
 ;--------------------------------
 
 SetCompressor lzma
+Unicode true
 Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
 InstallDir "$PROGRAMFILES\Tomb Editor"
@@ -93,7 +94,7 @@ SectionEnd
 
 Section "Stock game assets" Section2
 
-  SectionIn 2
+  SectionIn 2 3
   
   SetOutPath $INSTDIR
   File /r "Resources"
@@ -102,7 +103,7 @@ SectionEnd
 
 Section "TRNG Runtimes" Section3
 
-  SectionIn 2 3
+  SectionIn 3
   
   SetOutPath $INSTDIR
   File /r "Game"  
@@ -130,8 +131,8 @@ Section "Desktop Shortcut" Section5
   SectionEnd
 
 LangString DESC_Section1 ${LANG_ENGLISH} "Basic Tomb Editor components. This includes WadTool and ScriptEditor test versions."
-LangString DESC_Section2 ${LANG_ENGLISH} "Runtime TRNG game components are needed if you have no existing TRNG installation."
-LangString DESC_Section3 ${LANG_ENGLISH} "Stock assets, such as textures, font/sky graphics, sounds and default TRLE wads."
+LangString DESC_Section2 ${LANG_ENGLISH} "Stock assets, such as textures, font/sky graphics, sounds and default TRLE wads."
+LangString DESC_Section3 ${LANG_ENGLISH} "Runtime TRNG game components are needed if you have no existing TRNG installation."
 LangString DESC_Section4 ${LANG_ENGLISH} "Shortcuts for Tomb Editor in Start Menu."
 LangString DESC_Section5 ${LANG_ENGLISH} "Shortcut for Tomb Editor on Desktop."
 
