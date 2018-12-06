@@ -62,10 +62,18 @@ namespace TombEditor
                     form.Show();
 
                     if (args.Length > 0) // Open files on start
+                    {
                         if (args[0].EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
                             EditorActions.OpenLevelPrj(form, args[0]);
                         else
                             EditorActions.OpenLevel(form, args[0]);
+                    }
+                    else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
+                    {
+                        if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0 &&
+                            File.Exists(Properties.Settings.Default.RecentProjects[0]))
+                            EditorActions.OpenLevel(form, Properties.Settings.Default.RecentProjects[0]);
+                    }
                     Application.Run(form);
                 }
             }

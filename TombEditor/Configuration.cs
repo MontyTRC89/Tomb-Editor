@@ -36,6 +36,7 @@ namespace TombEditor
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
         public bool Editor_UseHalfPixelCorrection { get; set; } = false;
+        public bool Editor_OpenLastProjectOnStartup { get; set; } = false;
 
         // Item preview options
 
@@ -139,6 +140,7 @@ namespace TombEditor
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
         // Window options
+
         public Point Window_FormMain_Position { get; set; } = new Point(0);
         public Size Window_FormMain_Size { get; set; } = Window_SizeDefault;
         public bool Window_FormMain_Maximized { get; set; } = true;
