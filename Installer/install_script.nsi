@@ -259,7 +259,7 @@ Section "Uninstall"
      RMDir /r $INSTDIR
    StrCmp $0 0 0 +2
      MessageBox MB_OK \
-     "Installation folder contains extra files.$\r$\n \
+     "Installation folder contains extra files. $\r$\n\
      Check if these files are important and remove folder manually."
      
 SectionEnd
@@ -271,7 +271,7 @@ SectionEnd
 Function .onInit
   ${IfNot} ${AtLeastWin7}
     MessageBox MB_OK \
-    "At least Windows 7 is required to use Tomb Editor.$\r$\n \
+    "At least Windows 7 is required to use Tomb Editor. $\r$\n\
     The installer will now quit."
     Quit
   ${EndIf}
