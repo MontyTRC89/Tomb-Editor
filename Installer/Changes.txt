@@ -1,0 +1,223 @@
+Version 1.2.3 - 02/12/2018
+==========================
+
+1. Added basic undo/redo.
+2. New way to assign custom transform/light effects to rooms.
+3. Allow selecting objects in any visible rooms.
+4. Added "Cut" command (Ctrl+X).
+5. Added command search in keyboard layout.
+6. Rotate texture on whole floor/ceiling block with ctrl+shift+click.
+7. Added dark overlay for text in 3D label to increase readability.
+8. Improved resize room, trigger and flyby camera windows.
+9. Selection-based sector diagonal split flip and rotation.
+10. Fixed non-NG flipeffects (e.g. fog bulb color flipeffect).
+11. Fix issue with climbable walls highlight.
+12. Improved texture packing.
+13. Improved floordata hash packing.
+14. Fixed TR XML catalog.
+15. Fixed portals compilation.
+16. Fixed legacy flipeffect timer.
+
+Version 1.2.1 - 12/11/2018
+==========================
+1. Eliminate half-pixel texture correction and allow easy seamless texturing.
+2. Fix many issues with triangle texturing on diagonal steps and portals.
+3. Fix wrong portal coordinates which sometimes resulted in flickering and wrong occlusion.
+4. Fix potential problems with renderer which could have caused editor crashes and garbage on textures.
+5. Fix issue with hidden static mesh color picker.
+6. Fix selection tile size option which wasn't saved before, also use default selection tile size in anim textures window.
+7. Allow smooth edit through portals.
+8. Single-block diagonal arrow smooth editing now works like winroomedit.
+9. Update trcatalog.xml with several system sounds which were missing.
+10. Don't clear floor/ceiling geometry in parent room with portal digger by default (although you can still do this with ALT+CLICK).
+11. Animate camera on reset, relocation and mouse room switch (optional).
+12. Added many new customizable colors.
+13. Ability to "pick" objects and statics into item browser with ALT+CLICK.
+14. Hide selection color when color picking is in process.
+15. Remember custom colors in color dialog.
+16. Remember position and size for all main windows.
+17. Various small UI fixes.
+18. Fix missing textures on imported geometry.
+19. Optional agressive texture and floordata packing.
+
+Version 1.1.1 - 10/06/2018
+==========================
+Selection now is resetted after room change
+Fixed many bugs with normals and shades in meshes
+Small fixes
+
+Version 1.1.0 - 03/06/2018
+==========================
+Added additional sounds to Wad2
+Added state changes editor
+Added anim commands editor
+Added keyframe interpolation
+Added new start velocity and end velocity instead of speed and accel
+Improved many aspects of the animation editor
+Moved to quaternions for really smooth and precise interpolation
+Added confirmation to object delete
+Fixed exception after object delete
+Fixed TR5 sample MSADPCM compression
+Fixed TrCatalog.xml
+Fixed colored triangles in level meshes
+Fixed climbing bugs
+Fixed statics lightning bugs
+Fixed random access violation while loading Prj2
+
+Version 1.0.9 - 30/04/2018
+==========================
+Fixed sound paths
+Fixed climbing animations in some borderline case whene there're portals
+Fixed NG trigger window for allocate NG script IDs
+Improved the triangular collision generation in level compiler
+Fixed depth bar bugs
+Improved texture packing functions in level compiler
+Fixed NG headers
+New sound system!
+Animation editor in WadTool
+Skeleton editor in WadTool
+Sound overview in WadTool
+New sound editing panel in WadTool
+New sprite editor in WadTool
+Added functions in WadTool for creating new objects
+Fixed the 2x2 texture bug for horizons
+Wad2 file format breaking changes, but this will allow us more flexibility. All Wad2 files until now are not valid anymore.
+Added TR5 fixed sounds to the catalog
+Added object bookmarking
+Added the ability to import sounds directly in Tomb Editor
+Added a new light editor in static mesh editor in WadTool
+Added a feature for drawing all rooms together in Tomb Editor
+Partially working multiple wads support!
+Direct loading of TR levels as base levels
+... and tons of bugs fixed
+
+Version 1.0.8 - 28/02/2018
+==========================
+Fixed bug: triggers are now deleted if linked object is deleted
+Added Reload imported geometry to context menu
+Disabled for now TR2/3 support
+Switched back to classic sound system
+New Sounds with subdirectories TR2, TR3, TR4, TR5 folders and new XML files
+New tool for editing sounds XML files
+Fixed rounding precision in the conversion XML <-> SFX
+Autosave now is configurable
+Fixed little bugs
+Fixed bug for flat surfaces between portals when there are diagonal walls
+Fixed importing of statics NG OCB from PRJ
+Minor improvements
+
+Version 1.0.7 - 29/01/2018
+==========================
+Fixed bug: timer field not working in trigger window
+Fixed bug: now you can delete portals and triggers if they are selected in 2D grid, even in 2D map
+Fixed bug: now you can't create portals on the four room's corners
+Fixed bug: now you can't split a room if a gray wall is selected
+Added autosave feature
+Fixed items names from other TR versions in trigger window
+Added RAW mode to trigger window
+Fixed NG triggers catalog
+NG triggers catalog compressed of about 30%
+
+Version 1.0.6 - 21/01/2018
+==========================
+Added support for multiple rooms import from the same MQO (experimental)
+Added TR2 level compiler (partially working, experimental)
+Added TR3 level compiler (not working, experimental)
+Added TR5 level compiler (working, experimental)
+Fixed samples paths
+Improved the trigger window
+Added context menu to 2D map
+Fixed font and sky paths
+Selection is now cleared after potal creation
+Fixed code for ambient lighting
+Added default ambient light in level settings
+Optimized NG triggers catalog
+Fixed bug in depth bar
+Fixed loading of missing WAD
+Fixed loading of missing TGA
+Fixed problems with UV coords (the horizon bug)
+Replaced ugly exception with a nice message when no candidate for portal is found
+Fixed alpha trasparency for objects imported from compiled levels
+Added Wad Tool to Tools menu of Tomb Editor
+
+Version 1.0.5 - 01/01/2017
+==========================
+Added path of SCRIPT.TXT file for NG text triggers in Level settings
+Added strings to NG text triggers
+Added sound editor inside Tomb Editor (only for Wad2)
+Sorted NG items in comboboxes
+Worked on NG animated textures (not fully working yet)
+Fixed bugs in geometry importer
+Added support for multiple objects in Metasequoia importer
+Small bugs fixed
+Added the ability to browse single samples in import WAD window
+Added multiple rooms selection in 2D map
+Added room copy/paste (clipboard and drag and drop)
+Moved a lot of code in TombLib.dll for future plugins/tools development
+Changed math classes for future render library abstraction
+Added more infos to 2D map
+Fixed geometry building bugs
+Fixed NG header
+Fixed water intensity calculation
+Added values for rain/snow/quicksand
+Fixed special portals setup for ceiling rooms
+Fixed negative UV texture bug
+Added a function for setting the same ambient light for all rooms
+Fixed sounds paths
+Fixed bug with EXTRA statics
+Started working on multiple materials/objects in same MQO (will be ready in 1.0.6)
+Improvments in trigger window
+
+Version 1.0.4 - 10/12/2017
+==========================
+Added NG triggers
+Added NG header
+Fixed fast level loading
+Fixed crash in animated textures
+Added group transforms (domes, pyramids, etc)
+Added correct drawing of special sectors in stacked rooms
+Replaced old style tooltip in 2d Grid with standard Windows's tooltip
+Fixed some memory leaks
+Added game version settings for switching between vanilla tomb4.exe and TRNG (and more in future)
+Fixes to dark UI controls
+Autoswitch of special sectors in 3D view for seeing correcctly overlapped special sectors
+Fixed bugs on gizmo
+Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
+Fixed floordata creation for portals (thhis fixes Caesum's Perù animation bug)
+Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
+Increased renderer performances while doing dragging operations
+Fixed 1 px cut sprites bug
+Added "L" lock flag to rooms
+Fixed bug for RF-ED not synced correctly on portals when you edit a room
+Added a new window that popups when you import WADs and some WAV samples are missing. This window allows the user to brose for samples.
+Fixed bug about cameras and sinks (it was visible for example in Karnak)
+Added context menus for oobjects, unselected blocks and selected area
+Added compiler statistics in status bar
+Many other small bugfixes and improvements
+
+Version 1.0.3 - 21/11/2017
+==========================
+Fixed crash while generating boxes near the maximum limit of 2048
+Fixed importing of EXTRA SLOTS static meshes while loading PRJ
+Fixed horizontal portals flickering and missing rooms if camera was exactly on portal
+Fixed bug with anim commands that was causing the roll animation bug
+Fixed light on/off importing from PRJ
+Fixed other minor bugs 
+
+Version 1.0.2 - 18/11/2017
+==========================
+Sectors like monkey, box, death, etc are drawn over portals now
+Added an error messagebox when you reach the limit of 21 dynamic lights per room (TR4 engine limitation)
+Added a fix for handling corrupted WADs by WadMerger
+Fixed random DXGI error after Prj2 opening
+Diagonal walls are drawn correctly in 2D grid
+Solved lag while texturing
+Fixed loading of PRJ with not texture map or WAD
+Fixed exception that occurred when Wad2 had no items inside
+Optimized rendering while moving mouse on 3D view
+Fixed smooth editing tools
+Fixed grid walls functions for diagonal walls
+Added some missing tooltips
+Fixed hotkey description for rotate menu entry
+Fixed some bugs with geometry tools
+Minor bugs fixed
