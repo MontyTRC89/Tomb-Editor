@@ -4520,7 +4520,7 @@
       <moveable id="282" name="Pulley"/>
       <moveable id="283" name="Crowdove switch"/>
       <moveable id="284" name="Door 1"/>
-      <moveable id="285" name="Sacrophagus (TR4)"/>
+      <moveable id="285" name="Sarcophagus (TR4)"/>
       <moveable id="286" name="Door 2"/>
       <moveable id="287" name="Bird blade (TR4)"/>
       <moveable id="288" name="Door 3"/>
@@ -4576,10 +4576,10 @@
       <moveable id="338" name="Shotgun"/>
       <moveable id="339" name="Shotgun shells 1" y_adjust="0.05"/>
       <moveable id="340" name="Shotgun shells 2" y_adjust="0.05"/>
-      <moveable id="341" name="Grappling gun" y_adjust="0.025"/>
-      <moveable id="342" name="Grappling type 1"/>
-      <moveable id="343" name="Grappling type 2"/>
-      <moveable id="344" name="Grappling type 3"/>
+      <moveable id="341" name="Crossbow" y_adjust="0.025"/>
+      <moveable id="342" name="Crossbow ammo type 1"/>
+      <moveable id="343" name="Crossbow ammo type 2"/>
+      <moveable id="344" name="Crossbow bolt"/>
       <moveable id="345" name="HK Gun" y_adjust="0.025"/>
       <moveable id="346" name="HK ammo"/>
       <moveable id="347" name="Revolver" y_adjust="0.050"/>
@@ -4692,64 +4692,64 @@
       <moveable id="456" name="Binoculars graphics"/>
       <moveable id="457" name="Target graphics"/>
       <moveable id="460" name="Object 460"/>
-      <moveable id="461" name="Grenade launcher"/>
-      <moveable id="462" name="Grenade ammo"/>
-      <moveable id="463" name="Grenade item"/>
-      <moveable id="464" name="Lara grenade anims"/>
-      <moveable id="465" name="Harpoon gun"/>
-      <moveable id="466" name="Harpoon ammo"/>
-      <moveable id="467" name="Harpoon item"/>
-      <moveable id="468" name="Lara harpoon anims"/>
-      <moveable id="469" name="Rocket launcher"/>
-      <moveable id="470" name="Rocket ammo"/>
-      <moveable id="471" name="Rocket item"/>
-      <moveable id="472" name="Lara rocket anims"/>
-      <moveable id="473" name="Custom slot 473"/>
-      <moveable id="474" name="Custom slot 474"/>
-      <moveable id="475" name="Custom slot 475"/>
-      <moveable id="476" name="Custom slot 476"/>
-      <moveable id="477" name="Custom slot 477"/>
-      <moveable id="478" name="Custom slot 478"/>
-      <moveable id="479" name="Custom slot 479"/>
-      <moveable id="480" name="Custom slot 480"/>
-      <moveable id="481" name="Custom slot 481"/>
+      <moveable id="461" name="Grenade launcher (TR4)"/>
+      <moveable id="462" name="Grenade ammo type 1 (TR4)"/>
+      <moveable id="463" name="Grenade (TR4)"/>
+      <moveable id="464" name="Lara grenade anims (TR4)"/>
+      <moveable id="465" name="Harpoon gun (TR3)"/>
+      <moveable id="466" name="Harpoon ammo (TR3)"/>
+      <moveable id="467" name="Harpoon bolt (TR3)"/>
+      <moveable id="468" name="Lara harpoon anims (TR3)"/>
+      <moveable id="469" name="Rocket launcher (TR3)"/>
+      <moveable id="470" name="Rocket ammo (TR3)"/>
+      <moveable id="471" name="Rocket item (TR3)"/>
+      <moveable id="472" name="Lara rocket anims (TR3)"/>
+      <moveable id="473" name="Crossbow ammo type 3 (TR4)"/>
+      <moveable id="474" name="Grenade ammo type 2 (TR4)"/>
+      <moveable id="475" name="Grenade ammo type 3 (TR4)"/>
+      <moveable id="476" name="Goldrose item"/>
+      <moveable id="477" name="Diary (TR4)"/>
+      <moveable id="478" name="Von Croy"/>
+      <moveable id="479" name="Setha"/>
+      <moveable id="480" name="Knight templar"/>
+      <moveable id="481" name="Scorpion"/>
       <moveable id="482" name="Custom slot 482"/>
-      <moveable id="483" name="Custom slot 483"/>
-      <moveable id="484" name="Custom slot 484"/>
-      <moveable id="485" name="Custom slot 485"/>
-      <moveable id="486" name="Custom slot 486"/>
-      <moveable id="487" name="Custom slot 487"/>
-      <moveable id="488" name="Custom slot 488"/>
-      <moveable id="489" name="Custom slot 489"/>
-      <moveable id="490" name="Custom slot 490"/>
-      <moveable id="491" name="Custom slot 491"/>
-      <moveable id="492" name="Custom slot 492"/>
-      <moveable id="493" name="Custom slot 493"/>
-      <moveable id="494" name="Custom slot 494"/>
-      <moveable id="495" name="Custom slot 495"/>
-      <moveable id="496" name="Custom slot 496"/>
-      <moveable id="497" name="Custom slot 497"/>
-      <moveable id="498" name="Custom slot 498"/>
-      <moveable id="499" name="Custom slot 499"/>
-      <moveable id="500" name="Custom slot 500"/>
-      <moveable id="501" name="Custom slot 501"/>
-      <moveable id="502" name="Custom slot 502"/>
-      <moveable id="503" name="Custom slot 503"/>
-      <moveable id="504" name="Custom slot 504"/>
-      <moveable id="505" name="Custom slot 505"/>
-      <moveable id="506" name="Custom slot 506"/>
-      <moveable id="507" name="Custom slot 507"/>
-      <moveable id="508" name="Custom slot 508"/>
-      <moveable id="509" name="Custom slot 509"/>
-      <moveable id="510" name="Custom slot 510"/>
-      <moveable id="511" name="Custom slot 511"/>
-      <moveable id="512" name="Custom slot 512"/>
-      <moveable id="513" name="Custom slot 513"/>
-      <moveable id="514" name="Custom slot 514"/>
-      <moveable id="515" name="Custom slot 515"/>
-      <moveable id="516" name="Custom slot 516"/>
-      <moveable id="517" name="Custom slot 517"/>
-      <moveable id="518" name="Custom slot 518"/>
+      <moveable id="483" name="Ahmet"/>
+      <moveable id="484" name="Lara double"/>
+      <moveable id="485" name="Planet effect"/>
+      <moveable id="486" name="Butterfly"/>
+      <moveable id="487" name="Big beetle"/>
+      <moveable id="488" name="Vehicle smashable floor"/>
+      <moveable id="489" name="Vehicle smashable wall"/>
+      <moveable id="490" name="Sentry gun"/>
+      <moveable id="491" name="Mine"/>
+      <moveable id="492" name="Mapper"/>
+      <moveable id="493" name="Wheel of fortune"/>
+      <moveable id="494" name="Lighting conductor"/>
+      <moveable id="495" name="Locust emitter"/>
+      <moveable id="496" name="Scales"/>
+      <moveable id="497" name="Waterskin 1 empty"/>
+      <moveable id="498" name="Waterskin 1 filled 1/3"/>
+      <moveable id="499" name="Waterskin 1 filled 2/3"/>
+      <moveable id="500" name="Waterskin 1 filled 3/3"/>
+      <moveable id="501" name="Waterskin 2 empty"/>
+      <moveable id="502" name="Waterskin 2 filled 1/5"/>
+      <moveable id="503" name="Waterskin 2 filled 2/5"/>
+      <moveable id="504" name="Waterskin 2 filled 3/5"/>
+      <moveable id="505" name="Waterskin 2 filled 4/5"/>
+      <moveable id="506" name="Waterskin 2 filled 5/5"/>
+      <moveable id="507" name="Lara waterskin mesh"/>
+      <moveable id="508" name="Lara petrol mesh"/>
+      <moveable id="509" name="Lara dirt mest"/>
+      <moveable id="510" name="Jean Yves"/>
+      <moveable id="511" name="Troops"/>
+      <moveable id="512" name="Wraith 1"/>
+      <moveable id="513" name="Wraith 2"/>
+      <moveable id="514" name="Wraith 3"/>
+      <moveable id="515" name="Wraith 4"/>
+      <moveable id="516" name="Clockwork beetle"/>
+      <moveable id="517" name="Clockwork beetle combo 1"/>
+      <moveable id="518" name="Clockwork beetle combo 2"/>
     </moveables>
     <sprite_sequences>
       <sprite_sequence id="455" name="Sky graphics"/>
