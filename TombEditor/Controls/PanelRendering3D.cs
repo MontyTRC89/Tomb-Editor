@@ -1842,7 +1842,9 @@ namespace TombEditor.Controls
                     Matrix4x4 model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
 
                     effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                    effect.Parameters["Color"].SetValue(_editor.SelectedObject == instance ?
+                        new Vector4(1.0f, 0.0f, 0.0f, 1.0f) :
+                        new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                     effect.CurrentTechnique.Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
