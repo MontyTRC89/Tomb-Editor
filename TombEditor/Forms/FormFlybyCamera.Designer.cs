@@ -434,10 +434,15 @@ namespace TombEditor.Forms
             65536});
             this.numRotationX.Location = new System.Drawing.Point(82, 176);
             this.numRotationX.Maximum = new decimal(new int[] {
-            360,
+            90,
             0,
             0,
             0});
+            this.numRotationX.Minimum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            -2147483648});
             this.numRotationX.MousewheelSingleIncrement = true;
             this.numRotationX.Name = "numRotationX";
             this.numRotationX.Size = new System.Drawing.Size(71, 22);
