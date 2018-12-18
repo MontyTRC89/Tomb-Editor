@@ -1834,20 +1834,21 @@ namespace TombEditor.Controls
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
-                    // Outer cone
-                    float coneAngle = (float)Math.Atan2(512, 1024);
-                    float cutoffScaleH = 1;
-                    float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
+                    if (_editor.SelectedObject == instance)
+                    {
+                        // Outer cone
+                        float coneAngle = (float)Math.Atan2(512, 1024);
+                        float cutoffScaleH = 1;
+                        float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
 
-                    Matrix4x4 model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
+                        Matrix4x4 model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
 
-                    effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(_editor.SelectedObject == instance ?
-                        new Vector4(1.0f, 0.0f, 0.0f, 1.0f) :
-                        new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                        effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-                    effect.CurrentTechnique.Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                        effect.CurrentTechnique.Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                    }
                 }
 
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
