@@ -6,6 +6,14 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
+    public enum RotationAxis
+    {
+        Y,
+        X,
+        Roll,
+        None
+    }
+
     public interface IScaleable
     {
         float Scale { get; set; }

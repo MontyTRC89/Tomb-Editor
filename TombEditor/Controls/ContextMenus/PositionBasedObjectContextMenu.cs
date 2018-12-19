@@ -52,9 +52,20 @@ namespace TombEditor.Controls.ContextMenus
                 }));
             }
 
-            if (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll)
+            if (targetObject.Room != _editor.SelectedRoom)
             {
                 Items.Add(new ToolStripSeparator());
+                Items.Add(new ToolStripMenuItem("Move object to current room", null, (o, e) =>
+                {
+                    EditorActions.MoveObjectToOtherRoom(targetObject, _editor.SelectedRoom);
+                }));
+            }
+
+            if (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll)
+            {
+                if (!(Items[Items.Count - 2] is ToolStripSeparator))
+                    Items.Add(new ToolStripSeparator());
+
                 Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", Properties.Resources.actions_center_direction_16, (o, e) =>
                 {
                     EditorActions.ResetObjectRotation();
@@ -64,7 +75,7 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (X axis)", null, (o, e) =>
                     {
-                        EditorActions.ResetObjectRotation(EditorActions.RotationAxis.X);
+                        EditorActions.ResetObjectRotation(RotationAxis.X);
                     }));
                 }
 
@@ -72,7 +83,7 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Y axis)", null, (o, e) =>
                     {
-                        EditorActions.ResetObjectRotation(EditorActions.RotationAxis.Y);
+                        EditorActions.ResetObjectRotation(RotationAxis.Y);
                     }));
                 }
 
@@ -80,7 +91,7 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Roll axis)", null, (o, e) =>
                     {
-                        EditorActions.ResetObjectRotation(EditorActions.RotationAxis.Roll);
+                        EditorActions.ResetObjectRotation(RotationAxis.Roll);
                     }));
                 }
             }
