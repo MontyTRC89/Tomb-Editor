@@ -3099,7 +3099,7 @@ namespace TombEditor
                 _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
             }
-            _editor.Action = new EditorActionPlace(false, (level, room) => (PositionBasedObjectInstance)instance.Clone());
+            _editor.Action = new EditorActionPlace(true, (level, room) => (PositionBasedObjectInstance)instance.Clone());
         }
 
         public static void TryPasteSectors(SectorsClipboardData data, IWin32Window owner)
