@@ -16,7 +16,7 @@
 !getdllversion "TombEditor.exe" Version_
 
 !define MUI_WELCOMEPAGE_TEXT \
-"Welcome to Tomb Editor ${Version_1}.${Version_2}.${Version_3} installation! $\r$\n\
+"You are ready to install Tomb Editor ${Version_1}.${Version_2}.${Version_3}. $\r$\n\
 $\r$\n\
 Please make sure your system complies with following system requirements: $\r$\n\
 $\r$\n\
