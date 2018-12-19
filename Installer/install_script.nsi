@@ -72,6 +72,8 @@ Section "Tomb Editor" Section1
   /x "*.so" \
   /x "install_script.nsi" \
   /x "TombEditorInstall.exe" \
+  /x "TombEditorConfiguration.xml" \
+  /x "WadToolConfiguration.xml" \
   *.*
   
   ; Choose 32-bit or 64-bit d3dcompiler dll based on system version
