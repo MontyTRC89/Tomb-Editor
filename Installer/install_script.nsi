@@ -132,7 +132,7 @@ Section "Desktop Shortcut" Section5
   SectionIn 1 2 3
   CreateShortcut "$DESKTOP\Tomb Editor.lnk" "$INSTDIR\TombEditor.exe" "" "$INSTDIR\TombEditor.exe" 0  
 
-  SectionEnd
+SectionEnd
 
 LangString DESC_Section1 ${LANG_ENGLISH} "Basic Tomb Editor components. This includes WadTool and ScriptEditor test versions."
 LangString DESC_Section2 ${LANG_ENGLISH} "Stock assets, such as textures, font/sky graphics, sounds and default TRLE wads."
