@@ -3,6 +3,8 @@
 !include WinVer.nsh
 !include x64.nsh
 
+!cd "..\BuildRelease"
+
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
