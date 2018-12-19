@@ -6,15 +6,15 @@
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-!define MUI_HEADERIMAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Header\orange.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-uninstall.bmp"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange-uninstall.bmp" 
-!define MUI_ICON "..\TombEditor\tomb_editor.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplash.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplash.bmp" 
+!define MUI_ICON "..\TombEditor\Resources\Misc\tomb_editor.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
+!getdllversion "TombEditor.exe" Version_
+
 !define MUI_WELCOMEPAGE_TEXT \
-"Welcome to Tomb Editor installation! $\r$\n\
+"Welcome to Tomb Editor ${Version_1}.${Version_2}.${Version_3} installation! $\r$\n\
 $\r$\n\
 Please make sure your system complies with following system requirements: $\r$\n\
 $\r$\n\
@@ -33,7 +33,7 @@ Unicode true
 Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
 InstallDir "$PROGRAMFILES\Tomb Editor"
-RequestExecutionLevel admin
+RequestExecutionLevel user
 
 ;--------------------------------
 

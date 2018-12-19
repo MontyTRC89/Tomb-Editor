@@ -1,3 +1,12 @@
+Version 1.2.4 - 25/12/2018
+==========================
+
+1. Make installer distribution.
+2. Open last used project on startup option.
+3. Fixed flyby dialog exception.
+4. Highlight current flyby camera.
+5. Fix NG meshswap flipeffect parameters.
+
 Version 1.2.3 - 02/12/2018
 ==========================
 

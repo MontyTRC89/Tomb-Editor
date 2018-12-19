@@ -62,7 +62,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>tomb_editor.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Misc\tomb_editor.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TombEditor.Program</StartupObject>
@@ -527,7 +527,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\Palette.bin" />
+    <None Include="Resources\Misc\Palette.bin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
