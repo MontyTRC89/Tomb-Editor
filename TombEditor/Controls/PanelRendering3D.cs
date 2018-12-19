@@ -437,11 +437,22 @@ namespace TombEditor.Controls
             if (e.Button == MouseButtons.Left)
             {
                 // Do picking on the scene
-                PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
+                PickingResult newPicking = DoPicking(GetRay(e.X, e.Y), _editor.Configuration.Rendering3D_SelectObjectsInAnyRoom);
 
                 if (newPicking is PickingResultBlock)
                 {
                     PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
+
+                    // Ignore block picking if it's not from current room.
+                    // Alternately, if room autoswitch is active, switch and select it.
+
+                    if(newBlockPicking.Room != _editor.SelectedRoom)
+                    {
+                        if (_editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
+                            _editor.SelectedRoom = newBlockPicking.Room;
+                        else
+                            return;
+                    }
 
                     // Move camera to selected sector
                     if (_editor.Action is EditorActionRelocateCamera)
@@ -627,24 +638,12 @@ namespace TombEditor.Controls
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
                     _gizmoEnabled = true;
                 }
-                else if (newPicking is PickingResultObject || newPicking == null)
+                else if (newPicking is PickingResultObject)
                 {
-                    if(newPicking == null)
-                    {
-                        // Try to pick objects in other rooms
-                        newPicking = DoPicking(GetRay(e.X, e.Y), true);
-
-                        if (newPicking == null)
-                        {
-                            // Click outside room; if mouse is released without action, unselect all
-                            _noSelectionConfirm = true;
-                            return;
-                        }
-                        else if (!(newPicking is PickingResultObject) || !_editor.Configuration.Rendering3D_SelectObjectsInAnyRoom)
-                            return; // Do nothing if we've landed somewhere in other room
-                    }
-
                     var obj = ((PickingResultObject)newPicking).ObjectInstance;
+                    
+                    if (obj.Room != _editor.SelectedRoom && _editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
+                        _editor.SelectedRoom = obj.Room;
 
                     // Select or bookmark object
                     if (ModifierKeys.HasFlag(Keys.Shift))
@@ -653,6 +652,11 @@ namespace TombEditor.Controls
                         _editor.ChosenItem = ((ItemInstance)obj).ItemType;
                     else
                         _editor.SelectedObject = obj;
+                }
+                else if (newPicking == null)
+                {
+                    // Click outside room; if mouse is released without action, unselect all
+                    _noSelectionConfirm = true;
                 }
             }
             else if (e.Button == MouseButtons.Right)
@@ -1167,15 +1171,15 @@ namespace TombEditor.Controls
 
             // Now try to put data on pointed sector
             Point loc = PointToClient(new Point(e.X, e.Y));
-            PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y));
+            PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y), _editor.Configuration.Rendering3D_AutoswitchCurrentRoom);
 
             if (newPicking is PickingResultBlock)
             {
                 var newBlockPicking = (PickingResultBlock)newPicking;
 
-                // Disallow dropping objects and geometry on non-floor faces
-                if (!newBlockPicking.IsFloorHorizontalPlane)
-                    return;
+                // Switch room if needed
+                if (newBlockPicking.Room != _editor.SelectedRoom)
+                    _editor.SelectedRoom = newBlockPicking.Room;
 
                 if (e.Data.GetDataPresent(typeof(ItemType)))
                 {
@@ -2143,7 +2147,7 @@ namespace TombEditor.Controls
                 TextAlignment = new Vector2(0.0f, 0.0f),
                 PixelPos = new VectorInt2(10, -10),
                 Pos = matrix.TransformPerspectively(new Vector3()).To2(),
-                Overlay = true,
+                Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = message
             };
         }
@@ -2307,7 +2311,7 @@ namespace TombEditor.Controls
                     {
                         Font = _fontDefault,
                         Pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter()).To2(),
-                        Overlay = true,
+                        Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                         String = roomsToDraw[i].Name
                     });
             }
@@ -2331,7 +2335,7 @@ namespace TombEditor.Controls
                     {
                         Font = _fontDefault,
                         Pos = matrix.TransformPerspectively(center + positions[i]).To2(),
-                        Overlay = true,
+                        Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                         String = messages[i]
                     });
             }
@@ -2424,7 +2428,7 @@ namespace TombEditor.Controls
                 Font = _fontDefault,
                 PixelPos = new Vector2(10, -5),
                 Alignment = new Vector2(0.0f, 0.0f),
-                Overlay = true,
+                Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = DebugString
             });
 

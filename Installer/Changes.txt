@@ -6,6 +6,8 @@ Version 1.2.4 - 25/12/2018
 3. Fixed flyby dialog exception.
 4. Highlight current flyby camera.
 5. Fix NG meshswap flipeffect parameters.
+6. Add room autoswitch feature.
+7. Make dark rectangular text overlay optional.
 
 Version 1.2.3 - 02/12/2018
 ==========================
