@@ -19,7 +19,7 @@ float4 main(PixelInputType input) : SV_TARGET
         result.xyz *= result.a;
     }
     else
-        result = float4(0.0f, 0.0f, 0.0f, 0.7f);    // overlay
+        result = float4(0.0f, 0.0f, 0.0f, 0.6f);    // overlay
         
 	return result;
 }

@@ -80,6 +80,7 @@ namespace TombEditor
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public int Rendering3D_FontSize { get; set; } = 20;
         public bool Rendering3D_FontIsBold { get; set; } = true;
+        public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
@@ -88,6 +89,7 @@ namespace TombEditor
         public bool Rendering3D_AllowTexturingInLightingMode { get; set; } = true;
         public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
         public bool Rendering3D_SelectObjectsInAnyRoom { get; set; } = true;
+        public bool Rendering3D_AutoswitchCurrentRoom { get; set; } = false;
 
         // 2D Map options 
 
