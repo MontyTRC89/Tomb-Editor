@@ -622,12 +622,30 @@ namespace TombEditor
             MoveObject(instance, instance.Position + pos, precision, canGoOutsideRoom);
         }
 
-        public enum RotationAxis
+        public static void MoveObjectToOtherRoom(PositionBasedObjectInstance instance, Room newRoom)
         {
-            Y,
-            X,
-            Roll,
-            None
+            if (instance == null)
+                return;
+
+            if(instance.Room == null || !instance.Room.ExistsInLevel || newRoom == null || !newRoom.ExistsInLevel)
+            {
+                _editor.SendMessage("Can't move object from or to non-existent room", PopupType.Error);
+                return;
+            }
+
+            if (instance.Room == newRoom)
+            {
+                _editor.SendMessage("Object is already in current room", PopupType.Info);
+                return;
+            }
+
+            _editor.UndoManager.PushObjectTransformed(instance);
+            newRoom.MoveObjectFrom(_editor.Level, instance.Room, instance);
+
+            // Update state
+            if (instance is LightInstance)
+                instance.Room.RoomGeometry?.Relight(instance.Room);
+            _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
         public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true, bool disableUndo = false)

@@ -198,25 +198,25 @@ namespace TombEditor
             AddCommand("RotateObjectLeft", "Rotate object left", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
-                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                    EditorActions.RotateObject(args.Editor.SelectedObject, RotationAxis.Y, -1);
             });
 
             AddCommand("RotateObjectRight", "Rotate object right", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
-                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                    EditorActions.RotateObject(args.Editor.SelectedObject, RotationAxis.Y, 1);
             });
 
             AddCommand("RotateObjectUp", "Rotate object up", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
-                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.X, 1);
+                    EditorActions.RotateObject(args.Editor.SelectedObject, RotationAxis.X, 1);
             });
 
             AddCommand("RotateObjectDown", "Rotate object down", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
-                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                    EditorActions.RotateObject(args.Editor.SelectedObject, RotationAxis.X, -1);
             });
 
             AddCommand("MoveObjectLeft", "Move object left (4 clicks)", CommandType.Objects, delegate (CommandArgs args)
@@ -542,13 +542,19 @@ namespace TombEditor
             AddCommand("RotateObject5", "Rotate object (5 degrees)", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
-                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, 5.0f);
+                    EditorActions.RotateObject(args.Editor.SelectedObject, RotationAxis.Y, 5.0f);
             });
 
             AddCommand("RotateObject45", "Rotate object (45 degrees)", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
-                    EditorActions.RotateObject(args.Editor.SelectedObject, EditorActions.RotationAxis.Y, 45.0f);
+                    EditorActions.RotateObject(args.Editor.SelectedObject, RotationAxis.Y, 45.0f);
+            });
+
+            AddCommand("MoveObjectToCurrentRoom", "Move object to current room", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectToOtherRoom((PositionBasedObjectInstance)args.Editor.SelectedObject, args.Editor.SelectedRoom);
             });
 
             AddCommand("RelocateCamera", "Relocate camera", CommandType.View, delegate (CommandArgs args)
