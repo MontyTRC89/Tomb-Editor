@@ -4,10 +4,9 @@ HOW TO MAKE INSTALLER:
 2. Prepare all stock resources in "Resources" folder and copy this folder into BuildRelease folder
 3. Prepare TRNG runtimes (tomb4.exe etc.) in "Game" folder and copy this folder into BuildRelease folder
 4. Prepare "Native" folder and put "32 bit" and "64 bit" subfolders there with appropriate versions of "d3dcompiler_43.dll" file, and then copy "Native" folder into BuildRelease folder
-5. Copy "Changes.txt" to BuildRelease folder to display version history after installation, if user requests it.
-6. Download NSIS from here: https://sourceforge.net/projects/nsis/
-8. Run NSIS and execute install_script.nsi in-place from Installer folder. It will generate TombEditorInstall.exe installer inside BuildRelease folder.
-9. You are ready to deploy your installer!
+5. Download NSIS from here: https://sourceforge.net/projects/nsis/
+6. Run NSIS and execute install_script.nsi in-place from Installer folder. It will generate TombEditorInstall.exe installer inside BuildRelease folder.
+7. You are ready to deploy your installer!
 
 IN CASE NEW COMPONENTS ARE ADDED AND FILE LIST IN BuildRelease FOLDER IS CHANGED:
 
