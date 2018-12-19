@@ -241,8 +241,8 @@ Section "Uninstall"
   Delete "$INSTDIR\uninstall.exe"
   
   ; Remove settings
-  RMDir "$LOCALAPPDATA\TombEditor"
-  RMDir "$LOCALAPPDATA\ScriptEditor"
+  RMDir /r "$LOCALAPPDATA\TombEditor"
+  RMDir /r "$LOCALAPPDATA\ScriptEditor"
 
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TombEditor"
