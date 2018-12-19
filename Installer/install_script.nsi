@@ -76,6 +76,9 @@ Section "Tomb Editor" Section1
   /x "WadToolConfiguration.xml" \
   *.*
   
+  ; Add readme from installer folder
+  File "..\Installer\Changes.txt"
+  
   ; Choose 32-bit or 64-bit d3dcompiler dll based on system version
   ${If} ${RunningX64}
       Rename "$INSTDIR\Native\64 bit\d3dcompiler_43.dll" "$INSTDIR\d3dcompiler_43.dll"
