@@ -9,6 +9,7 @@ Version 1.2.4 - 25/12/2018
 6. Add room autoswitch feature.
 7. Make dark rectangular text overlay optional.
 8. Ability to move objects from one room to another (context menu or hotkey).
+9. Make move/rotation gizmo modifier keys consistent.
 
 Version 1.2.3 - 02/12/2018
 ==========================
