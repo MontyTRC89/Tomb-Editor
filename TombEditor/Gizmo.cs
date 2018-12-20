@@ -24,8 +24,15 @@ namespace TombEditor
                                      newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        private float RotationQuanization(bool smoothByDefault = true) =>
-            (Control.ModifierKeys.HasFlag(Keys.Shift) == smoothByDefault) ? 22.5f : 0.0f;
+        private float RotationQuanization(bool smoothByDefault = true)
+        {
+            if (Control.ModifierKeys.HasFlag(Keys.Shift))
+                return 11.25f;
+            else if (Control.ModifierKeys.HasFlag(Keys.Control))
+                return smoothByDefault ? 22.5f : 0.0f;
+            else
+                return smoothByDefault ? 0.0f : 22.5f;
+        }
 
         protected override void GizmoRotateY(float newAngle)
         {
