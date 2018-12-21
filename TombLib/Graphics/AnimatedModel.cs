@@ -164,7 +164,7 @@ namespace TombLib.Graphics
             model.BuildHierarchy();
 
 
-            if (model.Animations.Count > 0)
+            if (model.Animations.Count > 0 && model.Animations.Any(a => a.KeyFrames.Count > 0))
                 model.BuildAnimationPose(model.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0)?.KeyFrames[0]);
             model.UpdateBuffers();
 
