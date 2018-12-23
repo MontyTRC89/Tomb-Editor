@@ -465,5 +465,29 @@ namespace WadTool
             panelRendering.DrawNormals = cbDrawNormals.Checked;
             panelRendering.Invalidate();
         }
+
+        private void butDeleteLight_Click(object sender, EventArgs e)
+        {
+            if (!_doChangesInLighting)
+                return;
+
+            if (panelRendering.SelectedLight == null)
+                return;
+
+            WadLight light = panelRendering.SelectedLight;
+
+            var node = lstLights.SelectedNodes[0];
+            panelRendering.SelectedLight = null;
+            panelRendering.DeleteLight(light);
+            panelRendering.UpdateLights();
+            UpdateLightsList();
+            UpdateLightUI();
+            panelRendering.Invalidate();
+        }
+
+        private void FormStaticEditor_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
