@@ -399,7 +399,7 @@ namespace WadTool.Controls
             Invalidate();
         }
 
-        private void DeleteLight(WadLight light)
+        public void DeleteLight(WadLight light)
         {
             if (DarkMessageBox.Show(Parent, "Do you really want to delete this light?", "Confirm delete",
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
