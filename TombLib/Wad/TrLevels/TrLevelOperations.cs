@@ -122,6 +122,10 @@ namespace TombLib.Wad.TrLevels
                 // Create image
                 ImageC image = ImageC.CreateNew(end.X - start.X, end.Y - start.Y);
                 image.CopyFrom(0, 0, tiles, start.X, start.Y + textureTileIndex * 256, end.X - start.X, end.Y - start.Y);
+
+                // Replace black with transparent color
+                image.ReplaceColor(new ColorC(0, 0, 0, 255), new ColorC(0, 0, 0, 0));
+
                 WadTexture texture = new WadTexture(image);
 
                 // Create texture area

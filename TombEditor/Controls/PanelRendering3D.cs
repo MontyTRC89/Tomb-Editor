@@ -2111,7 +2111,7 @@ namespace TombEditor.Controls
 
                     foreach (var submesh in mesh.Submeshes)
                     {
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                        _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
 
