@@ -119,33 +119,11 @@ namespace TombLib.LevelData
 
             public override void UpdateBuffers()
             {
-                var lastBaseIndex = 0;
-
-                Vertices = new List<ImportedGeometryVertex>();
-                Indices = new List<int>();
-
                 foreach (var mesh in Meshes)
                 {
-                    var meshBaseIndex = Vertices.Count;
-                    Vertices.AddRange(mesh.Vertices);
-
-                    foreach (var submesh in mesh.Submeshes)
-                    {
-                        submesh.Value.BaseIndex = lastBaseIndex;
-                        foreach (var index in submesh.Value.Indices)
-                            if (submesh.Value.NumIndices != 0)
-                                Indices.Add((ushort)(meshBaseIndex + index));
-                        lastBaseIndex += submesh.Value.NumIndices;
-                    }
-
                     mesh.UpdateBoundingBox();
+                    //mesh.updateb
                 }
-
-                if (Vertices.Count == 0)
-                    return;
-
-                VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
-                IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             }
         }
 

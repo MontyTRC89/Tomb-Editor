@@ -103,17 +103,19 @@ namespace WadTool.Controls
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
-                _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                _layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
-                _device.SetVertexInputLayout(_layout);
-
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                 effect.Techniques[0].Passes[0].Apply();
 
                 foreach (var mesh_ in mesh.Meshes)
+                {
+                    _device.SetVertexBuffer(0, mesh_.VertexBuffer);
+                    _device.SetIndexBuffer(mesh_.IndexBuffer, true);
+                    _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
+                    _device.SetVertexInputLayout(_layout);
+
                     foreach (var submesh in mesh_.Submeshes)
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                }
             }
 
             if (DrawGrid)

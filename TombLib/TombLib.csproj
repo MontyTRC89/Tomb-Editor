@@ -152,7 +152,6 @@
     <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\ObjectMesh.cs" />
     <Compile Include="Graphics\ObjectVertex.cs" />
-    <Compile Include="Graphics\RoomModel.cs" />
     <Compile Include="Graphics\SharpDxConversions.cs" />
     <Compile Include="Graphics\Submesh.cs" />
     <Compile Include="Graphics\WadRenderer.cs" />
