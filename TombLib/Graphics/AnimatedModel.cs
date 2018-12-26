@@ -104,37 +104,11 @@ namespace TombLib.Graphics
 
         public override void UpdateBuffers()
         {
-            Vertices = new List<ObjectVertex>();
-            Indices = new List<int>();
-
             foreach (var mesh in Meshes)
             {
-                int lastBaseIndex = 0;
-
-                Vertices.AddRange(mesh.Vertices);
-
-                foreach (var submesh in mesh.Submeshes)
-                {
-                    submesh.Value.BaseIndex = lastBaseIndex;
-                    foreach (var index in submesh.Value.Indices)
-                        if (submesh.Value.NumIndices != 0)
-                            Indices.Add((ushort)(index));
-                    lastBaseIndex += submesh.Value.NumIndices;
-                }
-
                 mesh.UpdateBoundingBox();
+                mesh.UpdateBuffers();
             }
-
-            if (Vertices.Count == 0)
-                return;
-
-            if (VertexBuffer != null)
-                VertexBuffer.Dispose();
-            if (IndexBuffer != null)
-                IndexBuffer.Dispose();
-
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
-            IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
         public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture)

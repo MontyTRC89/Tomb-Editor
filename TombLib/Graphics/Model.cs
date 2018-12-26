@@ -18,14 +18,14 @@ namespace TombLib.Graphics
 
     public abstract class Model<T, U> : IRenderableObject, IDisposable where U : struct
     {
-        public Buffer<U> VertexBuffer { get; protected set; }
-        public Buffer IndexBuffer { get; protected set; }
+        //public Buffer<U> VertexBuffer { get; protected set; }
+        //public Buffer IndexBuffer { get; protected set; }
         public BoundingBox BoundingBox { get; set; }
         public List<T> Meshes { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
         public ModelType Type { get; set; }
-        public List<U> Vertices { get; set; }
-        public List<int> Indices { get; set; }
+        //public List<U> Vertices { get; set; }
+        //public List<int> Indices { get; set; }
         public string Name { get; set; }
         public List<Material> Materials { get; private set; } = new List<Material>();
         public DataVersion Version { get; set; } = DataVersion.GetNext();
@@ -39,8 +39,8 @@ namespace TombLib.Graphics
 
         public virtual void Dispose()
         {
-            VertexBuffer?.Dispose();
-            IndexBuffer?.Dispose();
+            //VertexBuffer?.Dispose();
+            //IndexBuffer?.Dispose();
         }
 
         public abstract void UpdateBuffers();

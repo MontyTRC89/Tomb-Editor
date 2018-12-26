@@ -167,16 +167,16 @@ namespace WadTool.Controls
                     // Use new renderer
                     var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.WadMesh });
 
-                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-
                     effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                     effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var mesh_ in mesh.Meshes)
                     {
+                        _device.SetVertexBuffer(0, mesh_.VertexBuffer);
+                        _device.SetIndexBuffer(mesh_.IndexBuffer, true);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer));
+
                         foreach (var submesh in mesh_.Submeshes)
                         {
                             _device.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);

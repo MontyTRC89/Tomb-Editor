@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -111,6 +112,8 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             if (_textureInfoManager.TexInfoCount > 32767)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
+
+            var taskSoundSources = Task.Factory.StartNew(PrepareSoundSources);
 
             PrepareSoundSources();
             PrepareItems();

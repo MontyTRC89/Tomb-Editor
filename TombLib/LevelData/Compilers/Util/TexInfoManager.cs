@@ -1201,7 +1201,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void UpdateTiles(int numSpritesPages)
         {
-            for (int i = 0; i < _objectTextures.Count; i++)
+            Parallel.For(0, _objectTextures.Count, i =>
             {
                 var texture = _objectTextures.ElementAt(i).Value;
                 if (texture.IsForRoom && texture.BumpLevel == BumpMappingLevel.None)
@@ -1216,7 +1216,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     texture.Tile += NumRoomPages + NumObjectsPages + numSpritesPages;
                 }
-            }
+            });
 
             NumObjectsPages += numSpritesPages;
         }

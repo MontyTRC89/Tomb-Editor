@@ -1871,10 +1871,7 @@ namespace TombEditor.Controls
                 return;
 
             AnimatedModel model = _wadRenderer.GetMoveable(moveable);
-            _legacyDevice.SetVertexBuffer(0, model.VertexBuffer);
-            _legacyDevice.SetIndexBuffer(model.IndexBuffer, true);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-
+           
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
 
@@ -1883,6 +1880,10 @@ namespace TombEditor.Controls
                 var mesh = model.Meshes[i];
                 if (mesh.Vertices.Count == 0)
                     continue;
+
+                _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
                 Matrix4x4 world = Matrix4x4.CreateScale(128.0f) *
                                   model.AnimationTransforms[i] *
@@ -1926,18 +1927,6 @@ namespace TombEditor.Controls
 
                 Room room = instance.Room;
 
-                if (_lastObject == null || instance.WadObjectId != _lastObject.WadObjectId)
-                {
-                    _legacyDevice.SetVertexBuffer(0, skin.VertexBuffer);
-                    _legacyDevice.SetIndexBuffer(skin.IndexBuffer, true);
-                }
-
-                if (_lastObject == null)
-                {
-                    _legacyDevice.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
-                }
-
                 skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (!disableSelection && _editor.SelectedObject == instance) // Selection
@@ -1948,6 +1937,10 @@ namespace TombEditor.Controls
                     var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
+
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
                     Matrix4x4 world = model.AnimationTransforms[i] * instance.ObjectMatrix;
 
@@ -2003,10 +1996,7 @@ namespace TombEditor.Controls
                 var roomIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 var meshes = model.Meshes;
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-                _legacyDevice.SetVertexBuffer(0, model.VertexBuffer);
-                _legacyDevice.SetIndexBuffer(model.IndexBuffer, true);
-
+                
                 for (var i = 0; i < meshes.Count; i++)
                 {
                     var mesh = meshes[i];
@@ -2014,6 +2004,10 @@ namespace TombEditor.Controls
                         continue;
                     if (mesh.Vertices.Count == 0)
                         continue;
+
+                    //_legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    //_legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    //_legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
@@ -2082,18 +2076,6 @@ namespace TombEditor.Controls
                     continue;
                 StaticModel model = _wadRenderer.GetStatic(@static);
 
-                if (_lastObject == null)
-                {
-                    _legacyDevice.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-                }
-
-                if (_lastObject == null || instance.WadObjectId != _lastObject.WadObjectId)
-                {
-                    _legacyDevice.SetVertexBuffer(0, model.VertexBuffer);
-                    _legacyDevice.SetIndexBuffer(model.IndexBuffer, true);
-                }
-
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
                 staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 if (!disableSelection && _editor.SelectedObject == instance)
@@ -2104,6 +2086,10 @@ namespace TombEditor.Controls
                     var mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
+
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
                     staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
