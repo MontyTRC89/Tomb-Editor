@@ -133,7 +133,8 @@ namespace TombLib.LevelData
                     {
                         submesh.Value.BaseIndex = lastBaseIndex;
                         foreach (var index in submesh.Value.Indices)
-                            Indices.Add((ushort)(meshBaseIndex + index));
+                            if (submesh.Value.NumIndices != 0)
+                                Indices.Add((ushort)(meshBaseIndex + index));
                         lastBaseIndex += submesh.Value.NumIndices;
                     }
 

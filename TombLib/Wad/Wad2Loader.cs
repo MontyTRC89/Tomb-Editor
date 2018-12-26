@@ -117,7 +117,10 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                textures.Add(obsoleteIndex++, new WadTexture(ImageC.FromByteArray(textureData, width, height)));
+                var texture = ImageC.FromByteArray(textureData, width, height);
+                texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+
+                textures.Add(obsoleteIndex++, new WadTexture(texture));
                 return true;
             });
 

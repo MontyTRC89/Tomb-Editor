@@ -16,20 +16,21 @@ namespace TombLib.Graphics
 
         public override void UpdateBuffers()
         {
-            int lastBaseIndex = 0;
-
             Vertices = new List<ObjectVertex>();
             Indices = new List<int>();
 
             foreach (var mesh in Meshes)
             {
+                int lastBaseIndex = 0;
+
                 Vertices.AddRange(mesh.Vertices);
 
                 foreach (var submesh in mesh.Submeshes)
                 {
                     submesh.Value.BaseIndex = lastBaseIndex;
                     foreach (var index in submesh.Value.Indices)
-                        Indices.Add((ushort)(lastBaseIndex + index));
+                        if (submesh.Value.NumIndices != 0)
+                            Indices.Add((ushort)(index));
                     lastBaseIndex += submesh.Value.NumIndices;
                 }
 

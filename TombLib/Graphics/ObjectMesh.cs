@@ -29,7 +29,8 @@ namespace TombLib.Graphics
             {
                 submesh.Value.BaseIndex = lastBaseIndex;
                 foreach (var index in submesh.Value.Indices)
-                    Indices.Add((ushort)(lastBaseIndex + index));
+                    if (submesh.Value.NumIndices != 0)
+                        Indices.Add((ushort)(index));
                 lastBaseIndex += submesh.Value.NumIndices;
             }
 

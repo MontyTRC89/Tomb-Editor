@@ -164,15 +164,26 @@ namespace TombLib.Wad
 
         public BoundingBox CalculateBoundingBox(Matrix4x4 transform)
         {
-            Vector3 min = new Vector3(float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue);
+            float minX = float.MaxValue;
+            float minY = float.MaxValue;
+            float minZ = float.MaxValue;
+            float maxX = float.MinValue;
+            float maxY = float.MinValue;
+            float maxZ = float.MinValue;
+            
             foreach (Vector3 oldVertex in VerticesPositions)
             {
                 var transformedVertex = MathC.HomogenousTransform(oldVertex, transform);
-                min = Vector3.Min(transformedVertex, min);
-                max = Vector3.Max(transformedVertex, max);
+
+                minX = (float)Math.Min(transformedVertex.X, minX);
+                minY = (float)Math.Min(transformedVertex.Y, minY);
+                minZ = (float)Math.Min(transformedVertex.Z, minZ);
+                maxX = (float)Math.Max(transformedVertex.X, maxX);
+                maxY = (float)Math.Max(transformedVertex.Y, maxY);
+                maxZ = (float)Math.Max(transformedVertex.Z, maxZ);
             }
-            return new BoundingBox(min, max);
+
+            return new BoundingBox(new Vector3(minX, maxY, minZ), new Vector3(maxX, minY, maxZ));
         }
 
         public BoundingBox CalculateBoundingBox()

@@ -249,7 +249,12 @@ namespace WadTool.Controls
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                    {
+                        _device.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    }
+
+                    //foreach (var submesh in mesh.Submeshes)
+                    //   _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
 
                 // Draw box
