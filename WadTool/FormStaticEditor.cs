@@ -120,7 +120,7 @@ namespace WadTool
 
         private void butCalculateVisibilityBox_Click(object sender, EventArgs e)
         {
-            _workingStatic.VisibilityBox = Static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+            _workingStatic.VisibilityBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
             UpdateVisibilityBoxUI();
             panelRendering.Invalidate();
         }
@@ -137,7 +137,7 @@ namespace WadTool
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
         {
-            _workingStatic.CollisionBox = Static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+            _workingStatic.CollisionBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
             UpdateCollisionBoxUI();
             panelRendering.Invalidate();
         }
@@ -270,11 +270,19 @@ namespace WadTool
                     form.AddPreset(IOSettingsPresets.SettingsPresets);
                     if (form.ShowDialog(this) != DialogResult.OK)
                         return;
-                    _workingStatic.Mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    if (mesh == null)
+                    {
+                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured",
+                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    _workingStatic.Mesh = mesh;
                     _workingStatic.VisibilityBox = _workingStatic.Mesh.BoundingBox;
                     _workingStatic.CollisionBox = _workingStatic.Mesh.BoundingBox;
                     _workingStatic.Version = DataVersion.GetNext();
-                    _workingStatic.Mesh.RecalculateNormals();
+                    _workingStatic.Mesh.CalculateNormals();
                     panelRendering.Invalidate();
                 }
             }

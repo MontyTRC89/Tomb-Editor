@@ -35,7 +35,7 @@ namespace TombLib.Wad
         public BoundingBox BoundingBox { get; set; }
         public WadMeshLightingType LightingType { get; set; }
 
-        public void RecalculateNormals()
+        public void CalculateNormals()
         {
             VerticesNormals.Clear();
             var tempNormals = new Dictionary<Hash, VertexNormalAverageHelper>();
@@ -208,12 +208,21 @@ namespace TombLib.Wad
 
         public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
         {
+            IOModel tmpModel = null;
+
             // Import the model
-            var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
+            try
             {
-                return new WadTexture(ImageC.FromFile(absoluteTexturePath));
-            });
-            var tmpModel = importer.ImportFromFile(fileName);
+                var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
+                {
+                    return new WadTexture(ImageC.FromFile(absoluteTexturePath));
+                });
+                tmpModel = importer.ImportFromFile(fileName);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
             // Create a new mesh (all meshes from model will be joined)
             var mesh = new WadMesh();
@@ -266,6 +275,7 @@ namespace TombLib.Wad
 
             mesh.BoundingBox = mesh.CalculateBoundingBox();
             mesh.BoundingSphere = mesh.CalculateBoundingSphere();
+            
             return mesh;
         }
 

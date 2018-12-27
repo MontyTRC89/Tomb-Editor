@@ -196,7 +196,15 @@ namespace WadTool
                         return;
 
                     var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
-                    @static.Mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    if (mesh == null)
+                    {
+                        DarkMessageBox.Show(owner, "Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured",
+                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    @static.Mesh = mesh;
                     @static.VisibilityBox = @static.Mesh.BoundingBox;
                     @static.CollisionBox = @static.Mesh.BoundingBox;
                     tool.DestinationWad.Statics.Add(@static.Id, @static);
