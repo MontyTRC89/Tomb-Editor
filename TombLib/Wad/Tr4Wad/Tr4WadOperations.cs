@@ -205,7 +205,7 @@ namespace TombLib.Wad.Tr4Wad
 
             // Usually only for static meshes
             if (mesh.VerticesNormals.Count == 0)
-                mesh.RecalculateNormals();
+                mesh.CalculateNormals();
 
             return mesh;
         }

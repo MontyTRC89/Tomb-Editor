@@ -52,7 +52,7 @@ namespace TombLib.LevelData.Compilers
                     _progressReporter.ReportWarn("Moveable '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
                 else
                     _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
-                oldMesh.RecalculateNormals();
+                oldMesh.CalculateNormals();
                 useShades = false;
             }
             else
