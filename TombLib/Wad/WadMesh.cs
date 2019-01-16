@@ -38,6 +38,13 @@ namespace TombLib.Wad
         public void CalculateNormals()
         {
             VerticesNormals.Clear();
+            for (int i = 0; i < VerticesPositions.Count; i++)
+            {
+                VerticesNormals.Add(Vector3.Zero);
+            }
+
+                return;
+            VerticesNormals.Clear();
             var tempNormals = new Dictionary<Hash, VertexNormalAverageHelper>();
             var tempVertices = new Dictionary<Hash, List<int>>();
 

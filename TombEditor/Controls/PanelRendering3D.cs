@@ -446,7 +446,7 @@ namespace TombEditor.Controls
                     // Ignore block picking if it's not from current room.
                     // Alternately, if room autoswitch is active, switch and select it.
 
-                    if(newBlockPicking.Room != _editor.SelectedRoom)
+                    if (newBlockPicking.Room != _editor.SelectedRoom)
                     {
                         if (_editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
                             _editor.SelectedRoom = newBlockPicking.Room;
@@ -526,7 +526,7 @@ namespace TombEditor.Controls
                             {
                                 Room newRoom = null;
 
-                                if(newBlockPicking.IsVerticalPlane)
+                                if (newBlockPicking.IsVerticalPlane)
                                 {
                                     newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
@@ -537,14 +537,14 @@ namespace TombEditor.Controls
                                 {
                                     newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
-                                        newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, 
+                                        newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling,
                                         (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control),
                                         ModifierKeys.HasFlag(Keys.Alt));
                                 }
 
-                                if(newRoom != null)
+                                if (newRoom != null)
                                 {
-                                    if(!ModifierKeys.HasFlag(Keys.Control))
+                                    if (!ModifierKeys.HasFlag(Keys.Control))
                                         _editor.HighlightedSectors = new SectorSelection() { Area = newRoom.LocalArea };
                                     _toolHandler.Engage(e.X, e.Y, newBlockPicking, false, newRoom);
 
@@ -558,7 +558,7 @@ namespace TombEditor.Controls
                         case EditorMode.Lighting:
                         case EditorMode.FaceEdit:
                             // Disable texturing in lighting mode, if option is set
-                            if (_editor.Mode == EditorMode.Lighting && 
+                            if (_editor.Mode == EditorMode.Lighting &&
                                 !_editor.Configuration.Rendering3D_AllowTexturingInLightingMode)
                                 break;
 
@@ -641,17 +641,18 @@ namespace TombEditor.Controls
                 else if (newPicking is PickingResultObject)
                 {
                     var obj = ((PickingResultObject)newPicking).ObjectInstance;
-                    
+
                     if (obj.Room != _editor.SelectedRoom && _editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
                         _editor.SelectedRoom = obj.Room;
 
                     // Select or bookmark object
-                    if (ModifierKeys.HasFlag(Keys.Shift))
-                        EditorActions.BookmarkObject(obj);
-                    else if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
+                    if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
                         _editor.ChosenItem = ((ItemInstance)obj).ItemType;
                     else
+                    {
                         _editor.SelectedObject = obj;
+                        EditorActions.BookmarkObject(obj);
+                    }
                 }
                 else if (newPicking == null)
                 {

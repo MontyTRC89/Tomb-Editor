@@ -391,7 +391,7 @@ namespace WadTool
             tool.WadChanged(wadArea);
         }
 
-        public static bool ExportAnimationToXml(WadAnimation animation, string fileName)
+        public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)
         {
             try
             {

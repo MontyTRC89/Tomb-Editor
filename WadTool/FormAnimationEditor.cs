@@ -1242,7 +1242,7 @@ namespace WadTool
 
             var animationToSave = SaveAnimationChanges(_selectedNode);
 
-            if (!WadActions.ExportAnimation(_moveable, animationToSave, saveFileDialogExport.FileName))
+            if (!WadActions.ExportAnimationToXml(_moveable, animationToSave, saveFileDialogExport.FileName))
             {
                 DarkMessageBox.Show(this, "Can't export current animation to XML file",
                                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

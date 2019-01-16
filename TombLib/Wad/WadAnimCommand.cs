@@ -5,6 +5,11 @@ namespace TombLib.Wad
 {
     public class WadAnimCommand : ICloneable
     {
+        public class WadAnimCommandSoundXml
+        {
+            public WadSoundInfo SoundInfo { get; set; }
+        }
+
         public WadAnimCommandType Type { get; set; }
         public short Parameter1 { get; set; }
         public short Parameter2 { get; set; }
@@ -12,6 +17,8 @@ namespace TombLib.Wad
 
         [XmlElement("SoundInfoName")]
         public string XmlSerializer_SoundInfoName { get; set; }
+        [XmlElement("Sound")]
+        public string XmlSerializer_Sound { get; set; }
 
         [XmlIgnore]
         public WadSoundInfo SoundInfo { get; set; }

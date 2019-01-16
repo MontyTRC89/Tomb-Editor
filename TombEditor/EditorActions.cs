@@ -489,8 +489,7 @@ namespace TombEditor
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
         {
-            // Allow creating a trigger using the bookmarked object if shift was pressed.
-            if (Control.ModifierKeys.HasFlag(Keys.Shift))
+            if (Control.ModifierKeys.HasFlag(Keys.Shift) || _editor.SelectedObject is null || !(_editor.SelectedObject is PositionBasedObjectInstance))
                 AddTrigger(room, area, owner, _editor.BookmarkedObject);
             else
                 AddTrigger(room, area, owner, _editor.SelectedObject);
