@@ -497,5 +497,15 @@ namespace WadTool
         {
 
         }
+
+        private void butRecalcNormals_Click(object sender, EventArgs e)
+        {
+            if (_workingStatic.Mesh != null)
+            {
+                _workingStatic.Mesh.CalculateNormals();
+                panelRendering.UpdateLights();
+                panelRendering.Invalidate();
+            }
+        }
     }
 }

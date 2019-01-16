@@ -136,7 +136,13 @@ namespace TombEditor
             AddCommand("AddTrigger", "Add trigger", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
-                    EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window, args.Editor.SelectedObject);
+                {
+                    if (Control.ModifierKeys.HasFlag(Keys.Shift) || args.Editor.SelectedObject is null ||
+                        !(args.Editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window, args.Editor.BookmarkedObject);
+                    else
+                        EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window, args.Editor.SelectedObject);
+                }
             });
 
             AddCommand("AddTriggerWithBookmark", "Add trigger with bookmarked object", CommandType.Objects, delegate (CommandArgs args)

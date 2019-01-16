@@ -78,6 +78,7 @@
             this.butImportMeshFromFile = new DarkUI.Controls.DarkButton();
             this.cbDrawNormals = new DarkUI.Controls.DarkCheckBox();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
+            this.butRecalcNormals = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -362,7 +363,7 @@
             this.cbDrawGrid.AutoSize = true;
             this.cbDrawGrid.Checked = true;
             this.cbDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGrid.Location = new System.Drawing.Point(804, 657);
+            this.cbDrawGrid.Location = new System.Drawing.Point(801, 631);
             this.cbDrawGrid.Name = "cbDrawGrid";
             this.cbDrawGrid.Size = new System.Drawing.Size(77, 17);
             this.cbDrawGrid.TabIndex = 78;
@@ -375,7 +376,7 @@
             this.cbDrawGizmo.AutoSize = true;
             this.cbDrawGizmo.Checked = true;
             this.cbDrawGizmo.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGizmo.Location = new System.Drawing.Point(804, 634);
+            this.cbDrawGizmo.Location = new System.Drawing.Point(801, 608);
             this.cbDrawGizmo.Name = "cbDrawGizmo";
             this.cbDrawGizmo.Size = new System.Drawing.Size(87, 17);
             this.cbDrawGizmo.TabIndex = 79;
@@ -410,9 +411,9 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
-            this.butSaveChanges.Location = new System.Drawing.Point(919, 674);
+            this.butSaveChanges.Location = new System.Drawing.Point(920, 674);
             this.butSaveChanges.Name = "butSaveChanges";
-            this.butSaveChanges.Size = new System.Drawing.Size(112, 23);
+            this.butSaveChanges.Size = new System.Drawing.Size(119, 23);
             this.butSaveChanges.TabIndex = 46;
             this.butSaveChanges.Text = "Save changes";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -627,7 +628,7 @@
             this.cbDrawLights.AutoSize = true;
             this.cbDrawLights.Checked = true;
             this.cbDrawLights.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawLights.Location = new System.Drawing.Point(804, 611);
+            this.cbDrawLights.Location = new System.Drawing.Point(801, 585);
             this.cbDrawLights.Name = "cbDrawLights";
             this.cbDrawLights.Size = new System.Drawing.Size(85, 17);
             this.cbDrawLights.TabIndex = 96;
@@ -649,11 +650,11 @@
             // 
             this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butImportMeshFromFile.Image = global::WadTool.Properties.Resources.opened_folder_16;
-            this.butImportMeshFromFile.Location = new System.Drawing.Point(801, 585);
+            this.butImportMeshFromFile.Location = new System.Drawing.Point(920, 614);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
-            this.butImportMeshFromFile.Size = new System.Drawing.Size(230, 23);
+            this.butImportMeshFromFile.Size = new System.Drawing.Size(119, 23);
             this.butImportMeshFromFile.TabIndex = 98;
-            this.butImportMeshFromFile.Text = "Import mesh from file";
+            this.butImportMeshFromFile.Text = "Import mesh";
             this.butImportMeshFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butImportMeshFromFile.Click += new System.EventHandler(this.butImportMeshFromFile_Click);
             // 
@@ -661,7 +662,7 @@
             // 
             this.cbDrawNormals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDrawNormals.AutoSize = true;
-            this.cbDrawNormals.Location = new System.Drawing.Point(804, 680);
+            this.cbDrawNormals.Location = new System.Drawing.Point(801, 654);
             this.cbDrawNormals.Name = "cbDrawNormals";
             this.cbDrawNormals.Size = new System.Drawing.Size(97, 17);
             this.cbDrawNormals.TabIndex = 99;
@@ -678,11 +679,24 @@
             this.panelRendering.Size = new System.Drawing.Size(792, 701);
             this.panelRendering.TabIndex = 100;
             // 
+            // butRecalcNormals
+            // 
+            this.butRecalcNormals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRecalcNormals.Image = global::WadTool.Properties.Resources.Effect_16;
+            this.butRecalcNormals.Location = new System.Drawing.Point(920, 585);
+            this.butRecalcNormals.Name = "butRecalcNormals";
+            this.butRecalcNormals.Size = new System.Drawing.Size(119, 23);
+            this.butRecalcNormals.TabIndex = 101;
+            this.butRecalcNormals.Text = "Recalc normals";
+            this.butRecalcNormals.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butRecalcNormals.Click += new System.EventHandler(this.butRecalcNormals_Click);
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1051, 729);
+            this.Controls.Add(this.butRecalcNormals);
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.cbDrawNormals);
             this.Controls.Add(this.butImportMeshFromFile);
@@ -803,5 +817,6 @@
         private DarkUI.Controls.DarkButton butImportMeshFromFile;
         private DarkUI.Controls.DarkCheckBox cbDrawNormals;
         private Controls.PanelRenderingStaticEditor panelRendering;
+        private DarkUI.Controls.DarkButton butRecalcNormals;
     }
 }
