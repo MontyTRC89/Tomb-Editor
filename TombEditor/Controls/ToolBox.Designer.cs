@@ -312,6 +312,7 @@
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolEraser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolEraser.Enabled = false;
             this.toolEraser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolEraser.Image = global::TombEditor.Properties.Resources.toolbox_Eraser_16;
             this.toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -364,7 +365,7 @@
             this.toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolUVFixer.Margin = new System.Windows.Forms.Padding(1);
             this.toolUVFixer.Name = "toolUVFixer";
-            this.toolUVFixer.Size = new System.Drawing.Size(23, 20);
+            this.toolUVFixer.Size = new System.Drawing.Size(24, 24);
             this.toolUVFixer.Text = "toolStripButton1";
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
