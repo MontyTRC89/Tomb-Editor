@@ -365,7 +365,7 @@
             this.toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolUVFixer.Margin = new System.Windows.Forms.Padding(1);
             this.toolUVFixer.Name = "toolUVFixer";
-            this.toolUVFixer.Size = new System.Drawing.Size(24, 24);
+            this.toolUVFixer.Size = new System.Drawing.Size(23, 20);
             this.toolUVFixer.Text = "toolStripButton1";
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
