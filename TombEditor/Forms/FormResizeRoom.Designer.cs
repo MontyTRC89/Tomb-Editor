@@ -164,7 +164,7 @@
             0,
             0,
             0});
-            this.numericXp.Location = new System.Drawing.Point(9, 92);
+            this.numericXp.Location = new System.Drawing.Point(183, 92);
             this.numericXp.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -190,7 +190,7 @@
             0,
             0,
             0});
-            this.numericXn.Location = new System.Drawing.Point(183, 92);
+            this.numericXn.Location = new System.Drawing.Point(9, 92);
             this.numericXn.Maximum = new decimal(new int[] {
             2147483647,
             0,
