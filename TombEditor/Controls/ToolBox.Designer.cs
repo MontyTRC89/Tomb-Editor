@@ -312,7 +312,7 @@
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolEraser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolEraser.Enabled = false;
+            this.toolEraser.Enabled = true;
             this.toolEraser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolEraser.Image = global::TombEditor.Properties.Resources.toolbox_Eraser_16;
             this.toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
