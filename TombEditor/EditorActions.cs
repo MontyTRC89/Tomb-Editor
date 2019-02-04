@@ -1439,6 +1439,16 @@ namespace TombEditor
                         currentTexture.TexCoord3 = currentTexture.TexCoord0 + horizontalUVStride;
                         currentTexture.TexCoord2 = currentTexture.TexCoord0 + horizontalUVStride - verticalUVStride;
 
+                        // Round textures to 5 decimal digits
+                        currentTexture.TexCoord0.X = (float)Math.Round(currentTexture.TexCoord0.X, 5);
+                        currentTexture.TexCoord0.Y = (float)Math.Round(currentTexture.TexCoord0.Y, 5);
+                        currentTexture.TexCoord1.X = (float)Math.Round(currentTexture.TexCoord1.X, 5);
+                        currentTexture.TexCoord1.Y = (float)Math.Round(currentTexture.TexCoord1.Y, 5);
+                        currentTexture.TexCoord2.X = (float)Math.Round(currentTexture.TexCoord2.X, 5);
+                        currentTexture.TexCoord2.Y = (float)Math.Round(currentTexture.TexCoord2.Y, 5);
+                        currentTexture.TexCoord3.X = (float)Math.Round(currentTexture.TexCoord3.X, 5);
+                        currentTexture.TexCoord3.Y = (float)Math.Round(currentTexture.TexCoord3.Y, 5);
+                        
                         switch (pickedFace)
                         {
                             case BlockFace.Floor:
