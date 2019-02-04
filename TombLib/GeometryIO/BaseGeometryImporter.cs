@@ -57,12 +57,12 @@ namespace TombLib.GeometryIO
             {
                 if (uv.X > 1.0f)
                     uv.X -= (float)Math.Floor(uv.X);
-                else if (uv.X < 0.0f)
+                else if (uv.X < -1.0f)
                     uv.X += -(float)Math.Floor(uv.X);
 
                 if (uv.Y > 1.0f)
                     uv.Y -= (float)Math.Floor(uv.Y);
-                else if (uv.Y < 0.0f)
+                else if (uv.Y < -1.0f)
                     uv.Y += -(float)Math.Floor(uv.Y);
 
             }

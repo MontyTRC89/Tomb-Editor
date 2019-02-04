@@ -49,7 +49,7 @@ namespace TombLib.LevelData
         public float Fov
         {
             get { return _fov; }
-            set { _fov = Math.Max(0, Math.Min(90, value)); }
+            set { _fov = Math.Max(0, Math.Min(180, value)); }
         }
 
         /// <summary> Degrees in the range [0, 360) </summary>
