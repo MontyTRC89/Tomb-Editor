@@ -73,8 +73,7 @@ namespace TombLib.Wad.TrLevels
         {
             var objectTextures = new TextureArea[oldLevel.ObjectTextures.Count];
             ImageC tiles = ImageC.FromByteArray(oldLevel.TextureMap32, 256, oldLevel.TextureMap32.Length / 1024);
-            tiles.ReplaceColor(new ColorC(0, 0, 0, 255), new ColorC(0, 0, 0, 0));
-            tiles.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+             tiles.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
             
             // for (int i = 0; i < oldLevel.ObjectTextures.Count; ++i)
             Parallel.For(0, oldLevel.ObjectTextures.Count, i =>
@@ -124,7 +123,7 @@ namespace TombLib.Wad.TrLevels
                 image.CopyFrom(0, 0, tiles, start.X, start.Y + textureTileIndex * 256, end.X - start.X, end.Y - start.Y);
 
                 // Replace black with transparent color
-                image.ReplaceColor(new ColorC(0, 0, 0, 255), new ColorC(0, 0, 0, 0));
+                //image.ReplaceColor(new ColorC(0, 0, 0, 255), new ColorC(0, 0, 0, 0));
 
                 WadTexture texture = new WadTexture(image);
 
