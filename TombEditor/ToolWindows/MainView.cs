@@ -28,6 +28,37 @@ namespace TombEditor.ToolWindows
 
             RefreshControls(_editor.Configuration);
             GenerateToolStripCommands(toolStrip.Items);
+
+            panel3D.MouseMove += panel3D_MouseMove;
+        }
+
+        private void panel3D_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
+            int panelWidth = panel3D.Size.Width;
+            int panelHeight = panel3D.Size.Height;
+
+            if (e.Location.X <= 0)
+            {
+                Cursor.Position = new System.Drawing.Point(Cursor.Position.X + panelWidth - 1, Cursor.Position.Y);
+            }
+            else if (e.Location.X >= panelWidth)
+            {
+                Cursor.Position = new System.Drawing.Point(Cursor.Position.X - panelWidth + 1, Cursor.Position.Y);
+            }
+
+            if (e.Location.Y <= 0)
+            {
+                Cursor.Position = new System.Drawing.Point(Cursor.Position.X, Cursor.Position.Y + panelHeight - 1);
+            }
+            else if (e.Location.Y >= panelHeight)
+            {
+                Cursor.Position = new System.Drawing.Point(Cursor.Position.X, Cursor.Position.Y - panelHeight + 1);
+            }
         }
 
         public void InitializeRendering(RenderingDevice device)
