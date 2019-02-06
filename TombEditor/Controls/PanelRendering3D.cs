@@ -741,9 +741,21 @@ namespace TombEditor.Controls
                     else if (ModifierKeys.HasFlag(Keys.Control))
                         Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDeltaY : -relativeDeltaY) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
+                    {
+                        if (e.X - _lastMousePosition.X >= (float)Width / 2 || e.X - _lastMousePosition.X <= -(float)Width / 2)
+                        {
+                            relativeDeltaX = 0;
+                        }
+
+                        if (e.Y - _lastMousePosition.Y >= (float)Height / 2 || e.Y - _lastMousePosition.Y <= -(float)Height / 2)
+                        {
+                            relativeDeltaY = 0;
+                        }
+
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
                             -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
+                    }
 
                     _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)); // Update gizmo
                     redrawWindow = true;
