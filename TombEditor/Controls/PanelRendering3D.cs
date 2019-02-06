@@ -1899,6 +1899,8 @@ namespace TombEditor.Controls
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                 }
             }
+
+            SwapChain.ClearDepth();
         }
 
         private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw, bool disableSelection = false)
