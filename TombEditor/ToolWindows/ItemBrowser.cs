@@ -110,7 +110,7 @@ namespace TombEditor.ToolWindows
             if (instance == null)
                 return;
 
-            using (var colorDialog = new RealtimeColorDialog(c =>
+            using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
             {
                 panelStaticMeshColor.BackColor = c;
                 instance.Color = c.ToFloat3Color() * 2.0f;

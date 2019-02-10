@@ -190,7 +190,7 @@ namespace TombEditor.ToolWindows
         {
             Room room = _editor.SelectedRoom;
 
-            using (var colorDialog = new RealtimeColorDialog(c =>
+            using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
             {
                 room.AmbientLight = c.ToFloat3Color() * 2.0f;
                 _editor.SelectedRoom.BuildGeometry();

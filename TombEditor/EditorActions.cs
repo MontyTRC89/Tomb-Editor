@@ -2818,7 +2818,7 @@ namespace TombEditor
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 light =>
                 {
-                    using (var colorDialog = new RealtimeColorDialog(c =>
+                    using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
                     {
                         UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
                         l => { return c.ToFloat3Color() * 2.0f; });

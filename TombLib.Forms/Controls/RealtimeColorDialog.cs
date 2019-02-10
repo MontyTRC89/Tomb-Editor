@@ -13,6 +13,17 @@ namespace TombLib.Controls
     {
         delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
+        private const int WM_CTLCOLOREDIT = 0x0133;
+        private const int WM_INITDIALOG = 0x0110;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint UFLAGS = SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW;
+        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        private static readonly IntPtr HWND_TOP = new IntPtr(0);
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool EnumChildWindows(IntPtr hWndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
@@ -23,16 +34,35 @@ namespace TombLib.Controls
         [DllImport("user32.dll", SetLastError = true)]
         static extern int GetClassName(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+
         private Color _previousColor;
         private Action<Color> _onColorChange;
 
         private ColorScheme _colorScheme;
+
+        private int _x;
+        private int _y;
+        private bool _setPos;
+
+        public RealtimeColorDialog(int x, int y, Action<Color> onColorChange, ColorScheme colorScheme = null)
+        {
+            FullOpen = true;
+            _onColorChange = onColorChange;
+            _colorScheme = colorScheme;
+            _x = x;
+            _y = y;
+            _setPos = true;
+        }
 
         public RealtimeColorDialog(Action<Color> onColorChange, ColorScheme colorScheme = null)
         {
             FullOpen = true;
             _onColorChange = onColorChange;
             _colorScheme = colorScheme;
+            _setPos = false;
         }
 
         protected override bool RunDialog(IntPtr hwndOwner)
@@ -68,7 +98,7 @@ namespace TombLib.Controls
 
         protected override IntPtr HookProc(IntPtr hWnd, int msg, IntPtr wparam, IntPtr lparam)
         {
-            if(msg == 0x0133) // WM_CTLCOLOREDIT
+            if(msg == WM_CTLCOLOREDIT) // WM_CTLCOLOREDIT
             {
                 List<IntPtr> childWindows = new List<IntPtr>();
                 StringBuilder str = new StringBuilder(8);
@@ -108,7 +138,14 @@ namespace TombLib.Controls
                 }
             }
 
-            return base.HookProc(hWnd, msg, wparam, lparam);
+            IntPtr result = base.HookProc(hWnd, msg, wparam, lparam);
+
+            if (_setPos && msg == WM_INITDIALOG)
+            {
+                SetWindowPos(hWnd, HWND_TOP, _x, _y, 0, 0, UFLAGS);
+            }
+
+            return result;
         }
     }
 }
