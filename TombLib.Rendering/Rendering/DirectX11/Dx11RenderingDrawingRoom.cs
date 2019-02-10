@@ -123,7 +123,8 @@ namespace TombLib.Rendering.DirectX11
                             uvwAndBlendModes[i * 3 + 2] = 0ul << 24;
                         }
                         else
-                        { // Render as textured (the texture may turn out to be unavailable)
+                        {                             
+                            // Render as textured (the texture may turn out to be unavailable)
                             if (texture.Texture.IsUnavailable)
                             { // Texture is unvailable (i.e. file couldn't be loaded.
                                 ImageC image = Dx11RenderingDevice.TextureUnavailable;
@@ -133,6 +134,14 @@ namespace TombLib.Rendering.DirectX11
                                 uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
                             }
                             else if (texture.TriangleCoordsOutOfBounds)
+                            { // Texture is available but coordinates are ouf of bounds
+                                ImageC image = Dx11RenderingDevice.TextureCoordOutOfBounds;
+                                VectorInt3 position = TextureAllocator.Get(image);
+                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
+                            }
+                            else if (!texture.ParentArea.IsZero && !texture.ParentArea.Intersects(texture.GetRect()))
                             { // Texture is available but coordinates are ouf of bounds
                                 ImageC image = Dx11RenderingDevice.TextureCoordOutOfBounds;
                                 VectorInt3 position = TextureAllocator.Get(image);

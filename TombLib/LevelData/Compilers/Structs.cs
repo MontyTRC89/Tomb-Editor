@@ -590,7 +590,7 @@ namespace TombLib.LevelData.Compilers
 
                 writer.Write((float)(light.LightType == 2 ? Math.Acos(light.In) * 2.0f : 0));
                 writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : 0));
-                writer.Write(light.Length - light.CutOff);
+                writer.Write(light.CutOff);
 
                 writer.Write(light.DirectionX);
                 writer.Write(light.DirectionY);
