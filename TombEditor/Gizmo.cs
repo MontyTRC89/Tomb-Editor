@@ -27,11 +27,11 @@ namespace TombEditor
         private float RotationQuanization(bool smoothByDefault = true)
         {
             if (Control.ModifierKeys.HasFlag(Keys.Shift))
-                return 11.25f;
+                return 5.0f;
             else if (Control.ModifierKeys.HasFlag(Keys.Control))
-                return smoothByDefault ? 22.5f : 0.0f;
+                return smoothByDefault ? 45.0f : 0.0f;
             else
-                return smoothByDefault ? 0.0f : 22.5f;
+                return smoothByDefault ? 0.0f : 45.0f;
         }
 
         protected override void GizmoRotateY(float newAngle)

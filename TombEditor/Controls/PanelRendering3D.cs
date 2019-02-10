@@ -443,6 +443,8 @@ namespace TombEditor.Controls
                 {
                     PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
 
+                    _editor.SelectedObject = null;
+
                     // Ignore block picking if it's not from current room.
                     // Alternately, if room autoswitch is active, switch and select it.
 
@@ -1112,7 +1114,7 @@ namespace TombEditor.Controls
                         {
                             var pickedBlock = newPicking as PickingResultBlock;
                             if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedBlock.Pos))
-                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, pickedBlock.Room, _editor.SelectedSectors.Area);
+                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, pickedBlock.Room, _editor.SelectedSectors.Area, pickedBlock.Pos);
                             else
                                 _currentContextMenu = new BlockContextMenu(_editor, this, pickedBlock.Room, pickedBlock.Pos);
                         }

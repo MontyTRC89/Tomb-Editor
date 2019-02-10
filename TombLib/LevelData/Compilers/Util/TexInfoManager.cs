@@ -653,6 +653,8 @@ namespace TombLib.LevelData.Compilers.Util
                 if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex))
                     AddParent(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex);
 
+                texture.GetCanonicalTexture(isForTriangle);
+
                 // Try again to get texinfo
                 if (animFrameIndex >= 0)
                     result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
