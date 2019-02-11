@@ -12,6 +12,7 @@ using TombLib.LevelData;
 using TombLib.Script;
 using TombLib.Utils;
 using System.Collections.Generic;
+using TombLib.Wad.TrLevels;
 
 namespace TombEditor.Forms
 {
@@ -562,10 +563,11 @@ namespace TombEditor.Forms
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load("");
-            var level = new TestLevel("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\tut1.tr4");
+            //var level = new TestLevel("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\tut1.tr4");
             //var level = new TestLevel("h:\\trle\\Data\\coastal.tr4");
 
-            //var level = new TrLevel();
+            var level = new TrLevel();
+            level.LoadLevel("H:\\tomb5\\data\\joby5.trc");
             //level.LoadLevel("Game\\data\\title.tr4", "", "");
             // level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
             // level.Load("editor");

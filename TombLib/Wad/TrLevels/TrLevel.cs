@@ -9,7 +9,7 @@ namespace TombLib.Wad.TrLevels
     // This is a class for loading objects data from original TR levels.
     // We are interested only in meshes, animations, textures.
     // Everything else will be ignored.
-    internal class TrLevel
+    public class TrLevel
     {
         internal TrVersion Version;
         internal bool IsNg;
@@ -227,7 +227,9 @@ namespace TombLib.Wad.TrLevels
                                 // XELA
                                 var xela = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(4));
                                 var roomDataSize = levelReader.ReadUInt32();
-                                /*levelReader.ReadUInt32();
+                                int startPos = (int)levelReader.BaseStream.Position;
+
+                                levelReader.ReadUInt32();
                                 levelReader.ReadUInt32();
                                 levelReader.ReadUInt32();
                                 levelReader.ReadUInt32();
@@ -285,8 +287,14 @@ namespace TombLib.Wad.TrLevels
                                 levelReader.ReadBytes(88 * numLights);
                                 levelReader.ReadBytes(8 * numXsectors * numZsectors);
                                 var numPortals = levelReader.ReadUInt16();
-                                levelReader.ReadBytes(32 * numPortals);
-                                var filler = levelReader.ReadUInt16();
+                                byte[] portals = levelReader.ReadBytes(32 * numPortals);
+
+                                levelReader.BaseStream.Seek(startPos, SeekOrigin.Begin);
+                                levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
+
+                                continue;
+
+                                /*var filler = levelReader.ReadUInt16();
                                 var smeshes = new List<tr_room_staticmesh>();
                                 for (var k=0;k<numStatics;k++)
                                 {
