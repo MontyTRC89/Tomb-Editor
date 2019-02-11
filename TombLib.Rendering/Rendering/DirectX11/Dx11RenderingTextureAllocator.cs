@@ -70,9 +70,20 @@ namespace TombLib.Rendering.DirectX11
                 region.Bottom = pos.Y + originalImage.Height;
                 region.Front = 0;
                 region.Back = 1;
+
+                // Security clamps
+                // TODO: it doesn't cover all cases and it hides a potential bug, but I can't still 
+                // understand how the renderer is working
+                region.Left = Math.Max(region.Left, 0);
+                region.Right = Math.Min(region.Right, Size.X);
+                region.Top = Math.Max(region.Top, 0);
+                region.Bottom = Math.Min(region.Bottom, Size.Y);
+
                 if (0 > region.Left || region.Left >= region.Right || region.Right > Size.X ||
                     0 > region.Top || region.Top >= region.Bottom || region.Bottom > Size.Y)
+                {
                     throw new ArgumentOutOfRangeException(); // This check is important, otherwise the graphics driver may crash the entire system as it turned out.
+                }
 
                 DataBox box;
                 box.DataPointer = ptr;
