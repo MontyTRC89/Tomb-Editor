@@ -41,7 +41,42 @@ namespace TombLib.Script
         // Level file names
         private List<string> _levelFileNames = new List<string>();
 
-        public static Script LoadFromTxt(string fileName)
+        public static Script LoadFromString(string content, string path)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(stream))
+                {
+                    writer.Write(content);
+                }
+
+                try
+                {
+                    return LoadFromStream(stream, path);
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public static Script LoadFromTxtFile(string fileName)
+        {
+            try
+            {
+                using (var stream = File.OpenRead(fileName))
+                {
+                    return LoadFromStream(stream, Path.GetDirectoryName(fileName));
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+         }
+
+        public static Script LoadFromStream(Stream stream, string path)
         {
             LevelScriptCatalog.LoadCatalog();
 
@@ -49,7 +84,7 @@ namespace TombLib.Script
             {
                 var script = new Script();
 
-                using (var reader = new StreamReader(File.OpenRead(fileName)))
+                using (var reader = new StreamReader(stream))
                 {
                     var lastBlock = ScriptBlocks.None;
                     LevelScript lastLevel = null;
@@ -226,7 +261,7 @@ namespace TombLib.Script
 
                 foreach (var languageFile in script.LanguageFiles)
                 {
-                    string languageFilePath = Path.GetDirectoryName(fileName) + "\\" + languageFile;
+                    string languageFilePath = path + "\\" + languageFile;
                     if (!File.Exists(languageFilePath))
                         continue;
                     using (var reader = new StreamReader(File.OpenRead(languageFilePath)))
@@ -268,6 +303,21 @@ namespace TombLib.Script
         }
 
         public bool CompileScript(string path)
+        {
+            return NgCenterScriptCompiler.CompileScript();
+        }
+
+        private bool CompileScriptTR5Main(string path)
+        {
+            return true;
+        }
+
+        private bool CompileScriptTRNG(string path)
+        {
+            return true;
+        }
+
+        private bool CompileScriptTRLE(string path)
         {
             string scriptPath = path + "\\SCRIPT.DAT";
 

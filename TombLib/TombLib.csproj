@@ -226,6 +226,7 @@
     <Compile Include="Script\LanguageScript.cs" />
     <Compile Include="Script\LevelScript.cs" />
     <Compile Include="Script\LevelScriptCatalog.cs" />
+    <Compile Include="Script\NgCenterScriptCompiler.cs" />
     <Compile Include="Script\Script.cs" />
     <Compile Include="Script\ScriptBlocks.cs" />
     <Compile Include="Utils\DataVersion.cs" />

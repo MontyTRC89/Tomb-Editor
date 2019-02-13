@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using TombLib.Script;
 
 namespace ScriptEditor
 {
@@ -784,6 +785,12 @@ namespace ScriptEditor
 			}
 		}
 
-		#endregion Other forms
-	}
+        #endregion Other forms
+
+        private void buildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var script = Script.LoadFromTxtFile(Properties.Settings.Default.ScriptPath + "\\script.txt");
+            script.CompileScript(Properties.Settings.Default.GamePath);
+        }
+    }
 }
