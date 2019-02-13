@@ -234,5 +234,11 @@
     <Content Include="Resources\Images\toggleBookmark-16.png" />
     <Content Include="Resources\Images\uncomment-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TombLib\TombLib.csproj">
+      <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
+      <Name>TombLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
