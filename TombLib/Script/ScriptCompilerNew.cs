@@ -5,85 +5,63 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.LevelData;
 
 namespace TombLib.Script
 {
-    public class Script
+    public class ScriptCompilerNew : IScriptCompiler
     {
-        // File extensions
-        public string PsxLevel { get; set; }
-        public string PsxCut { get; set; }
-        public string PsxFmv { get; set; }
+        private string _srcPath;
+        private string _dstPath;
+        private GameVersion _version;
 
-        public string PcLevel { get; set; }
-        public string PcCut { get; set; }
-        public string PcFmv { get; set; }
+        private List<LevelScript> _levels;
+        private List<string> _languageFiles;
+        private List<LanguageScript> _strings;
+        private List<string> _levelFileNames;
 
-        // Language files
-        public List<string> LanguageFiles { get; private set; } = new List<string>();
+        private string _psxLevel;
+        private string _psxCut;
+        private string _psxFmv;
+        private string _pcLevel;
+        private string _pcCut;
+        private string _pcFmv;
+        private bool _loadSave;
+        private bool _title;
+        private bool _playAnyLevel;
+        private bool _flyCheat;
+        private bool _demoDisc;
+        private int _inputTimeout;
+        private byte _security;
 
-        // Main flags and settings
-        public bool LoadSave { get; set; }
-        public bool Title { get; set; }
-        public bool PlayAnyLevel { get; set; }
-        public bool FlyCheat { get; set; }
-        public bool DemoDisc { get; set; }
-        public bool Diagnostic { get; set; }
-        public int InputTimeout { get; set; }
-        public byte SecurityByte { get; set; }
-
-        // Levels
-        public List<LevelScript> Levels { get; private set; } = new List<LevelScript>();
-
-        // English strings
-        public List<LanguageScript> Strings { get; private set; } = new List<LanguageScript>();
-
-        // Level file names
-        private List<string> _levelFileNames = new List<string>();
-
-        public static Script LoadFromString(string content, string path)
+        public ScriptCompilerNew(GameVersion version)
         {
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write(content);
-                }
-
-                try
-                {
-                    return LoadFromStream(stream, path);
-                }
-                catch (Exception ex)
-                {
-                    return null;
-                }
-            }
+            _version = version;
         }
 
-        public static Script LoadFromTxtFile(string fileName)
+        public bool CompileScripts(string srcPath, string dstPath)
         {
-            try
-            {
-                using (var stream = File.OpenRead(fileName))
-                {
-                    return LoadFromStream(stream, Path.GetDirectoryName(fileName));
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-         }
+            _srcPath = srcPath;
+            _dstPath = dstPath;
 
-        public static Script LoadFromStream(Stream stream, string path)
+            if (!ReadScripts())
+                return false;
+
+            return BuildScripts();
+        }
+
+        private bool ReadScripts()
         {
             LevelScriptCatalog.LoadCatalog();
 
+            _languageFiles = new List<string>();
+            _levels = new List<LevelScript>();
+            _strings = new List<LanguageScript>();
+            _levelFileNames = new List<string>();
+
             try
             {
-                var script = new Script();
-
+                using (var stream = File.OpenRead(_srcPath + "\\Script.txt"))
                 using (var reader = new StreamReader(stream))
                 {
                     var lastBlock = ScriptBlocks.None;
@@ -132,7 +110,7 @@ namespace TombLib.Script
                             {
                                 lastBlock = ScriptBlocks.Title;
                                 lastLevel = new LevelScript(true);
-                                script.Levels.Add(lastLevel);
+                                _levels.Add(lastLevel);
                                 continue;
                             }
 
@@ -140,7 +118,7 @@ namespace TombLib.Script
                             {
                                 lastBlock = ScriptBlocks.Level;
                                 lastLevel = new LevelScript(false);
-                                script.Levels.Add(lastLevel);
+                                _levels.Add(lastLevel);
                                 continue;
                             }
                         }
@@ -156,21 +134,21 @@ namespace TombLib.Script
                         if (lastBlock == ScriptBlocks.PsxExtensions)
                         {
                             if (command == "Level")
-                                script.PsxLevel = value;
+                                _psxLevel = value;
                             else if (command == "Cut")
-                                script.PsxCut = value;
+                                _psxCut = value;
                             else if (command == "FMV")
-                                script.PsxFmv = value;
+                                _psxFmv = value;
                         }
 
                         if (lastBlock == ScriptBlocks.PcExtensions)
                         {
                             if (command == "Level")
-                                script.PcLevel = value;
+                                _pcLevel = value;
                             else if (command == "Cut")
-                                script.PcCut = value;
+                                _pcCut = value;
                             else if (command == "FMV")
-                                script.PcFmv = value;
+                                _pcFmv = value;
                         }
 
                         if (lastBlock == ScriptBlocks.Language)
@@ -180,26 +158,26 @@ namespace TombLib.Script
                                 var tokensFile = value.Split(',');
                                 if (tokensFile.Length < 2)
                                     continue;
-                                script.LanguageFiles.Add(tokensFile[1]);
+                                _languageFiles.Add(tokensFile[1]);
                             }
                         }
 
                         if (lastBlock == ScriptBlocks.Options)
                         {
                             if (command == "LoadSave")
-                                script.LoadSave = (value == "ENABLED");
+                                _loadSave = (value == "ENABLED");
                             else if (command == "Title")
-                                script.Title = (value == "ENABLED");
+                                _title = (value == "ENABLED");
                             else if (command == "PlayAnyLevel")
-                                script.PlayAnyLevel = (value == "ENABLED");
+                                _playAnyLevel = (value == "ENABLED");
                             else if (command == "FlyCheat")
-                                script.FlyCheat = (value == "ENABLED");
+                                _flyCheat = (value == "ENABLED");
                             else if (command == "DemoDisc")
-                                script.DemoDisc = (value == "ENABLED");
+                                _demoDisc = (value == "ENABLED");
                             else if (command == "InputTimeout")
-                                script.InputTimeout = int.Parse(value);
+                                _inputTimeout = int.Parse(value);
                             else if (command == "Security")
-                                script.SecurityByte = Convert.ToByte(value.Replace("$", ""), 16);
+                                _security = Convert.ToByte(value.Replace("$", ""), 16);
                         }
 
                         if (lastBlock == ScriptBlocks.Title || lastBlock == ScriptBlocks.Level)
@@ -259,9 +237,9 @@ namespace TombLib.Script
                     }
                 }
 
-                foreach (var languageFile in script.LanguageFiles)
+                foreach (var languageFile in _languageFiles)
                 {
-                    string languageFilePath = path + "\\" + languageFile;
+                    string languageFilePath = _srcPath + "\\" + languageFile;
                     if (!File.Exists(languageFilePath))
                         continue;
                     using (var reader = new StreamReader(File.OpenRead(languageFilePath)))
@@ -290,36 +268,21 @@ namespace TombLib.Script
                             else if (lastBlock == "[ExtraNG]")
                                 strings.NgStrings.Add(line);
                         }
-                        script.Strings.Add(strings);
+                        _strings.Add(strings);
                     }
                 }
 
-                return script;
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
         }
 
-        public bool CompileScript(string path)
+        private bool BuildScripts()
         {
-            return NgCenterScriptCompiler.CompileScript();
-        }
-
-        private bool CompileScriptTR5Main(string path)
-        {
-            return true;
-        }
-
-        private bool CompileScriptTRNG(string path)
-        {
-            return true;
-        }
-
-        private bool CompileScriptTRLE(string path)
-        {
-            string scriptPath = path + "\\SCRIPT.DAT";
+            string scriptPath = _dstPath + "\\Script.dat";
 
             if (File.Exists(scriptPath))
                 File.Delete(scriptPath);
@@ -330,14 +293,14 @@ namespace TombLib.Script
                 {
                     // Prepare flags
                     short flags = 0;
-                    if (FlyCheat) flags += 0x01;
-                    if (LoadSave) flags += 0x02;
-                    if (Title) flags += 0x04;
-                    if (PlayAnyLevel) flags += 0x08;
+                    if (_flyCheat) flags += 0x01;
+                    if (_loadSave) flags += 0x02;
+                    if (_title) flags += 0x04;
+                    if (_playAnyLevel) flags += 0x08;
 
                     // Get unique level file names
                     short sizeOfLevelFileNames = 0;
-                    foreach (var level in Levels)
+                    foreach (var level in _levels)
                         if (!_levelFileNames.Contains(level.FileName))
                         {
                             _levelFileNames.Add(level.FileName);
@@ -346,9 +309,9 @@ namespace TombLib.Script
 
                     writer.Write((short)flags);
                     writer.Write((short)0);
-                    writer.Write((int)InputTimeout);
-                    writer.Write((byte)SecurityByte);
-                    writer.Write((byte)Levels.Count);
+                    writer.Write((int)_inputTimeout);
+                    writer.Write((byte)_security);
+                    writer.Write((byte)_levels.Count);
                     writer.Write((byte)_levelFileNames.Count);
                     writer.Write((byte)0);
                     writer.Write((short)sizeOfLevelFileNames);
@@ -358,9 +321,9 @@ namespace TombLib.Script
                     writer.Write((short)0);
 
                     // Write extensions
-                    WriteRawString(writer, PsxLevel);
-                    WriteRawString(writer, PsxFmv);
-                    WriteRawString(writer, PsxCut);
+                    WriteRawString(writer, _psxLevel);
+                    WriteRawString(writer, _psxFmv);
+                    WriteRawString(writer, _psxCut);
 
                     writer.Write((byte)0);
                     writer.Write((byte)0);
@@ -368,9 +331,9 @@ namespace TombLib.Script
                     writer.Write((byte)0);
                     writer.Write((byte)0);
 
-                    WriteRawString(writer, PcLevel);
-                    WriteRawString(writer, PcFmv);
-                    WriteRawString(writer, PcCut);
+                    WriteRawString(writer, _pcLevel);
+                    WriteRawString(writer, _pcFmv);
+                    WriteRawString(writer, _pcCut);
 
                     writer.Write((byte)0);
                     writer.Write((byte)0);
@@ -394,10 +357,10 @@ namespace TombLib.Script
                     var compiledLevelScripts = new List<byte[]>();
 
                     lastOffset = 0;
-                    foreach (var level in Levels)
+                    foreach (var level in _levels)
                     {
                         writer.Write(lastOffset);
-                        var data = BuildRawScriptData(level);
+                        var data = BuildRawScriptData(level, _version);
                         compiledLevelScripts.Add(data);
                         lastOffset += (short)data.Length;
                     }
@@ -408,7 +371,7 @@ namespace TombLib.Script
                         writer.Write(data);
 
                     // Write language files
-                    foreach (var languageFile in LanguageFiles)
+                    foreach (var languageFile in _languageFiles)
                         WriteRawString(writer, languageFile.ToUpper().Replace(".TXT", ".DAT"));
 
                     // Store level data size
@@ -418,38 +381,38 @@ namespace TombLib.Script
             }
 
             // Now write languages files
-            for (int i=0;i< LanguageFiles.Count;i++)
+            for (int i = 0; i < _languageFiles.Count; i++)
             {
-                var languageFilePath = path + "\\" + LanguageFiles[i].ToUpper().Replace(".TXT", ".DAT");
+                var languageFilePath = _dstPath + "\\" + _languageFiles[i].ToUpper().Replace(".TXT", ".DAT");
                 using (var stream = File.OpenWrite(languageFilePath))
                 {
                     using (var writer = new BinaryWriter(stream))
                     {
-                        writer.Write((short)Strings[i].GeneralStrings.Count);
-                        writer.Write((short)Strings[i].PsxStrings.Count);
-                        writer.Write((short)Strings[i].PcStrings.Count);
+                        writer.Write((short)_strings[i].GeneralStrings.Count);
+                        writer.Write((short)_strings[i].PsxStrings.Count);
+                        writer.Write((short)_strings[i].PcStrings.Count);
 
                         short size = 0;
-                        foreach (var str in Strings[i].GeneralStrings)
+                        foreach (var str in _strings[i].GeneralStrings)
                             size += (short)(str.Length + 1);
                         writer.Write(size);
 
-                        foreach (var str in Strings[i].PsxStrings)
+                        foreach (var str in _strings[i].PsxStrings)
                             size += (short)(str.Length + 1);
                         writer.Write(size);
 
-                        foreach (var str in Strings[i].PcStrings)
+                        foreach (var str in _strings[i].PcStrings)
                             size += (short)(str.Length + 1);
                         writer.Write(size);
 
                         short offset = 0;
-                        foreach (var str in Strings[i].AllStrings)
+                        foreach (var str in _strings[i].AllStrings)
                         {
                             writer.Write(offset);
                             offset += (short)(str.Length + 1);
                         }
 
-                        foreach (string str in Strings[i].AllStrings)
+                        foreach (string str in _strings[i].AllStrings)
                             WriteRawString(writer, str, true);
                     }
                 }
@@ -458,15 +421,34 @@ namespace TombLib.Script
             return true;
         }
 
-        public static void Test()
+        private void WriteRawString(BinaryWriter writer, string value, bool encode = false)
         {
-            using (var reader = new BinaryReader(File.OpenRead("E:\\trle\\script\\italian.dat")))
-            using (var writer = new BinaryWriter(File.OpenWrite("E:\\trle\\script\\italian2.dat")))
-                while(reader.BaseStream.Position<reader.BaseStream.Length)
-                writer.Write((byte)(reader.ReadByte() ^ 0xA5));
+            var buffer = UTF8Encoding.ASCII.GetBytes(value);
+            if (encode)
+                for (int i = 0; i < buffer.Length; i++)
+                    buffer[i] ^= 0xA5;
+
+            writer.Write(buffer);
+            writer.Write((byte)0);
         }
 
-        private byte[] BuildRawScriptData(LevelScript level)
+        private int GetStringIndex(string str)
+        {
+            for (int i = 0; i < _strings[0].AllStrings.Count; i++)
+                if (_strings[0].AllStrings[i] == str)
+                    return i;
+            return 0;
+        }
+
+        private int GetFileNameIndex(string str)
+        {
+            for (int i = 0; i < _levelFileNames.Count; i++)
+                if (_levelFileNames[i] == str)
+                    return i;
+            return 0;
+        }
+
+        private byte[] BuildRawScriptData(LevelScript level, GameVersion version)
         {
             using (var ms = new MemoryStream())
             {
@@ -538,6 +520,16 @@ namespace TombLib.Script
                         else if (entry.Command.Name == "Cut")
                         {
                             writer.Write((byte)0x84);
+                            writer.Write((byte)entry.Parameters[0]);
+                        }
+                        else if (version == GameVersion.TR5 && entry.Command.Name == "GiveItem")
+                        {
+                            writer.Write((byte)0xD9);
+                            writer.Write((byte)entry.Parameters[0]);
+                        }
+                        else if (version == GameVersion.TR5 && entry.Command.Name == "LoseItem")
+                        {
+                            writer.Write((byte)0xDA);
                             writer.Write((byte)entry.Parameters[0]);
                         }
                         else if (entry.Command.Name == "Legend")
@@ -656,33 +648,6 @@ namespace TombLib.Script
 
                 return ms.ToArray();
             }
-        }
-
-        private void WriteRawString(BinaryWriter writer, string value, bool encode=false)
-        {
-            var buffer = UTF8Encoding.ASCII.GetBytes(value);
-            if (encode)
-                for (int i = 0; i < buffer.Length; i++)
-                    buffer[i] ^= 0xA5;
-
-            writer.Write(buffer);
-            writer.Write((byte)0);
-        }
-
-        private int GetStringIndex(string str)
-        {
-            for (int i = 0; i < Strings[0].AllStrings.Count; i++)
-                if (Strings[0].AllStrings[i] == str)
-                    return i;
-            return 0;
-        }
-
-        private int GetFileNameIndex(string str)
-        {
-            for (int i = 0; i < _levelFileNames.Count; i++)
-                if (_levelFileNames[i] == str)
-                    return i;
-            return 0;
         }
     }
 }

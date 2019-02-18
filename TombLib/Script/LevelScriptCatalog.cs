@@ -176,11 +176,6 @@ namespace TombLib.Script
                              LevelScriptCatalogParameterType.Boolean
                          }));
 
-            Commands.Add("Timer",
-                         new LevelScriptCommand("Timer", new LevelScriptCatalogParameterType[] {
-                             LevelScriptCatalogParameterType.Boolean
-                         }));
-
             Commands.Add("NoLevel",
                          new LevelScriptCommand("NoLevel", new LevelScriptCatalogParameterType[] {
                              LevelScriptCatalogParameterType.Boolean
@@ -257,6 +252,91 @@ namespace TombLib.Script
                              LevelScriptCatalogParameterType.Int8
                        }));
 
+            Commands.Add("Timer",
+                        new LevelScriptCommand("Timer", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Boolean
+                        }));
+
+            Commands.Add("DistantFog",
+                       new LevelScriptCommand("DistantFog", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Int8,
+                             LevelScriptCatalogParameterType.Int8,
+                             LevelScriptCatalogParameterType.Int8,
+                             LevelScriptCatalogParameterType.Int8
+                       }));
+
+            Commands.Add("ResetInventory",
+                        new LevelScriptCommand("ResetInventory", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Boolean
+                        }));
+
+            Commands.Add("LaraType",
+                       new LevelScriptCommand("LaraType", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                       }));
+
+            Commands.Add("AmbientTrack",
+                      new LevelScriptCommand("AmbientTrack", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Int16
+                      }));
+
+            Commands.Add("LoadScreen",
+                   new LevelScriptCommand("LoadScreen", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                   }));
+
+            Commands.Add("OnLevelStart",
+                   new LevelScriptCommand("OnLevelStart", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                   }));
+
+            Commands.Add("OnLevelFinish",
+                 new LevelScriptCommand("OnLevelFinish", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                 }));
+
+            Commands.Add("OnLoadGame",
+                 new LevelScriptCommand("OnLoadGame", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                 }));
+
+            Commands.Add("OnSaveGame",
+                 new LevelScriptCommand("OnSaveGame", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                 }));
+
+            Commands.Add("OnLaraDeath",
+                 new LevelScriptCommand("OnLaraDeath", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                 }));
+
+            Commands.Add("OnLevelControl",
+                 new LevelScriptCommand("OnLevelControl", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                 }));
+
+            Commands.Add("OnBeginFrame",
+                 new LevelScriptCommand("OnBeginFrame", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                 }));
+
+            Commands.Add("OnEndFrame",
+                new LevelScriptCommand("OnEndFrame", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                }));
+
+            Commands.Add("LevelFile",
+               new LevelScriptCommand("LevelFile", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+               }));
+
+            Commands.Add("LaraStartPos",
+                    new LevelScriptCommand("LaraStartPos", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Int32,
+                             LevelScriptCatalogParameterType.Int32,
+                             LevelScriptCatalogParameterType.Int32,
+                             LevelScriptCatalogParameterType.Int16
+                    }));
         }
     }
 }

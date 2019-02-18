@@ -50,6 +50,9 @@ namespace ScriptEditor
 			// Disable the interface since no file has been loaded yet
 			ToggleInterface(false);
 
+            // Set the default compiler
+            comboCompiler.SelectedIndex = 0;
+
 			// Check if required paths are set
 			CheckRequiredPaths();
 
@@ -789,8 +792,32 @@ namespace ScriptEditor
 
         private void buildToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var script = Script.LoadFromTxtFile(Properties.Settings.Default.ScriptPath + "\\script.txt");
-            script.CompileScript(Properties.Settings.Default.GamePath);
+            BuildScript();
+        }
+
+        private void BuildScript()
+        {
+            IScriptCompiler compiler;
+            switch (comboCompiler.SelectedIndex)
+            {
+                case 0:
+                    compiler = new ScriptCompilerLegacy(Properties.Settings.Default.ScriptPath);
+                    break;
+                case 1:
+                    compiler = new ScriptCompilerTRNG();
+                    break;
+                case 2:
+                    compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR5);
+                    break;
+                case 3:
+                    compiler = new ScriptCompilerTR5Main();
+                    break;
+                default:
+                    compiler = new ScriptCompilerLegacy(Properties.Settings.Default.ScriptPath);
+                    break;
+            }
+
+            compiler.CompileScripts(Properties.Settings.Default.ScriptPath, Properties.Settings.Default.GamePath);
         }
     }
 }

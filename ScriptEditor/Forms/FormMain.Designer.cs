@@ -106,6 +106,7 @@
             this.uncommentToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator_13 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator_14 = new System.Windows.Forms.ToolStripSeparator();
+            this.comboCompiler = new System.Windows.Forms.ToolStripComboBox();
             this.zoomLabel = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.textEditor)).BeginInit();
             this.editorContextMenu.SuspendLayout();
@@ -143,7 +144,7 @@
             this.autosaveLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.autosaveLabel.AutoSize = true;
             this.autosaveLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.autosaveLabel.Location = new System.Drawing.Point(384, 430);
+            this.autosaveLabel.Location = new System.Drawing.Point(528, 547);
             this.autosaveLabel.Name = "autosaveLabel";
             this.autosaveLabel.Size = new System.Drawing.Size(265, 13);
             this.autosaveLabel.TabIndex = 14;
@@ -335,9 +336,9 @@
             this.documentMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.documentMap.Dock = System.Windows.Forms.DockStyle.Right;
             this.documentMap.ForeColor = System.Drawing.Color.Gainsboro;
-            this.documentMap.Location = new System.Drawing.Point(672, 52);
+            this.documentMap.Location = new System.Drawing.Point(816, 52);
             this.documentMap.Name = "documentMap";
-            this.documentMap.Size = new System.Drawing.Size(128, 207);
+            this.documentMap.Size = new System.Drawing.Size(128, 324);
             this.documentMap.TabIndex = 1;
             this.documentMap.Target = this.textEditor;
             this.documentMap.Text = "documentMap";
@@ -380,7 +381,7 @@
             this.textEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(30)))), ((int)(((byte)(144)))), ((int)(((byte)(255)))));
             this.textEditor.ServiceColors = null;
             this.textEditor.ServiceLinesColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.textEditor.Size = new System.Drawing.Size(472, 207);
+            this.textEditor.Size = new System.Drawing.Size(616, 324);
             this.textEditor.TabIndex = 3;
             this.textEditor.Zoom = 100;
             this.textEditor.ToolTipNeeded += new System.EventHandler<FastColoredTextBoxNS.ToolTipNeededEventArgs>(this.textEditor_ToolTipNeeded);
@@ -671,7 +672,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip.Size = new System.Drawing.Size(944, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -852,7 +853,7 @@
             this.objectBrowser.Location = new System.Drawing.Point(0, 20);
             this.objectBrowser.MaxDragChange = 20;
             this.objectBrowser.Name = "objectBrowser";
-            this.objectBrowser.Size = new System.Drawing.Size(200, 187);
+            this.objectBrowser.Size = new System.Drawing.Size(200, 304);
             this.objectBrowser.TabIndex = 6;
             this.objectBrowser.Click += new System.EventHandler(this.objectBrowser_Click);
             // 
@@ -863,7 +864,7 @@
             this.objectBrowserBox.Dock = System.Windows.Forms.DockStyle.Left;
             this.objectBrowserBox.Location = new System.Drawing.Point(0, 52);
             this.objectBrowserBox.Name = "objectBrowserBox";
-            this.objectBrowserBox.Size = new System.Drawing.Size(200, 207);
+            this.objectBrowserBox.Size = new System.Drawing.Size(200, 324);
             this.objectBrowserBox.TabIndex = 7;
             this.objectBrowserBox.TabStop = false;
             // 
@@ -885,7 +886,7 @@
             this.objectBrowserSplitter.Location = new System.Drawing.Point(200, 52);
             this.objectBrowserSplitter.MinSize = 100;
             this.objectBrowserSplitter.Name = "objectBrowserSplitter";
-            this.objectBrowserSplitter.Size = new System.Drawing.Size(3, 207);
+            this.objectBrowserSplitter.Size = new System.Drawing.Size(3, 324);
             this.objectBrowserSplitter.TabIndex = 12;
             this.objectBrowserSplitter.TabStop = false;
             // 
@@ -928,10 +929,10 @@
             // refBrowserSplitter
             // 
             this.refBrowserSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.refBrowserSplitter.Location = new System.Drawing.Point(0, 259);
+            this.refBrowserSplitter.Location = new System.Drawing.Point(0, 376);
             this.refBrowserSplitter.MinSize = 70;
             this.refBrowserSplitter.Name = "refBrowserSplitter";
-            this.refBrowserSplitter.Size = new System.Drawing.Size(800, 3);
+            this.refBrowserSplitter.Size = new System.Drawing.Size(944, 3);
             this.refBrowserSplitter.TabIndex = 13;
             this.refBrowserSplitter.TabStop = false;
             // 
@@ -940,15 +941,15 @@
             this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
+            this.referenceBrowser.Location = new System.Drawing.Point(0, 379);
             this.referenceBrowser.Name = "referenceBrowser";
-            this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
+            this.referenceBrowser.Size = new System.Drawing.Size(944, 160);
             this.referenceBrowser.TabIndex = 11;
             // 
             // resetZoomButton
             // 
             this.resetZoomButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetZoomButton.Location = new System.Drawing.Point(650, 426);
+            this.resetZoomButton.Location = new System.Drawing.Point(794, 543);
             this.resetZoomButton.Name = "resetZoomButton";
             this.resetZoomButton.Size = new System.Drawing.Size(75, 20);
             this.resetZoomButton.TabIndex = 9;
@@ -979,7 +980,7 @@
             this.showStringTableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.showStringTableButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.showStringTableButton.BackColorUseGeneric = false;
-            this.showStringTableButton.Location = new System.Drawing.Point(672, 12);
+            this.showStringTableButton.Location = new System.Drawing.Point(816, 12);
             this.showStringTableButton.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.showStringTableButton.Name = "showStringTableButton";
             this.showStringTableButton.Size = new System.Drawing.Size(116, 31);
@@ -995,10 +996,10 @@
             this.lineNumberLabel,
             this.colNumberLabel,
             this.selectedCharsLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 422);
+            this.statusStrip.Location = new System.Drawing.Point(0, 539);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.statusStrip.Size = new System.Drawing.Size(800, 28);
+            this.statusStrip.Size = new System.Drawing.Size(944, 28);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -1040,11 +1041,12 @@
             this.nextBookmarkToolStripButton,
             this.clearBookmarksToolStripButton,
             this.toolStripSeparator_14,
-            this.aboutToolStripButton});
+            this.aboutToolStripButton,
+            this.comboCompiler});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.toolStrip.Size = new System.Drawing.Size(800, 28);
+            this.toolStrip.Size = new System.Drawing.Size(944, 28);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip";
             // 
@@ -1120,13 +1122,26 @@
             this.toolStripSeparator_14.Name = "toolStripSeparator_14";
             this.toolStripSeparator_14.Size = new System.Drawing.Size(6, 28);
             // 
+            // comboCompiler
+            // 
+            this.comboCompiler.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.comboCompiler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboCompiler.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.comboCompiler.Items.AddRange(new object[] {
+            "TRLE compiler",
+            "NG_Center compiler",
+            "TR5 compiler",
+            "TR5Main compiler"});
+            this.comboCompiler.Name = "comboCompiler";
+            this.comboCompiler.Size = new System.Drawing.Size(121, 28);
+            // 
             // zoomLabel
             // 
             this.zoomLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.zoomLabel.AutoSize = true;
             this.zoomLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.zoomLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.zoomLabel.Location = new System.Drawing.Point(730, 430);
+            this.zoomLabel.Location = new System.Drawing.Point(874, 547);
             this.zoomLabel.Name = "zoomLabel";
             this.zoomLabel.Size = new System.Drawing.Size(66, 13);
             this.zoomLabel.TabIndex = 8;
@@ -1136,7 +1151,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(944, 567);
             this.Controls.Add(this.autosaveLabel);
             this.Controls.Add(this.objectBrowserSplitter);
             this.Controls.Add(this.showStringTableButton);
@@ -1263,6 +1278,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel colNumberLabel;
 		private System.Windows.Forms.ToolStripStatusLabel lineNumberLabel;
 		private System.Windows.Forms.ToolStripStatusLabel selectedCharsLabel;
-	}
+        private System.Windows.Forms.ToolStripComboBox comboCompiler;
+    }
 }
 

@@ -359,4 +359,13 @@ YoungLara = ENABLED / DISABLED</value>
   <data name="LevelTitle" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="Ambient" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LaraType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value />
+  </data>
 </root>
