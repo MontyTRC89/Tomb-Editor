@@ -64,7 +64,7 @@ namespace TombLib.Script
                 using (var stream = File.OpenRead(_srcPath + "\\Script.txt"))
                 using (var reader = new StreamReader(stream))
                 {
-                    var lastBlock = ScriptBlocks.None;
+                    var lastBlock = Enumerations.None;
                     LevelScript lastLevel = null;
 
                     while (reader.EndOfStream == false)
@@ -84,31 +84,31 @@ namespace TombLib.Script
                         {
                             if (line == "[PSXExtensions]")
                             {
-                                lastBlock = ScriptBlocks.PsxExtensions;
+                                lastBlock = Enumerations.PsxExtensions;
                                 continue;
                             }
 
                             if (line == "[PCExtensions]")
                             {
-                                lastBlock = ScriptBlocks.PcExtensions;
+                                lastBlock = Enumerations.PcExtensions;
                                 continue;
                             }
 
                             if (line == "[Language]")
                             {
-                                lastBlock = ScriptBlocks.Language;
+                                lastBlock = Enumerations.Language;
                                 continue;
                             }
 
                             if (line == "[Options]")
                             {
-                                lastBlock = ScriptBlocks.Options;
+                                lastBlock = Enumerations.Options;
                                 continue;
                             }
 
                             if (line == "[Title]")
                             {
-                                lastBlock = ScriptBlocks.Title;
+                                lastBlock = Enumerations.Title;
                                 lastLevel = new LevelScript(true);
                                 _levels.Add(lastLevel);
                                 continue;
@@ -116,7 +116,7 @@ namespace TombLib.Script
 
                             if (line == "[Level]")
                             {
-                                lastBlock = ScriptBlocks.Level;
+                                lastBlock = Enumerations.Level;
                                 lastLevel = new LevelScript(false);
                                 _levels.Add(lastLevel);
                                 continue;
@@ -131,7 +131,7 @@ namespace TombLib.Script
                         string command = tokens[0].Trim();
                         string value = tokens[1].Trim();
 
-                        if (lastBlock == ScriptBlocks.PsxExtensions)
+                        if (lastBlock == Enumerations.PsxExtensions)
                         {
                             if (command == "Level")
                                 _psxLevel = value;
@@ -141,7 +141,7 @@ namespace TombLib.Script
                                 _psxFmv = value;
                         }
 
-                        if (lastBlock == ScriptBlocks.PcExtensions)
+                        if (lastBlock == Enumerations.PcExtensions)
                         {
                             if (command == "Level")
                                 _pcLevel = value;
@@ -151,7 +151,7 @@ namespace TombLib.Script
                                 _pcFmv = value;
                         }
 
-                        if (lastBlock == ScriptBlocks.Language)
+                        if (lastBlock == Enumerations.Language)
                         {
                             if (command == "File")
                             {
@@ -162,7 +162,7 @@ namespace TombLib.Script
                             }
                         }
 
-                        if (lastBlock == ScriptBlocks.Options)
+                        if (lastBlock == Enumerations.Options)
                         {
                             if (command == "LoadSave")
                                 _loadSave = (value == "ENABLED");
@@ -180,7 +180,7 @@ namespace TombLib.Script
                                 _security = Convert.ToByte(value.Replace("$", ""), 16);
                         }
 
-                        if (lastBlock == ScriptBlocks.Title || lastBlock == ScriptBlocks.Level)
+                        if (lastBlock == Enumerations.Title || lastBlock == Enumerations.Level)
                         {
                             if (LevelScriptCatalog.Commands.ContainsKey(command))
                             {

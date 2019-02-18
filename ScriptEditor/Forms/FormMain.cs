@@ -50,9 +50,6 @@ namespace ScriptEditor
 			// Disable the interface since no file has been loaded yet
 			ToggleInterface(false);
 
-            // Set the default compiler
-            comboCompiler.SelectedIndex = 0;
-
 			// Check if required paths are set
 			CheckRequiredPaths();
 
@@ -111,7 +108,8 @@ namespace ScriptEditor
 		private void CheckRequiredPaths()
 		{
 			// If the required paths aren't defined yet
-			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
+			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || 
+                string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
 			{
 				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
 					"Paths not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -716,7 +714,7 @@ namespace ScriptEditor
 
 		private void ShowAboutForm()
 		{
-			using (FormAbout form = new FormAbout())
+			using (var form = new TombLib.Forms.FormAbout(null))
 			{
 				form.ShowDialog(this);
 			}
@@ -798,18 +796,18 @@ namespace ScriptEditor
         private void BuildScript()
         {
             IScriptCompiler compiler;
-            switch (comboCompiler.SelectedIndex)
+            switch (Properties.Settings.Default.Compiler)
             {
-                case 0:
-                    compiler = new ScriptCompilerLegacy(Properties.Settings.Default.ScriptPath);
+                case ScriptCompilers.TRLENew:
+                    compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR4);
                     break;
-                case 1:
-                    compiler = new ScriptCompilerTRNG();
+                case ScriptCompilers.NGCenter:
+                    compiler = new ScriptCompilerTRNG(Properties.Settings.Default.NgCenterPath);
                     break;
-                case 2:
+                case ScriptCompilers.TR5New:
                     compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR5);
                     break;
-                case 3:
+                case ScriptCompilers.TR5Main:
                     compiler = new ScriptCompilerTR5Main();
                     break;
                 default:
@@ -817,7 +815,12 @@ namespace ScriptEditor
                     break;
             }
 
-            compiler.CompileScripts(Properties.Settings.Default.ScriptPath, Properties.Settings.Default.GamePath);
+            bool result = compiler.CompileScripts(Properties.Settings.Default.ScriptPath, Properties.Settings.Default.GamePath);
+            if (!result)
+            {
+                DarkMessageBox.Show(this, "Error while compiling scripts", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

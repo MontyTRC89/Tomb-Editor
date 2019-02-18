@@ -227,7 +227,7 @@
     <Compile Include="Script\LanguageScript.cs" />
     <Compile Include="Script\LevelScript.cs" />
     <Compile Include="Script\LevelScriptCatalog.cs" />
-    <Compile Include="Script\ScriptBlocks.cs" />
+    <Compile Include="Script\Enumerations.cs" />
     <Compile Include="Script\ScriptCompilerLegacy.cs" />
     <Compile Include="Script\ScriptCompilerNew.cs" />
     <Compile Include="Script\ScriptCompilerTR5Main.cs" />
