@@ -953,6 +953,13 @@ namespace TombLib.LevelData
                     _objects.Remove((PositionBasedObjectInstance)instance);
                 throw;
             }
+
+            if (Level.Settings.GameVersion == GameVersion.TRNG &&
+                instance is IHasScriptID && !(instance is StaticInstance))
+            {
+                (instance as IHasScriptID).AllocateNewScriptId();
+            }
+
             return instance;
         }
 
