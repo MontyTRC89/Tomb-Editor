@@ -562,7 +562,6 @@ namespace TombEditor.Forms
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NgCenterScriptCompiler.CompileScript();
             //level.Load("");
             //var level = new TestLevel("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\tut1.tr4");
             //var level = new TestLevel("h:\\trle\\Data\\coastal.tr4");

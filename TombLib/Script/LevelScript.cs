@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,17 @@ namespace TombLib.Script
         public byte AudioTrack { get; set; }
         public bool IsTitle { get; set; }
         public List<LevelScriptEntry> Entries { get; private set; } = new List<LevelScriptEntry>();
+        public bool Horizon { get; set; }
+        public bool ResetInventory { get; set; }
+        public bool ColAddHorizon { get; set; }
+        public bool Lightning { get; set; }
+        public byte UVRotate { get; set; }
+
+        // TR5Main only
+        public bool Sky { get; set; }
+        public int LaraType { get; set; } = 0;
+        public int LevelFarView { get; set; } = 200;
+        public string LoadScreen { get; set; }
 
         public LevelScript(bool isTitle)
         {

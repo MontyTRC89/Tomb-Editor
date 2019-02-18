@@ -223,12 +223,15 @@
     <Compile Include="LevelData\StaticInstance.cs" />
     <Compile Include="LevelData\TextureFootStepSound.cs" />
     <Compile Include="LevelData\TriggerInstance.cs" />
+    <Compile Include="Script\IScriptCompiler.cs" />
     <Compile Include="Script\LanguageScript.cs" />
     <Compile Include="Script\LevelScript.cs" />
     <Compile Include="Script\LevelScriptCatalog.cs" />
-    <Compile Include="Script\NgCenterScriptCompiler.cs" />
-    <Compile Include="Script\Script.cs" />
     <Compile Include="Script\ScriptBlocks.cs" />
+    <Compile Include="Script\ScriptCompilerLegacy.cs" />
+    <Compile Include="Script\ScriptCompilerNew.cs" />
+    <Compile Include="Script\ScriptCompilerTR5Main.cs" />
+    <Compile Include="Script\ScriptCompilerTRNG.cs" />
     <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />

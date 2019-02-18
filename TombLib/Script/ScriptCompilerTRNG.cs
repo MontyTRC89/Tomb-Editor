@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TombLib.Script
 {
-    public class NgCenterScriptCompiler
+    public class ScriptCompilerTRNG : IScriptCompiler
     {
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
@@ -33,31 +33,6 @@ namespace TombLib.Script
         private const int BM_CLICK = 0x00F5;
 
         private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-
-        public static bool CompileScript()
-        {
-            IEnumerable<IntPtr> windows = FindWindowsWithText("NG Center 1.");
-
-            if (windows.Count() != 0)
-            {
-                try
-                {
-                    IntPtr parentWindow = windows.First();
-                    IntPtr child = FindControlByName(parentWindow, "Build");
-                    SendMessage(child, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         private static IntPtr FindControlByName(IntPtr parentWindow, string name)
         {
@@ -120,6 +95,31 @@ namespace TombLib.Script
             }
 
             return String.Empty;
+        }
+
+        public bool CompileScripts(string srcPath, string dstPath)
+        {
+            IEnumerable<IntPtr> windows = FindWindowsWithText("NG Center 1.");
+
+            if (windows.Count() != 0)
+            {
+                try
+                {
+                    IntPtr parentWindow = windows.First();
+                    IntPtr child = FindControlByName(parentWindow, "Build");
+                    SendMessage(child, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
