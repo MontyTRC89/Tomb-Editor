@@ -106,7 +106,6 @@
             this.uncommentToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator_13 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator_14 = new System.Windows.Forms.ToolStripSeparator();
-            this.comboCompiler = new System.Windows.Forms.ToolStripComboBox();
             this.zoomLabel = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.textEditor)).BeginInit();
             this.editorContextMenu.SuspendLayout();
@@ -135,7 +134,7 @@
             this.aboutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("aboutToolStripMenuItem.Image")));
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.Help_About_MenuItem_Click);
             // 
@@ -194,8 +193,8 @@
             this.changeToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.changeToolStripMenuItem.Name = "changeToolStripMenuItem";
             this.changeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.changeToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.changeToolStripMenuItem.Text = "&Change Paths...";
+            this.changeToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.changeToolStripMenuItem.Text = "&Change Paths && compiler...";
             this.changeToolStripMenuItem.Click += new System.EventHandler(this.File_Change_MenuItem_Click);
             // 
             // clearBookmarksToolStripButton
@@ -1041,8 +1040,7 @@
             this.nextBookmarkToolStripButton,
             this.clearBookmarksToolStripButton,
             this.toolStripSeparator_14,
-            this.aboutToolStripButton,
-            this.comboCompiler});
+            this.aboutToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -1122,19 +1120,6 @@
             this.toolStripSeparator_14.Name = "toolStripSeparator_14";
             this.toolStripSeparator_14.Size = new System.Drawing.Size(6, 28);
             // 
-            // comboCompiler
-            // 
-            this.comboCompiler.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboCompiler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboCompiler.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.comboCompiler.Items.AddRange(new object[] {
-            "TRLE compiler",
-            "NG_Center compiler",
-            "TR5 compiler",
-            "TR5Main compiler"});
-            this.comboCompiler.Name = "comboCompiler";
-            this.comboCompiler.Size = new System.Drawing.Size(121, 28);
-            // 
             // zoomLabel
             // 
             this.zoomLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1169,7 +1154,7 @@
             this.MinimumSize = new System.Drawing.Size(800, 450);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ScriptEditor";
+            this.Text = "Script Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_Closing);
             this.Shown += new System.EventHandler(this.FormMain_Shown);
@@ -1278,7 +1263,6 @@
 		private System.Windows.Forms.ToolStripStatusLabel colNumberLabel;
 		private System.Windows.Forms.ToolStripStatusLabel lineNumberLabel;
 		private System.Windows.Forms.ToolStripStatusLabel selectedCharsLabel;
-        private System.Windows.Forms.ToolStripComboBox comboCompiler;
     }
 }
 

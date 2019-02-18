@@ -86,5 +86,11 @@
     <Setting Name="ReduceSpaces" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="NgCenterPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Compiler" Type="TombLib.Script.ScriptCompilers" Scope="User">
+      <Value Profile="(Default)">NGCenter</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

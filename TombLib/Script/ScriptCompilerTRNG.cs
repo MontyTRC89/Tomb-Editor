@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,6 +35,13 @@ namespace TombLib.Script
         private const int BM_CLICK = 0x00F5;
 
         private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        private string _path;
+
+        public ScriptCompilerTRNG(string path)
+        {
+            _path = path;
+        }
 
         private static IntPtr FindControlByName(IntPtr parentWindow, string name)
         {
@@ -100,6 +109,18 @@ namespace TombLib.Script
         public bool CompileScripts(string srcPath, string dstPath)
         {
             IEnumerable<IntPtr> windows = FindWindowsWithText("NG Center 1.");
+
+            if (windows.Count() == 0)
+            {
+                string ngCenterPath = _path + "\\NG_Center.exe";
+                if (!File.Exists(ngCenterPath))
+                    return false;
+
+                Process process = Process.Start(ngCenterPath);
+                process.WaitForInputIdle();
+
+                windows = FindWindowsWithText("NG Center 1.");
+            }
 
             if (windows.Count() != 0)
             {
