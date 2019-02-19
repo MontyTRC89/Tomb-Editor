@@ -11,17 +11,20 @@ namespace TombLib.Wad
 {
     public class WadMesh : ICloneable
     {
-        private struct VertexNormalAverageHelper
+        private class VertexNormalAverageHelper
         {
             public Vector3 Position { get; set; }
             public List<Vector3> Normals { get; private set; }
             public List<int> Indices { get; private set; }
+            public Vector3 Normal { get; set; }
+            public int NumVertices { get; set; }
 
-            public VertexNormalAverageHelper(Vector3 pos)
+            public VertexNormalAverageHelper()
             {
-                Position = pos;
                 Normals = new List<Vector3>();
                 Indices = new List<int>();
+                Normal = Vector3.Zero;
+                NumVertices = 0;
             }
         }
 
@@ -38,73 +41,42 @@ namespace TombLib.Wad
         public void CalculateNormals()
         {
             VerticesNormals.Clear();
-            for (int i = 0; i < VerticesPositions.Count; i++)
-            {
-                VerticesNormals.Add(Vector3.Zero);
-            }
 
-                return;
-            VerticesNormals.Clear();
-            var tempNormals = new Dictionary<Hash, VertexNormalAverageHelper>();
-            var tempVertices = new Dictionary<Hash, List<int>>();
-
+            var tempNormals = new List<VertexNormalAverageHelper>();
             for (int i = 0; i < VerticesPositions.Count; i++)
-            {
-                Hash hash = MathC.GetVector3Hash(VerticesPositions[i]);
-                if (!tempNormals.ContainsKey(hash))
-                    tempNormals.Add(hash, new VertexNormalAverageHelper(VerticesPositions[i]));
-                if (!tempVertices.ContainsKey(hash))
-                    tempVertices.Add(hash, new List<int>());
-                tempVertices[hash].Add(i);
-                VerticesNormals.Add(Vector3.Zero);
-            }
+                tempNormals.Add(new VertexNormalAverageHelper());
 
-            for (int i = 0; i < VerticesPositions.Count; i++)
+            foreach (var poly in Polys)
             {
-                foreach (var poly in Polys)
+                var p0 = VerticesPositions[poly.Index0];
+                var p1 = VerticesPositions[poly.Index1];
+                var p2 = VerticesPositions[poly.Index2];
+
+                var v1 = p0 - p2;
+                var v2 = p1 - p2;
+                var normal = Vector3.Cross(v1, v2);
+
+                tempNormals[poly.Index0].Normal += normal;
+                tempNormals[poly.Index0].NumVertices++;
+
+                tempNormals[poly.Index1].Normal += normal;
+                tempNormals[poly.Index1].NumVertices++;
+
+                tempNormals[poly.Index2].Normal += normal;
+                tempNormals[poly.Index2].NumVertices++;
+
+                if (poly.Shape == WadPolygonShape.Quad)
                 {
-                    var p0 = VerticesPositions[poly.Index0];
-                    var p1 = VerticesPositions[poly.Index1];
-                    var p2 = VerticesPositions[poly.Index2];
-                    var p3 = VerticesPositions[poly.Index3];
-
-                    // Calculate the face normal
-                    var v1 = p0 - p2;
-                    var v2 = p1 - p2;
-                    var normal = Vector3.Cross(v1, v2);
-
-                    var hash0 = MathC.GetVector3Hash(p0);
-                    var hash1 = MathC.GetVector3Hash(p1);
-                    var hash2 = MathC.GetVector3Hash(p2);
-                    var hash3 = MathC.GetVector3Hash(p3);
-
-                    tempNormals[hash0].Normals.Add(normal);
-                    tempNormals[hash1].Normals.Add(normal);
-                    tempNormals[hash2].Normals.Add(normal);
-                    if (poly.Shape == WadPolygonShape.Quad)
-                        tempNormals[hash3].Normals.Add(normal);
+                    tempNormals[poly.Index3].Normal += normal;
+                    tempNormals[poly.Index3].NumVertices++;
                 }
             }
 
             for (int i = 0; i < tempNormals.Count; i++)
             {
-                Vector3 sum = Vector3.Zero;
-                var normals = tempNormals.ElementAt(i).Value.Normals;
-                var hash = tempNormals.ElementAt(i).Key;
-
-                if (normals.Count == 0)
-                {
-                    // This should neever happen but let's manage it
-                }
-                else
-                {
-                    for (int j = 0; j < normals.Count; j++)
-                        sum += normals[j];
-                    sum /= normals.Count;
-                }
-
-                for (int j = 0; j < tempVertices[hash].Count; j++)
-                    VerticesNormals[tempVertices[hash][j]] = sum / sum.Length() * 16300.0f;
+                var normal = tempNormals[i].Normal / Math.Max(1, tempNormals[i].NumVertices);
+                normal = Vector3.Normalize(normal);
+                VerticesNormals.Add(normal);
             }
         }
 
