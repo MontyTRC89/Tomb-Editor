@@ -53,6 +53,9 @@
     <Compile Include="AutocompleteItems.cs" />
     <Compile Include="Bookmarks.cs" />
     <Compile Include="ClipboardMethods.cs" />
+    <Compile Include="Controls\VisualStudioTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\FormReindentRules.cs">
       <SubType>Form</SubType>
     </Compile>
