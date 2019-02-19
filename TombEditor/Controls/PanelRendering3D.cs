@@ -146,6 +146,64 @@ namespace TombEditor.Controls
                          });
                 });
             }
+
+            PreviewKeyDown += OnPreviewKeyDown;
+        }
+
+        bool _walkMode = false;
+
+        private void OnPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Z && !_walkMode)
+            {
+                Cursor.Hide();
+                var bounds = new Rectangle(PointToScreen(Point.Empty).X, PointToScreen(Point.Empty).Y, Width - 2, Height - 2);
+                Cursor.Clip = bounds;
+
+                _walkMode = true;
+            }
+
+            if (e.KeyCode == Keys.Escape && _walkMode)
+            {
+                Camera.MaxDistance = 1000000;
+                Cursor.Clip = new Rectangle();
+                Cursor.Show();
+
+                _walkMode = false;
+            }
+
+            if (_walkMode)
+            {
+                Camera = new ArcBallCamera(Camera.GetPosition(), Camera.RotationX, Camera.RotationY, Camera.MinRotationX, Camera.MaxRotationX, 1, 1, 1, Camera.FieldOfView);
+                var newCameraPos = new Vector3();
+
+                switch (e.KeyCode)
+                {
+                    case Keys.W:
+                    {
+                        newCameraPos = new Vector3(0, 0, -200);
+                        break;
+                    }
+                    case Keys.A:
+                    {
+                        newCameraPos = new Vector3(200, 0, 0);
+                        break;
+                    }
+                    case Keys.S:
+                    {
+                        newCameraPos = new Vector3(0, 0, 200);
+                        break;
+                    }
+                    case Keys.D:
+                    {
+                        newCameraPos = new Vector3(-200, 0, 0);
+                        break;
+                    }
+                }
+
+                Camera.MoveCameraPlane(newCameraPos);
+                Invalidate();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -361,7 +419,7 @@ namespace TombEditor.Controls
             // Initialize a new camera
             if (Camera == null || forceNewCamera || !_editor.Configuration.Rendering3D_AnimateCameraOnReset)
             {
-                Camera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 2750, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
+                Camera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 1, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
                 Invalidate();
             }
             else
@@ -723,8 +781,15 @@ namespace TombEditor.Controls
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
                 redrawWindow = true;
 
+            var pressedButton = e.Button;
+
+            if (_walkMode)
+            {
+                pressedButton = MouseButtons.Right;
+            }
+
             // Process action
-            switch (e.Button)
+            switch (pressedButton)
             {
                 case MouseButtons.Middle:
                 case MouseButtons.Right:
@@ -742,6 +807,24 @@ namespace TombEditor.Controls
                         Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDeltaY : -relativeDeltaY) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                     {
+                        if (e.Location.X <= 0)
+                        {
+                            Cursor.Position = new Point(Cursor.Position.X + Width - 5, Cursor.Position.Y);
+                        }
+                        else if (e.Location.X >= Width - 4)
+                        {
+                            Cursor.Position = new Point(Cursor.Position.X - Width + 5, Cursor.Position.Y);
+                        }
+
+                        if (e.Location.Y <= 0)
+                        {
+                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 5);
+                        }
+                        else if (e.Location.Y >= Height - 4)
+                        {
+                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 5);
+                        }
+
                         if (e.X - _lastMousePosition.X >= (float)Width / 2 || e.X - _lastMousePosition.X <= -(float)Width / 2)
                         {
                             relativeDeltaX = 0;
