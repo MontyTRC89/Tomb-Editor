@@ -27,7 +27,7 @@ namespace TombEditor.Controls
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; }
+        public Camera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowPortals { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -58,6 +58,8 @@ namespace TombEditor.Controls
         public bool DisablePickingForImportedGeometry { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
+
+        private Camera _oldCamera;
 
         // Overall state
         private readonly Editor _editor;
@@ -150,6 +152,26 @@ namespace TombEditor.Controls
             PreviewKeyDown += OnPreviewKeyDown;
         }
 
+        private Room GetCurrentRoom()
+        {
+            foreach (var room in _editor.Level.Rooms)
+            {
+                if (room == null)
+                    continue;
+
+                Vector3 p = Camera.GetPosition();
+                BoundingBox b = room.WorldBoundingBox;
+
+                if (p.X >= b.Minimum.X && p.Y >= b.Minimum.Y && p.Z >= b.Minimum.Z &&
+                    p.X <= b.Maximum.X && p.Y <= b.Maximum.Y && p.Z <= b.Maximum.Z)
+                {
+                    return room;
+                }
+            }
+
+            return null;
+        }
+
         bool _walkMode = false;
 
         private void OnPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -160,12 +182,29 @@ namespace TombEditor.Controls
                 var bounds = new Rectangle(PointToScreen(Point.Empty).X, PointToScreen(Point.Empty).Y, Width - 2, Height - 2);
                 Cursor.Clip = bounds;
 
+                _oldCamera = Camera;
+                Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
+                    _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
+
                 _walkMode = true;
             }
 
             if (e.KeyCode == Keys.Escape && _walkMode)
             {
-                Camera.MaxDistance = 1000000;
+                var p = Camera.GetPosition();
+                var d = Camera.GetDirection();
+                var t = Camera.GetTarget();
+
+                t = p + d * 1024.0f;
+
+                _oldCamera.RotationX = Camera.RotationX;
+                _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
+
+                Camera = _oldCamera;
+                Camera.Distance = 1024.0f;
+                Camera.Position = p;
+                Camera.Target = t;
+                
                 Cursor.Clip = new Rectangle();
                 Cursor.Show();
 
@@ -174,7 +213,7 @@ namespace TombEditor.Controls
 
             if (_walkMode)
             {
-                Camera = new ArcBallCamera(Camera.GetPosition(), Camera.RotationX, Camera.RotationY, Camera.MinRotationX, Camera.MaxRotationX, 1, 1, 1, Camera.FieldOfView);
+               
                 var newCameraPos = new Vector3();
 
                 switch (e.KeyCode)
@@ -202,6 +241,11 @@ namespace TombEditor.Controls
                 }
 
                 Camera.MoveCameraPlane(newCameraPos);
+
+                var room = GetCurrentRoom();
+                if (room != null)
+                    _editor.SelectedRoom = room;
+
                 Invalidate();
             }
         }
@@ -476,6 +520,7 @@ namespace TombEditor.Controls
 
             if(!_movementTimer.Animating)
             {
+                Console.WriteLine("Delta: " + e.Delta);
                 Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
                 Invalidate();
             }

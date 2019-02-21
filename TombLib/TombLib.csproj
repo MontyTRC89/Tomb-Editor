@@ -149,6 +149,7 @@
     <Compile Include="GeometryIO\IOSubmesh.cs" />
     <Compile Include="GeometryIO\IOVertex.cs" />
     <Compile Include="Graphics\AnimationNode.cs" />
+    <Compile Include="Graphics\FreeCamera.cs" />
     <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\ObjectMesh.cs" />
     <Compile Include="Graphics\ObjectVertex.cs" />

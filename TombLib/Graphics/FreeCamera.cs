@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TombLib.Graphics
 {
-    public class ArcBallCamera : Camera
+    public class FreeCamera : Camera
     {
-        public ArcBallCamera(Vector3 target, float rotationX,
+        public FreeCamera(Vector3 position, float rotationX,
             float rotationY, float minRotationX, float maxRotationX,
-            float distance, float minDistance, float maxDistance, float fieldOfView)
-            : base(Vector3.Zero, target, rotationX, rotationY, minRotationX, maxRotationX,
-                 distance, minDistance, maxDistance, fieldOfView)
+            float fieldOfView)
+            : base(position, Vector3.Zero, rotationX, rotationY, minRotationX, maxRotationX,
+                 0, 0, 0, fieldOfView)
         {
 
         }
@@ -30,23 +34,33 @@ namespace TombLib.Graphics
 
         public override void MoveCameraPlane(Vector3 movementVec)
         {
-            float distanceMultiplier = (float)Math.Pow(Distance / DefaultDistance, 2 / (float)3);
-            Target += MathC.HomogenousTransform(movementVec * distanceMultiplier, GetRotationMatrix());
+            Matrix4x4 rotation = GetRotationMatrix();
+
+            Vector3 look = MathC.HomogenousTransform(Vector3.UnitZ, rotation);
+            Vector3 right = MathC.HomogenousTransform(Vector3.UnitX, rotation);
+            Vector3 up = Vector3.Cross(look, right);
+
+            Position -= movementVec.Z * look;
+            Position -= movementVec.X * right;
         }
 
         public override void MoveCameraLinear(Vector3 movementVec)
         {
-            Target += movementVec;
+
         }
 
         public override Matrix4x4 GetViewProjectionMatrix(float width, float height)
         {
-            // Calculate up vector
-            Matrix4x4 rotation = Matrix4x4.CreateFromYawPitchRoll(RotationY, -RotationX, 0);
-            Vector3 up = MathC.HomogenousTransform(Vector3.UnitY, rotation);
+            Matrix4x4 rotation = GetRotationMatrix();
 
-            //new Vector3(0, 150, 0), Vector3.Up);
-            Matrix4x4 View = MathC.Matrix4x4CreateLookAtLH(GetPosition(), Target, up);
+            Vector3 look = MathC.HomogenousTransform(Vector3.UnitZ, rotation);
+            Vector3 right = MathC.HomogenousTransform(Vector3.UnitX, rotation);
+            Vector3 up = Vector3.Cross(look, right);
+
+            Target = Position + 1024.0f * look;
+
+            Matrix4x4 View = MathC.Matrix4x4CreateLookAtLH(Position, Target, up);
+
             float aspectRatio = width / height;
             Matrix4x4 Projection = MathC.Matrix4x4CreatePerspectiveFieldOfViewLH(FieldOfView, aspectRatio, 20.0f, 1000000.0f);
             Matrix4x4 result = View * Projection;
@@ -55,20 +69,19 @@ namespace TombLib.Graphics
 
         public override Matrix4x4 GetRotationMatrix()
         {
-            return Matrix4x4.CreateFromYawPitchRoll(RotationY, -RotationX, 0);
+            return Matrix4x4.CreateFromYawPitchRoll(RotationY, RotationX, 0);
         }
 
         public override Vector3 GetDirection()
         {
-            // Translate down the Z axis by the desired distance
-            // between the camera and object, then rotate that
-            // vector to find the camera offset from the target
-            return MathC.HomogenousTransform(new Vector3(0, 0, Distance), GetRotationMatrix());
+            Matrix4x4 rotation = GetRotationMatrix();
+            Vector3 look = MathC.HomogenousTransform(Vector3.UnitZ, rotation);
+            return Vector3.Normalize(look);
         }
 
         public override Vector3 GetPosition()
         {
-            return Target + GetDirection();
+            return Position;
         }
 
         public override Vector3 GetTarget()
