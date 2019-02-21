@@ -47,9 +47,6 @@ namespace TombLib.GeometryIO.Importers
                 newModel.Materials.Add(material);
             }
 
-            /*foreach (var text in textures)
-                newModel.Textures.Add(text.Value);*/
-
             var lastBaseVertex = 0;
 
             // Loop for each mesh loaded in scene
@@ -59,7 +56,7 @@ namespace TombLib.GeometryIO.Importers
                 Texture faceTexture;
                 if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
                 {
-                    logger.Warn("Mesh '" + (mesh.Name ?? "") + "' does have material index " + mesh.MaterialIndex + " which can't be found.");
+                    logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which can't be found.");
                     continue;
                 }
 
@@ -69,10 +66,8 @@ namespace TombLib.GeometryIO.Importers
                 var newSubmesh = new IOSubmesh(material);
                 newMesh.Submeshes.Add(material, newSubmesh);
 
-                var hasTexCoords = mesh.HasTextureCoords(0);
-                var hasColors = mesh.HasVertexColors(0);
-
-                //newMesh.Texture = faceTexture;
+                bool hasTexCoords = mesh.HasTextureCoords(0);
+                bool hasColors = mesh.HasVertexColors(0);
 
                 // Source data
                 var positions = mesh.Vertices;
