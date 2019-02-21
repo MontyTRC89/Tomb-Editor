@@ -65,13 +65,15 @@ namespace TombEditor.Controls
         private readonly Editor _editor;
         private Vector3? _currentRoomLastPos;
 
-        // Camera state (needed only for animations)
+        // Camera state
         private Vector3 _lastCameraPos;
         private Vector3 _nextCameraPos;
         private Vector2 _lastCameraRot;
         private Vector2 _nextCameraRot;
         private float _lastCameraDist;
         private float _nextCameraDist;
+        private bool _flyMode = false;
+        private readonly Timer _flyModeTimer;
 
         // Mouse interaction state
         private Point _lastMousePosition;
@@ -118,38 +120,40 @@ namespace TombEditor.Controls
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
 
-            _toolHandler = new ToolHandler(this);
-            _movementTimer = new MovementTimer(MoveTimer_Tick);
+                _toolHandler = new ToolHandler(this);
+                _movementTimer = new MovementTimer(MoveTimer_Tick);
 
-            _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024,
-                delegate (Room room)
-                {
-                    var sectorTextures = new SectorTextureDefault
+                _flyModeTimer = new Timer();
+                _flyModeTimer.Interval = 1;
+                _flyModeTimer.Tick += new EventHandler(FlyModeTimer_Tick);
+
+                _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024,
+                    delegate (Room room)
                     {
-                        ColoringInfo = _editor.SectorColoringManager.ColoringInfo,
-                        DrawIllegalSlopes = ShowIllegalSlopes,
-                        DrawSlideDirections = ShowSlideDirections,
-                        ProbeAttributesThroughPortals = _editor.Configuration.UI_ProbeAttributesThroughPortals,
-                    };
+                        var sectorTextures = new SectorTextureDefault
+                        {
+                            ColoringInfo = _editor.SectorColoringManager.ColoringInfo,
+                            DrawIllegalSlopes = ShowIllegalSlopes,
+                            DrawSlideDirections = ShowSlideDirections,
+                            ProbeAttributesThroughPortals = _editor.Configuration.UI_ProbeAttributesThroughPortals,
+                        };
 
-                    if(_editor.SelectedRoom == room)
-                    {
-                        sectorTextures.HighlightArea = _editor.HighlightedSectors.Area;
-                        sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
-                        sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
-                    }
+                        if (_editor.SelectedRoom == room)
+                        {
+                            sectorTextures.HighlightArea = _editor.HighlightedSectors.Area;
+                            sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
+                            sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
+                        }
 
-                    return Device.CreateDrawingRoom(
-                         new RenderingDrawingRoom.Description
-                         {
-                             Room = room,
-                             TextureAllocator = _renderingTextures,
-                             SectorTextureGet = sectorTextures.Get
-                         });
-                });
+                        return Device.CreateDrawingRoom(
+                             new RenderingDrawingRoom.Description
+                             {
+                                 Room = room,
+                                 TextureAllocator = _renderingTextures,
+                                 SectorTextureGet = sectorTextures.Get
+                             });
+                    });
             }
-
-            PreviewKeyDown += OnPreviewKeyDown;
         }
 
         private Room GetCurrentRoom()
@@ -170,84 +174,6 @@ namespace TombEditor.Controls
             }
 
             return null;
-        }
-
-        bool _walkMode = false;
-
-        private void OnPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.KeyCode == Keys.Z && !_walkMode)
-            {
-                Cursor.Hide();
-                var bounds = new Rectangle(PointToScreen(Point.Empty).X, PointToScreen(Point.Empty).Y, Width - 2, Height - 2);
-                Cursor.Clip = bounds;
-
-                _oldCamera = Camera;
-                Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
-                    _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
-
-                _walkMode = true;
-            }
-
-            if (e.KeyCode == Keys.Escape && _walkMode)
-            {
-                var p = Camera.GetPosition();
-                var d = Camera.GetDirection();
-                var t = Camera.GetTarget();
-
-                t = p + d * 1024.0f;
-
-                _oldCamera.RotationX = Camera.RotationX;
-                _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
-
-                Camera = _oldCamera;
-                Camera.Distance = 1024.0f;
-                Camera.Position = p;
-                Camera.Target = t;
-                
-                Cursor.Clip = new Rectangle();
-                Cursor.Show();
-
-                _walkMode = false;
-            }
-
-            if (_walkMode)
-            {
-               
-                var newCameraPos = new Vector3();
-
-                switch (e.KeyCode)
-                {
-                    case Keys.W:
-                    {
-                        newCameraPos = new Vector3(0, 0, -200);
-                        break;
-                    }
-                    case Keys.A:
-                    {
-                        newCameraPos = new Vector3(200, 0, 0);
-                        break;
-                    }
-                    case Keys.S:
-                    {
-                        newCameraPos = new Vector3(0, 0, 200);
-                        break;
-                    }
-                    case Keys.D:
-                    {
-                        newCameraPos = new Vector3(-200, 0, 0);
-                        break;
-                    }
-                }
-
-                Camera.MoveCameraPlane(newCameraPos);
-
-                var room = GetCurrentRoom();
-                if (room != null)
-                    _editor.SelectedRoom = room;
-
-                Invalidate();
-            }
         }
 
         protected override void Dispose(bool disposing)
@@ -368,7 +294,7 @@ namespace TombEditor.Controls
             if (obj is IEditorRoomChangedEvent)
             {
                 _renderingCachedRooms.Remove(((IEditorRoomChangedEvent)obj).Room);
-                if(obj is Editor.RoomGeometryChangedEvent)
+                if (obj is Editor.RoomGeometryChangedEvent)
                     foreach (var portal in ((Editor.RoomGeometryChangedEvent)obj).Room.Portals)
                         _renderingCachedRooms.Remove(portal.AdjoiningRoom);
             }
@@ -434,7 +360,7 @@ namespace TombEditor.Controls
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
                 var nextPos = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
 
-                if(_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
+                if (_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
                     AnimateCamera(nextPos);
                 else
                 {
@@ -506,6 +432,41 @@ namespace TombEditor.Controls
 
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
+
+            if (e.KeyCode == Keys.Z && !_flyMode)
+            {
+                _oldCamera = Camera;
+                Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
+                    _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
+
+                Cursor.Hide();
+
+                _flyModeTimer.Start();
+                _flyMode = true;
+                Capture = true;
+            }
+            else if ((e.KeyCode == Keys.Z || e.KeyCode == Keys.Escape) && _flyMode)
+            {
+                var p = Camera.GetPosition();
+                var d = Camera.GetDirection();
+                var t = Camera.GetTarget();
+
+                t = p + d * 1024.0f;
+
+                _oldCamera.RotationX = Camera.RotationX;
+                _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
+
+                Camera = _oldCamera;
+                Camera.Distance = 1024.0f;
+                Camera.Position = p;
+                Camera.Target = t;
+
+                Cursor.Show();
+
+                _flyModeTimer.Stop();
+                _flyMode = false;
+                Capture = false;
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -518,7 +479,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseWheel(e);
 
-            if(!_movementTimer.Animating)
+            if (!_movementTimer.Animating)
             {
                 Console.WriteLine("Delta: " + e.Delta);
                 Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
@@ -830,7 +791,7 @@ namespace TombEditor.Controls
 
             var pressedButton = e.Button;
 
-            if (_walkMode)
+            if (_flyMode)
             {
                 pressedButton = MouseButtons.Right;
             }
@@ -856,20 +817,20 @@ namespace TombEditor.Controls
                     {
                         if (e.Location.X <= 0)
                         {
-                            Cursor.Position = new Point(Cursor.Position.X + Width - 5, Cursor.Position.Y);
+                            Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
                         }
-                        else if (e.Location.X >= Width - 4)
+                        else if (e.Location.X >= Width - 1)
                         {
-                            Cursor.Position = new Point(Cursor.Position.X - Width + 5, Cursor.Position.Y);
+                            Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
                         }
 
                         if (e.Location.Y <= 0)
                         {
-                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 5);
+                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
                         }
-                        else if (e.Location.Y >= Height - 4)
+                        else if (e.Location.Y >= Height - 1)
                         {
-                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 5);
+                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
                         }
 
                         if (e.X - _lastMousePosition.X >= (float)Width / 2 || e.X - _lastMousePosition.X <= -(float)Width / 2)
@@ -960,13 +921,13 @@ namespace TombEditor.Controls
                                 }
 
                                 // Only resize if any dimension is bigger than 3 and less than 32
-                                if(resizeArea.Size.X > 1 && resizeArea.Size.Y > 1 && resizeArea.Size.X < 32 && resizeArea.Size.Y < 32)
+                                if (resizeArea.Size.X > 1 && resizeArea.Size.Y > 1 && resizeArea.Size.X < 32 && resizeArea.Size.Y < 32)
                                 {
                                     bool? operateOnFloor = null;
                                     if (_toolHandler.ReferencePicking.IsVerticalPlane) operateOnFloor = true;
                                     currRoom.Resize(_editor.Level, resizeArea, resizeHeight[0], resizeHeight[1], operateOnFloor);
                                     EditorActions.MoveRooms(move, currRoom.Versions, true);
-                                    if(_toolHandler.ReferenceRoom == _editor.SelectedRoom)
+                                    if (_toolHandler.ReferenceRoom == _editor.SelectedRoom)
                                         _editor.HighlightedSectors = new SectorSelection() { Area = _toolHandler.ReferenceRoom.LocalArea };
                                 }
                             }
@@ -1135,7 +1096,7 @@ namespace TombEditor.Controls
                     }
                     break;
                 default:
-                    if(_editor.Tool.Tool == EditorToolType.Paint2x2)
+                    if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                     {
                         // Disable highlight in lighting mode, if option is set
                         if (_editor.Mode == EditorMode.Lighting &&
@@ -1364,7 +1325,7 @@ namespace TombEditor.Controls
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
-            if(_movementTimer.Animating)
+            if (_movementTimer.Animating)
             {
                 var lerpedRot = Vector2.Lerp(_lastCameraRot, _nextCameraRot, _movementTimer.MoveMultiplier);
                 Camera.Target = Vector3.Lerp(_lastCameraPos, _nextCameraPos, _movementTimer.MoveMultiplier);
@@ -1408,6 +1369,59 @@ namespace TombEditor.Controls
                         break;
                 }
             }
+        }
+
+        private void FlyModeTimer_Tick(object sender, EventArgs e)
+        {
+            var newCameraPos = new Vector3();
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
+            {
+                newCameraPos = new Vector3(0, 0, -50);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
+            {
+                newCameraPos = new Vector3(50, 0, 0);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S))
+            {
+                newCameraPos = new Vector3(0, 0, 50);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
+            {
+                newCameraPos = new Vector3(-50, 0, 0);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
+            {
+                newCameraPos = new Vector3(50, 0, -50);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
+            {
+                newCameraPos = new Vector3(-50, 0, -50);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
+            {
+                newCameraPos = new Vector3(50, 0, 50);
+            }
+
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
+            {
+                newCameraPos = new Vector3(-50, 0, 50);
+            }
+
+            Camera.MoveCameraPlane(newCameraPos);
+
+            var room = GetCurrentRoom();
+            if (room != null)
+                _editor.SelectedRoom = room;
+
+            Invalidate();
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix4x4 transform, ref Ray destinationRay, float sourceDistance)
@@ -3027,7 +3041,7 @@ namespace TombEditor.Controls
                     ReferenceRoom = refRoom ?? _parent._editor.SelectedRoom;
 
                     // Relocate picking may be not needed for texture operations (e.g. wall 4x4 painting)
-                    if(relocatePicking)
+                    if (relocatePicking)
                         RelocatePicking();
 
                     // Initialize data structures
@@ -3079,7 +3093,7 @@ namespace TombEditor.Controls
                         delta = new Point(_referencePosition.X - newPosition.X, _referencePosition.Y - newPosition.Y);
                     _newPosition = newPosition;
                     Dragged = true;
-                    if(highlightSelection)
+                    if (highlightSelection)
                         _parent._editor.HighlightedSectors = _parent._editor.SelectedSectors;
                     _parent._renderingCachedRooms.Remove(ReferenceRoom); // To update highlight state
                     return delta;
