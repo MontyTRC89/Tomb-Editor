@@ -133,6 +133,7 @@ namespace ScriptEditor
 			this.aboutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.aboutToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.aboutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("aboutToolStripButton.Image")));
+			this.aboutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.aboutToolStripButton.Name = "aboutToolStripButton";
 			this.aboutToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.aboutToolStripButton.Text = "About (F1)";
@@ -224,6 +225,7 @@ namespace ScriptEditor
 			this.buildToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buildToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.buildToolStripButton.Image = global::ScriptEditor.Properties.Resources.play_16;
+			this.buildToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buildToolStripButton.Name = "buildToolStripButton";
 			this.buildToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.buildToolStripButton.Text = "Build (F9)";
@@ -246,6 +248,7 @@ namespace ScriptEditor
 			this.changeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.changeToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.changeToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_Open_16;
+			this.changeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.changeToolStripButton.Name = "changeToolStripButton";
 			this.changeToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.changeToolStripButton.Text = "Add New Project... (Ctrl+N)";
@@ -257,6 +260,7 @@ namespace ScriptEditor
 			this.clearBookmarksToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.clearBookmarksToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.clearBookmarksToolStripButton.Image = global::ScriptEditor.Properties.Resources.clearBookmark_16;
+			this.clearBookmarksToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.clearBookmarksToolStripButton.Name = "clearBookmarksToolStripButton";
 			this.clearBookmarksToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.clearBookmarksToolStripButton.Text = "Clear all Bookmarks (Ctrl+Shift+B)";
@@ -296,6 +300,7 @@ namespace ScriptEditor
 			this.commentToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.commentToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.commentToolStripButton.Image = global::ScriptEditor.Properties.Resources.comment_16;
+			this.commentToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.commentToolStripButton.Name = "commentToolStripButton";
 			this.commentToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.commentToolStripButton.Text = "Comment out Lines (Ctrl+Shift+C)";
@@ -329,6 +334,7 @@ namespace ScriptEditor
 			this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.copyToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.copyToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripButton.Image")));
+			this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripButton.Name = "copyToolStripButton";
 			this.copyToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.copyToolStripButton.Text = "Copy (Ctrl+C)";
@@ -372,6 +378,7 @@ namespace ScriptEditor
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.cutToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.cutToolStripButton.Image = global::ScriptEditor.Properties.Resources.cut_16;
+			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.cutToolStripButton.Text = "Cut (Ctrl+X)";
@@ -948,6 +955,7 @@ namespace ScriptEditor
 			this.nextBookmarkToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.nextBookmarkToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.nextBookmarkToolStripButton.Image = global::ScriptEditor.Properties.Resources.nextBookmark_16;
+			this.nextBookmarkToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.nextBookmarkToolStripButton.Name = "nextBookmarkToolStripButton";
 			this.nextBookmarkToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.nextBookmarkToolStripButton.Text = "Next Bookmark (Ctrl+Right)";
@@ -978,6 +986,7 @@ namespace ScriptEditor
 			this.pasteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.pasteToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.pasteToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripButton.Image")));
+			this.pasteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pasteToolStripButton.Name = "pasteToolStripButton";
 			this.pasteToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.pasteToolStripButton.Text = "Paste (Ctrl+V)";
@@ -989,6 +998,7 @@ namespace ScriptEditor
 			this.prevBookmarkToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.prevBookmarkToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.prevBookmarkToolStripButton.Image = global::ScriptEditor.Properties.Resources.prevBookmark_16;
+			this.prevBookmarkToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.prevBookmarkToolStripButton.Name = "prevBookmarkToolStripButton";
 			this.prevBookmarkToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.prevBookmarkToolStripButton.Text = "Previous Bookmark (Ctrl+Left)";
@@ -1000,6 +1010,7 @@ namespace ScriptEditor
 			this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.redoToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.redoToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_redo_16;
+			this.redoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.redoToolStripButton.Name = "redoToolStripButton";
 			this.redoToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.redoToolStripButton.Text = "Redo (Ctrl+Y)";
@@ -1042,6 +1053,7 @@ namespace ScriptEditor
 			this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.saveToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.saveToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_Save_16;
+			this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripButton.Name = "saveToolStripButton";
 			this.saveToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.saveToolStripButton.Text = "Save (Ctrl+S)";
@@ -1074,6 +1086,7 @@ namespace ScriptEditor
 			this.toggleBookmarkToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.toggleBookmarkToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toggleBookmarkToolStripButton.Image = global::ScriptEditor.Properties.Resources.toggleBookmark_16;
+			this.toggleBookmarkToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toggleBookmarkToolStripButton.Name = "toggleBookmarkToolStripButton";
 			this.toggleBookmarkToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.toggleBookmarkToolStripButton.Text = "Toggle Bookmark (Ctrl+B)";
@@ -1136,6 +1149,7 @@ namespace ScriptEditor
 			this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.undoToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.undoToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_undo_16;
+			this.undoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.undoToolStripButton.Name = "undoToolStripButton";
 			this.undoToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.undoToolStripButton.Text = "Undo (Ctrl+Z)";
@@ -1163,6 +1177,7 @@ namespace ScriptEditor
 			this.uncommentToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.uncommentToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.uncommentToolStripButton.Image = global::ScriptEditor.Properties.Resources.uncomment_16;
+			this.uncommentToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.uncommentToolStripButton.Name = "uncommentToolStripButton";
 			this.uncommentToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.uncommentToolStripButton.Text = "Uncomment Lines (Ctrl+Shift+U)";
