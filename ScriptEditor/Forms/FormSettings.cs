@@ -7,16 +7,10 @@ namespace ScriptEditor
 {
 	public partial class FormSettings : DarkForm
 	{
-		#region Global variables
-
 		/// <summary>
 		/// The number of critical settings changed
 		/// </summary>
-		public int gI_RestartItemCount = 0;
-
-		#endregion Global variables
-
-		#region Constructors
+		public int _restartItemCount = 0;
 
 		public FormSettings()
 		{
@@ -47,10 +41,6 @@ namespace ScriptEditor
 
 			restartLabel.Visible = false;
 		}
-
-		#endregion Constructors
-
-		#region Buttons
 
 		private void reindentRulesButton_Click(object sender, EventArgs e)
 		{
@@ -131,10 +121,6 @@ namespace ScriptEditor
 			unknownColorButton.BackColor = Color.Red;
 		}
 
-		#endregion Buttons
-
-		#region Color selection
-
 		private void commentColorButton_Click(object sender, EventArgs e)
 		{
 			DialogResult result = commentColorDialog.ShowDialog();
@@ -212,10 +198,6 @@ namespace ScriptEditor
 			}
 		}
 
-		#endregion Color selection
-
-		#region Critical settings where the app needs to restart
-
 		private void autosaveCombo_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			string settingValue = Properties.Settings.Default.AutosaveTime == 0 ? "None" : Properties.Settings.Default.AutosaveTime.ToString();
@@ -230,23 +212,21 @@ namespace ScriptEditor
 		{
 			if (currentState.ToString() != prevSetting.ToString())
 			{
-				gI_RestartItemCount++;
+				_restartItemCount++;
 				restartLabel.Visible = true;
 			}
 			else
 			{
-				if (gI_RestartItemCount != 0)
+				if (_restartItemCount != 0)
 				{
-					gI_RestartItemCount--;
+					_restartItemCount--;
 				}
 
-				if (gI_RestartItemCount == 0)
+				if (_restartItemCount == 0)
 				{
 					restartLabel.Visible = false;
 				}
 			}
 		}
-
-		#endregion Critical settings where the app needs to restart
 	}
 }

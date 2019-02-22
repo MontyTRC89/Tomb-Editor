@@ -34,8 +34,8 @@
     <Reference Include="DarkUI">
       <HintPath>..\DarkUI\DarkUI\obj\Debug\DarkUI.dll</HintPath>
     </Reference>
-    <Reference Include="FastColoredTextBox, Version=2.16.21.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
-      <HintPath>..\packages\FCTB.2.16.21.0\lib\FastColoredTextBox.dll</HintPath>
+    <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
+      <HintPath>..\packages\FCTB.2.16.24\lib\FastColoredTextBox.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,8 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocompleteItems.cs" />
-    <Compile Include="Bookmarks.cs" />
-    <Compile Include="ClipboardMethods.cs" />
     <Compile Include="Controls\VisualStudioTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -62,23 +60,17 @@
     <Compile Include="Forms\FormReindentRules.Designer.cs">
       <DependentUpon>FormReindentRules.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormAbout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAbout.Designer.cs">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormStringTable.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormStringTable.Designer.cs">
       <DependentUpon>FormStringTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSelectPaths.cs">
+    <Compile Include="Forms\FormProjectSetup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSelectPaths.Designer.cs">
-      <DependentUpon>FormSelectPaths.cs</DependentUpon>
+    <Compile Include="Forms\FormProjectSetup.Designer.cs">
+      <DependentUpon>FormProjectSetup.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
@@ -98,7 +90,7 @@
     <Compile Include="Controls\ReferenceBrowser.Designer.cs">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="ObjectBrowser.cs" />
+    <Compile Include="Project.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -124,20 +116,14 @@
     <Compile Include="SyntaxHighlighting.cs" />
     <Compile Include="SyntaxKeyWords.cs" />
     <Compile Include="SyntaxTidying.cs" />
-    <Compile Include="ToolTips.cs" />
-    <Compile Include="UndoRedoHandling.cs" />
-    <Compile Include="VisibleSpaces.cs" />
-    <EmbeddedResource Include="Forms\FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormReindentRules.resx">
       <DependentUpon>FormReindentRules.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSelectPaths.resx">
-      <DependentUpon>FormSelectPaths.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormProjectSetup.resx">
+      <DependentUpon>FormProjectSetup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
@@ -181,9 +167,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="References\DamageEnemyList.csv" />
-    <None Include="References\KeyboardScancodeList.csv" />
-    <None Include="References\MnemonicConstants.csv" />
     <None Include="Resources\Images\general_AboutIcon-16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -214,21 +197,9 @@
     <None Include="Resources\Images\play-16.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ScriptTemplate.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Images\general_Open-16.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="References\OcbList.txt" />
-    <Content Include="References\ScriptNewCommands.txt" />
-    <Content Include="References\ScriptOldCommands.txt" />
-    <Content Include="References\SlotMoveablesIndicesList.txt" />
-    <Content Include="References\SoundEffectsIndicesList.txt" />
-    <Content Include="References\StaticsIndicesList.txt" />
-    <Content Include="References\VariablePlaceholders.txt" />
     <Content Include="Resources\Images\clearBookmark-16.png" />
     <Content Include="Resources\Images\comment-16.png" />
     <Content Include="Resources\Images\general_plus_math-16.png" />
