@@ -735,14 +735,7 @@ namespace ScriptEditor
 			{
 				Place caretPosition = scriptEditor.Selection.Start; // Cache caret position
 
-				for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
-				{
-					if (scriptEditor.GetLineText(i).Contains(" ")) // If a line contains whitespace
-					{
-						scriptEditor.Selection = new Range(scriptEditor, 0, i, scriptEditor.GetLineText(i).Length, i);
-						scriptEditor.InsertText(scriptEditor.GetLineText(i).Replace(" ", "·"));
-					}
-				}
+				scriptEditor.Text = scriptEditor.Text.Replace(' ', '·');
 
 				scriptEditor.Selection.Start = caretPosition; // Restore caret position
 			}
@@ -750,14 +743,7 @@ namespace ScriptEditor
 			{
 				Place caretPosition = scriptEditor.Selection.Start; // Cache caret position
 
-				for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
-				{
-					if (scriptEditor.GetLineText(i).Contains("·")) // If a line contains a "whitespace dot"
-					{
-						scriptEditor.Selection = new Range(scriptEditor, 0, i, scriptEditor.GetLineText(i).Length, i);
-						scriptEditor.InsertText(scriptEditor.GetLineText(i).Replace("·", " "));
-					}
-				}
+				scriptEditor.Text = scriptEditor.Text.Replace('·', ' ');
 
 				scriptEditor.Selection.Start = caretPosition; // Restore caret position
 			}
