@@ -2,10 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ScriptEditor.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ScriptPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GamePath" Type="System.String" Scope="User">
+    <Setting Name="LastProject" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="FontSize" Type="System.Decimal" Scope="User">
@@ -30,7 +27,7 @@
       <Value Profile="(Default)">SteelBlue</Value>
     </Setting>
     <Setting Name="NewCommandColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">MediumAquamarine</Value>
+      <Value Profile="(Default)">SpringGreen</Value>
     </Setting>
     <Setting Name="UnknownColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Red</Value>
@@ -60,7 +57,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="OldCommandColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">SpringGreen</Value>
+      <Value Profile="(Default)">MediumAquamarine</Value>
     </Setting>
     <Setting Name="ObjBrowserVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -86,11 +83,8 @@
     <Setting Name="ReduceSpaces" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="NgCenterPath" Type="System.String" Scope="User">
+    <Setting Name="NGCenterPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Compiler" Type="TombLib.Script.ScriptCompilers" Scope="User">
-      <Value Profile="(Default)">NGCenter</Value>
     </Setting>
   </Settings>
 </SettingsFile>

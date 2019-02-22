@@ -70,22 +70,85 @@ namespace ScriptEditor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Looks like your script folder does not contain a SCRIPT.txt file.
-        ///Would you like to create a new one now?.
+        ///   Looks up a localized string similar to Invalid game .exe path..
         /// </summary>
-        internal static string NoScriptFile {
+        internal static string Error_InvalidGamePath {
             get {
-                return ResourceManager.GetString("NoScriptFile", resourceCulture);
+                return ResourceManager.GetString("Error_InvalidGamePath", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t find required directory paths.
-        ///Would you like to setup the paths now?.
+        ///   Looks up a localized string similar to Invalid NG_Center.exe path..
         /// </summary>
-        internal static string PathsNotFound {
+        internal static string Error_InvalidNGCenterPath {
             get {
-                return ResourceManager.GetString("PathsNotFound", resourceCulture);
+                return ResourceManager.GetString("Error_InvalidNGCenterPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must select the engine type..
+        /// </summary>
+        internal static string Error_NoEngineType {
+            get {
+                return ResourceManager.GetString("Error_NoEngineType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must select your game&apos;s .exe file..
+        /// </summary>
+        internal static string Error_NoGamePath {
+            get {
+                return ResourceManager.GetString("Error_NoGamePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must enter NG_Center.exe&apos;s path..
+        /// </summary>
+        internal static string Error_NoNGCenterPath {
+            get {
+                return ResourceManager.GetString("Error_NoNGCenterPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must enter a name for your project..
+        /// </summary>
+        internal static string Error_NoProjectName {
+            get {
+                return ResourceManager.GetString("Error_NoProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No SCRIPT.TXT file found in the games&apos;s &quot;Script&quot; directory.
+        ///Please make sure your game is installed correctly..
+        /// </summary>
+        internal static string Error_NoScriptFileFound {
+            get {
+                return ResourceManager.GetString("Error_NoScriptFileFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No &quot;Script&quot; folder found in game directory.
+        ///Please make sure you selected the correct .exe file..
+        /// </summary>
+        internal static string Error_NoScriptFolderFound {
+            get {
+                return ResourceManager.GetString("Error_NoScriptFolderFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A project with the same name already exists..
+        /// </summary>
+        internal static string Error_ProjectAlreadyExists {
+            get {
+                return ResourceManager.GetString("Error_ProjectAlreadyExists", resourceCulture);
             }
         }
         
@@ -95,6 +158,16 @@ namespace ScriptEditor.Resources {
         internal static string ResetSettings {
             get {
                 return ResourceManager.GetString("ResetSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find selected project.
+        ///Do you want to delete it from the list?.
+        /// </summary>
+        internal static string SelectedProjectNotFound {
+            get {
+                return ResourceManager.GetString("SelectedProjectNotFound", resourceCulture);
             }
         }
         

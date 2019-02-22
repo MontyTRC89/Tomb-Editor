@@ -32,9 +32,9 @@ namespace ScriptEditor
 			e.ChangedRange.SetStyle(headerColor, @"\[(" + string.Join("|", SyntaxKeyWords.Headers()) + @")\]");
 			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", SyntaxKeyWords.NewCommands()) + @")[\s·]?=[\s·]?");
 			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", SyntaxKeyWords.OldCommands()) + @")[\s·]?=[\s·]?");
-            e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", SyntaxKeyWords.TR5Commands()) + @")[\s·]?=[\s·]?");
-            e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", SyntaxKeyWords.TR5MainCommands()) + @")[\s·]?=[\s·]?");
-            e.ChangedRange.SetStyle(unknownColor, @"\b(" + string.Join("|", SyntaxKeyWords.Unknown()) + @")[\s·]?=[\s·]?");
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", SyntaxKeyWords.TR5Commands()) + @")[\s·]?=[\s·]?");
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", SyntaxKeyWords.TR5MainCommands()) + @")[\s·]?=[\s·]?");
+			e.ChangedRange.SetStyle(unknownColor, @"\b(" + string.Join("|", SyntaxKeyWords.Unknown()) + @")[\s·]?=[\s·]?");
 		}
 	}
 }

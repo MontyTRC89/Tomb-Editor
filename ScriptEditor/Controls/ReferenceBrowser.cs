@@ -1,5 +1,4 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -40,7 +39,7 @@ namespace ScriptEditor
 			}
 			catch (Exception ex)
 			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				//DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 

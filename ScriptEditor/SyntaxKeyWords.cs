@@ -22,51 +22,51 @@ namespace ScriptEditor
 			return list;
 		}
 
-        public static List<string> TR5Commands()
-        {
-            List<string> list = new List<string>();
+		public static List<string> TR5Commands()
+		{
+			List<string> list = new List<string>();
 
-            string[] newCommands =
-            {
-                "GiveItem",
-                "TakeAway"
-            };
+			string[] newCommands =
+			{
+				"GiveItem",
+				"TakeAway"
+			};
 
-            list.AddRange(newCommands);
-            return list;
-        }
+			list.AddRange(newCommands);
+			return list;
+		}
 
-        public static List<string> TR5MainCommands()
-        {
-            List<string> list = new List<string>();
+		public static List<string> TR5MainCommands()
+		{
+			List<string> list = new List<string>();
 
-            string[] newCommands =
-            {
-                "ResetInventory",
-                "LaraType",
-                "Weather",
-                "AmbientTrack",
-                "LoadScreen",
-                "OnLevelStart",
-                "OnLevelFinish",
-                "OnLoadGame",
-                "OnSaveGame",
-                "OnLaraDeath",
-                "OnLevelControl",
-                "OnBeginFrame",
-                "OnEndFrame",
-                "Diagnostic",
-                "LaraStartPos",
-                "LevelFarView",
-                "DistantFog",
-                "MirrorEffect"
-            };
+			string[] newCommands =
+			{
+				"ResetInventory",
+				"LaraType",
+				"Weather",
+				"AmbientTrack",
+				"LoadScreen",
+				"OnLevelStart",
+				"OnLevelFinish",
+				"OnLoadGame",
+				"OnSaveGame",
+				"OnLaraDeath",
+				"OnLevelControl",
+				"OnBeginFrame",
+				"OnEndFrame",
+				"Diagnostic",
+				"LaraStartPos",
+				"LevelFarView",
+				"DistantFog",
+				"MirrorEffect"
+			};
 
-            list.AddRange(newCommands);
-            return list;
-        }
+			list.AddRange(newCommands);
+			return list;
+		}
 
-        public static List<string> NewCommands()
+		public static List<string> NewCommands()
 		{
 			List<string> list = new List<string>();
 

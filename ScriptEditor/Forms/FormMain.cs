@@ -1,84 +1,71 @@
-﻿using DarkUI.Forms;
+using DarkUI.Controls;
+using DarkUI.Forms;
 using FastColoredTextBoxNS;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Resources;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using TombLib.Script;
 
 namespace ScriptEditor
 {
 	public partial class FormMain : DarkForm
 	{
-		#region Global variables
+		/// <summary>
+		/// A list of all available projects.
+		/// </summary>
+		private List<Project> _availableProjects;
 
 		/// <summary>
-		/// Stores the currently edited file name and path.
+		/// Stores the currently edited project.
 		/// </summary>
-		private string gS_CurrentFilePath;
+		private Project _currentProject;
 
 		/// <summary>
 		/// Stores the previous zoom value to fix a strange FCTB bug.
 		/// </summary>
-		private int gI_PrevZoom = 100;
+		private int _prevZoom = 100;
 
-		#endregion Global variables
-
-		#region Constructors
+		#region Initialization
 
 		public FormMain()
 		{
 			InitializeComponent();
+			_availableProjects = new List<Project>();
 
-			// If Autocomplete is enabled in the settings
 			if (Properties.Settings.Default.Autocomplete)
-			{
 				GenerateAutocompleteMenu();
-			}
 		}
 
-		#endregion Constructors
-
-		#region Form actions
-
-		private void FormMain_Shown(object sender, EventArgs e)
+		protected override void OnShown(EventArgs e)
 		{
-			// Apply saved user settings
-			ApplyUserSettings();
-
-			// Disable the interface since no file has been loaded yet
 			ToggleInterface(false);
+			ApplyUserSettings();
+			GetAvailableProjects(); // From Projects.xml
+			OpenLastProject();
 
-			// Check if required paths are set
-			CheckRequiredPaths();
-
-			// If all default nodes are set
-			if (objectBrowser.Nodes.Count == 2)
-			{
-				// Force expanded nodes on launch
-				objectBrowser.Nodes[0].Expanded = true;
-				objectBrowser.Nodes[1].Expanded = true;
-			}
+			base.OnShown(e);
 		}
 
-		private void FormMain_Closing(object sender, FormClosingEventArgs e)
+		protected override void OnClosing(CancelEventArgs e)
 		{
-			// If the current file has unsaved changes
-			if (!IsFileSaved())
-			{
-				// Stop closing the form if saving failed or the user clicked "Cancel"
-				e.Cancel = true;
-			}
+			if (!IsFileSaved()) // If current file has unsaved changes
+				e.Cancel = true; // Stop closing form if saving failed or the user clicked "Cancel"
+
+			base.OnClosing(e);
 		}
-
-		#endregion Form actions
-
-		#region Application launch methods
 
 		private void GenerateAutocompleteMenu()
 		{
-			AutocompleteMenu popupMenu = new AutocompleteMenu(textEditor)
+			AutocompleteMenu popupMenu = new AutocompleteMenu(scriptEditor)
 			{
 				AllowTabKey = true,
 				BackColor = Color.FromArgb(64, 73, 74),
@@ -92,49 +79,281 @@ namespace ScriptEditor
 
 		private void ApplyUserSettings()
 		{
-			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
-			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
-			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
-			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
-
+			scriptEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
+			scriptEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
+			scriptEditor.WordWrap = Properties.Settings.Default.WordWrap;
+			scriptEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
 			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
-			showStringTableButton.Visible = toolStrip.Visible;
 
 			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
 			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
 			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
 		}
 
-		private void CheckRequiredPaths()
+		private void GetAvailableProjects()
 		{
-			// If the required paths aren't defined yet
-			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || 
-                string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
+			try
 			{
-				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
-					"Paths not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-				if (result == DialogResult.Yes)
+				using (StreamReader stream = new StreamReader("Projects.xml")) // Read Projects.xml
 				{
-					// Show path selection dialog
-					ShowPathSelectionForm();
+					XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
+					_availableProjects = (List<Project>)serializer.Deserialize(stream);
 				}
+
+				projectsToolStripMenuItem.DropDownItems.Clear();
+
+				foreach (Project project in _availableProjects) // Add all projects to the "Projects" DropDown
+					projectsToolStripMenuItem.DropDownItems.Add(project.Name);
 			}
-			else
+			catch (IOException) // Projects.xml doesn't exist
 			{
-				// Read all files from the script folder
-				ReadScriptFolder();
+				using (StreamWriter stream = new StreamWriter("Projects.xml")) // Create a new Projects.xml file
+				{
+					XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
+					serializer.Serialize(stream, new List<Project>());
+				}
+
+				Properties.Settings.Default.LastProject = string.Empty; // Reset this because we just created a new Projects.xml file
+				Properties.Settings.Default.Save();
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
-		#endregion Application launch methods
+		private void OpenLastProject()
+		{
+			if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LastProject))
+			{
+				foreach (Project proj in _availableProjects)
+				{
+					if (proj.Name == Properties.Settings.Default.LastProject)
+						_currentProject = proj;
+				}
 
-		#region Interface toggling methods
+				currentProjectLabel.Text = _currentProject.Name;
+				OpenProjectFiles();
+			}
+			else // This should only happen when the user never added a project or deleted Projects.xml
+				ShowProjectSetupForm();
+		}
+
+		#endregion Initialization
+
+		#region Object events
+
+		private void textEditor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e) => CreateToolTip(e);
+		private void textEditor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
+		private void textEditor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
+		private void textEditor_KeyUp(object sender, KeyEventArgs e) => UpdateObjectBrowserNodes();
+
+		private void textEditor_MouseDown(object sender, MouseEventArgs e)
+		{
+			// If user right clicked somewhere in the editor but didn't click on selected text
+			if (e.Button == MouseButtons.Right && !scriptEditor.Selection.Contains(scriptEditor.PointToPlace(e.Location)))
+				scriptEditor.Selection.Start = scriptEditor.PointToPlace(e.Location); // Move caret to the new position
+		}
+
+		private void textEditor_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			// Re-enable save buttons since the text has changed
+			saveToolStripMenuItem.Enabled = true;
+			saveToolStripButton.Enabled = true;
+
+			SyntaxHighlighting.DoSyntaxHighlighting(e);
+			HandleVisibleSpaces();
+
+			scriptEditor.Invalidate();
+		}
+
+		private void textEditor_ZoomChanged(object sender, EventArgs e)
+		{
+			if (scriptEditor.Zoom > _prevZoom) // If zoom increased
+			{
+				_prevZoom += 5;
+				scriptEditor.Zoom = _prevZoom;
+			}
+
+			if (scriptEditor.Zoom < _prevZoom) // If zoom decreased
+			{
+				_prevZoom -= 5;
+				scriptEditor.Zoom = _prevZoom;
+			}
+
+			zoomLabel.Text = "Zoom: " + scriptEditor.Zoom + "%";
+			resetZoomButton.Visible = scriptEditor.Zoom != 100;
+
+			// Limit zoom to a minumum of 25 and a maximum of 500
+			if (scriptEditor.Zoom < 25)
+				scriptEditor.Zoom = 25;
+			else if (scriptEditor.Zoom > 500)
+				scriptEditor.Zoom = 500;
+		}
+
+		private void UndoRedoState_Changed(object sender, EventArgs e)
+		{
+			if (scriptEditor.UndoEnabled)
+			{
+				undoToolStripMenuItem.Enabled = true;
+				undoToolStripMenuItem.Text = "&Undo";
+				undoToolStripButton.Enabled = true;
+			}
+			else
+			{
+				undoToolStripMenuItem.Enabled = false;
+				undoToolStripMenuItem.Text = "Can't Undo";
+				undoToolStripButton.Enabled = false;
+			}
+
+			if (scriptEditor.RedoEnabled)
+			{
+				redoToolStripMenuItem.Enabled = true;
+				redoToolStripMenuItem.Text = "&Redo";
+				redoToolStripButton.Enabled = true;
+			}
+			else
+			{
+				redoToolStripMenuItem.Enabled = false;
+				redoToolStripMenuItem.Text = "Can't Redo";
+				redoToolStripButton.Enabled = false;
+			}
+
+			if (_currentProject != null) // Just in case...
+			{
+				string scriptFilePath = _currentProject.GamePath + @"\Script\script.txt";
+
+				string editorContent = scriptEditor.Text.Replace("·", " ");
+				string fileContent = File.ReadAllText(scriptFilePath, Encoding.GetEncoding(1252)).Replace("·", " ");
+
+				if (editorContent == fileContent)
+				{
+					scriptEditor.IsChanged = false;
+
+					// Disable save buttons since there are no changes
+					saveToolStripMenuItem.Enabled = false;
+					saveToolStripButton.Enabled = false;
+				}
+			}
+		}
+
+		private void objectBrowser_Click(object sender, EventArgs e) => GoToSelectedObject();
+
+		private void searchTextBox_TextChanged(object sender, EventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
+				UpdateObjectBrowserNodes();
+			else
+				UpdateObjectBrowserNodes(searchTextBox.Text);
+		}
+
+		private void searchTextBox_GotFocus(object sender, EventArgs e)
+		{
+			if (searchTextBox.Text == "Search...")
+				searchTextBox.Text = string.Empty;
+		}
+
+		private void searchTextBox_LostFocus(object sender, EventArgs e)
+		{
+			if (searchTextBox.Text == string.Empty)
+				searchTextBox.Text = "Search...";
+		}
+
+		private void File_NewProject_MenuItem_Click(object sender, EventArgs e) => ShowProjectSetupForm();
+		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
+		private void File_Build_MenuItem_Click(object sender, EventArgs e) => BuildScript();
+		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
+		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
+
+		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndo();
+		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleRedo();
+		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => Cut();
+		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => Copy();
+		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => Paste();
+		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => scriptEditor.ShowFindDialog();
+		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => scriptEditor.ShowReplaceDialog();
+
+		private void Edit_SelectAll_MenuItem_Click(object sender, EventArgs e)
+		{
+			scriptEditor.SelectAll();
+			DoStatusCounting(); // So it updates the statusbar
+		}
+
+		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
+		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
+		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => scriptEditor.InsertLinePrefix(";");
+		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => scriptEditor.RemoveLinePrefix(";");
+		private void Tools_ToggleBookmark_MenuItem_Click(object sender, EventArgs e) => ToggleBookmark();
+		private void Tools_NextBookmark_MenuItem_Click(object sender, EventArgs e) => scriptEditor.GotoNextBookmark(scriptEditor.Selection.Start.iLine);
+		private void Tools_PrevBookmark_MenuItem_Click(object sender, EventArgs e) => scriptEditor.GotoPrevBookmark(scriptEditor.Selection.Start.iLine);
+		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => ClearAllBookmarks();
+		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e) => ShowSettingsForm();
+
+		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleObjectBrowser(!objectBrowser.Visible);
+			Properties.Settings.Default.ObjBrowserVisible = objectBrowser.Visible;
+			Properties.Settings.Default.Save();
+		}
+
+		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleReferenceBrowser(!referenceBrowser.Visible);
+			Properties.Settings.Default.RefBrowserVisible = referenceBrowser.Visible;
+			Properties.Settings.Default.Save();
+		}
+
+		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleDocumentMap(!documentMap.Visible);
+			Properties.Settings.Default.DocMapVisible = documentMap.Visible;
+			Properties.Settings.Default.Save();
+		}
+
+		private void Help_About_MenuItem_Click(object sender, EventArgs e) => ShowAboutForm();
+
+		private void Projects_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e) => OpenSelectedDropDownProject(e);
+
+		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => Cut();
+		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => Copy();
+		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => Paste();
+		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => scriptEditor.InsertLinePrefix(";");
+		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => scriptEditor.RemoveLinePrefix(";");
+		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => ToggleBookmark();
+
+		private void ToolStrip_NewProjectButton_Click(object sender, EventArgs e) => ShowProjectSetupForm();
+		private void ToolStrip_SaveButton_Click(object sender, EventArgs e) => SaveFile();
+		private void ToolStrip_BuildButton_Click(object sender, EventArgs e) => BuildScript();
+		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => HandleUndo();
+		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => HandleRedo();
+		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => Cut();
+		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => Copy();
+		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => Paste();
+		private void ToolStrip_CommentButton_Click(object sender, EventArgs e) => scriptEditor.InsertLinePrefix(";");
+		private void ToolStrip_UncommentButton_Click(object sender, EventArgs e) => scriptEditor.RemoveLinePrefix(";");
+		private void ToolStrip_ToggleBookmarkButton_Click(object sender, EventArgs e) => ToggleBookmark();
+		private void ToolStrip_PrevBookmarkButton_Click(object sender, EventArgs e) => scriptEditor.GotoPrevBookmark(scriptEditor.Selection.Start.iLine);
+		private void ToolStrip_NextBookmarkButton_Click(object sender, EventArgs e) => scriptEditor.GotoNextBookmark(scriptEditor.Selection.Start.iLine);
+		private void ToolStrip_ClearAllBookmarksButton_Click(object sender, EventArgs e) => ClearAllBookmarks();
+		private void ToolStrip_AboutButton_Click(object sender, EventArgs e) => ShowAboutForm();
+		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e) => ShowStringTable();
+
+		private void StatusStrip_ResetZoomButton_Click(object sender, EventArgs e)
+		{
+			_prevZoom = 100;
+			scriptEditor.Zoom = 100;
+
+			resetZoomButton.Visible = false;
+		}
+
+		#endregion Object events
+
+		#region Object event methods
 
 		private void ToggleInterface(bool state)
 		{
 			// Toggle editor
-			textEditor.Enabled = state;
+			scriptEditor.Enabled = state;
 
 			// Toggle "File" menu items
 			saveToolStripMenuItem.Enabled = state;
@@ -194,469 +413,491 @@ namespace ScriptEditor
 			documentMapToolStripMenuItem.Checked = state;
 		}
 
-		#endregion Interface toggling methods
-
-		#region Text editor events
-
-		private void textEditor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e) => ToolTips.CreateToolTip(textEditor, e);
-		private void textEditor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
-		private void textEditor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
-		private void textEditor_KeyUp(object sender, KeyEventArgs e) => ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
-
-		private void textEditor_MouseDown(object sender, MouseEventArgs e)
+		private void CreateToolTip(ToolTipNeededEventArgs e)
 		{
-			// If the user right clicked somewhere in the editor and didn't click on the selection
-			if (e.Button == MouseButtons.Right && !textEditor.Selection.Contains(textEditor.PointToPlace(e.Location)))
+			if (Properties.Settings.Default.ToolTips && !string.IsNullOrWhiteSpace(e.HoveredWord))
 			{
-				// Move the caret to the new position
-				textEditor.Selection.Start = textEditor.PointToPlace(e.Location);
+				if (scriptEditor.GetLineText(e.Place.iLine).StartsWith("["))
+					ShowHeaderToolTip(e);
+				else
+					ShowCommandToolTip(e);
 			}
 		}
 
-		private void textEditor_TextChanged(object sender, TextChangedEventArgs e)
+		private void ShowHeaderToolTip(ToolTipNeededEventArgs e)
 		{
-			// Re-enable save buttons since the text has changed
-			saveToolStripMenuItem.Enabled = true;
-			saveToolStripButton.Enabled = true;
+			e.ToolTipTitle = "[" + e.HoveredWord + "]";
 
-			SyntaxHighlighting.DoSyntaxHighlighting(e);
-			VisibleSpaces.HandleVisibleSpaces(textEditor);
+			// Get resources from HeaderToolTips.resx
+			ResourceManager headerToolTipResource = new ResourceManager(typeof(Resources.HeaderToolTips));
+			ResourceSet resourceSet = headerToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-			// Redraw the editor
-			textEditor.Invalidate();
-		}
-
-		private void textEditor_ZoomChanged(object sender, EventArgs e)
-		{
-			// If zoom increased
-			if (textEditor.Zoom > gI_PrevZoom)
+			foreach (DictionaryEntry entry in resourceSet)
 			{
-				gI_PrevZoom += 5;
-				textEditor.Zoom = gI_PrevZoom;
-			}
-
-			// If zoom decreased
-			if (textEditor.Zoom < gI_PrevZoom)
-			{
-				gI_PrevZoom -= 5;
-				textEditor.Zoom = gI_PrevZoom;
-			}
-
-			// Update the label with the current zoom value
-			zoomLabel.Text = "Zoom: " + textEditor.Zoom + "%";
-
-			// Show the "Reset" button if the zoom value is different than 100
-			resetZoomButton.Visible = textEditor.Zoom != 100;
-
-			// Limit the zoom to a minumum of 25 and a maximum of 500
-			if (textEditor.Zoom < 25)
-			{
-				textEditor.Zoom = 25;
-			}
-			else if (textEditor.Zoom > 500)
-			{
-				textEditor.Zoom = 500;
-			}
-		}
-
-		private void UndoRedoState_Changed(object sender, EventArgs e)
-		{
-			if (textEditor.UndoEnabled)
-			{
-				undoToolStripMenuItem.Enabled = true;
-				undoToolStripMenuItem.Text = "&Undo";
-				undoToolStripButton.Enabled = true;
-			}
-			else
-			{
-				undoToolStripMenuItem.Enabled = false;
-				undoToolStripMenuItem.Text = "Can't Undo";
-				undoToolStripButton.Enabled = false;
-			}
-
-			if (textEditor.RedoEnabled)
-			{
-				redoToolStripMenuItem.Enabled = true;
-				redoToolStripMenuItem.Text = "&Redo";
-				redoToolStripButton.Enabled = true;
-			}
-			else
-			{
-				redoToolStripMenuItem.Enabled = false;
-				redoToolStripMenuItem.Text = "Can't Redo";
-				redoToolStripButton.Enabled = false;
-			}
-
-			// If there's currently a file in the editor
-			if (!string.IsNullOrWhiteSpace(gS_CurrentFilePath))
-			{
-				string editorContent = textEditor.Text.Replace("·", " ");
-				string fileContent = File.ReadAllText(gS_CurrentFilePath, Encoding.GetEncoding(1252)).Replace("·", " ");
-
-				// If the editor content is the same as the file content
-				if (editorContent == fileContent)
+				if (e.HoveredWord == entry.Key.ToString())
 				{
-					textEditor.IsChanged = false;
-
-					// Disable the save buttons since there are no changes
-					saveToolStripMenuItem.Enabled = false;
-					saveToolStripButton.Enabled = false;
+					e.ToolTipText = entry.Value.ToString();
+					return;
 				}
 			}
 		}
 
-		#endregion Text editor events
-
-		#region Object browser events
-
-		private void objectBrowser_Click(object sender, EventArgs e) => ObjectBrowser.GoToSelectedObject(objectBrowser, textEditor);
-
-		private void searchTextBox_TextChanged(object sender, EventArgs e)
+		private void ShowCommandToolTip(ToolTipNeededEventArgs e)
 		{
-			if (string.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
-			{
-				ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
-			}
+			// Get resources from CommandToolTips.resx
+			ResourceManager commandToolTipResource = new ResourceManager(typeof(Resources.CommandToolTips));
+			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+			if (e.HoveredWord == "Level")
+				HandleLevelToolTip(e); // There are different definitions for the "Level" key, so handle them all
 			else
 			{
-				ObjectBrowser.UpdateNodes(objectBrowser, textEditor, searchTextBox.Text);
+				e.ToolTipTitle = e.HoveredWord;
+
+				foreach (DictionaryEntry entry in resourceSet)
+				{
+					if (e.HoveredWord == entry.Key.ToString())
+					{
+						e.ToolTipText = entry.Value.ToString();
+						return;
+					}
+				}
 			}
 		}
 
-		private void searchTextBox_GotFocus(object sender, EventArgs e)
+		private void HandleLevelToolTip(ToolTipNeededEventArgs e)
 		{
-			if (searchTextBox.Text == "Search...")
+			int i = e.Place.iLine; // Current line number
+
+			do
 			{
-				searchTextBox.Text = string.Empty;
+				if (i < 0)
+					return; // Line number might go to -1 and it will crash the app, so stop the loop to prevent it
+
+				if (scriptEditor.GetLineText(i).StartsWith("[PSXExtensions]"))
+				{
+					e.ToolTipTitle = "Level [PSXExtensions]";
+					e.ToolTipText = Resources.CommandToolTips.LevelPSX;
+					return;
+				}
+				else if (scriptEditor.GetLineText(i).StartsWith("[PCExtensions]"))
+				{
+					e.ToolTipTitle = "Level [PCExtensions]";
+					e.ToolTipText = Resources.CommandToolTips.LevelPC;
+					return;
+				}
+				else if (scriptEditor.GetLineText(i).StartsWith("[Title]"))
+				{
+					e.ToolTipTitle = "Level [Title]";
+					e.ToolTipText = Resources.CommandToolTips.LevelTitle;
+					return;
+				}
+				else if (scriptEditor.GetLineText(i).StartsWith("[Level]"))
+				{
+					e.ToolTipTitle = "Level";
+					e.ToolTipText = Resources.CommandToolTips.LevelLevel;
+					return;
+				}
+
+				i--; // Go 1 line higher if no header was found yet
 			}
-		}
-
-		private void searchTextBox_LostFocus(object sender, EventArgs e)
-		{
-			if (searchTextBox.Text == string.Empty)
-			{
-				searchTextBox.Text = "Search...";
-			}
-		}
-
-		#endregion Object browser events
-
-		#region File menu items
-
-		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelectionForm();
-		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
-		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
-		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
-
-		#endregion File menu items
-
-		#region Edit menu items
-
-		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 0);
-		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 1);
-
-		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.Cut(textEditor);
-		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.Copy(textEditor);
-		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => ClipboardMethods.Paste(textEditor);
-
-		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowFindDialog();
-		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowReplaceDialog();
-
-		private void Edit_SelectAll_MenuItem_Click(object sender, EventArgs e)
-		{
-			textEditor.SelectAll();
-			DoStatusCounting(); // So it updates the statusbar
-		}
-
-		#endregion Edit menu items
-
-		#region Tools menu items
-
-		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => SyntaxTidying.TidyScript(textEditor);
-		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => SyntaxTidying.TidyScript(textEditor, true);
-
-		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
-		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
-
-		private void Tools_ToggleBookmark_MenuItem_Click(object sender, EventArgs e) => Bookmarks.ToggleBookmark(textEditor);
-		private void Tools_NextBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoNextBookmark(textEditor.Selection.Start.iLine);
-		private void Tools_PrevBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
-		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => Bookmarks.ClearAllBookmarks(textEditor);
-
-		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e) => OpenSettingsForm();
-
-		#endregion Tools menu items
-
-		#region View menu items
-
-		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
-		{
-			ToggleObjectBrowser(!objectBrowser.Visible);
-			Properties.Settings.Default.ObjBrowserVisible = objectBrowser.Visible;
-			Properties.Settings.Default.Save();
-		}
-
-		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
-		{
-			ToggleReferenceBrowser(!referenceBrowser.Visible);
-			Properties.Settings.Default.RefBrowserVisible = referenceBrowser.Visible;
-			Properties.Settings.Default.Save();
-		}
-
-		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
-		{
-			ToggleDocumentMap(!documentMap.Visible);
-			Properties.Settings.Default.DocMapVisible = documentMap.Visible;
-			Properties.Settings.Default.Save();
-		}
-
-		#endregion View menu items
-
-		#region Help menu items
-
-		private void Help_About_MenuItem_Click(object sender, EventArgs e) => ShowAboutForm();
-
-		#endregion Help menu items
-
-		#region Context menu items
-
-		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => ClipboardMethods.Cut(textEditor);
-		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => ClipboardMethods.Copy(textEditor);
-		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => ClipboardMethods.Paste(textEditor);
-
-		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
-		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
-
-		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => Bookmarks.ToggleBookmark(textEditor);
-
-		#endregion Context menu items
-
-		#region ToolStrip buttons
-
-		private void ToolStrip_ChangeButton_Click(object sender, EventArgs e) => ShowPathSelectionForm();
-		private void ToolStrip_SaveButton_Click(object sender, EventArgs e) => SaveFile();
-
-		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 0);
-		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => UndoRedoHandling.HandleUndoRedo(textEditor, 1);
-
-		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => ClipboardMethods.Cut(textEditor);
-		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => ClipboardMethods.Copy(textEditor);
-		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => ClipboardMethods.Paste(textEditor);
-
-		private void ToolStrip_CommentButton_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
-		private void ToolStrip_UncommentButton_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
-
-		private void ToolStrip_ToggleBookmarkButton_Click(object sender, EventArgs e) => Bookmarks.ToggleBookmark(textEditor);
-		private void ToolStrip_PrevBookmarkButton_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
-		private void ToolStrip_NextBookmarkButton_Click(object sender, EventArgs e) => textEditor.GotoNextBookmark(textEditor.Selection.Start.iLine);
-		private void ToolStrip_ClearAllBookmarksButton_Click(object sender, EventArgs e) => Bookmarks.ClearAllBookmarks(textEditor);
-
-		private void ToolStrip_AboutButton_Click(object sender, EventArgs e) => ShowAboutForm();
-
-		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e) => ShowStringTable();
-
-		#endregion ToolStrip buttons
-
-		#region StatusStrip elements
-
-		private void StatusStrip_ResetZoomButton_Click(object sender, EventArgs e)
-		{
-			// Reset zoom values
-			gI_PrevZoom = 100;
-			textEditor.Zoom = 100;
-
-			resetZoomButton.Visible = false;
+			while (!scriptEditor.GetLineText(i + 1).StartsWith("["));
 		}
 
 		private void DoStatusCounting()
 		{
-			lineNumberLabel.Text = "Line: " + (textEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0.
-			colNumberLabel.Text = "Column: " + textEditor.Selection.Start.iChar;
-			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
+			lineNumberLabel.Text = "Line: " + (scriptEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0
+			colNumberLabel.Text = "Column: " + scriptEditor.Selection.Start.iChar;
+			selectedCharsLabel.Text = "Selected: " + scriptEditor.SelectedText.Length;
 		}
 
-		#endregion StatusStrip elements
-
-		#region File handling
-
-		public void ReadScriptFolder()
+		private void UpdateObjectBrowserNodes(string filter = "")
 		{
-			try
+			bool headersNodeExpanded = false;
+			bool levelsNodeExpanded = false;
+
+			if (objectBrowser.Nodes.Count == 2) // If all default nodes are set
 			{
-				string path = Properties.Settings.Default.ScriptPath;
+				// Cache current expand state
+				headersNodeExpanded = objectBrowser.Nodes[0].Expanded;
+				levelsNodeExpanded = objectBrowser.Nodes[1].Expanded;
+			}
 
-				// Get files from the selected directory
-				string[] files = Directory.GetFiles(path);
-				bool folderHasScriptFile = false;
+			ResetObjectBrowserNodes();
 
-				foreach (string file in files)
+			for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
+			{
+				AddHeaderNode(i, filter);
+				AddLevelNode(i, filter);
+			}
+
+			if (objectBrowser.Nodes.Count == 2) // If all default nodes are set
+			{
+				// Set previous expand state
+				objectBrowser.Nodes[0].Expanded = headersNodeExpanded;
+				objectBrowser.Nodes[1].Expanded = levelsNodeExpanded;
+			}
+
+			objectBrowser.Invalidate();
+		}
+
+		private void ResetObjectBrowserNodes()
+		{
+			bool headersNodeExpanded = false;
+			bool levelsNodeExpanded = false;
+
+			if (objectBrowser.Nodes.Count == 2) // If all default nodes are set
+			{
+				// Cache current expand state
+				headersNodeExpanded = objectBrowser.Nodes[0].Expanded;
+				levelsNodeExpanded = objectBrowser.Nodes[1].Expanded;
+			}
+
+			objectBrowser.Nodes.Clear();
+			objectBrowser.Nodes.Add(new DarkTreeNode("Headers"));
+			objectBrowser.Nodes.Add(new DarkTreeNode("Levels"));
+
+			if (objectBrowser.Nodes.Count == 2) // If all default nodes are set
+			{
+				// Set previous expand state
+				objectBrowser.Nodes[0].Expanded = headersNodeExpanded;
+				objectBrowser.Nodes[1].Expanded = levelsNodeExpanded;
+			}
+
+			objectBrowser.Invalidate();
+		}
+
+		private void GoToSelectedObject()
+		{
+			// If user hasn't selected any node or selected node is empty
+			if (objectBrowser.SelectedNodes.Count < 1 || string.IsNullOrWhiteSpace(objectBrowser.SelectedNodes[0].Text))
+				return;
+
+			// If selected node is a default item
+			if (objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[0] || objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[1])
+				return;
+
+			for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
+			{
+				// Find line that contains the node text
+				if (scriptEditor.GetLineText(i).ToLower().Replace("·", " ").Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
 				{
-					// If the file is not a text file
-					if (!file.ToLower().EndsWith(".txt"))
-					{
-						continue;
-					}
+					scriptEditor.Focus();
+					scriptEditor.Navigate(i); // Scroll to the line position
 
-					// Open the script file if exists
-					if (Path.GetFileName(file).ToLower() == "script.txt")
+					scriptEditor.Selection = new Range(scriptEditor, 0, i, scriptEditor.GetLineText(i).Length, i); // Select the line
+					return;
+				}
+			}
+		}
+
+		private void AddHeaderNode(int lineNumber, string filter)
+		{
+			List<string> headers = SyntaxKeyWords.Headers();
+
+			foreach (string header in headers)
+			{
+				string fullHeader = "[" + header + "]";
+
+				// If current line starts with a header but it's not a [Level] header
+				if (scriptEditor.GetLineText(lineNumber).StartsWith(fullHeader) && fullHeader != "[Level]")
+				{
+					DarkTreeNode headerNode = new DarkTreeNode(fullHeader);
+
+					// If header name matches the filter (It always does if there's nothing in the search bar)
+					if (headerNode.Text.ToLower().Contains(filter.ToLower()))
+						objectBrowser.Nodes[0].Nodes.Add(headerNode);
+				}
+			}
+		}
+
+		private void AddLevelNode(int lineNumber, string filter)
+		{
+			Regex rgx = new Regex(@"\bName[\s·]?=[\s·]?"); // Regex rule to find lines that start with "Name = "
+
+			if (rgx.IsMatch(scriptEditor.GetLineText(lineNumber)))
+			{
+				// Create a new node, remove "Name = ", replace dots with spaces and trim it, so we only get the level name string
+				DarkTreeNode levelNode = new DarkTreeNode(rgx.Replace(scriptEditor.GetLineText(lineNumber), string.Empty).Replace("·", " ").Trim());
+
+				// If level name matches the filter (It always does if there's nothing in the search bar)
+				if (levelNode.Text.ToLower().Contains(filter.ToLower()))
+					objectBrowser.Nodes[1].Nodes.Add(levelNode);
+			}
+		}
+
+		private void HandleUndo()
+		{
+			if (Properties.Settings.Default.ShowSpaces)
+			{
+				do scriptEditor.Undo();
+				while (scriptEditor.Text.Contains(" "));
+			}
+			else
+				scriptEditor.Undo();
+		}
+
+		private void HandleRedo()
+		{
+			if (Properties.Settings.Default.ShowSpaces)
+			{
+				do scriptEditor.Redo();
+				while (scriptEditor.Text.Contains(" "));
+			}
+			else
+				scriptEditor.Redo();
+		}
+
+		private void Cut()
+		{
+			if (!string.IsNullOrEmpty(scriptEditor.SelectedText))
+			{
+				Clipboard.SetText(scriptEditor.SelectedText.Replace("·", " "));
+				scriptEditor.SelectedText = string.Empty;
+			}
+		}
+
+		private void Copy()
+		{
+			if (!string.IsNullOrEmpty(scriptEditor.SelectedText))
+				Clipboard.SetText(scriptEditor.SelectedText.Replace("·", " "));
+		}
+
+		private void Paste()
+		{
+			scriptEditor.SelectedText = Clipboard.GetText();
+		}
+
+		private void ToggleBookmark()
+		{
+			int currentLine = scriptEditor.Selection.Start.iLine;
+
+			if (scriptEditor.Bookmarks.Contains(currentLine))
+				scriptEditor.Bookmarks.Remove(currentLine);
+			else
+				scriptEditor.Bookmarks.Add(currentLine);
+		}
+
+		private void ClearAllBookmarks()
+		{
+			DialogResult result = DarkMessageBox.Show(this,
+				Resources.Messages.ClearBookmarks, "Delete all bookmarks?",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
+			{
+				scriptEditor.Bookmarks.Clear();
+				scriptEditor.Invalidate();
+			}
+		}
+
+		private void TidyScript(bool trimOnly = false)
+		{
+			scriptEditor.BeginAutoUndo(); // Start AutoUndo to allow the user to undo the tidying process using only a single stack
+
+			// Save set bookmarks and remove them from the editor to prevent a bug
+			BaseBookmarks bookmarkedLines = scriptEditor.Bookmarks;
+			scriptEditor.Bookmarks.Clear();
+
+			int scrollPosition = scriptEditor.VerticalScroll.Value; // Cache current scroll position
+
+			// Store editor content in a string and replace the "whitespace dots" (if there are any) with whitespace
+			string editorContent = scriptEditor.Text.Replace("·", " ");
+
+			// Setup a list to store all tidied lines
+			List<string> tidiedlines = trimOnly ? SyntaxTidying.TrimLines(editorContent) : SyntaxTidying.ReindentLines(editorContent);
+
+			for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
+			{
+				// Also check if user has "Show Spaces" enabled
+				string currentTidiedLine = Properties.Settings.Default.ShowSpaces ? tidiedlines[i].Replace(" ", "·") : tidiedlines[i];
+
+				if (scriptEditor.GetLineText(i) != currentTidiedLine) // If a line has changed
+				{
+					scriptEditor.Selection = new Range(scriptEditor, 0, i, scriptEditor.GetLineText(i).Length, i);
+					scriptEditor.InsertText(tidiedlines[i]);
+				}
+			}
+
+			// Restore last scroll position
+			scriptEditor.VerticalScroll.Value = scrollPosition;
+			scriptEditor.UpdateScrollbars();
+
+			scriptEditor.Bookmarks = bookmarkedLines; // Restore lost bookmarks
+
+			scriptEditor.EndAutoUndo(); // End AutoUndo to stop recording actions and put them into a single stack
+		}
+
+		private void HandleVisibleSpaces()
+		{
+			// If "Show Spaces" is enabled and the text contains spaces
+			if (Properties.Settings.Default.ShowSpaces && scriptEditor.Text.Contains(" "))
+			{
+				Place caretPosition = scriptEditor.Selection.Start; // Cache caret position
+
+				for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
+				{
+					if (scriptEditor.GetLineText(i).Contains(" ")) // If a line contains whitespace
 					{
-						folderHasScriptFile = true;
-						OpenFile(file);
+						scriptEditor.Selection = new Range(scriptEditor, 0, i, scriptEditor.GetLineText(i).Length, i);
+						scriptEditor.InsertText(scriptEditor.GetLineText(i).Replace(" ", "·"));
 					}
 				}
 
-				// If no script file was found
-				if (!folderHasScriptFile)
+				scriptEditor.Selection.Start = caretPosition; // Restore caret position
+			}
+			else if (!Properties.Settings.Default.ShowSpaces && scriptEditor.Text.Contains("·"))
+			{
+				Place caretPosition = scriptEditor.Selection.Start; // Cache caret position
+
+				for (int i = 0; i < scriptEditor.LinesCount; i++) // Scan all lines
 				{
-					DialogResult result = DarkMessageBox.Show(this,
-						Resources.Messages.NoScriptFile, "Script file not found.",
-						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-					if (result == DialogResult.Yes)
+					if (scriptEditor.GetLineText(i).Contains("·")) // If a line contains a "whitespace dot"
 					{
-						// Create SCRIPT.txt from template
-						string filePath = path + "\\SCRIPT.txt";
-						File.Copy("ScriptTemplate.txt", filePath);
-
-						OpenFile(filePath);
-					}
-					else if (result == DialogResult.No)
-					{
-						textEditor.Clear();
-						ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
+						scriptEditor.Selection = new Range(scriptEditor, 0, i, scriptEditor.GetLineText(i).Length, i);
+						scriptEditor.InsertText(scriptEditor.GetLineText(i).Replace("·", " "));
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				UnloadCurrentFile();
+
+				scriptEditor.Selection.Start = caretPosition; // Restore caret position
 			}
 		}
 
-		public void OpenFile(string filePath)
+		#endregion Object event methods
+
+		#region Project / File handling
+
+		private void OpenSelectedDropDownProject(ToolStripItemClickedEventArgs e)
+		{
+			bool projectFound = false;
+
+			foreach (Project project in _availableProjects)
+			{
+				if (project.Name == e.ClickedItem.Text)
+				{
+					_currentProject = project;
+					currentProjectLabel.Text = _currentProject.Name;
+
+					OpenProjectFiles();
+
+					Properties.Settings.Default.LastProject = _currentProject.Name;
+					Properties.Settings.Default.Save();
+
+					projectFound = true;
+				}
+			}
+
+			if (!projectFound)
+			{
+				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.SelectedProjectNotFound, "Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+				if (result == DialogResult.Yes)
+					projectsToolStripMenuItem.DropDownItems.Remove(e.ClickedItem);
+			}
+		}
+
+		private void OpenProjectFiles() // TODO: Rewrite this mess and add Languages support
 		{
 			try
 			{
-				// "Copy" the file contents into a string
-				string fileContent = File.ReadAllText(filePath, Encoding.GetEncoding(1252));
+				string scriptFilePath = _currentProject.GamePath + @"\Script\script.txt";
+				string fileContent = File.ReadAllText(scriptFilePath, Encoding.GetEncoding(1252));
 
 				// Replace all spaces with dots if the user wants to have visible spaces
 				if (Properties.Settings.Default.ShowSpaces && fileContent.Contains(" "))
-				{
 					fileContent = fileContent.Replace(" ", "·");
-				}
 
-				// "Paste" the file contents into the textEditor
-				textEditor.Text = fileContent;
+				scriptEditor.Text = fileContent;
 
 				// Opening the file has changed the text, so set it back to false
-				textEditor.IsChanged = false;
-				textEditor.ClearUndo();
+				scriptEditor.IsChanged = false;
+				scriptEditor.ClearUndo();
 
-				// Enable the interface since we got a file we can edit
-				ToggleInterface(true);
-
-				// Store the file (with it's path) and open it in the editor
-				gS_CurrentFilePath = filePath;
+				ToggleInterface(true); // Enable interface since we got a file we can edit
 
 				// Disable "Save" buttons since we've just opened the file
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
 
-				// Update the object browser with objects (if they exist)
-				ObjectBrowser.UpdateNodes(objectBrowser, textEditor, string.Empty);
+				UpdateObjectBrowserNodes(); // Update object browser with objects (if they exist)
 
-				// If Autosave is enabled
-				if (Properties.Settings.Default.AutosaveTime != 0)
+				if (objectBrowser.Nodes.Count == 2) // If all default nodes are set
 				{
-					StartAutosaveTimer();
+					// Force expanded nodes
+					objectBrowser.Nodes[0].Expanded = true;
+					objectBrowser.Nodes[1].Expanded = true;
 				}
+
+				if (Properties.Settings.Default.AutosaveTime != 0)
+					StartAutosaveTimer();
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				UnloadCurrentFile();
+				UnloadCurrentProject();
 			}
 		}
 
-		private void UnloadCurrentFile()
+		private void UnloadCurrentProject()
 		{
-			// Unload the file
-			gS_CurrentFilePath = string.Empty;
+			_currentProject = null;
 
-			// Clear the editor
-			textEditor.Clear();
-			textEditor.IsChanged = false;
+			scriptEditor.Clear();
+			scriptEditor.IsChanged = false;
 
-			ObjectBrowser.ResetNodes(objectBrowser);
-
-			// Disable the interface
+			ResetObjectBrowserNodes();
 			ToggleInterface(false);
 		}
 
-		#endregion File handling
-
-		#region File saving
-
 		private bool IsFileSaved()
 		{
-			// If the current file has unsaved changes
-			if (textEditor.IsChanged)
+			if (scriptEditor.IsChanged)
 			{
+				string scriptFilePath = Path.GetDirectoryName(_currentProject.GamePath) + @"\Script\script.txt";
+
 				DialogResult result = DarkMessageBox.Show(this,
-					string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(gS_CurrentFilePath)), "Unsaved changes!",
+					string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(scriptFilePath)), "Unsaved changes!",
 					MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
 				{
-					// Try to save the file
-					if (!SaveFile())
-					{
+					if (!SaveFile()) // Try to save the file
 						return false; // If file saving failed
-					}
 				}
 				else if (result == DialogResult.Cancel)
-				{
-					return false; // If the user has cancelled the operation
-				}
+					return false; // If user has cancelled the operation
 			}
 
-			return true; // If the file is saved or has just been saved
+			return true; // If file is saved or has just been saved
 		}
 
 		private bool SaveFile()
 		{
-			// If "Reindent on Save" is enabled
 			if (Properties.Settings.Default.ReindentOnSave)
-			{
-				SyntaxTidying.TidyScript(textEditor);
-			}
+				TidyScript();
 
 			try
 			{
-				// Replace the dots with spaces
-				string editorContent = textEditor.Text.Replace("·", " ");
+				// Replace dots with spaces
+				string editorContent = scriptEditor.Text.Replace("·", " ");
 
 				// Save to file
-				File.WriteAllText(gS_CurrentFilePath, editorContent, Encoding.GetEncoding(1252));
-				textEditor.IsChanged = false;
+				string scriptFilePath = Path.GetDirectoryName(_currentProject.GamePath) + @"\Script\script.txt";
+				File.WriteAllText(scriptFilePath, editorContent, Encoding.GetEncoding(1252));
+				scriptEditor.IsChanged = false;
 
 				// Disable "Save" buttons since we've just saved
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
 
-				// Redraw the editor
-				textEditor.Invalidate();
+				scriptEditor.Invalidate();
 			}
 			catch (Exception ex) // Saving failed somehow
 			{
 				DialogResult result = DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
 				if (result == DialogResult.Retry)
-				{
 					return SaveFile(); // Retry saving
-				}
 
 				return false;
 			}
@@ -669,19 +910,18 @@ namespace ScriptEditor
 			var autosaveTimer = new System.Timers.Timer(); // I don't like using vars but ¯\_(ツ)_/¯
 			autosaveTimer.Elapsed += autosaveTimer_Elapsed;
 			autosaveTimer.Interval = Properties.Settings.Default.AutosaveTime * (60 * 1000);
-			autosaveTimer.Enabled = true; // Start the timer
+			autosaveTimer.Start();
 		}
 
 		private void autosaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
-			string currentFolder = Path.GetDirectoryName(gS_CurrentFilePath);
-			string currentFileName = Path.GetFileNameWithoutExtension(gS_CurrentFilePath);
-			string autosaveFilePath = currentFolder + "\\" + currentFileName + ".autosave";
+			string scriptFolderPath = Path.GetDirectoryName(_currentProject.GamePath) + @"\Script";
+			string autosaveFilePath = scriptFolderPath + @"\script.autosave";
 
 			try
 			{
-				// Replace the dots with spaces
-				string editorContent = textEditor.Text.Replace("·", " ");
+				// Replace dots with spaces
+				string editorContent = scriptEditor.Text.Replace("·", " ");
 
 				// Save to file
 				File.WriteAllText(autosaveFilePath, editorContent, Encoding.GetEncoding(1252));
@@ -708,31 +948,43 @@ namespace ScriptEditor
 			}
 		}
 
-		#endregion File saving
+		#endregion Project / File handling
 
 		#region Other forms
 
 		private void ShowAboutForm()
 		{
 			using (var form = new TombLib.Forms.FormAbout(null))
-			{
 				form.ShowDialog(this);
-			}
 		}
 
-		private void ShowPathSelectionForm()
+		private void ShowProjectSetupForm()
 		{
-			// If the current file has unsaved changes
-			if (!IsFileSaved())
-			{
+			if (!IsFileSaved()) // If current file has unsaved changes
 				return;
-			}
 
-			using (FormSelectPaths form = new FormSelectPaths())
+			using (FormProjectSetup form = new FormProjectSetup())
 			{
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					ReadScriptFolder();
+					List<Project> projects = new List<Project>();
+
+					using (StreamReader stream = new StreamReader("Projects.xml"))
+					{
+						XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
+						projects = (List<Project>)serializer.Deserialize(stream);
+					}
+
+					_currentProject = projects[projects.Count - 1];
+					_availableProjects.Add(_currentProject);
+
+					projectsToolStripMenuItem.DropDownItems.Add(_currentProject.Name);
+					currentProjectLabel.Text = _currentProject.Name;
+
+					OpenProjectFiles();
+
+					Properties.Settings.Default.LastProject = _currentProject.Name;
+					Properties.Settings.Default.Save();
 				}
 			}
 		}
@@ -740,12 +992,10 @@ namespace ScriptEditor
 		private void ShowStringTable()
 		{
 			using (FormStringTable form = new FormStringTable())
-			{
 				form.ShowDialog(this);
-			}
 		}
 
-		private void OpenSettingsForm()
+		private void ShowSettingsForm()
 		{
 			// Cache critical settings
 			int autosaveCache = Properties.Settings.Default.AutosaveTime;
@@ -755,18 +1005,14 @@ namespace ScriptEditor
 
 			using (FormSettings form = new FormSettings())
 			{
-				// If the user pressed "Cancel"
 				if (form.ShowDialog(this) == DialogResult.Cancel)
-				{
 					return;
-				}
 
 				ApplyUserSettings();
 
-				if (form.gI_RestartItemCount > 0) // GLOBALZZZ NUUUU THIZ IZ BED !!! Welp, find a better solution then. :P
+				if (form._restartItemCount > 0) // GLOBALZZZ NUUUU THIZ IZ BED !!! Welp, find a better solution then. :P
 				{
-					// If the current file has unsaved changes
-					if (!IsFileSaved())
+					if (!IsFileSaved()) // If current file has unsaved changes
 					{
 						// Saving failed or the user clicked "Cancel"
 						// Therefore restore the previous critical settings
@@ -776,51 +1022,52 @@ namespace ScriptEditor
 						Properties.Settings.Default.ToolTips = toolTipCache;
 
 						Properties.Settings.Default.Save();
-						OpenSettingsForm();
+						ShowSettingsForm();
 						return; // DO NOT CLOSE THE APP !!! (ﾉ°Д°)ﾉ︵﻿ ┻━┻
 					}
 
-					textEditor.IsChanged = false; // Prevent re-check of IsFileSaved()
+					scriptEditor.IsChanged = false; // Prevent re-check of IsFileSaved()
 					Application.Restart();
 				}
 			}
 		}
 
-        #endregion Other forms
+		#endregion Other forms
 
-        private void buildToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            BuildScript();
-        }
+		// UNSORTED CODE STARTS HERE:
 
-        private void BuildScript()
-        {
-            IScriptCompiler compiler;
-            switch (Properties.Settings.Default.Compiler)
-            {
-                case ScriptCompilers.TRLENew:
-                    compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR4);
-                    break;
-                case ScriptCompilers.NGCenter:
-                    compiler = new ScriptCompilerTRNG(Properties.Settings.Default.NgCenterPath);
-                    break;
-                case ScriptCompilers.TR5New:
-                    compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR5);
-                    break;
-                case ScriptCompilers.TR5Main:
-                    compiler = new ScriptCompilerTR5Main();
-                    break;
-                default:
-                    compiler = new ScriptCompilerLegacy(Properties.Settings.Default.ScriptPath);
-                    break;
-            }
+		private void BuildScript()
+		{
+			string scriptFolderPath = _currentProject.GamePath + @"\Script";
+			IScriptCompiler compiler;
 
-            bool result = compiler.CompileScripts(Properties.Settings.Default.ScriptPath, Properties.Settings.Default.GamePath);
-            if (!result)
-            {
-                DarkMessageBox.Show(this, "Error while compiling scripts", "Error",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-    }
+			switch (_currentProject.Compiler)
+			{
+				case ScriptCompilers.TRLENew:
+					compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR4);
+					break;
+
+				case ScriptCompilers.NGCenter:
+					compiler = new ScriptCompilerTRNG(_currentProject.NGCenterPath);
+					break;
+
+				case ScriptCompilers.TR5New:
+					compiler = new ScriptCompilerNew(TombLib.LevelData.GameVersion.TR5);
+					break;
+
+				case ScriptCompilers.TR5Main:
+					compiler = new ScriptCompilerTR5Main();
+					break;
+
+				default:
+					compiler = new ScriptCompilerLegacy(scriptFolderPath);
+					break;
+			}
+
+			bool result = compiler.CompileScripts(scriptFolderPath, _currentProject.GamePath);
+
+			if (!result)
+				DarkMessageBox.Show(this, "Error while compiling scripts", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+	}
 }
