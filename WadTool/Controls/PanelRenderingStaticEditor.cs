@@ -541,7 +541,8 @@ namespace WadTool.Controls
         {
             Static.Mesh.VerticesShades.Clear();
 
-            Matrix4x4 world = Matrix4x4.CreateTranslation(StaticPosition);
+            Matrix4x4 world = Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *  
+                              Matrix4x4.CreateTranslation(StaticPosition);
 
             for (int i = 0; i < Static.Mesh.VerticesPositions.Count; i++)
             {
