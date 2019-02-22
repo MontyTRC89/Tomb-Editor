@@ -1374,50 +1374,26 @@ namespace TombEditor.Controls
         private void FlyModeTimer_Tick(object sender, EventArgs e)
         {
             var newCameraPos = new Vector3();
+			var cameraSpeed = 50;
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
-            {
-                newCameraPos = new Vector3(0, 0, -50);
-            }
+			if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftAlt))
+				cameraSpeed *= 2;
+
+			if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
+				newCameraPos.Z -= cameraSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
-            {
-                newCameraPos = new Vector3(50, 0, 0);
-            }
+				newCameraPos.X += cameraSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S))
-            {
-                newCameraPos = new Vector3(0, 0, 50);
-            }
+				newCameraPos.Z += cameraSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
-            {
-                newCameraPos = new Vector3(-50, 0, 0);
-            }
-
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
-            {
-                newCameraPos = new Vector3(50, 0, -50);
-            }
-
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
-            {
-                newCameraPos = new Vector3(-50, 0, -50);
-            }
-
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
-            {
-                newCameraPos = new Vector3(50, 0, 50);
-            }
-
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
-            {
-                newCameraPos = new Vector3(-50, 0, 50);
-            }
+				newCameraPos.X -= cameraSpeed;
 
             Camera.MoveCameraPlane(newCameraPos);
 
-            var room = GetCurrentRoom();
+			var room = GetCurrentRoom();
             if (room != null)
                 _editor.SelectedRoom = room;
 
