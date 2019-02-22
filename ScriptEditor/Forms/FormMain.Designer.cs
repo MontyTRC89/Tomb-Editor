@@ -22,7 +22,7 @@ namespace ScriptEditor
 			this.aboutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autosaveLabel = new DarkUI.Controls.DarkLabel();
-			this.browserTabControl = new System.Windows.Forms.TabControl();
+			this.browserTabControl = new System.Windows.Forms.CustomTabControl();
 			this.objectBrowserTabPage = new System.Windows.Forms.TabPage();
 			this.objectBrowser = new DarkUI.Controls.DarkTreeView();
 			this.searchTextBox = new DarkUI.Controls.DarkTextBox();
@@ -52,7 +52,7 @@ namespace ScriptEditor
 			this.toolStripSeparator_16 = new System.Windows.Forms.ToolStripSeparator();
 			this.toggleBookmarkContextItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.documentMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.editorTabControl = new ScriptEditor.VisualStudioTabControl();
+			this.editorTabControl = new System.Windows.Forms.CustomTabControl();
 			this.scriptTabPage = new System.Windows.Forms.TabPage();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -169,6 +169,26 @@ namespace ScriptEditor
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.browserTabControl.Controls.Add(this.objectBrowserTabPage);
 			this.browserTabControl.Controls.Add(this.explorerTabPage);
+			this.browserTabControl.DisplayStyle = System.Windows.Forms.TabStyle.Angled;
+			// 
+			// 
+			// 
+			this.browserTabControl.DisplayStyleProvider.BorderColor = System.Drawing.SystemColors.ControlDark;
+			this.browserTabControl.DisplayStyleProvider.BorderColorHot = System.Drawing.SystemColors.ControlDark;
+			this.browserTabControl.DisplayStyleProvider.BorderColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(157)))), ((int)(((byte)(185)))));
+			this.browserTabControl.DisplayStyleProvider.CloserColor = System.Drawing.Color.DarkGray;
+			this.browserTabControl.DisplayStyleProvider.FocusTrack = false;
+			this.browserTabControl.DisplayStyleProvider.HotTrack = true;
+			this.browserTabControl.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.browserTabControl.DisplayStyleProvider.Opacity = 1F;
+			this.browserTabControl.DisplayStyleProvider.Overlap = 7;
+			this.browserTabControl.DisplayStyleProvider.Padding = new System.Drawing.Point(10, 3);
+			this.browserTabControl.DisplayStyleProvider.Radius = 10;
+			this.browserTabControl.DisplayStyleProvider.ShowTabCloser = false;
+			this.browserTabControl.DisplayStyleProvider.TextColor = System.Drawing.SystemColors.ControlText;
+			this.browserTabControl.DisplayStyleProvider.TextColorDisabled = System.Drawing.SystemColors.ControlDark;
+			this.browserTabControl.DisplayStyleProvider.TextColorSelected = System.Drawing.SystemColors.ControlText;
+			this.browserTabControl.HotTrack = true;
 			this.browserTabControl.Location = new System.Drawing.Point(0, 0);
 			this.browserTabControl.Margin = new System.Windows.Forms.Padding(0);
 			this.browserTabControl.Name = "browserTabControl";
@@ -180,10 +200,10 @@ namespace ScriptEditor
 			// 
 			this.objectBrowserTabPage.Controls.Add(this.objectBrowser);
 			this.objectBrowserTabPage.Controls.Add(this.searchTextBox);
-			this.objectBrowserTabPage.Location = new System.Drawing.Point(4, 22);
+			this.objectBrowserTabPage.Location = new System.Drawing.Point(4, 23);
 			this.objectBrowserTabPage.Margin = new System.Windows.Forms.Padding(0);
 			this.objectBrowserTabPage.Name = "objectBrowserTabPage";
-			this.objectBrowserTabPage.Size = new System.Drawing.Size(192, 298);
+			this.objectBrowserTabPage.Size = new System.Drawing.Size(192, 297);
 			this.objectBrowserTabPage.TabIndex = 0;
 			this.objectBrowserTabPage.Text = "Object Browser";
 			// 
@@ -192,9 +212,8 @@ namespace ScriptEditor
 			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.objectBrowser.Location = new System.Drawing.Point(0, 20);
-			this.objectBrowser.MaxDragChange = 20;
 			this.objectBrowser.Name = "objectBrowser";
-			this.objectBrowser.Size = new System.Drawing.Size(192, 278);
+			this.objectBrowser.Size = new System.Drawing.Size(192, 277);
 			this.objectBrowser.TabIndex = 6;
 			this.objectBrowser.Click += new System.EventHandler(this.objectBrowser_Click);
 			// 
@@ -212,10 +231,10 @@ namespace ScriptEditor
 			// 
 			// explorerTabPage
 			// 
-			this.explorerTabPage.Location = new System.Drawing.Point(4, 22);
+			this.explorerTabPage.Location = new System.Drawing.Point(4, 23);
 			this.explorerTabPage.Margin = new System.Windows.Forms.Padding(0);
 			this.explorerTabPage.Name = "explorerTabPage";
-			this.explorerTabPage.Size = new System.Drawing.Size(192, 298);
+			this.explorerTabPage.Size = new System.Drawing.Size(192, 297);
 			this.explorerTabPage.TabIndex = 1;
 			this.explorerTabPage.Text = "Explorer";
 			// 
@@ -446,7 +465,7 @@ namespace ScriptEditor
 			this.scriptEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(30)))), ((int)(((byte)(144)))), ((int)(((byte)(255)))));
 			this.scriptEditor.ServiceColors = null;
 			this.scriptEditor.ServiceLinesColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-			this.scriptEditor.Size = new System.Drawing.Size(605, 293);
+			this.scriptEditor.Size = new System.Drawing.Size(605, 297);
 			this.scriptEditor.TabIndex = 3;
 			this.scriptEditor.Zoom = 100;
 			this.scriptEditor.ToolTipNeeded += new System.EventHandler<FastColoredTextBoxNS.ToolTipNeededEventArgs>(this.textEditor_ToolTipNeeded);
@@ -535,12 +554,30 @@ namespace ScriptEditor
 			// 
 			this.editorTabControl.AllowDrop = true;
 			this.editorTabControl.Controls.Add(this.scriptTabPage);
+			this.editorTabControl.DisplayStyle = System.Windows.Forms.TabStyle.Angled;
+			// 
+			// 
+			// 
+			this.editorTabControl.DisplayStyleProvider.BorderColor = System.Drawing.SystemColors.ControlDark;
+			this.editorTabControl.DisplayStyleProvider.BorderColorHot = System.Drawing.SystemColors.ControlDark;
+			this.editorTabControl.DisplayStyleProvider.BorderColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(157)))), ((int)(((byte)(185)))));
+			this.editorTabControl.DisplayStyleProvider.CloserColor = System.Drawing.Color.DarkGray;
+			this.editorTabControl.DisplayStyleProvider.FocusTrack = false;
+			this.editorTabControl.DisplayStyleProvider.HotTrack = true;
+			this.editorTabControl.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.editorTabControl.DisplayStyleProvider.Opacity = 1F;
+			this.editorTabControl.DisplayStyleProvider.Overlap = 7;
+			this.editorTabControl.DisplayStyleProvider.Padding = new System.Drawing.Point(10, 3);
+			this.editorTabControl.DisplayStyleProvider.Radius = 10;
+			this.editorTabControl.DisplayStyleProvider.ShowTabCloser = true;
+			this.editorTabControl.DisplayStyleProvider.TextColor = System.Drawing.SystemColors.ControlText;
+			this.editorTabControl.DisplayStyleProvider.TextColorDisabled = System.Drawing.SystemColors.ControlDark;
+			this.editorTabControl.DisplayStyleProvider.TextColorSelected = System.Drawing.SystemColors.ControlText;
 			this.editorTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.editorTabControl.Font = new System.Drawing.Font("Segoe UI", 9F);
+			this.editorTabControl.HotTrack = true;
 			this.editorTabControl.Location = new System.Drawing.Point(203, 52);
 			this.editorTabControl.Margin = new System.Windows.Forms.Padding(0);
 			this.editorTabControl.Name = "editorTabControl";
-			this.editorTabControl.Padding = new System.Drawing.Point(14, 4);
 			this.editorTabControl.SelectedIndex = 0;
 			this.editorTabControl.Size = new System.Drawing.Size(613, 324);
 			this.editorTabControl.TabIndex = 15;
@@ -548,10 +585,10 @@ namespace ScriptEditor
 			// scriptTabPage
 			// 
 			this.scriptTabPage.Controls.Add(this.scriptEditor);
-			this.scriptTabPage.Location = new System.Drawing.Point(4, 27);
+			this.scriptTabPage.Location = new System.Drawing.Point(4, 23);
 			this.scriptTabPage.Margin = new System.Windows.Forms.Padding(0);
 			this.scriptTabPage.Name = "scriptTabPage";
-			this.scriptTabPage.Size = new System.Drawing.Size(605, 293);
+			this.scriptTabPage.Size = new System.Drawing.Size(605, 297);
 			this.scriptTabPage.TabIndex = 0;
 			this.scriptTabPage.Text = "Script";
 			// 
@@ -1354,12 +1391,12 @@ namespace ScriptEditor
         private System.Windows.Forms.ToolStripStatusLabel lineNumberLabel;
         private System.Windows.Forms.ToolStripStatusLabel selectedCharsLabel;
 		private FastColoredTextBoxNS.FastColoredTextBox scriptEditor;
-		private System.Windows.Forms.TabControl browserTabControl;
+		private System.Windows.Forms.CustomTabControl browserTabControl;
+		private System.Windows.Forms.CustomTabControl editorTabControl;
 		private System.Windows.Forms.TabPage explorerTabPage;
 		private System.Windows.Forms.TabPage langTabPage;
 		private System.Windows.Forms.TabPage objectBrowserTabPage;
 		private System.Windows.Forms.TabPage scriptTabPage;
-		private VisualStudioTabControl editorTabControl;
 	}
 }
 
