@@ -22,10 +22,14 @@ namespace ScriptEditor
 			this.aboutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autosaveLabel = new DarkUI.Controls.DarkLabel();
+			this.browserTabControl = new System.Windows.Forms.TabControl();
+			this.objectBrowserTabPage = new System.Windows.Forms.TabPage();
+			this.objectBrowser = new DarkUI.Controls.DarkTreeView();
+			this.searchTextBox = new DarkUI.Controls.DarkTextBox();
+			this.explorerTabPage = new System.Windows.Forms.TabPage();
 			this.buildToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearBookmarksToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.clearBookmarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.colNumberLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -48,6 +52,8 @@ namespace ScriptEditor
 			this.toolStripSeparator_16 = new System.Windows.Forms.ToolStripSeparator();
 			this.toggleBookmarkContextItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.documentMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editorTabControl = new ScriptEditor.VisualStudioTabControl();
+			this.scriptTabPage = new System.Windows.Forms.TabPage();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,6 +66,7 @@ namespace ScriptEditor
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator_02 = new System.Windows.Forms.ToolStripSeparator();
@@ -85,9 +92,7 @@ namespace ScriptEditor
 			this.referenceBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nextBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.objectBrowser = new DarkUI.Controls.DarkTreeView();
 			this.objectBrowserBox = new DarkUI.Controls.DarkGroupBox();
-			this.searchTextBox = new DarkUI.Controls.DarkTextBox();
 			this.objectBrowserSplitter = new System.Windows.Forms.Splitter();
 			this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.prevBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -96,10 +101,8 @@ namespace ScriptEditor
 			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			this.resetZoomButton = new DarkUI.Controls.DarkButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.scriptTabPage = new System.Windows.Forms.TabPage();
 			this.selectedCharsLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
-			this.tabControl = new ScriptEditor.VisualStudioTabControl();
 			this.toggleBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
 			this.toolStripSeparator_09 = new System.Windows.Forms.ToolStripSeparator();
@@ -112,13 +115,15 @@ namespace ScriptEditor
 			this.toolStripSeparator_14 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabel = new System.Windows.Forms.ToolStripLabel();
 			this.zoomLabel = new DarkUI.Controls.DarkLabel();
+			this.browserTabControl.SuspendLayout();
+			this.objectBrowserTabPage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.scriptEditor)).BeginInit();
 			this.editorContextMenu.SuspendLayout();
+			this.editorTabControl.SuspendLayout();
+			this.scriptTabPage.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.objectBrowserBox.SuspendLayout();
-			this.scriptTabPage.SuspendLayout();
 			this.statusStrip.SuspendLayout();
-			this.tabControl.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -128,7 +133,6 @@ namespace ScriptEditor
 			this.aboutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.aboutToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.aboutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("aboutToolStripButton.Image")));
-			this.aboutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.aboutToolStripButton.Name = "aboutToolStripButton";
 			this.aboutToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.aboutToolStripButton.Text = "About (F1)";
@@ -157,13 +161,69 @@ namespace ScriptEditor
 			this.autosaveLabel.Text = "Autosave Completed! (CURRENT TIME GOES HERE)";
 			this.autosaveLabel.Visible = false;
 			// 
+			// browserTabControl
+			// 
+			this.browserTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.browserTabControl.Controls.Add(this.objectBrowserTabPage);
+			this.browserTabControl.Controls.Add(this.explorerTabPage);
+			this.browserTabControl.Location = new System.Drawing.Point(0, 0);
+			this.browserTabControl.Margin = new System.Windows.Forms.Padding(0);
+			this.browserTabControl.Name = "browserTabControl";
+			this.browserTabControl.SelectedIndex = 0;
+			this.browserTabControl.Size = new System.Drawing.Size(200, 324);
+			this.browserTabControl.TabIndex = 16;
+			// 
+			// objectBrowserTabPage
+			// 
+			this.objectBrowserTabPage.Controls.Add(this.objectBrowser);
+			this.objectBrowserTabPage.Controls.Add(this.searchTextBox);
+			this.objectBrowserTabPage.Location = new System.Drawing.Point(4, 22);
+			this.objectBrowserTabPage.Margin = new System.Windows.Forms.Padding(0);
+			this.objectBrowserTabPage.Name = "objectBrowserTabPage";
+			this.objectBrowserTabPage.Size = new System.Drawing.Size(192, 298);
+			this.objectBrowserTabPage.TabIndex = 0;
+			this.objectBrowserTabPage.Text = "Object Browser";
+			// 
+			// objectBrowser
+			// 
+			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.objectBrowser.Location = new System.Drawing.Point(0, 20);
+			this.objectBrowser.MaxDragChange = 20;
+			this.objectBrowser.Name = "objectBrowser";
+			this.objectBrowser.Size = new System.Drawing.Size(192, 278);
+			this.objectBrowser.TabIndex = 6;
+			this.objectBrowser.Click += new System.EventHandler(this.objectBrowser_Click);
+			// 
+			// searchTextBox
+			// 
+			this.searchTextBox.Dock = System.Windows.Forms.DockStyle.Top;
+			this.searchTextBox.Location = new System.Drawing.Point(0, 0);
+			this.searchTextBox.Name = "searchTextBox";
+			this.searchTextBox.Size = new System.Drawing.Size(192, 20);
+			this.searchTextBox.TabIndex = 7;
+			this.searchTextBox.Text = "Search...";
+			this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
+			this.searchTextBox.GotFocus += new System.EventHandler(this.searchTextBox_GotFocus);
+			this.searchTextBox.LostFocus += new System.EventHandler(this.searchTextBox_LostFocus);
+			// 
+			// explorerTabPage
+			// 
+			this.explorerTabPage.Location = new System.Drawing.Point(4, 22);
+			this.explorerTabPage.Margin = new System.Windows.Forms.Padding(0);
+			this.explorerTabPage.Name = "explorerTabPage";
+			this.explorerTabPage.Size = new System.Drawing.Size(192, 298);
+			this.explorerTabPage.TabIndex = 1;
+			this.explorerTabPage.Text = "Explorer";
+			// 
 			// buildToolStripButton
 			// 
 			this.buildToolStripButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.buildToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buildToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.buildToolStripButton.Image = global::ScriptEditor.Properties.Resources.play_16;
-			this.buildToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buildToolStripButton.Name = "buildToolStripButton";
 			this.buildToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.buildToolStripButton.Text = "Build (F9)";
@@ -174,7 +234,6 @@ namespace ScriptEditor
 			this.buildToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.buildToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.buildToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.play_16;
-			this.buildToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
 			this.buildToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
 			this.buildToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
@@ -187,23 +246,10 @@ namespace ScriptEditor
 			this.changeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.changeToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.changeToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_Open_16;
-			this.changeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.changeToolStripButton.Name = "changeToolStripButton";
 			this.changeToolStripButton.Size = new System.Drawing.Size(23, 25);
-			this.changeToolStripButton.Text = "Change Paths... (Ctrl+O)";
+			this.changeToolStripButton.Text = "Add New Project... (Ctrl+N)";
 			this.changeToolStripButton.Click += new System.EventHandler(this.ToolStrip_NewProjectButton_Click);
-			// 
-			// newToolStripMenuItem
-			// 
-			this.newToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.newToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.newToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.general_Open_16;
-			this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.newToolStripMenuItem.Text = "&New Project...";
-			this.newToolStripMenuItem.Click += new System.EventHandler(this.File_NewProject_MenuItem_Click);
 			// 
 			// clearBookmarksToolStripButton
 			// 
@@ -211,7 +257,6 @@ namespace ScriptEditor
 			this.clearBookmarksToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.clearBookmarksToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.clearBookmarksToolStripButton.Image = global::ScriptEditor.Properties.Resources.clearBookmark_16;
-			this.clearBookmarksToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.clearBookmarksToolStripButton.Name = "clearBookmarksToolStripButton";
 			this.clearBookmarksToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.clearBookmarksToolStripButton.Text = "Clear all Bookmarks (Ctrl+Shift+B)";
@@ -251,11 +296,9 @@ namespace ScriptEditor
 			this.commentToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.commentToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.commentToolStripButton.Image = global::ScriptEditor.Properties.Resources.comment_16;
-			this.commentToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.commentToolStripButton.Name = "commentToolStripButton";
 			this.commentToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.commentToolStripButton.Text = "Comment out Lines (Ctrl+Shift+C)";
-			this.commentToolStripButton.ToolTipText = "Comment out Lines";
 			this.commentToolStripButton.Click += new System.EventHandler(this.ToolStrip_CommentButton_Click);
 			// 
 			// commentToolStripMenuItem
@@ -286,7 +329,6 @@ namespace ScriptEditor
 			this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.copyToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.copyToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripButton.Image")));
-			this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripButton.Name = "copyToolStripButton";
 			this.copyToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.copyToolStripButton.Text = "Copy (Ctrl+C)";
@@ -297,7 +339,6 @@ namespace ScriptEditor
 			this.copyToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.copyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.copyToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.general_copy_16;
-			this.copyToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
@@ -331,7 +372,6 @@ namespace ScriptEditor
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.cutToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.cutToolStripButton.Image = global::ScriptEditor.Properties.Resources.cut_16;
-			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.cutToolStripButton.Text = "Cut (Ctrl+X)";
@@ -342,7 +382,6 @@ namespace ScriptEditor
 			this.cutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.cutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.cutToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.cut_16;
-			this.cutToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
 			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.cutToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
@@ -485,6 +524,30 @@ namespace ScriptEditor
 			this.documentMapToolStripMenuItem.Text = "&Document Map";
 			this.documentMapToolStripMenuItem.Click += new System.EventHandler(this.View_DocumentMap_MenuItem_Click);
 			// 
+			// editorTabControl
+			// 
+			this.editorTabControl.AllowDrop = true;
+			this.editorTabControl.Controls.Add(this.scriptTabPage);
+			this.editorTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.editorTabControl.Font = new System.Drawing.Font("Segoe UI", 9F);
+			this.editorTabControl.Location = new System.Drawing.Point(203, 52);
+			this.editorTabControl.Margin = new System.Windows.Forms.Padding(0);
+			this.editorTabControl.Name = "editorTabControl";
+			this.editorTabControl.Padding = new System.Drawing.Point(14, 4);
+			this.editorTabControl.SelectedIndex = 0;
+			this.editorTabControl.Size = new System.Drawing.Size(613, 324);
+			this.editorTabControl.TabIndex = 15;
+			// 
+			// scriptTabPage
+			// 
+			this.scriptTabPage.Controls.Add(this.scriptEditor);
+			this.scriptTabPage.Location = new System.Drawing.Point(4, 27);
+			this.scriptTabPage.Margin = new System.Windows.Forms.Padding(0);
+			this.scriptTabPage.Name = "scriptTabPage";
+			this.scriptTabPage.Size = new System.Drawing.Size(605, 293);
+			this.scriptTabPage.TabIndex = 0;
+			this.scriptTabPage.Text = "Script";
+			// 
 			// editToolStripMenuItem
 			// 
 			this.editToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -537,7 +600,6 @@ namespace ScriptEditor
 			this.pasteToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.pasteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.pasteToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.general_clipboard_16;
-			this.pasteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
@@ -616,6 +678,17 @@ namespace ScriptEditor
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
+			// newToolStripMenuItem
+			// 
+			this.newToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.newToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.newToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.general_Open_16;
+			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.newToolStripMenuItem.Text = "&New Project...";
+			this.newToolStripMenuItem.Click += new System.EventHandler(this.File_NewProject_MenuItem_Click);
+			// 
 			// toolStripSeparator_01
 			// 
 			this.toolStripSeparator_01.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -629,7 +702,6 @@ namespace ScriptEditor
 			this.saveToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.saveToolStripMenuItem.Image = global::ScriptEditor.Properties.Resources.general_Save_16;
-			this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
@@ -680,7 +752,6 @@ namespace ScriptEditor
 			this.langTabPage.Size = new System.Drawing.Size(605, 293);
 			this.langTabPage.TabIndex = 1;
 			this.langTabPage.Text = "Languages";
-			this.langTabPage.UseVisualStyleBackColor = true;
 			// 
 			// lineNumberLabel
 			// 
@@ -704,7 +775,6 @@ namespace ScriptEditor
 			this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
 			this.menuStrip.Size = new System.Drawing.Size(944, 24);
 			this.menuStrip.TabIndex = 0;
-			this.menuStrip.Text = "menuStrip";
 			// 
 			// toolsToolStripMenuItem1
 			// 
@@ -878,48 +948,20 @@ namespace ScriptEditor
 			this.nextBookmarkToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.nextBookmarkToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.nextBookmarkToolStripButton.Image = global::ScriptEditor.Properties.Resources.nextBookmark_16;
-			this.nextBookmarkToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.nextBookmarkToolStripButton.Name = "nextBookmarkToolStripButton";
 			this.nextBookmarkToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.nextBookmarkToolStripButton.Text = "Next Bookmark (Ctrl+Right)";
 			this.nextBookmarkToolStripButton.Click += new System.EventHandler(this.ToolStrip_NextBookmarkButton_Click);
 			// 
-			// objectBrowser
-			// 
-			this.objectBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.objectBrowser.Location = new System.Drawing.Point(0, 20);
-			this.objectBrowser.MaxDragChange = 20;
-			this.objectBrowser.Name = "objectBrowser";
-			this.objectBrowser.Size = new System.Drawing.Size(200, 304);
-			this.objectBrowser.TabIndex = 6;
-			this.objectBrowser.Click += new System.EventHandler(this.objectBrowser_Click);
-			// 
 			// objectBrowserBox
 			// 
-			this.objectBrowserBox.Controls.Add(this.searchTextBox);
-			this.objectBrowserBox.Controls.Add(this.objectBrowser);
+			this.objectBrowserBox.Controls.Add(this.browserTabControl);
 			this.objectBrowserBox.Dock = System.Windows.Forms.DockStyle.Left;
 			this.objectBrowserBox.Location = new System.Drawing.Point(0, 52);
 			this.objectBrowserBox.Name = "objectBrowserBox";
 			this.objectBrowserBox.Size = new System.Drawing.Size(200, 324);
 			this.objectBrowserBox.TabIndex = 7;
 			this.objectBrowserBox.TabStop = false;
-			// 
-			// searchTextBox
-			// 
-			this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.searchTextBox.Location = new System.Drawing.Point(0, 0);
-			this.searchTextBox.Name = "searchTextBox";
-			this.searchTextBox.Size = new System.Drawing.Size(200, 20);
-			this.searchTextBox.TabIndex = 7;
-			this.searchTextBox.Text = "Search...";
-			this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
-			this.searchTextBox.GotFocus += new System.EventHandler(this.searchTextBox_GotFocus);
-			this.searchTextBox.LostFocus += new System.EventHandler(this.searchTextBox_LostFocus);
 			// 
 			// objectBrowserSplitter
 			// 
@@ -936,7 +978,6 @@ namespace ScriptEditor
 			this.pasteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.pasteToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.pasteToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripButton.Image")));
-			this.pasteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pasteToolStripButton.Name = "pasteToolStripButton";
 			this.pasteToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.pasteToolStripButton.Text = "Paste (Ctrl+V)";
@@ -948,7 +989,6 @@ namespace ScriptEditor
 			this.prevBookmarkToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.prevBookmarkToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.prevBookmarkToolStripButton.Image = global::ScriptEditor.Properties.Resources.prevBookmark_16;
-			this.prevBookmarkToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.prevBookmarkToolStripButton.Name = "prevBookmarkToolStripButton";
 			this.prevBookmarkToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.prevBookmarkToolStripButton.Text = "Previous Bookmark (Ctrl+Left)";
@@ -960,7 +1000,6 @@ namespace ScriptEditor
 			this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.redoToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.redoToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_redo_16;
-			this.redoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.redoToolStripButton.Name = "redoToolStripButton";
 			this.redoToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.redoToolStripButton.Text = "Redo (Ctrl+Y)";
@@ -1003,22 +1042,10 @@ namespace ScriptEditor
 			this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.saveToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.saveToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_Save_16;
-			this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripButton.Name = "saveToolStripButton";
 			this.saveToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.saveToolStripButton.Text = "Save (Ctrl+S)";
 			this.saveToolStripButton.Click += new System.EventHandler(this.ToolStrip_SaveButton_Click);
-			// 
-			// scriptTabPage
-			// 
-			this.scriptTabPage.Controls.Add(this.scriptEditor);
-			this.scriptTabPage.Location = new System.Drawing.Point(4, 27);
-			this.scriptTabPage.Margin = new System.Windows.Forms.Padding(0);
-			this.scriptTabPage.Name = "scriptTabPage";
-			this.scriptTabPage.Size = new System.Drawing.Size(605, 293);
-			this.scriptTabPage.TabIndex = 0;
-			this.scriptTabPage.Text = "Script";
-			this.scriptTabPage.UseVisualStyleBackColor = true;
 			// 
 			// selectedCharsLabel
 			// 
@@ -1041,29 +1068,12 @@ namespace ScriptEditor
 			this.statusStrip.TabIndex = 2;
 			this.statusStrip.Text = "statusStrip";
 			// 
-			// tabControl
-			// 
-			this.tabControl.AllowDrop = true;
-			this.tabControl.Controls.Add(this.scriptTabPage);
-			this.tabControl.Controls.Add(this.langTabPage);
-			this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabControl.Font = new System.Drawing.Font("Segoe UI", 9F);
-			this.tabControl.Location = new System.Drawing.Point(203, 52);
-			this.tabControl.Margin = new System.Windows.Forms.Padding(0);
-			this.tabControl.Multiline = true;
-			this.tabControl.Name = "tabControl";
-			this.tabControl.Padding = new System.Drawing.Point(14, 4);
-			this.tabControl.SelectedIndex = 0;
-			this.tabControl.Size = new System.Drawing.Size(613, 324);
-			this.tabControl.TabIndex = 15;
-			// 
 			// toggleBookmarkToolStripButton
 			// 
 			this.toggleBookmarkToolStripButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.toggleBookmarkToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.toggleBookmarkToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toggleBookmarkToolStripButton.Image = global::ScriptEditor.Properties.Resources.toggleBookmark_16;
-			this.toggleBookmarkToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toggleBookmarkToolStripButton.Name = "toggleBookmarkToolStripButton";
 			this.toggleBookmarkToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.toggleBookmarkToolStripButton.Text = "Toggle Bookmark (Ctrl+B)";
@@ -1103,7 +1113,6 @@ namespace ScriptEditor
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
 			this.toolStrip.Size = new System.Drawing.Size(944, 28);
 			this.toolStrip.TabIndex = 1;
-			this.toolStrip.Text = "toolStrip";
 			// 
 			// toolStripSeparator_09
 			// 
@@ -1127,7 +1136,6 @@ namespace ScriptEditor
 			this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.undoToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.undoToolStripButton.Image = global::ScriptEditor.Properties.Resources.general_undo_16;
-			this.undoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.undoToolStripButton.Name = "undoToolStripButton";
 			this.undoToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.undoToolStripButton.Text = "Undo (Ctrl+Z)";
@@ -1155,7 +1163,6 @@ namespace ScriptEditor
 			this.uncommentToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.uncommentToolStripButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.uncommentToolStripButton.Image = global::ScriptEditor.Properties.Resources.uncomment_16;
-			this.uncommentToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.uncommentToolStripButton.Name = "uncommentToolStripButton";
 			this.uncommentToolStripButton.Size = new System.Drawing.Size(23, 25);
 			this.uncommentToolStripButton.Text = "Uncomment Lines (Ctrl+Shift+U)";
@@ -1203,7 +1210,7 @@ namespace ScriptEditor
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(944, 567);
-			this.Controls.Add(this.tabControl);
+			this.Controls.Add(this.editorTabControl);
 			this.Controls.Add(this.autosaveLabel);
 			this.Controls.Add(this.objectBrowserSplitter);
 			this.Controls.Add(this.resetZoomButton);
@@ -1221,16 +1228,18 @@ namespace ScriptEditor
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Script Editor";
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			this.browserTabControl.ResumeLayout(false);
+			this.objectBrowserTabPage.ResumeLayout(false);
+			this.objectBrowserTabPage.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.scriptEditor)).EndInit();
 			this.editorContextMenu.ResumeLayout(false);
+			this.editorTabControl.ResumeLayout(false);
+			this.scriptTabPage.ResumeLayout(false);
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
 			this.objectBrowserBox.ResumeLayout(false);
-			this.objectBrowserBox.PerformLayout();
-			this.scriptTabPage.ResumeLayout(false);
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
-			this.tabControl.ResumeLayout(false);
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
 			this.ResumeLayout(false);
@@ -1273,7 +1282,6 @@ namespace ScriptEditor
         private System.Windows.Forms.ToolStripLabel toolStripLabel;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearBookmarksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem commentContextMenuItem;
         private System.Windows.Forms.ToolStripMenuItem commentToolStripMenuItem;
@@ -1287,6 +1295,7 @@ namespace ScriptEditor
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nextBookmarkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem objectBrowserToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteContextItem;
@@ -1330,9 +1339,12 @@ namespace ScriptEditor
         private System.Windows.Forms.ToolStripStatusLabel lineNumberLabel;
         private System.Windows.Forms.ToolStripStatusLabel selectedCharsLabel;
 		private FastColoredTextBoxNS.FastColoredTextBox scriptEditor;
+		private System.Windows.Forms.TabControl browserTabControl;
+		private System.Windows.Forms.TabPage explorerTabPage;
 		private System.Windows.Forms.TabPage langTabPage;
+		private System.Windows.Forms.TabPage objectBrowserTabPage;
 		private System.Windows.Forms.TabPage scriptTabPage;
-		private VisualStudioTabControl tabControl;
+		private VisualStudioTabControl editorTabControl;
 	}
 }
 
