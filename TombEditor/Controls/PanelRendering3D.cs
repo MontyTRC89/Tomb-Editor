@@ -2142,7 +2142,7 @@ namespace TombEditor.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    //_legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    //_legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, instance.Model.DirectXModel);
                     //_legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     //_legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 

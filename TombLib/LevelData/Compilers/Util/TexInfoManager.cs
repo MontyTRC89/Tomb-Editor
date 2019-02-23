@@ -603,6 +603,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         public Result AddTexture(TextureArea texture, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false)
         {
+            if (isForTriangle && texture.TriangleCoordsOutOfBounds || !isForTriangle && texture.QuadCoordsOutOfBounds)
+                return new Result();
+
             if (isForRoom)
             {
                 // Try to compare incoming texture with existing anims and return animation frame
