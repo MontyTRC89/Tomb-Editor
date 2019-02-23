@@ -436,99 +436,163 @@ namespace System.Windows.Forms
 
 		#region Drag 'n' Drop
 
+		//
+		// Comment from Nickelony:
+		// Here I made a dragging system that doesn't suck like the original one
+		//
+
+		private Point _LastMousePosition = new Point();
+
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
 
 			if (AllowDrop)
 			{
-				_dragStartPosition = new Point(e.X, e.Y);
+				// Store clicked tab
+				int clickedTabIndex = GetHoveredTabIndex();
+
+				if (clickedTabIndex >= 0)
+				{
+					Tag = TabPages[clickedTabIndex];
+				}
 			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
+			Tag = null;
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			if (_StyleProvider.ShowTabCloser)
+			{
+				Rectangle tabRect = _StyleProvider.GetTabRect(ActiveIndex);
+
+				if (tabRect.Contains(MousePosition))
+				{
+					Invalidate();
+				}
+			}
 
 			if (AllowDrop)
 			{
-				_dragStartPosition = Point.Empty;
-			}
-		}
-
-		protected override void OnDragOver(DragEventArgs drgevent)
-		{
-			base.OnDragOver(drgevent);
-
-			if (drgevent.Data.GetDataPresent(typeof(TabPage)))
-			{
-				drgevent.Effect = DragDropEffects.Move;
-			}
-			else
-			{
-				drgevent.Effect = DragDropEffects.None;
-			}
-		}
-
-		protected override void OnDragDrop(DragEventArgs drgevent)
-		{
-			base.OnDragDrop(drgevent);
-
-			if (drgevent.Data.GetDataPresent(typeof(TabPage)))
-			{
-				drgevent.Effect = DragDropEffects.Move;
-				TabPage dragTab = (TabPage)drgevent.Data.GetData(typeof(TabPage));
-
-				if (ActiveTab == dragTab)
+				// Dragging threshold. 5 seems like a good number here.
+				if (Math.Abs(e.Location.X - _LastMousePosition.X) < 5)
 				{
 					return;
 				}
 
-				// Capture insert point and adjust for removal of tab.
-				// We cannot assess this after removal as differeing tab sizes will cause
-				// inaccuracies in the activeTab at insert point.
-				int insertPoint = ActiveIndex;
+				_LastMousePosition = e.Location;
 
-				if (dragTab.Parent.Equals(this) && TabPages.IndexOf(dragTab) < insertPoint)
+				// Is left mouse button down? Was any tab clicked?
+				if ((e.Button != MouseButtons.Left) || (Tag == null))
 				{
-					insertPoint--;
-				}
-				if (insertPoint < 0)
-				{
-					insertPoint = 0;
+					return;
 				}
 
-				// Remove from current position (could be another tabcontrol)
-				((TabControl)dragTab.Parent).TabPages.Remove(dragTab);
+				TabPage clickedTab = (TabPage)Tag;
 
-				// Add to current position
-				TabPages.Insert(insertPoint, dragTab);
-				SelectedTab = dragTab;
-
-				// Deal with hidden tab handling?
+				// Start drag n drop
+				DoDragDrop(clickedTab, DragDropEffects.All);
 			}
 		}
 
-		private void StartDragDrop()
+		protected override void OnDragOver(DragEventArgs e)
 		{
-			if (!_dragStartPosition.IsEmpty)
+			base.OnDragOver(e);
+
+			if (AllowDrop)
 			{
-				TabPage dragTab = SelectedTab;
+				HandleDragDrop(e);
+			}
+		}
 
-				if (dragTab != null)
+		private void HandleDragDrop(DragEventArgs e)
+		{
+			// Is a tab being dragged?
+			if (e.Data.GetData(typeof(TabPage)) == null)
+			{
+				return;
+			}
+
+			TabPage draggedTab = (TabPage)e.Data.GetData(typeof(TabPage));
+			int draggedTabIndex = TabPages.IndexOf(draggedTab);
+			int hoveredTabIndex = GetHoveredTabIndex();
+
+			if (hoveredTabIndex < 0)
+			{
+				e.Effect = DragDropEffects.None;
+				return;
+			}
+
+			TabPage hoveredTab = TabPages[hoveredTabIndex];
+			e.Effect = DragDropEffects.Move;
+
+			// No dragging done yet
+			if (draggedTab == hoveredTab)
+			{
+				return;
+			}
+
+			// Swap dragTab & hoverTab - avoids toggling
+			Rectangle draggedTabRect = GetTabRect(draggedTabIndex);
+			Rectangle hoveredTabRect = GetTabRect(hoveredTabIndex);
+
+			if (draggedTabRect.Width < hoveredTabRect.Width)
+			{
+				Point tcLocation = PointToScreen(Location);
+
+				if (draggedTabIndex < hoveredTabIndex)
 				{
-					// Test for movement greater than the drag activation trigger area
-					Rectangle dragTestRect = new Rectangle(_dragStartPosition, Size.Empty);
-					dragTestRect.Inflate(SystemInformation.DragSize);
-					Point pt = PointToClient(Control.MousePosition);
-
-					if (!dragTestRect.Contains(pt))
+					if ((e.X - tcLocation.X) > ((hoveredTabRect.X + hoveredTabRect.Width) - draggedTabRect.Width))
 					{
-						DoDragDrop(dragTab, DragDropEffects.All);
-						_dragStartPosition = Point.Empty;
+						SwapTabPages(draggedTab, hoveredTab);
+					}
+				}
+				else if (draggedTabIndex > hoveredTabIndex)
+				{
+					if ((e.X - tcLocation.X) < (hoveredTabRect.X + draggedTabRect.Width))
+					{
+						SwapTabPages(draggedTab, hoveredTab);
 					}
 				}
 			}
+			else
+			{
+				SwapTabPages(draggedTab, hoveredTab);
+			}
+
+			// Select new position of draggedTab
+			SelectedIndex = TabPages.IndexOf(draggedTab);
+		}
+
+		private int GetHoveredTabIndex()
+		{
+			for (int i = 0; i < TabPages.Count; i++)
+			{
+				if (GetTabRect(i).Contains(PointToClient(Cursor.Position)))
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		private void SwapTabPages(TabPage src, TabPage dst)
+		{
+			int index_src = TabPages.IndexOf(src);
+			int index_dst = TabPages.IndexOf(dst);
+
+			TabPages[index_dst] = src;
+			TabPages[index_src] = dst;
+
+			Invalidate();
 		}
 
 		#endregion
@@ -792,27 +856,6 @@ namespace System.Windows.Forms
 			if (e.Type == ScrollEventType.EndScroll)
 			{
 				_oldValue = e.NewValue;
-			}
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			if (_StyleProvider.ShowTabCloser)
-			{
-				Rectangle tabRect = _StyleProvider.GetTabRect(ActiveIndex);
-
-				if (tabRect.Contains(MousePosition))
-				{
-					Invalidate();
-				}
-			}
-
-			// Initialise Drag Drop
-			if (AllowDrop && e.Button == MouseButtons.Left)
-			{
-				StartDragDrop();
 			}
 		}
 
