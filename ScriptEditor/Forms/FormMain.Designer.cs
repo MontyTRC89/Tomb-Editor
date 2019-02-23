@@ -169,7 +169,6 @@ namespace ScriptEditor
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.browserTabControl.Controls.Add(this.objectBrowserTabPage);
 			this.browserTabControl.Controls.Add(this.explorerTabPage);
-			this.browserTabControl.DisplayStyle = System.Windows.Forms.TabStyle.Angled;
 			// 
 			// 
 			// 
@@ -179,15 +178,15 @@ namespace ScriptEditor
 			this.browserTabControl.DisplayStyleProvider.CloserColor = System.Drawing.Color.DarkGray;
 			this.browserTabControl.DisplayStyleProvider.FocusTrack = false;
 			this.browserTabControl.DisplayStyleProvider.HotTrack = true;
-			this.browserTabControl.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.browserTabControl.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.browserTabControl.DisplayStyleProvider.Opacity = 1F;
-			this.browserTabControl.DisplayStyleProvider.Overlap = 7;
-			this.browserTabControl.DisplayStyleProvider.Padding = new System.Drawing.Point(10, 3);
-			this.browserTabControl.DisplayStyleProvider.Radius = 10;
+			this.browserTabControl.DisplayStyleProvider.Overlap = 0;
+			this.browserTabControl.DisplayStyleProvider.Padding = new System.Drawing.Point(6, 3);
+			this.browserTabControl.DisplayStyleProvider.Radius = 2;
 			this.browserTabControl.DisplayStyleProvider.ShowTabCloser = false;
-			this.browserTabControl.DisplayStyleProvider.TextColor = System.Drawing.SystemColors.ControlText;
-			this.browserTabControl.DisplayStyleProvider.TextColorDisabled = System.Drawing.SystemColors.ControlDark;
-			this.browserTabControl.DisplayStyleProvider.TextColorSelected = System.Drawing.SystemColors.ControlText;
+			this.browserTabControl.DisplayStyleProvider.TextColor = System.Drawing.Color.White;
+			this.browserTabControl.DisplayStyleProvider.TextColorDisabled = System.Drawing.Color.White;
+			this.browserTabControl.DisplayStyleProvider.TextColorSelected = System.Drawing.Color.White;
 			this.browserTabControl.HotTrack = true;
 			this.browserTabControl.Location = new System.Drawing.Point(0, 0);
 			this.browserTabControl.Margin = new System.Windows.Forms.Padding(0);
@@ -212,6 +211,7 @@ namespace ScriptEditor
 			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.objectBrowser.Location = new System.Drawing.Point(0, 20);
+			this.objectBrowser.MaxDragChange = 20;
 			this.objectBrowser.Name = "objectBrowser";
 			this.objectBrowser.Size = new System.Drawing.Size(192, 277);
 			this.objectBrowser.TabIndex = 6;
@@ -554,25 +554,24 @@ namespace ScriptEditor
 			// 
 			this.editorTabControl.AllowDrop = true;
 			this.editorTabControl.Controls.Add(this.scriptTabPage);
-			this.editorTabControl.DisplayStyle = System.Windows.Forms.TabStyle.Angled;
 			// 
 			// 
 			// 
 			this.editorTabControl.DisplayStyleProvider.BorderColor = System.Drawing.SystemColors.ControlDark;
 			this.editorTabControl.DisplayStyleProvider.BorderColorHot = System.Drawing.SystemColors.ControlDark;
 			this.editorTabControl.DisplayStyleProvider.BorderColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(157)))), ((int)(((byte)(185)))));
-			this.editorTabControl.DisplayStyleProvider.CloserColor = System.Drawing.Color.DarkGray;
+			this.editorTabControl.DisplayStyleProvider.CloserColor = System.Drawing.Color.White;
 			this.editorTabControl.DisplayStyleProvider.FocusTrack = false;
 			this.editorTabControl.DisplayStyleProvider.HotTrack = true;
-			this.editorTabControl.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.editorTabControl.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.editorTabControl.DisplayStyleProvider.Opacity = 1F;
-			this.editorTabControl.DisplayStyleProvider.Overlap = 7;
-			this.editorTabControl.DisplayStyleProvider.Padding = new System.Drawing.Point(10, 3);
-			this.editorTabControl.DisplayStyleProvider.Radius = 10;
+			this.editorTabControl.DisplayStyleProvider.Overlap = 0;
+			this.editorTabControl.DisplayStyleProvider.Padding = new System.Drawing.Point(6, 3);
+			this.editorTabControl.DisplayStyleProvider.Radius = 2;
 			this.editorTabControl.DisplayStyleProvider.ShowTabCloser = true;
-			this.editorTabControl.DisplayStyleProvider.TextColor = System.Drawing.SystemColors.ControlText;
-			this.editorTabControl.DisplayStyleProvider.TextColorDisabled = System.Drawing.SystemColors.ControlDark;
-			this.editorTabControl.DisplayStyleProvider.TextColorSelected = System.Drawing.SystemColors.ControlText;
+			this.editorTabControl.DisplayStyleProvider.TextColor = System.Drawing.Color.White;
+			this.editorTabControl.DisplayStyleProvider.TextColorDisabled = System.Drawing.Color.White;
+			this.editorTabControl.DisplayStyleProvider.TextColorSelected = System.Drawing.Color.White;
 			this.editorTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.editorTabControl.HotTrack = true;
 			this.editorTabControl.Location = new System.Drawing.Point(203, 52);

@@ -1,118 +1,96 @@
 ﻿/*
  * This code is provided under the Code Project Open Licence (CPOL)
  * See http://www.codeproject.com/info/cpol10.aspx for details
-*/
+ */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace System.Windows.Forms
 {
-	/// <summary>
-	/// Description of NativeMethods.
-	/// </summary>
-	//[SecurityPermission(SecurityAction.Assert, Flags=SecurityPermissionFlag.UnmanagedCode)]
 	internal sealed class NativeMethods
 	{
-		private NativeMethods()
-		{
-		}
-
 		#region Windows Constants
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WM_GETTABRECT = 0x130a;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WS_EX_TRANSPARENT = 0x20;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WM_SETFONT = 0x30;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WM_FONTCHANGE = 0x1d;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WM_HSCROLL = 0x114;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int TCM_HITTEST = 0x130D;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WM_PAINT = 0xf;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WS_EX_LAYOUTRTL = 0x400000;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const int WS_EX_NOINHERITLAYOUT = 0x100000;
 
 		#endregion Windows Constants
 
 		#region Content Alignment
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public static readonly ContentAlignment AnyRightAlign = ContentAlignment.BottomRight | ContentAlignment.MiddleRight | ContentAlignment.TopRight;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public static readonly ContentAlignment AnyLeftAlign = ContentAlignment.BottomLeft | ContentAlignment.MiddleLeft | ContentAlignment.TopLeft;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public static readonly ContentAlignment AnyTopAlign = ContentAlignment.TopRight | ContentAlignment.TopCenter | ContentAlignment.TopLeft;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public static readonly ContentAlignment AnyBottomAlign = ContentAlignment.BottomRight | ContentAlignment.BottomCenter | ContentAlignment.BottomLeft;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public static readonly ContentAlignment AnyMiddleAlign = ContentAlignment.MiddleRight | ContentAlignment.MiddleCenter | ContentAlignment.MiddleLeft;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+		[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public static readonly ContentAlignment AnyCenterAlign = ContentAlignment.BottomCenter | ContentAlignment.MiddleCenter | ContentAlignment.TopCenter;
 
 		#endregion Content Alignment
 
 		#region User32.dll
 
-		//        [DllImport("user32.dll"), SecurityPermission(SecurityAction.Demand)]
-		//		public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam);
-
 		public static IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam)
 		{
-			//	This Method replaces the User32 method SendMessage, but will only work for sending
-			//	messages to Managed controls.
+			// This Method replaces the User32 method SendMessage, but will only work for sending messages to Managed controls.
 			Control control = Control.FromHandle(hWnd);
+
 			if (control == null)
-			{
 				return IntPtr.Zero;
-			}
 
-			Message message = new Message();
-			message.HWnd = hWnd;
-			message.LParam = lParam;
-			message.WParam = wParam;
-			message.Msg = msg;
+			Message message = new Message
+			{
+				HWnd = hWnd,
+				LParam = lParam,
+				WParam = wParam,
+				Msg = msg
+			};
 
-			MethodInfo wproc = control.GetType().GetMethod("WndProc"
-														   , BindingFlags.NonPublic
-															| BindingFlags.InvokeMethod
-															| BindingFlags.FlattenHierarchy
-															| BindingFlags.IgnoreCase
-															| BindingFlags.Instance);
+			MethodInfo wproc = control.GetType().GetMethod("WndProc",
+				BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase | BindingFlags.Instance);
 
 			object[] args = new object[] { message };
 			wproc.Invoke(control, args);
 
 			return ((Message)args[0]).Result;
 		}
-
-		//		[DllImport("user32.dll")]
-		//		public static extern IntPtr BeginPaint(IntPtr hWnd, ref PAINTSTRUCT paintStruct);
-		//
-		//		[DllImport("user32.dll")]
-		//		[return: MarshalAs(UnmanagedType.Bool)]
-		//		public static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT paintStruct);
-		//
 
 		#endregion User32.dll
 
@@ -126,13 +104,13 @@ namespace System.Windows.Forms
 		public static int HiWord(IntPtr dWord)
 		{
 			if ((dWord.ToInt32() & 0x80000000) == 0x80000000)
-				return (dWord.ToInt32() >> 16);
+				return dWord.ToInt32() >> 16;
 			else
 				return (dWord.ToInt32() >> 16) & 0xffff;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2106:SecureAsserts")]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
+		[SuppressMessage("Microsoft.Security", "CA2106:SecureAsserts")]
+		[SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
 		public static IntPtr ToIntPtr(object structure)
 		{
 			IntPtr lparam = IntPtr.Zero;
