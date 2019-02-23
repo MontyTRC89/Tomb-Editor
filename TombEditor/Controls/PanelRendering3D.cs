@@ -58,6 +58,8 @@ namespace TombEditor.Controls
         public bool DisablePickingForImportedGeometry { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool FlyMode { get { return _flyMode; } }
 
         private Camera _oldCamera;
 
