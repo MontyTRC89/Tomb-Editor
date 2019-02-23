@@ -8,7 +8,12 @@ namespace System.Windows.Forms
 	{
 		public TabStyleDefaultProvider(CustomTabControl tabControl) : base(tabControl)
 		{
-			// Nothing
+			_TextColor = Color.White;
+			_TextColorSelected = Color.White;
+			_CloserColor = Color.White;
+			_CloserColorActive = Color.FromArgb(128, 128, 128);
+			_FocusColor = Color.FromArgb(128, 128, 128);
+			_FocusTrack = true;
 		}
 
 		protected override Brush GetTabBackgroundBrush(int index)
