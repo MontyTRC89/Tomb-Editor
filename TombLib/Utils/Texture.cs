@@ -218,8 +218,7 @@ namespace TombLib.Utils
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
                 Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
                 return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
-                       max.X - min.X >= 256.0f || max.Y - min.Y >= 256.0f;
-                //return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height;
+                       max.X - min.X > 256.0f || max.Y - min.Y > 256.0f;
             }
         }
 
@@ -232,8 +231,7 @@ namespace TombLib.Utils
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
                 Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
                 return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
-                       max.X - min.X >= 256.0f || max.Y - min.Y >= 256.0f;
-                //return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height;
+                       max.X - min.X > 256.0f || max.Y - min.Y > 256.0f;
             }
         }
 
