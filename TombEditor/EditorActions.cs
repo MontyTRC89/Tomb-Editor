@@ -909,7 +909,7 @@ namespace TombEditor
             }
         }
 
-        private static void FixTextureCoordinates(TextureArea texture)
+        private static void FixTextureCoordinates(ref TextureArea texture)
         {
             texture.TexCoord0.X = Math.Max(0.0f, texture.TexCoord0.X);
             texture.TexCoord0.Y = Math.Max(0.0f, texture.TexCoord0.Y);
@@ -938,7 +938,7 @@ namespace TombEditor
             var block = room.GetBlock(pos);
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
 
-            FixTextureCoordinates(texture);
+            FixTextureCoordinates(ref texture);
 
             if (!_editor.Tool.TextureUVFixer ||
                 (shape == BlockFaceShape.Triangle && texture.TextureIsTriangle))
@@ -1106,7 +1106,7 @@ namespace TombEditor
                     break;
             }
 
-            FixTextureCoordinates(texture);
+            FixTextureCoordinates(ref processedTexture);
 
             return block.SetFaceTexture(face, processedTexture);
         }
