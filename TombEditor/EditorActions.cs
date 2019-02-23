@@ -909,10 +909,36 @@ namespace TombEditor
             }
         }
 
+        private static void FixTextureCoordinates(TextureArea texture)
+        {
+            texture.TexCoord0.X = Math.Max(0.0f, texture.TexCoord0.X);
+            texture.TexCoord0.Y = Math.Max(0.0f, texture.TexCoord0.Y);
+            texture.TexCoord1.X = Math.Max(0.0f, texture.TexCoord1.X);
+            texture.TexCoord1.Y = Math.Max(0.0f, texture.TexCoord1.Y);
+            texture.TexCoord2.X = Math.Max(0.0f, texture.TexCoord2.X);
+            texture.TexCoord2.Y = Math.Max(0.0f, texture.TexCoord2.Y);
+            texture.TexCoord3.X = Math.Max(0.0f, texture.TexCoord3.X);
+            texture.TexCoord3.Y = Math.Max(0.0f, texture.TexCoord3.Y);
+
+            if (!texture.TextureIsInvisible && !texture.TextureIsUnavailable)
+            {
+                texture.TexCoord0.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord0.X);
+                texture.TexCoord0.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord0.Y);
+                texture.TexCoord1.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord1.X);
+                texture.TexCoord1.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord1.Y);
+                texture.TexCoord2.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord2.X);
+                texture.TexCoord2.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord2.Y);
+                texture.TexCoord3.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord3.X);
+                texture.TexCoord3.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord3.Y);
+            }
+        }
+
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             var block = room.GetBlock(pos);
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
+
+            FixTextureCoordinates(texture);
 
             if (!_editor.Tool.TextureUVFixer ||
                 (shape == BlockFaceShape.Triangle && texture.TextureIsTriangle))
@@ -1079,6 +1105,9 @@ namespace TombEditor
                     }
                     break;
             }
+
+            FixTextureCoordinates(texture);
+
             return block.SetFaceTexture(face, processedTexture);
         }
 
