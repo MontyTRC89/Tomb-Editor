@@ -197,6 +197,7 @@ namespace ScriptEditor
 			// 
 			// objectBrowserTabPage
 			// 
+			this.objectBrowserTabPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.objectBrowserTabPage.Controls.Add(this.objectBrowser);
 			this.objectBrowserTabPage.Controls.Add(this.searchTextBox);
 			this.objectBrowserTabPage.Location = new System.Drawing.Point(4, 23);
@@ -231,6 +232,7 @@ namespace ScriptEditor
 			// 
 			// explorerTabPage
 			// 
+			this.explorerTabPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.explorerTabPage.Location = new System.Drawing.Point(4, 23);
 			this.explorerTabPage.Margin = new System.Windows.Forms.Padding(0);
 			this.explorerTabPage.Name = "explorerTabPage";
@@ -583,6 +585,7 @@ namespace ScriptEditor
 			// 
 			// scriptTabPage
 			// 
+			this.scriptTabPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.scriptTabPage.Controls.Add(this.scriptEditor);
 			this.scriptTabPage.Location = new System.Drawing.Point(4, 23);
 			this.scriptTabPage.Margin = new System.Windows.Forms.Padding(0);
