@@ -1,8 +1,9 @@
 ﻿/*
  * This code is provided under the Code Project Open Licence (CPOL)
  * See http://www.codeproject.com/info/cpol10.aspx for details
-*/
+ */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -10,7 +11,7 @@ namespace System.Drawing
 {
 	internal sealed class ThemedColors
 	{
-		#region "    Variables and Constants "
+		#region Variables and Constants
 
 		private const string NormalColor = "NormalColor";
 		private const string HomeStead = "HomeStead";
@@ -19,37 +20,33 @@ namespace System.Drawing
 
 		private static Color[] _toolBorder;
 
-		#endregion "    Variables and Constants "
+		#endregion Variables and Constants
 
-		#region "    Properties "
+		#region Properties
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 		public static ColorScheme CurrentThemeIndex
 		{
-			get { return ThemedColors.GetCurrentThemeIndex(); }
+			get { return GetCurrentThemeIndex(); }
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 		public static Color ToolBorder
 		{
-			get { return ThemedColors._toolBorder[(int)ThemedColors.CurrentThemeIndex]; }
+			get { return _toolBorder[(int)CurrentThemeIndex]; }
 		}
 
-		#endregion "    Properties "
+		#endregion Properties
 
-		#region "    Constructors "
+		#region Constructors
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
+		[SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
 		static ThemedColors()
 		{
-			ThemedColors._toolBorder = new Color[] { Color.FromArgb(127, 157, 185), Color.FromArgb(164, 185, 127), Color.FromArgb(165, 172, 178), Color.FromArgb(132, 130, 132) };
+			_toolBorder = new Color[] { Color.FromArgb(127, 157, 185), Color.FromArgb(164, 185, 127), Color.FromArgb(165, 172, 178), Color.FromArgb(132, 130, 132) };
 		}
 
-		private ThemedColors()
-		{
-		}
-
-		#endregion "    Constructors "
+		#endregion Constructors
 
 		private static ColorScheme GetCurrentThemeIndex()
 		{
