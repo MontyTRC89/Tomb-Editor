@@ -32,12 +32,15 @@ namespace ScriptEditor.Controls
 			Font = new Font("Consolas", 12F);
 			ForeColor = SystemColors.ControlLight;
 			IndentBackColor = Color.FromArgb(48, 48, 48);
+			LeftPadding = 5;
 			LineNumberColor = Color.FromArgb(160, 160, 160);
 			Margin = new Padding(0);
 			Paddings = new Padding(0);
 			ReservedCountOfLineNumberChars = 2;
 			SelectionColor = Color.FromArgb(60, 30, 144, 255);
 			ServiceLinesColor = Color.FromArgb(32, 32, 32);
+
+			Dock = DockStyle.Fill;
 
 			if (Properties.Settings.Default.Autocomplete)
 				GenerateAutocompleteMenu();
