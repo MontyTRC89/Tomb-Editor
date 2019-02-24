@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocompleteItems.cs" />
+    <Compile Include="Controls\ScriptTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\TabControl\CustomTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -125,7 +128,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommandToolTips.resx</DependentUpon>
     </Compile>
-    <Compile Include="SyntaxHighlighting.cs" />
     <Compile Include="SyntaxKeyWords.cs" />
     <Compile Include="SyntaxTidying.cs" />
     <EmbeddedResource Include="Forms\FormMain.resx">

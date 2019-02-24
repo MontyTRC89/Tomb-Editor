@@ -1,5 +1,4 @@
 ﻿using DarkUI.Forms;
-using FastColoredTextBoxNS;
 using System;
 
 namespace ScriptEditor
@@ -17,11 +16,6 @@ namespace ScriptEditor
 			postCommaSpaceCheck.Checked = Properties.Settings.Default.PostCommaSpace;
 
 			reduceSpacesCheck.Checked = Properties.Settings.Default.ReduceSpaces;
-		}
-
-		private void preview_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			SyntaxHighlighting.DoSyntaxHighlighting(e);
 		}
 
 		private void defaultButton_Click(object sender, EventArgs e)
