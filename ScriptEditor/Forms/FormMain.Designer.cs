@@ -98,7 +98,7 @@ namespace ScriptEditor
 			this.prevBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.refBrowserSplitter = new System.Windows.Forms.Splitter();
-			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
+			this.referenceBrowser = new Controls.ReferenceBrowser();
 			this.resetZoomButton = new DarkUI.Controls.DarkButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.selectedCharsLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -1314,7 +1314,7 @@ namespace ScriptEditor
         private DarkUI.Controls.DarkToolStrip toolStrip;
         private DarkUI.Controls.DarkTreeView objectBrowser;
         private FastColoredTextBoxNS.DocumentMap documentMap;
-        private ReferenceBrowser referenceBrowser;
+        private Controls.ReferenceBrowser referenceBrowser;
         private System.Windows.Forms.Splitter objectBrowserSplitter;
         private System.Windows.Forms.Splitter refBrowserSplitter;
         private System.Windows.Forms.ToolStripButton aboutToolStripButton;
