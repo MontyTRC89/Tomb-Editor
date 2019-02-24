@@ -24,6 +24,15 @@ namespace TombLib.Graphics
             UpdateBuffers();
         }
 
+        public override void UpdateBuffers()
+        {
+            foreach (var mesh in Meshes)
+            {
+                mesh.UpdateBoundingBox();
+                mesh.UpdateBuffers();
+            }
+        }
+
         public void BuildHierarchy()
         {
             Root.GlobalTransform = Root.Transform;
@@ -80,8 +89,6 @@ namespace TombLib.Graphics
         public void BuildAnimationPose(KeyFrame frame1, KeyFrame frame2, float k)
         {
             Matrix4x4 translation = Matrix4x4.Lerp(frame1.TranslationsMatrices[0], frame2.TranslationsMatrices[0], k);
-            /*Matrix4x4 rotation = Matrix4x4.Lerp(Matrix4x4.CreateFromQuaternion(frame1.Quaternions[0]),
-                                                Matrix4x4.CreateFromQuaternion(frame2.Quaternions[0]), k);*/
             Matrix4x4 rotation = Matrix4x4.CreateFromQuaternion(Quaternion.Slerp(frame1.Quaternions[0], frame2.Quaternions[0], k));
 
             var globalScale = Matrix4x4.CreateTranslation(Offset) * translation;
@@ -93,22 +100,12 @@ namespace TombLib.Graphics
 
         private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, KeyFrame frame1, KeyFrame frame2, float k)
         {
-            //Matrix4x4 rotation = Matrix4x4.Lerp(frame1.RotationsMatrices[node.Index], frame2.RotationsMatrices[node.Index], k);
             Matrix4x4 rotation = Matrix4x4.CreateFromQuaternion(Quaternion.Slerp(frame1.Quaternions[0], frame2.Quaternions[0], k));
 
             AnimationTransforms[node.Index] = rotation * node.Transform * parentTransform;
 
             foreach (Bone child in node.Children)
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
-        }
-
-        public override void UpdateBuffers()
-        {
-            foreach (var mesh in Meshes)
-            {
-                mesh.UpdateBoundingBox();
-                mesh.UpdateBuffers();
-            }
         }
 
         public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture)

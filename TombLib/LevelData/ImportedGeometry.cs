@@ -72,6 +72,33 @@ namespace TombLib.LevelData
         public ImportedGeometryMesh(GraphicsDevice device, string name)
             : base(device, name)
         { }
+
+        public void UpdateBuffers()
+        {
+            int lastBaseIndex = 0;
+
+            foreach (var submesh in Submeshes)
+            {
+                submesh.Value.BaseIndex = lastBaseIndex;
+                if (submesh.Value.NumIndices != 0)
+                    foreach (var index in submesh.Value.Indices)
+                        Indices.Add((ushort)(index));
+                lastBaseIndex += submesh.Value.NumIndices;
+            }
+
+            UpdateBoundingBox();
+
+            if (Vertices.Count == 0)
+                return;
+
+            if (VertexBuffer != null)
+                VertexBuffer.Dispose();
+            if (IndexBuffer != null)
+                IndexBuffer.Dispose();
+
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+        }
     }
 
     public struct ImportedGeometryInfo
@@ -122,7 +149,7 @@ namespace TombLib.LevelData
                 foreach (var mesh in Meshes)
                 {
                     mesh.UpdateBoundingBox();
-                    //mesh.updateb
+                    mesh.UpdateBuffers();
                 }
             }
         }

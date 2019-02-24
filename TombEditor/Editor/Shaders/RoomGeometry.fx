@@ -26,7 +26,7 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
     output.UV = input.UV * ReciprocalTextureSize;
-    output.Color = input.Color;
+    output.Color = float4(input.Color.xyz * Color.xyz, 1.0f);
     return output;
 }
 
@@ -44,10 +44,6 @@ float4 PS(PixelInputType input) : SV_TARGET
 	float3 colorMul = min(input.Color.xyz, 1.0f);
 	pixel.xyz = pixel.xyz * colorMul + colorAdd;
 	pixel.w *= input.Color.w;
-
-    /*float3 colorMul = min(input.Color.xyz, 1.0f);
-    pixel.xyz = pixel.xyz * colorMul;
-    pixel.w *= input.Color.w;*/
 
     return pixel;
 }

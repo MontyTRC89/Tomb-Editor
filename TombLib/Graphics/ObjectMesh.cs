@@ -13,10 +13,6 @@ namespace TombLib.Graphics
 {
     public class ObjectMesh : Mesh<ObjectVertex>, IDisposable
     {
-        public Buffer<ObjectVertex> VertexBuffer { get; private set; }
-        public Buffer IndexBuffer { get; private set; }
-        public List<Material> Materials { get; private set; }
-
         public ObjectMesh(GraphicsDevice device, string name)
             : base(device, name)
         { }
@@ -80,7 +76,7 @@ namespace TombLib.Graphics
         public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture)
         {
             // Initialize the mesh
-            var mesh = new ObjectMesh(device, msh.Name /*"ObjectMesh_" + msh.Hash.ToString()*/);
+            var mesh = new ObjectMesh(device, msh.Name);
 
             // Prepare materials
             var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);

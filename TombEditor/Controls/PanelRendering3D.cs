@@ -719,7 +719,8 @@ namespace TombEditor.Controls
                     else
                     {
                         _editor.SelectedObject = obj;
-                        EditorActions.BookmarkObject(obj);
+                        if (!(obj is ImportedGeometryInstance))
+                            EditorActions.BookmarkObject(obj);
                     }
                 }
                 else if (newPicking == null)
@@ -2142,14 +2143,14 @@ namespace TombEditor.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    //_legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, instance.Model.DirectXModel);
-                    //_legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                    //_legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
                     geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                    if (!disableSelection && _editor.SelectedObject == instance)
+                    if (/*!disableSelection &&*/ _editor.SelectedObject == instance)
                         geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
                     foreach (var submesh in mesh.Submeshes)
