@@ -435,7 +435,7 @@ namespace TombEditor.Controls
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
 
-            if (!e.Control && e.KeyCode == Keys.Z && !_flyMode)
+            if (e.Control && e.KeyCode == Keys.Oemtilde && !_flyMode)
             {
                 _oldCamera = Camera;
                 Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
@@ -447,7 +447,7 @@ namespace TombEditor.Controls
                 _flyMode = true;
                 Capture = true;
             }
-            else if ((!e.Control && e.KeyCode == Keys.Z || e.KeyCode == Keys.Escape) && _flyMode)
+            else if ((e.Control && e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.Escape) && _flyMode)
             {
                 var p = Camera.GetPosition();
                 var d = Camera.GetDirection();
