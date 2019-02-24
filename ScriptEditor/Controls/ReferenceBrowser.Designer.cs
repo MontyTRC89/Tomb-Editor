@@ -1,4 +1,4 @@
-﻿namespace ScriptEditor
+﻿namespace ScriptEditor.Controls
 {
 	partial class ReferenceBrowser
 	{
