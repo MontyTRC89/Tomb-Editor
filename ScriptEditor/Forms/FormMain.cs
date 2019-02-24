@@ -40,9 +40,6 @@ namespace ScriptEditor
 		{
 			InitializeComponent();
 			_availableProjects = new List<Project>();
-
-			if (Properties.Settings.Default.Autocomplete)
-				GenerateAutocompleteMenu();
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -61,20 +58,6 @@ namespace ScriptEditor
 				e.Cancel = true; // Stop closing form if saving failed or the user clicked "Cancel"
 
 			base.OnClosing(e);
-		}
-
-		private void GenerateAutocompleteMenu()
-		{
-			AutocompleteMenu popupMenu = new AutocompleteMenu(scriptEditor)
-			{
-				AllowTabKey = true,
-				BackColor = Color.FromArgb(64, 73, 74),
-				ForeColor = Color.Gainsboro,
-				SearchPattern = @"[\w\.:=!<>\[\]]",
-				SelectedColor = Color.SteelBlue
-			};
-
-			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 		}
 
 		private void ApplyUserSettings()
@@ -161,7 +144,6 @@ namespace ScriptEditor
 			saveToolStripMenuItem.Enabled = true;
 			saveToolStripButton.Enabled = true;
 
-			SyntaxHighlighting.DoSyntaxHighlighting(e);
 			HandleVisibleSpaces();
 
 			scriptEditor.Invalidate();

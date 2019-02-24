@@ -244,7 +244,6 @@
     "   ; Crossbow room\r\nLevel=DATA\\COASTAL,105";
 			this.preview.TextAreaBorderColor = System.Drawing.Color.Transparent;
 			this.preview.Zoom = 100;
-			this.preview.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.preview_TextChanged);
 			// 
 			// reduceSpacesCheck
 			// 
