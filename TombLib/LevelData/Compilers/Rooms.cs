@@ -365,10 +365,15 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = texture.TexCoord2;
 
-                                // lock (_objectTextureManager)
-                                // {
-                                //     result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                                // }
+                                // TODO: what happens for flipped textures?
+                                if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
+                                if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
+                                if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
+                                if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
+                                if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
+                                if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
+                                if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
+                                if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));

@@ -53,6 +53,7 @@ namespace TombLib.GeometryIO
             {
                 uv.Y = 1.0f - uv.Y;
             }
+
             if (_settings.WrapUV)
             {
                 if (uv.X > 1.0f)
@@ -63,13 +64,28 @@ namespace TombLib.GeometryIO
                 if (uv.Y > 1.0f)
                     uv.Y -= (float)Math.Floor(uv.Y);
                 else if (uv.Y < -1.0f)
-                    uv.Y += -(float)Math.Floor(uv.Y);
-
+                    uv.Y += -(float)Math.Floor(uv.Y);          
             }
+            else
+            {
+                if (uv.X < -1.0f) uv.X = -1.0f;
+                if (uv.Y < -1.0f) uv.Y = -1.0f;
+                if (uv.X > 1.0f) uv.X = 1.0f;
+                if (uv.Y > 1.0f) uv.Y = 1.0f;
+            }
+
             if (_settings.PremultiplyUV)
             {
                 uv.X *= w;
                 uv.Y *= h;
+
+                if (!_settings.WrapUV)
+                {
+                    if (uv.X <= -w) uv.X = -w;
+                    if (uv.Y <= -h) uv.Y = -h;
+                    if (uv.X >= w) uv.X = w;
+                    if (uv.Y >= h) uv.Y = h;
+                }
             }
             return uv;
         }

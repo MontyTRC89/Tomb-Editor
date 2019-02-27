@@ -37,12 +37,6 @@ namespace TombLib.Graphics
             Meshes = new List<T>();
         }
 
-        public virtual void Dispose()
-        {
-            //VertexBuffer?.Dispose();
-            //IndexBuffer?.Dispose();
-        }
-
         public abstract void UpdateBuffers();
 
         protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
@@ -59,6 +53,11 @@ namespace TombLib.Graphics
 
             mesh.Vertices.Add(newVertex);
             submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }
