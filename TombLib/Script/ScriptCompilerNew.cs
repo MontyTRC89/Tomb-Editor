@@ -156,7 +156,7 @@ namespace TombLib.Script
                             if (command == "File")
                             {
                                 var tokensFile = value.Split(',');
-                                if (tokensFile.Length < 2)
+                                if (tokensFile.Length < 2 || !File.Exists(_srcPath + "\\" + tokensFile[1]))
                                     continue;
                                 _languageFiles.Add(tokensFile[1]);
                             }
@@ -265,8 +265,6 @@ namespace TombLib.Script
                                 strings.PsxStrings.Add(line);
                             else if (lastBlock == "[PCStrings]")
                                 strings.PcStrings.Add(line);
-                            else if (lastBlock == "[ExtraNG]")
-                                strings.NgStrings.Add(line);
                         }
                         _strings.Add(strings);
                     }
@@ -311,6 +309,7 @@ namespace TombLib.Script
                     writer.Write((short)0);
                     writer.Write((int)_inputTimeout);
                     writer.Write((byte)_security);
+
                     writer.Write((byte)_levels.Count);
                     writer.Write((byte)_levelFileNames.Count);
                     writer.Write((byte)0);
@@ -373,6 +372,8 @@ namespace TombLib.Script
                     // Write language files
                     foreach (var languageFile in _languageFiles)
                         WriteRawString(writer, languageFile.ToUpper().Replace(".TXT", ".DAT"));
+                    writer.Write(0);
+
 
                     // Store level data size
                     writer.BaseStream.Seek(levelDataOffset, SeekOrigin.Begin);
@@ -413,12 +414,41 @@ namespace TombLib.Script
                         }
 
                         foreach (string str in _strings[i].AllStrings)
-                            WriteRawString(writer, str, true);
+                            WriteRawString(writer, GetTrueString(str), true);
                     }
                 }
             }
 
             return true;
+        }
+
+        private byte[] GetTrueString(string str)
+        {
+            var ms = new MemoryStream();
+
+            for (int i=0;i<str.Length;i++)
+            {
+                if (str[i]=='\\' && i<str.Length-1 && str[i+1]=='x')
+                {
+                    i += 2;
+
+                    string hexCode = "";
+                    while (str[i] != ' ' && i < str.Length - 1)
+                    {
+                        hexCode += str[i];
+                        i++;
+                    }
+
+                    ms.WriteByte(Convert.ToByte("0x" + hexCode, 16));
+
+                }
+                else
+                {
+                    ms.WriteByte(Convert.ToByte(str[i]));
+                }
+            }
+
+            return ms.ToArray();
         }
 
         private void WriteRawString(BinaryWriter writer, string value, bool encode = false)
@@ -429,6 +459,16 @@ namespace TombLib.Script
                     buffer[i] ^= 0xA5;
 
             writer.Write(buffer);
+            writer.Write((byte)0);
+        }
+
+        private void WriteRawString(BinaryWriter writer, byte[] value, bool encode = false)
+        {
+            if (encode)
+                for (int i = 0; i < value.Length; i++)
+                    value[i] ^= 0xA5;
+
+            writer.Write(value);
             writer.Write((byte)0);
         }
 
@@ -460,49 +500,49 @@ namespace TombLib.Script
                     {
                         if (entry.Command.Name == "Puzzle")
                         {
-                            writer.Write((byte)(0x9F + (byte)entry.Parameters[0]));
+                            writer.Write((byte)(0x9F + (byte)entry.Parameters[0] - 1));
                             writer.Write((short)GetStringIndex((string)entry.Parameters[1]));
                             for (int i = 2; i < 8; i++)
                                 writer.Write((short)entry.Parameters[i]);
                         }
                         else if (entry.Command.Name == "Key")
                         {
-                            writer.Write((byte)(0x93 + (byte)entry.Parameters[0]));
+                            writer.Write((byte)(0x93 + (byte)entry.Parameters[0] - 1));
                             writer.Write((short)GetStringIndex((string)entry.Parameters[1]));
                             for (int i = 2; i < 8; i++)
                                 writer.Write((short)entry.Parameters[i]);
                         }
                         else if (entry.Command.Name == "Pickup")
                         {
-                            writer.Write((byte)(0xAB + (byte)entry.Parameters[0]));
+                            writer.Write((byte)(0xAB + (byte)entry.Parameters[0] - 1));
                             writer.Write((short)GetStringIndex((string)entry.Parameters[1]));
                             for (int i = 2; i < 8; i++)
                                 writer.Write((short)entry.Parameters[i]);
                         }
                         else if (entry.Command.Name == "Examine")
                         {
-                            writer.Write((byte)(0xAF + (byte)entry.Parameters[0]));
+                            writer.Write((byte)(0xAF + (byte)entry.Parameters[0]) - 1);
                             writer.Write((short)GetStringIndex((string)entry.Parameters[1]));
                             for (int i = 2; i < 8; i++)
                                 writer.Write((short)entry.Parameters[i]);
                         }
                         if (entry.Command.Name == "PuzzleCombo")
                         {
-                            writer.Write((byte)(0xC2 + (byte)entry.Parameters[0] + (byte)((byte)entry.Parameters[1] - 1)));
+                            writer.Write((byte)(0xC2 + (byte)(2 * (byte)entry.Parameters[0] - 2) + (byte)((byte)entry.Parameters[1] - 1)));
                             writer.Write((short)GetStringIndex((string)entry.Parameters[2]));
                             for (int i = 3; i < 9; i++)
                                 writer.Write((short)entry.Parameters[i]);
                         }
                         else if (entry.Command.Name == "KeyCombo")
                         {
-                            writer.Write((byte)(0xB2 + (byte)entry.Parameters[0] + (byte)((byte)entry.Parameters[1] - 1)));
+                            writer.Write((byte)(0xB2 + (byte)(2 * (byte)entry.Parameters[0] - 2) + (byte)((byte)entry.Parameters[1] - 1)));
                             writer.Write((short)GetStringIndex((string)entry.Parameters[2]));
                             for (int i = 3; i < 9; i++)
                                 writer.Write((short)entry.Parameters[i]);
                         }
                         else if (entry.Command.Name == "PickupCombo")
                         {
-                            writer.Write((byte)(0xD2 + (byte)entry.Parameters[0] + (byte)((byte)entry.Parameters[1] - 1)));
+                            writer.Write((byte)(0xD2 + (byte)(2 * (byte)entry.Parameters[0] - 2) + (byte)((byte)entry.Parameters[1] - 1)));
                             writer.Write((short)GetStringIndex((string)entry.Parameters[2]));
                             for (int i = 3; i < 9; i++)
                                 writer.Write((short)entry.Parameters[i]);

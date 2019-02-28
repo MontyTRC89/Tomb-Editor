@@ -11,7 +11,6 @@ namespace TombLib.Script
         public List<string> GeneralStrings { get; private set; } = new List<string>();
         public List<string> PsxStrings { get; private set; } = new List<string>();
         public List<string> PcStrings { get; private set; } = new List<string>();
-        public List<string> NgStrings { get; private set; } = new List<string>();
 
         public List<string> AllStrings
         {
@@ -21,7 +20,6 @@ namespace TombLib.Script
                 result.AddRange(GeneralStrings);
                 result.AddRange(PsxStrings);
                 result.AddRange(PcStrings);
-                result.AddRange(NgStrings);
                 return result;
             }
         }
