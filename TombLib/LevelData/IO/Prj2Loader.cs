@@ -1008,7 +1008,8 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectImportedGeometry || id3 == Prj2Chunks.ObjectImportedGeometry2)
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry || 
+                         id3 == Prj2Chunks.ObjectImportedGeometry2)
                 {
                     var instance = new ImportedGeometryInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -1020,6 +1021,30 @@ namespace TombLib.LevelData.IO
                     instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry3)
+                {
+                    var instance = new ImportedGeometryInstance();
+
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    instance.Scale = chunkIO.Raw.ReadSingle();
+                    instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+
+                    chunkIO.ReadChunks((id4, chunkSize4) =>
+                    {
+                        if (id4 == Prj2Chunks.ObjectImportedGeometryLightingModel)
+                            instance.LightingModel = (ImportedGeometryLightingModel)chunkIO.ReadChunkInt(chunkSize4);
+                        else if (id4 == Prj2Chunks.ObjectImportedGeometryMeshFilter)
+                            instance.MeshFilter = chunkIO.Raw.ReadStringUTF8();
+                        else
+                            return false;
+                        return true;
+                    });
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);                    
                 }
                 else
                     return false;

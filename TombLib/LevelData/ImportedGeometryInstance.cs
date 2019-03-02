@@ -2,11 +2,19 @@
 
 namespace TombLib.LevelData
 {
+    public enum ImportedGeometryLightingModel
+    {
+        NoLighting,
+        VertexColors,
+        CalculateFromLightsInRoom
+    }
+
     public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
         public float Scale { get; set; } = 1;
         public string MeshFilter { get; set; } = "";
+        public ImportedGeometryLightingModel LightingModel { get; set; } = ImportedGeometryLightingModel.NoLighting;
 
         private float _roll { get; set; }
         private float _rotationX { get; set; }
