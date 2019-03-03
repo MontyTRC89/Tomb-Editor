@@ -1275,6 +1275,9 @@ namespace ScriptEditor
 
 		private bool SaveFile(ScriptTextBox textBox)
 		{
+			if (_config.Tidy_ReindentOnSave)
+				TidyDocument();
+
 			try
 			{
 				if (_currentTab.Tag == null) // For "Untitled"
