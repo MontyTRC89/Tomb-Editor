@@ -5,66 +5,71 @@ namespace ScriptEditor
 {
 	public partial class FormReindentRules : DarkForm
 	{
+		/// <summary>
+		/// Configuration object.
+		/// </summary>
+		private Configuration _config = Configuration.Load();
+
 		public FormReindentRules()
 		{
 			InitializeComponent();
 
-			preEqualSpaceCheck.Checked = Properties.Settings.Default.PreEqualSpace;
-			postEqualSpaceCheck.Checked = Properties.Settings.Default.PostEqualSpace;
+			checkBox_PreEqualSpace.Checked = _config.Tidy_PreEqualSpace;
+			checkBox_PostEqualSpace.Checked = _config.Tidy_PostEqualSpace;
 
-			preCommaSpaceCheck.Checked = Properties.Settings.Default.PreCommaSpace;
-			postCommaSpaceCheck.Checked = Properties.Settings.Default.PostCommaSpace;
+			checkBox_PreCommaSpace.Checked = _config.Tidy_PreCommaSpace;
+			checkBox_PostCommaSpace.Checked = _config.Tidy_PostCommaSpace;
 
-			reduceSpacesCheck.Checked = Properties.Settings.Default.ReduceSpaces;
+			checkBox_ReduceSpaces.Checked = _config.Tidy_ReduceSpaces;
 		}
 
-		private void defaultButton_Click(object sender, EventArgs e)
+		private void button_Default_Click(object sender, EventArgs e)
 		{
-			preEqualSpaceCheck.Checked = true;
-			postEqualSpaceCheck.Checked = true;
+			checkBox_PreEqualSpace.Checked = true;
+			checkBox_PostEqualSpace.Checked = true;
 
-			preCommaSpaceCheck.Checked = false;
-			postCommaSpaceCheck.Checked = true;
+			checkBox_PreCommaSpace.Checked = false;
+			checkBox_PostCommaSpace.Checked = true;
 
-			reduceSpacesCheck.Checked = true;
+			checkBox_ReduceSpaces.Checked = true;
 		}
 
-		private void saveButton_Click(object sender, EventArgs e)
+		private void button_Save_Click(object sender, EventArgs e)
 		{
-			Properties.Settings.Default.PreEqualSpace = preEqualSpaceCheck.Checked;
-			Properties.Settings.Default.PostEqualSpace = postEqualSpaceCheck.Checked;
+			_config.Tidy_PreEqualSpace = checkBox_PreEqualSpace.Checked;
+			_config.Tidy_PostEqualSpace = checkBox_PostEqualSpace.Checked;
 
-			Properties.Settings.Default.PreCommaSpace = preCommaSpaceCheck.Checked;
-			Properties.Settings.Default.PostCommaSpace = postCommaSpaceCheck.Checked;
+			_config.Tidy_PreCommaSpace = checkBox_PreCommaSpace.Checked;
+			_config.Tidy_PostCommaSpace = checkBox_PostCommaSpace.Checked;
 
-			Properties.Settings.Default.ReduceSpaces = reduceSpacesCheck.Checked;
+			_config.Tidy_ReduceSpaces = checkBox_ReduceSpaces.Checked;
 
-			Properties.Settings.Default.Save();
+			_config.Save();
 		}
 
-		private void preCommaSpaceCheck_CheckedChanged(object sender, EventArgs e)
+		private void checkBox_PreEqualSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			preview.Text = preCommaSpaceCheck.Checked ? preview.Text.Replace(",", " ,") : preview.Text.Replace(" ,", ",");
+			textBox_Preview.Text = checkBox_PreEqualSpace.Checked ? textBox_Preview.Text.Replace("=", " =") : textBox_Preview.Text.Replace(" =", "=");
 		}
 
-		private void postCommaSpaceCheck_CheckedChanged(object sender, EventArgs e)
+		private void checkBox_PostEqualSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			preview.Text = postCommaSpaceCheck.Checked ? preview.Text.Replace(",", ", ") : preview.Text.Replace(", ", ",");
+			textBox_Preview.Text = checkBox_PostEqualSpace.Checked ? textBox_Preview.Text.Replace("=", "= ") : textBox_Preview.Text.Replace("= ", "=");
 		}
 
-		private void preEqualSpaceCheck_CheckedChanged(object sender, EventArgs e)
+		private void checkBox_PreCommaSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			preview.Text = preEqualSpaceCheck.Checked ? preview.Text.Replace("=", " =") : preview.Text.Replace(" =", "=");
+			textBox_Preview.Text = checkBox_PreCommaSpace.Checked ? textBox_Preview.Text.Replace(",", " ,") : textBox_Preview.Text.Replace(" ,", ",");
 		}
 
-		private void postEqualSpaceCheck_CheckedChanged(object sender, EventArgs e)
+		private void checkBox_PostCommaSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			preview.Text = postEqualSpaceCheck.Checked ? preview.Text.Replace("=", "= ") : preview.Text.Replace("= ", "=");
+			textBox_Preview.Text = checkBox_PostCommaSpace.Checked ? textBox_Preview.Text.Replace(",", ", ") : textBox_Preview.Text.Replace(", ", ",");
 		}
 
-		private void reduceSpacesCheck_CheckedChanged(object sender, EventArgs e)
+		private void checkBox_ReduceSpaces_CheckedChanged(object sender, EventArgs e)
 		{
-			preview.Text = reduceSpacesCheck.Checked ? preview.Text.Replace("  ;", ";") : preview.Text.Replace(";", "  ;");
+			textBox_Preview.Text = checkBox_ReduceSpaces.Checked ? textBox_Preview.Text.Replace("  ;", ";") : textBox_Preview.Text.Replace(";", "  ;");
 		}
 	}
 }

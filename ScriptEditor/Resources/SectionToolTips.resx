@@ -121,7 +121,7 @@
     <value />
   </data>
   <data name="Level" xml:space="preserve">
-    <value>Level header.
+    <value>Level section.
 Use this to start a new level script.</value>
   </data>
   <data name="Options" xml:space="preserve">

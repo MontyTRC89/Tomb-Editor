@@ -147,6 +147,10 @@ Please make sure your game is installed correctly.</value>
 Please make sure you selected the correct .exe file.</value>
   </data>
   <data name="Error_ProjectAlreadyExists" xml:space="preserve">
+    <value>The "{0}" project is using the same .exe file as the one you're currently trying to add.
+Please select a different .exe file.</value>
+  </data>
+  <data name="Error_ProjectNameAlreadyExists" xml:space="preserve">
     <value>A project with the same name already exists.</value>
   </data>
   <data name="ResetSettings" xml:space="preserve">

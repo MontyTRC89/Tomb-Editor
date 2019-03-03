@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocompleteItems.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ScriptTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,10 +117,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\HeaderToolTips.Designer.cs">
+    <Compile Include="Resources\SectionToolTips.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>HeaderToolTips.resx</DependentUpon>
+      <DependentUpon>SectionToolTips.resx</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -152,9 +153,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\HeaderToolTips.resx">
+    <EmbeddedResource Include="Resources\SectionToolTips.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>HeaderToolTips.Designer.cs</LastGenOutput>
+      <LastGenOutput>SectionToolTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -216,6 +217,9 @@
   <ItemGroup>
     <Content Include="Resources\Images\clearBookmark-16.png" />
     <Content Include="Resources\Images\comment-16.png" />
+    <Content Include="Resources\Images\file.ico" />
+    <Content Include="Resources\Images\folder.ico" />
+    <Content Include="Resources\Images\general_create_new-16.png" />
     <Content Include="Resources\Images\general_plus_math-16.png" />
     <Content Include="Resources\Images\nextBookmark-16.png" />
     <Content Include="Resources\Images\prevBookmark-16.png" />

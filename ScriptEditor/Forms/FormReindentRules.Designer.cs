@@ -2,15 +2,8 @@
 {
 	partial class FormReindentRules : DarkUI.Forms.DarkForm
 	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && (components != null))
@@ -22,278 +15,283 @@
 
 		#region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormReindentRules));
-			this.addSpacesGroupBox = new DarkUI.Controls.DarkGroupBox();
-			this.commaLabel = new DarkUI.Controls.DarkLabel();
-			this.equalLabel = new DarkUI.Controls.DarkLabel();
-			this.postCommaSpaceCheck = new DarkUI.Controls.DarkCheckBox();
-			this.preCommaSpaceCheck = new DarkUI.Controls.DarkCheckBox();
-			this.postEqualSpaceCheck = new DarkUI.Controls.DarkCheckBox();
-			this.preEqualSpaceCheck = new DarkUI.Controls.DarkCheckBox();
-			this.buttonsGroupBox = new DarkUI.Controls.DarkGroupBox();
-			this.defaultButton = new DarkUI.Controls.DarkButton();
-			this.cancelButton = new DarkUI.Controls.DarkButton();
-			this.saveButton = new DarkUI.Controls.DarkButton();
-			this.mainGroupBox = new DarkUI.Controls.DarkGroupBox();
-			this.previewGroupBox = new DarkUI.Controls.DarkGroupBox();
-			this.preview = new FastColoredTextBoxNS.FastColoredTextBox();
-			this.reduceSpacesCheck = new DarkUI.Controls.DarkCheckBox();
-			this.addSpacesGroupBox.SuspendLayout();
-			this.buttonsGroupBox.SuspendLayout();
-			this.mainGroupBox.SuspendLayout();
-			this.previewGroupBox.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.preview)).BeginInit();
+			this.button_Cancel = new DarkUI.Controls.DarkButton();
+			this.button_ResetDefault = new DarkUI.Controls.DarkButton();
+			this.button_Save = new DarkUI.Controls.DarkButton();
+			this.checkBox_PostCommaSpace = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_PostEqualSpace = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_PreCommaSpace = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_PreEqualSpace = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_ReduceSpaces = new DarkUI.Controls.DarkCheckBox();
+			this.groupBox_AddSpaces = new DarkUI.Controls.DarkGroupBox();
+			this.label_Comma = new DarkUI.Controls.DarkLabel();
+			this.label_Equal = new DarkUI.Controls.DarkLabel();
+			this.groupBox_Buttons = new DarkUI.Controls.DarkGroupBox();
+			this.groupBox_Main = new DarkUI.Controls.DarkGroupBox();
+			this.GroupBox_Preview = new DarkUI.Controls.DarkGroupBox();
+			this.textBox_Preview = new ScriptEditor.ScriptTextBox();
+			this.groupBox_AddSpaces.SuspendLayout();
+			this.groupBox_Buttons.SuspendLayout();
+			this.groupBox_Main.SuspendLayout();
+			this.GroupBox_Preview.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.textBox_Preview)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// addSpacesGroupBox
+			// button_Cancel
 			// 
-			this.addSpacesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.button_Cancel.Location = new System.Drawing.Point(489, 9);
+			this.button_Cancel.Name = "button_Cancel";
+			this.button_Cancel.Size = new System.Drawing.Size(75, 25);
+			this.button_Cancel.TabIndex = 5;
+			this.button_Cancel.Text = "Cancel";
+			// 
+			// button_ResetDefault
+			// 
+			this.button_ResetDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.button_ResetDefault.Location = new System.Drawing.Point(6, 9);
+			this.button_ResetDefault.Name = "button_ResetDefault";
+			this.button_ResetDefault.Size = new System.Drawing.Size(128, 25);
+			this.button_ResetDefault.TabIndex = 6;
+			this.button_ResetDefault.Text = "Reset rules to default";
+			this.button_ResetDefault.Click += new System.EventHandler(this.button_Default_Click);
+			// 
+			// button_Save
+			// 
+			this.button_Save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Save.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button_Save.Location = new System.Drawing.Point(408, 9);
+			this.button_Save.Name = "button_Save";
+			this.button_Save.Size = new System.Drawing.Size(75, 25);
+			this.button_Save.TabIndex = 4;
+			this.button_Save.Text = "Save";
+			this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
+			// 
+			// checkBox_PostCommaSpace
+			// 
+			this.checkBox_PostCommaSpace.AutoSize = true;
+			this.checkBox_PostCommaSpace.Location = new System.Drawing.Point(124, 78);
+			this.checkBox_PostCommaSpace.Margin = new System.Windows.Forms.Padding(0, 32, 40, 26);
+			this.checkBox_PostCommaSpace.Name = "checkBox_PostCommaSpace";
+			this.checkBox_PostCommaSpace.Size = new System.Drawing.Size(15, 14);
+			this.checkBox_PostCommaSpace.TabIndex = 3;
+			this.checkBox_PostCommaSpace.CheckedChanged += new System.EventHandler(this.checkBox_PostCommaSpace_CheckedChanged);
+			// 
+			// checkBox_PostEqualSpace
+			// 
+			this.checkBox_PostEqualSpace.AutoSize = true;
+			this.checkBox_PostEqualSpace.Location = new System.Drawing.Point(124, 32);
+			this.checkBox_PostEqualSpace.Margin = new System.Windows.Forms.Padding(0, 16, 40, 0);
+			this.checkBox_PostEqualSpace.Name = "checkBox_PostEqualSpace";
+			this.checkBox_PostEqualSpace.Size = new System.Drawing.Size(15, 14);
+			this.checkBox_PostEqualSpace.TabIndex = 1;
+			this.checkBox_PostEqualSpace.CheckedChanged += new System.EventHandler(this.checkBox_PostEqualSpace_CheckedChanged);
+			// 
+			// checkBox_PreCommaSpace
+			// 
+			this.checkBox_PreCommaSpace.AutoSize = true;
+			this.checkBox_PreCommaSpace.Location = new System.Drawing.Point(43, 78);
+			this.checkBox_PreCommaSpace.Margin = new System.Windows.Forms.Padding(40, 32, 0, 26);
+			this.checkBox_PreCommaSpace.Name = "checkBox_PreCommaSpace";
+			this.checkBox_PreCommaSpace.Size = new System.Drawing.Size(15, 14);
+			this.checkBox_PreCommaSpace.TabIndex = 2;
+			this.checkBox_PreCommaSpace.CheckedChanged += new System.EventHandler(this.checkBox_PreCommaSpace_CheckedChanged);
+			// 
+			// checkBox_PreEqualSpace
+			// 
+			this.checkBox_PreEqualSpace.AutoSize = true;
+			this.checkBox_PreEqualSpace.Location = new System.Drawing.Point(43, 32);
+			this.checkBox_PreEqualSpace.Margin = new System.Windows.Forms.Padding(40, 16, 0, 0);
+			this.checkBox_PreEqualSpace.Name = "checkBox_PreEqualSpace";
+			this.checkBox_PreEqualSpace.Size = new System.Drawing.Size(15, 14);
+			this.checkBox_PreEqualSpace.TabIndex = 0;
+			this.checkBox_PreEqualSpace.CheckedChanged += new System.EventHandler(this.checkBox_PreEqualSpace_CheckedChanged);
+			// 
+			// checkBox_ReduceSpaces
+			// 
+			this.checkBox_ReduceSpaces.AutoSize = true;
+			this.checkBox_ReduceSpaces.Location = new System.Drawing.Point(16, 137);
+			this.checkBox_ReduceSpaces.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
+			this.checkBox_ReduceSpaces.Name = "checkBox_ReduceSpaces";
+			this.checkBox_ReduceSpaces.Size = new System.Drawing.Size(169, 17);
+			this.checkBox_ReduceSpaces.TabIndex = 3;
+			this.checkBox_ReduceSpaces.Text = "Reduce the amount of spaces";
+			this.checkBox_ReduceSpaces.CheckedChanged += new System.EventHandler(this.checkBox_ReduceSpaces_CheckedChanged);
+			// 
+			// groupBox_AddSpaces
+			// 
+			this.groupBox_AddSpaces.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.addSpacesGroupBox.Controls.Add(this.commaLabel);
-			this.addSpacesGroupBox.Controls.Add(this.equalLabel);
-			this.addSpacesGroupBox.Controls.Add(this.postCommaSpaceCheck);
-			this.addSpacesGroupBox.Controls.Add(this.preCommaSpaceCheck);
-			this.addSpacesGroupBox.Controls.Add(this.postEqualSpaceCheck);
-			this.addSpacesGroupBox.Controls.Add(this.preEqualSpaceCheck);
-			this.addSpacesGroupBox.Location = new System.Drawing.Point(9, 9);
-			this.addSpacesGroupBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
-			this.addSpacesGroupBox.Name = "addSpacesGroupBox";
-			this.addSpacesGroupBox.Size = new System.Drawing.Size(182, 121);
-			this.addSpacesGroupBox.TabIndex = 6;
-			this.addSpacesGroupBox.TabStop = false;
-			this.addSpacesGroupBox.Text = "Insert spaces";
+			this.groupBox_AddSpaces.Controls.Add(this.label_Comma);
+			this.groupBox_AddSpaces.Controls.Add(this.label_Equal);
+			this.groupBox_AddSpaces.Controls.Add(this.checkBox_PostCommaSpace);
+			this.groupBox_AddSpaces.Controls.Add(this.checkBox_PreCommaSpace);
+			this.groupBox_AddSpaces.Controls.Add(this.checkBox_PostEqualSpace);
+			this.groupBox_AddSpaces.Controls.Add(this.checkBox_PreEqualSpace);
+			this.groupBox_AddSpaces.Location = new System.Drawing.Point(9, 9);
+			this.groupBox_AddSpaces.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+			this.groupBox_AddSpaces.Name = "groupBox_AddSpaces";
+			this.groupBox_AddSpaces.Size = new System.Drawing.Size(182, 121);
+			this.groupBox_AddSpaces.TabIndex = 6;
+			this.groupBox_AddSpaces.TabStop = false;
+			this.groupBox_AddSpaces.Text = "Insert spaces";
 			// 
-			// commaLabel
+			// label_Comma
 			// 
-			this.commaLabel.AutoSize = true;
-			this.commaLabel.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.commaLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.commaLabel.Location = new System.Drawing.Point(80, 76);
-			this.commaLabel.Margin = new System.Windows.Forms.Padding(22, 0, 22, 0);
-			this.commaLabel.Name = "commaLabel";
-			this.commaLabel.Size = new System.Drawing.Size(22, 24);
-			this.commaLabel.TabIndex = 5;
-			this.commaLabel.Text = ",";
+			this.label_Comma.AutoSize = true;
+			this.label_Comma.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Comma.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_Comma.Location = new System.Drawing.Point(80, 76);
+			this.label_Comma.Margin = new System.Windows.Forms.Padding(22, 0, 22, 0);
+			this.label_Comma.Name = "label_Comma";
+			this.label_Comma.Size = new System.Drawing.Size(22, 24);
+			this.label_Comma.TabIndex = 5;
+			this.label_Comma.Text = ",";
 			// 
-			// equalLabel
+			// label_Equal
 			// 
-			this.equalLabel.AutoSize = true;
-			this.equalLabel.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.equalLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.equalLabel.Location = new System.Drawing.Point(80, 30);
-			this.equalLabel.Margin = new System.Windows.Forms.Padding(22, 0, 22, 0);
-			this.equalLabel.Name = "equalLabel";
-			this.equalLabel.Size = new System.Drawing.Size(22, 24);
-			this.equalLabel.TabIndex = 4;
-			this.equalLabel.Text = "=";
+			this.label_Equal.AutoSize = true;
+			this.label_Equal.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Equal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_Equal.Location = new System.Drawing.Point(80, 30);
+			this.label_Equal.Margin = new System.Windows.Forms.Padding(22, 0, 22, 0);
+			this.label_Equal.Name = "label_Equal";
+			this.label_Equal.Size = new System.Drawing.Size(22, 24);
+			this.label_Equal.TabIndex = 4;
+			this.label_Equal.Text = "=";
 			// 
-			// postCommaSpaceCheck
+			// groupBox_Buttons
 			// 
-			this.postCommaSpaceCheck.AutoSize = true;
-			this.postCommaSpaceCheck.Location = new System.Drawing.Point(124, 78);
-			this.postCommaSpaceCheck.Margin = new System.Windows.Forms.Padding(0, 32, 40, 26);
-			this.postCommaSpaceCheck.Name = "postCommaSpaceCheck";
-			this.postCommaSpaceCheck.Size = new System.Drawing.Size(15, 14);
-			this.postCommaSpaceCheck.TabIndex = 3;
-			this.postCommaSpaceCheck.CheckedChanged += new System.EventHandler(this.postCommaSpaceCheck_CheckedChanged);
+			this.groupBox_Buttons.Controls.Add(this.button_ResetDefault);
+			this.groupBox_Buttons.Controls.Add(this.button_Cancel);
+			this.groupBox_Buttons.Controls.Add(this.button_Save);
+			this.groupBox_Buttons.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.groupBox_Buttons.Location = new System.Drawing.Point(0, 160);
+			this.groupBox_Buttons.Name = "groupBox_Buttons";
+			this.groupBox_Buttons.Size = new System.Drawing.Size(570, 40);
+			this.groupBox_Buttons.TabIndex = 7;
+			this.groupBox_Buttons.TabStop = false;
 			// 
-			// preCommaSpaceCheck
+			// groupBox_Main
 			// 
-			this.preCommaSpaceCheck.AutoSize = true;
-			this.preCommaSpaceCheck.Location = new System.Drawing.Point(43, 78);
-			this.preCommaSpaceCheck.Margin = new System.Windows.Forms.Padding(40, 32, 0, 26);
-			this.preCommaSpaceCheck.Name = "preCommaSpaceCheck";
-			this.preCommaSpaceCheck.Size = new System.Drawing.Size(15, 14);
-			this.preCommaSpaceCheck.TabIndex = 2;
-			this.preCommaSpaceCheck.CheckedChanged += new System.EventHandler(this.preCommaSpaceCheck_CheckedChanged);
+			this.groupBox_Main.Controls.Add(this.GroupBox_Preview);
+			this.groupBox_Main.Controls.Add(this.groupBox_AddSpaces);
+			this.groupBox_Main.Controls.Add(this.checkBox_ReduceSpaces);
+			this.groupBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox_Main.Location = new System.Drawing.Point(0, 0);
+			this.groupBox_Main.Name = "groupBox_Main";
+			this.groupBox_Main.Size = new System.Drawing.Size(570, 160);
+			this.groupBox_Main.TabIndex = 8;
+			this.groupBox_Main.TabStop = false;
 			// 
-			// postEqualSpaceCheck
+			// GroupBox_Preview
 			// 
-			this.postEqualSpaceCheck.AutoSize = true;
-			this.postEqualSpaceCheck.Location = new System.Drawing.Point(124, 32);
-			this.postEqualSpaceCheck.Margin = new System.Windows.Forms.Padding(0, 16, 40, 0);
-			this.postEqualSpaceCheck.Name = "postEqualSpaceCheck";
-			this.postEqualSpaceCheck.Size = new System.Drawing.Size(15, 14);
-			this.postEqualSpaceCheck.TabIndex = 1;
-			this.postEqualSpaceCheck.CheckedChanged += new System.EventHandler(this.postEqualSpaceCheck_CheckedChanged);
-			// 
-			// preEqualSpaceCheck
-			// 
-			this.preEqualSpaceCheck.AutoSize = true;
-			this.preEqualSpaceCheck.Location = new System.Drawing.Point(43, 32);
-			this.preEqualSpaceCheck.Margin = new System.Windows.Forms.Padding(40, 16, 0, 0);
-			this.preEqualSpaceCheck.Name = "preEqualSpaceCheck";
-			this.preEqualSpaceCheck.Size = new System.Drawing.Size(15, 14);
-			this.preEqualSpaceCheck.TabIndex = 0;
-			this.preEqualSpaceCheck.CheckedChanged += new System.EventHandler(this.preEqualSpaceCheck_CheckedChanged);
-			// 
-			// buttonsGroupBox
-			// 
-			this.buttonsGroupBox.Controls.Add(this.defaultButton);
-			this.buttonsGroupBox.Controls.Add(this.cancelButton);
-			this.buttonsGroupBox.Controls.Add(this.saveButton);
-			this.buttonsGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.buttonsGroupBox.Location = new System.Drawing.Point(0, 160);
-			this.buttonsGroupBox.Name = "buttonsGroupBox";
-			this.buttonsGroupBox.Size = new System.Drawing.Size(570, 40);
-			this.buttonsGroupBox.TabIndex = 7;
-			this.buttonsGroupBox.TabStop = false;
-			// 
-			// defaultButton
-			// 
-			this.defaultButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.defaultButton.Location = new System.Drawing.Point(6, 9);
-			this.defaultButton.Name = "defaultButton";
-			this.defaultButton.Size = new System.Drawing.Size(128, 25);
-			this.defaultButton.TabIndex = 6;
-			this.defaultButton.Text = "Reset rules to default";
-			this.defaultButton.Click += new System.EventHandler(this.defaultButton_Click);
-			// 
-			// cancelButton
-			// 
-			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(489, 9);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 25);
-			this.cancelButton.TabIndex = 5;
-			this.cancelButton.Text = "Cancel";
-			// 
-			// saveButton
-			// 
-			this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.saveButton.Location = new System.Drawing.Point(408, 9);
-			this.saveButton.Name = "saveButton";
-			this.saveButton.Size = new System.Drawing.Size(75, 25);
-			this.saveButton.TabIndex = 4;
-			this.saveButton.Text = "Save";
-			this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-			// 
-			// mainGroupBox
-			// 
-			this.mainGroupBox.Controls.Add(this.previewGroupBox);
-			this.mainGroupBox.Controls.Add(this.addSpacesGroupBox);
-			this.mainGroupBox.Controls.Add(this.reduceSpacesCheck);
-			this.mainGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mainGroupBox.Location = new System.Drawing.Point(0, 0);
-			this.mainGroupBox.Name = "mainGroupBox";
-			this.mainGroupBox.Size = new System.Drawing.Size(570, 160);
-			this.mainGroupBox.TabIndex = 8;
-			this.mainGroupBox.TabStop = false;
-			// 
-			// previewGroupBox
-			// 
-			this.previewGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.GroupBox_Preview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.previewGroupBox.Controls.Add(this.preview);
-			this.previewGroupBox.Location = new System.Drawing.Point(194, 9);
-			this.previewGroupBox.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
-			this.previewGroupBox.Name = "previewGroupBox";
-			this.previewGroupBox.Size = new System.Drawing.Size(367, 145);
-			this.previewGroupBox.TabIndex = 7;
-			this.previewGroupBox.TabStop = false;
-			this.previewGroupBox.Text = "Preview";
+			this.GroupBox_Preview.Controls.Add(this.textBox_Preview);
+			this.GroupBox_Preview.Location = new System.Drawing.Point(194, 9);
+			this.GroupBox_Preview.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
+			this.GroupBox_Preview.Name = "GroupBox_Preview";
+			this.GroupBox_Preview.Size = new System.Drawing.Size(367, 145);
+			this.GroupBox_Preview.TabIndex = 7;
+			this.GroupBox_Preview.TabStop = false;
+			this.GroupBox_Preview.Text = "Preview";
 			// 
-			// preview
+			// textBox_Preview
 			// 
-			this.preview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.textBox_Preview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.preview.AutoCompleteBracketsList = new char[0];
-			this.preview.AutoIndentCharsPatterns = "\r\n";
-			this.preview.AutoScrollMinSize = new System.Drawing.Size(305, 108);
-			this.preview.BackBrush = null;
-			this.preview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-			this.preview.BookmarkColor = System.Drawing.Color.Transparent;
-			this.preview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.preview.CaretColor = System.Drawing.Color.Transparent;
-			this.preview.CaretVisible = false;
-			this.preview.CharHeight = 18;
-			this.preview.CharWidth = 9;
-			this.preview.Cursor = System.Windows.Forms.Cursors.IBeam;
-			this.preview.DisabledColor = System.Drawing.Color.Transparent;
-			this.preview.Enabled = false;
-			this.preview.FoldingIndicatorColor = System.Drawing.Color.Transparent;
-			this.preview.Font = new System.Drawing.Font("Consolas", 12F);
-			this.preview.IndentBackColor = System.Drawing.Color.Transparent;
-			this.preview.IsReplaceMode = false;
-			this.preview.LeftPadding = 6;
-			this.preview.LineNumberColor = System.Drawing.Color.Transparent;
-			this.preview.Location = new System.Drawing.Point(6, 19);
-			this.preview.Name = "preview";
-			this.preview.Paddings = new System.Windows.Forms.Padding(0);
-			this.preview.ReadOnly = true;
-			this.preview.SelectionColor = System.Drawing.Color.Transparent;
-			this.preview.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("preview.ServiceColors")));
-			this.preview.ServiceLinesColor = System.Drawing.Color.Transparent;
-			this.preview.ShowLineNumbers = false;
-			this.preview.ShowScrollBars = false;
-			this.preview.Size = new System.Drawing.Size(355, 120);
-			this.preview.TabIndex = 0;
-			this.preview.Text = "[Level]\r\nName=Coastal Ruins\r\nRain=ENABLED\r\nLayer1=128,128,128,-8\r\nMirror=69,$7400" +
+			this.textBox_Preview.AutoCompleteBracketsList = new char[0];
+			this.textBox_Preview.AutoIndent = false;
+			this.textBox_Preview.AutoIndentChars = false;
+			this.textBox_Preview.AutoIndentCharsPatterns = "\r\n";
+			this.textBox_Preview.AutoIndentExistingLines = false;
+			this.textBox_Preview.AutoScrollMinSize = new System.Drawing.Size(305, 108);
+			this.textBox_Preview.BackBrush = null;
+			this.textBox_Preview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+			this.textBox_Preview.BookmarkColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBox_Preview.CaretColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.CaretVisible = false;
+			this.textBox_Preview.ChangedLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(96)))));
+			this.textBox_Preview.CharHeight = 18;
+			this.textBox_Preview.CharWidth = 9;
+			this.textBox_Preview.CommentPrefix = ";";
+			this.textBox_Preview.CurrentLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.textBox_Preview.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.textBox_Preview.DisabledColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.Enabled = false;
+			this.textBox_Preview.FoldingIndicatorColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.Font = new System.Drawing.Font("Consolas", 12F);
+			this.textBox_Preview.ForeColor = System.Drawing.SystemColors.ControlLight;
+			this.textBox_Preview.IndentBackColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.IsReplaceMode = false;
+			this.textBox_Preview.LeftPadding = 6;
+			this.textBox_Preview.LineNumberColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.Location = new System.Drawing.Point(6, 19);
+			this.textBox_Preview.Margin = new System.Windows.Forms.Padding(0);
+			this.textBox_Preview.Name = "textBox_Preview";
+			this.textBox_Preview.Paddings = new System.Windows.Forms.Padding(0);
+			this.textBox_Preview.ReadOnly = true;
+			this.textBox_Preview.ReservedCountOfLineNumberChars = 2;
+			this.textBox_Preview.SelectionColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("textBox_Preview.ServiceColors")));
+			this.textBox_Preview.ServiceLinesColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.ShowLineNumbers = false;
+			this.textBox_Preview.ShowScrollBars = false;
+			this.textBox_Preview.Size = new System.Drawing.Size(355, 120);
+			this.textBox_Preview.TabIndex = 0;
+			this.textBox_Preview.Text = "[Level]\r\nName=Coastal Ruins\r\nRain=ENABLED\r\nLayer1=128,128,128,-8\r\nMirror=69,$7400" +
     "   ; Crossbow room\r\nLevel=DATA\\COASTAL,105";
-			this.preview.TextAreaBorderColor = System.Drawing.Color.Transparent;
-			this.preview.Zoom = 100;
-			// 
-			// reduceSpacesCheck
-			// 
-			this.reduceSpacesCheck.AutoSize = true;
-			this.reduceSpacesCheck.Location = new System.Drawing.Point(16, 137);
-			this.reduceSpacesCheck.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
-			this.reduceSpacesCheck.Name = "reduceSpacesCheck";
-			this.reduceSpacesCheck.Size = new System.Drawing.Size(169, 17);
-			this.reduceSpacesCheck.TabIndex = 3;
-			this.reduceSpacesCheck.Text = "Reduce the amount of spaces";
-			this.reduceSpacesCheck.CheckedChanged += new System.EventHandler(this.reduceSpacesCheck_CheckedChanged);
+			this.textBox_Preview.TextAreaBorderColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.Zoom = 100;
 			// 
 			// FormReindentRules
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(570, 200);
-			this.Controls.Add(this.mainGroupBox);
-			this.Controls.Add(this.buttonsGroupBox);
+			this.Controls.Add(this.groupBox_Main);
+			this.Controls.Add(this.groupBox_Buttons);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "FormReindentRules";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Reindent rules";
-			this.addSpacesGroupBox.ResumeLayout(false);
-			this.addSpacesGroupBox.PerformLayout();
-			this.buttonsGroupBox.ResumeLayout(false);
-			this.mainGroupBox.ResumeLayout(false);
-			this.mainGroupBox.PerformLayout();
-			this.previewGroupBox.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.preview)).EndInit();
+			this.groupBox_AddSpaces.ResumeLayout(false);
+			this.groupBox_AddSpaces.PerformLayout();
+			this.groupBox_Buttons.ResumeLayout(false);
+			this.groupBox_Main.ResumeLayout(false);
+			this.groupBox_Main.PerformLayout();
+			this.GroupBox_Preview.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.textBox_Preview)).EndInit();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private DarkUI.Controls.DarkButton cancelButton;
-		private DarkUI.Controls.DarkButton defaultButton;
-		private DarkUI.Controls.DarkButton saveButton;
-		private DarkUI.Controls.DarkCheckBox postCommaSpaceCheck;
-		private DarkUI.Controls.DarkCheckBox postEqualSpaceCheck;
-		private DarkUI.Controls.DarkCheckBox preCommaSpaceCheck;
-		private DarkUI.Controls.DarkCheckBox preEqualSpaceCheck;
-		private DarkUI.Controls.DarkCheckBox reduceSpacesCheck;
-		private DarkUI.Controls.DarkGroupBox addSpacesGroupBox;
-		private DarkUI.Controls.DarkGroupBox buttonsGroupBox;
-		private DarkUI.Controls.DarkGroupBox mainGroupBox;
-		private DarkUI.Controls.DarkGroupBox previewGroupBox;
-		private DarkUI.Controls.DarkLabel commaLabel;
-		private DarkUI.Controls.DarkLabel equalLabel;
-		private FastColoredTextBoxNS.FastColoredTextBox preview;
+		private DarkUI.Controls.DarkButton button_Cancel;
+		private DarkUI.Controls.DarkButton button_ResetDefault;
+		private DarkUI.Controls.DarkButton button_Save;
+		private DarkUI.Controls.DarkCheckBox checkBox_PostCommaSpace;
+		private DarkUI.Controls.DarkCheckBox checkBox_PostEqualSpace;
+		private DarkUI.Controls.DarkCheckBox checkBox_PreCommaSpace;
+		private DarkUI.Controls.DarkCheckBox checkBox_PreEqualSpace;
+		private DarkUI.Controls.DarkCheckBox checkBox_ReduceSpaces;
+		private DarkUI.Controls.DarkGroupBox groupBox_AddSpaces;
+		private DarkUI.Controls.DarkGroupBox groupBox_Buttons;
+		private DarkUI.Controls.DarkGroupBox groupBox_Main;
+		private DarkUI.Controls.DarkGroupBox GroupBox_Preview;
+		private DarkUI.Controls.DarkLabel label_Comma;
+		private DarkUI.Controls.DarkLabel label_Equal;
+		private ScriptTextBox textBox_Preview;
 	}
 }
