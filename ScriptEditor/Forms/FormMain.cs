@@ -50,6 +50,11 @@ namespace ScriptEditor
 		/// </summary>
 		private ScriptTextBox _textBox = new ScriptTextBox();
 
+		/// <summary>
+		/// Tells whether the editor is in "Backup Mode".
+		/// </summary>
+		private bool _backupMode = false;
+
 		#region Initialization
 
 		public FormMain()
@@ -61,6 +66,9 @@ namespace ScriptEditor
 		{
 			ApplyUserSettings();
 			GetProjectsFromXML(); // From Projects.xml
+
+			if (!LastSessionClosedSuccessfully())
+				return;
 
 			if (!string.IsNullOrWhiteSpace(_config.LastProjectName))
 				OpenLastProject();
@@ -135,6 +143,44 @@ namespace ScriptEditor
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		private bool LastSessionClosedSuccessfully()
+		{
+			foreach (Project proj in _availableProjects)
+			{
+				string[] files = Directory.GetFiles(proj.ScriptPath, "*.backup", SearchOption.AllDirectories);
+
+				if (files.Count() != 0)
+				{
+					RestorePreviousSession(proj, files);
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private void RestorePreviousSession(Project project, string[] files)
+		{
+			_backupMode = true;
+
+			_currentProject = project;
+			comboBox_Projects.SelectedItem = project.Name;
+
+			UpdateExplorerTreeView();
+
+			foreach (string file in files)
+			{
+				string backupFileContent = File.ReadAllText(file, Encoding.GetEncoding(1252));
+
+				string originalFilePath = Path.GetDirectoryName(file) + "\\" + Path.GetFileNameWithoutExtension(file);
+				OpenFile(originalFilePath);
+
+				_textBox.Text = backupFileContent;
+			}
+
+			_backupMode = false;
 		}
 
 		private void OpenLastProject()
@@ -264,15 +310,10 @@ namespace ScriptEditor
 			button_ResetZoom.Visible = false;
 		}
 
+		private void Editor_TextChangedDelayed(object sender, TextChangedEventArgs e) => HandleTextChangedIndicator();
 		private void Editor_UndoRedoState_Changed(object sender, EventArgs e) => UpdateUndoRedoSaveStates();
 		private void Editor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
 		private void Editor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
-
-		private void Editor_MouseDown(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Right && !_textBox.Selection.Contains(_textBox.PointToPlace(e.Location)))
-				_textBox.Selection.Start = _textBox.PointToPlace(e.Location); // Move caret to the right clicked line
-		}
 
 		private void Editor_TextChanged(object sender, TextChangedEventArgs e)
 		{
@@ -281,27 +322,18 @@ namespace ScriptEditor
 			if (_currentTab.Tag != null)
 			{
 				// Create live backup file so the app can restore lost progress if it crashes
-				string backupFilePath = Path.GetDirectoryName(_currentTab.Tag.ToString()) + "\\" + Path.GetFileNameWithoutExtension(_currentTab.Tag.ToString()) + ".backup";
+				string backupFilePath = _currentTab.Tag.ToString() + ".backup";
 				File.WriteAllText(backupFilePath, _textBox.Text.Replace("·", " "));
 			}
+
+			if (_backupMode)
+				HandleTextChangedIndicator();
 		}
 
-		private void Editor_TextChangedDelayed(object sender, TextChangedEventArgs e)
+		private void Editor_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (_currentTab.Tag != null)
-			{
-				if (!_textBox.IsChanged)
-					_currentTab.Text = _currentTab.Text.TrimEnd('*');
-				else if (!_currentTab.Text.EndsWith("*"))
-					_currentTab.Text = Path.GetFileName(_currentTab.Tag.ToString()) + "*";
-			}
-			else
-			{
-				if (!_textBox.IsChanged)
-					_currentTab.Text = "Untitled";
-				else if (!_currentTab.Text.EndsWith("*"))
-					_currentTab.Text = "Untitled*";
-			}
+			if (e.Button == MouseButtons.Right && !_textBox.Selection.Contains(_textBox.PointToPlace(e.Location)))
+				_textBox.Selection.Start = _textBox.PointToPlace(e.Location); // Move caret to the right clicked line
 		}
 
 		private void Editor_ZoomChanged(object sender, EventArgs e)
@@ -326,6 +358,24 @@ namespace ScriptEditor
 				_textBox.Zoom = 25;
 			else if (_textBox.Zoom > 500)
 				_textBox.Zoom = 500;
+		}
+
+		private void OnSaveButtonClicked()
+		{
+			if (!SaveFile(_textBox))
+				return;
+
+			string backupFilePath = _currentTab.Tag.ToString() + ".backup";
+			File.Delete(backupFilePath); // We don't need it when saving was successful
+
+			_textBox.IsChanged = false;
+			_currentTab.Text = _currentTab.Text.TrimEnd('*');
+
+			menuItem_Save.Enabled = false;
+			button_Save.Enabled = false;
+
+			UpdateObjectBrowserNodes();
+			_textBox.Invalidate();
 		}
 
 		private void UpdateUndoRedoSaveStates()
@@ -363,6 +413,9 @@ namespace ScriptEditor
 
 				if (editorContent == fileContent)
 				{
+					string backupFilePath = _currentTab.Tag.ToString() + ".backup";
+					File.Delete(backupFilePath); // We don't need it when there are no changes made
+
 					_textBox.IsChanged = false;
 					menuItem_Save.Enabled = false;
 					button_Save.Enabled = false;
@@ -491,9 +544,6 @@ namespace ScriptEditor
 			string editorContent = _textBox.Text.Replace("·", " ");
 			_textBox.Text = trimOnly ? SyntaxTidying.Trim(editorContent) : SyntaxTidying.Reindent(editorContent);
 
-			if (_config.ShowSpaces)
-				_textBox.Text = _textBox.Text.Replace(" ", "·");
-
 			// Restore
 			_textBox.VerticalScroll.Value = scrollPosition;
 			_textBox.UpdateScrollbars();
@@ -524,6 +574,24 @@ namespace ScriptEditor
 			}
 
 			_textBox.Invalidate();
+		}
+
+		private void HandleTextChangedIndicator()
+		{
+			if (_currentTab.Tag != null)
+			{
+				if (!_textBox.IsChanged)
+					_currentTab.Text = _currentTab.Text.TrimEnd('*');
+				else if (!_currentTab.Text.EndsWith("*"))
+					_currentTab.Text = Path.GetFileName(_currentTab.Tag.ToString()) + "*";
+			}
+			else
+			{
+				if (!_textBox.IsChanged)
+					_currentTab.Text = "Untitled";
+				else if (!_currentTab.Text.EndsWith("*"))
+					_currentTab.Text = "Untitled*";
+			}
 		}
 
 		private void ToggleInterface(bool state)
@@ -832,6 +900,9 @@ namespace ScriptEditor
 				return;
 			}
 
+			if (_backupMode)
+				return;
+
 			bool projectFound = false;
 
 			foreach (Project proj in _availableProjects)
@@ -1080,6 +1151,8 @@ namespace ScriptEditor
 			newTextBox.UndoRedoStateChanged += Editor_UndoRedoState_Changed;
 			newTextBox.ZoomChanged += Editor_ZoomChanged;
 
+			newTextBox.DelayedTextChangedInterval = 1;
+
 			if (!string.IsNullOrWhiteSpace(filePath))
 				newTabPage.Tag = filePath; // Store full file path in the tag
 
@@ -1154,21 +1227,6 @@ namespace ScriptEditor
 			}
 		}
 
-		private void OnSaveButtonClicked()
-		{
-			if (!SaveFile(_textBox))
-				return;
-
-			_textBox.IsChanged = false;
-			_currentTab.Text = _currentTab.Text.TrimEnd('*');
-
-			menuItem_Save.Enabled = false;
-			button_Save.Enabled = false;
-
-			UpdateObjectBrowserNodes();
-			_textBox.Invalidate();
-		}
-
 		private bool AreAllFilesSaved()
 		{
 			foreach (TabPage tab in tabControl_Editor.TabPages)
@@ -1203,8 +1261,8 @@ namespace ScriptEditor
 
 			if (_currentTab.Tag != null)
 			{
-				string backupFilePath = Path.GetDirectoryName(_currentTab.Tag.ToString()) + "\\" + Path.GetFileNameWithoutExtension(_currentTab.Tag.ToString()) + ".backup";
-				File.Delete(backupFilePath); // We don't need it when saving was successful
+				string backupFilePath = _currentTab.Tag.ToString() + ".backup";
+				File.Delete(backupFilePath); // We don't need it when the file is saved
 			}
 
 			tab.Dispose();
@@ -1228,6 +1286,8 @@ namespace ScriptEditor
 					{
 						string editorContent = textBox.Text.Replace("·", " ");
 						File.WriteAllText(dialog.FileName, editorContent, Encoding.GetEncoding(1252));
+
+						_currentTab.Tag = dialog.FileName;
 					}
 				}
 				else
