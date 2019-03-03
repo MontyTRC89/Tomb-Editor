@@ -98,13 +98,14 @@ namespace ScriptEditor
 			this.separator_08 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_View = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem_ToolStrip = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ObjBrowser = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ProjExplorer = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_InfoBox = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem_StatusStrip = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem_LineNumbers = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_17 = new System.Windows.Forms.ToolStripSeparator();
+			this.menuItem_ToolStrip = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuItem_StatusStrip = new System.Windows.Forms.ToolStripMenuItem();
+			this.separator_18 = new System.Windows.Forms.ToolStripSeparator();
+			this.menuItem_LineNumbers = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ToolTips = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
 			this.separator_09 = new System.Windows.Forms.ToolStripSeparator();
@@ -1053,29 +1054,19 @@ namespace ScriptEditor
 			// 
 			this.menu_View.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menu_View.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_ToolStrip,
             this.menuItem_ObjBrowser,
             this.menuItem_ProjExplorer,
             this.menuItem_InfoBox,
-            this.menuItem_StatusStrip,
-            this.menuItem_LineNumbers,
             this.separator_17,
+            this.menuItem_ToolStrip,
+            this.menuItem_StatusStrip,
+            this.separator_18,
+            this.menuItem_LineNumbers,
             this.menuItem_ToolTips});
 			this.menu_View.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menu_View.Name = "menu_View";
 			this.menu_View.Size = new System.Drawing.Size(44, 20);
 			this.menu_View.Text = "&View";
-			// 
-			// menuItem_ToolStrip
-			// 
-			this.menuItem_ToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_ToolStrip.Checked = true;
-			this.menuItem_ToolStrip.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.menuItem_ToolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.menuItem_ToolStrip.Name = "menuItem_ToolStrip";
-			this.menuItem_ToolStrip.Size = new System.Drawing.Size(159, 22);
-			this.menuItem_ToolStrip.Text = "Tool Strip";
-			this.menuItem_ToolStrip.Click += new System.EventHandler(this.View_ToolStrip_Click);
 			// 
 			// menuItem_ObjBrowser
 			// 
@@ -1110,6 +1101,25 @@ namespace ScriptEditor
 			this.menuItem_InfoBox.Text = "&Information Box";
 			this.menuItem_InfoBox.Click += new System.EventHandler(this.View_InfoBox_Click);
 			// 
+			// separator_17
+			// 
+			this.separator_17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_17.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+			this.separator_17.Name = "separator_17";
+			this.separator_17.Size = new System.Drawing.Size(156, 6);
+			// 
+			// menuItem_ToolStrip
+			// 
+			this.menuItem_ToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_ToolStrip.Checked = true;
+			this.menuItem_ToolStrip.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.menuItem_ToolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_ToolStrip.Name = "menuItem_ToolStrip";
+			this.menuItem_ToolStrip.Size = new System.Drawing.Size(159, 22);
+			this.menuItem_ToolStrip.Text = "Tool Strip";
+			this.menuItem_ToolStrip.Click += new System.EventHandler(this.View_ToolStrip_Click);
+			// 
 			// menuItem_StatusStrip
 			// 
 			this.menuItem_StatusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1121,6 +1131,14 @@ namespace ScriptEditor
 			this.menuItem_StatusStrip.Text = "Status Strip";
 			this.menuItem_StatusStrip.Click += new System.EventHandler(this.View_StatusStrip_Click);
 			// 
+			// separator_18
+			// 
+			this.separator_18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_18.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+			this.separator_18.Name = "separator_18";
+			this.separator_18.Size = new System.Drawing.Size(156, 6);
+			// 
 			// menuItem_LineNumbers
 			// 
 			this.menuItem_LineNumbers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1131,14 +1149,6 @@ namespace ScriptEditor
 			this.menuItem_LineNumbers.Size = new System.Drawing.Size(159, 22);
 			this.menuItem_LineNumbers.Text = "Line Numbers";
 			this.menuItem_LineNumbers.Click += new System.EventHandler(this.View_LineNumbers_Click);
-			// 
-			// separator_17
-			// 
-			this.separator_17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.separator_17.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-			this.separator_17.Name = "separator_17";
-			this.separator_17.Size = new System.Drawing.Size(156, 6);
 			// 
 			// menuItem_ToolTips
 			// 
@@ -1415,6 +1425,7 @@ namespace ScriptEditor
 		private System.Windows.Forms.ToolStripSeparator separator_15;
 		private System.Windows.Forms.ToolStripSeparator separator_16;
 		private System.Windows.Forms.ToolStripSeparator separator_17;
+		private System.Windows.Forms.ToolStripSeparator separator_18;
 		private DarkUI.Controls.DarkGroupBox groupBox_Editor;
 		private DarkUI.Controls.DarkGroupBox groupBox_ObjBrowser;
 		private DarkUI.Controls.DarkGroupBox groupBox_ProjExplorer;
