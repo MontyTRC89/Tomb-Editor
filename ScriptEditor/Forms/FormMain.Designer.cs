@@ -108,6 +108,7 @@ namespace ScriptEditor
 			this.menuItem_LineNumbers = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ToolTips = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
+			this.scriptFolderWatcher = new System.IO.FileSystemWatcher();
 			this.separator_09 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_10 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_11 = new System.Windows.Forms.ToolStripSeparator();
@@ -127,6 +128,7 @@ namespace ScriptEditor
 			this.groupBox_ObjBrowser.SuspendLayout();
 			this.groupBox_ProjExplorer.SuspendLayout();
 			this.menuStrip.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.scriptFolderWatcher)).BeginInit();
 			this.statusStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -1177,6 +1179,19 @@ namespace ScriptEditor
 			this.menuStrip.Size = new System.Drawing.Size(944, 24);
 			this.menuStrip.TabIndex = 0;
 			// 
+			// scriptFolderWatcher
+			// 
+			this.scriptFolderWatcher.EnableRaisingEvents = true;
+			this.scriptFolderWatcher.IncludeSubdirectories = true;
+			this.scriptFolderWatcher.NotifyFilter = ((System.IO.NotifyFilters)((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName) 
+            | System.IO.NotifyFilters.LastWrite) 
+            | System.IO.NotifyFilters.LastAccess)));
+			this.scriptFolderWatcher.SynchronizingObject = this;
+			this.scriptFolderWatcher.Changed += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
+			this.scriptFolderWatcher.Created += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
+			this.scriptFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
+			this.scriptFolderWatcher.Renamed += new System.IO.RenamedEventHandler(this.scriptFolderWatcher_Renamed);
+			// 
 			// separator_09
 			// 
 			this.separator_09.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1339,6 +1354,7 @@ namespace ScriptEditor
 			this.groupBox_ProjExplorer.ResumeLayout(false);
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.scriptFolderWatcher)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			this.toolStrip.ResumeLayout(false);
@@ -1451,6 +1467,7 @@ namespace ScriptEditor
 		private System.Windows.Forms.TabPage tabPage_CompilerLogs;
 		private System.Windows.Forms.TabPage tabPage_RefBrowser;
 		private ReferenceBrowser referenceBrowser;
+		private System.IO.FileSystemWatcher scriptFolderWatcher;
 	}
 }
 

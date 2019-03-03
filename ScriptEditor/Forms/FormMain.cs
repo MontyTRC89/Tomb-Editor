@@ -1176,6 +1176,7 @@ namespace ScriptEditor
 			{
 				ToggleInterface(true); // Enable interface since we got files we can edit
 				UpdateExplorerTreeView();
+				scriptFolderWatcher.Path = _currentProject.ScriptPath;
 
 				bool scriptFileFound = false;
 
@@ -1421,5 +1422,8 @@ namespace ScriptEditor
 			if (!result)
 				DarkMessageBox.Show(this, "Error while compiling scripts", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
+
+		private void scriptFolderWatcher_Changed(object sender, FileSystemEventArgs e) => UpdateExplorerTreeView();
+		private void scriptFolderWatcher_Renamed(object sender, RenamedEventArgs e) => UpdateExplorerTreeView();
 	}
 }
