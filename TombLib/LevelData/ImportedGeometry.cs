@@ -61,6 +61,8 @@ namespace TombLib.LevelData
         public Vector2 UV;
         [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32_Float, 20)]
         public Vector3 Color;
+        [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 32)]
+        public Vector3 Normal;
 
         Vector3 IVertex.Position => Position;
     }
@@ -234,6 +236,7 @@ namespace TombLib.LevelData
                                            vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
                                            vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
                                            vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
+                                           vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
                                            modelMesh.Vertices.Add(vertex);
                                        }
 
@@ -255,6 +258,7 @@ namespace TombLib.LevelData
                                            vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
                                            vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
                                            vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
+                                           vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
                                            modelMesh.Vertices.Add(vertex);
                                            submesh.Indices.Add(currentIndex);
                                            currentIndex++;

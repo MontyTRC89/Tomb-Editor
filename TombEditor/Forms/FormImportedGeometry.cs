@@ -23,6 +23,8 @@ namespace TombEditor.Forms
             importedGeometryManager.LevelSettings = NewLevelSettings;
             importedGeometryManager.SelectedImportedGeometry = NewLevelSettings.ImportedGeometryFromID(_currentModel);
             tbMeshFilter.Text = instance.MeshFilter;
+            comboLightingModel.SelectedIndex = (int)_instance.LightingModel;
+
             UpdateCurrentModelDisplay();
 
             // Set window property handlers
@@ -52,6 +54,7 @@ namespace TombEditor.Forms
         {
             _instance.Model = OldLevelSettings.ImportedGeometryFromID(_currentModel) ?? NewLevelSettings.ImportedGeometryFromID(_currentModel);
             _instance.MeshFilter = tbMeshFilter.Text;
+            _instance.LightingModel = (ImportedGeometryLightingModel)comboLightingModel.SelectedIndex;
             DialogResult = DialogResult.OK;
             Close();
         }

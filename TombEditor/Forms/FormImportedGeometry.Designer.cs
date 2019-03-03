@@ -37,6 +37,8 @@
             this.importedGeometryLabel = new DarkUI.Controls.DarkLabel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.tbMeshFilter = new DarkUI.Controls.DarkTextBox();
+            this.comboLightingModel = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.SuspendLayout();
             // 
             // importedGeometryManager
@@ -48,14 +50,14 @@
             this.importedGeometryManager.Location = new System.Drawing.Point(6, 42);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(730, 306);
+            this.importedGeometryManager.Size = new System.Drawing.Size(730, 451);
             this.importedGeometryManager.TabIndex = 0;
             // 
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(653, 420);
+            this.butCancel.Location = new System.Drawing.Point(653, 559);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
@@ -65,7 +67,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(567, 420);
+            this.butOk.Location = new System.Drawing.Point(567, 559);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -89,7 +91,7 @@
             // 
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(4, 360);
+            this.darkLabel2.Location = new System.Drawing.Point(4, 505);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(157, 17);
             this.darkLabel2.TabIndex = 2;
@@ -99,7 +101,7 @@
             // butAssign
             // 
             this.butAssign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAssign.Location = new System.Drawing.Point(653, 357);
+            this.butAssign.Location = new System.Drawing.Point(653, 502);
             this.butAssign.Name = "butAssign";
             this.butAssign.Size = new System.Drawing.Size(80, 23);
             this.butAssign.TabIndex = 1;
@@ -111,7 +113,7 @@
             this.importedGeometryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.importedGeometryLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importedGeometryLabel.Location = new System.Drawing.Point(156, 360);
+            this.importedGeometryLabel.Location = new System.Drawing.Point(156, 505);
             this.importedGeometryLabel.Name = "importedGeometryLabel";
             this.importedGeometryLabel.Size = new System.Drawing.Size(491, 17);
             this.importedGeometryLabel.TabIndex = 2;
@@ -122,7 +124,7 @@
             // 
             this.darkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(4, 386);
+            this.darkLabel3.Location = new System.Drawing.Point(4, 531);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(319, 17);
             this.darkLabel3.TabIndex = 2;
@@ -133,10 +135,35 @@
             // 
             this.tbMeshFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbMeshFilter.Location = new System.Drawing.Point(309, 386);
+            this.tbMeshFilter.Location = new System.Drawing.Point(309, 531);
             this.tbMeshFilter.Name = "tbMeshFilter";
             this.tbMeshFilter.Size = new System.Drawing.Size(424, 22);
             this.tbMeshFilter.TabIndex = 4;
+            // 
+            // comboLightingModel
+            // 
+            this.comboLightingModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboLightingModel.FormattingEnabled = true;
+            this.comboLightingModel.Items.AddRange(new object[] {
+            "No lights",
+            "Vertex colors",
+            "Calculate from lights in room"});
+            this.comboLightingModel.Location = new System.Drawing.Point(309, 559);
+            this.comboLightingModel.Name = "comboLightingModel";
+            this.comboLightingModel.Size = new System.Drawing.Size(252, 23);
+            this.comboLightingModel.TabIndex = 5;
+            // 
+            // darkLabel4
+            // 
+            this.darkLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel4.Location = new System.Drawing.Point(4, 560);
+            this.darkLabel4.Name = "darkLabel4";
+            this.darkLabel4.Size = new System.Drawing.Size(107, 17);
+            this.darkLabel4.TabIndex = 6;
+            this.darkLabel4.Text = "Lighting model:";
+            this.darkLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormImportedGeometry
             // 
@@ -144,7 +171,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(740, 450);
+            this.ClientSize = new System.Drawing.Size(740, 595);
+            this.Controls.Add(this.darkLabel4);
+            this.Controls.Add(this.comboLightingModel);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.tbMeshFilter);
@@ -178,5 +207,7 @@
         private DarkUI.Controls.DarkLabel importedGeometryLabel;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkTextBox tbMeshFilter;
+        private DarkUI.Controls.DarkComboBox comboLightingModel;
+        private DarkUI.Controls.DarkLabel darkLabel4;
     }
 }

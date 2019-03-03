@@ -78,6 +78,151 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
 
+        private Vector3 CalculateLightForVertex(Room room, Vector3 position, Vector3 normal)
+        {
+            Vector3 output = room.AmbientLight * 128;
+
+            foreach (var obj in room.Objects)
+                if (obj is LightInstance)
+                {
+                    var light = obj as LightInstance;
+
+                    if (!light.Enabled || !light.IsStaticallyUsed)
+                        continue;
+
+                    switch (light.Type)
+                    {
+                        case LightType.Point:
+                        case LightType.Shadow:
+                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                            {
+                                // Get the distance between light and vertex
+                                float distance = Math.Abs((position - light.Position).Length());
+
+                                // If distance is greater than light out radius, then skip this light
+                                if (distance > light.OuterRange * 1024.0f)
+                                    continue;
+
+                                // Calculate light diffuse value
+                                int diffuse = (int)(light.Intensity * 8192);
+
+                                // Calculate the length squared of the normal vector
+                                float dotN = Vector3.Dot(normal, normal);
+
+                                // Do raytracing
+                                if (dotN <= 0)
+                                {
+                                    continue;
+                                }
+
+                                // Calculate the attenuation
+                                float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+                                if (attenuaton > 1.0f)
+                                    attenuaton = 1.0f;
+                                if (attenuaton <= 0.0f)
+                                    continue;
+
+                                // Calculate final light color
+                                float finalIntensity = dotN * attenuaton * diffuse;
+                                output += finalIntensity * light.Color * (1.0f / 64.0f);
+                            }
+                            break;
+                        case LightType.Effect:
+                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                            {
+                                int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
+                                int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
+                                int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
+                                int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
+
+                                // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
+                                // ReSharper disable CompareOfFloatsByEqualityOperator
+                                if ((position.X == x1 && position.Z == z1 || position.X == x1 && position.Z == z2 || position.X == x2 && position.Z == z1 ||
+                                     position.X == x2 && position.Z == z2) && position.Y <= light.Position.Y)
+                                {
+                                    float finalIntensity = light.Intensity * 8192 * 0.25f;
+                                    output += finalIntensity * light.Color * (1.0f / 64.0f);
+                                }
+                                // ReSharper restore CompareOfFloatsByEqualityOperator
+                            }
+                            break;
+                        case LightType.Sun:
+                            {
+                                // Calculate the light direction
+                                Vector3 lightDirection = light.GetDirection();
+
+                                // calcolo la luce diffusa
+                                float diffuse = -Vector3.Dot(lightDirection, normal);
+
+                                if (diffuse <= 0)
+                                    continue;
+
+                                if (diffuse > 1)
+                                    diffuse = 1.0f;
+
+
+                                float finalIntensity = diffuse * light.Intensity * 8192.0f;
+                                if (finalIntensity < 0)
+                                    continue;
+                                output += finalIntensity * light.Color * (1.0f / 64.0f);
+                            }
+                            break;
+                        case LightType.Spot:
+                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                            {
+                                // Calculate the ray from light to vertex
+                                Vector3 lightVector = Vector3.Normalize(position - light.Position);
+
+                                // Get the distance between light and vertex
+                                float distance = Math.Abs((position - light.Position).Length());
+
+                                // If distance is greater than light length, then skip this light
+                                if (distance > light.OuterRange * 1024.0f)
+                                    continue;
+
+                                // Calculate the light direction
+                                Vector3 lightDirection = light.GetDirection();
+
+                                // Calculate the cosines values for In, Out
+                                double d = Vector3.Dot(lightVector, lightDirection);
+                                double cosI2 = Math.Cos(light.InnerAngle * (Math.PI / 180));
+                                double cosO2 = Math.Cos(light.OuterAngle * (Math.PI / 180));
+
+                                if (d < cosO2)
+                                    continue;
+
+                                // Calculate light diffuse value
+                                float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
+                                if (factor > 1.0f)
+                                    factor = 1.0f;
+                                if (factor <= 0.0f)
+                                    continue;
+
+                                float attenuation = 1.0f;
+                                if (distance >= light.InnerRange * 1024.0f)
+                                    attenuation = 1.0f - (distance - light.InnerRange * 1024.0f) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+
+                                if (attenuation > 1.0f)
+                                    attenuation = 1.0f;
+                                if (attenuation < 0.0f)
+                                    continue;
+
+                                float dot1 = -Vector3.Dot(lightDirection, normal);
+                                if (dot1 < 0.0f)
+                                    continue;
+                                if (dot1 > 1.0f)
+                                    dot1 = 1.0f;
+
+                                float finalIntensity = attenuation * dot1 * factor * light.Intensity * 8192.0f;
+                                output += finalIntensity * light.Color * (1.0f / 64.0f);
+                            }
+                            break;
+                    }
+                }
+
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
+        }
+
         private tr_room BuildRoom(Room room)
         {
             tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
@@ -308,9 +453,11 @@ namespace TombLib.LevelData.Compilers
                         continue;
 
                     var meshes = geometry.Model.DirectXModel.Meshes;
-                    var transform = geometry.RotationMatrix *
+                    var worldTransform = geometry.RotationMatrix *
                                     Matrix4x4.CreateScale(geometry.Scale) *
                                     Matrix4x4.CreateTranslation(geometry.Position);
+                    var normalTransform = geometry.RotationMatrix;
+
                     foreach (var mesh in meshes)
                     {
                         if (!geometry.MeshNameMatchesFilter(mesh.Name))
@@ -321,7 +468,8 @@ namespace TombLib.LevelData.Compilers
                             for (int j = 0; j < mesh.Vertices.Count; j++)
                             {
                                 // Apply the transform to the vertex
-                                Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, transform);
+                                Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, worldTransform);
+                                Vector3 normal = MathC.HomogenousTransform(mesh.Vertices[j].Position, normalTransform);
 
                                 var trVertex = new tr_room_vertex
                                 {
@@ -332,9 +480,17 @@ namespace TombLib.LevelData.Compilers
                                         Z = (short)position.Z
                                     },
                                     Lighting1 = 0,
-                                    Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color),
+                                    Lighting2 = 0,
                                     Attributes = 0
                                 };
+
+                                // Pack the light according to chosen lighting model
+                                if (geometry.LightingModel == ImportedGeometryLightingModel.NoLighting)
+                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
+                                else if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                                    trVertex.Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color);
+                                else
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal));
 
                                 // Check for maximum vertices reached
                                 if (roomVertices.Count >= 65536)
@@ -365,10 +521,15 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = texture.TexCoord2;
 
-                                // lock (_objectTextureManager)
-                                // {
-                                //     result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                                // }
+                                // TODO: what happens for flipped textures?
+                                if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
+                                if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
+                                if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
+                                if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
+                                if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
+                                if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
+                                if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
+                                if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));

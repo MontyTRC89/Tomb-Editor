@@ -523,7 +523,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry2, LEB128.MaximumSize2Byte))
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry3, () =>
                         {
                             var instance = (ImportedGeometryInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -532,9 +532,12 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write(instance.Roll);
                             chunkIO.Raw.Write(instance.Scale);
-                            chunkIO.Raw.WriteStringUTF8(instance.MeshFilter);
                             LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
-                        }
+
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
+                            if (instance.MeshFilter != null && instance.MeshFilter != "")
+                                chunkIO.WriteChunkString(Prj2Chunks.ObjectImportedGeometryMeshFilter, instance.MeshFilter);
+                        });
                     else
                         logger.Warn("Object " + o + " not supported.");
                 }
