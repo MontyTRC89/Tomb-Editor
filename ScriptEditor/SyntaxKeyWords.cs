@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ScriptEditor
 {
 	public class SyntaxKeyWords
 	{
-		public static List<string> Headers()
+		public static List<string> Sections()
 		{
 			List<string> list = new List<string>();
 
-			string[] headers =
+			string[] keyWords =
 			{
 				"Language",
 				"Level",
@@ -18,7 +18,7 @@ namespace ScriptEditor
 				"Title"
 			};
 
-			list.AddRange(headers);
+			list.AddRange(keyWords);
 			return list;
 		}
 
@@ -26,13 +26,13 @@ namespace ScriptEditor
 		{
 			List<string> list = new List<string>();
 
-			string[] newCommands =
+			string[] keyWords =
 			{
 				"GiveItem",
 				"TakeAway"
 			};
 
-			list.AddRange(newCommands);
+			list.AddRange(keyWords);
 			return list;
 		}
 
@@ -40,29 +40,28 @@ namespace ScriptEditor
 		{
 			List<string> list = new List<string>();
 
-			string[] newCommands =
+			string[] keyWords =
 			{
-				"ResetInventory",
-				"LaraType",
-				"Weather",
 				"AmbientTrack",
+				"Debug",
+				"DistantFog",
+				"LaraStartPos",
+				"LaraType",
+				"LevelFarView",
 				"LoadScreen",
-				"OnLevelStart",
-				"OnLevelFinish",
-				"OnLoadGame",
-				"OnSaveGame",
-				"OnLaraDeath",
-				"OnLevelControl",
 				"OnBeginFrame",
 				"OnEndFrame",
-				"Diagnostic",
-				"LaraStartPos",
-				"LevelFarView",
-				"DistantFog",
-				"MirrorEffect"
+				"OnLaraDeath",
+				"OnLevelControl",
+				"OnLevelFinish",
+				"OnLevelStart",
+				"OnLoadGame",
+				"OnSaveGame",
+				"ResetInventory",
+				"Weather"
 			};
 
-			list.AddRange(newCommands);
+			list.AddRange(keyWords);
 			return list;
 		}
 
@@ -70,7 +69,7 @@ namespace ScriptEditor
 		{
 			List<string> list = new List<string>();
 
-			string[] newCommands =
+			string[] keyWords =
 			{
 				"AddEffect",
 				"Animation",
@@ -128,7 +127,7 @@ namespace ScriptEditor
 				"WorldFarView"
 			};
 
-			list.AddRange(newCommands);
+			list.AddRange(keyWords);
 			return list;
 		}
 
@@ -136,7 +135,7 @@ namespace ScriptEditor
 		{
 			List<string> list = new List<string>();
 
-			string[] oldCommands =
+			string[] keyWords =
 			{
 				"AnimatingMIP",
 				"ColAddHorizon",
@@ -177,7 +176,7 @@ namespace ScriptEditor
 				"FMV"
 			};
 
-			list.AddRange(oldCommands);
+			list.AddRange(keyWords);
 			return list;
 		}
 
@@ -185,17 +184,16 @@ namespace ScriptEditor
 		{
 			List<string> list = new List<string>();
 
-			string[] unknown =
+			string[] keyWords =
 			{
-				"Weather",
-				"StarField",
 				"Layer2",
-				"Security",
+				"NoLevel",
 				"Pulse",
-				"NoLevel"
+				"Security",
+				"StarField"
 			};
 
-			list.AddRange(unknown);
+			list.AddRange(keyWords);
 			return list;
 		}
 	}

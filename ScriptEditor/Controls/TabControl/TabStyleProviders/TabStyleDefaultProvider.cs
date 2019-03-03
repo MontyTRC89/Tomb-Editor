@@ -14,6 +14,8 @@ namespace System.Windows.Forms
 			_CloserColorActive = Color.FromArgb(128, 128, 128);
 			_FocusColor = Color.FromArgb(128, 128, 128);
 			_FocusTrack = true;
+
+			_Radius = 2;
 		}
 
 		protected override Brush GetTabBackgroundBrush(int index)
@@ -26,9 +28,32 @@ namespace System.Windows.Forms
 
 		public override void AddTabBorder(GraphicsPath path, Rectangle tabBounds)
 		{
-			path.AddLine(tabBounds.X, tabBounds.Bottom, tabBounds.X, tabBounds.Y);
-			path.AddLine(tabBounds.X, tabBounds.Y, tabBounds.Right, tabBounds.Y);
-			path.AddLine(tabBounds.Right, tabBounds.Y, tabBounds.Right, tabBounds.Bottom);
+			switch (_TabControl.Alignment)
+			{
+				case TabAlignment.Top:
+					path.AddLine(tabBounds.X, tabBounds.Bottom, tabBounds.X, tabBounds.Y);
+					path.AddLine(tabBounds.X, tabBounds.Y, tabBounds.Right, tabBounds.Y);
+					path.AddLine(tabBounds.Right, tabBounds.Y, tabBounds.Right, tabBounds.Bottom);
+					break;
+
+				case TabAlignment.Bottom:
+					path.AddLine(tabBounds.Right, tabBounds.Y, tabBounds.Right, tabBounds.Bottom);
+					path.AddLine(tabBounds.Right, tabBounds.Bottom, tabBounds.X, tabBounds.Bottom);
+					path.AddLine(tabBounds.X, tabBounds.Bottom, tabBounds.X, tabBounds.Y);
+					break;
+
+				case TabAlignment.Left:
+					path.AddLine(tabBounds.Right, tabBounds.Bottom, tabBounds.X, tabBounds.Bottom);
+					path.AddLine(tabBounds.X, tabBounds.Bottom, tabBounds.X, tabBounds.Y);
+					path.AddLine(tabBounds.X, tabBounds.Y, tabBounds.Right, tabBounds.Y);
+					break;
+
+				case TabAlignment.Right:
+					path.AddLine(tabBounds.X, tabBounds.Y, tabBounds.Right, tabBounds.Y);
+					path.AddLine(tabBounds.Right, tabBounds.Y, tabBounds.Right, tabBounds.Bottom);
+					path.AddLine(tabBounds.Right, tabBounds.Bottom, tabBounds.X, tabBounds.Bottom);
+					break;
+			}
 		}
 
 		public override Rectangle GetTabRect(int index)
@@ -39,7 +64,17 @@ namespace System.Windows.Forms
 			}
 
 			Rectangle tabBounds = base.GetTabRect(index);
-			tabBounds.Height += 1;
+
+			switch (_TabControl.Alignment)
+			{
+				case TabAlignment.Top:
+					tabBounds.Height += 1;
+					break;
+
+				case TabAlignment.Bottom:
+					tabBounds = new Rectangle(tabBounds.Location.X, tabBounds.Location.Y - 1, tabBounds.Width, tabBounds.Height + 1);
+					break;
+			}
 
 			EnsureFirstTabIsInView(ref tabBounds, index);
 			return tabBounds;

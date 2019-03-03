@@ -2,15 +2,8 @@
 {
     partial class FormProjectSetup : DarkUI.Forms.DarkForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,249 +15,245 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormProjectSetup));
-			this.applyButton = new DarkUI.Controls.DarkButton();
-			this.engineTypeLabel = new DarkUI.Controls.DarkLabel();
-			this.gameBrowseButton = new DarkUI.Controls.DarkButton();
-			this.gamePathLabel = new DarkUI.Controls.DarkLabel();
-			this.gamePathTextBox = new DarkUI.Controls.DarkTextBox();
-			this.nameTextBox = new DarkUI.Controls.DarkTextBox();
-			this.ngCenterBrowseButton = new DarkUI.Controls.DarkButton();
-			this.ngCenterPathTextBox = new DarkUI.Controls.DarkTextBox();
-			this.ngFolderLabel = new DarkUI.Controls.DarkLabel();
-			this.projectNameGroup = new DarkUI.Controls.DarkGroupBox();
-			this.projectNameLabel = new DarkUI.Controls.DarkLabel();
-			this.projectSetupGroup = new DarkUI.Controls.DarkGroupBox();
-			this.tr5mainRadioButton = new DarkUI.Controls.DarkRadioButton();
-			this.tr5RadioButton = new DarkUI.Controls.DarkRadioButton();
-			this.trngRadioButton = new DarkUI.Controls.DarkRadioButton();
-			this.tr4RadioButton = new DarkUI.Controls.DarkRadioButton();
-			this.projectNameGroup.SuspendLayout();
-			this.projectSetupGroup.SuspendLayout();
+			this.button_Apply = new DarkUI.Controls.DarkButton();
+			this.button_BrowseGame = new DarkUI.Controls.DarkButton();
+			this.button_BrowseNGCenter = new DarkUI.Controls.DarkButton();
+			this.groupBox_ProjectName = new DarkUI.Controls.DarkGroupBox();
+			this.label_ProjectName = new DarkUI.Controls.DarkLabel();
+			this.textBox_ProjectName = new DarkUI.Controls.DarkTextBox();
+			this.groupBox_ProjectSetup = new DarkUI.Controls.DarkGroupBox();
+			this.textBox_GamePath = new DarkUI.Controls.DarkTextBox();
+			this.label_EngineType = new DarkUI.Controls.DarkLabel();
+			this.radioButton_TR5Main = new DarkUI.Controls.DarkRadioButton();
+			this.label_GamePath = new DarkUI.Controls.DarkLabel();
+			this.radioButton_TR5 = new DarkUI.Controls.DarkRadioButton();
+			this.radioButton_TRNG = new DarkUI.Controls.DarkRadioButton();
+			this.label_NGCenterPath = new DarkUI.Controls.DarkLabel();
+			this.textBox_NGCenterPath = new DarkUI.Controls.DarkTextBox();
+			this.radioButton_TR4 = new DarkUI.Controls.DarkRadioButton();
+			this.groupBox_ProjectName.SuspendLayout();
+			this.groupBox_ProjectSetup.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// applyButton
+			// button_Apply
 			// 
-			this.applyButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.applyButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.applyButton.Location = new System.Drawing.Point(9, 165);
-			this.applyButton.Name = "applyButton";
-			this.applyButton.Size = new System.Drawing.Size(460, 24);
-			this.applyButton.TabIndex = 4;
-			this.applyButton.Text = "Add Project";
-			this.applyButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+			this.button_Apply.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button_Apply.Location = new System.Drawing.Point(9, 165);
+			this.button_Apply.Name = "button_Apply";
+			this.button_Apply.Size = new System.Drawing.Size(460, 24);
+			this.button_Apply.TabIndex = 4;
+			this.button_Apply.Text = "Add Project";
+			this.button_Apply.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_Apply.Click += new System.EventHandler(this.button_Apply_Click);
 			// 
-			// engineTypeLabel
+			// button_BrowseGame
 			// 
-			this.engineTypeLabel.AutoSize = true;
-			this.engineTypeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.engineTypeLabel.Location = new System.Drawing.Point(6, 44);
-			this.engineTypeLabel.Margin = new System.Windows.Forms.Padding(3, 12, 3, 12);
-			this.engineTypeLabel.Name = "engineTypeLabel";
-			this.engineTypeLabel.Size = new System.Drawing.Size(66, 13);
-			this.engineTypeLabel.TabIndex = 18;
-			this.engineTypeLabel.Text = "Engine type:";
+			this.button_BrowseGame.Image = ((System.Drawing.Image)(resources.GetObject("button_BrowseGame.Image")));
+			this.button_BrowseGame.Location = new System.Drawing.Point(379, 11);
+			this.button_BrowseGame.Name = "button_BrowseGame";
+			this.button_BrowseGame.Size = new System.Drawing.Size(75, 22);
+			this.button_BrowseGame.TabIndex = 3;
+			this.button_BrowseGame.Text = "Browse...";
+			this.button_BrowseGame.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_BrowseGame.Click += new System.EventHandler(this.button_BrowseGame_Click);
 			// 
-			// gameBrowseButton
+			// button_BrowseNGCenter
 			// 
-			this.gameBrowseButton.Image = ((System.Drawing.Image)(resources.GetObject("gameBrowseButton.Image")));
-			this.gameBrowseButton.Location = new System.Drawing.Point(379, 11);
-			this.gameBrowseButton.Name = "gameBrowseButton";
-			this.gameBrowseButton.Size = new System.Drawing.Size(75, 22);
-			this.gameBrowseButton.TabIndex = 3;
-			this.gameBrowseButton.Text = "Browse...";
-			this.gameBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.gameBrowseButton.Click += new System.EventHandler(this.gameBrowseButton_Click);
+			this.button_BrowseNGCenter.Image = ((System.Drawing.Image)(resources.GetObject("button_BrowseNGCenter.Image")));
+			this.button_BrowseNGCenter.Location = new System.Drawing.Point(379, 68);
+			this.button_BrowseNGCenter.Name = "button_BrowseNGCenter";
+			this.button_BrowseNGCenter.Size = new System.Drawing.Size(75, 22);
+			this.button_BrowseNGCenter.TabIndex = 8;
+			this.button_BrowseNGCenter.Text = "Browse...";
+			this.button_BrowseNGCenter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_BrowseNGCenter.Click += new System.EventHandler(this.button_BrowseNGCenter_Click);
 			// 
-			// gamePathLabel
+			// groupBox_ProjectName
 			// 
-			this.gamePathLabel.AutoSize = true;
-			this.gamePathLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.gamePathLabel.Location = new System.Drawing.Point(6, 15);
-			this.gamePathLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.gamePathLabel.Name = "gamePathLabel";
-			this.gamePathLabel.Size = new System.Drawing.Size(77, 13);
-			this.gamePathLabel.TabIndex = 6;
-			this.gamePathLabel.Text = "Game .exe file:";
+			this.groupBox_ProjectName.Controls.Add(this.label_ProjectName);
+			this.groupBox_ProjectName.Controls.Add(this.textBox_ProjectName);
+			this.groupBox_ProjectName.Location = new System.Drawing.Point(9, 9);
+			this.groupBox_ProjectName.Margin = new System.Windows.Forms.Padding(0);
+			this.groupBox_ProjectName.Name = "groupBox_ProjectName";
+			this.groupBox_ProjectName.Padding = new System.Windows.Forms.Padding(3, 0, 3, 9);
+			this.groupBox_ProjectName.Size = new System.Drawing.Size(460, 45);
+			this.groupBox_ProjectName.TabIndex = 14;
+			this.groupBox_ProjectName.TabStop = false;
 			// 
-			// gamePathTextBox
+			// label_ProjectName
 			// 
-			this.gamePathTextBox.Location = new System.Drawing.Point(84, 13);
-			this.gamePathTextBox.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.gamePathTextBox.Name = "gamePathTextBox";
-			this.gamePathTextBox.Size = new System.Drawing.Size(289, 20);
-			this.gamePathTextBox.TabIndex = 1;
-			this.gamePathTextBox.TextChanged += new System.EventHandler(this.gamePathTextBox_TextChanged);
+			this.label_ProjectName.AutoSize = true;
+			this.label_ProjectName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_ProjectName.Location = new System.Drawing.Point(6, 15);
+			this.label_ProjectName.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.label_ProjectName.Name = "label_ProjectName";
+			this.label_ProjectName.Size = new System.Drawing.Size(72, 13);
+			this.label_ProjectName.TabIndex = 19;
+			this.label_ProjectName.Text = "Project name:";
 			// 
-			// nameTextBox
+			// textBox_ProjectName
 			// 
-			this.nameTextBox.Location = new System.Drawing.Point(84, 13);
-			this.nameTextBox.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.nameTextBox.Name = "nameTextBox";
-			this.nameTextBox.Size = new System.Drawing.Size(370, 20);
-			this.nameTextBox.TabIndex = 7;
+			this.textBox_ProjectName.Location = new System.Drawing.Point(84, 13);
+			this.textBox_ProjectName.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.textBox_ProjectName.Name = "textBox_ProjectName";
+			this.textBox_ProjectName.Size = new System.Drawing.Size(370, 20);
+			this.textBox_ProjectName.TabIndex = 7;
 			// 
-			// ngCenterBrowseButton
+			// groupBox_ProjectSetup
 			// 
-			this.ngCenterBrowseButton.Image = ((System.Drawing.Image)(resources.GetObject("ngCenterBrowseButton.Image")));
-			this.ngCenterBrowseButton.Location = new System.Drawing.Point(379, 68);
-			this.ngCenterBrowseButton.Name = "ngCenterBrowseButton";
-			this.ngCenterBrowseButton.Size = new System.Drawing.Size(75, 22);
-			this.ngCenterBrowseButton.TabIndex = 8;
-			this.ngCenterBrowseButton.Text = "Browse...";
-			this.ngCenterBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.ngCenterBrowseButton.Click += new System.EventHandler(this.ngCenterBrowseButton_Click);
+			this.groupBox_ProjectSetup.Controls.Add(this.textBox_GamePath);
+			this.groupBox_ProjectSetup.Controls.Add(this.label_EngineType);
+			this.groupBox_ProjectSetup.Controls.Add(this.button_BrowseGame);
+			this.groupBox_ProjectSetup.Controls.Add(this.radioButton_TR5Main);
+			this.groupBox_ProjectSetup.Controls.Add(this.label_GamePath);
+			this.groupBox_ProjectSetup.Controls.Add(this.radioButton_TR5);
+			this.groupBox_ProjectSetup.Controls.Add(this.radioButton_TRNG);
+			this.groupBox_ProjectSetup.Controls.Add(this.label_NGCenterPath);
+			this.groupBox_ProjectSetup.Controls.Add(this.textBox_NGCenterPath);
+			this.groupBox_ProjectSetup.Controls.Add(this.radioButton_TR4);
+			this.groupBox_ProjectSetup.Controls.Add(this.button_BrowseNGCenter);
+			this.groupBox_ProjectSetup.Location = new System.Drawing.Point(9, 57);
+			this.groupBox_ProjectSetup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+			this.groupBox_ProjectSetup.Name = "groupBox_ProjectSetup";
+			this.groupBox_ProjectSetup.Padding = new System.Windows.Forms.Padding(3, 0, 3, 9);
+			this.groupBox_ProjectSetup.Size = new System.Drawing.Size(460, 102);
+			this.groupBox_ProjectSetup.TabIndex = 15;
+			this.groupBox_ProjectSetup.TabStop = false;
 			// 
-			// ngCenterPathTextBox
+			// textBox_GamePath
 			// 
-			this.ngCenterPathTextBox.Location = new System.Drawing.Point(104, 70);
-			this.ngCenterPathTextBox.Name = "ngCenterPathTextBox";
-			this.ngCenterPathTextBox.Size = new System.Drawing.Size(269, 20);
-			this.ngCenterPathTextBox.TabIndex = 7;
+			this.textBox_GamePath.Location = new System.Drawing.Point(84, 13);
+			this.textBox_GamePath.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.textBox_GamePath.Name = "textBox_GamePath";
+			this.textBox_GamePath.Size = new System.Drawing.Size(289, 20);
+			this.textBox_GamePath.TabIndex = 1;
+			this.textBox_GamePath.TextChanged += new System.EventHandler(this.textBox_GamePath_TextChanged);
 			// 
-			// ngFolderLabel
+			// label_EngineType
 			// 
-			this.ngFolderLabel.AutoSize = true;
-			this.ngFolderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.ngFolderLabel.Location = new System.Drawing.Point(6, 73);
-			this.ngFolderLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.ngFolderLabel.Name = "ngFolderLabel";
-			this.ngFolderLabel.Size = new System.Drawing.Size(92, 13);
-			this.ngFolderLabel.TabIndex = 9;
-			this.ngFolderLabel.Text = "NG_Center folder:";
+			this.label_EngineType.AutoSize = true;
+			this.label_EngineType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_EngineType.Location = new System.Drawing.Point(6, 44);
+			this.label_EngineType.Margin = new System.Windows.Forms.Padding(3, 12, 3, 12);
+			this.label_EngineType.Name = "label_EngineType";
+			this.label_EngineType.Size = new System.Drawing.Size(66, 13);
+			this.label_EngineType.TabIndex = 18;
+			this.label_EngineType.Text = "Engine type:";
 			// 
-			// projectNameGroup
+			// radioButton_TR5Main
 			// 
-			this.projectNameGroup.Controls.Add(this.projectNameLabel);
-			this.projectNameGroup.Controls.Add(this.nameTextBox);
-			this.projectNameGroup.Location = new System.Drawing.Point(9, 9);
-			this.projectNameGroup.Margin = new System.Windows.Forms.Padding(0);
-			this.projectNameGroup.Name = "projectNameGroup";
-			this.projectNameGroup.Padding = new System.Windows.Forms.Padding(3, 0, 3, 9);
-			this.projectNameGroup.Size = new System.Drawing.Size(460, 45);
-			this.projectNameGroup.TabIndex = 14;
-			this.projectNameGroup.TabStop = false;
+			this.radioButton_TR5Main.AutoSize = true;
+			this.radioButton_TR5Main.Location = new System.Drawing.Point(244, 42);
+			this.radioButton_TR5Main.Name = "radioButton_TR5Main";
+			this.radioButton_TR5Main.Size = new System.Drawing.Size(69, 17);
+			this.radioButton_TR5Main.TabIndex = 17;
+			this.radioButton_TR5Main.TabStop = true;
+			this.radioButton_TR5Main.Text = "TR5Main";
 			// 
-			// projectNameLabel
+			// label_GamePath
 			// 
-			this.projectNameLabel.AutoSize = true;
-			this.projectNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.projectNameLabel.Location = new System.Drawing.Point(6, 15);
-			this.projectNameLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.projectNameLabel.Name = "projectNameLabel";
-			this.projectNameLabel.Size = new System.Drawing.Size(72, 13);
-			this.projectNameLabel.TabIndex = 19;
-			this.projectNameLabel.Text = "Project name:";
+			this.label_GamePath.AutoSize = true;
+			this.label_GamePath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_GamePath.Location = new System.Drawing.Point(6, 15);
+			this.label_GamePath.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.label_GamePath.Name = "label_GamePath";
+			this.label_GamePath.Size = new System.Drawing.Size(77, 13);
+			this.label_GamePath.TabIndex = 6;
+			this.label_GamePath.Text = "Game .exe file:";
 			// 
-			// projectSetupGroup
+			// radioButton_TR5
 			// 
-			this.projectSetupGroup.Controls.Add(this.gamePathTextBox);
-			this.projectSetupGroup.Controls.Add(this.engineTypeLabel);
-			this.projectSetupGroup.Controls.Add(this.gameBrowseButton);
-			this.projectSetupGroup.Controls.Add(this.tr5mainRadioButton);
-			this.projectSetupGroup.Controls.Add(this.gamePathLabel);
-			this.projectSetupGroup.Controls.Add(this.tr5RadioButton);
-			this.projectSetupGroup.Controls.Add(this.trngRadioButton);
-			this.projectSetupGroup.Controls.Add(this.ngFolderLabel);
-			this.projectSetupGroup.Controls.Add(this.ngCenterPathTextBox);
-			this.projectSetupGroup.Controls.Add(this.tr4RadioButton);
-			this.projectSetupGroup.Controls.Add(this.ngCenterBrowseButton);
-			this.projectSetupGroup.Location = new System.Drawing.Point(9, 57);
-			this.projectSetupGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
-			this.projectSetupGroup.Name = "projectSetupGroup";
-			this.projectSetupGroup.Padding = new System.Windows.Forms.Padding(3, 0, 3, 9);
-			this.projectSetupGroup.Size = new System.Drawing.Size(460, 102);
-			this.projectSetupGroup.TabIndex = 15;
-			this.projectSetupGroup.TabStop = false;
+			this.radioButton_TR5.AutoSize = true;
+			this.radioButton_TR5.Location = new System.Drawing.Point(192, 42);
+			this.radioButton_TR5.Name = "radioButton_TR5";
+			this.radioButton_TR5.Size = new System.Drawing.Size(46, 17);
+			this.radioButton_TR5.TabIndex = 16;
+			this.radioButton_TR5.TabStop = true;
+			this.radioButton_TR5.Text = "TR5";
 			// 
-			// tr5mainRadioButton
+			// radioButton_TRNG
 			// 
-			this.tr5mainRadioButton.AutoSize = true;
-			this.tr5mainRadioButton.Location = new System.Drawing.Point(244, 42);
-			this.tr5mainRadioButton.Name = "tr5mainRadioButton";
-			this.tr5mainRadioButton.Size = new System.Drawing.Size(69, 17);
-			this.tr5mainRadioButton.TabIndex = 17;
-			this.tr5mainRadioButton.TabStop = true;
-			this.tr5mainRadioButton.Text = "TR5Main";
+			this.radioButton_TRNG.AutoSize = true;
+			this.radioButton_TRNG.Location = new System.Drawing.Point(130, 42);
+			this.radioButton_TRNG.Name = "radioButton_TRNG";
+			this.radioButton_TRNG.Size = new System.Drawing.Size(56, 17);
+			this.radioButton_TRNG.TabIndex = 15;
+			this.radioButton_TRNG.TabStop = true;
+			this.radioButton_TRNG.Text = "TRNG";
+			this.radioButton_TRNG.CheckedChanged += new System.EventHandler(this.radioButton_TRNG_CheckedChanged);
 			// 
-			// tr5RadioButton
+			// label_NGCenterPath
 			// 
-			this.tr5RadioButton.AutoSize = true;
-			this.tr5RadioButton.Location = new System.Drawing.Point(192, 42);
-			this.tr5RadioButton.Name = "tr5RadioButton";
-			this.tr5RadioButton.Size = new System.Drawing.Size(46, 17);
-			this.tr5RadioButton.TabIndex = 16;
-			this.tr5RadioButton.TabStop = true;
-			this.tr5RadioButton.Text = "TR5";
+			this.label_NGCenterPath.AutoSize = true;
+			this.label_NGCenterPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_NGCenterPath.Location = new System.Drawing.Point(6, 73);
+			this.label_NGCenterPath.Margin = new System.Windows.Forms.Padding(3);
+			this.label_NGCenterPath.Name = "label_NGCenterPath";
+			this.label_NGCenterPath.Size = new System.Drawing.Size(99, 13);
+			this.label_NGCenterPath.TabIndex = 9;
+			this.label_NGCenterPath.Text = "NG_Center.exe file:";
 			// 
-			// trngRadioButton
+			// textBox_NGCenterPath
 			// 
-			this.trngRadioButton.AutoSize = true;
-			this.trngRadioButton.Location = new System.Drawing.Point(130, 42);
-			this.trngRadioButton.Name = "trngRadioButton";
-			this.trngRadioButton.Size = new System.Drawing.Size(56, 17);
-			this.trngRadioButton.TabIndex = 15;
-			this.trngRadioButton.TabStop = true;
-			this.trngRadioButton.Text = "TRNG";
-			this.trngRadioButton.CheckedChanged += new System.EventHandler(this.trngRadioButton_CheckedChanged);
+			this.textBox_NGCenterPath.Location = new System.Drawing.Point(111, 70);
+			this.textBox_NGCenterPath.Name = "textBox_NGCenterPath";
+			this.textBox_NGCenterPath.Size = new System.Drawing.Size(262, 20);
+			this.textBox_NGCenterPath.TabIndex = 7;
 			// 
-			// tr4RadioButton
+			// radioButton_TR4
 			// 
-			this.tr4RadioButton.AutoSize = true;
-			this.tr4RadioButton.Location = new System.Drawing.Point(78, 42);
-			this.tr4RadioButton.Name = "tr4RadioButton";
-			this.tr4RadioButton.Size = new System.Drawing.Size(46, 17);
-			this.tr4RadioButton.TabIndex = 14;
-			this.tr4RadioButton.TabStop = true;
-			this.tr4RadioButton.Text = "TR4";
+			this.radioButton_TR4.AutoSize = true;
+			this.radioButton_TR4.Location = new System.Drawing.Point(78, 42);
+			this.radioButton_TR4.Name = "radioButton_TR4";
+			this.radioButton_TR4.Size = new System.Drawing.Size(46, 17);
+			this.radioButton_TR4.TabIndex = 14;
+			this.radioButton_TR4.TabStop = true;
+			this.radioButton_TR4.Text = "TR4";
 			// 
 			// FormProjectSetup
 			// 
-			this.AcceptButton = this.applyButton;
+			this.AcceptButton = this.button_Apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.ClientSize = new System.Drawing.Size(478, 201);
-			this.Controls.Add(this.applyButton);
-			this.Controls.Add(this.projectSetupGroup);
-			this.Controls.Add(this.projectNameGroup);
+			this.Controls.Add(this.button_Apply);
+			this.Controls.Add(this.groupBox_ProjectSetup);
+			this.Controls.Add(this.groupBox_ProjectName);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.Name = "FormProjectSetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Add New Project";
-			this.projectNameGroup.ResumeLayout(false);
-			this.projectNameGroup.PerformLayout();
-			this.projectSetupGroup.ResumeLayout(false);
-			this.projectSetupGroup.PerformLayout();
+			this.groupBox_ProjectName.ResumeLayout(false);
+			this.groupBox_ProjectName.PerformLayout();
+			this.groupBox_ProjectSetup.ResumeLayout(false);
+			this.groupBox_ProjectSetup.PerformLayout();
 			this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private DarkUI.Controls.DarkButton applyButton;
-        private DarkUI.Controls.DarkButton gameBrowseButton;
-        private DarkUI.Controls.DarkButton ngCenterBrowseButton;
-        private DarkUI.Controls.DarkGroupBox projectNameGroup;
-        private DarkUI.Controls.DarkGroupBox projectSetupGroup;
-        private DarkUI.Controls.DarkLabel engineTypeLabel;
-        private DarkUI.Controls.DarkLabel gamePathLabel;
-        private DarkUI.Controls.DarkLabel ngFolderLabel;
-        private DarkUI.Controls.DarkLabel projectNameLabel;
-        private DarkUI.Controls.DarkRadioButton tr4RadioButton;
-        private DarkUI.Controls.DarkRadioButton tr5mainRadioButton;
-        private DarkUI.Controls.DarkRadioButton tr5RadioButton;
-        private DarkUI.Controls.DarkRadioButton trngRadioButton;
-        private DarkUI.Controls.DarkTextBox gamePathTextBox;
-        private DarkUI.Controls.DarkTextBox nameTextBox;
-        private DarkUI.Controls.DarkTextBox ngCenterPathTextBox;
+        private DarkUI.Controls.DarkButton button_Apply;
+        private DarkUI.Controls.DarkButton button_BrowseGame;
+        private DarkUI.Controls.DarkButton button_BrowseNGCenter;
+        private DarkUI.Controls.DarkGroupBox groupBox_ProjectName;
+        private DarkUI.Controls.DarkGroupBox groupBox_ProjectSetup;
+        private DarkUI.Controls.DarkLabel label_EngineType;
+        private DarkUI.Controls.DarkLabel label_GamePath;
+        private DarkUI.Controls.DarkLabel label_NGCenterPath;
+        private DarkUI.Controls.DarkLabel label_ProjectName;
+        private DarkUI.Controls.DarkRadioButton radioButton_TR4;
+        private DarkUI.Controls.DarkRadioButton radioButton_TR5;
+        private DarkUI.Controls.DarkRadioButton radioButton_TR5Main;
+        private DarkUI.Controls.DarkRadioButton radioButton_TRNG;
+        private DarkUI.Controls.DarkTextBox textBox_GamePath;
+        private DarkUI.Controls.DarkTextBox textBox_NGCenterPath;
+        private DarkUI.Controls.DarkTextBox textBox_ProjectName;
     }
 }

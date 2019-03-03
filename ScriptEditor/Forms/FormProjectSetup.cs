@@ -11,6 +11,14 @@ namespace ScriptEditor
 {
 	public partial class FormProjectSetup : DarkForm
 	{
+		/// <summary>
+		/// Configuration object.
+		/// </summary>
+		private Configuration _config = Configuration.Load();
+
+		/// <summary>
+		/// Used to stop the form from closing when an error occurred.
+		/// </summary>
 		private bool _errorOccurred = false;
 
 		public FormProjectSetup()
@@ -18,21 +26,16 @@ namespace ScriptEditor
 			InitializeComponent();
 
 			// Hide NG_Center path selection by default
-			ngFolderLabel.Visible = false;
-			ngCenterPathTextBox.Visible = false;
-			ngCenterBrowseButton.Visible = false;
-			projectSetupGroup.Height = 72;
+			label_NGCenterPath.Visible = false;
+			textBox_NGCenterPath.Visible = false;
+			button_BrowseNGCenter.Visible = false;
+			groupBox_ProjectSetup.Height = 72;
 			Height = 210;
-		}
 
-		protected override void OnShown(EventArgs e)
-		{
-			base.OnShown(e);
-
-			if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.NGCenterPath))
+			if (!string.IsNullOrWhiteSpace(_config.CachedNGCenterPath))
 			{
 				// Add NG_Center path which was already used in another project
-				ngCenterPathTextBox.Text = Properties.Settings.Default.NGCenterPath;
+				textBox_NGCenterPath.Text = _config.CachedNGCenterPath;
 			}
 		}
 
@@ -47,86 +50,117 @@ namespace ScriptEditor
 			}
 		}
 
-		private void applyButton_Click(object sender, EventArgs e)
+		private void button_Apply_Click(object sender, EventArgs e)
 		{
-			if (string.IsNullOrWhiteSpace(nameTextBox.Text))
+			if (string.IsNullOrWhiteSpace(textBox_ProjectName.Text))
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_NoProjectName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			if (string.IsNullOrWhiteSpace(gamePathTextBox.Text))
+			if (string.IsNullOrWhiteSpace(textBox_GamePath.Text))
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_NoGamePath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			if (!File.Exists(gamePathTextBox.Text))
+			if (!File.Exists(textBox_GamePath.Text))
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_InvalidGamePath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			if (!tr4RadioButton.Checked && !trngRadioButton.Checked && !tr5RadioButton.Checked && !tr5mainRadioButton.Checked)
+			if (!radioButton_TR4.Checked && !radioButton_TRNG.Checked && !radioButton_TR5.Checked && !radioButton_TR5Main.Checked)
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_NoEngineType, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			if (trngRadioButton.Checked && string.IsNullOrWhiteSpace(ngCenterPathTextBox.Text))
+			if (radioButton_TRNG.Checked && string.IsNullOrWhiteSpace(textBox_NGCenterPath.Text))
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_NoNGCenterPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			if (trngRadioButton.Checked && !File.Exists(gamePathTextBox.Text))
+			if (radioButton_TRNG.Checked && !File.Exists(textBox_GamePath.Text))
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_InvalidNGCenterPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			string scriptFolderPath = Path.GetDirectoryName(gamePathTextBox.Text) + @"\Script";
+			string gamePath = Path.GetDirectoryName(textBox_GamePath.Text.Trim());
+			DirectoryInfo gameDirectory = new DirectoryInfo(gamePath);
 
-			if (!Directory.Exists(scriptFolderPath))
+			bool scriptDirectoryFound = false;
+			bool scriptFileFound = false;
+
+			foreach (DirectoryInfo directory in gameDirectory.GetDirectories())
+			{
+				if (directory.Name.ToLower() == "script")
+				{
+					scriptDirectoryFound = true;
+
+					foreach (FileInfo file in directory.GetFiles())
+					{
+						if (file.Name.ToLower() == "script.txt")
+						{
+							scriptFileFound = true;
+							AddNewProject(gamePath, directory.FullName);
+						}
+					}
+				}
+			}
+
+			if (!scriptDirectoryFound)
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_NoScriptFolderFound, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
 				return;
 			}
 
-			string scriptFilePath = scriptFolderPath + @"\script.txt";
-
-			if (!File.Exists(scriptFilePath))
+			if (!scriptFileFound)
 			{
 				DarkMessageBox.Show(this, Resources.Messages.Error_NoScriptFileFound, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_errorOccurred = true;
-				return;
 			}
-
-			AddNewProject();
 		}
 
-		private void AddNewProject()
+		private void AddNewProject(string gamePath, string scriptPath)
 		{
 			List<Project> existingProjects = new List<Project>();
 
-			using (StreamReader stream = new StreamReader("Projects.xml"))
+			using (StreamReader reader = new StreamReader("Projects.xml"))
 			{
 				XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
-				existingProjects = (List<Project>)serializer.Deserialize(stream);
+				existingProjects = (List<Project>)serializer.Deserialize(reader);
 			}
+
+			string name = textBox_ProjectName.Text.Trim();
 
 			foreach (Project proj in existingProjects)
 			{
-				if (nameTextBox.Text.Trim() == proj.Name)
+				if (name == proj.Name)
 				{
-					DarkMessageBox.Show(this, Resources.Messages.Error_ProjectAlreadyExists, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					DarkMessageBox.Show(this,
+						Resources.Messages.Error_ProjectNameAlreadyExists, "Error",
+						MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+					_errorOccurred = true;
+					return;
+				}
+
+				if (gamePath == proj.GamePath)
+				{
+					DarkMessageBox.Show(this,
+						string.Format(Resources.Messages.Error_ProjectAlreadyExists, proj.Name), "Error",
+						MessageBoxButtons.OK, MessageBoxIcon.Error);
+
 					_errorOccurred = true;
 					return;
 				}
@@ -134,103 +168,111 @@ namespace ScriptEditor
 
 			ScriptCompilers compiler = new ScriptCompilers();
 
-			if (tr4RadioButton.Checked)
+			if (radioButton_TR4.Checked)
 				compiler = ScriptCompilers.TRLELegacy;
-			else if (trngRadioButton.Checked)
+			else if (radioButton_TRNG.Checked)
 				compiler = ScriptCompilers.NGCenter;
-			else if (tr5RadioButton.Checked)
+			else if (radioButton_TR5.Checked)
 				compiler = ScriptCompilers.TR5New;
-			else if (tr5mainRadioButton.Checked)
+			else if (radioButton_TR5Main.Checked)
 				compiler = ScriptCompilers.TR5Main;
 
-			Project newProject = new Project();
-
-			newProject.Name = nameTextBox.Text.Trim();
-			newProject.GamePath = Path.GetDirectoryName(gamePathTextBox.Text.Trim());
-			newProject.Compiler = compiler;
-
-			if (trngRadioButton.Checked)
+			Project newProject = new Project
 			{
-				newProject.NGCenterPath = ngCenterPathTextBox.Text.Trim();
+				Name = name,
+				GamePath = gamePath,
+				ScriptPath = scriptPath,
+				Compiler = compiler
+			};
 
-				Properties.Settings.Default.NGCenterPath = ngCenterPathTextBox.Text; // Remember this for other projects
-				Properties.Settings.Default.Save();
+			if (radioButton_TRNG.Checked)
+			{
+				string ngCenterPath = textBox_NGCenterPath.Text.Trim();
+
+				newProject.NGCenterPath = ngCenterPath;
+
+				_config.CachedNGCenterPath = ngCenterPath; // Remember this for other projects
+				_config.Save();
 			}
 
 			existingProjects.Add(newProject);
 
-			using (StreamWriter stream = new StreamWriter("Projects.xml"))
-				new XmlSerializer(typeof(List<Project>)).Serialize(stream, existingProjects);
+			using (StreamWriter writer = new StreamWriter("Projects.xml"))
+				new XmlSerializer(typeof(List<Project>)).Serialize(writer, existingProjects);
 		}
 
-		private void gameBrowseButton_Click(object sender, EventArgs e)
+		private void button_BrowseGame_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "Game Executable|*.exe";
-			dialog.Title = "Select your game's .exe file (Tomb4.exe or PCTomb5.exe)";
+			OpenFileDialog dialog = new OpenFileDialog
+			{
+				Filter = "Game Executable (*.exe)|*.exe",
+				Title = "Select your game's .exe file (Tomb4.exe or PCTomb5.exe)"
+			};
 
 			if (dialog.ShowDialog() == DialogResult.OK)
-				gamePathTextBox.Text = dialog.FileName;
+				textBox_GamePath.Text = dialog.FileName;
 		}
 
-		private void ngCenterBrowseButton_Click(object sender, EventArgs e)
+		private void button_BrowseNGCenter_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "NG_Center Executable|*.exe";
-			dialog.Title = "Select NG_Center.exe file";
+			OpenFileDialog dialog = new OpenFileDialog
+			{
+				Filter = "NG_Center Executable (*.exe)|*.exe",
+				Title = "Select NG_Center.exe file"
+			};
 
 			if (dialog.ShowDialog() == DialogResult.OK)
-				ngCenterPathTextBox.Text = dialog.FileName;
+				textBox_NGCenterPath.Text = dialog.FileName;
 		}
 
-		private void gamePathTextBox_TextChanged(object sender, EventArgs e)
+		private void textBox_GamePath_TextChanged(object sender, EventArgs e)
 		{
-			if (gamePathTextBox.Text.ToLower().EndsWith("tomb4.exe"))
+			if (textBox_GamePath.Text.ToLower().EndsWith("tomb4.exe"))
 			{
 				// Disable TR5 related RadioButtons
-				tr4RadioButton.Enabled = true;
-				trngRadioButton.Enabled = true;
-				tr5RadioButton.Enabled = false;
-				tr5mainRadioButton.Enabled = false;
+				radioButton_TR4.Enabled = true;
+				radioButton_TRNG.Enabled = true;
+				radioButton_TR5.Enabled = false;
+				radioButton_TR5Main.Enabled = false;
 			}
-			else if (gamePathTextBox.Text.ToLower().EndsWith("pctomb5.exe"))
+			else if (textBox_GamePath.Text.ToLower().EndsWith("pctomb5.exe"))
 			{
 				// Disable TR4 related RadioButtons
-				tr4RadioButton.Enabled = false;
-				trngRadioButton.Enabled = false;
-				tr5RadioButton.Enabled = true;
-				tr5mainRadioButton.Enabled = true;
+				radioButton_TR4.Enabled = false;
+				radioButton_TRNG.Enabled = false;
+				radioButton_TR5.Enabled = true;
+				radioButton_TR5Main.Enabled = true;
 			}
 			else
 			{
 				// Re-Enable everything
-				tr4RadioButton.Enabled = true;
-				trngRadioButton.Enabled = true;
-				tr5RadioButton.Enabled = true;
-				tr5mainRadioButton.Enabled = true;
+				radioButton_TR4.Enabled = true;
+				radioButton_TRNG.Enabled = true;
+				radioButton_TR5.Enabled = true;
+				radioButton_TR5Main.Enabled = true;
 			}
 		}
 
-		private void trngRadioButton_CheckedChanged(object sender, EventArgs e)
+		private void radioButton_TRNG_CheckedChanged(object sender, EventArgs e)
 		{
-			if (trngRadioButton.Checked)
+			if (radioButton_TRNG.Checked)
 			{
 				// Expand GroupBox and Window size to show NG_Center path selection
-				projectSetupGroup.Height = 102;
+				groupBox_ProjectSetup.Height = 102;
 				Height = 240;
 
-				ngFolderLabel.Visible = true;
-				ngCenterPathTextBox.Visible = true;
-				ngCenterBrowseButton.Visible = true;
+				label_NGCenterPath.Visible = true;
+				textBox_NGCenterPath.Visible = true;
+				button_BrowseNGCenter.Visible = true;
 			}
 			else
 			{
-				projectSetupGroup.Height = 72;
+				groupBox_ProjectSetup.Height = 72;
 				Height = 210;
 
-				ngFolderLabel.Visible = false;
-				ngCenterPathTextBox.Visible = false;
-				ngCenterBrowseButton.Visible = false;
+				label_NGCenterPath.Visible = false;
+				textBox_NGCenterPath.Visible = false;
+				button_BrowseNGCenter.Visible = false;
 			}
 		}
 	}

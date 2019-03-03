@@ -2,15 +2,8 @@
 {
 	partial class FormSettings : DarkUI.Forms.DarkForm
 	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && (components != null))
@@ -22,611 +15,533 @@
 
 		#region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		private void InitializeComponent()
 		{
-			this.applyButton = new DarkUI.Controls.DarkButton();
-			this.autocompleteCheck = new DarkUI.Controls.DarkCheckBox();
-			this.autosaveCombo = new DarkUI.Controls.DarkComboBox();
-			this.autoSaveLabel = new DarkUI.Controls.DarkLabel();
-			this.cancelButton = new DarkUI.Controls.DarkButton();
-			this.closeBracketsCheck = new DarkUI.Controls.DarkCheckBox();
-			this.commentColorButton = new DarkUI.Controls.DarkButton();
-			this.commentColorDialog = new System.Windows.Forms.ColorDialog();
-			this.commentColorLabel = new DarkUI.Controls.DarkLabel();
-			this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
-			this.reindentRulesButton = new DarkUI.Controls.DarkButton();
-			this.toolTipCheck = new DarkUI.Controls.DarkCheckBox();
-			this.wordWrapCheck = new DarkUI.Controls.DarkCheckBox();
-			this.showNumbersCheck = new DarkUI.Controls.DarkCheckBox();
-			this.reindentCheck = new DarkUI.Controls.DarkCheckBox();
-			this.showToolbarCheck = new DarkUI.Controls.DarkCheckBox();
-			this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
-			this.oldColorButton = new DarkUI.Controls.DarkButton();
-			this.oldColorLabel = new DarkUI.Controls.DarkLabel();
-			this.unknownColorButton = new DarkUI.Controls.DarkButton();
-			this.newColorButton = new DarkUI.Controls.DarkButton();
-			this.headerColorButton = new DarkUI.Controls.DarkButton();
-			this.valueColorButton = new DarkUI.Controls.DarkButton();
-			this.refColorButton = new DarkUI.Controls.DarkButton();
-			this.unknownColorLabel = new DarkUI.Controls.DarkLabel();
-			this.newColorLabel = new DarkUI.Controls.DarkLabel();
-			this.headerColorLabel = new DarkUI.Controls.DarkLabel();
-			this.valuesColorLabel = new DarkUI.Controls.DarkLabel();
-			this.referencesColorLabel = new DarkUI.Controls.DarkLabel();
-			this.showSpacesCheck = new DarkUI.Controls.DarkCheckBox();
-			this.fontFaceCombo = new DarkUI.Controls.DarkComboBox();
-			this.faceLabel = new DarkUI.Controls.DarkLabel();
-			this.fontSizeNumeric = new DarkUI.Controls.DarkNumericUpDown();
-			this.sizeLabel = new DarkUI.Controls.DarkLabel();
-			this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
-			this.restartLabel = new DarkUI.Controls.DarkLabel();
-			this.resetDefaultButton = new DarkUI.Controls.DarkButton();
-			this.headerColorDialog = new System.Windows.Forms.ColorDialog();
-			this.newColorDialog = new System.Windows.Forms.ColorDialog();
-			this.oldColorDialog = new System.Windows.Forms.ColorDialog();
-			this.refColorDialog = new System.Windows.Forms.ColorDialog();
-			this.unknownColorDialog = new System.Windows.Forms.ColorDialog();
-			this.valueColorDialog = new System.Windows.Forms.ColorDialog();
-			this.darkGroupBox1.SuspendLayout();
-			this.darkGroupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.fontSizeNumeric)).BeginInit();
-			this.darkGroupBox3.SuspendLayout();
+			this.button_Apply = new DarkUI.Controls.DarkButton();
+			this.button_Cancel = new DarkUI.Controls.DarkButton();
+			this.button_CommentColor = new DarkUI.Controls.DarkButton();
+			this.button_NewCommandColor = new DarkUI.Controls.DarkButton();
+			this.button_OldCommandColor = new DarkUI.Controls.DarkButton();
+			this.button_ReferenceColor = new DarkUI.Controls.DarkButton();
+			this.button_ReindentRules = new DarkUI.Controls.DarkButton();
+			this.button_ResetDefault = new DarkUI.Controls.DarkButton();
+			this.button_SectionColor = new DarkUI.Controls.DarkButton();
+			this.button_UnknownCommandColor = new DarkUI.Controls.DarkButton();
+			this.button_ValueColor = new DarkUI.Controls.DarkButton();
+			this.checkBox_AutoCloseBrackets = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_Autocomplete = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_ReindentOnSave = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_ShowSpaces = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_WordWrap = new DarkUI.Controls.DarkCheckBox();
+			this.comboBox_FontFace = new DarkUI.Controls.DarkComboBox();
+			this.darkGroupBox_01 = new DarkUI.Controls.DarkGroupBox();
+			this.darkGroupBox_02 = new DarkUI.Controls.DarkGroupBox();
+			this.label_OldCommandColor = new DarkUI.Controls.DarkLabel();
+			this.label_UnknownCommandColor = new DarkUI.Controls.DarkLabel();
+			this.label_NewCommandColor = new DarkUI.Controls.DarkLabel();
+			this.label_SectionColor = new DarkUI.Controls.DarkLabel();
+			this.label_ValueColor = new DarkUI.Controls.DarkLabel();
+			this.label_ReferenceColor = new DarkUI.Controls.DarkLabel();
+			this.label_CommentColor = new DarkUI.Controls.DarkLabel();
+			this.label_FontFace = new DarkUI.Controls.DarkLabel();
+			this.numeric_FontSize = new DarkUI.Controls.DarkNumericUpDown();
+			this.label_FontSize = new DarkUI.Controls.DarkLabel();
+			this.darkGroupBox_03 = new DarkUI.Controls.DarkGroupBox();
+			this.label_RestartRequired = new DarkUI.Controls.DarkLabel();
+			this.dialog_CommentColor = new System.Windows.Forms.ColorDialog();
+			this.dialog_NewCommandColor = new System.Windows.Forms.ColorDialog();
+			this.dialog_OldCommandColor = new System.Windows.Forms.ColorDialog();
+			this.dialog_ReferenceColor = new System.Windows.Forms.ColorDialog();
+			this.dialog_SectionColor = new System.Windows.Forms.ColorDialog();
+			this.dialog_UnknownCommandColor = new System.Windows.Forms.ColorDialog();
+			this.dialog_ValueColor = new System.Windows.Forms.ColorDialog();
+			this.darkGroupBox_01.SuspendLayout();
+			this.darkGroupBox_02.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numeric_FontSize)).BeginInit();
+			this.darkGroupBox_03.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// applyButton
+			// button_Apply
 			// 
-			this.applyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.applyButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.applyButton.Location = new System.Drawing.Point(318, 9);
-			this.applyButton.Name = "applyButton";
-			this.applyButton.Size = new System.Drawing.Size(75, 25);
-			this.applyButton.TabIndex = 1;
-			this.applyButton.Text = "Apply";
-			this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+			this.button_Apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button_Apply.Location = new System.Drawing.Point(318, 9);
+			this.button_Apply.Name = "button_Apply";
+			this.button_Apply.Size = new System.Drawing.Size(75, 25);
+			this.button_Apply.TabIndex = 1;
+			this.button_Apply.Text = "Apply";
+			this.button_Apply.Click += new System.EventHandler(this.button_Apply_Click);
 			// 
-			// autocompleteCheck
+			// button_Cancel
 			// 
-			this.autocompleteCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.autocompleteCheck.AutoSize = true;
-			this.autocompleteCheck.Location = new System.Drawing.Point(6, 165);
-			this.autocompleteCheck.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-			this.autocompleteCheck.Name = "autocompleteCheck";
-			this.autocompleteCheck.Size = new System.Drawing.Size(126, 17);
-			this.autocompleteCheck.TabIndex = 13;
-			this.autocompleteCheck.Text = "Enable autocomplete";
-			this.autocompleteCheck.CheckedChanged += new System.EventHandler(this.autocompleteCheck_CheckedChanged);
+			this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.button_Cancel.Location = new System.Drawing.Point(399, 9);
+			this.button_Cancel.Name = "button_Cancel";
+			this.button_Cancel.Size = new System.Drawing.Size(75, 25);
+			this.button_Cancel.TabIndex = 0;
+			this.button_Cancel.Text = "Cancel";
 			// 
-			// autosaveCombo
+			// button_CommentColor
 			// 
-			this.autosaveCombo.FormattingEnabled = true;
-			this.autosaveCombo.Items.AddRange(new object[] {
-            "None",
-            "1",
-            "3",
-            "5",
-            "10",
-            "15",
-            "30"});
-			this.autosaveCombo.Location = new System.Drawing.Point(6, 131);
-			this.autosaveCombo.Name = "autosaveCombo";
-			this.autosaveCombo.Size = new System.Drawing.Size(150, 21);
-			this.autosaveCombo.TabIndex = 5;
-			this.autosaveCombo.SelectedIndexChanged += new System.EventHandler(this.autosaveCombo_SelectedIndexChanged);
+			this.button_CommentColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_CommentColor.BackColor = System.Drawing.Color.Green;
+			this.button_CommentColor.BackColorUseGeneric = false;
+			this.button_CommentColor.Location = new System.Drawing.Point(6, 47);
+			this.button_CommentColor.Name = "button_CommentColor";
+			this.button_CommentColor.Size = new System.Drawing.Size(276, 25);
+			this.button_CommentColor.TabIndex = 18;
+			this.button_CommentColor.Click += new System.EventHandler(this.button_CommentColor_Click);
 			// 
-			// autoSaveLabel
+			// button_NewCommandColor
 			// 
-			this.autoSaveLabel.AutoSize = true;
-			this.autoSaveLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.autoSaveLabel.Location = new System.Drawing.Point(6, 111);
-			this.autoSaveLabel.Name = "autoSaveLabel";
-			this.autoSaveLabel.Size = new System.Drawing.Size(80, 13);
-			this.autoSaveLabel.TabIndex = 4;
-			this.autoSaveLabel.Text = "Autosave (min):";
+			this.button_NewCommandColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_NewCommandColor.BackColor = System.Drawing.Color.SpringGreen;
+			this.button_NewCommandColor.BackColorUseGeneric = false;
+			this.button_NewCommandColor.Location = new System.Drawing.Point(6, 263);
+			this.button_NewCommandColor.Name = "button_NewCommandColor";
+			this.button_NewCommandColor.Size = new System.Drawing.Size(276, 25);
+			this.button_NewCommandColor.TabIndex = 22;
+			this.button_NewCommandColor.Click += new System.EventHandler(this.button_NewCommandColor_Click);
 			// 
-			// cancelButton
+			// button_OldCommandColor
 			// 
-			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(399, 9);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 25);
-			this.cancelButton.TabIndex = 0;
-			this.cancelButton.Text = "Cancel";
+			this.button_OldCommandColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_OldCommandColor.BackColor = System.Drawing.Color.MediumAquamarine;
+			this.button_OldCommandColor.BackColorUseGeneric = false;
+			this.button_OldCommandColor.Location = new System.Drawing.Point(6, 317);
+			this.button_OldCommandColor.Name = "button_OldCommandColor";
+			this.button_OldCommandColor.Size = new System.Drawing.Size(276, 25);
+			this.button_OldCommandColor.TabIndex = 25;
+			this.button_OldCommandColor.Click += new System.EventHandler(this.button_OldCommandColor_Click);
 			// 
-			// closeBracketsCheck
+			// button_ReferenceColor
 			// 
-			this.closeBracketsCheck.AutoSize = true;
-			this.closeBracketsCheck.Location = new System.Drawing.Point(6, 333);
-			this.closeBracketsCheck.Name = "closeBracketsCheck";
-			this.closeBracketsCheck.Size = new System.Drawing.Size(132, 17);
-			this.closeBracketsCheck.TabIndex = 9;
-			this.closeBracketsCheck.Text = "Auto close [ ] brackets";
+			this.button_ReferenceColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_ReferenceColor.BackColor = System.Drawing.Color.Orchid;
+			this.button_ReferenceColor.BackColorUseGeneric = false;
+			this.button_ReferenceColor.Location = new System.Drawing.Point(6, 101);
+			this.button_ReferenceColor.Name = "button_ReferenceColor";
+			this.button_ReferenceColor.Size = new System.Drawing.Size(276, 25);
+			this.button_ReferenceColor.TabIndex = 19;
+			this.button_ReferenceColor.Click += new System.EventHandler(this.button_ReferenceColor_Click);
 			// 
-			// commentColorButton
+			// button_ReindentRules
 			// 
-			this.commentColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.commentColorButton.BackColor = System.Drawing.Color.Green;
-			this.commentColorButton.BackColorUseGeneric = false;
-			this.commentColorButton.Location = new System.Drawing.Point(6, 47);
-			this.commentColorButton.Name = "commentColorButton";
-			this.commentColorButton.Size = new System.Drawing.Size(276, 25);
-			this.commentColorButton.TabIndex = 18;
-			this.commentColorButton.Click += new System.EventHandler(this.commentColorButton_Click);
+			this.button_ReindentRules.Location = new System.Drawing.Point(6, 393);
+			this.button_ReindentRules.Name = "button_ReindentRules";
+			this.button_ReindentRules.Size = new System.Drawing.Size(150, 23);
+			this.button_ReindentRules.TabIndex = 16;
+			this.button_ReindentRules.Text = "Reindent Rules...";
+			this.button_ReindentRules.Click += new System.EventHandler(this.button_ReindentRules_Click);
 			// 
-			// commentColorDialog
+			// button_ResetDefault
 			// 
-			this.commentColorDialog.AnyColor = true;
-			this.commentColorDialog.FullOpen = true;
+			this.button_ResetDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.button_ResetDefault.Location = new System.Drawing.Point(6, 9);
+			this.button_ResetDefault.Name = "button_ResetDefault";
+			this.button_ResetDefault.Size = new System.Drawing.Size(150, 25);
+			this.button_ResetDefault.TabIndex = 2;
+			this.button_ResetDefault.Text = "Reset settings to default";
+			this.button_ResetDefault.Click += new System.EventHandler(this.button_ResetDefault_Click);
 			// 
-			// commentColorLabel
+			// button_SectionColor
 			// 
-			this.commentColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.commentColorLabel.AutoSize = true;
-			this.commentColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.commentColorLabel.Location = new System.Drawing.Point(6, 26);
-			this.commentColorLabel.Name = "commentColorLabel";
-			this.commentColorLabel.Size = new System.Drawing.Size(59, 13);
-			this.commentColorLabel.TabIndex = 12;
-			this.commentColorLabel.Text = "Comments:";
+			this.button_SectionColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_SectionColor.BackColor = System.Drawing.Color.SteelBlue;
+			this.button_SectionColor.BackColorUseGeneric = false;
+			this.button_SectionColor.Location = new System.Drawing.Point(6, 209);
+			this.button_SectionColor.Name = "button_SectionColor";
+			this.button_SectionColor.Size = new System.Drawing.Size(276, 25);
+			this.button_SectionColor.TabIndex = 21;
+			this.button_SectionColor.Click += new System.EventHandler(this.button_SectionColor_Click);
 			// 
-			// darkGroupBox1
+			// button_UnknownCommandColor
 			// 
-			this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.darkGroupBox1.Controls.Add(this.reindentRulesButton);
-			this.darkGroupBox1.Controls.Add(this.toolTipCheck);
-			this.darkGroupBox1.Controls.Add(this.autocompleteCheck);
-			this.darkGroupBox1.Controls.Add(this.wordWrapCheck);
-			this.darkGroupBox1.Controls.Add(this.showNumbersCheck);
-			this.darkGroupBox1.Controls.Add(this.reindentCheck);
-			this.darkGroupBox1.Controls.Add(this.showToolbarCheck);
-			this.darkGroupBox1.Controls.Add(this.darkGroupBox2);
-			this.darkGroupBox1.Controls.Add(this.closeBracketsCheck);
-			this.darkGroupBox1.Controls.Add(this.autosaveCombo);
-			this.darkGroupBox1.Controls.Add(this.autoSaveLabel);
-			this.darkGroupBox1.Controls.Add(this.showSpacesCheck);
-			this.darkGroupBox1.Controls.Add(this.fontFaceCombo);
-			this.darkGroupBox1.Controls.Add(this.faceLabel);
-			this.darkGroupBox1.Controls.Add(this.fontSizeNumeric);
-			this.darkGroupBox1.Controls.Add(this.sizeLabel);
-			this.darkGroupBox1.Location = new System.Drawing.Point(12, 12);
-			this.darkGroupBox1.Name = "darkGroupBox1";
-			this.darkGroupBox1.Size = new System.Drawing.Size(456, 422);
-			this.darkGroupBox1.TabIndex = 2;
-			this.darkGroupBox1.TabStop = false;
+			this.button_UnknownCommandColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_UnknownCommandColor.BackColor = System.Drawing.Color.Red;
+			this.button_UnknownCommandColor.BackColorUseGeneric = false;
+			this.button_UnknownCommandColor.Location = new System.Drawing.Point(6, 371);
+			this.button_UnknownCommandColor.Name = "button_UnknownCommandColor";
+			this.button_UnknownCommandColor.Size = new System.Drawing.Size(276, 25);
+			this.button_UnknownCommandColor.TabIndex = 23;
+			this.button_UnknownCommandColor.Click += new System.EventHandler(this.button_UnknownCommandColor_Click);
 			// 
-			// reindentRulesButton
+			// button_ValueColor
 			// 
-			this.reindentRulesButton.Location = new System.Drawing.Point(6, 392);
-			this.reindentRulesButton.Name = "reindentRulesButton";
-			this.reindentRulesButton.Size = new System.Drawing.Size(150, 23);
-			this.reindentRulesButton.TabIndex = 16;
-			this.reindentRulesButton.Text = "Reindent rules...";
-			this.reindentRulesButton.Click += new System.EventHandler(this.reindentRulesButton_Click);
+			this.button_ValueColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.button_ValueColor.BackColor = System.Drawing.Color.LightSalmon;
+			this.button_ValueColor.BackColorUseGeneric = false;
+			this.button_ValueColor.Location = new System.Drawing.Point(6, 155);
+			this.button_ValueColor.Name = "button_ValueColor";
+			this.button_ValueColor.Size = new System.Drawing.Size(276, 25);
+			this.button_ValueColor.TabIndex = 20;
+			this.button_ValueColor.Click += new System.EventHandler(this.button_ValueColor_Click);
 			// 
-			// toolTipCheck
+			// checkBox_AutoCloseBrackets
 			// 
-			this.toolTipCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.toolTipCheck.AutoSize = true;
-			this.toolTipCheck.Location = new System.Drawing.Point(6, 188);
-			this.toolTipCheck.Name = "toolTipCheck";
-			this.toolTipCheck.Size = new System.Drawing.Size(95, 17);
-			this.toolTipCheck.TabIndex = 15;
-			this.toolTipCheck.Text = "Enable tooltips";
-			this.toolTipCheck.CheckedChanged += new System.EventHandler(this.toolTipCheck_CheckedChanged);
+			this.checkBox_AutoCloseBrackets.AutoSize = true;
+			this.checkBox_AutoCloseBrackets.Location = new System.Drawing.Point(6, 198);
+			this.checkBox_AutoCloseBrackets.Name = "checkBox_AutoCloseBrackets";
+			this.checkBox_AutoCloseBrackets.Size = new System.Drawing.Size(122, 17);
+			this.checkBox_AutoCloseBrackets.TabIndex = 9;
+			this.checkBox_AutoCloseBrackets.Text = "Auto Close Brackets";
 			// 
-			// wordWrapCheck
+			// checkBox_Autocomplete
 			// 
-			this.wordWrapCheck.AutoSize = true;
-			this.wordWrapCheck.Location = new System.Drawing.Point(6, 310);
-			this.wordWrapCheck.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
-			this.wordWrapCheck.Name = "wordWrapCheck";
-			this.wordWrapCheck.Size = new System.Drawing.Size(78, 17);
-			this.wordWrapCheck.TabIndex = 12;
-			this.wordWrapCheck.Text = "Word wrap";
+			this.checkBox_Autocomplete.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.checkBox_Autocomplete.AutoSize = true;
+			this.checkBox_Autocomplete.Location = new System.Drawing.Point(6, 114);
+			this.checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+			this.checkBox_Autocomplete.Name = "checkBox_Autocomplete";
+			this.checkBox_Autocomplete.Size = new System.Drawing.Size(127, 17);
+			this.checkBox_Autocomplete.TabIndex = 13;
+			this.checkBox_Autocomplete.Text = "Enable Autocomplete";
+			this.checkBox_Autocomplete.CheckedChanged += new System.EventHandler(this.checkBox_Autocomplete_CheckedChanged);
 			// 
-			// showNumbersCheck
+			// checkBox_ReindentOnSave
 			// 
-			this.showNumbersCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.showNumbersCheck.AutoSize = true;
-			this.showNumbersCheck.Location = new System.Drawing.Point(6, 249);
-			this.showNumbersCheck.Name = "showNumbersCheck";
-			this.showNumbersCheck.Size = new System.Drawing.Size(115, 17);
-			this.showNumbersCheck.TabIndex = 11;
-			this.showNumbersCheck.Text = "Show line numbers";
+			this.checkBox_ReindentOnSave.AutoSize = true;
+			this.checkBox_ReindentOnSave.Location = new System.Drawing.Point(6, 370);
+			this.checkBox_ReindentOnSave.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
+			this.checkBox_ReindentOnSave.Name = "checkBox_ReindentOnSave";
+			this.checkBox_ReindentOnSave.Size = new System.Drawing.Size(112, 17);
+			this.checkBox_ReindentOnSave.TabIndex = 10;
+			this.checkBox_ReindentOnSave.Text = "Reindent on Save";
 			// 
-			// reindentCheck
+			// checkBox_ShowSpaces
 			// 
-			this.reindentCheck.AutoSize = true;
-			this.reindentCheck.Location = new System.Drawing.Point(6, 369);
-			this.reindentCheck.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
-			this.reindentCheck.Name = "reindentCheck";
-			this.reindentCheck.Size = new System.Drawing.Size(110, 17);
-			this.reindentCheck.TabIndex = 10;
-			this.reindentCheck.Text = "Reindent on save";
+			this.checkBox_ShowSpaces.AutoSize = true;
+			this.checkBox_ShowSpaces.Location = new System.Drawing.Point(6, 137);
+			this.checkBox_ShowSpaces.Name = "checkBox_ShowSpaces";
+			this.checkBox_ShowSpaces.Size = new System.Drawing.Size(92, 17);
+			this.checkBox_ShowSpaces.TabIndex = 8;
+			this.checkBox_ShowSpaces.Text = "Show Spaces";
+			this.checkBox_ShowSpaces.CheckedChanged += new System.EventHandler(this.checkBox_ShowSpaces_CheckedChanged);
 			// 
-			// showToolbarCheck
+			// checkBox_WordWrap
 			// 
-			this.showToolbarCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.showToolbarCheck.AutoSize = true;
-			this.showToolbarCheck.Location = new System.Drawing.Point(6, 226);
-			this.showToolbarCheck.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
-			this.showToolbarCheck.Name = "showToolbarCheck";
-			this.showToolbarCheck.Size = new System.Drawing.Size(88, 17);
-			this.showToolbarCheck.TabIndex = 7;
-			this.showToolbarCheck.Text = "Show toolbar";
+			this.checkBox_WordWrap.AutoSize = true;
+			this.checkBox_WordWrap.Location = new System.Drawing.Point(6, 175);
+			this.checkBox_WordWrap.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
+			this.checkBox_WordWrap.Name = "checkBox_WordWrap";
+			this.checkBox_WordWrap.Size = new System.Drawing.Size(81, 17);
+			this.checkBox_WordWrap.TabIndex = 12;
+			this.checkBox_WordWrap.Text = "Word Wrap";
 			// 
-			// darkGroupBox2
+			// comboBox_FontFace
 			// 
-			this.darkGroupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.darkGroupBox2.Controls.Add(this.oldColorButton);
-			this.darkGroupBox2.Controls.Add(this.oldColorLabel);
-			this.darkGroupBox2.Controls.Add(this.unknownColorButton);
-			this.darkGroupBox2.Controls.Add(this.newColorButton);
-			this.darkGroupBox2.Controls.Add(this.headerColorButton);
-			this.darkGroupBox2.Controls.Add(this.valueColorButton);
-			this.darkGroupBox2.Controls.Add(this.refColorButton);
-			this.darkGroupBox2.Controls.Add(this.commentColorButton);
-			this.darkGroupBox2.Controls.Add(this.unknownColorLabel);
-			this.darkGroupBox2.Controls.Add(this.newColorLabel);
-			this.darkGroupBox2.Controls.Add(this.headerColorLabel);
-			this.darkGroupBox2.Controls.Add(this.valuesColorLabel);
-			this.darkGroupBox2.Controls.Add(this.referencesColorLabel);
-			this.darkGroupBox2.Controls.Add(this.commentColorLabel);
-			this.darkGroupBox2.Location = new System.Drawing.Point(162, 10);
-			this.darkGroupBox2.Name = "darkGroupBox2";
-			this.darkGroupBox2.Size = new System.Drawing.Size(288, 406);
-			this.darkGroupBox2.TabIndex = 6;
-			this.darkGroupBox2.TabStop = false;
-			this.darkGroupBox2.Text = "Syntax Colors";
-			// 
-			// oldColorButton
-			// 
-			this.oldColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.oldColorButton.BackColor = System.Drawing.Color.MediumAquamarine;
-			this.oldColorButton.BackColorUseGeneric = false;
-			this.oldColorButton.Location = new System.Drawing.Point(6, 317);
-			this.oldColorButton.Name = "oldColorButton";
-			this.oldColorButton.Size = new System.Drawing.Size(276, 25);
-			this.oldColorButton.TabIndex = 25;
-			this.oldColorButton.Click += new System.EventHandler(this.oldColorButton_Click);
-			// 
-			// oldColorLabel
-			// 
-			this.oldColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.oldColorLabel.AutoSize = true;
-			this.oldColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.oldColorLabel.Location = new System.Drawing.Point(6, 296);
-			this.oldColorLabel.Name = "oldColorLabel";
-			this.oldColorLabel.Size = new System.Drawing.Size(107, 13);
-			this.oldColorLabel.TabIndex = 24;
-			this.oldColorLabel.Text = "Standard commands:";
-			// 
-			// unknownColorButton
-			// 
-			this.unknownColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.unknownColorButton.BackColor = System.Drawing.Color.Red;
-			this.unknownColorButton.BackColorUseGeneric = false;
-			this.unknownColorButton.Location = new System.Drawing.Point(6, 371);
-			this.unknownColorButton.Name = "unknownColorButton";
-			this.unknownColorButton.Size = new System.Drawing.Size(276, 25);
-			this.unknownColorButton.TabIndex = 23;
-			this.unknownColorButton.Click += new System.EventHandler(this.unknownColorButton_Click);
-			// 
-			// newColorButton
-			// 
-			this.newColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.newColorButton.BackColor = System.Drawing.Color.SpringGreen;
-			this.newColorButton.BackColorUseGeneric = false;
-			this.newColorButton.Location = new System.Drawing.Point(6, 263);
-			this.newColorButton.Name = "newColorButton";
-			this.newColorButton.Size = new System.Drawing.Size(276, 25);
-			this.newColorButton.TabIndex = 22;
-			this.newColorButton.Click += new System.EventHandler(this.newColorButton_Click);
-			// 
-			// headerColorButton
-			// 
-			this.headerColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.headerColorButton.BackColor = System.Drawing.Color.SteelBlue;
-			this.headerColorButton.BackColorUseGeneric = false;
-			this.headerColorButton.Location = new System.Drawing.Point(6, 209);
-			this.headerColorButton.Name = "headerColorButton";
-			this.headerColorButton.Size = new System.Drawing.Size(276, 25);
-			this.headerColorButton.TabIndex = 21;
-			this.headerColorButton.Click += new System.EventHandler(this.headerColorButton_Click);
-			// 
-			// valueColorButton
-			// 
-			this.valueColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.valueColorButton.BackColor = System.Drawing.Color.LightSalmon;
-			this.valueColorButton.BackColorUseGeneric = false;
-			this.valueColorButton.Location = new System.Drawing.Point(6, 155);
-			this.valueColorButton.Name = "valueColorButton";
-			this.valueColorButton.Size = new System.Drawing.Size(276, 25);
-			this.valueColorButton.TabIndex = 20;
-			this.valueColorButton.Click += new System.EventHandler(this.valueColorButton_Click);
-			// 
-			// refColorButton
-			// 
-			this.refColorButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.refColorButton.BackColor = System.Drawing.Color.Orchid;
-			this.refColorButton.BackColorUseGeneric = false;
-			this.refColorButton.Location = new System.Drawing.Point(6, 101);
-			this.refColorButton.Name = "refColorButton";
-			this.refColorButton.Size = new System.Drawing.Size(276, 25);
-			this.refColorButton.TabIndex = 19;
-			this.refColorButton.Click += new System.EventHandler(this.refColorButton_Click);
-			// 
-			// unknownColorLabel
-			// 
-			this.unknownColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.unknownColorLabel.AutoSize = true;
-			this.unknownColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.unknownColorLabel.Location = new System.Drawing.Point(6, 350);
-			this.unknownColorLabel.Name = "unknownColorLabel";
-			this.unknownColorLabel.Size = new System.Drawing.Size(56, 13);
-			this.unknownColorLabel.TabIndex = 17;
-			this.unknownColorLabel.Text = "Unknown:";
-			// 
-			// newColorLabel
-			// 
-			this.newColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.newColorLabel.AutoSize = true;
-			this.newColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.newColorLabel.Location = new System.Drawing.Point(6, 242);
-			this.newColorLabel.Name = "newColorLabel";
-			this.newColorLabel.Size = new System.Drawing.Size(95, 13);
-			this.newColorLabel.TabIndex = 16;
-			this.newColorLabel.Text = "TRNG commands:";
-			// 
-			// headerColorLabel
-			// 
-			this.headerColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.headerColorLabel.AutoSize = true;
-			this.headerColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.headerColorLabel.Location = new System.Drawing.Point(6, 188);
-			this.headerColorLabel.Name = "headerColorLabel";
-			this.headerColorLabel.Size = new System.Drawing.Size(50, 13);
-			this.headerColorLabel.TabIndex = 15;
-			this.headerColorLabel.Text = "Headers:";
-			// 
-			// valuesColorLabel
-			// 
-			this.valuesColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.valuesColorLabel.AutoSize = true;
-			this.valuesColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.valuesColorLabel.Location = new System.Drawing.Point(6, 134);
-			this.valuesColorLabel.Name = "valuesColorLabel";
-			this.valuesColorLabel.Size = new System.Drawing.Size(42, 13);
-			this.valuesColorLabel.TabIndex = 14;
-			this.valuesColorLabel.Text = "Values:";
-			// 
-			// referencesColorLabel
-			// 
-			this.referencesColorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.referencesColorLabel.AutoSize = true;
-			this.referencesColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.referencesColorLabel.Location = new System.Drawing.Point(6, 80);
-			this.referencesColorLabel.Name = "referencesColorLabel";
-			this.referencesColorLabel.Size = new System.Drawing.Size(65, 13);
-			this.referencesColorLabel.TabIndex = 13;
-			this.referencesColorLabel.Text = "References:";
-			// 
-			// showSpacesCheck
-			// 
-			this.showSpacesCheck.AutoSize = true;
-			this.showSpacesCheck.Location = new System.Drawing.Point(6, 272);
-			this.showSpacesCheck.Name = "showSpacesCheck";
-			this.showSpacesCheck.Size = new System.Drawing.Size(90, 17);
-			this.showSpacesCheck.TabIndex = 8;
-			this.showSpacesCheck.Text = "Show spaces";
-			this.showSpacesCheck.CheckedChanged += new System.EventHandler(this.showSpacesCheck_CheckedChanged);
-			// 
-			// fontFaceCombo
-			// 
-			this.fontFaceCombo.FormattingEnabled = true;
-			this.fontFaceCombo.Items.AddRange(new object[] {
+			this.comboBox_FontFace.FormattingEnabled = true;
+			this.comboBox_FontFace.Items.AddRange(new object[] {
             "Consolas",
-            "Courier New",
-            "Lucida Console",
-            "Lucida Sans Typewriter"});
-			this.fontFaceCombo.Location = new System.Drawing.Point(6, 83);
-			this.fontFaceCombo.Name = "fontFaceCombo";
-			this.fontFaceCombo.Size = new System.Drawing.Size(150, 21);
-			this.fontFaceCombo.TabIndex = 3;
+            "Courier New"});
+			this.comboBox_FontFace.Location = new System.Drawing.Point(6, 80);
+			this.comboBox_FontFace.Name = "comboBox_FontFace";
+			this.comboBox_FontFace.Size = new System.Drawing.Size(150, 21);
+			this.comboBox_FontFace.TabIndex = 3;
 			// 
-			// faceLabel
+			// darkGroupBox_01
 			// 
-			this.faceLabel.AutoSize = true;
-			this.faceLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.faceLabel.Location = new System.Drawing.Point(6, 63);
-			this.faceLabel.Name = "faceLabel";
-			this.faceLabel.Size = new System.Drawing.Size(55, 13);
-			this.faceLabel.TabIndex = 2;
-			this.faceLabel.Text = "Font face:";
+			this.darkGroupBox_01.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.darkGroupBox_01.Controls.Add(this.button_ReindentRules);
+			this.darkGroupBox_01.Controls.Add(this.checkBox_Autocomplete);
+			this.darkGroupBox_01.Controls.Add(this.checkBox_WordWrap);
+			this.darkGroupBox_01.Controls.Add(this.checkBox_ReindentOnSave);
+			this.darkGroupBox_01.Controls.Add(this.darkGroupBox_02);
+			this.darkGroupBox_01.Controls.Add(this.checkBox_AutoCloseBrackets);
+			this.darkGroupBox_01.Controls.Add(this.checkBox_ShowSpaces);
+			this.darkGroupBox_01.Controls.Add(this.comboBox_FontFace);
+			this.darkGroupBox_01.Controls.Add(this.label_FontFace);
+			this.darkGroupBox_01.Controls.Add(this.numeric_FontSize);
+			this.darkGroupBox_01.Controls.Add(this.label_FontSize);
+			this.darkGroupBox_01.Location = new System.Drawing.Point(12, 12);
+			this.darkGroupBox_01.Name = "darkGroupBox_01";
+			this.darkGroupBox_01.Size = new System.Drawing.Size(456, 422);
+			this.darkGroupBox_01.TabIndex = 2;
+			this.darkGroupBox_01.TabStop = false;
 			// 
-			// fontSizeNumeric
+			// darkGroupBox_02
 			// 
-			this.fontSizeNumeric.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-			this.fontSizeNumeric.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.fontSizeNumeric.IncrementAlternate = new decimal(new int[] {
+			this.darkGroupBox_02.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.darkGroupBox_02.Controls.Add(this.button_OldCommandColor);
+			this.darkGroupBox_02.Controls.Add(this.label_OldCommandColor);
+			this.darkGroupBox_02.Controls.Add(this.button_UnknownCommandColor);
+			this.darkGroupBox_02.Controls.Add(this.button_NewCommandColor);
+			this.darkGroupBox_02.Controls.Add(this.button_SectionColor);
+			this.darkGroupBox_02.Controls.Add(this.button_ValueColor);
+			this.darkGroupBox_02.Controls.Add(this.button_ReferenceColor);
+			this.darkGroupBox_02.Controls.Add(this.button_CommentColor);
+			this.darkGroupBox_02.Controls.Add(this.label_UnknownCommandColor);
+			this.darkGroupBox_02.Controls.Add(this.label_NewCommandColor);
+			this.darkGroupBox_02.Controls.Add(this.label_SectionColor);
+			this.darkGroupBox_02.Controls.Add(this.label_ValueColor);
+			this.darkGroupBox_02.Controls.Add(this.label_ReferenceColor);
+			this.darkGroupBox_02.Controls.Add(this.label_CommentColor);
+			this.darkGroupBox_02.Location = new System.Drawing.Point(162, 10);
+			this.darkGroupBox_02.Name = "darkGroupBox_02";
+			this.darkGroupBox_02.Size = new System.Drawing.Size(288, 406);
+			this.darkGroupBox_02.TabIndex = 6;
+			this.darkGroupBox_02.TabStop = false;
+			this.darkGroupBox_02.Text = "Syntax Colors";
+			// 
+			// label_OldCommandColor
+			// 
+			this.label_OldCommandColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_OldCommandColor.AutoSize = true;
+			this.label_OldCommandColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_OldCommandColor.Location = new System.Drawing.Point(6, 296);
+			this.label_OldCommandColor.Name = "label_OldCommandColor";
+			this.label_OldCommandColor.Size = new System.Drawing.Size(108, 13);
+			this.label_OldCommandColor.TabIndex = 24;
+			this.label_OldCommandColor.Text = "Standard Commands:";
+			// 
+			// label_UnknownCommandColor
+			// 
+			this.label_UnknownCommandColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_UnknownCommandColor.AutoSize = true;
+			this.label_UnknownCommandColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_UnknownCommandColor.Location = new System.Drawing.Point(6, 350);
+			this.label_UnknownCommandColor.Name = "label_UnknownCommandColor";
+			this.label_UnknownCommandColor.Size = new System.Drawing.Size(56, 13);
+			this.label_UnknownCommandColor.TabIndex = 17;
+			this.label_UnknownCommandColor.Text = "Unknown:";
+			// 
+			// label_NewCommandColor
+			// 
+			this.label_NewCommandColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_NewCommandColor.AutoSize = true;
+			this.label_NewCommandColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_NewCommandColor.Location = new System.Drawing.Point(6, 242);
+			this.label_NewCommandColor.Name = "label_NewCommandColor";
+			this.label_NewCommandColor.Size = new System.Drawing.Size(151, 13);
+			this.label_NewCommandColor.TabIndex = 16;
+			this.label_NewCommandColor.Text = "TRNG / TR5Main Commands:";
+			// 
+			// label_SectionColor
+			// 
+			this.label_SectionColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_SectionColor.AutoSize = true;
+			this.label_SectionColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_SectionColor.Location = new System.Drawing.Point(6, 188);
+			this.label_SectionColor.Name = "label_SectionColor";
+			this.label_SectionColor.Size = new System.Drawing.Size(51, 13);
+			this.label_SectionColor.TabIndex = 15;
+			this.label_SectionColor.Text = "Sections:";
+			// 
+			// label_ValueColor
+			// 
+			this.label_ValueColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_ValueColor.AutoSize = true;
+			this.label_ValueColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_ValueColor.Location = new System.Drawing.Point(6, 134);
+			this.label_ValueColor.Name = "label_ValueColor";
+			this.label_ValueColor.Size = new System.Drawing.Size(42, 13);
+			this.label_ValueColor.TabIndex = 14;
+			this.label_ValueColor.Text = "Values:";
+			// 
+			// label_ReferenceColor
+			// 
+			this.label_ReferenceColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_ReferenceColor.AutoSize = true;
+			this.label_ReferenceColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_ReferenceColor.Location = new System.Drawing.Point(6, 80);
+			this.label_ReferenceColor.Name = "label_ReferenceColor";
+			this.label_ReferenceColor.Size = new System.Drawing.Size(65, 13);
+			this.label_ReferenceColor.TabIndex = 13;
+			this.label_ReferenceColor.Text = "References:";
+			// 
+			// label_CommentColor
+			// 
+			this.label_CommentColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label_CommentColor.AutoSize = true;
+			this.label_CommentColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_CommentColor.Location = new System.Drawing.Point(6, 26);
+			this.label_CommentColor.Name = "label_CommentColor";
+			this.label_CommentColor.Size = new System.Drawing.Size(59, 13);
+			this.label_CommentColor.TabIndex = 12;
+			this.label_CommentColor.Text = "Comments:";
+			// 
+			// label_FontFace
+			// 
+			this.label_FontFace.AutoSize = true;
+			this.label_FontFace.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_FontFace.Location = new System.Drawing.Point(6, 61);
+			this.label_FontFace.Margin = new System.Windows.Forms.Padding(3);
+			this.label_FontFace.Name = "label_FontFace";
+			this.label_FontFace.Size = new System.Drawing.Size(58, 13);
+			this.label_FontFace.TabIndex = 2;
+			this.label_FontFace.Text = "Font Face:";
+			// 
+			// numeric_FontSize
+			// 
+			this.numeric_FontSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+			this.numeric_FontSize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.numeric_FontSize.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
-			this.fontSizeNumeric.Location = new System.Drawing.Point(6, 36);
-			this.fontSizeNumeric.Maximum = new decimal(new int[] {
+			this.numeric_FontSize.Location = new System.Drawing.Point(6, 35);
+			this.numeric_FontSize.Maximum = new decimal(new int[] {
             30,
             0,
             0,
             0});
-			this.fontSizeNumeric.Minimum = new decimal(new int[] {
+			this.numeric_FontSize.Minimum = new decimal(new int[] {
             5,
             0,
             0,
             0});
-			this.fontSizeNumeric.MousewheelSingleIncrement = true;
-			this.fontSizeNumeric.Name = "fontSizeNumeric";
-			this.fontSizeNumeric.Size = new System.Drawing.Size(150, 20);
-			this.fontSizeNumeric.TabIndex = 1;
-			this.fontSizeNumeric.Value = new decimal(new int[] {
+			this.numeric_FontSize.MousewheelSingleIncrement = true;
+			this.numeric_FontSize.Name = "numeric_FontSize";
+			this.numeric_FontSize.Size = new System.Drawing.Size(150, 20);
+			this.numeric_FontSize.TabIndex = 1;
+			this.numeric_FontSize.Value = new decimal(new int[] {
             12,
             0,
             0,
             0});
 			// 
-			// sizeLabel
+			// label_FontSize
 			// 
-			this.sizeLabel.AutoSize = true;
-			this.sizeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.sizeLabel.Location = new System.Drawing.Point(6, 16);
-			this.sizeLabel.Name = "sizeLabel";
-			this.sizeLabel.Size = new System.Drawing.Size(52, 13);
-			this.sizeLabel.TabIndex = 0;
-			this.sizeLabel.Text = "Font size:";
+			this.label_FontSize.AutoSize = true;
+			this.label_FontSize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_FontSize.Location = new System.Drawing.Point(6, 16);
+			this.label_FontSize.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.label_FontSize.Name = "label_FontSize";
+			this.label_FontSize.Size = new System.Drawing.Size(54, 13);
+			this.label_FontSize.TabIndex = 0;
+			this.label_FontSize.Text = "Font Size:";
 			// 
-			// darkGroupBox3
+			// darkGroupBox_03
 			// 
-			this.darkGroupBox3.Controls.Add(this.restartLabel);
-			this.darkGroupBox3.Controls.Add(this.resetDefaultButton);
-			this.darkGroupBox3.Controls.Add(this.applyButton);
-			this.darkGroupBox3.Controls.Add(this.cancelButton);
-			this.darkGroupBox3.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.darkGroupBox3.Location = new System.Drawing.Point(0, 440);
-			this.darkGroupBox3.Name = "darkGroupBox3";
-			this.darkGroupBox3.Size = new System.Drawing.Size(480, 40);
-			this.darkGroupBox3.TabIndex = 3;
-			this.darkGroupBox3.TabStop = false;
+			this.darkGroupBox_03.Controls.Add(this.label_RestartRequired);
+			this.darkGroupBox_03.Controls.Add(this.button_ResetDefault);
+			this.darkGroupBox_03.Controls.Add(this.button_Apply);
+			this.darkGroupBox_03.Controls.Add(this.button_Cancel);
+			this.darkGroupBox_03.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.darkGroupBox_03.Location = new System.Drawing.Point(0, 440);
+			this.darkGroupBox_03.Name = "darkGroupBox_03";
+			this.darkGroupBox_03.Size = new System.Drawing.Size(480, 40);
+			this.darkGroupBox_03.TabIndex = 3;
+			this.darkGroupBox_03.TabStop = false;
 			// 
-			// restartLabel
+			// label_RestartRequired
 			// 
-			this.restartLabel.AutoSize = true;
-			this.restartLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.restartLabel.Location = new System.Drawing.Point(224, 15);
-			this.restartLabel.Name = "restartLabel";
-			this.restartLabel.Size = new System.Drawing.Size(85, 13);
-			this.restartLabel.TabIndex = 3;
-			this.restartLabel.Text = "Restart required.";
-			this.restartLabel.Visible = false;
+			this.label_RestartRequired.AutoSize = true;
+			this.label_RestartRequired.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_RestartRequired.Location = new System.Drawing.Point(227, 15);
+			this.label_RestartRequired.Name = "label_RestartRequired";
+			this.label_RestartRequired.Size = new System.Drawing.Size(85, 13);
+			this.label_RestartRequired.TabIndex = 3;
+			this.label_RestartRequired.Text = "Restart required.";
+			this.label_RestartRequired.Visible = false;
 			// 
-			// resetDefaultButton
+			// dialog_CommentColor
 			// 
-			this.resetDefaultButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.resetDefaultButton.Location = new System.Drawing.Point(6, 9);
-			this.resetDefaultButton.Name = "resetDefaultButton";
-			this.resetDefaultButton.Size = new System.Drawing.Size(150, 25);
-			this.resetDefaultButton.TabIndex = 2;
-			this.resetDefaultButton.Text = "Reset settings to default";
-			this.resetDefaultButton.Click += new System.EventHandler(this.resetDefaultButton_Click);
+			this.dialog_CommentColor.AnyColor = true;
+			this.dialog_CommentColor.FullOpen = true;
 			// 
-			// headerColorDialog
+			// dialog_NewCommandColor
 			// 
-			this.headerColorDialog.AnyColor = true;
-			this.headerColorDialog.FullOpen = true;
+			this.dialog_NewCommandColor.AnyColor = true;
+			this.dialog_NewCommandColor.FullOpen = true;
 			// 
-			// newColorDialog
+			// dialog_OldCommandColor
 			// 
-			this.newColorDialog.AnyColor = true;
-			this.newColorDialog.FullOpen = true;
+			this.dialog_OldCommandColor.AnyColor = true;
+			this.dialog_OldCommandColor.FullOpen = true;
 			// 
-			// oldColorDialog
+			// dialog_ReferenceColor
 			// 
-			this.oldColorDialog.AnyColor = true;
-			this.oldColorDialog.FullOpen = true;
+			this.dialog_ReferenceColor.AnyColor = true;
+			this.dialog_ReferenceColor.FullOpen = true;
 			// 
-			// refColorDialog
+			// dialog_SectionColor
 			// 
-			this.refColorDialog.AnyColor = true;
-			this.refColorDialog.FullOpen = true;
+			this.dialog_SectionColor.AnyColor = true;
+			this.dialog_SectionColor.FullOpen = true;
 			// 
-			// unknownColorDialog
+			// dialog_UnknownCommandColor
 			// 
-			this.unknownColorDialog.AnyColor = true;
-			this.unknownColorDialog.FullOpen = true;
+			this.dialog_UnknownCommandColor.AnyColor = true;
+			this.dialog_UnknownCommandColor.FullOpen = true;
 			// 
-			// valueColorDialog
+			// dialog_ValueColor
 			// 
-			this.valueColorDialog.AnyColor = true;
-			this.valueColorDialog.FullOpen = true;
+			this.dialog_ValueColor.AnyColor = true;
+			this.dialog_ValueColor.FullOpen = true;
 			// 
 			// FormSettings
 			// 
-			this.AcceptButton = this.applyButton;
+			this.AcceptButton = this.button_Apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.CancelButton = this.cancelButton;
+			this.CancelButton = this.button_Cancel;
 			this.ClientSize = new System.Drawing.Size(480, 480);
-			this.Controls.Add(this.darkGroupBox3);
-			this.Controls.Add(this.darkGroupBox1);
+			this.Controls.Add(this.darkGroupBox_03);
+			this.Controls.Add(this.darkGroupBox_01);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.Name = "FormSettings";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Settings";
-			this.darkGroupBox1.ResumeLayout(false);
-			this.darkGroupBox1.PerformLayout();
-			this.darkGroupBox2.ResumeLayout(false);
-			this.darkGroupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.fontSizeNumeric)).EndInit();
-			this.darkGroupBox3.ResumeLayout(false);
-			this.darkGroupBox3.PerformLayout();
+			this.darkGroupBox_01.ResumeLayout(false);
+			this.darkGroupBox_01.PerformLayout();
+			this.darkGroupBox_02.ResumeLayout(false);
+			this.darkGroupBox_02.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numeric_FontSize)).EndInit();
+			this.darkGroupBox_03.ResumeLayout(false);
+			this.darkGroupBox_03.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private DarkUI.Controls.DarkButton applyButton;
-		private DarkUI.Controls.DarkButton cancelButton;
-		private DarkUI.Controls.DarkButton commentColorButton;
-		private DarkUI.Controls.DarkButton headerColorButton;
-		private DarkUI.Controls.DarkButton newColorButton;
-		private DarkUI.Controls.DarkButton oldColorButton;
-		private DarkUI.Controls.DarkButton refColorButton;
-		private DarkUI.Controls.DarkButton reindentRulesButton;
-		private DarkUI.Controls.DarkButton resetDefaultButton;
-		private DarkUI.Controls.DarkButton unknownColorButton;
-		private DarkUI.Controls.DarkButton valueColorButton;
-		private DarkUI.Controls.DarkCheckBox autocompleteCheck;
-		private DarkUI.Controls.DarkCheckBox closeBracketsCheck;
-		private DarkUI.Controls.DarkCheckBox reindentCheck;
-		private DarkUI.Controls.DarkCheckBox showNumbersCheck;
-		private DarkUI.Controls.DarkCheckBox showSpacesCheck;
-		private DarkUI.Controls.DarkCheckBox showToolbarCheck;
-		private DarkUI.Controls.DarkCheckBox toolTipCheck;
-		private DarkUI.Controls.DarkCheckBox wordWrapCheck;
-		private DarkUI.Controls.DarkComboBox autosaveCombo;
-		private DarkUI.Controls.DarkComboBox fontFaceCombo;
-		private DarkUI.Controls.DarkGroupBox darkGroupBox1;
-		private DarkUI.Controls.DarkGroupBox darkGroupBox2;
-		private DarkUI.Controls.DarkGroupBox darkGroupBox3;
-		private DarkUI.Controls.DarkLabel autoSaveLabel;
-		private DarkUI.Controls.DarkLabel commentColorLabel;
-		private DarkUI.Controls.DarkLabel faceLabel;
-		private DarkUI.Controls.DarkLabel headerColorLabel;
-		private DarkUI.Controls.DarkLabel newColorLabel;
-		private DarkUI.Controls.DarkLabel oldColorLabel;
-		private DarkUI.Controls.DarkLabel referencesColorLabel;
-		private DarkUI.Controls.DarkLabel restartLabel;
-		private DarkUI.Controls.DarkLabel sizeLabel;
-		private DarkUI.Controls.DarkLabel unknownColorLabel;
-		private DarkUI.Controls.DarkLabel valuesColorLabel;
-		private DarkUI.Controls.DarkNumericUpDown fontSizeNumeric;
-		private System.Windows.Forms.ColorDialog commentColorDialog;
-		private System.Windows.Forms.ColorDialog headerColorDialog;
-		private System.Windows.Forms.ColorDialog newColorDialog;
-		private System.Windows.Forms.ColorDialog oldColorDialog;
-		private System.Windows.Forms.ColorDialog refColorDialog;
-		private System.Windows.Forms.ColorDialog unknownColorDialog;
-		private System.Windows.Forms.ColorDialog valueColorDialog;
+		private DarkUI.Controls.DarkButton button_Apply;
+		private DarkUI.Controls.DarkButton button_Cancel;
+		private DarkUI.Controls.DarkButton button_CommentColor;
+		private DarkUI.Controls.DarkButton button_NewCommandColor;
+		private DarkUI.Controls.DarkButton button_OldCommandColor;
+		private DarkUI.Controls.DarkButton button_ReferenceColor;
+		private DarkUI.Controls.DarkButton button_ReindentRules;
+		private DarkUI.Controls.DarkButton button_ResetDefault;
+		private DarkUI.Controls.DarkButton button_SectionColor;
+		private DarkUI.Controls.DarkButton button_UnknownCommandColor;
+		private DarkUI.Controls.DarkButton button_ValueColor;
+		private DarkUI.Controls.DarkCheckBox checkBox_AutoCloseBrackets;
+		private DarkUI.Controls.DarkCheckBox checkBox_Autocomplete;
+		private DarkUI.Controls.DarkCheckBox checkBox_ReindentOnSave;
+		private DarkUI.Controls.DarkCheckBox checkBox_ShowSpaces;
+		private DarkUI.Controls.DarkCheckBox checkBox_WordWrap;
+		private DarkUI.Controls.DarkComboBox comboBox_FontFace;
+		private DarkUI.Controls.DarkGroupBox darkGroupBox_01;
+		private DarkUI.Controls.DarkGroupBox darkGroupBox_02;
+		private DarkUI.Controls.DarkGroupBox darkGroupBox_03;
+		private DarkUI.Controls.DarkLabel label_CommentColor;
+		private DarkUI.Controls.DarkLabel label_FontFace;
+		private DarkUI.Controls.DarkLabel label_FontSize;
+		private DarkUI.Controls.DarkLabel label_NewCommandColor;
+		private DarkUI.Controls.DarkLabel label_OldCommandColor;
+		private DarkUI.Controls.DarkLabel label_ReferenceColor;
+		private DarkUI.Controls.DarkLabel label_RestartRequired;
+		private DarkUI.Controls.DarkLabel label_SectionColor;
+		private DarkUI.Controls.DarkLabel label_UnknownCommandColor;
+		private DarkUI.Controls.DarkLabel label_ValueColor;
+		private DarkUI.Controls.DarkNumericUpDown numeric_FontSize;
+		private System.Windows.Forms.ColorDialog dialog_CommentColor;
+		private System.Windows.Forms.ColorDialog dialog_NewCommandColor;
+		private System.Windows.Forms.ColorDialog dialog_OldCommandColor;
+		private System.Windows.Forms.ColorDialog dialog_ReferenceColor;
+		private System.Windows.Forms.ColorDialog dialog_SectionColor;
+		private System.Windows.Forms.ColorDialog dialog_UnknownCommandColor;
+		private System.Windows.Forms.ColorDialog dialog_ValueColor;
 	}
 }

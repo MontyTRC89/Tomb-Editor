@@ -8,224 +8,197 @@ namespace ScriptEditor
 	public partial class FormSettings : DarkForm
 	{
 		/// <summary>
-		/// The number of critical settings changed
+		/// The number of critical settings changed.
 		/// </summary>
-		public int _restartItemCount = 0;
+		public int RestartItemCount = 0;
+
+		/// <summary>
+		/// Configuration object.
+		/// </summary>
+		private Configuration _config = Configuration.Load();
 
 		public FormSettings()
 		{
 			InitializeComponent();
 
-			fontSizeNumeric.Value = Properties.Settings.Default.FontSize;
-			fontFaceCombo.SelectedItem = Properties.Settings.Default.FontFace;
-			autosaveCombo.SelectedItem = Properties.Settings.Default.AutosaveTime == 0 ? "None" : Properties.Settings.Default.AutosaveTime.ToString();
+			numeric_FontSize.Value = (int)_config.FontSize;
+			comboBox_FontFace.SelectedItem = _config.FontFamily;
 
-			reindentCheck.Checked = Properties.Settings.Default.ReindentOnSave;
-			closeBracketsCheck.Checked = Properties.Settings.Default.CloseBrackets;
-			showSpacesCheck.Checked = Properties.Settings.Default.ShowSpaces;
-			wordWrapCheck.Checked = Properties.Settings.Default.WordWrap;
+			// General options
+			checkBox_Autocomplete.Checked = _config.Autocomplete;
+			checkBox_AutoCloseBrackets.Checked = _config.AutoCloseBrackets;
+			checkBox_ShowSpaces.Checked = _config.ShowSpaces;
+			checkBox_WordWrap.Checked = _config.WordWrap;
+			checkBox_ReindentOnSave.Checked = _config.Tidy_ReindentOnSave;
 
-			autocompleteCheck.Checked = Properties.Settings.Default.Autocomplete;
-			toolTipCheck.Checked = Properties.Settings.Default.ToolTips;
+			// Script syntax colors
+			button_CommentColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_Comment);
+			button_SectionColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_Section);
+			button_NewCommandColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_NewCommand);
+			button_OldCommandColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_OldCommand);
+			button_UnknownCommandColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_UnknownCommand);
+			button_ValueColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_Value);
+			button_ReferenceColor.BackColor = ColorTranslator.FromHtml(_config.ScriptColors_Reference);
 
-			showToolbarCheck.Checked = Properties.Settings.Default.ShowToolbar;
-			showNumbersCheck.Checked = Properties.Settings.Default.ShowLineNumbers;
-
-			commentColorButton.BackColor = Properties.Settings.Default.CommentColor;
-			refColorButton.BackColor = Properties.Settings.Default.ReferenceColor;
-			valueColorButton.BackColor = Properties.Settings.Default.ValueColor;
-			headerColorButton.BackColor = Properties.Settings.Default.HeaderColor;
-			newColorButton.BackColor = Properties.Settings.Default.NewCommandColor;
-			oldColorButton.BackColor = Properties.Settings.Default.OldCommandColor;
-			unknownColorButton.BackColor = Properties.Settings.Default.UnknownColor;
-
-			restartLabel.Visible = false;
+			label_RestartRequired.Visible = false;
 		}
 
-		private void reindentRulesButton_Click(object sender, EventArgs e)
+		private void button_Apply_Click(object sender, EventArgs e)
 		{
-			using (FormReindentRules form = new FormReindentRules())
-			{
-				form.ShowDialog(this);
-			}
+			_config.FontSize = Convert.ToSingle(numeric_FontSize.Value);
+			_config.FontFamily = comboBox_FontFace.SelectedItem.ToString();
+
+			// General options
+			_config.Autocomplete = checkBox_Autocomplete.Checked;
+			_config.AutoCloseBrackets = checkBox_AutoCloseBrackets.Checked;
+			_config.ShowSpaces = checkBox_ShowSpaces.Checked;
+			_config.WordWrap = checkBox_WordWrap.Checked;
+			_config.Tidy_ReindentOnSave = checkBox_ReindentOnSave.Checked;
+
+			// Script syntax colors
+			_config.ScriptColors_Comment = ColorTranslator.ToHtml(button_CommentColor.BackColor);
+			_config.ScriptColors_Section = ColorTranslator.ToHtml(button_SectionColor.BackColor);
+			_config.ScriptColors_NewCommand = ColorTranslator.ToHtml(button_NewCommandColor.BackColor);
+			_config.ScriptColors_OldCommand = ColorTranslator.ToHtml(button_OldCommandColor.BackColor);
+			_config.ScriptColors_UnknownCommand = ColorTranslator.ToHtml(button_UnknownCommandColor.BackColor);
+			_config.ScriptColors_Value = ColorTranslator.ToHtml(button_ValueColor.BackColor);
+			_config.ScriptColors_Reference = ColorTranslator.ToHtml(button_ReferenceColor.BackColor);
+
+			_config.Save();
 		}
 
-		private void applyButton_Click(object sender, EventArgs e)
-		{
-			Properties.Settings.Default.FontSize = fontSizeNumeric.Value;
-			Properties.Settings.Default.FontFace = fontFaceCombo.SelectedItem.ToString();
-
-			if (autosaveCombo.SelectedItem.ToString() == "None")
-			{
-				Properties.Settings.Default.AutosaveTime = 0;
-			}
-			else
-			{
-				Properties.Settings.Default.AutosaveTime = int.Parse(autosaveCombo.SelectedItem.ToString());
-			}
-
-			Properties.Settings.Default.ReindentOnSave = reindentCheck.Checked;
-			Properties.Settings.Default.CloseBrackets = closeBracketsCheck.Checked;
-			Properties.Settings.Default.ShowSpaces = showSpacesCheck.Checked;
-			Properties.Settings.Default.WordWrap = wordWrapCheck.Checked;
-
-			Properties.Settings.Default.Autocomplete = autocompleteCheck.Checked;
-			Properties.Settings.Default.ToolTips = toolTipCheck.Checked;
-
-			Properties.Settings.Default.ShowToolbar = showToolbarCheck.Checked;
-			Properties.Settings.Default.ShowLineNumbers = showNumbersCheck.Checked;
-
-			Properties.Settings.Default.CommentColor = commentColorButton.BackColor;
-			Properties.Settings.Default.ReferenceColor = refColorButton.BackColor;
-			Properties.Settings.Default.ValueColor = valueColorButton.BackColor;
-			Properties.Settings.Default.HeaderColor = headerColorButton.BackColor;
-			Properties.Settings.Default.NewCommandColor = newColorButton.BackColor;
-			Properties.Settings.Default.OldCommandColor = oldColorButton.BackColor;
-			Properties.Settings.Default.UnknownColor = unknownColorButton.BackColor;
-
-			Properties.Settings.Default.Save();
-		}
-
-		private void resetDefaultButton_Click(object sender, EventArgs e)
+		private void button_ResetDefault_Click(object sender, EventArgs e)
 		{
 			DialogResult result = DarkMessageBox.Show(this,
 				Resources.Messages.ResetSettings, "Reset?",
 				MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-			if (result == DialogResult.No)
+			if (result == DialogResult.Yes)
 			{
-				return;
+				numeric_FontSize.Value = 12;
+				comboBox_FontFace.SelectedItem = "Consolas";
+
+				// General options
+				checkBox_Autocomplete.Checked = true;
+				checkBox_AutoCloseBrackets.Checked = true;
+				checkBox_ShowSpaces.Checked = false;
+				checkBox_WordWrap.Checked = false;
+				checkBox_ReindentOnSave.Checked = false;
+
+				// Script syntax colors
+				button_CommentColor.BackColor = Color.Green;
+				button_SectionColor.BackColor = Color.SteelBlue;
+				button_NewCommandColor.BackColor = Color.SpringGreen;
+				button_OldCommandColor.BackColor = Color.MediumAquamarine;
+				button_UnknownCommandColor.BackColor = Color.Red;
+				button_ValueColor.BackColor = Color.LightSalmon;
+				button_ReferenceColor.BackColor = Color.Orchid;
+
+				label_RestartRequired.Visible = true;
+				RestartItemCount = 9999; // The user has to restart the editor, no matter what
 			}
-
-			fontSizeNumeric.Value = 12;
-			fontFaceCombo.SelectedItem = "Consolas";
-			autosaveCombo.SelectedItem = "None";
-
-			reindentCheck.Checked = false;
-			closeBracketsCheck.Checked = true;
-			showSpacesCheck.Checked = false;
-			wordWrapCheck.Checked = false;
-
-			autocompleteCheck.Checked = true;
-			toolTipCheck.Checked = true;
-
-			showToolbarCheck.Checked = true;
-			showNumbersCheck.Checked = true;
-
-			commentColorButton.BackColor = Color.Green;
-			refColorButton.BackColor = Color.Orchid;
-			valueColorButton.BackColor = Color.LightSalmon;
-			headerColorButton.BackColor = Color.SteelBlue;
-			newColorButton.BackColor = Color.SpringGreen;
-			oldColorButton.BackColor = Color.MediumAquamarine;
-			unknownColorButton.BackColor = Color.Red;
 		}
 
-		private void commentColorButton_Click(object sender, EventArgs e)
+		private void button_ReindentRules_Click(object sender, EventArgs e)
 		{
-			DialogResult result = commentColorDialog.ShowDialog();
+			using (FormReindentRules form = new FormReindentRules())
+				form.ShowDialog(this);
+		}
+
+		private void button_CommentColor_Click(object sender, EventArgs e)
+		{
+			DialogResult result = dialog_CommentColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				commentColorButton.BackColor = commentColorDialog.Color;
-				CheckRestartRequirement(commentColorButton.BackColor, Properties.Settings.Default.CommentColor);
+				button_CommentColor.BackColor = dialog_CommentColor.Color;
+				CheckRestartRequirement(button_CommentColor.BackColor, _config.ScriptColors_Comment);
 			}
 		}
 
-		private void refColorButton_Click(object sender, EventArgs e)
+		private void button_SectionColor_Click(object sender, EventArgs e)
 		{
-			DialogResult result = refColorDialog.ShowDialog();
+			DialogResult result = dialog_SectionColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				refColorButton.BackColor = refColorDialog.Color;
-				CheckRestartRequirement(refColorButton.BackColor, Properties.Settings.Default.ReferenceColor);
+				button_SectionColor.BackColor = dialog_SectionColor.Color;
+				CheckRestartRequirement(button_SectionColor.BackColor, _config.ScriptColors_Section);
 			}
 		}
 
-		private void valueColorButton_Click(object sender, EventArgs e)
+		private void button_NewCommandColor_Click(object sender, EventArgs e)
 		{
-			DialogResult result = valueColorDialog.ShowDialog();
+			DialogResult result = dialog_NewCommandColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				valueColorButton.BackColor = valueColorDialog.Color;
-				CheckRestartRequirement(valueColorButton.BackColor, Properties.Settings.Default.ValueColor);
+				button_NewCommandColor.BackColor = dialog_NewCommandColor.Color;
+				CheckRestartRequirement(button_NewCommandColor.BackColor, _config.ScriptColors_NewCommand);
 			}
 		}
 
-		private void headerColorButton_Click(object sender, EventArgs e)
+		private void button_OldCommandColor_Click(object sender, EventArgs e)
 		{
-			DialogResult result = headerColorDialog.ShowDialog();
+			DialogResult result = dialog_OldCommandColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				headerColorButton.BackColor = headerColorDialog.Color;
-				CheckRestartRequirement(headerColorButton.BackColor, Properties.Settings.Default.HeaderColor);
+				button_OldCommandColor.BackColor = dialog_OldCommandColor.Color;
+				CheckRestartRequirement(button_OldCommandColor.BackColor, _config.ScriptColors_OldCommand);
 			}
 		}
 
-		private void newColorButton_Click(object sender, EventArgs e)
+		private void button_UnknownCommandColor_Click(object sender, EventArgs e)
 		{
-			DialogResult result = newColorDialog.ShowDialog();
+			DialogResult result = dialog_UnknownCommandColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				newColorButton.BackColor = newColorDialog.Color;
-				CheckRestartRequirement(newColorButton.BackColor, Properties.Settings.Default.NewCommandColor);
+				button_UnknownCommandColor.BackColor = dialog_UnknownCommandColor.Color;
+				CheckRestartRequirement(button_UnknownCommandColor.BackColor, _config.ScriptColors_UnknownCommand);
 			}
 		}
 
-		private void oldColorButton_Click(object sender, EventArgs e)
+		private void button_ValueColor_Click(object sender, EventArgs e)
 		{
-			DialogResult result = oldColorDialog.ShowDialog();
+			DialogResult result = dialog_ValueColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				oldColorButton.BackColor = oldColorDialog.Color;
-				CheckRestartRequirement(oldColorButton.BackColor, Properties.Settings.Default.OldCommandColor);
+				button_ValueColor.BackColor = dialog_ValueColor.Color;
+				CheckRestartRequirement(button_ValueColor.BackColor, _config.ScriptColors_Value);
 			}
 		}
 
-		private void unknownColorButton_Click(object sender, EventArgs e)
+		private void button_ReferenceColor_Click(object sender, EventArgs e)
 		{
-			DialogResult result = unknownColorDialog.ShowDialog();
+			DialogResult result = dialog_ReferenceColor.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				unknownColorButton.BackColor = unknownColorDialog.Color;
-				CheckRestartRequirement(unknownColorButton.BackColor, Properties.Settings.Default.UnknownColor);
+				button_ReferenceColor.BackColor = dialog_ReferenceColor.Color;
+				CheckRestartRequirement(button_ReferenceColor.BackColor, _config.ScriptColors_Reference);
 			}
 		}
 
-		private void autosaveCombo_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			string settingValue = Properties.Settings.Default.AutosaveTime == 0 ? "None" : Properties.Settings.Default.AutosaveTime.ToString();
-			CheckRestartRequirement(autosaveCombo.SelectedItem.ToString(), settingValue);
-		}
-
-		private void showSpacesCheck_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(showSpacesCheck.Checked, Properties.Settings.Default.ShowSpaces);
-		private void autocompleteCheck_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(autocompleteCheck.Checked, Properties.Settings.Default.Autocomplete);
-		private void toolTipCheck_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(toolTipCheck.Checked, Properties.Settings.Default.ToolTips);
+		private void checkBox_Autocomplete_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(checkBox_Autocomplete.Checked, _config.Autocomplete);
+		private void checkBox_ShowSpaces_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(checkBox_ShowSpaces.Checked, _config.ShowSpaces);
 
 		private void CheckRestartRequirement(object currentState, object prevSetting)
 		{
 			if (currentState.ToString() != prevSetting.ToString())
 			{
-				_restartItemCount++;
-				restartLabel.Visible = true;
+				RestartItemCount++;
+				label_RestartRequired.Visible = true;
 			}
 			else
 			{
-				if (_restartItemCount != 0)
-				{
-					_restartItemCount--;
-				}
+				if (RestartItemCount != 0)
+					RestartItemCount--;
 
-				if (_restartItemCount == 0)
-				{
-					restartLabel.Visible = false;
-				}
+				if (RestartItemCount == 0)
+					label_RestartRequired.Visible = false;
 			}
 		}
 	}

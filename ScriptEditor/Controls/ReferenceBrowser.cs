@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace ScriptEditor.Controls
+namespace ScriptEditor
 {
 	public partial class ReferenceBrowser : UserControl
 	{

@@ -5,7 +5,9 @@ namespace ScriptEditor
 {
 	public class SyntaxTidying
 	{
-		public static List<string> ReindentLines(string editorContent)
+		private static Configuration _config = Configuration.Load();
+
+		public static string Reindent(string editorContent)
 		{
 			editorContent = HandleSpacesBeforeEquals(editorContent);
 			editorContent = HandleSpacesAfterEquals(editorContent);
@@ -14,12 +16,28 @@ namespace ScriptEditor
 			editorContent = HandleSpacesAfterCommas(editorContent);
 
 			editorContent = HandleSpaceReduction(editorContent);
-			return TrimLines(editorContent);
+			return Trim(editorContent);
+		}
+
+		public static string Trim(string editorContent)
+		{
+			// Get all lines and create a list to store them
+			string[] lines = editorContent.Replace("\r", string.Empty).Split('\n');
+			List<string> trimmedText = new List<string>();
+
+			// Trim whitespace on every line and add it to the list
+			for (int i = 0; i < lines.Length; i++)
+			{
+				string currentLineText = (lines.Length >= i) ? lines[i] : Environment.NewLine;
+				trimmedText.Add(currentLineText.Trim());
+			}
+
+			return string.Join("\r\n", trimmedText);
 		}
 
 		private static string HandleSpacesBeforeEquals(string editorContent)
 		{
-			if (Properties.Settings.Default.PreEqualSpace)
+			if (_config.Tidy_PreEqualSpace)
 			{
 				editorContent = editorContent.Replace("=", " =");
 
@@ -37,7 +55,7 @@ namespace ScriptEditor
 
 		private static string HandleSpacesAfterEquals(string editorContent)
 		{
-			if (Properties.Settings.Default.PostEqualSpace)
+			if (_config.Tidy_PostEqualSpace)
 			{
 				editorContent = editorContent.Replace("=", "= ");
 
@@ -55,7 +73,7 @@ namespace ScriptEditor
 
 		private static string HandleSpacesBeforeCommas(string editorContent)
 		{
-			if (Properties.Settings.Default.PreCommaSpace)
+			if (_config.Tidy_PreCommaSpace)
 			{
 				editorContent = editorContent.Replace(",", " ,");
 
@@ -73,21 +91,17 @@ namespace ScriptEditor
 
 		private static string HandleSpacesAfterCommas(string editorContent)
 		{
-			if (Properties.Settings.Default.PostCommaSpace)
+			if (_config.Tidy_PostCommaSpace)
 			{
 				editorContent = editorContent.Replace(",", ", ");
 
 				while (editorContent.Contains(",  "))
-				{
 					editorContent = editorContent.Replace(",  ", ", ");
-				}
 			}
 			else
 			{
 				while (editorContent.Contains(", "))
-				{
 					editorContent = editorContent.Replace(", ", ",");
-				}
 			}
 
 			return editorContent;
@@ -95,31 +109,13 @@ namespace ScriptEditor
 
 		private static string HandleSpaceReduction(string editorContent)
 		{
-			if (Properties.Settings.Default.ReduceSpaces)
+			if (_config.Tidy_ReduceSpaces)
 			{
 				while (editorContent.Contains("  "))
-				{
 					editorContent = editorContent.Replace("  ", " ");
-				}
 			}
 
 			return editorContent;
-		}
-
-		public static List<string> TrimLines(string editorContent)
-		{
-			// Get all lines and create a list to store them
-			string[] lines = editorContent.Replace("\r", "").Split('\n');
-			List<string> trimmedText = new List<string>();
-
-			// Trim whitespace on every line and add it to the list
-			for (int i = 0; i < lines.Length; i++)
-			{
-				string currentLineText = (lines.Length >= i) ? lines[i] : Environment.NewLine;
-				trimmedText.Add(currentLineText.Trim());
-			}
-
-			return trimmedText;
 		}
 	}
 }

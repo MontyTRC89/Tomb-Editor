@@ -144,11 +144,21 @@ namespace ScriptEditor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A project with the same name already exists..
+        ///   Looks up a localized string similar to The &quot;{0}&quot; project is using the same .exe file as the one you&apos;re currently trying to add.
+        ///Please select a different .exe file..
         /// </summary>
         internal static string Error_ProjectAlreadyExists {
             get {
                 return ResourceManager.GetString("Error_ProjectAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A project with the same name already exists..
+        /// </summary>
+        internal static string Error_ProjectNameAlreadyExists {
+            get {
+                return ResourceManager.GetString("Error_ProjectNameAlreadyExists", resourceCulture);
             }
         }
         
