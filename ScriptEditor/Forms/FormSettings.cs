@@ -102,7 +102,10 @@ namespace ScriptEditor
 		private void button_ReindentRules_Click(object sender, EventArgs e)
 		{
 			using (FormReindentRules form = new FormReindentRules())
-				form.ShowDialog(this);
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+					_config = Configuration.Load();
+			}
 		}
 
 		private void button_CommentColor_Click(object sender, EventArgs e)
