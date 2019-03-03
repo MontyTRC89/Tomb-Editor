@@ -909,6 +909,8 @@ namespace ScriptEditor
 			{
 				if (proj.Name == comboBox_Projects.SelectedItem.ToString())
 				{
+					projectFound = true;
+
 					_currentProject = null; // Set this to null so we won't trigger Editor_TabControl_Selecting in the next line
 					tabControl_Editor.TabPages.Clear();
 
@@ -916,8 +918,6 @@ namespace ScriptEditor
 					OpenProjectFiles();
 
 					_config.LastProjectName = _currentProject.Name;
-
-					projectFound = true;
 				}
 			}
 
@@ -1183,8 +1183,8 @@ namespace ScriptEditor
 				{
 					if (file.ToLower().EndsWith("\\script.txt"))
 					{
-						OpenFile(file);
 						scriptFileFound = true;
+						OpenFile(file);
 					}
 				}
 
