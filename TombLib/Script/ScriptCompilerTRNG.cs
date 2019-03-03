@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Script
 {
@@ -112,11 +111,10 @@ namespace TombLib.Script
 
             if (windows.Count() == 0)
             {
-                string ngCenterPath = _path + "\\NG_Center.exe";
-                if (!File.Exists(ngCenterPath))
+                if (!File.Exists(_path))
                     return false;
 
-                Process process = Process.Start(ngCenterPath);
+                Process process = Process.Start(_path);
                 process.WaitForInputIdle();
 
                 windows = FindWindowsWithText("NG Center 1.");
