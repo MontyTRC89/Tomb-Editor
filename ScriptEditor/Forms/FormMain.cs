@@ -1218,13 +1218,17 @@ namespace ScriptEditor
 					menuItem_Save.Enabled = false;
 					button_Save.Enabled = false;
 				}
-
-				UpdateObjectBrowserNodes();
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				_currentTab.Tag = null;
+
+				if (_backupMode)
+					File.Delete(filePath + ".backup");
 			}
+
+			UpdateObjectBrowserNodes();
 		}
 
 		private bool AreAllFilesSaved()
