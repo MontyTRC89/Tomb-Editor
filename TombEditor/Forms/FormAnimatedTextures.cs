@@ -84,7 +84,7 @@ namespace TombEditor.Forms
         private readonly Timer _previewTimer = new Timer();
         private AnimatedTextureFrame _previewCurrentFrame;
         private int _previewCurrentRepeatTimes;
-        private const float _previewFps = 15;
+        private const float _previewFps = 16;
         private const int _maxLegacyFrames = 16;
         private const string animNameCombineString = " (with ";
         private int _lastY;
