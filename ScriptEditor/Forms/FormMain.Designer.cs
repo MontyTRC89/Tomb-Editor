@@ -1393,10 +1393,10 @@ namespace ScriptEditor
 		private System.Windows.Forms.ToolStripMenuItem menuItem_NextBookmark;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_ClearBookmarks;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Settings;
-		private System.Windows.Forms.ToolStripMenuItem menuItem_ToolStrip;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_ObjBrowser;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_ProjExplorer;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_InfoBox;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_ToolStrip;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_StatusStrip;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_LineNumbers;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_ToolTips;

@@ -135,7 +135,7 @@ namespace ScriptEditor
 		{
 			List<Project> existingProjects = new List<Project>();
 
-			using (StreamReader reader = new StreamReader("Projects.xml"))
+			using (StreamReader reader = new StreamReader("ScriptEditorProjects.xml"))
 			{
 				XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
 				existingProjects = (List<Project>)serializer.Deserialize(reader);
@@ -197,7 +197,7 @@ namespace ScriptEditor
 
 			existingProjects.Add(newProject);
 
-			using (StreamWriter writer = new StreamWriter("Projects.xml"))
+			using (StreamWriter writer = new StreamWriter("ScriptEditorProjects.xml"))
 				new XmlSerializer(typeof(List<Project>)).Serialize(writer, existingProjects);
 		}
 
