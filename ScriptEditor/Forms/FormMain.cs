@@ -131,8 +131,8 @@ namespace ScriptEditor
 
 				comboBox_Projects.Items.Clear();
 
-				foreach (Project project in _availableProjects) // Add all available projects into comboBox_Projects
-					comboBox_Projects.Items.Add(project.Name);
+				foreach (Project proj in _availableProjects) // Add all available projects into comboBox_Projects
+					comboBox_Projects.Items.Add(proj.Name);
 			}
 			catch (IOException) // ScriptEditorProjects.xml doesn't exist
 			{
@@ -338,7 +338,7 @@ namespace ScriptEditor
 		private void Editor_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right && !_textBox.Selection.Contains(_textBox.PointToPlace(e.Location)))
-				_textBox.Selection.Start = _textBox.PointToPlace(e.Location); // Move caret to the right-clicked line
+				_textBox.Selection.Start = _textBox.PointToPlace(e.Location); // Move caret to the right-clicked position
 		}
 
 		private void Editor_ZoomChanged(object sender, EventArgs e)
@@ -973,7 +973,10 @@ namespace ScriptEditor
 			}
 
 			if (string.IsNullOrEmpty(scriptFilePath))
-				return; // TODO: ADD ERROR MESSAGE HERE!
+			{
+				DarkMessageBox.Show(this, Resources.Messages.Error_NoScriptFileFound, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
 			foreach (TabPage tab in tabControl_Editor.TabPages) // Check if the file isn't opened already
 			{
@@ -1074,7 +1077,7 @@ namespace ScriptEditor
 		private void Editor_TabControl_Selecting(object sender, TabControlCancelEventArgs e)
 		{
 			if (tabControl_Editor.TabCount == 0 && _currentProject != null) // If the last tab page was closed
-				CreateNewTabPage(); // As "Untitled"
+				CreateNewTabPage("Untitled");
 		}
 
 		private void Editor_TabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -1087,10 +1090,9 @@ namespace ScriptEditor
 			foreach (ScriptTextBox textBox in _currentTab.Controls.OfType<ScriptTextBox>())
 			{
 				_textBox = textBox;
+				UpdateObjectBrowserNodes();
 				UpdateUndoRedoSaveStates();
 				DoStatusCounting();
-
-				UpdateObjectBrowserNodes();
 
 				label_Zoom.Text = "Zoom: " + _textBox.Zoom + "%";
 				button_ResetZoom.Visible = _textBox.Zoom != 100;
@@ -1136,10 +1138,8 @@ namespace ScriptEditor
 			}
 		}
 
-		private void CreateNewTabPage(string filePath = null)
+		private void CreateNewTabPage(string tabPageTitle, string filePath = null)
 		{
-			string tabPageTitle = filePath == null ? "Untitled" : Path.GetFileName(filePath);
-
 			TabPage newTabPage = new TabPage(tabPageTitle)
 			{
 				UseVisualStyleBackColor = false,
@@ -1188,7 +1188,7 @@ namespace ScriptEditor
 				ToggleInterface(true); // Enable the interface since we got files we can edit
 				UpdateExplorerTreeView(); // Add the \Script\ folder files and subfolders into the TreeView
 
-				scriptFolderWatcher.Path = _currentProject.ScriptPath; // Enable the scriptFolderWatcher for the current project
+				scriptFolderWatcher.Path = _currentProject.ScriptPath; // Enable scriptFolderWatcher for the current project
 
 				bool scriptFileFound = false;
 
@@ -1202,9 +1202,7 @@ namespace ScriptEditor
 				}
 
 				if (!scriptFileFound)
-				{
-					// TODO: Add error message for missing script.txt file here
-				}
+					DarkMessageBox.Show(this, Resources.Messages.Error_NoScriptFileFound, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			catch (Exception ex)
 			{
@@ -1216,7 +1214,7 @@ namespace ScriptEditor
 		{
 			try
 			{
-				CreateNewTabPage(filePath);
+				CreateNewTabPage(Path.GetFileName(filePath), filePath);
 				_textBox.OpenFile(filePath, Encoding.GetEncoding(1252));
 
 				if (_config.ShowSpaces && _textBox.Text.Contains(" "))
