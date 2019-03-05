@@ -32,10 +32,10 @@ namespace ScriptEditor
 
 		// View options
 
-		public bool View_ShowToolStrip { get; set; } = true;
 		public bool View_ShowObjBrowser { get; set; } = true;
 		public bool View_ShowProjExplorer { get; set; } = true;
 		public bool View_ShowInfoBox { get; set; } = true;
+		public bool View_ShowToolStrip { get; set; } = true;
 		public bool View_ShowStatusStrip { get; set; } = true;
 		public bool View_ShowLineNumbers { get; set; } = true;
 		public bool View_ShowToolTips { get; set; } = true;

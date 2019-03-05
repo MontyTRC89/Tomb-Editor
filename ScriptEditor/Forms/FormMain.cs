@@ -64,30 +64,31 @@ namespace ScriptEditor
 
 		protected override void OnShown(EventArgs e)
 		{
-			ApplyUserSettings();
-			GetProjectsFromXML(); // From Projects.xml
+			base.OnShown(e);
 
-			if (!LastSessionClosedSuccessfully())
+			ApplyUserSettings(); // From ScriptEditorConfiguration.xml
+			GetProjectsFromXML(); // From ScriptEditorProjects.xml
+
+			if (LastSessionCrashed())
 				return;
 
-			if (!string.IsNullOrWhiteSpace(_config.LastProjectName))
-				OpenLastProject();
-			else // This should only happen when the program was never used before
+			if (string.IsNullOrWhiteSpace(_config.LastProjectName)) // This should only happen when the program was never used before
 			{
 				ToggleInterface(false);
 				ShowProjectSetupForm();
 			}
-
-			base.OnShown(e);
+			else
+				OpenLastProject();
 		}
 
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			if (!AreAllFilesSaved()) // Checks all opened tabs
+			base.OnClosing(e);
+
+			if (!AreAllFilesSaved()) // Check all opened tabs
 				e.Cancel = true;
 
-			_config.Save();
-			base.OnClosing(e);
+			_config.Save(); // Save settings before closing
 		}
 
 		private void ApplyUserSettings()
@@ -98,18 +99,22 @@ namespace ScriptEditor
 				foreach (ScriptTextBox textBox in tab.Controls.OfType<ScriptTextBox>())
 				{
 					textBox.Font = new Font(_config.FontFamily, _config.FontSize);
+
 					textBox.AutoCompleteBrackets = _config.AutoCloseBrackets;
 					textBox.WordWrap = _config.WordWrap;
+
 					textBox.ShowLineNumbers = _config.View_ShowLineNumbers;
 				}
 			}
 
 			// Editor settings
-			ToggleToolStrip(_config.View_ShowToolStrip);
 			ToggleObjBrowser(_config.View_ShowObjBrowser);
 			ToggleProjExplorer(_config.View_ShowProjExplorer);
 			ToggleInfoBox(_config.View_ShowInfoBox);
+
+			ToggleToolStrip(_config.View_ShowToolStrip);
 			ToggleStatusStrip(_config.View_ShowStatusStrip);
+
 			ToggleLineNumbers(_config.View_ShowLineNumbers);
 			menuItem_ToolTips.Checked = _config.View_ShowToolTips;
 		}
@@ -118,7 +123,7 @@ namespace ScriptEditor
 		{
 			try
 			{
-				using (StreamReader reader = new StreamReader("Projects.xml")) // Read Projects.xml
+				using (StreamReader reader = new StreamReader("ScriptEditorProjects.xml")) // Read ScriptEditorProjects.xml
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
 					_availableProjects = (List<Project>)serializer.Deserialize(reader);
@@ -126,18 +131,18 @@ namespace ScriptEditor
 
 				comboBox_Projects.Items.Clear();
 
-				foreach (Project project in _availableProjects) // Add all available projects to comboBox_Projects
+				foreach (Project project in _availableProjects) // Add all available projects into comboBox_Projects
 					comboBox_Projects.Items.Add(project.Name);
 			}
-			catch (IOException) // Projects.xml doesn't exist
+			catch (IOException) // ScriptEditorProjects.xml doesn't exist
 			{
-				using (StreamWriter writer = new StreamWriter("Projects.xml")) // Create a new Projects.xml file
+				using (StreamWriter writer = new StreamWriter("ScriptEditorProjects.xml")) // Create a new ScriptEditorProjects.xml file
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
 					serializer.Serialize(writer, new List<Project>());
 				}
 
-				_config.LastProjectName = string.Empty; // Reset this because we just created a new Projects.xml file
+				_config.LastProjectName = string.Empty; // Reset this because we just created a new ScriptEditorProjects.xml file
 			}
 			catch (Exception ex)
 			{
@@ -145,25 +150,25 @@ namespace ScriptEditor
 			}
 		}
 
-		private bool LastSessionClosedSuccessfully()
+		private bool LastSessionCrashed()
 		{
 			foreach (Project proj in _availableProjects)
 			{
 				string[] files = Directory.GetFiles(proj.ScriptPath, "*.backup", SearchOption.AllDirectories);
 
-				if (files.Count() != 0)
+				if (files.Count() != 0) // If a .backup file exists in the current project
 				{
 					RestorePreviousSession(proj, files);
-					return false;
+					return true;
 				}
 			}
 
-			return true;
+			return false;
 		}
 
 		private void RestorePreviousSession(Project project, string[] files)
 		{
-			_backupMode = true;
+			_backupMode = true; // To prevent unwanted events such as Explorer_Projects_SelectedIndexChanged
 
 			_currentProject = project;
 			comboBox_Projects.SelectedItem = project.Name;
@@ -196,7 +201,7 @@ namespace ScriptEditor
 				}
 			}
 
-			if (!projectFound) // Projects.xml was probably modified or deleted
+			if (!projectFound) // ScriptEditorProjects.xml was probably modified or deleted
 			{
 				ToggleInterface(false);
 				ShowProjectSetupForm();
@@ -236,12 +241,6 @@ namespace ScriptEditor
 		private void Tools_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
 		private void Tools_Settings_Click(object sender, EventArgs e) => ShowSettingsForm();
 
-		private void View_ToolStrip_Click(object sender, EventArgs e)
-		{
-			ToggleToolStrip(!toolStrip.Visible);
-			_config.View_ShowToolStrip = toolStrip.Visible;
-		}
-
 		private void View_ObjBrowser_Click(object sender, EventArgs e)
 		{
 			ToggleObjBrowser(!groupBox_ObjBrowser.Visible);
@@ -258,6 +257,12 @@ namespace ScriptEditor
 		{
 			ToggleInfoBox(!groupBox_InfoBox.Visible);
 			_config.View_ShowInfoBox = groupBox_InfoBox.Visible;
+		}
+
+		private void View_ToolStrip_Click(object sender, EventArgs e)
+		{
+			ToggleToolStrip(!toolStrip.Visible);
+			_config.View_ShowToolStrip = toolStrip.Visible;
 		}
 
 		private void View_StatusStrip_Click(object sender, EventArgs e)
@@ -333,7 +338,7 @@ namespace ScriptEditor
 		private void Editor_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right && !_textBox.Selection.Contains(_textBox.PointToPlace(e.Location)))
-				_textBox.Selection.Start = _textBox.PointToPlace(e.Location); // Move caret to the right clicked line
+				_textBox.Selection.Start = _textBox.PointToPlace(e.Location); // Move caret to the right-clicked line
 		}
 
 		private void Editor_ZoomChanged(object sender, EventArgs e)
@@ -417,6 +422,7 @@ namespace ScriptEditor
 					File.Delete(backupFilePath); // We don't need it when there are no changes made
 
 					_textBox.IsChanged = false;
+
 					menuItem_Save.Enabled = false;
 					button_Save.Enabled = false;
 				}
@@ -431,6 +437,7 @@ namespace ScriptEditor
 				if (string.IsNullOrEmpty(_textBox.Text))
 				{
 					_textBox.IsChanged = false;
+
 					menuItem_Save.Enabled = false;
 					button_Save.Enabled = false;
 				}
@@ -447,7 +454,7 @@ namespace ScriptEditor
 			label_LineNumber.Text = "Line: " + (_textBox.Selection.Start.iLine + 1);
 			label_ColNumber.Text = "Column: " + (_textBox.Selection.Start.iChar + 1);
 
-			if (_textBox.Selection.Start.iChar == -1) // FCTB sucks
+			if (_textBox.Selection.Start.iChar < 0) // FCTB sucks
 				_textBox.Selection.Start = new Place(0, _textBox.Selection.Start.iLine);
 
 			label_SelectedChars.Text = "Selected: " + _textBox.SelectedText.Length;
@@ -538,6 +545,7 @@ namespace ScriptEditor
 			// Cache
 			int scrollPosition = _textBox.VerticalScroll.Value;
 			Bookmark[] bookmarks = _textBox.Bookmarks.ToArray();
+
 			_textBox.Bookmarks.Clear();
 
 			// Tidy
@@ -580,16 +588,16 @@ namespace ScriptEditor
 		{
 			if (_currentTab.Tag != null)
 			{
-				if (!_textBox.IsChanged)
+				if (!_textBox.IsChanged) // Remove * if it's there
 					_currentTab.Text = _currentTab.Text.TrimEnd('*');
-				else if (!_currentTab.Text.EndsWith("*"))
+				else if (!_currentTab.Text.EndsWith("*")) // Add * if it's NOT there
 					_currentTab.Text = Path.GetFileName(_currentTab.Tag.ToString()) + "*";
 			}
 			else
 			{
-				if (!_textBox.IsChanged)
+				if (!_textBox.IsChanged) // Remove * if it's there
 					_currentTab.Text = "Untitled";
-				else if (!_currentTab.Text.EndsWith("*"))
+				else if (!_currentTab.Text.EndsWith("*")) // Add * if it's NOT there
 					_currentTab.Text = "Untitled*";
 			}
 		}
@@ -629,26 +637,20 @@ namespace ScriptEditor
 
 			if (state == false)
 			{
-				ToggleToolStrip(false);
 				ToggleObjBrowser(false);
 				ToggleProjExplorer(false);
 				ToggleInfoBox(false);
+				ToggleToolStrip(false);
 				ToggleStatusStrip(false);
 			}
 			else
 			{
-				ToggleToolStrip(_config.View_ShowToolStrip);
 				ToggleObjBrowser(_config.View_ShowObjBrowser);
 				ToggleProjExplorer(_config.View_ShowProjExplorer);
 				ToggleInfoBox(_config.View_ShowInfoBox);
+				ToggleToolStrip(_config.View_ShowToolStrip);
 				ToggleStatusStrip(_config.View_ShowStatusStrip);
 			}
-		}
-
-		private void ToggleToolStrip(bool state)
-		{
-			toolStrip.Visible = state;
-			menuItem_ToolStrip.Checked = state;
 		}
 
 		private void ToggleObjBrowser(bool state)
@@ -670,6 +672,12 @@ namespace ScriptEditor
 			groupBox_InfoBox.Visible = state;
 			splitter_Bottom.Visible = state;
 			menuItem_InfoBox.Checked = state;
+		}
+
+		private void ToggleToolStrip(bool state)
+		{
+			toolStrip.Visible = state;
+			menuItem_ToolStrip.Checked = state;
 		}
 
 		private void ToggleStatusStrip(bool state)
@@ -752,7 +760,7 @@ namespace ScriptEditor
 			do
 			{
 				if (i < 0)
-					return; // Line number might go to -1 and it will crash the app, so stop the loop to prevent it
+					return; // The line number might go to -1 and it will crash the app, so stop the loop to prevent it
 
 				if (_textBox.GetLineText(i).StartsWith("[PSXExtensions]"))
 				{
@@ -934,7 +942,7 @@ namespace ScriptEditor
 
 		private void Explorer_TreeView_DoubleClick(object sender, EventArgs e)
 		{
-			// If user hasn't selected any node or selected node is empty
+			// If the user hasn't selected any node or the selected node is empty
 			if (treeView_Files.SelectedNodes.Count < 1 || string.IsNullOrWhiteSpace(treeView_Files.SelectedNodes[0].Text))
 				return;
 
@@ -944,7 +952,7 @@ namespace ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages) // Check if the file isn't opened already
 			{
-				if (tab.Text == treeView_Files.SelectedNodes[0].Text || tab.Text == treeView_Files.SelectedNodes[0].Text + "*")
+				if (tab.Text.TrimEnd('*') == treeView_Files.SelectedNodes[0].Text)
 				{
 					tabControl_Editor.SelectTab(tabControl_Editor.TabPages.IndexOf(tab));
 					return;
@@ -969,7 +977,7 @@ namespace ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages) // Check if the file isn't opened already
 			{
-				if (tab.Text == Path.GetFileName(scriptFilePath) || tab.Text == Path.GetFileName(scriptFilePath) + "*")
+				if (tab.Text.TrimEnd('*') == Path.GetFileName(scriptFilePath))
 				{
 					tabControl_Editor.SelectTab(tabControl_Editor.TabPages.IndexOf(tab));
 					return;
@@ -981,7 +989,10 @@ namespace ScriptEditor
 
 		private void Explorer_EditLanguages_Click(object sender, EventArgs e)
 		{
-			// TODO
+			// TODO !!!
+			using (FormStringTable form = new FormStringTable())
+				form.ShowDialog(this);
+			// TODO !!!
 		}
 
 		private void Explorer_OpenInExplorer_Click(object sender, EventArgs e)
@@ -1062,7 +1073,7 @@ namespace ScriptEditor
 
 		private void Editor_TabControl_Selecting(object sender, TabControlCancelEventArgs e)
 		{
-			if (tabControl_Editor.TabCount == 0 && _currentProject != null) // If last tab page was closed
+			if (tabControl_Editor.TabCount == 0 && _currentProject != null) // If the last tab page was closed
 				CreateNewTabPage(); // As "Untitled"
 		}
 
@@ -1154,9 +1165,9 @@ namespace ScriptEditor
 			newTextBox.DelayedTextChangedInterval = 1;
 
 			if (!string.IsNullOrWhiteSpace(filePath))
-				newTabPage.Tag = filePath; // Store full file path in the tag
+				newTabPage.Tag = filePath; // Store the full file path in the tag
 
-			newTextBox.Tag = 100; // More info about why this is here at the start of the class (_textBox.Tag)
+			newTextBox.Tag = 100; // For more info about why this is here, scroll up to the start of the class
 
 			newTabPage.Controls.Add(newTextBox);
 			tabControl_Editor.TabPages.Add(newTabPage);
@@ -1174,9 +1185,10 @@ namespace ScriptEditor
 		{
 			try
 			{
-				ToggleInterface(true); // Enable interface since we got files we can edit
-				UpdateExplorerTreeView();
-				scriptFolderWatcher.Path = _currentProject.ScriptPath;
+				ToggleInterface(true); // Enable the interface since we got files we can edit
+				UpdateExplorerTreeView(); // Add the \Script\ folder files and subfolders into the TreeView
+
+				scriptFolderWatcher.Path = _currentProject.ScriptPath; // Enable the scriptFolderWatcher for the current project
 
 				bool scriptFileFound = false;
 
@@ -1271,7 +1283,7 @@ namespace ScriptEditor
 			}
 
 			tab.Dispose();
-			return true; // If file is saved
+			return true; // If the file is saved
 		}
 
 		private bool SaveFile(ScriptTextBox textBox)
@@ -1282,22 +1294,7 @@ namespace ScriptEditor
 			try
 			{
 				if (_currentTab.Tag == null) // For "Untitled"
-				{
-					SaveFileDialog dialog = new SaveFileDialog()
-					{
-						Filter = "Text Files (*.txt)|*.txt|LUA Files (*.lua)|*.lua|All Files (*.*)|*.*",
-						RestoreDirectory = true,
-						InitialDirectory = _currentProject.ScriptPath
-					};
-
-					if (dialog.ShowDialog() == DialogResult.OK)
-					{
-						string editorContent = textBox.Text.Replace("·", " ");
-						File.WriteAllText(dialog.FileName, editorContent, Encoding.GetEncoding(1252));
-
-						_currentTab.Tag = dialog.FileName;
-					}
-				}
+					ShowSaveAsDialog(textBox);
 				else
 				{
 					string editorContent = textBox.Text.Replace("·", " ");
@@ -1315,6 +1312,24 @@ namespace ScriptEditor
 			}
 
 			return true; // If saving was successful
+		}
+
+		private void ShowSaveAsDialog(ScriptTextBox textBox)
+		{
+			SaveFileDialog dialog = new SaveFileDialog()
+			{
+				Filter = "Text Files (*.txt)|*.txt|LUA Files (*.lua)|*.lua|All Files (*.*)|*.*",
+				RestoreDirectory = true,
+				InitialDirectory = _currentProject.ScriptPath
+			};
+
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				string editorContent = textBox.Text.Replace("·", " ");
+				File.WriteAllText(dialog.FileName, editorContent, Encoding.GetEncoding(1252));
+
+				_currentTab.Tag = dialog.FileName;
+			}
 		}
 
 		#endregion Files
@@ -1335,13 +1350,13 @@ namespace ScriptEditor
 				{
 					List<Project> projects = new List<Project>();
 
-					using (StreamReader reader = new StreamReader("Projects.xml"))
+					using (StreamReader reader = new StreamReader("ScriptEditorProjects.xml"))
 					{
 						XmlSerializer serializer = new XmlSerializer(typeof(List<Project>));
 						projects = (List<Project>)serializer.Deserialize(reader);
 					}
 
-					Project newProject = projects[projects.Count - 1]; // Last project from the XML file (the one we just added)
+					Project newProject = projects[projects.Count - 1]; // The last project from the XML file (the one we just added)
 
 					_availableProjects.Add(newProject);
 					comboBox_Projects.Items.Add(newProject.Name);
@@ -1356,8 +1371,8 @@ namespace ScriptEditor
 			_config.Save();
 
 			// Cache critical settings
-			bool showSpacesCache = _config.ShowSpaces;
 			bool autocompleteCache = _config.Autocomplete;
+			bool showSpacesCache = _config.ShowSpaces;
 
 			using (FormSettings form = new FormSettings())
 			{
@@ -1373,8 +1388,8 @@ namespace ScriptEditor
 					{
 						// Saving failed or the user clicked "Cancel"
 						// Therefore restore the previous critical settings
-						_config.ShowSpaces = showSpacesCache;
 						_config.Autocomplete = autocompleteCache;
+						_config.ShowSpaces = showSpacesCache;
 						_config.Save();
 
 						ShowSettingsForm();
