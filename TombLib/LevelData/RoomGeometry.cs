@@ -1513,7 +1513,7 @@ namespace TombLib.LevelData
             TriangleSectorInfo.Add(new SectorInfo(x, z, face));
         }
 
-        private bool RayTraceCheckFloorCeiling(Room room, int x, int y, int z, int xLight, int zLight)
+        private static bool RayTraceCheckFloorCeiling(Room room, int x, int y, int z, int xLight, int zLight)
         {
             int currentX = x / 1024 - (x > xLight ? 1 : 0);
             int currentZ = z / 1024 - (z > zLight ? 1 : 0);
@@ -1525,7 +1525,7 @@ namespace TombLib.LevelData
             return floorMin <= y / 256 && ceilingMax >= y / 256;
         }
 
-        private bool RayTraceX(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
+        private static bool RayTraceX(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
         {
             int deltaX;
             int deltaY;
@@ -1561,8 +1561,6 @@ namespace TombLib.LevelData
                 yPoint = yLight;
                 zPoint = zLight;
             }
-
-            // deltaY *= -1;
 
             if (deltaX == 0)
                 return true;
@@ -1632,7 +1630,7 @@ namespace TombLib.LevelData
             return true;
         }
 
-        private bool RayTraceZ(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
+        private static bool RayTraceZ(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
         {
             int deltaX;
             int deltaY;
@@ -1668,8 +1666,6 @@ namespace TombLib.LevelData
                 xPoint = xLight;
                 yPoint = yLight;
             }
-
-            //deltaY *= -1;
 
             if (deltaZ == 0)
                 return true;
@@ -1739,6 +1735,162 @@ namespace TombLib.LevelData
             return true;
         }
 
+        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, Vector3 normal, bool raytrace)
+        {
+            if (!light.Enabled || !light.IsStaticallyUsed)
+                return Vector3.Zero;
+
+            switch (light.Type)
+            {
+                case LightType.Point:
+                case LightType.Shadow:
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                    {
+                        // Get the distance between light and vertex
+                        float distance = Math.Abs((position - light.Position).Length());
+
+                        // If distance is greater than light out radius, then skip this light
+                        if (distance > light.OuterRange * 1024.0f)
+                            return Vector3.Zero;
+
+                        // Calculate light diffuse value
+                        int diffuse = (int)(light.Intensity * 8192);
+
+                        // Calculate the length squared of the normal vector
+                        float dotN = Vector3.Dot(normal, normal);
+
+                        // Do raytracing
+                        if (dotN <= 0 || raytrace && (
+                            !RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                            !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
+                            !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z)))
+                        {
+                            if (light.IsObstructedByRoomGeometry)
+                                return Vector3.Zero;
+                        }
+
+                        // Calculate the attenuation
+                        float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+                        if (attenuaton > 1.0f)
+                            attenuaton = 1.0f;
+                        if (attenuaton <= 0.0f)
+                            return Vector3.Zero;
+
+                        // Calculate final light color
+                        float finalIntensity = dotN * attenuaton * diffuse;
+                        return finalIntensity * light.Color * (1.0f / 64.0f);
+                    }
+                    break;
+                case LightType.Effect:
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                    {
+                        int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
+                        int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
+                        int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
+                        int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
+
+                        // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
+                        if ((position.X == x1 && position.Z == z1 || position.X == x1 && position.Z == z2 || position.X == x2 && position.Z == z1 ||
+                             position.X == x2 && position.Z == z2) && position.Y <= light.Position.Y)
+                        {
+                            float finalIntensity = light.Intensity * 8192 * 0.25f;
+                            return finalIntensity * light.Color * (1.0f / 64.0f);
+                        }
+                    }
+                    break;
+                case LightType.Sun:
+                    {
+                        // Do raytracing now for saving CPU later
+                        if (raytrace && (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                            !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
+                            !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z)))
+                        {
+                            if (light.IsObstructedByRoomGeometry)
+                                return Vector3.Zero;
+                        }
+
+                        // Calculate the light direction
+                        Vector3 lightDirection = light.GetDirection();
+
+                        // calcolo la luce diffusa
+                        float diffuse = -Vector3.Dot(lightDirection, normal);
+
+                        if (diffuse <= 0)
+                            return Vector3.Zero;
+
+                        if (diffuse > 1)
+                            diffuse = 1.0f;
+
+
+                        float finalIntensity = diffuse * light.Intensity * 8192.0f;
+                        if (finalIntensity < 0)
+                            return Vector3.Zero;
+                        return finalIntensity * light.Color * (1.0f / 64.0f);
+                    }
+                    break;
+                case LightType.Spot:
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                    {
+                        // Calculate the ray from light to vertex
+                        Vector3 lightVector = Vector3.Normalize(position - light.Position);
+
+                        // Get the distance between light and vertex
+                        float distance = Math.Abs((position - light.Position).Length());
+
+                        // If distance is greater than light length, then skip this light
+                        if (distance > light.OuterRange * 1024.0f)
+                            return Vector3.Zero;
+
+                        // Calculate the light direction
+                        Vector3 lightDirection = light.GetDirection();
+
+                        // Calculate the cosines values for In, Out
+                        double d = Vector3.Dot(lightVector, lightDirection);
+                        double cosI2 = Math.Cos(light.InnerAngle * (Math.PI / 180));
+                        double cosO2 = Math.Cos(light.OuterAngle * (Math.PI / 180));
+
+                        if (d < cosO2)
+                            return Vector3.Zero;
+
+                        if (raytrace && (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                            !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
+                            !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z)))
+                        {
+                            if (light.IsObstructedByRoomGeometry)
+                                return Vector3.Zero;
+                        }
+
+                        // Calculate light diffuse value
+                        float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
+                        if (factor > 1.0f)
+                            factor = 1.0f;
+                        if (factor <= 0.0f)
+                            return Vector3.Zero;
+
+                        float attenuation = 1.0f;
+                        if (distance >= light.InnerRange * 1024.0f)
+                            attenuation = 1.0f - (distance - light.InnerRange * 1024.0f) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+
+                        if (attenuation > 1.0f)
+                            attenuation = 1.0f;
+                        if (attenuation < 0.0f)
+                            return Vector3.Zero;
+
+                        float dot1 = -Vector3.Dot(lightDirection, normal);
+                        if (dot1 < 0.0f)
+                            return Vector3.Zero;
+                        if (dot1 > 1.0f)
+                            dot1 = 1.0f;
+
+                        float finalIntensity = attenuation * dot1 * factor * light.Intensity * 8192.0f;
+                        return finalIntensity * light.Color * (1.0f / 64.0f);
+                    }
+                    break;
+            }
+
+            return Vector3.Zero;
+        }
+
         public void Relight(Room room)
         {
             // Collect lights
@@ -1765,158 +1917,7 @@ namespace TombLib.LevelData
 
                     foreach (var light in lights) // No Linq here because it's slow
                     {
-                        if (!light.Enabled || !light.IsStaticallyUsed)
-                            continue;
-
-                        switch (light.Type)
-                        {
-                            case LightType.Point:
-                            case LightType.Shadow:
-                                if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
-                                {
-                                    // Get the distance between light and vertex
-                                    float distance = Math.Abs((position - light.Position).Length());
-
-                                    // If distance is greater than light out radius, then skip this light
-                                    if (distance > light.OuterRange * 1024.0f)
-                                        continue;
-
-                                    // Calculate light diffuse value
-                                    int diffuse = (int)(light.Intensity * 8192);
-
-                                    // Calculate the length squared of the normal vector
-                                    float dotN = Vector3.Dot(normal, normal);
-
-                                    // Do raytracing
-                                    if (dotN <= 0 ||
-                                        !RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
-                                        !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
-                                        !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
-                                    {
-                                        if (light.IsObstructedByRoomGeometry)
-                                            continue;
-                                    }
-
-                                    // Calculate the attenuation
-                                    float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
-                                    if (attenuaton > 1.0f)
-                                        attenuaton = 1.0f;
-                                    if (attenuaton <= 0.0f)
-                                        continue;
-
-                                    // Calculate final light color
-                                    float finalIntensity = dotN * attenuaton * diffuse;
-                                    color += finalIntensity * light.Color * (1.0f / 64.0f);
-                                }
-                                break;
-                            case LightType.Effect:
-                                if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
-                                {
-                                    int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
-                                    int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
-                                    int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
-                                    int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
-
-                                    // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
-                                    // ReSharper disable CompareOfFloatsByEqualityOperator
-                                    if ((position.X == x1 && position.Z == z1 || position.X == x1 && position.Z == z2 || position.X == x2 && position.Z == z1 ||
-                                         position.X == x2 && position.Z == z2) && position.Y <= light.Position.Y)
-                                    {
-                                        float finalIntensity = light.Intensity * 8192 * 0.25f;
-                                        color += finalIntensity * light.Color * (1.0f / 64.0f);
-                                    }
-                                    // ReSharper restore CompareOfFloatsByEqualityOperator
-                                }
-                                break;
-                            case LightType.Sun:
-                                {
-                                    // Do raytracing now for saving CPU later
-                                    if (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
-                                        !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
-                                        !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
-                                    {
-                                        if (light.IsObstructedByRoomGeometry)
-                                            continue;
-                                    }
-
-                                    // Calculate the light direction
-                                    Vector3 lightDirection = light.GetDirection();
-
-                                    // calcolo la luce diffusa
-                                    float diffuse = -Vector3.Dot(lightDirection, normal);
-
-                                    if (diffuse <= 0)
-                                        continue;
-
-                                    if (diffuse > 1)
-                                        diffuse = 1.0f;
-
-
-                                    float finalIntensity = diffuse * light.Intensity * 8192.0f;
-                                    if (finalIntensity < 0)
-                                        continue;
-                                    color += finalIntensity * light.Color * (1.0f / 64.0f);
-                                }
-                                break;
-                            case LightType.Spot:
-                                if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
-                                {
-                                    // Calculate the ray from light to vertex
-                                    Vector3 lightVector = Vector3.Normalize(position - light.Position);
-
-                                    // Get the distance between light and vertex
-                                    float distance = Math.Abs((position - light.Position).Length());
-
-                                    // If distance is greater than light length, then skip this light
-                                    if (distance > light.OuterRange * 1024.0f)
-                                        continue;
-
-                                    // Calculate the light direction
-                                    Vector3 lightDirection = light.GetDirection();
-
-                                    // Calculate the cosines values for In, Out
-                                    double d = Vector3.Dot(lightVector, lightDirection);
-                                    double cosI2 = Math.Cos(light.InnerAngle * (Math.PI / 180));
-                                    double cosO2 = Math.Cos(light.OuterAngle * (Math.PI / 180));
-
-                                    if (d < cosO2)
-                                        continue;
-
-                                    if (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
-                                        !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
-                                        !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
-                                    {
-                                        if (light.IsObstructedByRoomGeometry)
-                                            continue;
-                                    }
-
-                                    // Calculate light diffuse value
-                                    float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
-                                    if (factor > 1.0f)
-                                        factor = 1.0f;
-                                    if (factor <= 0.0f)
-                                        continue;
-
-                                    float attenuation = 1.0f;
-                                    if (distance >= light.InnerRange * 1024.0f)
-                                        attenuation = 1.0f - (distance - light.InnerRange * 1024.0f) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
-
-                                    if (attenuation > 1.0f)
-                                        attenuation = 1.0f;
-                                    if (attenuation < 0.0f)
-                                        continue;
-
-                                    float dot1 = -Vector3.Dot(lightDirection, normal);
-                                    if (dot1 < 0.0f)
-                                        continue;
-                                    if (dot1 > 1.0f)
-                                        dot1 = 1.0f;
-
-                                    float finalIntensity = attenuation * dot1 * factor * light.Intensity * 8192.0f;
-                                    color += finalIntensity * light.Color * (1.0f / 64.0f);
-                                }
-                                break;
-                        }
+                        color += CalculateLightForVertex(room, light, position, normal, true);
                     }
 
                     // Apply color
