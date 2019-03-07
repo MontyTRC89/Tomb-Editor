@@ -1735,7 +1735,8 @@ namespace TombLib.LevelData
             return true;
         }
 
-        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, Vector3 normal, bool raytrace)
+        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, 
+                                                      Vector3 normal, bool forRooms)
         {
             if (!light.Enabled || !light.IsStaticallyUsed)
                 return Vector3.Zero;
@@ -1746,8 +1747,11 @@ namespace TombLib.LevelData
                 case LightType.Shadow:
                     if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                     {
+                        // Get the light vector
+                        Vector3 lightDirection = light.GetDirection();
+
                         // Get the distance between light and vertex
-                        float distance = Math.Abs((position - light.Position).Length());
+                        float distance = lightDirection.Length();
 
                         // If distance is greater than light out radius, then skip this light
                         if (distance > light.OuterRange * 1024.0f)
@@ -1757,10 +1761,10 @@ namespace TombLib.LevelData
                         int diffuse = (int)(light.Intensity * 8192);
 
                         // Calculate the length squared of the normal vector
-                        float dotN = Vector3.Dot(normal, normal);
+                        float dotN = Vector3.Dot((!forRooms ? -lightDirection : normal), normal);
 
                         // Do raytracing
-                        if (dotN <= 0 || raytrace && (
+                        if (dotN <= 0 || forRooms && (
                             !RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
                             !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                             !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z)))
@@ -1801,7 +1805,7 @@ namespace TombLib.LevelData
                 case LightType.Sun:
                     {
                         // Do raytracing now for saving CPU later
-                        if (raytrace && (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                        if (forRooms && (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
                             !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                             !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z)))
                         {
@@ -1852,7 +1856,7 @@ namespace TombLib.LevelData
                         if (d < cosO2)
                             return Vector3.Zero;
 
-                        if (raytrace && (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                        if (forRooms && (!RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Z) ||
                             !RayTraceX(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                             !RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z)))
                         {
