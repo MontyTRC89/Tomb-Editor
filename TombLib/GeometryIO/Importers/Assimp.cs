@@ -68,9 +68,11 @@ namespace TombLib.GeometryIO.Importers
 
                 bool hasTexCoords = mesh.HasTextureCoords(0);
                 bool hasColors = mesh.HasVertexColors(0);
+                bool hasNormals = mesh.HasNormals;
 
                 // Source data
                 var positions = mesh.Vertices;
+                var normals = mesh.Normals;
                 var texCoords = mesh.TextureCoordinateChannels[0];
                 var colors = mesh.VertexColorChannels[0];
 
@@ -80,6 +82,11 @@ namespace TombLib.GeometryIO.Importers
                     var position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z);
                     position = ApplyAxesTransforms(position);
                     newMesh.Positions.Add(position);
+
+                    // Create normal
+                    var normal = new Vector3(normals[i].X, normals[i].Y, normals[i].Z);
+                    normal = ApplyAxesTransforms(normal);
+                    newMesh.Normals.Add(normal);
 
                     // Create UV
                     var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);

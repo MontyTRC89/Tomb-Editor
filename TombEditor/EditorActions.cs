@@ -3273,16 +3273,16 @@ namespace TombEditor
                 return false;
 
             // Save level
-            try
-            {
+            //try
+            //{
                 Prj2Writer.SaveToPrj2(fileName, _editor.Level);
-            }
+            /*}
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + fileName + "\".");
                 _editor.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
                 return false;
-            }
+            }*/
 
             // Update state
             if (_editor.Level.Settings.LevelFilePath != fileName)

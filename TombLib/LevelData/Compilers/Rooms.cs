@@ -338,7 +338,8 @@ namespace TombLib.LevelData.Compilers
                             {
                                 // Apply the transform to the vertex
                                 Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, worldTransform);
-                                Vector3 normal = MathC.HomogenousTransform(mesh.Vertices[j].Position, normalTransform);
+                                Vector3 normal = MathC.HomogenousTransform(mesh.Vertices[j].Normal, normalTransform);
+                                normal = Vector3.Normalize(normal);
 
                                 var trVertex = new tr_room_vertex
                                 {
