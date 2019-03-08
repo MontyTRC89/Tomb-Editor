@@ -1741,18 +1741,22 @@ namespace TombLib.LevelData
             if (!light.Enabled || !light.IsStaticallyUsed)
                 return Vector3.Zero;
 
+            Vector3 lightDirection;
+            Vector3 lightVector;
+            float distance;
+
             switch (light.Type)
             {
                 case LightType.Point:
                 case LightType.Shadow:
-                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
-                    {
-                        // Get the light vector
-                        Vector3 lightDirection = light.GetDirection();
+                    // Get the light vector
+                    lightVector = position - light.Position;
 
-                        // Get the distance between light and vertex
-                        float distance = lightDirection.Length();
+                    // Get the distance between light and vertex
+                    distance = lightVector.Length();
 
+                    if (distance + 64.0f <= light.OuterRange * 1024.0f)
+                    {     
                         // If distance is greater than light out radius, then skip this light
                         if (distance > light.OuterRange * 1024.0f)
                             return Vector3.Zero;
@@ -1761,7 +1765,7 @@ namespace TombLib.LevelData
                         int diffuse = (int)(light.Intensity * 8192);
 
                         // Calculate the length squared of the normal vector
-                        float dotN = Vector3.Dot((!forRooms ? -lightDirection : normal), normal);
+                        float dotN = Vector3.Dot((!forRooms ? -lightVector : normal), normal);
 
                         // Do raytracing
                         if (dotN <= 0 || forRooms && (
@@ -1814,7 +1818,7 @@ namespace TombLib.LevelData
                         }
 
                         // Calculate the light direction
-                        Vector3 lightDirection = light.GetDirection();
+                        lightDirection = light.GetDirection();
 
                         // calcolo la luce diffusa
                         float diffuse = -Vector3.Dot(lightDirection, normal);
@@ -1831,22 +1835,22 @@ namespace TombLib.LevelData
                             return Vector3.Zero;
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
-                    break;
+
                 case LightType.Spot:
                     if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                     {
                         // Calculate the ray from light to vertex
-                        Vector3 lightVector = Vector3.Normalize(position - light.Position);
+                        lightVector = Vector3.Normalize(position - light.Position);
 
                         // Get the distance between light and vertex
-                        float distance = Math.Abs((position - light.Position).Length());
+                        distance = Math.Abs((position - light.Position).Length());
 
                         // If distance is greater than light length, then skip this light
                         if (distance > light.OuterRange * 1024.0f)
                             return Vector3.Zero;
 
                         // Calculate the light direction
-                        Vector3 lightDirection = light.GetDirection();
+                        lightDirection = light.GetDirection();
 
                         // Calculate the cosines values for In, Out
                         double d = Vector3.Dot(lightVector, lightDirection);
