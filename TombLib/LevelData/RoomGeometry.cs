@@ -1755,6 +1755,9 @@ namespace TombLib.LevelData
                     // Get the distance between light and vertex
                     distance = lightVector.Length();
 
+                    // Normalize the light vector
+                    lightVector = Vector3.Normalize(lightVector);
+
                     if (distance + 64.0f <= light.OuterRange * 1024.0f)
                     {     
                         // If distance is greater than light out radius, then skip this light
