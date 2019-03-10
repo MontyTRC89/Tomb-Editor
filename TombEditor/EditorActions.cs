@@ -757,7 +757,27 @@ namespace TombEditor
             if (data == null)
                 _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
             else
-                PlaceObject(room, pos, data.MergeGetSingleObject(_editor));
+            {
+                PositionBasedObjectInstance instance = data.MergeGetSingleObject(_editor);
+
+                // HACK: fix imported geometry reference
+                if (instance is ImportedGeometryInstance)
+                {
+                    var imported = instance as ImportedGeometryInstance;
+                    var pastedPath = _editor.Level.Settings.MakeAbsolute(imported.Model.Info.Path);
+                    foreach (var model in _editor.Level.Settings.ImportedGeometries)
+                    {
+                        var currentPath = _editor.Level.Settings.MakeAbsolute(model.Info.Path);
+                        if (currentPath == pastedPath)
+                        {
+                            imported.Model = model;
+                            break;
+                        }
+                    }
+                }
+
+                PlaceObject(room, pos, instance);
+            }
         }
 
         public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
@@ -3122,6 +3142,16 @@ namespace TombEditor
                 _editor.SendMessage("No object selected. \nYou have to select position-based object before you can cut or copy it.", PopupType.Info);
                 return;
             }
+
+            if (_editor.SelectedObject == null && instance == null)
+                return;
+
+            if (_editor.SelectedObject == null && instance != null)
+            {
+                _editor.SelectedObject = instance;
+                EditorActions.BookmarkObject(instance);
+            }
+
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));
         }
 
@@ -3137,6 +3167,16 @@ namespace TombEditor
                 _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
             }
+
+            if (_editor.SelectedObject == null && instance == null)
+                return;
+
+            if (_editor.SelectedObject == null && instance != null)
+            {
+                _editor.SelectedObject = instance;
+                EditorActions.BookmarkObject(instance);
+            }
+
             _editor.Action = new EditorActionPlace(true, (level, room) => (PositionBasedObjectInstance)instance.Clone());
         }
 

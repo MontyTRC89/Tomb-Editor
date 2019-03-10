@@ -1792,6 +1792,7 @@ namespace TombLib.LevelData
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
                     break;
+
                 case LightType.Effect:
                     if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                     {
@@ -1809,6 +1810,7 @@ namespace TombLib.LevelData
                         }
                     }
                     break;
+
                 case LightType.Sun:
                     {
                         // Do raytracing now for saving CPU later
@@ -1897,6 +1899,7 @@ namespace TombLib.LevelData
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
                     break;
+
             }
 
             return Vector3.Zero;

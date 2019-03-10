@@ -532,7 +532,9 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write(instance.Roll);
                             chunkIO.Raw.Write(instance.Scale);
-                            LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
+                            LEB128.Write(chunkIO.Raw, instance.Model == null ?
+                                -1 :
+                                levelSettingIds.ImportedGeometries[instance.Model]);
 
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
                             if (instance.MeshFilter != null && instance.MeshFilter != "")
