@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
@@ -113,7 +114,11 @@ namespace TombEditor.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
-        
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        private IntPtr LastWindow { get; set; }
+
         public PanelRendering3D()
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -457,6 +462,8 @@ namespace TombEditor.Controls
 
         private void EnableFlyMode()
         {
+            LastWindow = GetForegroundWindow();
+
             _oldCamera = Camera;
             Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
                 _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
@@ -1380,6 +1387,13 @@ namespace TombEditor.Controls
 
         private void FlyModeTimer_Tick(object sender, EventArgs e)
         {
+            if (LastWindow != GetForegroundWindow())
+            {
+                DisableFlyMode();
+                LastWindow = GetForegroundWindow();
+                return;
+            }
+
             Capture = true;
 
             /* Camera position handling */
