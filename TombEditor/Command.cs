@@ -1586,6 +1586,11 @@ namespace TombEditor
                     EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, false, true);
             });
 
+            AddCommand("ToggleFlyMode", "Toggle Fly Mode", CommandType.General, delegate (CommandArgs args)
+            {
+                Controls.PanelRendering3D.ToggleFlyModeKeys = args.KeyData; // Lwmte please review this. -Nickelony
+            });
+
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }

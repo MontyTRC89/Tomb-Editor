@@ -1,4 +1,4 @@
-﻿using DarkUI.Controls;
+using DarkUI.Controls;
 using NLog;
 using SharpDX.Toolkit.Graphics;
 using System;
@@ -59,7 +59,9 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool FlyMode { get { return _flyMode; } }
+        public static bool FlyMode { get; private set; } = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static Keys ToggleFlyModeKeys { get; set; } = Keys.Z;
 
         private Camera _oldCamera;
 
@@ -74,7 +76,6 @@ namespace TombEditor.Controls
         private Vector2 _nextCameraRot;
         private float _lastCameraDist;
         private float _nextCameraDist;
-        private bool _flyMode = false;
         private readonly Timer _flyModeTimer;
 
         // Mouse interaction state
@@ -125,8 +126,7 @@ namespace TombEditor.Controls
                 _toolHandler = new ToolHandler(this);
                 _movementTimer = new MovementTimer(MoveTimer_Tick);
 
-                _flyModeTimer = new Timer();
-                _flyModeTimer.Interval = 1;
+                _flyModeTimer = new Timer { Interval = 1 };
                 _flyModeTimer.Tick += new EventHandler(FlyModeTimer_Tick);
 
                 _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024,
@@ -196,6 +196,7 @@ namespace TombEditor.Controls
                 _littleCube?.Dispose();
                 _littleSphere?.Dispose();
                 _movementTimer?.Dispose();
+                _flyModeTimer?.Dispose();
                 _rasterizerStateDepthBias?.Dispose();
                 _currentContextMenu?.Dispose();
                 _wadRenderer?.Dispose();
@@ -435,46 +436,60 @@ namespace TombEditor.Controls
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
 
-            if (e.Control && e.KeyCode == Keys.Oemtilde && !_flyMode)
-            {
-                _oldCamera = Camera;
-                Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
-                    _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
-
-                Cursor.Hide();
-
-                _flyModeTimer.Start();
-                _flyMode = true;
-                Capture = true;
-            }
-            else if ((e.Control && e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.Escape) && _flyMode)
-            {
-                var p = Camera.GetPosition();
-                var d = Camera.GetDirection();
-                var t = Camera.GetTarget();
-
-                t = p + d * 1024.0f;
-
-                _oldCamera.RotationX = Camera.RotationX;
-                _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
-
-                Camera = _oldCamera;
-                Camera.Distance = 1024.0f;
-                Camera.Position = p;
-                Camera.Target = t;
-
-                Cursor.Show();
-
-                _flyModeTimer.Stop();
-                _flyMode = false;
-                Capture = false;
-            }
+            // This is here because we want to disable FlyMode immediately after pressing ESC and not after releasing it
+            if (e.KeyCode == Keys.Escape && FlyMode)
+                DisableFlyMode();
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
             _movementTimer.Stop();
+
+            if (FlyMode && e.KeyCode == Keys.Menu)
+                e.Handled = true;
+
+            if (e.KeyCode == ToggleFlyModeKeys && e.Modifiers == Keys.None && !FlyMode)
+                EnableFlyMode();
+            else if (e.KeyCode == ToggleFlyModeKeys && e.Modifiers == Keys.None && FlyMode)
+                DisableFlyMode();
+        }
+
+        private void EnableFlyMode()
+        {
+            _oldCamera = Camera;
+            Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
+                _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
+
+            Cursor.Hide();
+
+            _flyModeTimer.Start();
+            FlyMode = true;
+        }
+
+        private void DisableFlyMode()
+        {
+            Capture = false;
+
+            var p = Camera.GetPosition();
+            var d = Camera.GetDirection();
+            var t = Camera.GetTarget();
+
+            t = p + d * 1024.0f;
+
+            _oldCamera.RotationX = Camera.RotationX;
+            _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
+
+            Camera = _oldCamera;
+            Camera.Distance = 1024.0f;
+            Camera.Position = p;
+            Camera.Target = t;
+
+            Cursor.Position = PointToScreen(new Point(Width / 2, Height / 2)); // Center cursor
+            Cursor.Show();
+
+            _flyModeTimer.Stop();
+            FlyMode = false;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -492,6 +507,9 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+
+            if(FlyMode)
+                return; // Selecting in FlyMode is not allowed
 
             _lastMousePosition = e.Location;
             _doSectorSelection = false;
@@ -783,6 +801,9 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
+            if (FlyMode)
+                return;
+
             bool redrawWindow = false;
 
             // Reset internal bool for deselection
@@ -793,11 +814,6 @@ namespace TombEditor.Controls
                 redrawWindow = true;
 
             var pressedButton = e.Button;
-
-            if (_flyMode)
-            {
-                pressedButton = MouseButtons.Right;
-            }
 
             // Process action
             switch (pressedButton)
@@ -818,33 +834,21 @@ namespace TombEditor.Controls
                         Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDeltaY : -relativeDeltaY) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                     {
-                        if (e.Location.X <= 0)
-                        {
+                        if (e.X <= 0)
                             Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
-                        }
-                        else if (e.Location.X >= Width - 1)
-                        {
+                        else if (e.X >= Width - 1)
                             Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
-                        }
 
-                        if (e.Location.Y <= 0)
-                        {
+                        if (e.Y <= 0)
                             Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
-                        }
-                        else if (e.Location.Y >= Height - 1)
-                        {
+                        else if (e.Y >= Height - 1)
                             Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
-                        }
 
                         if (e.X - _lastMousePosition.X >= (float)Width / 2 || e.X - _lastMousePosition.X <= -(float)Width / 2)
-                        {
                             relativeDeltaX = 0;
-                        }
 
                         if (e.Y - _lastMousePosition.Y >= (float)Height / 2 || e.Y - _lastMousePosition.Y <= -(float)Height / 2)
-                        {
                             relativeDeltaY = 0;
-                        }
 
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
@@ -1376,31 +1380,67 @@ namespace TombEditor.Controls
 
         private void FlyModeTimer_Tick(object sender, EventArgs e)
         {
+            Capture = true;
+
+            /* Camera position handling */
             var newCameraPos = new Vector3();
-			var cameraSpeed = 50;
+            var cameraMoveSpeed = 50; // TODO: Add a setting for this in the options form
 
-			if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftAlt))
-				cameraSpeed *= 2;
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftShift) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightShift))
+                cameraMoveSpeed *= 2;
+            else if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftAlt) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightAlt))
+                cameraMoveSpeed /= 2;
 
-			if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
-				newCameraPos.Z -= cameraSpeed;
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
+                newCameraPos.Z -= cameraMoveSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
-				newCameraPos.X += cameraSpeed;
+                newCameraPos.X += cameraMoveSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S))
-				newCameraPos.Z += cameraSpeed;
+                newCameraPos.Z += cameraMoveSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
-				newCameraPos.X -= cameraSpeed;
+                newCameraPos.X -= cameraMoveSpeed;
 
             Camera.MoveCameraPlane(newCameraPos);
 
-			var room = GetCurrentRoom();
+            var room = GetCurrentRoom();
+
             if (room != null)
                 _editor.SelectedRoom = room;
 
+            /* Camera rotation handling */
+            var cursorPos = PointToClient(Cursor.Position);
+
+            float relativeDeltaX = (cursorPos.X - _lastMousePosition.X) / (float)Height;
+            float relativeDeltaY = (cursorPos.Y - _lastMousePosition.Y) / (float)Height;
+
+            if (cursorPos.X <= 0)
+                Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
+            else if (cursorPos.X >= Width - 1)
+                Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
+
+            if (cursorPos.Y <= 0)
+                Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
+            else if (cursorPos.Y >= Height - 1)
+                Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
+
+            if (cursorPos.X - _lastMousePosition.X >= (float)Width / 2 || cursorPos.X - _lastMousePosition.X <= -(float)Width / 2)
+                relativeDeltaX = 0;
+
+            if (cursorPos.Y - _lastMousePosition.Y >= (float)Height / 2 || cursorPos.Y - _lastMousePosition.Y <= -(float)Height / 2)
+                relativeDeltaY = 0;
+
+            Camera.Rotate(
+                relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
+
+            _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(cursorPos.X, cursorPos.Y));
+
             Invalidate();
+
+            _lastMousePosition = cursorPos;
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix4x4 transform, ref Ray destinationRay, float sourceDistance)

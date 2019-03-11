@@ -381,6 +381,7 @@ namespace TombEditor
             this["RelocateCamera"] = new SortedSet<Hotkey> { Keys.Alt | Z };
             this["Undo"] = new SortedSet<Hotkey> { Keys.Control | Z };
             this["Redo"] = new SortedSet<Hotkey> { Keys.Control | Y };
+            this["ToggleFlyMode"] = new SortedSet<Hotkey> { Z };
 
             // Check for conflicts
             var hotkeyList = _list
