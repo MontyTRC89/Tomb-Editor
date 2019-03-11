@@ -841,21 +841,24 @@ namespace TombEditor.Controls
                         Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDeltaY : -relativeDeltaY) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                     {
-                        if (e.X <= 0)
-                            Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
-                        else if (e.X >= Width - 1)
-                            Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
+                        if (_editor.Configuration.Rendering3D_CursorWarping)
+                        {
+                            if (e.X <= 0)
+                                Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
+                            else if (e.X >= Width - 1)
+                                Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
 
-                        if (e.Y <= 0)
-                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
-                        else if (e.Y >= Height - 1)
-                            Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
+                            if (e.Y <= 0)
+                                Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
+                            else if (e.Y >= Height - 1)
+                                Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
 
-                        if (e.X - _lastMousePosition.X >= (float)Width / 2 || e.X - _lastMousePosition.X <= -(float)Width / 2)
-                            relativeDeltaX = 0;
+                            if (e.X - _lastMousePosition.X >= (float)Width / 2 || e.X - _lastMousePosition.X <= -(float)Width / 2)
+                                relativeDeltaX = 0;
 
-                        if (e.Y - _lastMousePosition.Y >= (float)Height / 2 || e.Y - _lastMousePosition.Y <= -(float)Height / 2)
-                            relativeDeltaY = 0;
+                            if (e.Y - _lastMousePosition.Y >= (float)Height / 2 || e.Y - _lastMousePosition.Y <= -(float)Height / 2)
+                                relativeDeltaY = 0;
+                        }
 
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
@@ -1398,7 +1401,7 @@ namespace TombEditor.Controls
 
             /* Camera position handling */
             var newCameraPos = new Vector3();
-            var cameraMoveSpeed = 50; // TODO: Add a setting for this in the options form
+            var cameraMoveSpeed = 10 * _editor.Configuration.Rendering3D_FlyModeMoveSpeed;
 
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftShift) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightShift))
                 cameraMoveSpeed *= 2;
