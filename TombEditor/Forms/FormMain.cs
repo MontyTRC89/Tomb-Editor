@@ -388,8 +388,19 @@ namespace TombEditor.Forms
             _editor.ConfigurationChange();
         }
 
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+
+            if (TombEditor.Controls.PanelRendering3D.FlyMode && e.KeyCode == Keys.Menu)
+                e.Handled = true;
+        }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (TombEditor.Controls.PanelRendering3D.FlyMode)
+                keyData = Keys.None;
+
             // Don't process reserved camera keys
             if (Hotkey.ReservedCameraKeys.Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
