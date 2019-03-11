@@ -90,6 +90,8 @@ namespace TombEditor
         public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
         public bool Rendering3D_SelectObjectsInAnyRoom { get; set; } = true;
         public bool Rendering3D_AutoswitchCurrentRoom { get; set; } = false;
+        public bool Rendering3D_CursorWarping { get; set; } = true;
+        public int Rendering3D_FlyModeMoveSpeed { get; set; } = 5;
 
         // 2D Map options 
 
