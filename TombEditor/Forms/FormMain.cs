@@ -394,6 +394,16 @@ namespace TombEditor.Forms
 
             if (TombEditor.Controls.PanelRendering3D.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
+
+            var timer = new Timer { Interval = 1 };
+            timer.Tick += CheckFlyModeStateTimer_Tick; // We must delay this event, otherwise it won't work
+            timer.Start();
+        }
+
+        private void CheckFlyModeStateTimer_Tick(object sender, EventArgs e)
+        {
+            // We must disable the menuStrip in Fly Mode because the menu items are reacting to the ALT key
+            menuStrip.Enabled = !TombEditor.Controls.PanelRendering3D.FlyMode;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
