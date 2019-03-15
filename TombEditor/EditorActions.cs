@@ -1555,10 +1555,27 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
+        private static void AllocateScriptIds(PositionBasedObjectInstance instance)
+        {
+            if (instance is IHasScriptID &&
+                (_editor.Level.Settings.GameVersion == GameVersion.TR4 ||
+                 _editor.Level.Settings.GameVersion == GameVersion.TRNG))
+            {
+                (instance as IHasScriptID).AllocateNewScriptId();
+            }
+
+            if (instance is ItemInstance && _editor.Level.Settings.GameVersion == GameVersion.TR5Main)
+            {
+                (instance as ItemInstance).LuaId = _editor.Level.AllocNewLuaId();
+            }
+        }
+
         public static void PlaceObject(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
             PlaceObjectWithoutUpdate(room, pos, instance);
             _editor.UndoManager.PushObjectCreated(instance);
+
+            AllocateScriptIds(instance);
         }
 
 

@@ -312,7 +312,6 @@ namespace TombLib.Script
                     LEB128.Write(chunkIO.Raw, (_playAnyLevel ? 1 : 0));
                     LEB128.Write(chunkIO.Raw, (_flyCheat ? 1 : 0));
                     LEB128.Write(chunkIO.Raw, (_diagnostics ? 1 : 0));
-                    LEB128.Write(chunkIO.Raw, (_loadSave ? 1 : 0));
                     LEB128.Write(chunkIO.Raw, _levelFarView);
                 });
 
@@ -480,6 +479,9 @@ namespace TombLib.Script
                         }
                     });
                 }
+
+                // EOF
+                chunkIO.Raw.Write((int)0);
 
                 chunkIO.Raw.Flush();
             }

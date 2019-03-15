@@ -940,9 +940,6 @@ namespace TombLib.LevelData
 
         public ObjectInstance AddObjectAndSingularPortal(Level level, ObjectInstance instance)
         {
-            if (instance is ItemInstance)
-                (instance as ItemInstance).LuaId = level.AllocNewLuaId();
-
             if (instance is PositionBasedObjectInstance)
                 _objects.Add((PositionBasedObjectInstance)instance);
             try
@@ -954,12 +951,6 @@ namespace TombLib.LevelData
                 if (instance is PositionBasedObjectInstance)
                     _objects.Remove((PositionBasedObjectInstance)instance);
                 throw;
-            }
-
-            if (Level.Settings.GameVersion == GameVersion.TRNG &&
-                instance is IHasScriptID && !(instance is StaticInstance))
-            {
-                (instance as IHasScriptID).AllocateNewScriptId();
             }
 
             return instance;
