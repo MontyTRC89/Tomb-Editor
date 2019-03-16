@@ -146,5 +146,17 @@ namespace TombEditor.ToolWindows
             if (gameVersion != null && listItem != null)
                 e.Value = listItem.ToString(gameVersion.Value);
         }
+
+        private void butItemUp_Click(object sender, EventArgs e)
+        {
+            if(comboItems.Items.Count > 0 && comboItems.SelectedIndex > 0)
+                comboItems.SelectedIndex--;
+        }
+
+        private void butItemDown_Click(object sender, EventArgs e)
+        {
+            if (comboItems.Items.Count > 0 && comboItems.SelectedIndex != comboItems.Items.Count - 1)
+                comboItems.SelectedIndex++;
+        }
     }
 }

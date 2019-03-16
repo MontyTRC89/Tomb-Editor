@@ -25,6 +25,8 @@
             this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelRightBottom = new System.Windows.Forms.Panel();
+            this.butItemDown = new DarkUI.Controls.DarkButton();
+            this.butItemUp = new DarkUI.Controls.DarkButton();
             this.panelRight = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeader.SuspendLayout();
@@ -118,9 +120,9 @@
             this.butFindItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butFindItem.Image = global::TombEditor.Properties.Resources.general_target_16;
-            this.butFindItem.Location = new System.Drawing.Point(191, 6);
+            this.butFindItem.Location = new System.Drawing.Point(190, 6);
             this.butFindItem.Name = "butFindItem";
-            this.butFindItem.Size = new System.Drawing.Size(91, 23);
+            this.butFindItem.Size = new System.Drawing.Size(92, 23);
             this.butFindItem.TabIndex = 5;
             this.butFindItem.Tag = "LocateItem";
             this.butFindItem.Text = "Locate item";
@@ -128,6 +130,8 @@
             // 
             // panelRightBottom
             // 
+            this.panelRightBottom.Controls.Add(this.butItemDown);
+            this.panelRightBottom.Controls.Add(this.butItemUp);
             this.panelRightBottom.Controls.Add(this.panelStaticMeshColor);
             this.panelRightBottom.Controls.Add(this.butFindItem);
             this.panelRightBottom.Controls.Add(this.lblStaticMeshColor);
@@ -136,6 +140,26 @@
             this.panelRightBottom.Name = "panelRightBottom";
             this.panelRightBottom.Size = new System.Drawing.Size(284, 33);
             this.panelRightBottom.TabIndex = 1;
+            // 
+            // butItemDown
+            // 
+            this.butItemDown.Location = new System.Drawing.Point(164, 6);
+            this.butItemDown.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.butItemDown.Name = "butItemDown";
+            this.butItemDown.Size = new System.Drawing.Size(23, 23);
+            this.butItemDown.TabIndex = 69;
+            this.butItemDown.Text = "▼";
+            this.butItemDown.Click += new System.EventHandler(this.butItemDown_Click);
+            // 
+            // butItemUp
+            // 
+            this.butItemUp.Location = new System.Drawing.Point(138, 6);
+            this.butItemUp.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.butItemUp.Name = "butItemUp";
+            this.butItemUp.Size = new System.Drawing.Size(23, 23);
+            this.butItemUp.TabIndex = 68;
+            this.butItemUp.Text = "▲";
+            this.butItemUp.Click += new System.EventHandler(this.butItemUp_Click);
             // 
             // panelRight
             // 
@@ -186,5 +210,7 @@
         private System.Windows.Forms.Panel panelRightBottom;
         private System.Windows.Forms.Panel panelRight;
         private System.Windows.Forms.ToolTip toolTip;
+        private DarkUI.Controls.DarkButton butItemDown;
+        private DarkUI.Controls.DarkButton butItemUp;
     }
 }
