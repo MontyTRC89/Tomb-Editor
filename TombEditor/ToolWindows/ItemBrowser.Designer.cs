@@ -149,6 +149,7 @@
             this.butItemDown.Size = new System.Drawing.Size(23, 23);
             this.butItemDown.TabIndex = 69;
             this.butItemDown.Text = "▼";
+            this.toolTip.SetToolTip(this.butItemDown, "Next item");
             this.butItemDown.Click += new System.EventHandler(this.butItemDown_Click);
             // 
             // butItemUp
@@ -159,6 +160,7 @@
             this.butItemUp.Size = new System.Drawing.Size(23, 23);
             this.butItemUp.TabIndex = 68;
             this.butItemUp.Text = "▲";
+            this.toolTip.SetToolTip(this.butItemUp, "Previous item");
             this.butItemUp.Click += new System.EventHandler(this.butItemUp_Click);
             // 
             // panelRight
