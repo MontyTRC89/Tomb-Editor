@@ -143,6 +143,7 @@
             // 
             // butItemDown
             // 
+            this.butItemDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butItemDown.Location = new System.Drawing.Point(164, 6);
             this.butItemDown.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.butItemDown.Name = "butItemDown";
@@ -154,6 +155,7 @@
             // 
             // butItemUp
             // 
+            this.butItemUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butItemUp.Location = new System.Drawing.Point(138, 6);
             this.butItemUp.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.butItemUp.Name = "butItemUp";
