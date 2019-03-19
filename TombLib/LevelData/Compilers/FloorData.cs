@@ -229,8 +229,9 @@ namespace TombLib.LevelData.Compilers
                                 var portal = block.FloorPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
                                 if (roomIndex >= 254)
-                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
-                                sector.RoomBelow = (byte)roomIndex;
+                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                else
+                                    sector.RoomBelow = (byte)roomIndex;
                             }
 
                             // Ceiling
@@ -243,8 +244,9 @@ namespace TombLib.LevelData.Compilers
                                 var portal = block.CeilingPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
                                 if (roomIndex >= 254)
-                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
-                                sector.RoomAbove = (byte)roomIndex;
+                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                else
+                                    sector.RoomAbove = (byte)roomIndex;
                             }
 
                             // Calculate the floordata now
