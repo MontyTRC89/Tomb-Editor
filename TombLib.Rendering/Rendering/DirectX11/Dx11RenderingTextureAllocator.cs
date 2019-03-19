@@ -83,7 +83,11 @@ namespace TombLib.Rendering.DirectX11
                     0 > region.Top || region.Top >= region.Bottom || region.Bottom > Size.Y)
                 {
                     // This check is important, otherwise the graphics driver may crash the entire system as it turned out.
-                    throw new ArgumentOutOfRangeException("pos.X = " + pos.X + ", " +
+                    throw new ArgumentOutOfRangeException("texture.From.X = " + texture.From.X + ", " +
+                                                          "texture.From.Y = " + texture.From.Y + ", " +
+                                                          "texture.To.X = " + texture.To.X + ", " +
+                                                          "texture.To.Y = " + texture.To.Y + ", " +
+                                                          "pos.X = " + pos.X + ", " +
                                                           "pos.Y = " + pos.Y + ", " +
                                                           "region.Left = " + region.Left + ", "+
                                                           "region.Right = " + region.Right + ", " +
