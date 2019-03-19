@@ -82,7 +82,13 @@ namespace TombLib.Rendering.DirectX11
                 if (0 > region.Left || region.Left >= region.Right || region.Right > Size.X ||
                     0 > region.Top || region.Top >= region.Bottom || region.Bottom > Size.Y)
                 {
-                    throw new ArgumentOutOfRangeException(); // This check is important, otherwise the graphics driver may crash the entire system as it turned out.
+                    // This check is important, otherwise the graphics driver may crash the entire system as it turned out.
+                    throw new ArgumentOutOfRangeException("pos.X = " + pos.X + ", " +
+                                                          "pos.Y = " + pos.Y + ", " +
+                                                          "region.Left = " + region.Left + ", "+
+                                                          "region.Right = " + region.Right + ", " +
+                                                          "region.Top = " + region.Top + ", " +
+                                                          "region.Bottom = " + region.Bottom ); 
                 }
 
                 DataBox box;
