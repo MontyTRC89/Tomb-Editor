@@ -518,7 +518,7 @@ namespace NgXmlBuilder
                     return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
                 else if (list == "#CAMERA_EFFECTS#")
                     return new NgParameterRange(NgParameterKind.CamerasInLevel);
-                else if (list == "#WAD-SLOTS#")
+                else if (list == "#WAD-SLOTS#" || list == "#LARA_ANIM_SLOT#")
                     return new NgParameterRange(NgParameterKind.WadSlots);
                 else if (list == "#STATIC_SLOTS#")
                     return new NgParameterRange(NgParameterKind.StaticsSlots);

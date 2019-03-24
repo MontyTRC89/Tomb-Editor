@@ -312,12 +312,18 @@ namespace TombLib.NG
                 case NgParameterKind.WadSlots:
                     if (level?.Settings == null)
                         return new ITriggerParameter[0];
-                    return level.Settings.WadGetAllMoveables().Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
+                    return level.Settings.WadGetAllMoveables().Select(p => 
+                        new TriggerParameterUshort(
+                            checked((ushort)p.Key.TypeId), 
+                            p.Value.ToString(level.Settings.WadGameVersion)));
 
                 case NgParameterKind.StaticsSlots:
                     if (level?.Settings == null)
                         return new ITriggerParameter[0];
-                    return level.Settings.WadGetAllStatics().Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
+                    return level.Settings.WadGetAllStatics().Select(p => 
+                        new TriggerParameterUshort(
+                            checked((ushort)p.Key.TypeId), 
+                            p.Value.ToString(level.Settings.WadGameVersion)));
 
                 case NgParameterKind.LaraStartPosOcb:
                     return level.Rooms.Where(room => room != null)
