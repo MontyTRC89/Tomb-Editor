@@ -216,15 +216,15 @@ namespace TombLib.Script
                                 else if (entry.Command.Name == "LaraType")
                                     lastLevel.LaraType = GetLaraType((string)entry.Parameters[0]);
                                 else if (entry.Command.Name == "Horizon")
-                                    lastLevel.Horizon = (entry.Parameters[0].ToString() == "ENABLED");
+                                    lastLevel.Horizon = (entry.Parameters[0].ToString() == "True");
                                 else if (entry.Command.Name == "ResetInventory")
-                                    lastLevel.ResetInventory = (entry.Parameters[0].ToString() == "ENABLED");
+                                    lastLevel.ResetInventory = (entry.Parameters[0].ToString() == "True");
                                 else if (entry.Command.Name == "Sky")
-                                    lastLevel.Sky = (entry.Parameters[0].ToString() == "ENABLED");
+                                    lastLevel.Sky = (entry.Parameters[0].ToString() == "True");
                                 else if (entry.Command.Name == "ColAddHorizon")
-                                    lastLevel.ColAddHorizon = (entry.Parameters[0].ToString() == "ENABLED");
+                                    lastLevel.ColAddHorizon = (entry.Parameters[0].ToString() == "True");
                                 else if (entry.Command.Name == "Lightning")
-                                    lastLevel.Lightning = (entry.Parameters[0].ToString() == "ENABLED");
+                                    lastLevel.Lightning = (entry.Parameters[0].ToString() == "True");
                                 else if (entry.Command.Name == "UVRotate")
                                     lastLevel.UVRotate = (byte)entry.Parameters[0];
                                 else if (entry.Command.Name == "LevelFarView")
@@ -233,6 +233,17 @@ namespace TombLib.Script
                                     lastLevel.LoadScreen = (string)entry.Parameters[0];
                                 else if (entry.Command.Name == "LevelFile")
                                     lastLevel.FileName = (string)entry.Parameters[0];
+                                else if (entry.Command.Name == "Rumble")
+                                    lastLevel.Rumble = (entry.Parameters[0].ToString() == "True");
+                                else if (entry.Command.Name == "UnlimitedAir")
+                                    lastLevel.UnlimitedAir = (entry.Parameters[0].ToString() == "True");
+                                else if (entry.Command.Name == "Weather")
+                                {
+                                    if (entry.Parameters[0].ToString() == "RAIN")
+                                        lastLevel.Weather = Weather.Rain;
+                                    else if (entry.Parameters[0].ToString() == "SNOW")
+                                        lastLevel.Weather = Weather.Snow;
+                                }
                                 else if (entry.Command.Name == "Level")
                                 {
                                     lastLevel.FileName = (string)entry.Parameters[0];
@@ -352,6 +363,9 @@ namespace TombLib.Script
                             LEB128.Write(chunkIO.Raw, level.LaraType);
                             LEB128.Write(chunkIO.Raw, level.UVRotate);
                             LEB128.Write(chunkIO.Raw, (level.LevelFarView != 0 ? level.LevelFarView : _levelFarView));
+                            LEB128.Write(chunkIO.Raw, (level.Rumble ? 1 : 0));
+                            LEB128.Write(chunkIO.Raw, (byte)(level.Weather));
+                            LEB128.Write(chunkIO.Raw, (level.UnlimitedAir ? 1 : 0));
                         });
 
                         // Puzzles and various things

@@ -25,4 +25,11 @@ namespace TombLib.Script
         TR5New = 3,
         TR5Main = 4
     }
+
+    public enum Weather
+    {
+        None,
+        Rain,
+        Snow
+    }
 }
