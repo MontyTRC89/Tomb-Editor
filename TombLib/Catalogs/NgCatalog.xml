@@ -948,10 +948,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="255">
-          <Linear Add="0" Factor="1" />
-          <Fixed> Animation</Fixed>
-        </LinearModel>
+        <WadSlots />
       </Extra>
     </Subtrigger>
     <Subtrigger K="78" V="Lara. (Animation) Force &lt;&amp;&gt;StateID and (E)next StateID for Lara">
@@ -997,10 +994,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="255">
-          <Linear Add="0" Factor="1" />
-          <Fixed> Animation</Fixed>
-        </LinearModel>
+        <WadSlots />
       </Extra>
     </Subtrigger>
     <Subtrigger K="81" V="Text. Set &lt;&amp;&gt;size characters for next print string command">

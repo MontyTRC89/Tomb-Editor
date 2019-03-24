@@ -501,5 +501,17 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
+
+        public static WadGameVersion WadGameVersionFromGameVersion(GameVersion v)
+        {
+            switch (v)
+            {
+                case GameVersion.TR4: return WadGameVersion.TR4_TRNG;
+                case GameVersion.TRNG: return WadGameVersion.TR4_TRNG;
+                case GameVersion.TR5: return WadGameVersion.TR5;
+                case GameVersion.TR5Main: return WadGameVersion.TR5Main;
+                default: return WadGameVersion.TR4_TRNG;
+            }
+        }
     }
 }
