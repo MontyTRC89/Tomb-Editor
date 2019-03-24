@@ -171,6 +171,11 @@ namespace TombLib.Script
                              LevelScriptCatalogParameterType.Boolean
                          }));
 
+            Commands.Add("Sky",
+                         new LevelScriptCommand("Sky", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Boolean
+                         }));
+
             Commands.Add("ColAddHorizon",
                          new LevelScriptCommand("ColAddHorizon", new LevelScriptCatalogParameterType[] {
                              LevelScriptCatalogParameterType.Boolean
@@ -267,6 +272,21 @@ namespace TombLib.Script
 
             Commands.Add("ResetInventory",
                         new LevelScriptCommand("ResetInventory", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Boolean
+                        }));
+
+            Commands.Add("UnlimitedAir",
+                        new LevelScriptCommand("UnlimitedAir", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.Boolean
+                        }));
+
+            Commands.Add("Weather",
+                        new LevelScriptCommand("Weather", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                        }));
+
+            Commands.Add("Rumble",
+                        new LevelScriptCommand("Rumble", new LevelScriptCatalogParameterType[] {
                              LevelScriptCatalogParameterType.Boolean
                         }));
 

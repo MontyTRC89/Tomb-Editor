@@ -1136,6 +1136,8 @@ namespace TombEditor
             if(!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
+            texture.ParentArea = new Rectangle2();
+
             if (face >= BlockFace.Ceiling) texture.Mirror();
             var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
             if (textureApplied)
@@ -1526,6 +1528,8 @@ namespace TombEditor
 
             if (type == BlockFaceType.Ceiling) texture.Mirror();
             RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
+
+            texture.ParentArea = new Rectangle2();
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
