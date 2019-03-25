@@ -819,7 +819,9 @@ namespace TombEditor.Forms
                 string result = LevelFileDialog.BrowseFile(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex].Path,
                     "Select a new object file", ReferencedWad.FileExtensions, VariableType.LevelDirectory, false);
                 if (result != null)
+                {
                     _objectFileDataGridViewDataSource[e.RowIndex].Path = result;
+                }
             }
             else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowColumn.Name)
             {
@@ -917,7 +919,17 @@ namespace TombEditor.Forms
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            _editor.UpdateLevelSettings(_levelSettings.Clone());
+            LevelSettings settings = _levelSettings.Clone();
+
+            settings.Wads.Clear();
+            foreach (var reference in _objectFileDataGridViewDataSource)
+                settings.Wads.Add(reference.Wad);
+
+            settings.Textures.Clear();
+            foreach (var reference in _textureFileDataGridViewDataSource)
+                settings.Textures.Add(reference.Texture);
+
+            _editor.UpdateLevelSettings(settings);
             Close();
         }
 
