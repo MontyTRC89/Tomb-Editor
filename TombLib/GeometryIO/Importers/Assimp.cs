@@ -1,4 +1,5 @@
 ﻿using Assimp;
+using Assimp.Configs;
 using NLog;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,7 @@ namespace TombLib.GeometryIO.Importers
 
             // Use Assimp.NET for importing model
             AssimpContext context = new AssimpContext();
+            context.SetConfig(new NormalSmoothingAngleConfig(90.0f));
             Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
 
             var newModel = new IOModel();

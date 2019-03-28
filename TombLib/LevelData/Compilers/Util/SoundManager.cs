@@ -85,8 +85,8 @@ namespace TombLib.LevelData.Compilers.Util
             ushort oldSoundMapSize = checked((ushort)_soundMap.Count);
             if (_soundMap.Count <= soundMapIndex)
                 _soundMap.Resize(soundMapIndex + 1, (ushort)0xffff);
-            if (_soundMap[soundMapIndex] != 0xffff)
-                throw new Exception("Sound map index " + soundMapIndex + " is used twice..");
+            //if (_soundMap[soundMapIndex] != 0xffff)
+            //    throw new Exception("Sound map index " + soundMapIndex + " is used twice..");
             _soundMap[soundMapIndex] = soundDetailIndex;
 
             // Fill accelerated data structure to find free sound map entries
