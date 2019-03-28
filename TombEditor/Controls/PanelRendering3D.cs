@@ -2554,7 +2554,7 @@ namespace TombEditor.Controls
             }
 
             // Draw room imported geometry
-            if (importedGeometryToDraw.Count != 0)
+            if (importedGeometryToDraw.Count != 0 && ShowImportedGeometry)
             {
                 // If picking for imported geometry is disabled, then draw geometry translucent
                 if (DisablePickingForImportedGeometry)
