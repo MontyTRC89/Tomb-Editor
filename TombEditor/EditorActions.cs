@@ -925,6 +925,18 @@ namespace TombEditor
             else
             {
                 if (face >= BlockFace.Ceiling) area.Mirror();
+
+                float xMin = Math.Min(Math.Min(Math.Min(area.TexCoord0.X, area.TexCoord1.X), area.TexCoord2.X), area.TexCoord3.X); ;
+                float xMax = Math.Max(Math.Max(Math.Max(area.TexCoord0.X, area.TexCoord1.X), area.TexCoord2.X), area.TexCoord3.X); ;
+                float yMin = Math.Min(Math.Min(Math.Min(area.TexCoord0.Y, area.TexCoord1.Y), area.TexCoord2.Y), area.TexCoord3.Y); ;
+                float yMax = Math.Max(Math.Max(Math.Max(area.TexCoord0.Y, area.TexCoord1.Y), area.TexCoord2.Y), area.TexCoord3.Y); ;
+                
+                // create a rectangle area
+                area.TexCoord0 = new Vector2(xMin, yMin);
+                area.TexCoord1 = new Vector2(xMax, yMin);
+                area.TexCoord2 = new Vector2(xMax, yMax);
+                area.TexCoord3 = new Vector2(xMin, yMax);
+                
                 _editor.SelectTextureAndCenterView(area);
             }
         }
