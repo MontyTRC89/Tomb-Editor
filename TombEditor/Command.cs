@@ -137,7 +137,7 @@ namespace TombEditor
             {
                 if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
                 {
-                    if (Control.ModifierKeys.HasFlag(Keys.Shift) || args.Editor.SelectedObject is null ||
+                    if (Control.ModifierKeys.HasFlag(Keys.Shift) || args.Editor.SelectedObject == null ||
                         !(args.Editor.SelectedObject is PositionBasedObjectInstance))
                         EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Window, args.Editor.BookmarkedObject);
                     else

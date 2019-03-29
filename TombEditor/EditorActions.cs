@@ -489,7 +489,7 @@ namespace TombEditor
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
         {
-            if (Control.ModifierKeys.HasFlag(Keys.Shift) || _editor.SelectedObject is null || !(_editor.SelectedObject is PositionBasedObjectInstance))
+            if (Control.ModifierKeys.HasFlag(Keys.Shift) || _editor.SelectedObject == null || !(_editor.SelectedObject is PositionBasedObjectInstance))
                 AddTrigger(room, area, owner, _editor.BookmarkedObject);
             else
                 AddTrigger(room, area, owner, _editor.SelectedObject);
