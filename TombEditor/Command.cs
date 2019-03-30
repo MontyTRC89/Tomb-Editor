@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -1588,7 +1588,7 @@ namespace TombEditor
 
             AddCommand("ToggleFlyMode", "Toggle Fly Mode", CommandType.General, delegate (CommandArgs args)
             {
-                Controls.PanelRendering3D.ToggleFlyModeKeys = args.KeyData; // Lwmte please review this. -Nickelony
+                args.Editor.ToggleFlyMode(!args.Editor.FlyMode);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

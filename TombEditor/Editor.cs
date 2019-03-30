@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -568,6 +568,18 @@ namespace TombEditor
         {
             RaiseEvent(new ResetCameraEvent { NewCamera = newCamera });
         }
+
+        // Toggle FlyMode
+        public class ToggleFlyModeEvent : IEditorCameraEvent
+        {
+            public bool FlyModeState { get; set; }
+        }
+        public void ToggleFlyMode(bool state)
+        {
+            RaiseEvent(new ToggleFlyModeEvent { FlyModeState = state });
+        }
+
+        public bool FlyMode { get; set; } = false;
 
         // Select a texture and center the view
         public class SelectTextureAndCenterViewEvent : IEditorEvent
