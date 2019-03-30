@@ -160,6 +160,8 @@ namespace WadTool
             // Update context menu
             if (currentSelection is WadMoveableId)
                 treeDestWad.ContextMenuStrip = contextMenuMoveableItem;
+            else if (currentSelection is WadStaticId)
+                treeDestWad.ContextMenuStrip = cmStatics;
             else
                 treeDestWad.ContextMenuStrip = null;
         }
@@ -254,7 +256,7 @@ namespace WadTool
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            butEditItem_Click(null, null);
         }
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
@@ -343,7 +345,7 @@ namespace WadTool
 
         private void butEditItem_Click(object sender, EventArgs e)
         {
-
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void butRenameAnimation_Click(object sender, EventArgs e)
@@ -399,6 +401,31 @@ namespace WadTool
         private void butEditSound_Click(object sender, EventArgs e)
         {
             WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
+
+        private void changeSlotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butChangeSlot_Click(null, null);
+        }
+
+        private void deleteObjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butDeleteObject_Click(null, null);
+        }
+
+        private void editObjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butEditItem_Click(null, null);
+        }
+
+        private void toolStripMenuItemMoveablesChangeSlot_Click(object sender, EventArgs e)
+        {
+            butChangeSlot_Click(null, null);
+        }
+
+        private void toolStripMenuItemMoveablesDelete_Click(object sender, EventArgs e)
+        {
+            butDeleteObject_Click(null, null);
         }
     }
 }

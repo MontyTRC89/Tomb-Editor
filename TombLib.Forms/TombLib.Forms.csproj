@@ -206,6 +206,9 @@
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WadTreeControl.resx">
+      <DependentUpon>WadTreeControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>

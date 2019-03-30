@@ -222,11 +222,11 @@ namespace TombLib.Controls
             this.suggestedGameVersionComboBox = new DarkUI.Controls.DarkComboBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.SuspendLayout();
-            //
+            // 
             // tree
-            //
-            this.tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tree.Enabled = false;
             this.tree.Location = new System.Drawing.Point(0, 30);
@@ -240,10 +240,11 @@ namespace TombLib.Controls
             this.tree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Tree_KeyDown);
             this.tree.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Tree_KeyPress);
             this.tree.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Tree_KeyUp);
-            //
+            this.tree.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tree_MouseDown);
+            // 
             // suggestedGameVersionComboBox
-            //
-            this.suggestedGameVersionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.suggestedGameVersionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.suggestedGameVersionComboBox.Enabled = false;
             this.suggestedGameVersionComboBox.FormattingEnabled = true;
@@ -252,9 +253,9 @@ namespace TombLib.Controls
             this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(47, 21);
             this.suggestedGameVersionComboBox.TabIndex = 0;
             this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
-            //
+            // 
             // darkLabel1
-            //
+            // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(3, 6);
@@ -262,9 +263,9 @@ namespace TombLib.Controls
             this.darkLabel1.Size = new System.Drawing.Size(91, 13);
             this.darkLabel1.TabIndex = 3;
             this.darkLabel1.Text = "Game slot names:";
-            //
+            // 
             // WadTreeView
-            //
+            // 
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.suggestedGameVersionComboBox);
             this.Controls.Add(this.tree);
@@ -279,6 +280,11 @@ namespace TombLib.Controls
         {
             get { return tree.MultiSelect; }
             set { tree.MultiSelect = value; }
+        }
+
+        private void tree_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnMouseDown(e);
         }
     }
 }
