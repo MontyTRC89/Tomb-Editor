@@ -26,6 +26,7 @@ namespace TombEditor.Controls
     public class PanelRendering3D : RenderingPanel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly KeyMessageFilter filter = new KeyMessageFilter();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Camera Camera { get; set; }
@@ -121,6 +122,8 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
+            Application.AddMessageFilter(filter);
+
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
@@ -291,7 +294,7 @@ namespace TombEditor.Controls
                 _currentRoomLastPos = _editor.SelectedRoom.WorldPos;
 
             // Reset tool handler state
-            if ( obj is Editor.ModeChangedEvent ||
+            if (obj is Editor.ModeChangedEvent ||
                  obj is Editor.ToolChangedEvent ||
                 (obj is Editor.SelectedRoomChangedEvent && _editor.Tool.Tool != EditorToolType.PortalDigger))
             {
@@ -312,7 +315,7 @@ namespace TombEditor.Controls
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
                     _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
             }
-            if (obj is Editor.SelectedSectorsChangedEvent || 
+            if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
             if (obj is Editor.SelectedRoomChangedEvent)
@@ -417,7 +420,7 @@ namespace TombEditor.Controls
             else
                 return horizontal ? value.X : value.Y;
         }
-        
+
         private void AnimateCamera(Vector3 oldPos, Vector3 newPos, Vector2 oldRot, Vector2 newRot, float oldDist, float newDist, float speed = 0.5f)
         {
             _nextCameraPos = newPos;
@@ -515,7 +518,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            if(FlyMode)
+            if (FlyMode)
                 return; // Selecting in FlyMode is not allowed
 
             _lastMousePosition = e.Location;
@@ -881,7 +884,7 @@ namespace TombEditor.Controls
                             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y,
-                            _editor.Tool.Tool == EditorToolType.Drag || _editor.Tool.Tool == EditorToolType.PortalDigger, 
+                            _editor.Tool.Tool == EditorToolType.Drag || _editor.Tool.Tool == EditorToolType.PortalDigger,
                             _editor.Tool.Tool != EditorToolType.PortalDigger);
 
                         if (dragValue.HasValue)
@@ -907,7 +910,7 @@ namespace TombEditor.Controls
                                     move = new VectorInt3(0, dragValue.Value.Y * verticalPrecision, 0);
                                 }
 
-                                switch(portalDirection)
+                                switch (portalDirection)
                                 {
                                     case PortalDirection.Floor:
                                     case PortalDirection.Ceiling:
@@ -1127,7 +1130,7 @@ namespace TombEditor.Controls
                             var newSelection = new SectorSelection
                             {
                                 Start = new VectorInt2(pos.X, pos.Y),
-                                  End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One
+                                End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One
                             };
 
                             if (_editor.HighlightedSectors != newSelection)
@@ -1403,21 +1406,21 @@ namespace TombEditor.Controls
             var newCameraPos = new Vector3();
             var cameraMoveSpeed = 10 * _editor.Configuration.Rendering3D_FlyModeMoveSpeed;
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftShift) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightShift))
+            if (ModifierKeys.HasFlag(Keys.Shift))
                 cameraMoveSpeed *= 2;
-            else if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftAlt) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightAlt))
+            else if (ModifierKeys.HasFlag(Keys.Alt))
                 cameraMoveSpeed /= 2;
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
+            if (filter.IsKeyPressed(Keys.W))
                 newCameraPos.Z -= cameraMoveSpeed;
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
+            if (filter.IsKeyPressed(Keys.A))
                 newCameraPos.X += cameraMoveSpeed;
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S))
+            if (filter.IsKeyPressed(Keys.S))
                 newCameraPos.Z += cameraMoveSpeed;
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
+            if (filter.IsKeyPressed(Keys.D))
                 newCameraPos.X -= cameraMoveSpeed;
 
             Camera.MoveCameraPlane(newCameraPos);
@@ -1626,7 +1629,7 @@ namespace TombEditor.Controls
 
         private void DrawDebugLines(Matrix4x4 viewProjection)
         {
-            var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds || 
+            var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds ||
                 ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms));
 
             if (!_drawFlybyPath && !_drawHeightLine && !drawRoomBounds)
@@ -2064,7 +2067,7 @@ namespace TombEditor.Controls
                 return;
 
             AnimatedModel model = _wadRenderer.GetMoveable(moveable);
-           
+
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
 
@@ -2155,7 +2158,7 @@ namespace TombEditor.Controls
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
                         moveable.ToString(_editor.Level.Settings.WadGameVersion) +
-                        (_editor.Level.Settings.GameVersion != GameVersion.TRNG ? 
+                        (_editor.Level.Settings.GameVersion != GameVersion.TRNG ?
                         "" :
                         " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
                         (_editor.Level.Settings.GameVersion != GameVersion.TR5Main ?
@@ -2191,7 +2194,7 @@ namespace TombEditor.Controls
                 var roomIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 var meshes = model.Meshes;
-                
+
                 for (var i = 0; i < meshes.Count; i++)
                 {
                     var mesh = meshes[i];
