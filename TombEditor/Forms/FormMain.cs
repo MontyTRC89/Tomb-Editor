@@ -392,7 +392,7 @@ namespace TombEditor.Forms
         {
             base.OnKeyUp(e);
 
-            if (TombEditor.Controls.PanelRendering3D.FlyMode && e.KeyCode == Keys.Menu)
+            if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
 
             var timer = new Timer { Interval = 1 };
@@ -403,13 +403,13 @@ namespace TombEditor.Forms
         private void CheckFlyModeStateTimer_Tick(object sender, EventArgs e)
         {
             // We must disable the menuStrip in Fly Mode because the menu items are reacting to the ALT key
-            menuStrip.Enabled = !TombEditor.Controls.PanelRendering3D.FlyMode;
+            menuStrip.Enabled = !_editor.FlyMode;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (TombEditor.Controls.PanelRendering3D.FlyMode)
-                keyData = Keys.None;
+            if (_editor.FlyMode && !_editor.Configuration.UI_Hotkeys["ToggleFlyMode"].Contains(keyData))
+                return base.ProcessCmdKey(ref msg, keyData);
 
             // Don't process reserved camera keys
             if (Hotkey.ReservedCameraKeys.Contains(keyData))

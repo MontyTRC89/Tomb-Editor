@@ -60,10 +60,6 @@ namespace TombEditor.Controls
         public bool DisablePickingForImportedGeometry { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static bool FlyMode { get; private set; } = false;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static Keys ToggleFlyModeKeys { get; set; } = Keys.Z;
 
         private Camera _oldCamera;
 
@@ -359,6 +355,10 @@ namespace TombEditor.Controls
             if (obj is Editor.ResetCameraEvent)
                 ResetCamera(((Editor.ResetCameraEvent)obj).NewCamera);
 
+            // Toggle FlyMode
+            if (obj is Editor.ToggleFlyModeEvent)
+                ToggleFlyMode(((Editor.ToggleFlyModeEvent)obj).FlyModeState);
+
             // Stop camera animation if level is changing
             if (obj is Editor.LevelChangedEvent)
                 _movementTimer.Stop(true);
@@ -443,10 +443,6 @@ namespace TombEditor.Controls
 
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
-
-            // This is here because we want to disable FlyMode immediately after pressing ESC and not after releasing it
-            if (e.KeyCode == Keys.Escape && FlyMode)
-                DisableFlyMode();
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -454,52 +450,8 @@ namespace TombEditor.Controls
             base.OnKeyUp(e);
             _movementTimer.Stop();
 
-            if (FlyMode && e.KeyCode == Keys.Menu)
+            if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
-
-            if (e.KeyCode == ToggleFlyModeKeys && e.Modifiers == Keys.None && !FlyMode)
-                EnableFlyMode();
-            else if (e.KeyCode == ToggleFlyModeKeys && e.Modifiers == Keys.None && FlyMode)
-                DisableFlyMode();
-        }
-
-        private void EnableFlyMode()
-        {
-            LastWindow = GetForegroundWindow();
-
-            _oldCamera = Camera;
-            Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
-                _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
-
-            Cursor.Hide();
-
-            _flyModeTimer.Start();
-            FlyMode = true;
-        }
-
-        private void DisableFlyMode()
-        {
-            Capture = false;
-
-            var p = Camera.GetPosition();
-            var d = Camera.GetDirection();
-            var t = Camera.GetTarget();
-
-            t = p + d * 1024.0f;
-
-            _oldCamera.RotationX = Camera.RotationX;
-            _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
-
-            Camera = _oldCamera;
-            Camera.Distance = 1024.0f;
-            Camera.Position = p;
-            Camera.Target = t;
-
-            Cursor.Position = PointToScreen(new Point(Width / 2, Height / 2)); // Center cursor
-            Cursor.Show();
-
-            _flyModeTimer.Stop();
-            FlyMode = false;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -518,7 +470,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            if (FlyMode)
+            if (_editor.FlyMode)
                 return; // Selecting in FlyMode is not allowed
 
             _lastMousePosition = e.Location;
@@ -811,7 +763,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if (FlyMode)
+            if (_editor.FlyMode)
                 return;
 
             bool redrawWindow = false;
@@ -1393,9 +1345,9 @@ namespace TombEditor.Controls
 
         private void FlyModeTimer_Tick(object sender, EventArgs e)
         {
-            if (LastWindow != GetForegroundWindow())
+            if (LastWindow != GetForegroundWindow() || filter.IsKeyPressed(Keys.Escape))
             {
-                DisableFlyMode();
+                ToggleFlyMode(false);
                 LastWindow = GetForegroundWindow();
                 return;
             }
@@ -1461,6 +1413,47 @@ namespace TombEditor.Controls
             Invalidate();
 
             _lastMousePosition = cursorPos;
+        }
+
+        public void ToggleFlyMode(bool state)
+        {
+            if (state == true)
+            {
+                LastWindow = GetForegroundWindow();
+
+                _oldCamera = Camera;
+                Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
+                    _oldCamera.MinRotationX, _oldCamera.MaxRotationX, _oldCamera.FieldOfView);
+
+                Cursor.Hide();
+
+                _flyModeTimer.Start();
+            }
+            else
+            {
+                Capture = false;
+
+                var p = Camera.GetPosition();
+                var d = Camera.GetDirection();
+                var t = Camera.GetTarget();
+
+                t = p + d * 1024.0f;
+
+                _oldCamera.RotationX = Camera.RotationX;
+                _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
+
+                Camera = _oldCamera;
+                Camera.Distance = 1024.0f;
+                Camera.Position = p;
+                Camera.Target = t;
+
+                Cursor.Position = PointToScreen(new Point(Width / 2, Height / 2)); // Center cursor
+                Cursor.Show();
+
+                _flyModeTimer.Stop();
+            }
+
+            _editor.FlyMode = state;
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix4x4 transform, ref Ray destinationRay, float sourceDistance)
