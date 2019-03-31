@@ -120,16 +120,6 @@
     </PixelShader>
   </ItemGroup>
   <ItemGroup>
-    <PixelShader Include="Rendering\DirectX11\TestShaderPS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-      <EnableDebuggingInfo>False</EnableDebuggingInfo>
-    </PixelShader>
-    <VertexShader Include="Rendering\DirectX11\TestShaderVS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-      <EnableDebuggingInfo>False</EnableDebuggingInfo>
-    </VertexShader>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>

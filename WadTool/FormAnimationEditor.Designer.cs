@@ -39,6 +39,7 @@ namespace WadTool
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.calculateBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertnFramesAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,6 +53,7 @@ namespace WadTool
             this.interpolateFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -214,7 +216,8 @@ namespace WadTool
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem,
             this.toolStripMenuItem7,
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem});
+            this.calculateBoundingBoxForAllFramesToolStripMenuItem,
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";
             this.animationToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
@@ -226,7 +229,7 @@ namespace WadTool
             this.addNewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.addNewToolStripMenuItem.Image = global::WadTool.Properties.Resources.plus_math_16;
             this.addNewToolStripMenuItem.Name = "addNewToolStripMenuItem";
-            this.addNewToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.addNewToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.addNewToolStripMenuItem.Text = "New animation";
             this.addNewToolStripMenuItem.Click += new System.EventHandler(this.addNewToolStripMenuItem_Click_1);
             // 
@@ -236,7 +239,7 @@ namespace WadTool
             this.deleteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteToolStripMenuItem.Image = global::WadTool.Properties.Resources.trash_16;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.deleteToolStripMenuItem.Text = "Delete animation";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -246,7 +249,7 @@ namespace WadTool
             this.splitAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.splitAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.split_16;
             this.splitAnimationToolStripMenuItem.Name = "splitAnimationToolStripMenuItem";
-            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.splitAnimationToolStripMenuItem.Text = "Split animation";
             this.splitAnimationToolStripMenuItem.Click += new System.EventHandler(this.splitAnimationToolStripMenuItem_Click);
             // 
@@ -256,7 +259,7 @@ namespace WadTool
             this.toolStripMenuItem5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(269, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(261, 6);
             // 
             // curToolStripMenuItem
             // 
@@ -264,7 +267,7 @@ namespace WadTool
             this.curToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.curToolStripMenuItem.Image = global::WadTool.Properties.Resources.cut_16;
             this.curToolStripMenuItem.Name = "curToolStripMenuItem";
-            this.curToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.curToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.curToolStripMenuItem.Text = "Cut";
             this.curToolStripMenuItem.Click += new System.EventHandler(this.curToolStripMenuItem_Click);
             // 
@@ -274,7 +277,7 @@ namespace WadTool
             this.copyToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.copyToolStripMenuItem1.Image = global::WadTool.Properties.Resources.copy_16;
             this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
-            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(272, 22);
+            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(264, 22);
             this.copyToolStripMenuItem1.Text = "Copy";
             this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
             // 
@@ -284,7 +287,7 @@ namespace WadTool
             this.pasteToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pasteToolStripMenuItem1.Image = global::WadTool.Properties.Resources.paste_16;
             this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
-            this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(272, 22);
+            this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(264, 22);
             this.pasteToolStripMenuItem1.Text = "Paste (Insert)";
             this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.pasteToolStripMenuItem1_Click);
             // 
@@ -294,7 +297,7 @@ namespace WadTool
             this.pasteReplaceToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pasteReplaceToolStripMenuItem1.Image = global::WadTool.Properties.Resources.paste_special_16;
             this.pasteReplaceToolStripMenuItem1.Name = "pasteReplaceToolStripMenuItem1";
-            this.pasteReplaceToolStripMenuItem1.Size = new System.Drawing.Size(272, 22);
+            this.pasteReplaceToolStripMenuItem1.Size = new System.Drawing.Size(264, 22);
             this.pasteReplaceToolStripMenuItem1.Text = "Paste (Replace)";
             this.pasteReplaceToolStripMenuItem1.Click += new System.EventHandler(this.pasteReplaceToolStripMenuItem1_Click);
             // 
@@ -304,7 +307,7 @@ namespace WadTool
             this.toolStripMenuItem2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(269, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(261, 6);
             // 
             // importToolStripMenuItem
             // 
@@ -312,7 +315,7 @@ namespace WadTool
             this.importToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.importToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Import_16;
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
@@ -322,7 +325,7 @@ namespace WadTool
             this.exportToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.exportToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Export_16;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
@@ -332,7 +335,7 @@ namespace WadTool
             this.toolStripMenuItem7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem7.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(269, 6);
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(261, 6);
             // 
             // calculateBoundingBoxForAllFramesToolStripMenuItem
             // 
@@ -340,9 +343,18 @@ namespace WadTool
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Image = global::WadTool.Properties.Resources.resize_16;
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Name = "calculateBoundingBoxForAllFramesToolStripMenuItem";
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate bounding box for all frames";
+            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
+            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate collision box for all frames";
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForAllFramesToolStripMenuItem_Click);
+            // 
+            // deleteBoundingBoxForAllFramesToolStripMenuItem
+            // 
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Name = "deleteBoundingBoxForAllFramesToolStripMenuItem";
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete collision box for all frames";
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.deleteBoundingBoxForAllFramesToolStripMenuItem_Click);
             // 
             // frameToolStripMenuItem
             // 
@@ -359,7 +371,8 @@ namespace WadTool
             this.toolStripMenuItem1,
             this.interpolateFramesToolStripMenuItem,
             this.toolStripMenuItem6,
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem});
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem,
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem});
             this.frameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.frameToolStripMenuItem.Name = "frameToolStripMenuItem";
             this.frameToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
@@ -479,6 +492,15 @@ namespace WadTool
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate collision box for current frame";
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.calculateCollisionBoxForCurrentFrameToolStripMenuItem_Click);
+            // 
+            // deleteCollisionBoxForCurrentFrameToolStripMenuItem
+            // 
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Name = "deleteCollisionBoxForCurrentFrameToolStripMenuItem";
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Delete collision box for current frame";
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click);
             // 
             // renderingToolStripMenuItem
             // 
@@ -1616,5 +1638,7 @@ namespace WadTool
         private DarkUI.Controls.DarkTextBox tbSearchByStateID;
         private DarkUI.Controls.DarkButton darkButton1;
         private DarkUI.Controls.DarkButton butShowAll;
+        private System.Windows.Forms.ToolStripMenuItem deleteBoundingBoxForAllFramesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteCollisionBoxForCurrentFrameToolStripMenuItem;
     }
 }
