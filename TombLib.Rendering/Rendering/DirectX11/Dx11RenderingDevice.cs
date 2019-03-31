@@ -29,7 +29,7 @@ namespace TombLib.Rendering.DirectX11
         public static ImageC TextureCoordOutOfBounds = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_coord_out_of_bounds.png"));
         public readonly Device Device;
         public readonly DeviceContext Context;
-        public readonly Dx11PipelineState TestShader;
+        //public readonly Dx11PipelineState TestShader;
         public readonly Dx11PipelineState TextShader;
         public readonly Dx11PipelineState SpriteShader;
         public readonly Dx11PipelineState RoomShader;
@@ -87,11 +87,11 @@ namespace TombLib.Rendering.DirectX11
             try
             {
                 Context = Device.ImmediateContext;
-                TestShader = new Dx11PipelineState(this, "TestShader", new InputElement[]
+                /*TestShader = new Dx11PipelineState(this, "TestShader", new InputElement[]
                 {
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0)
-                });
+                });*/
                 TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
                 {
                 new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),

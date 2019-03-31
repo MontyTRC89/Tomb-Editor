@@ -19,6 +19,8 @@ namespace WadTool.Controls
     public class PanelRenderingAnimationEditor : RenderingPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Configuration Configuration { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimationNode Animation { get; set; }
@@ -169,7 +171,7 @@ namespace WadTool.Controls
             return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
-        protected override Vector4 ClearColor => new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
+        protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
 
         protected override void OnDraw()
         {

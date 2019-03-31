@@ -45,6 +45,8 @@ namespace WadTool
             _model = _renderer.GetMoveable(_moveable);
             _deviceManager = deviceManager;
 
+            panelRendering.Configuration = _tool.Configuration;
+
             // Initialize the panel
             var skin = _moveableId;
             if (_moveableId.TypeId == 0)
@@ -73,6 +75,9 @@ namespace WadTool
             foreach (var animation in _moveable.Animations)
                 _workingAnimations.Add(new AnimationNode(animation.Clone(), Animation.FromWad2(_bones, animation)));
             ReloadAnimations();
+
+            if (_workingAnimations.Count() != 0)
+                SelectAnimation(_workingAnimations[0]);
 
             tool.EditorEventRaised += Tool_EditorEventRaised;
         }
@@ -479,7 +484,7 @@ namespace WadTool
             if (_clipboardKeyFrame != null && _selectedNode != null)
             {
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(panelRendering.CurrentKeyFrame, _clipboardKeyFrame);
-                _clipboardKeyFrame = null;
+                //_clipboardKeyFrame = null;
                 OnKeyframesListChanged();
                 SelectFrame(panelRendering.CurrentKeyFrame);
                 _saved = false;
@@ -491,7 +496,7 @@ namespace WadTool
             if (_clipboardKeyFrame != null && _selectedNode != null)
             {
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
-                _clipboardKeyFrame = null;
+                //_clipboardKeyFrame = null;
                 SelectFrame(panelRendering.CurrentKeyFrame);
                 _saved = false;
             }
@@ -522,7 +527,7 @@ namespace WadTool
                 _workingAnimations.Insert(animationIndex, _clipboardNode);
                 _clipboardNode.DirectXAnimation.Name += " - Copy";
                 _clipboardNode.WadAnimation.Name += " - Copy";
-                _clipboardNode = null;
+                //_clipboardNode = null;
                 ReloadAnimations();
                 SelectAnimation(_workingAnimations[animationIndex]);
                 _saved = false;
@@ -537,7 +542,7 @@ namespace WadTool
                 _workingAnimations[animationIndex] = _clipboardNode;
                 _clipboardNode.DirectXAnimation.Name += " - Copy";
                 _clipboardNode.WadAnimation.Name += " - Copy";
-                _clipboardNode = null;
+                //_clipboardNode = null;
                 ReloadAnimations();
                 SelectAnimation(_workingAnimations[animationIndex]);
                 _saved = false;
@@ -1335,6 +1340,55 @@ namespace WadTool
         private void FormAnimationEditor_Load(object sender, EventArgs e)
         {
 
+        }
+        private void DeleteKeyframeBoundingBox(int index)
+        {
+            if (_selectedNode != null)
+            {
+                var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[index];
+                keyFrame.BoundingBox = new BoundingBox();
+
+                panelRendering.Invalidate();
+
+                tbCollisionBoxMinX.Text = "0";
+                tbCollisionBoxMinY.Text = "0";
+                tbCollisionBoxMinZ.Text = "0";
+                tbCollisionBoxMaxX.Text = "0";
+                tbCollisionBoxMaxY.Text = "0";
+                tbCollisionBoxMaxZ.Text = "0";
+
+                _saved = false;
+            }
+        }
+
+        private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null)
+            {
+                if (DarkMessageBox.Show(this, "Do you really want to delete the collision box for the current keyframe?",
+                                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    DeleteKeyframeBoundingBox(panelRendering.CurrentKeyFrame);
+                }
+            }
+        }
+
+        private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null)
+            {
+                if (DarkMessageBox.Show(this, "Do you really want to delete the collision box for each frame of animation '" + _selectedNode.WadAnimation.Name + "'?",
+                                          "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    int startFrame = panelRendering.CurrentKeyFrame;
+                    for (int i = 0; i < _selectedNode.DirectXAnimation.KeyFrames.Count; i++)
+                    {
+                        SelectFrame(i);
+                        DeleteKeyframeBoundingBox(i);
+                    }
+                    SelectFrame(startFrame);
+                }
+            }
         }
     }
 }

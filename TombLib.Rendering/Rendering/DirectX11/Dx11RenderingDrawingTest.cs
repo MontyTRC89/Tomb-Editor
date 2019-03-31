@@ -49,7 +49,7 @@ namespace TombLib.Rendering.DirectX11
 
         public override void Render(RenderArgs arg)
         {
-            var context = Device.Context;
+            /*var context = Device.Context;
 
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
@@ -57,7 +57,7 @@ namespace TombLib.Rendering.DirectX11
             context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
 
             // Render
-            context.Draw(3, 0);
+            context.Draw(3, 0);*/
         }
     }
 }

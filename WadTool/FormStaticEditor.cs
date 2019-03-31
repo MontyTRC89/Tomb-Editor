@@ -40,6 +40,7 @@ namespace WadTool
             _workingStatic = @static.Clone();
             panelRendering.InitializeRendering(tool, deviceManager);
 
+            panelRendering.Configuration = _tool.Configuration;
             panelRendering.Static = _workingStatic;
             panelRendering.DrawGrid = true;
             panelRendering.DrawGizmo = true;
