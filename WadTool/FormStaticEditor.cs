@@ -48,6 +48,7 @@ namespace WadTool
             comboLightType.SelectedIndex = (int)_workingStatic.LightingType;
             UpdateVisibilityBoxUI();
             UpdateCollisionBoxUI();
+            UpdatePositionUI();
             UpdateLightsList();
 
             numAmbient.Value = (decimal)_workingStatic.AmbientLight;
@@ -286,6 +287,7 @@ namespace WadTool
                     _workingStatic.Version = DataVersion.GetNext();
                     _workingStatic.Mesh.CalculateNormals();
                     panelRendering.Invalidate();
+                    UpdatePositionUI();
                 }
             }
         }
@@ -538,6 +540,43 @@ namespace WadTool
                 lstLights.Enabled = true;
                 panelRendering.Invalidate();
             }
+        }
+
+        private void tbPositionX_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbPositionX.Text, out result))
+                return;
+
+            panelRendering.StaticPosition = new Vector3(result, panelRendering.StaticPosition.Y, panelRendering.StaticPosition.Z);
+            panelRendering.Invalidate();
+        }
+
+        private void tbPositionY_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbPositionY.Text, out result))
+                return;
+
+            panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, result, panelRendering.StaticPosition.Z);
+            panelRendering.Invalidate();
+        }
+
+        private void tbPositionZ_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbPositionZ.Text, out result))
+                return;
+
+            panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, panelRendering.StaticPosition.Y, result);
+            panelRendering.Invalidate();
+        }
+
+        public void UpdatePositionUI()
+        {
+            tbPositionX.Text = panelRendering.StaticPosition.X.ToString();
+            tbPositionY.Text = panelRendering.StaticPosition.Y.ToString();
+            tbPositionZ.Text = panelRendering.StaticPosition.Z.ToString();
         }
     }
 }

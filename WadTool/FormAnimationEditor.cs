@@ -199,6 +199,8 @@ namespace WadTool
         {
             if (_selectedNode != null)
             {
+                if (frameIndex >= _selectedNode.DirectXAnimation.KeyFrames.Count)
+                    frameIndex = _selectedNode.DirectXAnimation.KeyFrames.Count - 1;
                 var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[frameIndex];
                 panelRendering.Model.BuildAnimationPose(keyFrame);
                 panelRendering.CurrentKeyFrame = frameIndex;
@@ -1396,6 +1398,22 @@ namespace WadTool
             double dblValue;
             dblValue = ((double)e.X / (double)trackFrames.Width) * (trackFrames.Maximum - trackFrames.Minimum);
             trackFrames.Value = Convert.ToInt32(dblValue);
+        }
+
+        private void FormAnimationEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!_saved)
+            {
+                var result = DarkMessageBox.Show(this, "Do you have unsaved changes. Do you want to save changes to animations?",
+                                                 "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    SaveChanges();
+                    DialogResult = DialogResult.OK;
+                }
+                else if (result == DialogResult.Cancel)
+                    return;
+            }
         }
     }
 }
