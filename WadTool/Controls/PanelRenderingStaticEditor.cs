@@ -526,6 +526,8 @@ namespace WadTool.Controls
                                   -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 Invalidate();
             }
+
+             ((FormStaticEditor)Parent).UpdatePositionUI();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -537,6 +539,8 @@ namespace WadTool.Controls
 
             if (_gizmoLight.MouseUp())
                 Invalidate();
+
+            ((FormStaticEditor)Parent).UpdatePositionUI();
         }
 
         public void UpdateLights()
