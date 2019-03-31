@@ -1390,5 +1390,12 @@ namespace WadTool
                 }
             }
         }
+
+        private void trackFrames_MouseDown(object sender, MouseEventArgs e)
+        {
+            double dblValue;
+            dblValue = ((double)e.X / (double)trackFrames.Width) * (trackFrames.Maximum - trackFrames.Minimum);
+            trackFrames.Value = Convert.ToInt32(dblValue);
+        }
     }
 }

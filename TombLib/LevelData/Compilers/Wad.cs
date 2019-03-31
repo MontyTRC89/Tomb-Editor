@@ -46,18 +46,42 @@ namespace TombLib.LevelData.Compilers
             // FIX: the following code will check for valid normals and shades combinations.
             // As last chance, I recalculate the normals on the fly.
             bool useShades = false;
-            if (oldMesh.VerticesNormals.Count == 0 && oldMesh.VerticesShades.Count == 0)
+            if (isStatic)
             {
-                if (!isStatic)
-                    _progressReporter.ReportWarn("Moveable '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                if (oldMesh.LightingType == WadMeshLightingType.Normals)
+                {
+                    if (oldMesh.VerticesNormals.Count == 0)
+                    {
+                        _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                        oldMesh.CalculateNormals();
+                    }
+                    useShades = false;
+                }
                 else
-                    _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
-                oldMesh.CalculateNormals();
-                useShades = false;
+                {
+                    if (oldMesh.VerticesShades.Count == 0)
+                    {
+                        if (oldMesh.VerticesNormals.Count == 0)
+                        {
+                            _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                            oldMesh.CalculateNormals();
+                        }
+                        useShades = false;
+                    }
+                    else
+                    {
+                        useShades = true;
+                    }
+                }
             }
             else
             {
-                useShades = isStatic && oldMesh.VerticesShades.Count != 0;
+                if (oldMesh.VerticesNormals.Count == 0)
+                {
+                    _progressReporter.ReportWarn("Moveable '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                    oldMesh.CalculateNormals();
+                }
+                useShades = false;
             }
 
             newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesShades.Count : oldMesh.VerticesNormals.Count);

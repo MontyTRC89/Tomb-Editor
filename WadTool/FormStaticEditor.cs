@@ -45,6 +45,7 @@ namespace WadTool
             panelRendering.DrawGrid = true;
             panelRendering.DrawGizmo = true;
             panelRendering.DrawLights = true;
+            comboLightType.SelectedIndex = (int)_workingStatic.LightingType;
             UpdateVisibilityBoxUI();
             UpdateCollisionBoxUI();
             UpdateLightsList();
@@ -505,6 +506,36 @@ namespace WadTool
             {
                 _workingStatic.Mesh.CalculateNormals();
                 panelRendering.UpdateLights();
+                panelRendering.Invalidate();
+            }
+        }
+
+        private void comboLightType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboLightType.SelectedIndex==(int)WadMeshLightingType.Normals)
+            {
+                _workingStatic.LightingType = WadMeshLightingType.Normals;
+                _workingStatic.Lights.Clear();
+                UpdateLightsList();
+                UpdateLightUI();
+                butAddLight.Enabled = false;
+                butDeleteLight.Enabled = false;
+                numIntensity.Enabled = false;
+                numRadius.Enabled = false;
+                numAmbient.Enabled = false;
+                lstLights.Enabled = false;
+                panelRendering.Invalidate();
+            }
+            else
+            {
+                _workingStatic.LightingType = WadMeshLightingType.PrecalculatedGrayShades;
+                UpdateLightUI();
+                butAddLight.Enabled = true;
+                butDeleteLight.Enabled = true;
+                numIntensity.Enabled = true;
+                numRadius.Enabled = true;
+                numAmbient.Enabled = true;
+                lstLights.Enabled = true;
                 panelRendering.Invalidate();
             }
         }
