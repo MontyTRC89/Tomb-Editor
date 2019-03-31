@@ -79,6 +79,7 @@
             this.cbDrawNormals = new DarkUI.Controls.DarkCheckBox();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.butRecalcNormals = new DarkUI.Controls.DarkButton();
+            this.comboLightType = new DarkUI.Controls.DarkComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -691,11 +692,24 @@
             this.butRecalcNormals.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butRecalcNormals.Click += new System.EventHandler(this.butRecalcNormals_Click);
             // 
+            // comboLightType
+            // 
+            this.comboLightType.FormattingEnabled = true;
+            this.comboLightType.Items.AddRange(new object[] {
+            "Dynamic",
+            "Static"});
+            this.comboLightType.Location = new System.Drawing.Point(869, 405);
+            this.comboLightType.Name = "comboLightType";
+            this.comboLightType.Size = new System.Drawing.Size(162, 23);
+            this.comboLightType.TabIndex = 102;
+            this.comboLightType.SelectedIndexChanged += new System.EventHandler(this.comboLightType_SelectedIndexChanged);
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1051, 729);
+            this.Controls.Add(this.comboLightType);
             this.Controls.Add(this.butRecalcNormals);
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.cbDrawNormals);
@@ -818,5 +832,6 @@
         private DarkUI.Controls.DarkCheckBox cbDrawNormals;
         private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkButton butRecalcNormals;
+        private DarkUI.Controls.DarkComboBox comboLightType;
     }
 }

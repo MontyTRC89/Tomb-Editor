@@ -105,7 +105,6 @@ namespace WadTool
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
-            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackFrames = new System.Windows.Forms.TrackBar();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
@@ -136,6 +135,7 @@ namespace WadTool
             this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogPrj2 = new System.Windows.Forms.OpenFileDialog();
+            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -179,7 +179,7 @@ namespace WadTool
             this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveChangesToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_16;
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveChangesToolStripMenuItem.Text = "Save changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
@@ -189,14 +189,14 @@ namespace WadTool
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(142, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(177, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.closeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -1121,16 +1121,6 @@ namespace WadTool
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
             // 
-            // panelRendering
-            // 
-            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelRendering.Location = new System.Drawing.Point(3, 59);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(809, 570);
-            this.panelRendering.TabIndex = 0;
-            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -1150,6 +1140,7 @@ namespace WadTool
             this.trackFrames.Size = new System.Drawing.Size(806, 45);
             this.trackFrames.TabIndex = 0;
             this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
+            this.trackFrames.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackFrames_MouseDown);
             // 
             // topBar
             // 
@@ -1466,6 +1457,16 @@ namespace WadTool
             this.openFileDialogPrj2.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
             this.openFileDialogPrj2.Title = "Open Prj2";
             // 
+            // panelRendering
+            // 
+            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRendering.Location = new System.Drawing.Point(3, 59);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(809, 570);
+            this.panelRendering.TabIndex = 7;
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1536,7 +1537,6 @@ namespace WadTool
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
         private System.Windows.Forms.Panel panelRight;
         private DarkUI.Controls.DarkTreeView treeAnimations;
-        private Controls.PanelRenderingAnimationEditor panelRendering;
         private DarkUI.Controls.DarkButton butDeleteAnimation;
         private DarkUI.Controls.DarkButton butEditStateChanges;
         private DarkUI.Controls.DarkButton butDeleteFrame;
@@ -1640,5 +1640,6 @@ namespace WadTool
         private DarkUI.Controls.DarkButton butShowAll;
         private System.Windows.Forms.ToolStripMenuItem deleteBoundingBoxForAllFramesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteCollisionBoxForCurrentFrameToolStripMenuItem;
+        private Controls.PanelRenderingAnimationEditor panelRendering;
     }
 }
