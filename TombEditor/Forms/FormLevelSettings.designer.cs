@@ -114,6 +114,7 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.levelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
             this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
@@ -127,7 +128,6 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -171,14 +171,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -454,6 +454,7 @@
             this.textureFileDataGridViewControls.AllowUserDelete = false;
             this.textureFileDataGridViewControls.AllowUserMove = false;
             this.textureFileDataGridViewControls.AllowUserNew = false;
+            this.textureFileDataGridViewControls.AlwaysInsertAtZero = false;
             this.textureFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textureFileDataGridViewControls.Enabled = false;
@@ -587,6 +588,7 @@
             this.objectFileDataGridViewControls.AllowUserDelete = false;
             this.objectFileDataGridViewControls.AllowUserMove = false;
             this.objectFileDataGridViewControls.AllowUserNew = false;
+            this.objectFileDataGridViewControls.AlwaysInsertAtZero = true;
             this.objectFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.objectFileDataGridViewControls.Enabled = false;
@@ -957,6 +959,7 @@
             this.soundDataGridViewControls.AllowUserDelete = false;
             this.soundDataGridViewControls.AllowUserMove = false;
             this.soundDataGridViewControls.AllowUserNew = false;
+            this.soundDataGridViewControls.AlwaysInsertAtZero = false;
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundDataGridViewControls.Enabled = false;
@@ -1232,12 +1235,23 @@
             this.panel12.Size = new System.Drawing.Size(563, 118);
             this.panel12.TabIndex = 91;
             // 
+            // cbAgressiveFloordataPacking
+            // 
+            this.cbAgressiveFloordataPacking.AutoSize = true;
+            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 93);
+            this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
+            this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(169, 17);
+            this.cbAgressiveFloordataPacking.TabIndex = 105;
+            this.cbAgressiveFloordataPacking.Tag = "";
+            this.cbAgressiveFloordataPacking.Text = "Agressive floordata packing";
+            this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
+            // 
             // cbAgressiveTexturePacking
             // 
             this.cbAgressiveTexturePacking.AutoSize = true;
             this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 70);
             this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
-            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(422, 17);
+            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(330, 17);
             this.cbAgressiveTexturePacking.TabIndex = 104;
             this.cbAgressiveTexturePacking.Tag = "";
             this.cbAgressiveTexturePacking.Text = "Agressive texture packing (merge object and room textures)";
@@ -1368,17 +1382,6 @@
             // 
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
-            // 
-            // cbAgressiveFloordataPacking
-            // 
-            this.cbAgressiveFloordataPacking.AutoSize = true;
-            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 93);
-            this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
-            this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(323, 17);
-            this.cbAgressiveFloordataPacking.TabIndex = 105;
-            this.cbAgressiveFloordataPacking.Tag = "";
-            this.cbAgressiveFloordataPacking.Text = "Agressive floordata packing";
-            this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
             // 
             // FormLevelSettings
             // 

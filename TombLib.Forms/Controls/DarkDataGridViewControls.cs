@@ -12,6 +12,8 @@ namespace TombLib.Controls
     {
         private DarkDataGridView _dataGridView;
 
+        public bool AlwaysInsertAtZero { get; set; }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DarkDataGridView DataGridView
         {
@@ -51,7 +53,13 @@ namespace TombLib.Controls
             int startIndex = DataGridView.EditableRowCollection.Count;
             foreach (object newRow in (newRowsOrSingleRow as IEnumerable) ?? new[] { newRowsOrSingleRow })
             {
-                int newIndex = DataGridView.EditableRowCollection.Add(newRow);
+                int newIndex = 0;
+
+                if (AlwaysInsertAtZero)
+                    DataGridView.EditableRowCollection.Insert(0, newRow);
+                else
+                    newIndex = DataGridView.EditableRowCollection.Add(newRow);
+
                 DataGridView.Rows[newIndex].Selected = true;
             }
             if (startIndex > 0 && DataGridView.EditableRowCollection.Count > startIndex)
