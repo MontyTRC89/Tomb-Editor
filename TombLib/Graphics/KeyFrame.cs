@@ -28,8 +28,8 @@ namespace TombLib.Graphics
                 }
             }
 
-            BoundingBox = new BoundingBox(new Vector3((int)min.X, (int)min.Y, (int)min.Z),
-                                          new Vector3((int)max.X, (int)max.Y, (int)max.Z));
+            BoundingBox = new BoundingBox(new Vector3((int)min.X, (int)max.Y, (int)min.Z),
+                                          new Vector3((int)max.X, (int)min.Y, (int)max.Z));
 
             return BoundingBox;
         }

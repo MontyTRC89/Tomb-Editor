@@ -30,7 +30,6 @@ namespace WadTool
 
             panel3D.Configuration = tool.Configuration;
             panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device);
-            panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());
