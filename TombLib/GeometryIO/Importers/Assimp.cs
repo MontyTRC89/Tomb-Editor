@@ -8,11 +8,11 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Importers
 {
-    public class Assimp : BaseGeometryImporter
+    public class AssimpImporter : BaseGeometryImporter
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public Assimp(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
+        public AssimpImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
             : base(settings, getTextureCallback)
         {
 

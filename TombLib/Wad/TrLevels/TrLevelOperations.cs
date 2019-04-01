@@ -192,7 +192,7 @@ namespace TombLib.Wad.TrLevels
                 TextureArea textureArea = objectTextures[oldPoly.Texture & 0x7fff];
                 textureArea.DoubleSided = (oldPoly.Texture & 0x8000) != 0;
 
-                WadPolygon poly;
+                WadPolygon poly = new WadPolygon();
                 poly.Shape = WadPolygonShape.Triangle;
                 poly.Index0 = oldPoly.Index0;
                 poly.Index1 = oldPoly.Index1;
@@ -205,7 +205,7 @@ namespace TombLib.Wad.TrLevels
 
             foreach (var oldPoly in oldMesh.ColoredRectangles)
             {
-                WadPolygon poly;
+                WadPolygon poly = new WadPolygon();
                 poly.Shape = WadPolygonShape.Quad;
                 poly.Index0 = oldPoly.Index0;
                 poly.Index1 = oldPoly.Index1;

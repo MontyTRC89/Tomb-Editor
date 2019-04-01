@@ -12,6 +12,7 @@ using TombLib.GeometryIO;
 using TombLib.Graphics;
 using System.Xml;
 using System.Xml.Serialization;
+using TombLib;
 
 namespace WadTool
 {
@@ -162,6 +163,88 @@ namespace WadTool
                 wad.AssignNewId(wadObject.Id, form.NewId);
             }
             tool.WadChanged(tool.MainSelection.Value.WadArea);
+        }
+
+        public static void ExportMesh(WadToolClass tool, IWin32Window owner, WadMesh m)
+        {
+            // Step 1: collect all textures
+            /*var texturePieces = new Dictionary<Hash, WadTexture>();
+            for (int i = 0; i < m.Polys.Count; i++)
+            {
+                var poly = m.Polys[i];
+
+                // Create the new tile and compute hash
+                var textureQuad = poly.Texture.GetRect(poly.Shape == WadPolygonShape.Triangle);
+                var image = ImageC.CreateNew((int)textureQuad.Width, (int)textureQuad.Height);
+                image.CopyFrom(0, 0, poly.Texture.Texture.Image, (int)textureQuad.X0, (int)textureQuad.Y0,
+                    (int)(textureQuad.X0 + textureQuad.X1), (int)(textureQuad.Y0 + textureQuad.Y1));
+                WadTexture text = new WadTexture(image);
+
+                // Store the hash for the next steps
+                poly.TextureHash = text.Hash;
+
+                //Add uniquely the texture to the dictionary
+                if (!texturePieces.ContainsKey(text.Hash))
+                    texturePieces.Add(text.Hash, text);
+            }
+
+            // Step 2: collect textures in 256x256 pages
+            int processedTextures = 0;
+            var lastTexture = ImageC.CreateNew(256, 256);
+            var packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
+            while (processedTextures < texturePieces.Count)
+            {
+                var texture = texturePieces.ElementAt(processedTextures).Value;
+                var result = packer.TryAdd(new VectorInt2(texture.Image.Width, texture.Image.Height));
+                if (!result.HasValue)
+                {
+
+                }
+                processedTextures++;
+            }
+
+            var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + i,
+                                                                   texture,
+                                                                   fileName,
+                                                                   i,
+                                                                   false,
+                                                                   false,
+                                                                   0);
+
+            var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + i,
+                                                      texture,
+                                                      fileName,
+                                                      i,
+                                                      false,
+                                                      true,
+                                                      0);
+
+            var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + i,
+                                                     texture,
+                                                     fileName,
+                                                     i,
+                                                     true,
+                                                     false,
+                                                     0);
+
+            var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + i,
+                                                                texture,
+                                                                fileName,
+                                                                i,
+                                                                true,
+                                                                true,
+                                                                0);
+
+            var mesh = new IOMesh(m.Name);
+
+            foreach (var poly in m.Polys)
+            {
+
+            }
+
+            m.Polys[0].Texture.*/
+
+            return;
         }
 
         public static void ImportModelAsStaticMesh(WadToolClass tool, IWin32Window owner)

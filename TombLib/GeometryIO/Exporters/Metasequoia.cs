@@ -5,9 +5,9 @@ using System.Numerics;
 
 namespace TombLib.GeometryIO.Exporters
 {
-    public class Metasequoia : BaseGeometryExporter
+    public class MetasequoiaExporter : BaseGeometryExporter
     {
-        public Metasequoia(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        public MetasequoiaExporter(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
             : base(settings, getTexturePathCallback)
         {
 
