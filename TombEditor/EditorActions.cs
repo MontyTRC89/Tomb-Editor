@@ -3095,7 +3095,7 @@ namespace TombEditor
 
 
             // Update level
-            _editor.Level.Settings.Wads.AddRange(results.Where(result => result != null));
+            _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
             _editor.LoadedWadsChange();
             return results.Where(result => result != null);
         }
