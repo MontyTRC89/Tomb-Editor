@@ -32,9 +32,9 @@ namespace TombLib.GeometryIO
         public static BaseGeometryExporter CreateForFile(string filename, IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
         {
             if (filename.EndsWith(".mqo", StringComparison.InvariantCultureIgnoreCase))
-                return new Exporters.Metasequoia(settings, getTexturePathCallback);
+                return new Exporters.MetasequoiaExporter(settings, getTexturePathCallback);
             if (filename.EndsWith(".mqo", StringComparison.InvariantCultureIgnoreCase))
-                return new Exporters.Metasequoia(settings, getTexturePathCallback);
+                return new Exporters.MetasequoiaExporter(settings, getTexturePathCallback);
             /*else if (filename.EndsWith(".ply", StringComparison.InvariantCultureIgnoreCase))
                 return new Exporters.Ply(settings, getTexturePathCallback);
             else if (filename.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase))

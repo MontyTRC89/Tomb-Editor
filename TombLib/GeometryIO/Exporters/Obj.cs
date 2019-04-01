@@ -9,9 +9,9 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
-    /*public class Obj : BaseGeometryExporter
+    public class ObjExporter : BaseGeometryExporter
     {
-        public Obj(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        public ObjExporter(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
             : base(settings, getTexturePathCallback)
         {
 
@@ -19,16 +19,30 @@ namespace TombLib.GeometryIO.Exporters
 
         public override bool ExportToFile(IOModel model, string filename)
         {
-            var path = Path.GetDirectoryName(filename);
-            var material = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
+            /*var path = Path.GetDirectoryName(filename);
+            var materialPath = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
 
             var mesh = model.Meshes[0];
+            var materials = new List<IOMaterial>();
+
+            foreach (var pair in mesh.Submeshes)
+            {
+                var material = pair.Key;
+                var submesh = pair.Value;
+
+                // If no polygons, then no need to consider this material
+                if (submesh.Polygons.Count == 0)
+                    continue;
+
+                material.Path = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
+                materials.Add(material);
+            }
 
             using (var writer = new StreamWriter(filename, false))
             {
                 writer.WriteLine("# Exported by Tomb Editor");
-                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(filename) + ".mtl");
-                writer.WriteLine("o Room");
+                writer.WriteLine("matlib " + Path.GetFileNameWithoutExtension(filename) + ".mtl");
+                writer.WriteLine("o " + mesh.Name);
 
                 // Save vertices
                 foreach (var vertex in mesh.Positions)
@@ -42,7 +56,7 @@ namespace TombLib.GeometryIO.Exporters
                 // Save UVs
                 foreach (var uv in mesh.UV)
                 {
-                    var newUV = ApplyUVTransform(uv, mesh.Texture.Image.Width, mesh.Texture.Image.Height);
+                    var newUV = ApplyUVTransform(uv, mesh.Submeshes[0].Material.tex mesh.Texture.Image.Width, mesh.Texture.Image.Height);
                     writer.WriteLine("vt " + newUV.X.ToString(CultureInfo.InvariantCulture) + " " +
                                              newUV.Y.ToString(CultureInfo.InvariantCulture));
                 }
@@ -80,18 +94,22 @@ namespace TombLib.GeometryIO.Exporters
                     }
             }
 
-            using (var writer = new StreamWriter(material, false))
+            using (var writer = new StreamWriter(materialPath, false))
             {
                 writer.WriteLine("# Exported by Tomb Editor");
-                writer.WriteLine("newmtl Room");
-                writer.WriteLine("Ka 1.000000 1.000000 1.000000");
-                writer.WriteLine("Ni 1.000000");
-                writer.WriteLine("d 1.000000");
-                writer.WriteLine("illum 2");
-                writer.WriteLine("map_Kd " + GetTexturePath(path, mesh.Texture));
-            }
+
+                foreach (var material in materials)
+                {
+                    writer.WriteLine("newmtl " + material.Name);
+                    writer.WriteLine("Ka 1.000000 1.000000 1.000000");
+                    writer.WriteLine("Ni 1.000000");
+                    writer.WriteLine("d 1.000000");
+                    writer.WriteLine("illum 2");
+                    writer.WriteLine("map_Kd " + GetTexturePath(path, material.Texture));
+                }
+            }*/
 
             return true;
         }
-    }*/
+    }
 }

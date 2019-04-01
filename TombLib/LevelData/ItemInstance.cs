@@ -28,7 +28,8 @@ namespace TombLib.LevelData
             return ItemType +
                    ", Room = " + (Room?.ToString() ?? "NULL") +
                    ", X = " + SectorPosition.X +
-                   ", Z = " + SectorPosition.Y;
+                   ", Z = " + SectorPosition.Y +
+                   (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
         public string ShortName() => ItemType.ShortName() + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");

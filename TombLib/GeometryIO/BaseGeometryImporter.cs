@@ -24,9 +24,9 @@ namespace TombLib.GeometryIO
         public static BaseGeometryImporter CreateForFile(string filename, IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
         {
             if (filename.EndsWith(".mqo", StringComparison.InvariantCultureIgnoreCase))
-                return new Importers.Metasequoia(settings, getTextureCallback);
+                return new Importers.MetasequoiaImporter(settings, getTextureCallback);
             else
-                return new Importers.Assimp(settings, getTextureCallback);
+                return new Importers.AssimpImporter(settings, getTextureCallback);
         }
 
         protected Texture GetTexture(string baseDirectory, string textureFilePath)

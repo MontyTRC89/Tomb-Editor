@@ -11,7 +11,8 @@
             return "Sink with strength " + Strength +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
-                ", Z = " + SectorPosition.Y;
+                ", Z = " + SectorPosition.Y +
+                (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
         public string ShortName() => "Sink" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
