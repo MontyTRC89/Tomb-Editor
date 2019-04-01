@@ -42,20 +42,7 @@ namespace TombLib.Controls
         public int AnimationIndex { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int KeyFrameIndex { get; set; }
-
-        private DarkScrollBar _animationScrollBar;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public DarkScrollBar AnimationScrollBar
-        {
-            get { return _animationScrollBar; }
-            set
-            {
-                if (_animationScrollBar != null)
-                    _animationScrollBar.ValueChanged -= AnimationScrollBar_Value_ValueChanged;
-                _animationScrollBar = value;
-                value.ValueChanged += AnimationScrollBar_Value_ValueChanged;
-            }
-        }
+      
 
         // Interaction state
         private float _lastX;
@@ -329,12 +316,6 @@ namespace TombLib.Controls
             }
         }
 
-        private void AnimationScrollBar_Value_ValueChanged(object sender, ScrollValueEventArgs e)
-        {
-            KeyFrameIndex = AnimationScrollBar.Value;
-            Invalidate();
-        }
-
         public void UpdateAnimationScrollbar()
         {
             // Figure out scroll bar maximum
@@ -348,15 +329,6 @@ namespace TombLib.Controls
             {
                 stateCount = ((WadSpriteSequence)CurrentObject).Sprites.Count;
             }
-
-            // Setup scroll bar
-            KeyFrameIndex = Math.Max(KeyFrameIndex, stateCount - 1);
-            AnimationScrollBar.ViewSize = 1;
-            AnimationScrollBar.Enabled = stateCount > 1;
-            AnimationScrollBar.Minimum = 0;
-            AnimationScrollBar.Maximum = Math.Max(1, stateCount);
-            AnimationScrollBar.Value = KeyFrameIndex;
-            AnimationScrollBar.Invalidate();
         }
 
         public abstract float FieldOfView { get; }

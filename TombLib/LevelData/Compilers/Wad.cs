@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -13,7 +14,9 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, bool isWaterfall = false, bool isOptics = false)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, 
+                                       bool isWaterfall = false, bool isOptics = false,
+                                       WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
             int currentMeshSize = 0;
 
@@ -48,7 +51,7 @@ namespace TombLib.LevelData.Compilers
             bool useShades = false;
             if (isStatic)
             {
-                if (oldMesh.LightingType == WadMeshLightingType.Normals)
+                if (lightType == WadMeshLightingType.Normals)
                 {
                     if (oldMesh.VerticesNormals.Count == 0)
                     {
@@ -93,7 +96,9 @@ namespace TombLib.LevelData.Compilers
 
                 for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
                 {
-                    var normal = oldMesh.VerticesNormals[j];
+                    Vector3 normal = oldMesh.VerticesNormals[j];
+                    normal = Vector3.Normalize(normal);
+                    normal *= 16300.0f;
                     newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
 
                     currentMeshSize += 6;
@@ -476,7 +481,7 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId);
+                ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
 
                 _staticMeshes.Add(newStaticMesh);
             }

@@ -575,6 +575,8 @@ namespace WadTool.Controls
                                 (light.Radius * 1024.0f));
                 }
 
+                newShade = Math.Min(newShade, 1.0f);
+
                 Static.Mesh.VerticesShades.Add((short)((255.0f - newShade * 255.0f) * 8191 / 255));
             }
 

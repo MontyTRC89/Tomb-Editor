@@ -59,7 +59,6 @@
             this.butSave = new System.Windows.Forms.ToolStripButton();
             this.butSaveAs = new System.Windows.Forms.ToolStripButton();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.scrollbarAnimations = new DarkUI.Controls.DarkScrollBar();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.treeSourceWad = new TombLib.Controls.WadTreeView();
@@ -82,14 +81,14 @@
             this.contextMenuMoveableItem = new DarkUI.Controls.DarkContextMenu();
             this.editSkeletonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmStatics = new DarkUI.Controls.DarkContextMenu();
-            this.changeSlorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemMoveablesChangeSlot = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemMoveablesDelete = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmStatics = new DarkUI.Controls.DarkContextMenu();
             this.editObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.changeSlorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1.SuspendLayout();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
@@ -544,17 +543,6 @@
             this.darkLabel2.Text = "Reference WAD - Wad2 - Level";
             this.darkLabel2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // scrollbarAnimations
-            // 
-            this.scrollbarAnimations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.scrollbarAnimations.Location = new System.Drawing.Point(0, 620);
-            this.scrollbarAnimations.Name = "scrollbarAnimations";
-            this.scrollbarAnimations.ScrollOrientation = DarkUI.Controls.DarkScrollOrientation.Horizontal;
-            this.scrollbarAnimations.Size = new System.Drawing.Size(591, 12);
-            this.scrollbarAnimations.TabIndex = 20;
-            this.scrollbarAnimations.Text = "darkScrollBar1";
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 3;
@@ -701,7 +689,6 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.flowLayoutPanel3);
-            this.panel3.Controls.Add(this.scrollbarAnimations);
             this.panel3.Controls.Add(this.panel3D);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(323, 0);
@@ -789,7 +776,7 @@
             this.panel3D.Location = new System.Drawing.Point(4, 30);
             this.panel3D.Margin = new System.Windows.Forms.Padding(0);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(586, 587);
+            this.panel3D.Size = new System.Drawing.Size(586, 602);
             this.panel3D.TabIndex = 9;
             // 
             // contextMenuMoveableItem
@@ -825,37 +812,13 @@
             this.editAnimationsToolStripMenuItem.Text = "Edit animations";
             this.editAnimationsToolStripMenuItem.Click += new System.EventHandler(this.editAnimationsToolStripMenuItem_Click);
             // 
-            // cmStatics
+            // toolStripMenuItem6
             // 
-            this.cmStatics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.cmStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.cmStatics.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editObjectToolStripMenuItem,
-            this.toolStripMenuItem4,
-            this.changeSlorToolStripMenuItem,
-            this.deleteObjectToolStripMenuItem});
-            this.cmStatics.Name = "cmObject";
-            this.cmStatics.Size = new System.Drawing.Size(144, 77);
-            // 
-            // changeSlorToolStripMenuItem
-            // 
-            this.changeSlorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.changeSlorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.changeSlorToolStripMenuItem.Image = global::WadTool.Properties.Resources.replace_16;
-            this.changeSlorToolStripMenuItem.Name = "changeSlorToolStripMenuItem";
-            this.changeSlorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.changeSlorToolStripMenuItem.Text = "Change slot";
-            this.changeSlorToolStripMenuItem.Click += new System.EventHandler(this.changeSlotToolStripMenuItem_Click);
-            // 
-            // deleteObjectToolStripMenuItem
-            // 
-            this.deleteObjectToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.deleteObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.deleteObjectToolStripMenuItem.Image = global::WadTool.Properties.Resources.trash_16;
-            this.deleteObjectToolStripMenuItem.Name = "deleteObjectToolStripMenuItem";
-            this.deleteObjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.deleteObjectToolStripMenuItem.Text = "Delete object";
-            this.deleteObjectToolStripMenuItem.Click += new System.EventHandler(this.deleteObjectToolStripMenuItem_Click);
+            this.toolStripMenuItem6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem6.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(153, 6);
             // 
             // toolStripMenuItemMoveablesChangeSlot
             // 
@@ -877,21 +840,17 @@
             this.toolStripMenuItemMoveablesDelete.Text = "Delete object";
             this.toolStripMenuItemMoveablesDelete.Click += new System.EventHandler(this.toolStripMenuItemMoveablesDelete_Click);
             // 
-            // toolStripMenuItem6
+            // cmStatics
             // 
-            this.toolStripMenuItem6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem6.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(153, 6);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(140, 6);
+            this.cmStatics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmStatics.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editObjectToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.changeSlorToolStripMenuItem,
+            this.deleteObjectToolStripMenuItem});
+            this.cmStatics.Name = "cmObject";
+            this.cmStatics.Size = new System.Drawing.Size(144, 77);
             // 
             // editObjectToolStripMenuItem
             // 
@@ -902,6 +861,34 @@
             this.editObjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.editObjectToolStripMenuItem.Text = "Edit object";
             this.editObjectToolStripMenuItem.Click += new System.EventHandler(this.editObjectToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(140, 6);
+            // 
+            // changeSlorToolStripMenuItem
+            // 
+            this.changeSlorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.changeSlorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.changeSlorToolStripMenuItem.Image = global::WadTool.Properties.Resources.replace_16;
+            this.changeSlorToolStripMenuItem.Name = "changeSlorToolStripMenuItem";
+            this.changeSlorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.changeSlorToolStripMenuItem.Text = "Change slot";
+            this.changeSlorToolStripMenuItem.Click += new System.EventHandler(this.changeSlotToolStripMenuItem_Click);
+            // 
+            // deleteObjectToolStripMenuItem
+            // 
+            this.deleteObjectToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteObjectToolStripMenuItem.Image = global::WadTool.Properties.Resources.trash_16;
+            this.deleteObjectToolStripMenuItem.Name = "deleteObjectToolStripMenuItem";
+            this.deleteObjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.deleteObjectToolStripMenuItem.Text = "Delete object";
+            this.deleteObjectToolStripMenuItem.Click += new System.EventHandler(this.deleteObjectToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -979,7 +966,6 @@
         private System.Windows.Forms.ToolStripButton butNewWad2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private DarkUI.Controls.DarkButton butChangeSlot;
-        private DarkUI.Controls.DarkScrollBar scrollbarAnimations;
         private DarkUI.Controls.DarkButton butEditItem;
         private System.Windows.Forms.ToolStripMenuItem newWad2ToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
