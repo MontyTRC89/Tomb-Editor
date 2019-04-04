@@ -314,16 +314,34 @@ namespace WadTool
                 if (!sourceWad.Contains(objectIdsToMove[i]))
                     continue;
                 if (!alwaysChooseId)
+                {
                     if (!destinationWad.Contains(newIds[i]))
                         if (!newIds.Take(i).Contains(newIds[i])) // There also must not be collisions with the other custom assigned ids.
                             continue;
+                }
+
+                bool askConfirm = !alwaysChooseId;
 
                 // Ask for the new slot
                 do
                 {
-                    var result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad." +
-                                                     "Do you want to replace it (Yes) or to select another Id (No)?",
-                                                     "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                    var result = DialogResult.None;
+
+                    if (askConfirm)
+                    {
+                        result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad." +
+                                                         "Do you want to replace it (Yes) or to select another Id (No)?",
+                                                         "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    }
+                    else
+                    {
+                        result = DialogResult.No;
+                    }
+
+                    // From this time, always ask for confirm
+                    askConfirm = true;
+
                     if (result == DialogResult.Cancel)
                         return;
                     else if (result == DialogResult.No)

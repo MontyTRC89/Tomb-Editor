@@ -32,7 +32,8 @@ namespace WadTool.Controls
         public int CurrentKeyFrame { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PlayAnimation { get; set; }
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public float CurrentTime { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawVisibilityBox { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
