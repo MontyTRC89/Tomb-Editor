@@ -13,6 +13,7 @@ using TombLib.Graphics;
 using System.Xml;
 using System.Xml.Serialization;
 using TombLib;
+using System.Numerics;
 
 namespace WadTool
 {
@@ -471,10 +472,107 @@ namespace WadTool
                     DarkMessageBox.Show(owner, "The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", "Error", MessageBoxIcon.Error);
                     return;
                 }
+
+                if (initialWadObject is WadMoveable)
+                {
+                    var moveable = initialWadObject as WadMoveable;
+                    moveable.Skeleton.Name = "Root";
+                    moveable.Skeleton.Mesh = CreateFakeMesh("Root");
+                }
+
                 destinationWad.Add(form.NewId, initialWadObject);
             }
 
             tool.DestinationWadChanged();
+        }
+
+        public static WadMesh CreateFakeMesh(string name)
+        {
+            var mesh = new WadMesh();
+
+            mesh.Name = name;
+
+            mesh.VerticesPositions.Add(new Vector3(-1, 1, 1)); // 0
+            mesh.VerticesPositions.Add(new Vector3(1, 1, 1)); // 1
+            mesh.VerticesPositions.Add(new Vector3(1, 1, -1)); // 2
+            mesh.VerticesPositions.Add(new Vector3(-1, 1, -1)); // 3
+            mesh.VerticesPositions.Add(new Vector3(-1, -1, 1)); // 4
+            mesh.VerticesPositions.Add(new Vector3(1, -1, 1)); // 5
+            mesh.VerticesPositions.Add(new Vector3(1, -1, -1)); // 6
+            mesh.VerticesPositions.Add(new Vector3(-1, -1, -1)); // 7
+
+            for (int i = 0; i < 8; i++)
+                mesh.VerticesNormals.Add(Vector3.Zero);
+
+            var texture = new TextureArea();
+            var image = ImageC.Magenta;
+            texture.Texture = new WadTexture(image);
+            texture.TexCoord0 = new Vector2(0, 0);
+            texture.TexCoord1 = new Vector2(1, 0);
+            texture.TexCoord2 = new Vector2(1, 1);
+            texture.TexCoord3 = new Vector2(0, 1);
+
+            mesh.Polys.Add(new WadPolygon
+            {
+                Index0 = 0,
+                Index1 = 1,
+                Index2 = 2,
+                Index3 = 3,
+                Shape = WadPolygonShape.Quad,
+                Texture = texture
+            });
+
+            mesh.Polys.Add(new WadPolygon
+            {
+                Index0 = 2,
+                Index1 = 1,
+                Index2 = 5,
+                Index3 = 6,
+                Shape = WadPolygonShape.Quad,
+                Texture = texture
+            });
+
+            mesh.Polys.Add(new WadPolygon
+            {
+                Index0 = 1,
+                Index1 = 0,
+                Index2 = 4,
+                Index3 = 5,
+                Shape = WadPolygonShape.Quad,
+                Texture = texture
+            });
+
+            mesh.Polys.Add(new WadPolygon
+            {
+                Index0 = 0,
+                Index1 = 3,
+                Index2 = 7,
+                Index3 = 4,
+                Shape = WadPolygonShape.Quad,
+                Texture = texture
+            });
+
+            mesh.Polys.Add(new WadPolygon
+            {
+                Index0 = 3,
+                Index1 = 2,
+                Index2 = 6,
+                Index3 = 7,
+                Shape = WadPolygonShape.Quad,
+                Texture = texture
+            });
+
+            mesh.Polys.Add(new WadPolygon
+            {
+                Index0 = 7,
+                Index1 = 6,
+                Index2 = 5,
+                Index3 = 4,
+                Shape = WadPolygonShape.Quad,
+                Texture = texture
+            });
+
+            return mesh;
         }
 
         public static void ShowSoundOverview(WadToolClass tool, IWin32Window owner, WadArea wadArea)

@@ -59,6 +59,7 @@ namespace TombLib.Utils
     public struct ImageC : IEquatable<ImageC>
     {
         public static ImageC Black { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0xFF });
+        public static ImageC Magenta { get; } = new ImageC(1, 1, new byte[] { 0xFF, 0, 0xFF, 0xFF });
         public static ImageC Transparent { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0 });
         public const int PixelSize = 4;
 
