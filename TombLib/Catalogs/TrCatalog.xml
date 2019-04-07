@@ -2606,11 +2606,11 @@
       <sound id="303" name="Horseman grunt"/>
       <sound id="304" name="Horseman fall"/>
       <sound id="305" name="Horseman die"/>
-      <sound id="306" name="Mapper switch on"/>
-      <sound id="307" name="Mapper open"/>
+      <sound id="306" name="Mapper switch on" fixed_by_default="true"/>
+      <sound id="307" name="Mapper open" fixed_by_default="true"/>
       <sound id="308" name="Mapper lazer" fixed_by_default="true"/>
-      <sound id="309" name="Mapper move"/>
-      <sound id="310" name="Mapper clunk"/>
+      <sound id="309" name="Mapper move" fixed_by_default="true"/>
+      <sound id="310" name="Mapper clunk" fixed_by_default="true"/>
       <sound id="311" name="Blades draw"/>
       <sound id="312" name="Blades clash loud"/>
       <sound id="313" name="Blades clash quiet"/>
