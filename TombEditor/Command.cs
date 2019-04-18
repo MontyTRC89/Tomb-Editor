@@ -1148,6 +1148,18 @@ namespace TombEditor
                     EditorActions.GridWalls(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, true);
             });
 
+            AddCommand("GridWallsIn3Squares", "Grid walls in 3 (squares)", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    EditorActions.GridWallsSquares(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("GridWallsIn5Squares", "Grid walls in 5 (squares)", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    EditorActions.GridWallsSquares(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, true);
+            });
+
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (FormLevelSettings form = new FormLevelSettings(args.Editor))

@@ -2315,6 +2315,104 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
+        public static void GridWallsSquares(Room room, RectangleInt2 area, bool fiveDivisions = false)
+        {
+            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+            int minFloor = int.MaxValue;
+            int maxCeiling = int.MinValue;
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    Block block = room.Blocks[x, z];
+                    if (block.IsAnyWall)
+                    {
+                        // Figure out corner heights
+                        int?[] floorHeights = new int?[(int)BlockEdge.Count];
+                        int?[] ceilingHeights = new int?[(int)BlockEdge.Count];
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        {
+                            int testX = x + edge.DirectionX(), testZ = z + edge.DirectionZ();
+                            floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
+                            ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
+                        }
+
+                        if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
+                            continue; // We can only do it if there is information available
+
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        {
+                            // Skip opposite diagonal step corner
+                            switch (block.Floor.DiagonalSplit)
+                            {
+                                case DiagonalSplit.XnZn:
+                                    if (edge == BlockEdge.XpZp)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XnZp:
+                                    if (edge == BlockEdge.XpZn)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XpZn:
+                                    if (edge == BlockEdge.XnZp)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XpZp:
+                                    if (edge == BlockEdge.XnZn)
+                                        continue;
+                                    break;
+                            }
+
+                            // Use the closest available vertical area information and divide it equally
+                            int floor = floorHeights[(int)edge] ?? floorHeights[((int)edge + 1) % 4] ?? floorHeights[((int)edge + 3) % 4] ?? floorHeights[((int)edge + 2) % 4].Value;
+                            int ceiling = ceilingHeights[(int)edge] ?? ceilingHeights[((int)edge + 1) % 4] ?? ceilingHeights[((int)edge + 3) % 4] ?? ceilingHeights[((int)edge + 2) % 4].Value;
+
+                            if (floor <= minFloor) minFloor = floor;
+                            if (ceiling >= maxCeiling) maxCeiling = ceiling;
+                        }
+                    }
+                }
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    Block block = room.Blocks[x, z];
+                    if (block.IsAnyWall)
+                    {
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        {
+                            // Skip opposite diagonal step corner
+                            switch (block.Floor.DiagonalSplit)
+                            {
+                                case DiagonalSplit.XnZn:
+                                    if (edge == BlockEdge.XpZp)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XnZp:
+                                    if (edge == BlockEdge.XpZn)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XpZn:
+                                    if (edge == BlockEdge.XnZp)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XpZp:
+                                    if (edge == BlockEdge.XnZn)
+                                        continue;
+                                    break;
+                            }
+                            block.SetHeight(BlockVertical.Ed, edge, (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor));
+                            block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f));
+                            block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f));
+                            block.SetHeight(BlockVertical.Rf, edge, (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling));
+                        }
+                    }
+                }
+
+            SmartBuildGeometry(room, area);
+        }
+
         public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
             if (!selection.Empty && !selection.Valid)
