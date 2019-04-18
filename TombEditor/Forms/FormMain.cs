@@ -135,6 +135,8 @@ namespace TombEditor.Forms
                 averageFloorToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn3ToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
+                gridWallsIn3SquaresToolStripMenuItem.Enabled = validSectorSelection;
+                gridWallsIn5SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = _editor.SelectedObject is SectorBasedObjectInstance && validSectorSelection;
             }
 
@@ -725,6 +727,11 @@ namespace TombEditor.Forms
             ////var script = Script.LoadFromTxt("E:\\trle\\script\\script.txt");
           // script.CompileScript("E:\\trle\\script\\");
             //Script.Test();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

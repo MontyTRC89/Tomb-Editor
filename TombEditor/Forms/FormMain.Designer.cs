@@ -108,6 +108,7 @@
             this.textureCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.clearAllTexturesInRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearAllTexturesInRoomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.animationRangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,6 +129,8 @@
             this.toolStripMenuSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.gridWallsIn3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridWallsIn5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gridWallsIn3SquaresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gridWallsIn5SquaresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.editOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -170,7 +173,6 @@
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.clearAllTexturesInRoomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1150,6 +1152,15 @@
             this.clearAllTexturesInRoomToolStripMenuItem.Tag = "ClearAllTexturesInRoom";
             this.clearAllTexturesInRoomToolStripMenuItem.Text = "ClearAllTexturesInRoom";
             // 
+            // clearAllTexturesInRoomToolStripMenuItem1
+            // 
+            this.clearAllTexturesInRoomToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.clearAllTexturesInRoomToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.clearAllTexturesInRoomToolStripMenuItem1.Name = "clearAllTexturesInRoomToolStripMenuItem1";
+            this.clearAllTexturesInRoomToolStripMenuItem1.Size = new System.Drawing.Size(200, 22);
+            this.clearAllTexturesInRoomToolStripMenuItem1.Tag = "ClearAllTexturesInLevel";
+            this.clearAllTexturesInRoomToolStripMenuItem1.Text = "ClearAllTexturesInLevel";
+            // 
             // toolStripMenuSeparator10
             // 
             this.toolStripMenuSeparator10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1188,7 +1199,9 @@
             this.flattenCeilingToolStripMenuItem,
             this.toolStripMenuSeparator13,
             this.gridWallsIn3ToolStripMenuItem,
-            this.gridWallsIn5ToolStripMenuItem});
+            this.gridWallsIn5ToolStripMenuItem,
+            this.gridWallsIn3SquaresToolStripMenuItem,
+            this.gridWallsIn5SquaresToolStripMenuItem});
             this.transformToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
             this.transformToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
@@ -1355,6 +1368,26 @@
             this.gridWallsIn5ToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.gridWallsIn5ToolStripMenuItem.Tag = "GridWallsIn5";
             this.gridWallsIn5ToolStripMenuItem.Text = "GridWallsIn5";
+            // 
+            // gridWallsIn3SquaresToolStripMenuItem
+            // 
+            this.gridWallsIn3SquaresToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.gridWallsIn3SquaresToolStripMenuItem.Enabled = false;
+            this.gridWallsIn3SquaresToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.gridWallsIn3SquaresToolStripMenuItem.Name = "gridWallsIn3SquaresToolStripMenuItem";
+            this.gridWallsIn3SquaresToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.gridWallsIn3SquaresToolStripMenuItem.Tag = "GridWallsIn3Squares";
+            this.gridWallsIn3SquaresToolStripMenuItem.Text = "GridWallsIn3Squares";
+            // 
+            // gridWallsIn5SquaresToolStripMenuItem
+            // 
+            this.gridWallsIn5SquaresToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.gridWallsIn5SquaresToolStripMenuItem.Enabled = false;
+            this.gridWallsIn5SquaresToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.gridWallsIn5SquaresToolStripMenuItem.Name = "gridWallsIn5SquaresToolStripMenuItem";
+            this.gridWallsIn5SquaresToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.gridWallsIn5SquaresToolStripMenuItem.Tag = "GridWallsIn5Squares";
+            this.gridWallsIn5SquaresToolStripMenuItem.Text = "GridWallsIn5Squares";
             // 
             // toolStripMenuItem4
             // 
@@ -1758,15 +1791,6 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
-            // clearAllTexturesInRoomToolStripMenuItem1
-            // 
-            this.clearAllTexturesInRoomToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.clearAllTexturesInRoomToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.clearAllTexturesInRoomToolStripMenuItem1.Name = "clearAllTexturesInRoomToolStripMenuItem1";
-            this.clearAllTexturesInRoomToolStripMenuItem1.Size = new System.Drawing.Size(200, 22);
-            this.clearAllTexturesInRoomToolStripMenuItem1.Tag = "ClearAllTexturesInLevel";
-            this.clearAllTexturesInRoomToolStripMenuItem1.Text = "ClearAllTexturesInLevel";
-            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -1781,6 +1805,7 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Tomb Editor";
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -1949,5 +1974,7 @@
         private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem clearAllTexturesInRoomToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem gridWallsIn3SquaresToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gridWallsIn5SquaresToolStripMenuItem;
     }
 }
