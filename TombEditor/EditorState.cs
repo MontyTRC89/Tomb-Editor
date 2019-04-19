@@ -14,13 +14,19 @@ namespace TombEditor
         None, Selection, Brush, Pencil,
         Fill, Group, Paint2x2,
         Shovel, Smooth, Flatten,
-        Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain, PortalDigger // Do not modify enum order after drag tool!
+        Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain, PortalDigger /* Do not modify enum order after drag tool! */
+    }
+
+    public enum PaintGridSize
+    {
+        Grid2x2, Grid3x3, Grid4x4
     }
 
     public class EditorTool
     {
         public EditorToolType Tool { get; set; }
         public bool TextureUVFixer { get; set; }
+        public PaintGridSize GridSize { get; set; }
 
         public static bool operator == (EditorTool first, EditorTool second)
         {

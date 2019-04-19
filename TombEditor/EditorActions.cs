@@ -1378,7 +1378,7 @@ namespace TombEditor
         {
             if(!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
+            
             if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
             RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
 

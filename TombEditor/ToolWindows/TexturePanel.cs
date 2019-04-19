@@ -36,7 +36,7 @@ namespace TombEditor.ToolWindows
 
             cmbBlending.SelectedIndex = 0;
             cmbTileSize.SelectedItem = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
-
+            comboTextureGridMode.SelectedIndex = 0;
         }
 
         protected override void Dispose(bool disposing)
@@ -217,6 +217,11 @@ namespace TombEditor.ToolWindows
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
                 EditorActions.UpdateTextureFilepath(this, texture);
+        }
+
+        private void ComboTextureGridMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.Tool.GridSize = (PaintGridSize)comboTextureGridMode.SelectedIndex;
         }
     }
 }

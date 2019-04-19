@@ -1043,10 +1043,14 @@ namespace TombEditor.Controls
                                     }
                                     else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
                                     {
+                                        int factor = 2;
+                                        if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) factor = 3;
+                                        if (_editor.Tool.GridSize == PaintGridSize.Grid4x4) factor = 4;
+
                                         var point = new VectorInt2
-                                            ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % 2)) % 2)),
-                                                (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % 2)) % 2)));
-                                        var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One };
+                                            ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % factor)) % factor)),
+                                                (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % factor)) % factor)));
+                                        var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One * (factor - 1) };
 
                                         if (_editor.HighlightedSectors != newSelection)
                                         {
@@ -1061,7 +1065,7 @@ namespace TombEditor.Controls
                                                 true);
                                             redrawWindow = true;
                                         }
-                                    }
+                                    }                                    
                                 }
                             }
                         }
@@ -1075,6 +1079,10 @@ namespace TombEditor.Controls
                             !_editor.Configuration.Rendering3D_AllowTexturingInLightingMode)
                             break;
 
+                        int addToSelection = 1;
+                        if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) addToSelection = 2;
+                        if (_editor.Tool.GridSize == PaintGridSize.Grid4x4) addToSelection = 3;
+
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null)
                         {
@@ -1082,7 +1090,7 @@ namespace TombEditor.Controls
                             var newSelection = new SectorSelection
                             {
                                 Start = new VectorInt2(pos.X, pos.Y),
-                                End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One
+                                End = new VectorInt2(pos.X, pos.Y) + VectorInt2.One * addToSelection
                             };
 
                             if (_editor.HighlightedSectors != newSelection)
