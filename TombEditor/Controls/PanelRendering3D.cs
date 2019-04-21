@@ -1047,9 +1047,11 @@ namespace TombEditor.Controls
                                         if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) factor = 3;
                                         if (_editor.Tool.GridSize == PaintGridSize.Grid4x4) factor = 4;
 
-                                        var point = new VectorInt2
-                                            ((pos.X - ((pos.X + (_toolHandler.ReferencePicking.Pos.X % factor)) % factor)),
-                                                (pos.Y - ((pos.Y + (_toolHandler.ReferencePicking.Pos.Y % factor)) % factor)));
+                                        var point = new VectorInt2();
+
+                                        point.X = _toolHandler.ReferencePicking.Pos.X + (int)Math.Floor((float)(pos.X - _toolHandler.ReferencePicking.Pos.X) / factor) * factor;
+                                        point.Y = _toolHandler.ReferencePicking.Pos.Y + (int)Math.Floor((float)(pos.Y - _toolHandler.ReferencePicking.Pos.Y) / factor) * factor;
+
                                         var newSelection = new SectorSelection { Start = point, End = point + VectorInt2.One * (factor - 1) };
 
                                         if (_editor.HighlightedSectors != newSelection)
