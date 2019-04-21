@@ -350,6 +350,12 @@ namespace TombEditor
         {
             var name = "Window_" + form.Name;
 
+            // HACK: this prevents saving wrong position to XML file
+            if (form.WindowState == FormWindowState.Minimized)
+            {
+                return;
+            }
+
             config.GetType().GetProperty(name + "_Size")?.SetValue(config, form.Size);
             config.GetType().GetProperty(name + "_Position")?.SetValue(config, form.Location);
             config.GetType().GetProperty(name + "_Maximized")?.SetValue(config, form.WindowState == FormWindowState.Maximized);
@@ -366,6 +372,9 @@ namespace TombEditor
             if (size is Size)  form.Size = (Size)size;
             if (pos  is Point) form.Location = (Point)pos;
             if (max  is bool)  form.WindowState = (bool)max ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            // HACK: this fixed corrupted XML files
+            if (form.Location.X <= -127 || form.Location.Y <= -127) form.Location = new Point(0, 0);
 
             if (form.Location.X == -1 && form.Location.Y == -1)
                 form.StartPosition = FormStartPosition.CenterParent;
