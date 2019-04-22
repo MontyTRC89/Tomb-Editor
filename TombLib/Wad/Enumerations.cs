@@ -25,4 +25,12 @@
         Normals,
         PrecalculatedGrayShades
     }
+
+    public enum WadLinkOpcode : ushort
+    {
+        NotUseStack = 0,
+        Pop = 1,
+        Push = 2,
+        Read = 3
+    }
 }

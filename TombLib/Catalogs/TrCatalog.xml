@@ -2670,6 +2670,9 @@
       <sound id="367" name="Bike hit enemies" fixed_by_default="true"/>
       <sound id="368" name="Flame emitter" fixed_by_default="true"/>
       <sound id="369" name="Lara click switch"/>
+      <sound id="1053" name="TR2 boat sound 1" fixed_by_default="true"/>
+      <sound id="1055" name="TR2 boat sound 2" fixed_by_default="true"/>
+      <sound id="1057" name="TR2 boat sound 2" fixed_by_default="true"/>
     </sounds>
     <original_names>
       <org is_static="false" id="0" name="LARA"/>

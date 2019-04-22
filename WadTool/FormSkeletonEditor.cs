@@ -23,10 +23,9 @@ namespace WadTool
     {
         private Wad2 _wad;
         private WadMoveable _moveable;
-        private WadBone _workingSkeleton;
         private List<WadMeshBoneNode> _linearizedSkeleton;
         private WadToolClass _tool;
-
+        
         public FormSkeletonEditor(WadToolClass tool, DeviceManager manager, Wad2 wad, WadMoveableId moveableId)
         {
             InitializeComponent();
@@ -41,9 +40,8 @@ namespace WadTool
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
             // Clone the skeleton and load it
-            _workingSkeleton = _moveable.Skeleton.Clone(null);
             treeSkeleton.Nodes.Clear();
-            treeSkeleton.Nodes.Add(LoadSkeleton(null, _workingSkeleton, null));
+            treeSkeleton.Nodes.Add(LoadSkeleton());
             UpdateLinearizedNodesList();
         }
 
@@ -53,23 +51,87 @@ namespace WadTool
                 UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
         }
 
-        private DarkTreeNode LoadSkeleton(WadMeshBoneNode parentNode, WadBone currentBone, DarkTreeNode parent)
+        private DarkTreeNode LoadSkeleton()
         {
-            var wadMesh = currentBone.Mesh;
-            var wadMoveable = _moveable;
+            var nodes = new List<DarkTreeNode>();
+            var stack = new Stack<DarkTreeNode>();
+            var bones = _moveable.Bones;
 
-            DarkTreeNode node = new DarkTreeNode(currentBone.Name);
-            node.Tag = new WadMeshBoneNode(parentNode, wadMesh, currentBone);
-
-            foreach (var childBone in currentBone.Children)
+            for (int i = 0; i < bones.Count; i++)
             {
-                var newChildNode = LoadSkeleton((WadMeshBoneNode)node.Tag, childBone, node);
-                node.Nodes.Add(newChildNode);
-                var tag = (WadMeshBoneNode)node.Tag;
-                tag.Children.Add((WadMeshBoneNode)(newChildNode.Tag));
+                var newNode = new DarkTreeNode(bones[i].Name);
+                newNode.Tag = new WadMeshBoneNode(null, bones[i].Mesh, bones[i]);
+                var boneNode = new WadMeshBoneNode(null, bones[i].Mesh, bones[i].Clone());
+                boneNode.Bone.Translation = Vector3.Zero;
+                boneNode.GlobalTransform = Matrix4x4.Identity;
+                newNode.Tag = boneNode;
+                nodes.Add(newNode);
             }
 
-            return node;
+            var currentNode = nodes[0];            
+
+            for (int j = 1; j < bones.Count; j++)
+            {
+                int linkX = (int)bones[j].Translation.X;
+                int linkY = (int)bones[j].Translation.Y;
+                int linkZ = (int)bones[j].Translation.Z;
+
+                var boneNode = nodes[j].Tag as WadMeshBoneNode;
+
+                switch (bones[j].OpCode)
+                {
+                    case WadLinkOpcode.NotUseStack:
+                        boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
+                        boneNode.Parent = currentNode.Tag as WadMeshBoneNode;
+                        (currentNode.Tag as WadMeshBoneNode).Children.Add(boneNode);
+                        nodes[j].ParentNode = currentNode;
+                        currentNode.Nodes.Add(nodes[j]);
+                        currentNode = nodes[j];
+
+                        break;
+                    case WadLinkOpcode.Pop:
+                        if (stack.Count <= 0)
+                            continue;
+                        currentNode = stack.Pop();
+
+                        boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
+                        boneNode.Parent = currentNode.Tag as WadMeshBoneNode;
+                        (currentNode.Tag as WadMeshBoneNode).Children.Add(boneNode);
+                        nodes[j].ParentNode = currentNode;
+                        currentNode.Nodes.Add(nodes[j]);
+                        currentNode = nodes[j];
+
+                        break;
+                    case WadLinkOpcode.Push:
+                        stack.Push(currentNode);
+
+                        boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
+                        boneNode.Parent = currentNode.Tag as WadMeshBoneNode;
+                        (currentNode.Tag as WadMeshBoneNode).Children.Add(boneNode);
+                        nodes[j].ParentNode = currentNode;
+                        currentNode.Nodes.Add(nodes[j]);
+                        currentNode = nodes[j];
+
+                        break;
+                    case WadLinkOpcode.Read:
+                        if (stack.Count <= 0)
+                            continue;
+                        var bone = stack.Pop();
+
+                        boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
+                        boneNode.Parent = bone.Tag as WadMeshBoneNode;
+                        (bone.Tag as WadMeshBoneNode).Children.Add(boneNode);
+                        nodes[j].ParentNode = currentNode;
+                        currentNode.Nodes.Add(nodes[j]);
+                        currentNode = nodes[j];
+
+                        stack.Push(bone);
+
+                        break;
+                }
+            }
+
+            return nodes[0];
         }
 
         private void UpdateLinearizedNodesList()
@@ -126,7 +188,7 @@ namespace WadTool
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
             // First I have to count old skeleton bones count
-            int originalBonesCount = _moveable.Skeleton.LinearizedBones.Count();
+            /*int originalBonesCount = _moveable.Skeleton.LinearizedBones.Count();
             int currentBonesCount = _workingSkeleton.LinearizedBones.Count();
 
             if (originalBonesCount < currentBonesCount)
@@ -180,7 +242,7 @@ namespace WadTool
             _moveable.Version = DataVersion.GetNext();
 
             DialogResult = DialogResult.OK;
-            Close();
+            Close();*/
         }
 
         private WadBone SaveSkeleton(WadBone parentBone, DarkTreeNode currentNode)
@@ -282,7 +344,7 @@ namespace WadTool
             UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
 
             treeSkeleton.Nodes.Clear();
-            treeSkeleton.Nodes.Add(LoadSkeleton(null, _workingSkeleton, null));
+            treeSkeleton.Nodes.Add(LoadSkeleton());
             UpdateLinearizedNodesList();
         }
 
@@ -293,7 +355,7 @@ namespace WadTool
             UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
 
             treeSkeleton.Nodes.Clear();
-            treeSkeleton.Nodes.Add(LoadSkeleton(null, _workingSkeleton, null));
+            treeSkeleton.Nodes.Add(LoadSkeleton());
             UpdateLinearizedNodesList();
         }
 

@@ -277,7 +277,6 @@ namespace TombLib.Wad
             {
                 foreach (var moveable in wad.Moveables)
                 {
-                    var bones = moveable.Value.Skeleton.LinearizedBones.ToList();
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveable, () =>
                     {
                         var m = moveable.Value;
@@ -287,7 +286,16 @@ namespace TombLib.Wad
                         foreach (var mesh in m.Meshes)
                             WriteMesh(chunkIO, mesh, textureTable);
 
-                        WriteBone(chunkIO, moveable.Value.Skeleton, bones);
+                        foreach (var b in m.Bones)
+                        {
+                            chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableBoneNew, () =>
+                            {
+                                LEB128.Write(chunkIO.Raw, (byte)b.OpCode);
+                                chunkIO.Raw.WriteStringUTF8(b.Name);
+                                chunkIO.WriteChunkVector3(Wad2Chunks.MoveableBoneTranslation, b.Translation);
+                                chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, m.Bones.IndexOf(b));
+                            });
+                        }
 
                         foreach (var animation in m.Animations)
                         {
