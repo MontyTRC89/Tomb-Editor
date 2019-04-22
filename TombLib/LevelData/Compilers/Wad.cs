@@ -421,7 +421,20 @@ namespace TombLib.LevelData.Compilers
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
-                BuildMeshTree(oldMoveable.Skeleton, meshTrees, usedMeshes);
+                usedMeshes.Add(oldMoveable.Bones[0].Mesh);
+
+                for (int b = 1; b < oldMoveable.Bones.Count; b++)
+                {
+                    tr_meshtree tree = new tr_meshtree();
+
+                    tree.Opcode = (int)oldMoveable.Bones[b].OpCode;
+                    tree.X = (int)oldMoveable.Bones[b].Translation.X;
+                    tree.Y = (int)-oldMoveable.Bones[b].Translation.Y;
+                    tree.Z = (int)oldMoveable.Bones[b].Translation.Z;
+
+                    usedMeshes.Add(oldMoveable.Bones[b].Mesh);
+                    meshTrees.Add(tree);
+                }
 
                 foreach (var meshTree in meshTrees)
                 {
@@ -590,11 +603,11 @@ namespace TombLib.LevelData.Compilers
         }
 
         private void BuildMeshTree(WadBone bone, List<tr_meshtree> meshTrees, List<WadMesh> usedMeshes)
-        {
-            tr_meshtree tree = new tr_meshtree();
+        {tr_meshtree tree = new tr_meshtree();
             tree.X = (int)bone.Translation.X;
             tree.Y = (int)-bone.Translation.Y;
             tree.Z = (int)bone.Translation.Z;
+            
 
             if (bone.Parent == null)
                 tree.Opcode = 2;

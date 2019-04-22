@@ -390,7 +390,6 @@ namespace TombLib.Wad.TrLevels
 
             var bones = new List<WadBone>();
             bones.Add(root);
-            newMoveable.Skeleton = root;
 
             for (int j = 0; j < oldMoveable.NumMeshes - 1; j++)
             {
@@ -402,60 +401,17 @@ namespace TombLib.Wad.TrLevels
                 bones.Add(bone);
             }
 
-            WadBone currentBone = root;
-            WadBone stackBone = root;
-            Stack<WadBone> stack = new Stack<WadBone>();
-
             for (int mi = 0; mi < (oldMeshes.Count - 1); mi++)
             {
                 int j = mi + 1;
 
-                var opcode = (Tr4Wad.WadLinkOpcode)oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4)];
+                var opcode = (WadLinkOpcode)oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4)];
                 int linkX = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 1];
                 int linkY = -oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 2];
                 int linkZ = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 3];
 
-                switch (opcode)
-                {
-                    case Tr4Wad.WadLinkOpcode.NotUseStack:
-                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Parent = currentBone;
-                        currentBone.Children.Add(bones[j]);
-                        currentBone = bones[j];
-
-                        break;
-                    case Tr4Wad.WadLinkOpcode.Push:
-                        if (stack.Count <= 0)
-                            continue;
-                        currentBone = stack.Pop();
-
-                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Parent = currentBone;
-                        currentBone.Children.Add(bones[j]);
-                        currentBone = bones[j];
-
-                        break;
-                    case Tr4Wad.WadLinkOpcode.Pop:
-                        stack.Push(currentBone);
-
-                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Parent = currentBone;
-                        currentBone.Children.Add(bones[j]);
-                        currentBone = bones[j];
-
-                        break;
-                    case Tr4Wad.WadLinkOpcode.Read:
-                        if (stack.Count <= 0)
-                            continue;
-                        WadBone bone = stack.Pop();
-                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Parent = bone;
-                        bone.Children.Add(bones[j]);
-                        currentBone = bones[j];
-                        stack.Push(bone);
-
-                        break;
-                }
+                bones[j].OpCode = opcode;
+                bones[j].Translation = new Vector3(linkX, linkY, linkZ);
             }
 
             // Convert animations

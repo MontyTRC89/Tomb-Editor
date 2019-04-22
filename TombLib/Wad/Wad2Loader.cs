@@ -546,8 +546,40 @@ namespace TombLib.Wad
             return bone;
         }
 
+        private static void BuildNewMeshTree(WadBone bone, List<WadBone> meshTrees)
+        {
+            var newBone = new WadBone();
+            newBone.Translation = bone.Translation;
+            newBone.Mesh = bone.Mesh;
+            newBone.Name = bone.Name;
+
+            if (bone.Parent == null)
+                newBone.OpCode = WadLinkOpcode.Push;
+            else
+            {
+                if (bone.Parent.Children.Count == 1)
+                    newBone.OpCode = WadLinkOpcode.NotUseStack;
+                else
+                {
+                    int childrenCount = bone.Parent.Children.Count;
+                    if (bone.Parent.Children.IndexOf(bone) == 0)
+                        newBone.OpCode = WadLinkOpcode.Push;
+                    else if (bone.Parent.Children.IndexOf(bone) == childrenCount - 1)
+                        newBone.OpCode = WadLinkOpcode.Pop;
+                    else
+                        newBone.OpCode = WadLinkOpcode.Read;
+                }
+            }
+
+            if (bone.Parent != null)
+                meshTrees.Add(newBone);
+
+            for (int i = 0; i < bone.Children.Count; i++)
+                BuildNewMeshTree(bone.Children[i], meshTrees);
+        }
+
         private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad,
-                                          Dictionary<long, WadSoundInfo> soundInfos, /*Dictionary<long, WadMesh> meshes*/
+                                          Dictionary<long, WadSoundInfo> soundInfos, 
                                           Dictionary<long, WadTexture> textures)
         {
             if (idOuter != Wad2Chunks.Moveables)
@@ -569,7 +601,43 @@ namespace TombLib.Wad
                         meshes.Add(mesh);
                     }
                     else if (id2 == Wad2Chunks.MoveableBone)
-                        mov.Skeleton = LoadBone(chunkIO, mov, meshes);
+                    {
+                        var skeleton = LoadBone(chunkIO, mov, meshes);
+
+                        // Now convert the skeleton in the new (?) format. Ugly system but this is required for 
+                        // setting exact hardcoded ID for some moveables (i.e. gun mesh of an enemy, the engine 
+                        // has hardcoded mesh indices for effects)
+                        var bones = new List<WadBone>();
+
+                        var root = new WadBone();
+                        root.Name = skeleton.Name;
+                        root.Translation = Vector3.Zero;
+                        root.Mesh = skeleton.Mesh;
+                        bones.Add(root);
+
+                        BuildNewMeshTree(skeleton, bones);
+                        mov.Bones.AddRange(bones);
+                    }
+                    else if (id2 == Wad2Chunks.MoveableBoneNew)
+                    {
+                        var bone = new WadBone();
+
+                        bone.OpCode = (WadLinkOpcode)LEB128.ReadByte(chunkIO.Raw);
+                        bone.Name = chunkIO.Raw.ReadStringUTF8();
+
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {                            
+                            if (id3 == Wad2Chunks.MoveableBoneTranslation)
+                                bone.Translation = chunkIO.ReadChunkVector3(chunkSize);
+                            else if (id3 == Wad2Chunks.MoveableBoneMeshPointer)
+                                bone.Mesh = meshes[chunkIO.ReadChunkInt(chunkSize)];
+                            else
+                                return false;
+                            return true;
+                        });
+
+                        mov.Bones.Add(bone);
+                    }
                     else if (id2 == Wad2Chunks.AnimationObsolete || id2 == Wad2Chunks.Animation)
                     {
                         var animation = new WadAnimation();

@@ -59,7 +59,7 @@ namespace WadTool
             panelRendering.InitializeRendering(_tool, _wad, _deviceManager, _moveableId, skin);
 
             // Get a copy of the skeleton in linearized form
-            _bones = _moveable.Skeleton.LinearizedBones.ToList<WadBone>();
+            _bones = _moveable.Bones;
 
             // Load skeleton in combobox
             comboSkeleton.Items.Add("--- Select a mesh ---");
@@ -338,11 +338,11 @@ namespace WadTool
             wadAnimation.Name = "New Animation " + _workingAnimations.Count;
 
             var keyFrame = new WadKeyFrame();
-            foreach (var bone in _moveable.Skeleton.LinearizedBones)
+            foreach (var bone in _bones)
                 keyFrame.Angles.Add(new WadKeyFrameRotation());
             wadAnimation.KeyFrames.Add(keyFrame);
 
-            var dxAnimation = Animation.FromWad2(_moveable.Skeleton.LinearizedBones.ToList(), wadAnimation);
+            var dxAnimation = Animation.FromWad2(_bones, wadAnimation);
             var node = new AnimationNode(wadAnimation, dxAnimation);
             var treeNode = new DarkUI.Controls.DarkTreeNode(wadAnimation.Name);
             treeNode.Tag = node;
@@ -621,10 +621,9 @@ namespace WadTool
             if (_selectedNode != null)
             {
                 var keyFrame = new KeyFrame();
-                foreach (var bone in _moveable.Skeleton.LinearizedBones)
+                foreach (var bone in _bones)
                 {
                     keyFrame.Rotations.Add(Vector3.Zero);
-                    // keyFrame.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(0, 0, 0));
                     keyFrame.Quaternions.Add(Quaternion.Identity);
                     keyFrame.Translations.Add(bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
@@ -1044,7 +1043,7 @@ namespace WadTool
             for (int i = 0; i < numFramesToAdd; i++)
             {
                 var keyFrame = new KeyFrame();
-                foreach (var bone in _moveable.Skeleton.LinearizedBones)
+                foreach (var bone in _bones)
                 {
                     keyFrame.Rotations.Add(Vector3.Zero);
                     keyFrame.Quaternions.Add(Quaternion.Identity);
