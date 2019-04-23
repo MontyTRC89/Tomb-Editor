@@ -20,7 +20,7 @@ A big thank you to all the authors for making their work publicly available and 
 
 ### Main Software Documentation
   
-  You can found more information about SharpDX Toolkit reading the source code on www.symbolsource.org/Public/Metadata/NuGet/Project/SharpDX.Toolkit/2.4.2/Release/.NETFramework%2cVersion%3dv4.0
+  You can find more information about SharpDX Toolkit reading the source code on www.symbolsource.org/Public/Metadata/NuGet/Project/SharpDX.Toolkit/2.4.2/Release/.NETFramework%2cVersion%3dv4.0
 
 ### Icons
 
