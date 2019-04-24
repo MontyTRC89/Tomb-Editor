@@ -23,15 +23,18 @@ namespace WadTool
     {
         private Wad2 _wad;
         private WadMoveable _moveable;
-        private List<WadMeshBoneNode> _linearizedSkeleton;
+        private List<WadMeshBoneNode> _bones;
         private WadToolClass _tool;
-        
+        private List<int> _bonesOrder;
+        private WadMeshBoneNode _lastBone = null;
+        private Dictionary<WadMeshBoneNode, DarkTreeNode> _nodesDictionary;
+
         public FormSkeletonEditor(WadToolClass tool, DeviceManager manager, Wad2 wad, WadMoveableId moveableId)
         {
             InitializeComponent();
 
             _wad = wad;
-            _moveable = _wad.Moveables[moveableId];
+            _moveable = _wad.Moveables[moveableId].Clone();
             _tool = tool;
 
             panelRendering.Configuration = _tool.Configuration;
@@ -40,9 +43,29 @@ namespace WadTool
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
             // Clone the skeleton and load it
-            treeSkeleton.Nodes.Clear();
-            treeSkeleton.Nodes.Add(LoadSkeleton());
-            UpdateLinearizedNodesList();
+            _bones = new List<WadMeshBoneNode>();
+            _bonesOrder = new List<int>();
+            for (int i = 0; i < _moveable.Bones.Count; i++)
+            {
+                var boneNode = new WadMeshBoneNode(null, _moveable.Bones[i].Mesh, _moveable.Bones[i]);
+                boneNode.Bone.Translation = _moveable.Bones[i].Translation;
+                boneNode.GlobalTransform = Matrix4x4.Identity;
+                _bones.Add(boneNode);
+                _bonesOrder.Add(i);
+            }
+
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
+        }
+
+        private void ExpandSkeleton()
+        {
+            treeSkeleton.ExpandAllNodes();
+            if (_lastBone != null && _nodesDictionary.ContainsKey(_lastBone))
+                treeSkeleton.SelectNode(_nodesDictionary[_lastBone]);
         }
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
@@ -51,108 +74,98 @@ namespace WadTool
                 UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
         }
 
-        private DarkTreeNode LoadSkeleton()
+        private List<DarkTreeNode> LoadSkeleton()
         {
+            treeSkeleton.Nodes.Clear();
+
             var nodes = new List<DarkTreeNode>();
             var stack = new Stack<DarkTreeNode>();
-            var bones = _moveable.Bones;
+            _nodesDictionary = new Dictionary<WadMeshBoneNode, DarkTreeNode>();
 
-            for (int i = 0; i < bones.Count; i++)
+            var rootNode = new DarkTreeNode("0: " + _bones[0].Bone.Name);
+            rootNode.Tag = _bones[0];
+            rootNode.Expanded = true;
+            nodes.Add(rootNode);
+            _nodesDictionary.Add(_bones[0], rootNode);
+
+            var currentNode = nodes[0];
+
+            for (int j = 1; j < _bones.Count; j++)
             {
-                var newNode = new DarkTreeNode(bones[i].Name);
-                newNode.Tag = new WadMeshBoneNode(null, bones[i].Mesh, bones[i]);
-                var boneNode = new WadMeshBoneNode(null, bones[i].Mesh, bones[i].Clone());
-                boneNode.Bone.Translation = Vector3.Zero;
-                boneNode.GlobalTransform = Matrix4x4.Identity;
-                newNode.Tag = boneNode;
-                nodes.Add(newNode);
-            }
+                int linkX = (int)_bones[j].Bone.Translation.X;
+                int linkY = (int)_bones[j].Bone.Translation.Y;
+                int linkZ = (int)_bones[j].Bone.Translation.Z;
 
-            var currentNode = nodes[0];            
+                var boneNode = _bones[j]; // nodes[j].Tag as WadMeshBoneNode;
+                string op = "";
+                if (boneNode.Bone.OpCode == WadLinkOpcode.Pop) op = "POP ";
+                if (boneNode.Bone.OpCode == WadLinkOpcode.Push) op = "PUSH ";
+                if (boneNode.Bone.OpCode == WadLinkOpcode.Read) op = "READ ";
 
-            for (int j = 1; j < bones.Count; j++)
-            {
-                int linkX = (int)bones[j].Translation.X;
-                int linkY = (int)bones[j].Translation.Y;
-                int linkZ = (int)bones[j].Translation.Z;
+                var newNode = new DarkTreeNode(j.ToString() + ": " + op + _bones[j].Bone.Name);
+                newNode.Tag = _bones[j];
 
-                var boneNode = nodes[j].Tag as WadMeshBoneNode;
+                _nodesDictionary.Add(_bones[j], newNode);
 
-                switch (bones[j].OpCode)
+                switch (_bones[j].Bone.OpCode)
                 {
                     case WadLinkOpcode.NotUseStack:
                         boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
-                        boneNode.Parent = currentNode.Tag as WadMeshBoneNode;
-                        (currentNode.Tag as WadMeshBoneNode).Children.Add(boneNode);
-                        nodes[j].ParentNode = currentNode;
-                        currentNode.Nodes.Add(nodes[j]);
-                        currentNode = nodes[j];
+                        newNode.ParentNode = currentNode;
+                        currentNode.Nodes.Add(newNode);
+                        currentNode = newNode;
 
                         break;
                     case WadLinkOpcode.Pop:
-                        if (stack.Count <= 0)
-                            continue;
-                        currentNode = stack.Pop();
-
                         boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
-                        boneNode.Parent = currentNode.Tag as WadMeshBoneNode;
-                        (currentNode.Tag as WadMeshBoneNode).Children.Add(boneNode);
-                        nodes[j].ParentNode = currentNode;
-                        currentNode.Nodes.Add(nodes[j]);
-                        currentNode = nodes[j];
+
+                        if (stack.Count > 0)
+                        {
+                            currentNode = stack.Pop();
+                            newNode.ParentNode = currentNode;
+                            currentNode.Nodes.Add(newNode);
+                            currentNode = newNode;
+                        }
+                        else
+                        {
+                            nodes.Add(newNode);
+                            currentNode = newNode;
+                        }
 
                         break;
                     case WadLinkOpcode.Push:
                         stack.Push(currentNode);
 
                         boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
-                        boneNode.Parent = currentNode.Tag as WadMeshBoneNode;
-                        (currentNode.Tag as WadMeshBoneNode).Children.Add(boneNode);
-                        nodes[j].ParentNode = currentNode;
-                        currentNode.Nodes.Add(nodes[j]);
-                        currentNode = nodes[j];
+                        newNode.ParentNode = currentNode;
+                        currentNode.Nodes.Add(newNode);
+                        currentNode = newNode;
 
                         break;
                     case WadLinkOpcode.Read:
-                        if (stack.Count <= 0)
-                            continue;
-                        var bone = stack.Pop();
-
                         boneNode.Bone.Translation = new Vector3(linkX, linkY, linkZ);
-                        boneNode.Parent = bone.Tag as WadMeshBoneNode;
-                        (bone.Tag as WadMeshBoneNode).Children.Add(boneNode);
-                        nodes[j].ParentNode = currentNode;
-                        currentNode.Nodes.Add(nodes[j]);
-                        currentNode = nodes[j];
 
-                        stack.Push(bone);
+                        if (stack.Count > 0)
+                        {
+                            var bone = stack.Pop();
+                            newNode.ParentNode = bone;
+                            bone.Nodes.Add(newNode);
+                            currentNode = newNode;
+                            stack.Push(bone);
+                        }
+                        else
+                        {
+                            nodes.Add(newNode);
+                            currentNode = newNode;
+                        }
 
                         break;
                 }
             }
 
-            return nodes[0];
-        }
+            UpdateSkeletonMatrices(nodes[0], Matrix4x4.Identity);
 
-        private void UpdateLinearizedNodesList()
-        {
-            _linearizedSkeleton = new List<WadMeshBoneNode>();
-            LinearizeNodes(treeSkeleton.Nodes[0], Matrix4x4.Identity);
-
-            panelRendering.Skeleton = _linearizedSkeleton;
-            panelRendering.Invalidate();
-        }
-
-        private void LinearizeNodes(DarkTreeNode current, Matrix4x4 parentTransform)
-        {
-            var theNode = (WadMeshBoneNode)current.Tag;
-            theNode.GlobalTransform = theNode.Bone.Transform * parentTransform;
-            theNode.LinearizedIndex = _linearizedSkeleton.Count;
-
-            _linearizedSkeleton.Add(theNode);
-
-            foreach (var childNode in current.Nodes)
-                LinearizeNodes(childNode, theNode.GlobalTransform);
+            return nodes;
         }
 
         public void UpdateSkeletonMatrices(DarkTreeNode current, Matrix4x4 parentTransform)
@@ -323,7 +336,6 @@ namespace WadTool
 
                     // Now cause the moveable to reload
                     _moveable.Version = DataVersion.GetNext();
-                    UpdateLinearizedNodesList();
                 }
             }
         }
@@ -344,8 +356,11 @@ namespace WadTool
             UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
 
             treeSkeleton.Nodes.Clear();
-            treeSkeleton.Nodes.Add(LoadSkeleton());
-            UpdateLinearizedNodesList();
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
         }
 
         private void ReplaceExistingBone(WadMesh mesh, WadMeshBoneNode node)
@@ -355,8 +370,11 @@ namespace WadTool
             UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
 
             treeSkeleton.Nodes.Clear();
-            treeSkeleton.Nodes.Add(LoadSkeleton());
-            UpdateLinearizedNodesList();
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
         }
 
         private void butSelectMesh_Click(object sender, EventArgs e)
@@ -464,6 +482,166 @@ namespace WadTool
                     panelRendering.Invalidate();
                 }
             }
+        }
+
+        private void TreeSkeleton_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (treeSkeleton.SelectedNodes.Count == 0)
+                    return;
+                var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+                pushToolStripMenuItem.Checked = (theNode.Bone.OpCode == WadLinkOpcode.Push || theNode.Bone.OpCode == WadLinkOpcode.Read);
+                popToolStripMenuItem.Checked = (theNode.Bone.OpCode == WadLinkOpcode.Pop || theNode.Bone.OpCode == WadLinkOpcode.Read);
+
+                cmBone.Show(treeSkeleton.PointToScreen(new Point(e.X, e.Y)));
+            }
+        }
+
+        private void PopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleBonePop();
+        }
+
+        private void ToggleBonePop()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            // Change opcode
+            theNode.Bone.OpCode = theNode.Bone.OpCode ^ WadLinkOpcode.Pop;
+
+            // Reload skeleton
+            _lastBone = theNode;
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
+        }
+
+        private void PushToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleBonePush();
+        }
+
+        private void ToggleBonePush()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            // Change opcode
+            theNode.Bone.OpCode = theNode.Bone.OpCode ^ WadLinkOpcode.Push;
+
+            // Reload skeleton
+            _lastBone = theNode;
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
+        }
+
+        private void MoveUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MoveBoneUp();
+        }
+
+        private void MoveBoneUp()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            // Swap bones
+            int oldIndex = _bones.IndexOf(theNode);
+            if (oldIndex == 0) return;
+            WadMeshBoneNode temp = _bones[oldIndex];
+            _bones[oldIndex] = _bones[oldIndex - 1];
+            _bones[oldIndex - 1] = temp;
+
+            // Fix keyframes
+            foreach (var animation in _moveable.Animations)
+                foreach (var kf in animation.KeyFrames)
+                    for (int i = 0; i < kf.Angles.Count; i++)
+                    {
+                        var tempAngles = kf.Angles[oldIndex];
+                        kf.Angles[oldIndex] = kf.Angles[oldIndex + -1];
+                        kf.Angles[oldIndex - 1] = tempAngles;
+                    }
+
+            // Reload skeleton
+            _lastBone = temp;
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
+        }
+
+        private void MoveDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MoveBoneDown();
+        }
+
+        private void MoveBoneDown()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            // Swap bones
+            int oldIndex = _bones.IndexOf(theNode);
+            if (oldIndex == _bones.Count - 1) return;
+            WadMeshBoneNode temp = _bones[oldIndex];
+            _bones[oldIndex] = _bones[oldIndex + 1];
+            _bones[oldIndex + 1] = temp;
+
+            // Fix keyframes
+            foreach (var animation in _moveable.Animations)
+                foreach (var kf in animation.KeyFrames)
+                    for (int i = 0; i < kf.Angles.Count; i++)
+                    {
+                        var tempAngles = kf.Angles[oldIndex];
+                        kf.Angles[oldIndex] = kf.Angles[oldIndex + 1];
+                        kf.Angles[oldIndex + 1] = tempAngles;
+                    }
+
+            // Reload skeleton
+            _lastBone = temp;
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
+        }
+
+        private void FormSkeletonEditor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up && e.Control)
+            {
+                MoveBoneUp();
+            }
+
+            if (e.KeyCode == Keys.Down && e.Control)
+            {
+                MoveBoneDown();
+            }
+
+            if (e.KeyCode == Keys.O && e.Control)
+            {
+                ToggleBonePop();
+            }
+
+            if (e.KeyCode == Keys.P && e.Control)
+            {
+                ToggleBonePush();
+            }
+
+            e.Handled = true;
         }
     }
 }
