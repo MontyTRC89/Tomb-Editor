@@ -273,6 +273,7 @@
     <Compile Include="Utils\IProgressReporter.cs" />
     <Compile Include="Utils\ConservativeRasterizer.cs" />
     <Compile Include="Utils\Logging.cs" />
+    <Compile Include="Utils\NegativeIndexArray.cs" />
     <Compile Include="Utils\PathC.cs" />
     <Compile Include="Utils\PolygonFunctions.cs" />
     <Compile Include="Utils\RectTransformation.cs" />

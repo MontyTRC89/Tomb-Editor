@@ -16,7 +16,6 @@ namespace WadTool
         public WadBone Bone { get; set; }
         public WadMeshBoneNode Parent { get; set; }
         public Matrix4x4 GlobalTransform { get; set; }
-        public int LinearizedIndex { get; set; }
         public List<WadMeshBoneNode> Children { get; private set; } = new List<WadMeshBoneNode>();
 
         public Vector3 Centre

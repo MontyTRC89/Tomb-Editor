@@ -84,5 +84,17 @@ namespace TombLib.Wad
                             yield return command.SoundInfo;
             }
         }
+
+        public WadMoveable Clone()
+        {
+            var mov = new WadMoveable(Id);
+            foreach (var mesh in Meshes)
+                mov.Meshes.Add(mesh.Clone());
+            foreach (var bone in Bones)
+                mov.Bones.Add(bone.Clone());
+            foreach (var animation in Animations)
+                mov.Animations.Add(animation.Clone());
+            return mov;
+        }
     }
 }

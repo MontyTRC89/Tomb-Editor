@@ -14,17 +14,6 @@ namespace TombLib.Wad
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(Translation);
 
-        public IEnumerable<WadBone> LinearizedBones
-        {
-            get
-            {
-                yield return this;
-                foreach (WadBone child in Children)
-                    foreach (WadBone childBones in child.LinearizedBones)
-                        yield return childBones;
-            }
-        }
-
         public WadBone Clone(WadBone parentBone)
         {
             WadBone newBone = new WadBone();
@@ -45,9 +34,7 @@ namespace TombLib.Wad
             newBone.Name = Name;
             newBone.Mesh = Mesh;
             newBone.Translation = Translation;
-
-            foreach (var childBone in Children)
-                newBone.Children.Add(childBone.Clone(newBone));
+            newBone.OpCode = OpCode;
 
             return newBone;
         }

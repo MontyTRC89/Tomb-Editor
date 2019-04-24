@@ -39,9 +39,16 @@
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.butAddFromWad2 = new DarkUI.Controls.DarkButton();
             this.butAddFromFile = new DarkUI.Controls.DarkButton();
-            this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
             this.butReplaceFromWad2 = new DarkUI.Controls.DarkButton();
             this.butReplaceFromFile = new DarkUI.Controls.DarkButton();
+            this.cmBone = new DarkUI.Controls.DarkContextMenu();
+            this.popToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pushToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
+            this.cmBone.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeSkeleton
@@ -56,6 +63,7 @@
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Text = "darkTreeView1";
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
+            this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeSkeleton_MouseDown);
             // 
             // cbDrawGizmo
             // 
@@ -166,16 +174,6 @@
             this.butAddFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddFromFile.Click += new System.EventHandler(this.butAddFromFile_Click);
             // 
-            // panelRendering
-            // 
-            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelRendering.Location = new System.Drawing.Point(13, 12);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(706, 690);
-            this.panelRendering.TabIndex = 88;
-            // 
             // butReplaceFromWad2
             // 
             this.butReplaceFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -200,14 +198,83 @@
             this.butReplaceFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butReplaceFromFile.Click += new System.EventHandler(this.butReplaceFromFile_Click);
             // 
+            // cmBone
+            // 
+            this.cmBone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmBone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmBone.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.popToolStripMenuItem,
+            this.pushToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.moveUpToolStripMenuItem,
+            this.moveDownToolStripMenuItem});
+            this.cmBone.Name = "cmBone";
+            this.cmBone.Size = new System.Drawing.Size(138, 99);
+            // 
+            // popToolStripMenuItem
+            // 
+            this.popToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.popToolStripMenuItem.CheckOnClick = true;
+            this.popToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.popToolStripMenuItem.Name = "popToolStripMenuItem";
+            this.popToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.popToolStripMenuItem.Text = "Pop";
+            this.popToolStripMenuItem.Click += new System.EventHandler(this.PopToolStripMenuItem_Click);
+            // 
+            // pushToolStripMenuItem
+            // 
+            this.pushToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.pushToolStripMenuItem.CheckOnClick = true;
+            this.pushToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.pushToolStripMenuItem.Name = "pushToolStripMenuItem";
+            this.pushToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.pushToolStripMenuItem.Text = "Push";
+            this.pushToolStripMenuItem.Click += new System.EventHandler(this.PushToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(134, 6);
+            // 
+            // moveUpToolStripMenuItem
+            // 
+            this.moveUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.moveUpToolStripMenuItem.Text = "Move up";
+            this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.MoveUpToolStripMenuItem_Click);
+            // 
+            // moveDownToolStripMenuItem
+            // 
+            this.moveDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.moveDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.moveDownToolStripMenuItem.Text = "Move down";
+            this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.MoveDownToolStripMenuItem_Click);
+            // 
+            // panelRendering
+            // 
+            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRendering.Location = new System.Drawing.Point(0, 12);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(719, 690);
+            this.panelRendering.TabIndex = 91;
+            // 
             // FormSkeletonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1016, 729);
+            this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.butReplaceFromWad2);
             this.Controls.Add(this.butReplaceFromFile);
-            this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.butAddFromWad2);
             this.Controls.Add(this.butAddFromFile);
             this.Controls.Add(this.darkStatusStrip1);
@@ -219,6 +286,7 @@
             this.Controls.Add(this.butSaveChanges);
             this.Controls.Add(this.treeSkeleton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormSkeletonEditor";
@@ -227,6 +295,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Skeleton editor";
             this.Load += new System.EventHandler(this.FormSkeletonEditor_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormSkeletonEditor_KeyDown);
+            this.cmBone.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -244,8 +314,14 @@
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
         private DarkUI.Controls.DarkButton butAddFromWad2;
         private DarkUI.Controls.DarkButton butAddFromFile;
-        private Controls.PanelRenderingSkeleton panelRendering;
         private DarkUI.Controls.DarkButton butReplaceFromWad2;
         private DarkUI.Controls.DarkButton butReplaceFromFile;
+        private DarkUI.Controls.DarkContextMenu cmBone;
+        private System.Windows.Forms.ToolStripMenuItem popToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pushToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
+        private Controls.PanelRenderingSkeleton panelRendering;
     }
 }
