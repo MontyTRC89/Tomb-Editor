@@ -157,6 +157,13 @@ namespace WadTool
             RaiseEvent(new BoneOffsetMovedEvent());
         }
 
+        public class BonePickedEvent : IEditorEvent
+        { }
+        public void BonePicked()
+        {
+            RaiseEvent(new BonePickedEvent());
+        }
+
         public class SelectedObjectEditedEvent : IEditorEvent
         { }
         public void SelectedObjectEdited()

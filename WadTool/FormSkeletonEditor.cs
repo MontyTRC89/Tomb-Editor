@@ -28,6 +28,7 @@ namespace WadTool
         private List<int> _bonesOrder;
         private WadMeshBoneNode _lastBone = null;
         private Dictionary<WadMeshBoneNode, DarkTreeNode> _nodesDictionary;
+        private Point _startPoint;
 
         public FormSkeletonEditor(WadToolClass tool, DeviceManager manager, Wad2 wad, WadMoveableId moveableId)
         {
@@ -308,34 +309,12 @@ namespace WadTool
 
         private void butDeleteBone_Click(object sender, EventArgs e)
         {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-            if (DarkMessageBox.Show(this, "Are you really sure to delete bone '" + theNode.Bone.Name + "' and " +
-                                    "all its children?", "Delete bone",
-                                    MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-
-            treeSkeleton.SelectedNodes[0].Remove();
+            DeleteBone();
         }
 
         private void butRenameBone_Click(object sender, EventArgs e)
         {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-            using (var form = new FormInputBox("Rename bone", "Insert the name of the bone:", theNode.Bone.Name))
-            {
-                if (form.ShowDialog(this) == DialogResult.OK && form.Result != "")
-                {
-                    theNode.Bone.Name = form.Result;
-                    treeSkeleton.SelectedNodes[0].Text = form.Result;
-                    panelRendering.Invalidate();
-                }
-            }
+            RenameBone();
         }
 
         private void butLoadModel_Click(object sender, EventArgs e)
@@ -377,17 +356,23 @@ namespace WadTool
             // Create the new bone
             var bone = new WadBone();
             bone.Mesh = mesh;
-            bone.Parent = parentNode.Bone;
             bone.Name = "Bone_" + mesh.Name;
-            bone.Parent.Children.Add(bone);
+            bone.OpCode = WadLinkOpcode.NotUseStack;
 
             // Create the new node
             var node = new WadMeshBoneNode(parentNode, mesh, bone);
-            node.Parent = parentNode;
-            parentNode.Children.Add(node);
-            UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
 
-            treeSkeleton.Nodes.Clear();
+            // Insert the bone
+            int index = _bones.IndexOf(parentNode);
+            _bones.Insert(index + 1, node);
+
+            // Add angles to animations
+            foreach (var animation in _moveable.Animations)
+                foreach (var kf in animation.KeyFrames)
+                    kf.Angles.Insert(index, new WadKeyFrameRotation());
+
+            // Reload skeleton
+            _lastBone = node;
             treeSkeleton.Nodes.AddRange(LoadSkeleton());
             ExpandSkeleton();
 
@@ -399,9 +384,9 @@ namespace WadTool
         {
             node.Bone.Mesh = mesh;
             node.WadMesh = mesh;
-            UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
 
-            treeSkeleton.Nodes.Clear();
+            // Reload skeleton
+            _lastBone = node;
             treeSkeleton.Nodes.AddRange(LoadSkeleton());
             ExpandSkeleton();
 
@@ -411,18 +396,7 @@ namespace WadTool
 
         private void butSelectMesh_Click(object sender, EventArgs e)
         {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
-            {
-                if (form.ShowDialog() == DialogResult.Cancel)
-                    return;
-
-                InsertNewBone(form.SelectedMesh.Clone(), theNode);
-                panelRendering.Invalidate();
-            }
+            AddChildBoneFromWad2();
         }
 
         private void FormSkeletonEditor_Load(object sender, EventArgs e)
@@ -432,88 +406,17 @@ namespace WadTool
 
         private void butReplaceFromWad2_Click(object sender, EventArgs e)
         {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
-            {
-                if (form.ShowDialog() == DialogResult.Cancel)
-                    return;
-
-                ReplaceExistingBone(form.SelectedMesh.Clone(), theNode);
-                panelRendering.Invalidate();
-            }
+            ReplaceBoneFromWad2();
         }
 
         private void butAddFromFile_Click(object sender, EventArgs e)
         {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-            using (FileDialog dialog = new OpenFileDialog())
-            {
-                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
-                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
-                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.SettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
-                    {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    InsertNewBone(mesh, theNode);
-                    panelRendering.Invalidate();
-                }
-            }
+            AddChildBoneFromFile();
         }
 
         private void butReplaceFromFile_Click(object sender, EventArgs e)
         {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-            using (FileDialog dialog = new OpenFileDialog())
-            {
-                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
-                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
-                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.SettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
-                    {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    ReplaceExistingBone(mesh, theNode);
-                    panelRendering.Invalidate();
-                }
-            }
+            ReplaceBoneFromFile();
         }
 
         private void TreeSkeleton_MouseDown(object sender, MouseEventArgs e)
@@ -674,6 +577,204 @@ namespace WadTool
             }
 
             e.Handled = true;
+        }
+
+        private void ReplaceBoneFromFile()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (FileDialog dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
+                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
+                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
+                dialog.Title = "Select a 3D file that you want to see imported.";
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    if (mesh == null)
+                    {
+                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured",
+                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    ReplaceExistingBone(mesh, theNode);
+                }
+            }
+        }
+
+        private void ReplaceBoneFromWad2()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+            {
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                ReplaceExistingBone(form.SelectedMesh.Clone(), theNode);
+            }
+        }
+
+        private void DeleteBone()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            if (DarkMessageBox.Show(this, "Are you really sure to delete bone '" + theNode.Bone.Name + "'?" +
+                                    "Angles associated to this bone will be deleted from all keyframes of all animations.",
+                                    "Delete bone",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            // Delete the bone
+            int index = _bones.IndexOf(theNode);
+            _bones.RemoveAt(index);
+
+            // Remove angles from animations
+            foreach (var animation in _moveable.Animations)
+                foreach (var kf in animation.KeyFrames)
+                    kf.Angles.RemoveAt(index);
+
+            // Reload skeleton
+            _lastBone = null;
+            treeSkeleton.Nodes.AddRange(LoadSkeleton());
+            ExpandSkeleton();
+
+            panelRendering.Skeleton = _bones;
+            panelRendering.Invalidate();
+        }
+
+        private void RenameBone()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (var form = new FormInputBox("Rename bone", "Insert the name of the bone:", theNode.Bone.Name))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK && form.Result != "")
+                {
+                    theNode.Bone.Name = form.Result;
+                    treeSkeleton.SelectedNodes[0].Text = form.Result;
+                    panelRendering.Invalidate();
+                }
+            }
+        }
+
+        private void RenameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RenameBone();
+        }
+
+        private void ReplaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReplaceBoneFromFile();
+        }
+
+        private void ReplaceFromWad2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReplaceBoneFromWad2();
+        }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteBone();
+        }
+
+        private void AddChildBoneFromFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddChildBoneFromFile();
+        }
+
+        private void AddChildBoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddChildBoneFromWad2();
+        }
+
+        private void AddChildBoneFromWad2()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+            {
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                InsertNewBone(form.SelectedMesh.Clone(), theNode);
+            }
+        }
+
+        private void AddChildBoneFromFile()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (FileDialog dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
+                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
+                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
+                dialog.Title = "Select a 3D file that you want to see imported.";
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    if (mesh == null)
+                    {
+                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured",
+                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    InsertNewBone(mesh, theNode);
+                }
+            }
+        }
+
+        private void PanelRendering_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (panelRendering.SelectedNode != null)
+            {
+                if (e.Button == MouseButtons.Right &&
+                    Math.Abs(e.X - _startPoint.X) < 2.0f &&
+                    Math.Abs(e.Y - _startPoint.Y) < 2.0f)
+                    cmBone.Show(panelRendering.PointToScreen(new Point(e.X, e.Y)));
+                if (_nodesDictionary.ContainsKey(panelRendering.SelectedNode))
+                    treeSkeleton.SelectNode(_nodesDictionary[panelRendering.SelectedNode]);
+            }
+
+            _startPoint = new Point(0, 0);
+        } 
+
+        private void PanelRendering_MouseDown(object sender, MouseEventArgs e)
+        {
+            _startPoint = e.Location;
         }
     }
 }
