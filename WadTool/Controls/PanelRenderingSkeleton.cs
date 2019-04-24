@@ -266,10 +266,8 @@ namespace WadTool.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown(e);
-
-            if (e.Button == MouseButtons.Left)
-            {
+            //if (e.Button == MouseButtons.Left)
+            //{
                 // Try to do gizmo picking
                 if (DrawGizmo)
                 {
@@ -298,12 +296,14 @@ namespace WadTool.Controls
                     }
                 }
                 SelectedNode = foundNode;
-            }
+            //}
 
             Invalidate();
 
             _lastX = e.X;
             _lastY = e.Y;
+
+            base.OnMouseDown(e);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
