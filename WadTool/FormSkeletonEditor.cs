@@ -200,6 +200,38 @@ namespace WadTool
 
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
+            // First check if skeleton is valid
+            int numPop = 0;
+            int numPush = 0;
+            foreach (var bone in _bones)
+            {
+                if (bone.Bone.OpCode == WadLinkOpcode.Pop) numPop++;
+                if (bone.Bone.OpCode == WadLinkOpcode.Push) numPush++;
+            }
+
+            // We can have more push than pop, but the opposite case (pop more than push) will result in a leak 
+            // inside the previous moveables in the list
+            if (numPop > numPush)
+            {
+                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you have added more POP than PUSH.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Insert new bones in moveable
+            _moveable.Bones.Clear();
+            foreach (var bone in _bones)
+                _moveable.Bones.Add(bone.Bone);
+
+            // Replace the moveable
+            _wad.Moveables[_moveable.Id] = _moveable;
+
+            // Now cause the moveable to reload
+            _moveable.Version = DataVersion.GetNext();
+
+            DialogResult = DialogResult.OK;
+            Close();
+
             // First I have to count old skeleton bones count
             /*int originalBonesCount = _moveable.Skeleton.LinearizedBones.Count();
             int currentBonesCount = _workingSkeleton.LinearizedBones.Count();
