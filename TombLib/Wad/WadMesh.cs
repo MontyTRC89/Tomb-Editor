@@ -254,6 +254,7 @@ namespace TombLib.Wad
 
             mesh.BoundingBox = mesh.CalculateBoundingBox();
             mesh.BoundingSphere = mesh.CalculateBoundingSphere();
+            if (mesh.VerticesNormals.Count == 0) mesh.CalculateNormals(); //MQO files rarely have normals
             
             return mesh;
         }
