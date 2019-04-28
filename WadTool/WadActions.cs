@@ -724,7 +724,7 @@ namespace WadTool
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
-                tool.SelectedObjectEdited();
+                tool.DestinationWadChanged();
             }
         }
 
@@ -736,7 +736,7 @@ namespace WadTool
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
-                tool.SelectedObjectEdited();
+                tool.DestinationWadChanged();
             }
         }
     }

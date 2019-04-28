@@ -111,7 +111,7 @@ namespace TombLib.Graphics
         public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture)
         {
             AnimatedModel model = new AnimatedModel(device);
-            List<WadBone> bones = mov.Bones; // Skeleton.LinearizedBones.ToList();
+            List<WadBone> bones = mov.Bones;  
 
             // Create meshes
             for (int m = 0; m < bones.Count; m++)
@@ -144,7 +144,7 @@ namespace TombLib.Graphics
 
         private static Bone BuildSkeleton(AnimatedModel model, Bone parentBone, List<WadBone> bones)
         {
-            var newBones = new List<Bone>();
+            model.Bones = new List<Bone>();
             var stack = new Stack<Bone>();
 
             for (int i = 0; i < bones.Count; i++)
@@ -152,14 +152,14 @@ namespace TombLib.Graphics
                 var nb = new Bone();
                 nb.Name = bones[i].Name;
                 nb.Index = i;
-                newBones.Add(nb);
+                model.Bones.Add(nb);
             }
 
-            var currentBone = newBones[0];
+            var currentBone = model.Bones[0];
             currentBone.Transform = Matrix4x4.Identity;
             currentBone.GlobalTransform = Matrix4x4.Identity;
 
-            for (int j = 1; j < bones.Count; j++)
+            for (int j = 1; j < model.Bones.Count; j++)
             {
                 int linkX = (int)bones[j].Translation.X;
                 int linkY = (int)bones[j].Translation.Y;
@@ -168,10 +168,10 @@ namespace TombLib.Graphics
                 switch (bones[j].OpCode)
                 {
                     case WadLinkOpcode.NotUseStack:
-                        newBones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
-                        newBones[j].Parent = currentBone;
-                        currentBone.Children.Add(newBones[j]);
-                        currentBone = newBones[j];
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        model.Bones[j].Parent = currentBone;
+                        currentBone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
 
                         break;
                     case WadLinkOpcode.Pop:
@@ -179,36 +179,36 @@ namespace TombLib.Graphics
                             continue;
                         currentBone = stack.Pop();
 
-                        newBones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
-                        newBones[j].Parent = currentBone;
-                        currentBone.Children.Add(newBones[j]);
-                        currentBone = newBones[j];
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        model.Bones[j].Parent = currentBone;
+                        currentBone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
 
                         break;
                     case WadLinkOpcode.Push:
                         stack.Push(currentBone);
 
-                        newBones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
-                        newBones[j].Parent = currentBone;
-                        currentBone.Children.Add(newBones[j]);
-                        currentBone = newBones[j];
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        model.Bones[j].Parent = currentBone;
+                        currentBone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
 
                         break;
                     case WadLinkOpcode.Read:
                         if (stack.Count <= 0)
                             continue;
                         var bone = stack.Pop();
-                        newBones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
-                        newBones[j].Parent = bone;
-                        bone.Children.Add(newBones[j]);
-                        currentBone = newBones[j];
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        model.Bones[j].Parent = bone;
+                        bone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
                         stack.Push(bone);
 
                         break;
                 }
             }
-
-            return newBones[0];
+            
+            return model.Bones[0];
         }
     }
 }
