@@ -2,15 +2,9 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombLib;
 using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
@@ -25,7 +19,6 @@ namespace WadTool
         private WadMoveable _moveable;
         private List<WadMeshBoneNode> _bones;
         private WadToolClass _tool;
-        private List<int> _bonesOrder;
         private WadMeshBoneNode _lastBone = null;
         private Dictionary<WadMeshBoneNode, DarkTreeNode> _nodesDictionary;
         private Point _startPoint;
@@ -45,14 +38,12 @@ namespace WadTool
 
             // Clone the skeleton and load it
             _bones = new List<WadMeshBoneNode>();
-            _bonesOrder = new List<int>();
             for (int i = 0; i < _moveable.Bones.Count; i++)
             {
                 var boneNode = new WadMeshBoneNode(null, _moveable.Bones[i].Mesh, _moveable.Bones[i]);
                 boneNode.Bone.Translation = _moveable.Bones[i].Translation;
                 boneNode.GlobalTransform = Matrix4x4.Identity;
                 _bones.Add(boneNode);
-                _bonesOrder.Add(i);
             }
 
             treeSkeleton.Nodes.AddRange(LoadSkeleton());
@@ -97,7 +88,7 @@ namespace WadTool
                 int linkY = (int)_bones[j].Bone.Translation.Y;
                 int linkZ = (int)_bones[j].Bone.Translation.Z;
 
-                var boneNode = _bones[j]; // nodes[j].Tag as WadMeshBoneNode;
+                var boneNode = _bones[j]; 
                 string op = "";
                 if (boneNode.Bone.OpCode == WadLinkOpcode.Pop) op = "POP ";
                 if (boneNode.Bone.OpCode == WadLinkOpcode.Push) op = "PUSH ";
@@ -210,11 +201,18 @@ namespace WadTool
                 if (bone.Bone.OpCode == WadLinkOpcode.Push) numPush++;
             }
 
-            // We can have more push than pop, but the opposite case (pop more than push) will result in a leak 
+            // We can have more PUSH than POP, but the opposite case (POP more than PUSH) will result in a leak 
             // inside the previous moveables in the list
             if (numPop > numPush)
             {
                 DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you have added more POP than PUSH.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (treeSkeleton.Nodes.Count > 1)
+            {
+                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you must have a single bone as root.",
                                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -232,63 +230,6 @@ namespace WadTool
 
             DialogResult = DialogResult.OK;
             Close();
-
-            // First I have to count old skeleton bones count
-            /*int originalBonesCount = _moveable.Skeleton.LinearizedBones.Count();
-            int currentBonesCount = _workingSkeleton.LinearizedBones.Count();
-
-            if (originalBonesCount < currentBonesCount)
-            {
-                if (DarkMessageBox.Show(this, "The original moveable has less bones than current unsaved skeleton. " +
-                                        "Some extra angles will be added to keyframes of animations. " +
-                                        "Do you really want to continue?", "Confirm", MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-            }
-
-            if (originalBonesCount > currentBonesCount)
-            {
-                if (DarkMessageBox.Show(this, "The original moveable has more bones than current unsaved skeleton. " +
-                                        "Some extra angles will be deleted from keyframes of animations. " +
-                                        "Do you really want to continue?", "Confirm", MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-            }
-
-            // The user agree to do this, so let's do it
-
-            // First, we have to build the new skeleton
-            _moveable.Skeleton = SaveSkeleton(null, treeSkeleton.Nodes[0]);
-
-            // Now I have to change all animations
-            if (currentBonesCount != originalBonesCount)
-            {
-                for (int i = 0; i < _moveable.Animations.Count; i++)
-                {
-                    for (int j = 0; j < _moveable.Animations[i].KeyFrames.Count; j++)
-                    {
-                        if (currentBonesCount > originalBonesCount)
-                        {
-                            for (int k = 0; k < currentBonesCount - originalBonesCount; k++)
-                            {
-                                var newAngle = new WadKeyFrameRotation();
-                                //newAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
-                                _moveable.Animations[i].KeyFrames[j].Angles.Add(newAngle);
-                            }
-                        }
-                        else
-                        {
-                            _moveable.Animations[i].KeyFrames[j].Angles.RemoveRange(currentBonesCount, originalBonesCount - currentBonesCount);
-                        }
-                    }
-                }
-            }
-
-            // Now cause the moveable to reload
-            _moveable.Version = DataVersion.GetNext();
-
-            DialogResult = DialogResult.OK;
-            Close();*/
         }
 
         private WadBone SaveSkeleton(WadBone parentBone, DarkTreeNode currentNode)
