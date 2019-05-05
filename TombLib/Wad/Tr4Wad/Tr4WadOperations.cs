@@ -353,7 +353,7 @@ namespace TombLib.Wad.Tr4Wad
             }
 
             // Build the skeleton
-            WadBone root = new WadBone();
+            var root = new WadBone();
             root.Name = "bone_root";
             root.Parent = null;
             root.Translation = Vector3.Zero;
