@@ -82,7 +82,7 @@ namespace TombLib.LevelData.IO
 
         private class LevelSettingsIds
         {
-            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>(new ReferenceEqualityComparer<ImportedGeometry>());
+            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer());
             public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
         }
 

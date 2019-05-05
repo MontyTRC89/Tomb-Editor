@@ -329,4 +329,38 @@ namespace TombLib.LevelData
         object ICloneable.Clone() => Clone();
         public bool Equals(ImportedGeometry other) => base.Equals(other);
     }
+
+    public class ImportedGeometryComparer : IEqualityComparer<ImportedGeometry>
+    {
+        public bool Equals(ImportedGeometry x, ImportedGeometry y)
+        {
+            return (x.Info.FlipUV_V == y.Info.FlipUV_V &&
+                    x.Info.FlipX == y.Info.FlipX &&
+                    x.Info.FlipY == y.Info.FlipY &&
+                    x.Info.FlipZ == y.Info.FlipZ &&
+                    x.Info.InvertFaces == y.Info.InvertFaces &&
+                    x.Info.Name == y.Info.Name &&
+                    x.Info.Path == y.Info.Path &&
+                    x.Info.Scale == y.Info.Scale &&
+                    x.Info.SwapXY == y.Info.SwapXY &&
+                    x.Info.SwapXZ == y.Info.SwapXZ &&
+                    x.Info.SwapYZ == y.Info.SwapYZ);
+        }
+
+        public int GetHashCode(ImportedGeometry obj)
+        {
+            string info = obj.Info.FlipUV_V.ToString() + "|" +
+                          obj.Info.FlipX.ToString() + "|" +
+                          obj.Info.FlipY.ToString() + "|" +
+                          obj.Info.FlipZ.ToString() + "|" +
+                          obj.Info.InvertFaces.ToString() + "|" +
+                          obj.Info.Name.ToString() + "|" +
+                          obj.Info.Path.ToString() + "|" +
+                          obj.Info.Scale.ToString() + "|" +
+                          obj.Info.SwapXY.ToString() + "|" +
+                          obj.Info.SwapXZ.ToString() + "|" +
+                          obj.Info.SwapYZ.ToString();
+            return (info.GetHashCode());
+        }
+    }
 }
