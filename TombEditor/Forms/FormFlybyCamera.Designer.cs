@@ -79,7 +79,7 @@ namespace TombEditor.Forms
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(855, 389);
+            this.butCancel.Location = new System.Drawing.Point(456, 389);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
@@ -90,7 +90,7 @@ namespace TombEditor.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(769, 389);
+            this.butOK.Location = new System.Drawing.Point(370, 389);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
@@ -152,7 +152,7 @@ namespace TombEditor.Forms
             this.cbBit6.Name = "cbBit6";
             this.cbBit6.Size = new System.Drawing.Size(300, 32);
             this.cbBit6.TabIndex = 8;
-            this.cbBit6.Text = "Pan back to Lara\'s camera position";
+            this.cbBit6.Text = "Snap back to Lara at the end of sequence";
             // 
             // cbBit13
             // 
@@ -206,9 +206,9 @@ namespace TombEditor.Forms
             // 
             this.cbBit7.Location = new System.Drawing.Point(208, 173);
             this.cbBit7.Name = "cbBit7";
-            this.cbBit7.Size = new System.Drawing.Size(300, 32);
+            this.cbBit7.Size = new System.Drawing.Size(317, 32);
             this.cbBit7.TabIndex = 9;
-            this.cbBit7.Text = "Jump to another flyby";
+            this.cbBit7.Text = "Cut cam: jump to a specificed camera in the same sequence";
             // 
             // cbBit15
             // 
@@ -476,9 +476,9 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbLuaScript.Code = "";
             this.tbLuaScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbLuaScript.Location = new System.Drawing.Point(491, 19);
+            this.tbLuaScript.Location = new System.Drawing.Point(547, 19);
             this.tbLuaScript.Name = "tbLuaScript";
-            this.tbLuaScript.Size = new System.Drawing.Size(444, 364);
+            this.tbLuaScript.Size = new System.Drawing.Size(0, 364);
             this.tbLuaScript.TabIndex = 82;
             // 
             // FormFlybyCamera
@@ -487,7 +487,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(940, 418);
+            this.ClientSize = new System.Drawing.Size(541, 418);
             this.Controls.Add(this.numRotationY);
             this.Controls.Add(this.numRotationX);
             this.Controls.Add(this.numRoll);

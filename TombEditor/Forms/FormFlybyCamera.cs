@@ -70,7 +70,7 @@ namespace TombEditor.Forms
             }
             else
             {
-                Width = 500;
+                Width = 560;
                 tbLuaScript.Enabled = false;
             }
         }
