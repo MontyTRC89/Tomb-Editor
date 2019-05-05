@@ -388,8 +388,7 @@ namespace TombLib.Wad.TrLevels
             root.Translation = Vector3.Zero;
             root.Mesh = newMeshes[0];
 
-            var bones = new List<WadBone>();
-            bones.Add(root);
+            newMoveable.Bones.Add(root);
 
             for (int j = 0; j < oldMoveable.NumMeshes - 1; j++)
             {
@@ -398,7 +397,7 @@ namespace TombLib.Wad.TrLevels
                 bone.Parent = null;
                 bone.Translation = Vector3.Zero;
                 bone.Mesh = newMeshes[j + 1];
-                bones.Add(bone);
+                newMoveable.Bones.Add(bone);
             }
 
             for (int mi = 0; mi < (oldMeshes.Count - 1); mi++)
@@ -410,8 +409,8 @@ namespace TombLib.Wad.TrLevels
                 int linkY = -oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 2];
                 int linkZ = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 3];
 
-                bones[j].OpCode = opcode;
-                bones[j].Translation = new Vector3(linkX, linkY, linkZ);
+                newMoveable.Bones[j].OpCode = opcode;
+                newMoveable.Bones[j].Translation = new Vector3(linkX, linkY, linkZ);
             }
 
             // Convert animations
