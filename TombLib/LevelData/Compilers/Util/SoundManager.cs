@@ -33,13 +33,34 @@ namespace TombLib.LevelData.Compilers.Util
         {
             _gameVersion = settings.GameVersion;
 
+            int soundMapSize = 256;
+            switch (_gameVersion)
+            {
+                case GameVersion.TR2:
+                case GameVersion.TR3:
+                case GameVersion.TR4:
+                    soundMapSize = 370;
+                    break;
+                case GameVersion.TRNG:
+                    soundMapSize = 2048;
+                    break;
+                case GameVersion.TR5:
+                case GameVersion.TR5Main:
+                    soundMapSize = 450;
+                    break;
+            }
+
             // Fix all the sounds for the TR version
             foreach (uint fixedSound in TrCatalog.GetAllFixedByDefaultSounds(settings.WadGameVersion).Keys)
-                SetSoundMapEntryToSoundInfo(checked((ushort)fixedSound), null);
+            {
+                if (fixedSound < soundMapSize)
+                    SetSoundMapEntryToSoundInfo(checked((ushort)fixedSound), null);
+            }
 
             // Add fixed sounds from the wad
             foreach (WadFixedSoundInfo fixedSoundInfo in fixedSoundInfos.Values)
-                SetSoundMapEntryToSoundInfo(checked((ushort)fixedSoundInfo.Id.TypeId), fixedSoundInfo.SoundInfo);
+                if (fixedSoundInfo.Id.TypeId < soundMapSize)
+                    SetSoundMapEntryToSoundInfo(checked((ushort)fixedSoundInfo.Id.TypeId), fixedSoundInfo.SoundInfo);
         }
 
         private void SetSoundMapEntryToSoundInfo(ushort soundMapIndex, WadSoundInfo soundInfo)
