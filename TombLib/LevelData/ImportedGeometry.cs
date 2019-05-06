@@ -140,6 +140,18 @@ namespace TombLib.LevelData
         {
             public float Scale { get; private set; }
 
+            public int TotalTriangles
+            {
+                get
+                {
+                    int numTriangles = 0;
+                    foreach (var mesh in Meshes)
+                        foreach (var submesh in mesh.Submeshes)
+                            numTriangles += submesh.Value.Indices.Count / 3;
+                    return numTriangles;
+                }
+            }
+
             public Model(GraphicsDevice device, float scale)
                 : base(device, ModelType.RoomGeometry)
             {
