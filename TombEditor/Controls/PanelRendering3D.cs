@@ -2250,7 +2250,8 @@ namespace TombEditor.Controls
                     // Add text message
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
-                        instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance)));
+                        instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" + 
+                        "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
 
                     // Add the line height of the object
                     AddObjectHeightLine(_editor.SelectedRoom, instance.Position);

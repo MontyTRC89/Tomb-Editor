@@ -323,8 +323,8 @@ namespace TombLib.LevelData.Compilers
 
                     var meshes = geometry.Model.DirectXModel.Meshes;
                     var worldTransform = geometry.RotationMatrix *
-                                    Matrix4x4.CreateScale(geometry.Scale) *
-                                    Matrix4x4.CreateTranslation(geometry.Position);
+                                         Matrix4x4.CreateScale(geometry.Scale) *
+                                         Matrix4x4.CreateTranslation(geometry.Position);
                     var normalTransform = geometry.RotationMatrix;
 
                     foreach (var mesh in meshes)
@@ -365,7 +365,7 @@ namespace TombLib.LevelData.Compilers
                                 // Check for maximum vertices reached
                                 if (roomVertices.Count >= 65536)
                                 {
-                                    throw new Exception("Room '" + room.Name + "' has too many vertices! Try to remove some imported geometry objects.");
+                                    throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
                                 }
 
                                 roomVertices.Add(trVertex);
@@ -373,6 +373,11 @@ namespace TombLib.LevelData.Compilers
 
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                             {
+                                if (_level.Settings.GameVersion!= GameVersion.TR5Main &&  roomTriangles.Count > 3000)
+                                {
+                                    throw new Exception("Room '" + room.Name + "' has too many polygons (limit = 3000)! Try to remove some imported geometry objects.");
+                                }
+
                                 var triangle = new tr_face3();
 
                                 ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
