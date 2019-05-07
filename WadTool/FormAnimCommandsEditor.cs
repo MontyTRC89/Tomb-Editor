@@ -13,6 +13,7 @@ namespace WadTool
         private readonly WadToolClass _tool;
         public IEnumerable<WadAnimCommand> AnimCommands => treeCommands.Nodes.Select(node => node.Tag).OfType<WadAnimCommand>();
         private bool _currentlyDoingCommandSelection = false;
+        private List<WadSoundInfo> _sounds;
 
         private WadAnimCommand _selectedCommand => treeCommands.SelectedNodes.FirstOrDefault()?.Tag as WadAnimCommand;
 
@@ -113,7 +114,7 @@ namespace WadTool
                         break;
 
                     default:
-                        comboCommandType.Enabled = false;
+                        //comboCommandType.Enabled = false;
                         panelEffect.Visible = false;
                         panelJumpDistance.Visible = false;
                         panelPosition.Visible = false;
@@ -163,9 +164,21 @@ namespace WadTool
 
         private void comboCommandType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ReloadSounds();
+
             if (_selectedCommand == null || _currentlyDoingCommandSelection)
                 return;
-            _selectedCommand.Type = (WadAnimCommandType)(comboCommandType.SelectedIndex) + 1;
+
+            WadAnimCommandType newType = (WadAnimCommandType)(comboCommandType.SelectedIndex + 1);
+            _selectedCommand.Type = newType;
+
+            // Add a new sound info if needed
+            if (_selectedCommand.Type == WadAnimCommandType.PlaySound)
+            {
+                if (_selectedCommand.SoundInfo == null)
+                    _selectedCommand.SoundInfo = new WadSoundInfo();
+            }
+
             treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
             SelectCommand(_selectedCommand, false);
         }
@@ -249,6 +262,19 @@ namespace WadTool
                 return;
             _selectedCommand.SoundInfo = soundInfoEditor.SoundInfo;
             treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+        }
+
+        private void ReloadSounds()
+        {
+            _sounds = new List<WadSoundInfo>();
+            comboSound.Items.Clear();
+            comboSound.Items.Add("(Select a sound info)");
+            foreach (var sound in _tool.DestinationWad.SoundInfosUnique)
+            {
+                _sounds.Add(sound);
+                comboSound.Items.Add(sound.Name);
+            }
+            comboSound.SelectedIndex = 0;
         }
     }
 }

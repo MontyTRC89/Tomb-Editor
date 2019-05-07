@@ -51,7 +51,6 @@
             this.tbFlipEffectFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.panelSound = new System.Windows.Forms.Panel();
             this.groupBox = new DarkUI.Controls.DarkGroupBox();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.comboPlaySoundConditions = new DarkUI.Controls.DarkComboBox();
             this.tbPlaySoundFrame = new DarkUI.Controls.DarkNumericUpDown();
@@ -60,6 +59,8 @@
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.darkTreeView1 = new DarkUI.Controls.DarkTreeView();
+            this.comboSound = new DarkUI.Controls.DarkComboBox();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.panelPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosY)).BeginInit();
@@ -124,9 +125,9 @@
             "Kill entity",
             "Play sound",
             "Flipeffect"});
-            this.comboCommandType.Location = new System.Drawing.Point(45, 4);
+            this.comboCommandType.Location = new System.Drawing.Point(53, 4);
             this.comboCommandType.Name = "comboCommandType";
-            this.comboCommandType.Size = new System.Drawing.Size(413, 23);
+            this.comboCommandType.Size = new System.Drawing.Size(405, 23);
             this.comboCommandType.TabIndex = 53;
             this.comboCommandType.SelectedIndexChanged += new System.EventHandler(this.comboCommandType_SelectedIndexChanged);
             // 
@@ -274,7 +275,7 @@
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(188, 6);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(48, 13);
+            this.darkLabel5.Size = new System.Drawing.Size(47, 13);
             this.darkLabel5.TabIndex = 3;
             this.darkLabel5.Text = "Vertical:";
             // 
@@ -431,6 +432,7 @@
             this.panelSound.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelSound.Controls.Add(this.comboSound);
             this.panelSound.Controls.Add(this.groupBox);
             this.panelSound.Controls.Add(this.darkLabel9);
             this.panelSound.Controls.Add(this.comboPlaySoundConditions);
@@ -447,24 +449,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox.Controls.Add(this.soundInfoEditor);
-            this.groupBox.Location = new System.Drawing.Point(2, 29);
+            this.groupBox.Location = new System.Drawing.Point(2, 33);
             this.groupBox.Name = "groupBox";
-            this.groupBox.Size = new System.Drawing.Size(453, 371);
+            this.groupBox.Size = new System.Drawing.Size(453, 370);
             this.groupBox.TabIndex = 98;
             this.groupBox.TabStop = false;
             this.groupBox.Text = "Sound settings";
-            // 
-            // soundInfoEditor
-            // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Location = new System.Drawing.Point(6, 22);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(440, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(440, 346);
-            this.soundInfoEditor.TabIndex = 98;
             // 
             // darkLabel9
             // 
@@ -485,7 +475,7 @@
             "Always",
             "Only when dry",
             "Only in the water"});
-            this.comboPlaySoundConditions.Location = new System.Drawing.Point(191, 2);
+            this.comboPlaySoundConditions.Location = new System.Drawing.Point(131, 2);
             this.comboPlaySoundConditions.Name = "comboPlaySoundConditions";
             this.comboPlaySoundConditions.Size = new System.Drawing.Size(123, 23);
             this.comboPlaySoundConditions.TabIndex = 53;
@@ -500,7 +490,7 @@
             0,
             0,
             65536});
-            this.tbPlaySoundFrame.Location = new System.Drawing.Point(73, 3);
+            this.tbPlaySoundFrame.Location = new System.Drawing.Point(50, 3);
             this.tbPlaySoundFrame.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -574,7 +564,7 @@
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel8.Location = new System.Drawing.Point(6, 7);
             this.darkLabel8.Name = "darkLabel8";
-            this.darkLabel8.Size = new System.Drawing.Size(33, 13);
+            this.darkLabel8.Size = new System.Drawing.Size(32, 13);
             this.darkLabel8.TabIndex = 1;
             this.darkLabel8.Text = "Type:";
             // 
@@ -586,6 +576,33 @@
             this.darkTreeView1.Size = new System.Drawing.Size(8, 8);
             this.darkTreeView1.TabIndex = 99;
             this.darkTreeView1.Text = "darkTreeView1";
+            // 
+            // comboSound
+            // 
+            this.comboSound.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboSound.FormattingEnabled = true;
+            this.comboSound.Items.AddRange(new object[] {
+            "Always",
+            "Only when dry",
+            "Only in the water"});
+            this.comboSound.Location = new System.Drawing.Point(260, 2);
+            this.comboSound.Name = "comboSound";
+            this.comboSound.Size = new System.Drawing.Size(188, 23);
+            this.comboSound.TabIndex = 100;
+            // 
+            // soundInfoEditor
+            // 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.soundInfoEditor.Location = new System.Drawing.Point(6, 22);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(440, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.Size = new System.Drawing.Size(440, 381);
+            this.soundInfoEditor.TabIndex = 98;
             // 
             // FormAnimCommandsEditor
             // 
@@ -663,5 +680,6 @@
         private DarkUI.Controls.DarkGroupBox groupBox;
         private DarkUI.Controls.DarkTreeView darkTreeView1;
         private TombLib.Controls.SoundInfoEditor soundInfoEditor;
+        private DarkUI.Controls.DarkComboBox comboSound;
     }
 }
