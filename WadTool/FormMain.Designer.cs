@@ -294,8 +294,8 @@
             this.destinationSoundInfoOverviewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.destinationSoundInfoOverviewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.destinationSoundInfoOverviewToolStripMenuItem.Name = "destinationSoundInfoOverviewToolStripMenuItem";
-            this.destinationSoundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.destinationSoundInfoOverviewToolStripMenuItem.Text = "Destination sound info overview";
+            this.destinationSoundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.destinationSoundInfoOverviewToolStripMenuItem.Text = "Final Wad2 sound info overview";
             this.destinationSoundInfoOverviewToolStripMenuItem.Click += new System.EventHandler(this.destinationSoundInfoOverviewToolStripMenuItem_Click);
             // 
             // sourceSoundInfoOverviewToolStripMenuItem
@@ -303,8 +303,8 @@
             this.sourceSoundInfoOverviewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.sourceSoundInfoOverviewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.sourceSoundInfoOverviewToolStripMenuItem.Name = "sourceSoundInfoOverviewToolStripMenuItem";
-            this.sourceSoundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.sourceSoundInfoOverviewToolStripMenuItem.Text = "Source sound info overview";
+            this.sourceSoundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.sourceSoundInfoOverviewToolStripMenuItem.Text = "Reference Wad2 sound info overview";
             this.sourceSoundInfoOverviewToolStripMenuItem.Click += new System.EventHandler(this.sourceSoundInfoOverviewToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
