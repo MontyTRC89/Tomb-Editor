@@ -373,9 +373,10 @@ namespace TombLib.LevelData.Compilers
 
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                             {
-                                if (_level.Settings.GameVersion!= GameVersion.TR5Main &&  roomTriangles.Count > 3000)
+                                int numPolygons = roomQuads.Count + roomTriangles.Count;
+                                if (_level.Settings.GameVersion != GameVersion.TR5Main && numPolygons > 3000)
                                 {
-                                    throw new Exception("Room '" + room.Name + "' has too many polygons (limit = 3000)! Try to remove some imported geometry objects.");
+                                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
                                 }
 
                                 var triangle = new tr_face3();
