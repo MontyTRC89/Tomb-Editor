@@ -115,11 +115,11 @@ namespace TombLib.LevelData.Compilers
 
             var taskSoundSources = Task.Factory.StartNew(PrepareSoundSources);
 
+            GetAllReachableRooms();
+            BuildPathFindingData();
             PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
-            GetAllReachableRooms();
-            BuildPathFindingData();
             BuildFloorData();
 
             // Combine the data collected
@@ -259,7 +259,7 @@ namespace TombLib.LevelData.Compilers
                     Z = (int)Math.Round(position.Z),
                     Room = instance.Strength,
                     Flags = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex &
-                                       0x7f00) >> 4)
+                                       0x7FF0) >> 4)
                 });
             }
 
