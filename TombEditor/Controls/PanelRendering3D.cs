@@ -2374,7 +2374,10 @@ namespace TombEditor.Controls
                     }
                     else
                     {
-                        result.Add(room);
+                        if (!room.Alternated)
+                        {
+                            result.Add(room);
+                        }
                     }
                 }
 
@@ -2426,9 +2429,12 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    visitedRooms.Add(theRoom);
-                    if (!result.Contains(theRoom))
-                        result.Add(theRoom);
+                    if (!theRoom.Alternated)
+                    {
+                        visitedRooms.Add(theRoom);
+                        if (!result.Contains(theRoom))
+                            result.Add(theRoom);
+                    }
                 }
 
                 foreach (var portal in theRoom.Portals)
