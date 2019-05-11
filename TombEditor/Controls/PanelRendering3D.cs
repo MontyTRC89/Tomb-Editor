@@ -2343,13 +2343,47 @@ namespace TombEditor.Controls
 
         private List<Room> CollectRoomsToDraw(Room baseRoom)
         {
+            List<Room> result = new List<Room>();
+
+            bool isFlipped = baseRoom.Alternated && baseRoom.AlternateBaseRoom != null;
+
             if (ShowAllRooms)
-                return _editor.Level.Rooms.Where(room => room != null && room.AlternateBaseRoom == null).ToList();
+            {
+                foreach (var room in _editor.Level.Rooms)
+                {
+                    if (room == null)
+                        continue;
+
+                    if (isFlipped)
+                    {
+                        if (!room.Alternated)
+                        {
+                            result.Add(room);
+                        }
+                        else
+                        {
+                            if (room.AlternateRoom != null)
+                            {
+                                result.Add(room.AlternateRoom);
+                            }
+                            else
+                            {
+                                result.Add(room);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result.Add(room);
+                    }
+                }
+
+                return result;
+            }
             else if (!ShowPortals)
                 return new List<Room>(new[] { baseRoom });
 
             // New iterative version of the function
-            List<Room> result = new List<Room>();
             Vector3 cameraPosition = Camera.GetPosition();
             Stack<Room> stackRooms = new Stack<Room>();
             Stack<int> stackLimits = new Stack<int>();
@@ -2357,8 +2391,6 @@ namespace TombEditor.Controls
 
             stackRooms.Push(baseRoom);
             stackLimits.Push(0);
-
-            bool isFlipped = baseRoom.Alternated && baseRoom.AlternateBaseRoom != null;
 
             while (stackRooms.Count > 0)
             {
