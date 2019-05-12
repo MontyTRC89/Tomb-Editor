@@ -36,11 +36,12 @@ namespace TombLib.Script
         public bool Sky { get; set; }
         public int LaraType { get; set; } = 0;
         public int LevelFarView { get; set; } = 200;
-        public string LoadScreen { get; set; }
+        public string LoadScreen { get; set; } = "";
         public bool UnlimitedAir { get; set; }
         public bool Rumble { get; set; }
         public Weather Weather { get; set; }
-        
+        public string Background { get; set; } = "";
+
         public LevelScript(bool isTitle)
         {
             IsTitle = isTitle;

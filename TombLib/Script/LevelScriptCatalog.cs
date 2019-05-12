@@ -42,6 +42,11 @@ namespace TombLib.Script
                              LevelScriptCatalogParameterType.String
                          }));
 
+            Commands.Add("Background",
+                         new LevelScriptCommand("Background", new LevelScriptCatalogParameterType[] {
+                             LevelScriptCatalogParameterType.String
+                         }));
+
             Commands.Add("LoadCamera",
                          new LevelScriptCommand("LoadCamera", new LevelScriptCatalogParameterType[] {
                              LevelScriptCatalogParameterType.Int32,

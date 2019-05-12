@@ -63,7 +63,7 @@ namespace TombLib.LevelData.Compilers
                     switch (set.AnimationType)
                     {
                         case AnimatedTextureAnimationType.Frames:
-                            param |= (ushort)MathC.Clamp(Math.Round(1000.0f / (set.Fps == 0 ? 15 : set.Fps)), 0, 0x1fff);
+                            param |= (ushort)MathC.Clamp(Math.Round(1000.0f / (set.Fps == 0 ? 16 : set.Fps)), 0, 0x1fff);
                             break;
                         case AnimatedTextureAnimationType.PFrames:
                             param = 0x4000;
