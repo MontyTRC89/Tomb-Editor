@@ -29,6 +29,7 @@ namespace TombLib.Script
         private static readonly ChunkId Tr5MainLevel = ChunkId.FromString("Tr5MainLevel");
         private static readonly ChunkId Tr5MainLevelFlags = ChunkId.FromString("Tr5MainLevelFlags");
         private static readonly ChunkId Tr5MainLevelInfo = ChunkId.FromString("Tr5MainLevelInfo");
+        private static readonly ChunkId Tr5MainTitleBackground = ChunkId.FromString("Tr5MainTitleBackground");
         private static readonly ChunkId Tr5MainLevelPuzzle = ChunkId.FromString("Tr5MainLevelPuzzle");
         private static readonly ChunkId Tr5MainLevelKey = ChunkId.FromString("Tr5MainLevelKey");
         private static readonly ChunkId Tr5MainLevelPuzzleCombo = ChunkId.FromString("Tr5MainLevelPuzzleCombo");
@@ -39,6 +40,7 @@ namespace TombLib.Script
         private static readonly ChunkId Tr5MainLevelLayer = ChunkId.FromString("Tr5MainLevelLayer");
         private static readonly ChunkId Tr5MainLevelLuaEvent = ChunkId.FromString("Tr5MainLevelLuaEvent");
         private static readonly ChunkId Tr5MainLevelLegend = ChunkId.FromString("Tr5MainLevelLegend");
+        private static readonly ChunkId Tr5MainAudioTracks = ChunkId.FromString("Tr5MainAudioTracks");
         private static readonly ChunkId Tr5MainStrings = ChunkId.FromString("Tr5MainStrings");
 
         private string _srcPath;
@@ -47,6 +49,7 @@ namespace TombLib.Script
         private List<LevelScript> _levels;
         private List<LanguageStrings> _languageStrings;
         private List<string> _levelFileNames;
+        private List<string> _tracks;
 
         private bool _loadSave;
         private bool _title;
@@ -54,6 +57,7 @@ namespace TombLib.Script
         private bool _flyCheat;
         private bool _diagnostics;
         private int _levelFarView;
+        private string _intro;
 
         public ScriptCompilerTR5Main()
         {
@@ -164,6 +168,8 @@ namespace TombLib.Script
                                 _diagnostics = (value == "ENABLED");
                             else if (command == "LevelFarView")
                                 _levelFarView = int.Parse(value);
+                            else if (command == "Intro")
+                                _intro = value;
                         }
 
                         if (lastBlock == Enumerations.Title || lastBlock == Enumerations.Level)
@@ -211,6 +217,8 @@ namespace TombLib.Script
 
                                 if (entry.Command.Name == "Name")
                                     lastLevel.Name = (string)entry.Parameters[0];
+                                if (entry.Command.Name == "Background")
+                                    lastLevel.Background = (string)entry.Parameters[0];
                                 else if (entry.Command.Name == "AmbientTrack")
                                     lastLevel.AudioTrack = byte.Parse(entry.Parameters[0].ToString());
                                 else if (entry.Command.Name == "LaraType")
@@ -284,6 +292,15 @@ namespace TombLib.Script
                     }
                 }
 
+                _tracks = new List<string>();
+                using (var reader = new StreamReader(File.OpenRead(_srcPath + "\\" + "Tracks.txt")))
+                {
+                    while (reader.EndOfStream == false)
+                    {
+                        _tracks.Add(reader.ReadLine());
+                    }
+                }
+
                 return true;
             }
             catch (Exception)
@@ -324,6 +341,7 @@ namespace TombLib.Script
                     LEB128.Write(chunkIO.Raw, (_flyCheat ? 1 : 0));
                     LEB128.Write(chunkIO.Raw, (_diagnostics ? 1 : 0));
                     LEB128.Write(chunkIO.Raw, _levelFarView);
+                    chunkIO.Raw.WriteStringUTF8(_intro);
                 });
 
                 // Game strings
@@ -338,6 +356,14 @@ namespace TombLib.Script
                     });
                 }
 
+                // Audio tracks
+                chunkIO.WriteChunk(Tr5MainAudioTracks, () =>
+                {
+                    LEB128.Write(chunkIO.Raw, _tracks.Count);
+                    foreach (var track in _tracks)
+                        chunkIO.Raw.WriteStringUTF8(track);
+                });
+
                 // Levels
                 foreach (var level in _levels)
                 {
@@ -348,6 +374,7 @@ namespace TombLib.Script
                         {
                             chunkIO.Raw.WriteStringUTF8(level.FileName);
                             chunkIO.Raw.WriteStringUTF8(level.LoadScreen);
+                            chunkIO.Raw.WriteStringUTF8(level.Background);
                             LEB128.Write(chunkIO.Raw, GetStringIndex(level.Name));
                             LEB128.Write(chunkIO.Raw, level.AudioTrack);
                         });
