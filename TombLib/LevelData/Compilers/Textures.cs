@@ -133,7 +133,7 @@ namespace TombLib.LevelData.Compilers
             //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             // Add all sprites to the texture packer
-            var textureAllocator = new Util.TextureAllocator();
+            var textureAllocator = new Util.LegacyTextureAllocator();
             var spriteTextureIDs = new Dictionary<Hash, int>();
             foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))

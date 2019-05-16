@@ -7,7 +7,7 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
 {
-    public struct AnimatedTextureInfo
+    /*public struct AnimatedTextureInfo
     {
         public AnimatedTextureAnimationType AnimationType;
         public float Fps;
@@ -409,5 +409,5 @@ namespace TombLib.LevelData.Compilers.Util
                     stream.Write(objectTextureIndex);
             }
         }
-    }
+    }*/
 }

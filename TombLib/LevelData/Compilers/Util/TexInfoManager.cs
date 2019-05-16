@@ -827,7 +827,7 @@ namespace TombLib.LevelData.Compilers.Util
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
                         {
-                            AddTexture(newFrame, refAnim.CompiledAnimation, true, (triangleVariation > 0), false, index, set.IsUvRotate);
+                            AddTexture(newFrame, refAnim.CompiledAnimation, true, (triangleVariation > 0), set.AnimationType== AnimatedTextureAnimationType.UVRotate, index, set.IsUvRotate);
                             index++;
                         }
                     }

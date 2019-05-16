@@ -6,7 +6,7 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
 {
-    public class TextureAllocator
+    public class LegacyTextureAllocator
     {
         public const int OutputTextureWidth = 256;
         public const int OutputTextureHeight = 256;
@@ -183,7 +183,7 @@ namespace TombLib.LevelData.Compilers.Util
             return resultingTextures;
         }
 
-        private int GetOrAllocateTextureIDForPageAt(ref TextureArea texture, int pageX, int pageY,
+        /*private int GetOrAllocateTextureIDForPageAt(ref TextureArea texture, int pageX, int pageY,
                                                     int pageWidth, int pageHeight, int priorityClass)
         {
             Vector2 pageOffset = new Vector2(pageX, pageY);
@@ -196,9 +196,9 @@ namespace TombLib.LevelData.Compilers.Util
             pageHeight = Math.Min(texture.Texture.Image.Height - pageY, pageHeight);
 
             return GetOrAllocateTextureID(new TextureView(texture.Texture, RectangleInt2.FromLTRB(pageX, pageY, pageWidth, pageHeight)), priorityClass);
-        }
+        }*/
 
-        public int GetOrAllocateTextureID(ref TextureArea texture, bool isTriangle, int priorityClass = 0)
+        /*public int GetOrAllocateTextureID(ref TextureArea texture, bool isTriangle, int priorityClass = 0)
         {
             // Textures bigger than 256² must be split into pieces of 256 max each
             Vector2 minTexCoord = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), isTriangle ? texture.TexCoord2 : Vector2.Min(texture.TexCoord2, texture.TexCoord3));
@@ -227,7 +227,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Include the new texture specifically from whatever region it needs
             return GetOrAllocateTextureIDForPageAt(ref texture, startX, startY, endX - startX + 1, endY - startY + 1, priorityClass);
-        }
+        }*/
 
         public Result GetPackInfo(int id)
         {
