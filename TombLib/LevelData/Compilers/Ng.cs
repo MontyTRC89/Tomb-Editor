@@ -115,9 +115,9 @@ namespace TombLib.LevelData.Compilers
                     writer.Write((short)0);
                 else
                 {
-                    var set = _textureInfoManager.ActualAnimTextures[i].Origin;
-                    frameCount += (short)(set.Frames.Count - 1);
-                    writer.Write(frameCount);
+                    var set = _textureInfoManager.ActualAnimTextures[i];
+                    var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
+                    writer.Write((ushort)orderedFrameList[0].TexInfoIndex);
                 }
             }
 
@@ -191,31 +191,25 @@ namespace TombLib.LevelData.Compilers
             if (_textureInfoManager.ActualAnimTextures.Count < 1)
                 return;
 
-            ushort frameCount = 0;
-            var animFrameList = new List<KeyValuePair<int, int>>();
+            // In theory we should remap tiles from TGA but it's impossible with TE
+            // But writing fake remappings seems to let UVRotate textures finally working
+            var startOfChunk = writer.BaseStream.Position;
 
-            foreach(var anim in _textureInfoManager.ActualAnimTextures)
-                foreach(var seq in anim.CompiledAnimation)
-                    foreach(var frame in seq.Children)
-                    {
-                        animFrameList.Add(new KeyValuePair<int, int>(frameCount, frame.TexInfoIndex));
-                        frameCount++;
-                    }
-
-            // FIXME: TRNG Magic! Commented for now, probably will need it later...
-
-            //animFrameList.Sort((x, y) => x.Value.CompareTo(y.Value));
-            //animFrameList[animFrameList.Count - 1] = new KeyValuePair<int, int>(1034, animFrameList[animFrameList.Count - 1].Value);
-
-            writer.Write((ushort)((frameCount * 2) + 3));
+            writer.Write((ushort)0);
             writer.Write((ushort)0x8018);
-            writer.Write(frameCount);
 
-            foreach(var frame in animFrameList)
+            writer.Write((ushort)_textureInfoManager.TexInfoCount);
+            for (int i = 0; i < _textureInfoManager.TexInfoCount; i++)
             {
-                writer.Write((ushort)frame.Key);
-                writer.Write((ushort)frame.Value);
+                writer.Write((ushort)i);
+                writer.Write((ushort)i);
             }
+
+            var endOfChunk = writer.BaseStream.Position;
+            var numWords = (endOfChunk - startOfChunk) / 2;
+            writer.Seek((int)startOfChunk, SeekOrigin.Begin);
+            writer.Write((ushort)numWords);
+            writer.Seek((int)endOfChunk, SeekOrigin.Begin);
         }
 
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)

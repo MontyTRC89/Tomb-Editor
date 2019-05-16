@@ -294,7 +294,7 @@ namespace TombLib.LevelData.Compilers.Util
             public readonly uint TextureSpaceIdentifier;
             private readonly uint Unused;
 
-            public SavedObjectTexture(ushort textureID, TextureArea texture, uint textureSpaceIdentifier, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
+            public SavedObjectTexture(ushort textureID, TextureArea texture, uint textureSpaceIdentifier, LegacyTextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
             {
                 TextureID = textureID;
                 IsTriangularAndPadding = isTriangular ? (ushort)1 : (ushort)0;
@@ -388,7 +388,7 @@ namespace TombLib.LevelData.Compilers.Util
         private uint _textureSpaceIdentifier;
         private int _supportsUpTo65536TextureCount;
 
-        private readonly TextureAllocator _textureAllocator = new TextureAllocator();
+        private readonly LegacyTextureAllocator _textureAllocator = new LegacyTextureAllocator();
 
         private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool supportsUpTo65536)
         {
@@ -422,7 +422,7 @@ namespace TombLib.LevelData.Compilers.Util
             return id;
         }
 
-        public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
+        /*public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
         {
             // Add object textures
             int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
@@ -436,7 +436,7 @@ namespace TombLib.LevelData.Compilers.Util
                 FirstVertexIndexToEmit = firstTexCoordToEmit,
                 Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None)
             };
-        }
+        }*/
 
         protected virtual void OnPackingTextures(IProgressReporter progressReporter)
         {}
@@ -455,7 +455,7 @@ namespace TombLib.LevelData.Compilers.Util
                     return;
 
                 bool isTriangle = objectTexture.IsTriangularAndPadding != 0;
-                TextureAllocator.TextureView textureView = _textureAllocator.GetTextureFromID(objectTexture.TextureID);
+                LegacyTextureAllocator.TextureView textureView = _textureAllocator.GetTextureFromID(objectTexture.TextureID);
 
                 // To simplify the test just use the rectangular region around. (We could do a polygonal thing but I am not sure its worth it)
                 Vector2 minTexCoord, maxTexCoord;
@@ -646,7 +646,7 @@ namespace TombLib.LevelData.Compilers.Util
             for (int i = 0; i < _objectTextures.Count; ++i)
             {
                 SavedObjectTexture objectTexture = _objectTextures[i];
-                TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
+                LegacyTextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
                 ushort Tile = UsedTexturePackInfo.OutputTextureID;
                 if (level.Settings.GameVersion != GameVersion.TR2)
                     Tile |= objectTexture.IsTriangularAndPadding != 0 ? (ushort)0x8000 : (ushort)0;
