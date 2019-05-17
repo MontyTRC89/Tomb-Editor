@@ -8,8 +8,12 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
+        private Dictionary<ushort, ushort> _remappedTiles;
+
         private void WriteNgHeader(BinaryWriter writer, string ngVersion)
         {
+            CollectNgRemappedTiles();
+
             var ngleStartSignature = System.Text.Encoding.ASCII.GetBytes("NG");
             var endSignature = System.Text.Encoding.ASCII.GetBytes("NGLE");
             var startOffset = writer.BaseStream.Position;
@@ -38,6 +42,18 @@ namespace TombLib.LevelData.Compilers
             writer.Write((int)(writer.BaseStream.Position + 4 - startOffset));
         }
 
+        private void CollectNgRemappedTiles()
+        {
+            _remappedTiles = new Dictionary<ushort, ushort>();
+
+            foreach (var set in _textureInfoManager.ActualAnimTextures)
+            {
+                var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
+                foreach (var frame in orderedFrameList)
+                    _remappedTiles.Add((ushort)frame.TexInfoIndex, (ushort)_remappedTiles.Count);
+            }
+        }
+
         private void WriteNgChunkAnimatedTextures(BinaryWriter writer)
         {
             var startOfChunk = writer.BaseStream.Position;
@@ -63,7 +79,7 @@ namespace TombLib.LevelData.Compilers
                     switch (set.AnimationType)
                     {
                         case AnimatedTextureAnimationType.Frames:
-                            param |= (ushort)MathC.Clamp(Math.Round(1000.0f / (set.Fps == 0 ? 16 : set.Fps)), 0, 0x1fff);
+                            param = 0x00; //|= (ushort)MathC.Clamp(Math.Round(1000.0f / (set.Fps == 0 ? 16 : set.Fps)), 0, 0x1fff);
                             break;
                         case AnimatedTextureAnimationType.PFrames:
                             param = 0x4000;
@@ -91,8 +107,6 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            short frameCount = 0;
-
             // Array VetFromTex
             for (var i = 0; i < 40; i++)
             {
@@ -100,13 +114,11 @@ namespace TombLib.LevelData.Compilers
                     writer.Write((short)0);
                 else
                 {
-                    var set = _textureInfoManager.ActualAnimTextures[i].Origin;
-                    writer.Write(frameCount);
-                    frameCount += (short)set.Frames.Count;
+                    var set = _textureInfoManager.ActualAnimTextures[i];
+                    var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
+                    writer.Write(_remappedTiles[(ushort)orderedFrameList[0].TexInfoIndex]);
                 }
             }
-
-            frameCount = 0;
 
             // Array VetToTex
             for (var i = 0; i < 40; i++)
@@ -117,7 +129,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     var set = _textureInfoManager.ActualAnimTextures[i];
                     var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
-                    writer.Write((ushort)orderedFrameList[0].TexInfoIndex);
+                    writer.Write(_remappedTiles[(ushort)orderedFrameList[orderedFrameList.Count - 1].TexInfoIndex]);
                 }
             }
 
@@ -198,13 +210,13 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)0);
             writer.Write((ushort)0x8018);
 
-            writer.Write((ushort)_textureInfoManager.TexInfoCount);
-            for (int i = 0; i < _textureInfoManager.TexInfoCount; i++)
+            writer.Write((ushort)_remappedTiles.Count);
+            foreach (ushort textureId in _remappedTiles.Keys.ToArray())
             {
-                writer.Write((ushort)i);
-                writer.Write((ushort)i);
+                writer.Write((ushort)_remappedTiles[textureId]);
+                writer.Write((ushort)textureId);
             }
-
+            
             var endOfChunk = writer.BaseStream.Position;
             var numWords = (endOfChunk - startOfChunk) / 2;
             writer.Seek((int)startOfChunk, SeekOrigin.Begin);
