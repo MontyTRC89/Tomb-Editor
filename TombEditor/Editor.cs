@@ -907,7 +907,7 @@ namespace TombEditor
                         fileName = fileNameBase + configuration.AutoSave_NameSeparator + Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture);
                     fileName = Path.Combine(path, fileName + ".prj2");
 
-                    // Save the level
+                    // Save project
                     Prj2Writer.SaveToPrj2(fileName, level);
 
                     // Consider cleaning up directory

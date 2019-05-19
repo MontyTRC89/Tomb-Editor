@@ -22,8 +22,21 @@ namespace TombLib.LevelData.IO
 
         public static void SaveToPrj2(string filename, Level level, Filter filter = null)
         {
-            using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-                SaveToPrj2(fileStream, level, filter);
+            // We save first to a temporary memory stream
+            using (var stream = new MemoryStream())
+            {
+                SaveToPrj2(stream, level);
+
+                // Then, if no exception occurred, overwrite file
+                File.Delete(filename);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                using (var writer = new BinaryWriter(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None)))
+                {
+                    var buffer = stream.ToArray();
+                    writer.Write(buffer, 0, buffer.Length);
+                }
+            }
         }
 
         public static void SaveToPrj2(Stream stream, Level level, Filter filter = null)
