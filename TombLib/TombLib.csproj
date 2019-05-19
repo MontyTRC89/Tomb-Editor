@@ -282,6 +282,7 @@
     <Compile Include="Utils\Swap.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Utils\RectPackerTree.cs" />
+    <Compile Include="Utils\VertexNormalAverageHelper.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />

@@ -14,6 +14,7 @@ namespace TombLib.GeometryIO
         protected GetTextureDelegate _getTextureCallback { get; }
 
         public abstract IOModel ImportFromFile(string filename);
+        public abstract void CalculateNormals(IOModel model);
 
         public BaseGeometryImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
         {
