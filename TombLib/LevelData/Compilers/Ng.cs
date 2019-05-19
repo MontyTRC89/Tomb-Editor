@@ -50,7 +50,8 @@ namespace TombLib.LevelData.Compilers
             {
                 var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
                 foreach (var frame in orderedFrameList)
-                    _remappedTiles.Add((ushort)frame.TexInfoIndex, (ushort)_remappedTiles.Count);
+                    if (!_remappedTiles.ContainsKey((ushort)frame.TexInfoIndex))
+                        _remappedTiles.Add((ushort)frame.TexInfoIndex, (ushort)_remappedTiles.Count);
             }
         }
 
@@ -204,7 +205,7 @@ namespace TombLib.LevelData.Compilers
                 return;
 
             // In theory we should remap tiles from TGA but it's impossible with TE
-            // But writing fake remappings seems to let UVRotate textures finally working
+            // But writing fake remappings seems to make UVRotate textures finally working
             var startOfChunk = writer.BaseStream.Position;
 
             writer.Write((ushort)0);
