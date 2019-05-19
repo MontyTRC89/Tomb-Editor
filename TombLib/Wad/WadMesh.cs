@@ -6,28 +6,12 @@ using TombLib.GeometryIO;
 using TombLib.IO;
 using TombLib.Utils;
 using System.Linq;
+using TombLib.GeometryIO.Importers;
 
 namespace TombLib.Wad
 {
     public class WadMesh : ICloneable
     {
-        private class VertexNormalAverageHelper
-        {
-            public Vector3 Position { get; set; }
-            public List<Vector3> Normals { get; private set; }
-            public List<int> Indices { get; private set; }
-            public Vector3 Normal { get; set; }
-            public int NumVertices { get; set; }
-
-            public VertexNormalAverageHelper()
-            {
-                Normals = new List<Vector3>();
-                Indices = new List<int>();
-                Normal = Vector3.Zero;
-                NumVertices = 0;
-            }
-        }
-
         public string Name { get; set; }
         public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
         public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
@@ -188,6 +172,7 @@ namespace TombLib.Wad
         public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
         {
             IOModel tmpModel = null;
+            bool calculateNormals = false;
 
             // Import the model
             try
@@ -197,6 +182,8 @@ namespace TombLib.Wad
                     return new WadTexture(ImageC.FromFile(absoluteTexturePath));
                 });
                 tmpModel = importer.ImportFromFile(fileName);
+
+                calculateNormals = importer is MetasequoiaImporter;
             }
             catch (Exception ex)
             {
@@ -254,7 +241,7 @@ namespace TombLib.Wad
 
             mesh.BoundingBox = mesh.CalculateBoundingBox();
             mesh.BoundingSphere = mesh.CalculateBoundingSphere();
-            if (mesh.VerticesNormals.Count == 0) mesh.CalculateNormals(); //MQO files rarely have normals
+            if (mesh.VerticesNormals.Count == 0 || calculateNormals) mesh.CalculateNormals(); //MQO files rarely have normals
             
             return mesh;
         }
