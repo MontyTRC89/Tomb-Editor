@@ -18,7 +18,8 @@ namespace TombEditor
 
 		public bool IsKeyPressed(Keys k)
 		{
-			if (KeyTable.TryGetValue(k, out bool pressed))
+            bool pressed;
+			if (KeyTable.TryGetValue(k, out pressed))
 				return pressed;
 
 			return false;
