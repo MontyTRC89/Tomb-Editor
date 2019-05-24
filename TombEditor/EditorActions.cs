@@ -4108,7 +4108,7 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry)
                         currentTool.Tool = EditorToolType.Flatten;
                     else
-                        currentTool.Tool = EditorToolType.Paint2x2;
+                        currentTool.Tool = EditorToolType.GridPaint;
                     break;
                 case 5:
                     if (_editor.Mode == EditorMode.Geometry)

@@ -611,7 +611,7 @@ namespace TombEditor.Controls
                                 break;
 
                             // Do texturing
-                            if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.Paint2x2)
+                            if (_editor.Tool.Tool != EditorToolType.Group && _editor.Tool.Tool != EditorToolType.GridPaint)
                             {
                                 if (ModifierKeys.HasFlag(Keys.Shift))
                                 {
@@ -629,7 +629,7 @@ namespace TombEditor.Controls
                             {
                                 EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                             }
-                            else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
+                            else if (_editor.Tool.Tool == EditorToolType.GridPaint && !_editor.HighlightedSectors.Empty)
                             {
                                 EditorActions.TexturizeGroup(_editor.SelectedRoom,
                                     _editor.HighlightedSectors,
@@ -1041,7 +1041,7 @@ namespace TombEditor.Controls
                                             _editor.SelectedSectors.Empty)
                                             redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
                                     }
-                                    else if (_editor.Tool.Tool == EditorToolType.Paint2x2)
+                                    else if (_editor.Tool.Tool == EditorToolType.GridPaint)
                                     {
                                         int factor = 2;
                                         if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) factor = 3;
@@ -1074,7 +1074,7 @@ namespace TombEditor.Controls
                     }
                     break;
                 default:
-                    if (_editor.Tool.Tool == EditorToolType.Paint2x2)
+                    if (_editor.Tool.Tool == EditorToolType.GridPaint)
                     {
                         // Disable highlight in lighting mode, if option is set
                         if (_editor.Mode == EditorMode.Lighting &&
