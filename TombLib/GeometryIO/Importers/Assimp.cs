@@ -18,11 +18,6 @@ namespace TombLib.GeometryIO.Importers
 
         }
 
-        public override void CalculateNormals(IOModel model)
-        {
-            return; // Assimp handles it automatically
-        }
-
         public override IOModel ImportFromFile(string filename)
         {
             string path = Path.GetDirectoryName(filename);

@@ -51,7 +51,7 @@ namespace TombLib.LevelData.Compilers
                 var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
                 foreach (var frame in orderedFrameList)
                     if (!_remappedTiles.ContainsKey((ushort)frame.TexInfoIndex))
-                        _remappedTiles.Add((ushort)frame.TexInfoIndex, (ushort)_remappedTiles.Count);
+                        _remappedTiles.Add((ushort)frame.TexInfoIndex, (ushort)_level.Settings.AnimatedTextureSets.IndexOf(set.Origin));
             }
         }
 
