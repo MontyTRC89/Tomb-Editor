@@ -888,7 +888,7 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 545);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(121, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
@@ -1028,7 +1028,7 @@
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel52.Location = new System.Drawing.Point(12, 342);
             this.darkLabel52.Name = "darkLabel52";
-            this.darkLabel52.Size = new System.Drawing.Size(45, 13);
+            this.darkLabel52.Size = new System.Drawing.Size(46, 13);
             this.darkLabel52.TabIndex = 48;
             this.darkLabel52.Text = "Trigger:";
             // 
@@ -1328,18 +1328,17 @@
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel3.Size = new System.Drawing.Size(364, 738);
+            this.panel3.Size = new System.Drawing.Size(364, 736);
             this.panel3.TabIndex = 21;
             // 
             // darkGroupBox9
             // 
             this.darkGroupBox9.Controls.Add(this.darkNumericUpDown40);
             this.darkGroupBox9.Controls.Add(this.darkLabel69);
-            this.darkGroupBox9.Controls.Add(this.darkCheckBox29);
             this.darkGroupBox9.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox9.Location = new System.Drawing.Point(3, 659);
+            this.darkGroupBox9.Location = new System.Drawing.Point(3, 683);
             this.darkGroupBox9.Name = "darkGroupBox9";
-            this.darkGroupBox9.Size = new System.Drawing.Size(358, 76);
+            this.darkGroupBox9.Size = new System.Drawing.Size(358, 50);
             this.darkGroupBox9.TabIndex = 31;
             this.darkGroupBox9.TabStop = false;
             this.darkGroupBox9.Text = "Other";
@@ -1353,7 +1352,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown40.Location = new System.Drawing.Point(291, 48);
+            this.darkNumericUpDown40.Location = new System.Drawing.Point(291, 22);
             this.darkNumericUpDown40.MousewheelSingleIncrement = true;
             this.darkNumericUpDown40.Name = "darkNumericUpDown40";
             this.darkNumericUpDown40.Size = new System.Drawing.Size(64, 22);
@@ -1364,7 +1363,7 @@
             // 
             this.darkLabel69.AutoSize = true;
             this.darkLabel69.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel69.Location = new System.Drawing.Point(6, 50);
+            this.darkLabel69.Location = new System.Drawing.Point(6, 24);
             this.darkLabel69.Name = "darkLabel69";
             this.darkLabel69.Size = new System.Drawing.Size(121, 13);
             this.darkLabel69.TabIndex = 1;
@@ -1373,7 +1372,7 @@
             // darkCheckBox29
             // 
             this.darkCheckBox29.AutoSize = true;
-            this.darkCheckBox29.Location = new System.Drawing.Point(9, 21);
+            this.darkCheckBox29.Location = new System.Drawing.Point(9, 183);
             this.darkCheckBox29.Name = "darkCheckBox29";
             this.darkCheckBox29.Size = new System.Drawing.Size(140, 17);
             this.darkCheckBox29.TabIndex = 0;
@@ -1384,6 +1383,7 @@
             // 
             this.darkGroupBox3.Controls.Add(this.darkLabel24);
             this.darkGroupBox3.Controls.Add(this.darkNumericUpDown22);
+            this.darkGroupBox3.Controls.Add(this.darkCheckBox29);
             this.darkGroupBox3.Controls.Add(this.darkCheckBox5);
             this.darkGroupBox3.Controls.Add(this.darkNumericUpDown14);
             this.darkGroupBox3.Controls.Add(this.darkLabel15);
@@ -1398,7 +1398,7 @@
             this.darkGroupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox3.Location = new System.Drawing.Point(3, 476);
             this.darkGroupBox3.Name = "darkGroupBox3";
-            this.darkGroupBox3.Size = new System.Drawing.Size(358, 183);
+            this.darkGroupBox3.Size = new System.Drawing.Size(358, 207);
             this.darkGroupBox3.TabIndex = 18;
             this.darkGroupBox3.TabStop = false;
             this.darkGroupBox3.Text = "Mouse controls";
@@ -2104,7 +2104,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
