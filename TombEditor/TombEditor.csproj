@@ -125,6 +125,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ContextMenus\GridPaintContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -537,6 +540,9 @@
     <Content Include="Editor\Shaders\RoomGeometry.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\icons_toolbox\toolbox_GridPaint2x2-16.png" />
+    <None Include="Resources\icons_toolbox\toolbox_GridPaint3x3-16.png" />
+    <None Include="Resources\icons_toolbox\toolbox_GridPaint4x4-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">

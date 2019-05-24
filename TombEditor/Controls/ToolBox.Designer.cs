@@ -36,7 +36,7 @@
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
             this.toolSmooth = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
-            this.toolPaint2x2 = new System.Windows.Forms.ToolStripButton();
+            this.toolGridPaint = new System.Windows.Forms.ToolStripButton();
             this.toolGroup = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolDrag = new System.Windows.Forms.ToolStripButton();
@@ -70,7 +70,7 @@
             this.toolFlatten,
             this.toolSmooth,
             this.toolFill,
-            this.toolPaint2x2,
+            this.toolGridPaint,
             this.toolGroup,
             this.toolSeparator1,
             this.toolDrag,
@@ -183,18 +183,20 @@
             this.toolFill.ToolTipText = "Fill";
             this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
             // 
-            // toolPaint2x2
+            // toolGridPaint
             // 
-            this.toolPaint2x2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolPaint2x2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolPaint2x2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolPaint2x2.Image = global::TombEditor.Properties.Resources.toolbox_Paint2x2_16;
-            this.toolPaint2x2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolPaint2x2.Margin = new System.Windows.Forms.Padding(1);
-            this.toolPaint2x2.Name = "toolPaint2x2";
-            this.toolPaint2x2.Size = new System.Drawing.Size(23, 20);
-            this.toolPaint2x2.ToolTipText = "Grid Paint";
-            this.toolPaint2x2.Click += new System.EventHandler(this.tooPaint2x2_Click);
+            this.toolGridPaint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolGridPaint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolGridPaint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolGridPaint.Image = global::TombEditor.Properties.Resources.toolbox_Paint2x2_16;
+            this.toolGridPaint.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolGridPaint.Margin = new System.Windows.Forms.Padding(1);
+            this.toolGridPaint.Name = "toolGridPaint";
+            this.toolGridPaint.Size = new System.Drawing.Size(23, 20);
+            this.toolGridPaint.ToolTipText = "Grid Paint (2x2)";
+            this.toolGridPaint.Click += new System.EventHandler(this.tooPaint2x2_Click);
+            this.toolGridPaint.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toolGridPaint_MouseDown);
+            this.toolGridPaint.MouseUp += new System.Windows.Forms.MouseEventHandler(this.toolGridPaint_MouseUp);
             // 
             // toolGroup
             // 
@@ -312,7 +314,6 @@
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolEraser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolEraser.Enabled = true;
             this.toolEraser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolEraser.Image = global::TombEditor.Properties.Resources.toolbox_Eraser_16;
             this.toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -408,7 +409,7 @@
         private System.Windows.Forms.ToolStripButton toolInvisibility;
         private System.Windows.Forms.ToolStripSeparator toolSeparator2;
         private System.Windows.Forms.ToolStripButton toolUVFixer;
-        private System.Windows.Forms.ToolStripButton toolPaint2x2;
+        private System.Windows.Forms.ToolStripButton toolGridPaint;
         private System.Windows.Forms.ToolStripButton toolPortalDigger;
     }
 }

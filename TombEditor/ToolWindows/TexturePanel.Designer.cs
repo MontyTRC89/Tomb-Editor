@@ -19,7 +19,6 @@ namespace TombEditor.ToolWindows
         {
             this.components = new System.ComponentModel.Container();
             this.panelTextureTools = new System.Windows.Forms.Panel();
-            this.comboTextureGridMode = new DarkUI.Controls.DarkComboBox();
             this.butBumpMaps = new DarkUI.Controls.DarkButton();
             this.butMirror = new DarkUI.Controls.DarkButton();
             this.butDoubleSide = new DarkUI.Controls.DarkButton();
@@ -41,7 +40,6 @@ namespace TombEditor.ToolWindows
             // 
             // panelTextureTools
             // 
-            this.panelTextureTools.Controls.Add(this.comboTextureGridMode);
             this.panelTextureTools.Controls.Add(this.butBumpMaps);
             this.panelTextureTools.Controls.Add(this.butMirror);
             this.panelTextureTools.Controls.Add(this.butDoubleSide);
@@ -55,21 +53,6 @@ namespace TombEditor.ToolWindows
             this.panelTextureTools.Name = "panelTextureTools";
             this.panelTextureTools.Size = new System.Drawing.Size(286, 56);
             this.panelTextureTools.TabIndex = 10;
-            // 
-            // comboTextureGridMode
-            // 
-            this.comboTextureGridMode.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.comboTextureGridMode.FormattingEnabled = true;
-            this.comboTextureGridMode.Items.AddRange(new object[] {
-            "2x2",
-            "3x3",
-            "4x4"});
-            this.comboTextureGridMode.Location = new System.Drawing.Point(229, 3);
-            this.comboTextureGridMode.Name = "comboTextureGridMode";
-            this.comboTextureGridMode.Size = new System.Drawing.Size(53, 23);
-            this.comboTextureGridMode.TabIndex = 13;
-            this.toolTip.SetToolTip(this.comboTextureGridMode, "Selection tile size");
-            this.comboTextureGridMode.SelectedIndexChanged += new System.EventHandler(this.ComboTextureGridMode_SelectedIndexChanged);
             // 
             // butBumpMaps
             // 
@@ -87,7 +70,7 @@ namespace TombEditor.ToolWindows
             // 
             this.butMirror.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butMirror.Image = global::TombEditor.Properties.Resources.texture_Mirror;
-            this.butMirror.Location = new System.Drawing.Point(148, 3);
+            this.butMirror.Location = new System.Drawing.Point(173, 3);
             this.butMirror.Name = "butMirror";
             this.butMirror.Size = new System.Drawing.Size(23, 23);
             this.butMirror.TabIndex = 11;
@@ -120,9 +103,9 @@ namespace TombEditor.ToolWindows
             // 
             this.cmbTileSize.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cmbTileSize.FormattingEnabled = true;
-            this.cmbTileSize.Location = new System.Drawing.Point(177, 3);
+            this.cmbTileSize.Location = new System.Drawing.Point(201, 3);
             this.cmbTileSize.Name = "cmbTileSize";
-            this.cmbTileSize.Size = new System.Drawing.Size(47, 23);
+            this.cmbTileSize.Size = new System.Drawing.Size(82, 23);
             this.cmbTileSize.TabIndex = 9;
             this.toolTip.SetToolTip(this.cmbTileSize, "Selection tile size");
             this.cmbTileSize.SelectedIndexChanged += new System.EventHandler(this.cmbTileSize_SelectedIndexChanged);
@@ -142,7 +125,7 @@ namespace TombEditor.ToolWindows
             // 
             this.butRotate.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butRotate.Image = global::TombEditor.Properties.Resources.texture_Rotate;
-            this.butRotate.Location = new System.Drawing.Point(121, 3);
+            this.butRotate.Location = new System.Drawing.Point(146, 3);
             this.butRotate.Name = "butRotate";
             this.butRotate.Size = new System.Drawing.Size(23, 23);
             this.butRotate.TabIndex = 8;
@@ -161,7 +144,7 @@ namespace TombEditor.ToolWindows
             "Lighten"});
             this.cmbBlending.Location = new System.Drawing.Point(31, 3);
             this.cmbBlending.Name = "cmbBlending";
-            this.cmbBlending.Size = new System.Drawing.Size(84, 23);
+            this.cmbBlending.Size = new System.Drawing.Size(110, 23);
             this.cmbBlending.TabIndex = 6;
             this.toolTip.SetToolTip(this.cmbBlending, "Blending mode");
             this.cmbBlending.SelectedIndexChanged += new System.EventHandler(this.cmbBlending_SelectedIndexChanged);
@@ -233,10 +216,12 @@ namespace TombEditor.ToolWindows
             // 
             // panelTextureMap
             // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(0, 53);
+            this.panelTextureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelTextureMap.Location = new System.Drawing.Point(3, 54);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(286, 588);
+            this.panelTextureMap.Size = new System.Drawing.Size(279, 586);
             this.panelTextureMap.TabIndex = 12;
             // 
             // TexturePanel
@@ -275,7 +260,6 @@ namespace TombEditor.ToolWindows
         private DarkUI.Controls.DarkButton butDeleteTexture;
         private DarkUI.Controls.DarkButton butBrowseTexture;
         private DarkUI.Controls.DarkButton butBumpMaps;
-        private DarkUI.Controls.DarkComboBox comboTextureGridMode;
         private PanelTextureMap panelTextureMap;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using TombEditor.Controls.ContextMenus;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -29,11 +30,17 @@ namespace TombEditor.Controls
         }
 
         private readonly Editor _editor;
+        private Timer _contextMenuTimer;
 
         public ToolBox()
         {
             InitializeComponent();
-            
+
+            _contextMenuTimer = new Timer();
+            _contextMenuTimer.Interval = 300;
+            _contextMenuTimer.Tick += ContextMenuTimer_Tick;
+
+
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
                 _editor = Editor.Instance;
@@ -53,7 +60,7 @@ namespace TombEditor.Controls
                 toolPencil.Checked = currentTool.Tool == EditorToolType.Pencil;
                 toolFill.Checked = currentTool.Tool == EditorToolType.Fill;
                 toolGroup.Checked = currentTool.Tool == EditorToolType.Group;
-                toolPaint2x2.Checked = currentTool.Tool == EditorToolType.Paint2x2;
+                toolGridPaint.Checked = currentTool.Tool == EditorToolType.GridPaint;
                 toolShovel.Checked = currentTool.Tool == EditorToolType.Shovel;
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
@@ -67,6 +74,22 @@ namespace TombEditor.Controls
                 toolPortalDigger.Checked = currentTool.Tool == EditorToolType.PortalDigger;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
+
+                switch(currentTool.GridSize)
+                {
+                    case PaintGridSize.Grid2x2:
+                        toolGridPaint.Image = Properties.Resources.toolbox_GridPaint2x2_16;
+                        toolGridPaint.ToolTipText = "Grid Paint (2x2)";
+                        break;
+                    case PaintGridSize.Grid3x3:
+                        toolGridPaint.Image = Properties.Resources.toolbox_GridPaint3x3_16;
+                        toolGridPaint.ToolTipText = "Grid Paint (3x3)";
+                        break;
+                    case PaintGridSize.Grid4x4:
+                        toolGridPaint.Image = Properties.Resources.toolbox_GridPaint4x4_16;
+                        toolGridPaint.ToolTipText = "Grid Paint (4x4)";
+                        break;
+                }
             }
 
             if (obj is Editor.SelectedTexturesChangedEvent || obj is Editor.InitEvent)
@@ -82,7 +105,7 @@ namespace TombEditor.Controls
 
                 toolFill.Visible = !geometryMode;
                 toolGroup.Visible = !geometryMode;
-                toolPaint2x2.Visible = !geometryMode;
+                toolGridPaint.Visible = !geometryMode;
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
@@ -104,9 +127,16 @@ namespace TombEditor.Controls
             }
         }
 
+        private void ContextMenuTimer_Tick(object sender, EventArgs e)
+        {
+            var _currentContextMenu = new GridPaintContextMenu(_editor, this);
+            _currentContextMenu?.Show(Cursor.Position);
+            _contextMenuTimer.Stop();
+        }
+
         private void SwitchTool(EditorToolType tool)
         {
-            EditorTool currentTool = new EditorTool() { Tool = tool, TextureUVFixer = _editor.Tool.TextureUVFixer };
+            EditorTool currentTool = new EditorTool() { Tool = tool, TextureUVFixer = _editor.Tool.TextureUVFixer, GridSize = _editor.Tool.GridSize };
             _editor.Tool = currentTool;
         }
 
@@ -187,7 +217,7 @@ namespace TombEditor.Controls
 
         private void tooPaint2x2_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorToolType.Paint2x2);
+            SwitchTool(EditorToolType.GridPaint);
         }
         
         private void toolPortalDigger_Click(object sender, EventArgs e)
@@ -209,6 +239,19 @@ namespace TombEditor.Controls
         {
             EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = !_editor.Tool.TextureUVFixer };
             _editor.Tool = currentTool;
+        }
+
+        private void toolGridPaint_MouseUp(object sender, MouseEventArgs e)
+        {
+            _contextMenuTimer.Stop();
+        }
+
+        private void toolGridPaint_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+                _contextMenuTimer.Start();
+            else
+                ContextMenuTimer_Tick(sender, e);
         }
     }
 }

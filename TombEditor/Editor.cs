@@ -171,21 +171,21 @@ namespace TombEditor
             public EditorTool Previous { get; internal set; }
             public EditorTool Current { get; internal set; }
         }
-        private EditorTool _tool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
+        private EditorTool _tool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
         public EditorTool Tool
         {
             get { return _tool; }
             set
             {
-                if (value == _tool)
+                if (value.Tool == _tool.Tool && value.GridSize == _tool.GridSize)
                     return;
                 var previous = _tool;
                 _tool = value;
                 RaiseEvent(new ToolChangedEvent { Previous = previous, Current = value });
             }
         }
-        private EditorTool _lastGeometryTool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
-        private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true };
+        private EditorTool _lastGeometryTool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
+        private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
 
         public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {
