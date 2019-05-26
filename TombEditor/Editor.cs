@@ -177,7 +177,7 @@ namespace TombEditor
             get { return _tool; }
             set
             {
-                if (value.Tool == _tool.Tool && value.GridSize == _tool.GridSize)
+                if (value.Tool == _tool.Tool && value.GridSize == _tool.GridSize && value.TextureUVFixer == _tool.TextureUVFixer)
                     return;
                 var previous = _tool;
                 _tool = value;
