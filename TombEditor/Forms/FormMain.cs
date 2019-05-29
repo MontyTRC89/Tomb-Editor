@@ -586,8 +586,8 @@ namespace TombEditor.Forms
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load("");
-            //var level = new TestLevel("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\tut1.tr4");
-            var level = new TestLevel("h:\\trle\\Data\\karnak.tr4");
+            //var level = new TestLevel("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
+            var level = new TestLevel("h:\\pyramid8px_padding.tr4");
 
             // var level = new TrLevel();
             // level.LoadLevel("H:\\tomb5\\data\\joby5.trc");
