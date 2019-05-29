@@ -27,14 +27,14 @@ namespace TombLib.LevelData.Compilers
 
             if (!texture.TextureIsInvisible && !texture.TextureIsUnavailable)
             {
-                texture.TexCoord0.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord0.X);
-                texture.TexCoord0.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord0.Y);
-                texture.TexCoord1.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord1.X);
-                texture.TexCoord1.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord1.Y);
-                texture.TexCoord2.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord2.X);
-                texture.TexCoord2.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord2.Y);
-                texture.TexCoord3.X = Math.Min(texture.Texture.Image.Width - 1, texture.TexCoord3.X);
-                texture.TexCoord3.Y = Math.Min(texture.Texture.Image.Height - 1, texture.TexCoord3.Y);
+                texture.TexCoord0.X = Math.Min(texture.Texture.Image.Width, texture.TexCoord0.X);
+                texture.TexCoord0.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord0.Y);
+                texture.TexCoord1.X = Math.Min(texture.Texture.Image.Width , texture.TexCoord1.X);
+                texture.TexCoord1.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord1.Y);
+                texture.TexCoord2.X = Math.Min(texture.Texture.Image.Width , texture.TexCoord2.X);
+                texture.TexCoord2.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord2.Y);
+                texture.TexCoord3.X = Math.Min(texture.Texture.Image.Width, texture.TexCoord3.X);
+                texture.TexCoord3.Y = Math.Min(texture.Texture.Image.Height , texture.TexCoord3.Y);
             }
         }
 
