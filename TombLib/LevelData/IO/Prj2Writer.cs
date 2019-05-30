@@ -95,13 +95,22 @@ namespace TombLib.LevelData.IO
 
         private class LevelSettingsIds
         {
-            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer());
-            public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
+            private LevelSettings _settings;
+
+            public LevelSettingsIds(LevelSettings settings)
+            {
+                _settings = settings;
+                ImportedGeometries = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer(_settings));
+                LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>()); 
+            }
+
+            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
+            public Dictionary<LevelTexture, int> LevelTextures { get; private set; } 
         }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
         {
-            var levelSettingIds = new LevelSettingsIds();
+            var levelSettingIds = new LevelSettingsIds(settings);
             using (var chunkSettings = chunkIO.WriteChunk(Prj2Chunks.Settings, long.MaxValue))
             {
                 chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
