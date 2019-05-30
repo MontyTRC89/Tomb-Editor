@@ -344,6 +344,13 @@ namespace TombLib.LevelData
 
     public class ImportedGeometryComparer : IEqualityComparer<ImportedGeometry>
     {
+        private LevelSettings _settings;
+
+        public ImportedGeometryComparer(LevelSettings settings)
+        {
+            _settings = settings;
+        }
+        
         public bool Equals(ImportedGeometry x, ImportedGeometry y)
         {
             return (x.Info.FlipUV_V == y.Info.FlipUV_V &&
@@ -351,7 +358,7 @@ namespace TombLib.LevelData
                     x.Info.FlipY == y.Info.FlipY &&
                     x.Info.FlipZ == y.Info.FlipZ &&
                     x.Info.InvertFaces == y.Info.InvertFaces &&
-                    x.Info.Name == y.Info.Name &&
+                    _settings.MakeAbsolute(x.Info.Name).Equals(_settings.MakeAbsolute(y.Info.Name)) &&
                     x.Info.Path == y.Info.Path &&
                     x.Info.Scale == y.Info.Scale &&
                     x.Info.SwapXY == y.Info.SwapXY &&
