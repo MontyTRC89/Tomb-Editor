@@ -578,7 +578,7 @@ namespace TombLib.LevelData.IO
                         {
                             room.Type = RoomType.Water;
                             room.LightEffect = RoomLightEffect.Default;
-                            room.LightEffectStrength = val;
+                            room.LightEffectStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomRainLevel) // DEPRECATED
@@ -588,7 +588,7 @@ namespace TombLib.LevelData.IO
                         {
                             room.Type = RoomType.Rain;
                             room.LightEffect = RoomLightEffect.Default;
-                            room.LightEffectStrength = val;
+                            room.TypeStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomSnowLevel) // DEPRECATED
@@ -598,7 +598,7 @@ namespace TombLib.LevelData.IO
                         {
                             room.Type = RoomType.Snow;
                             room.LightEffect = RoomLightEffect.Default;
-                            room.LightEffectStrength = val;
+                            room.TypeStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomQuickSandLevel) // DEPRECATED
@@ -608,7 +608,7 @@ namespace TombLib.LevelData.IO
                         {
                             room.Type = RoomType.Quicksand;
                             room.LightEffect = RoomLightEffect.Default;
-                            room.LightEffectStrength = val;
+                            room.LightEffectStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomMistLevel) // DEPRECATED
@@ -617,7 +617,7 @@ namespace TombLib.LevelData.IO
                         if (val > 0)
                         {
                             room.LightEffect = RoomLightEffect.Glow;
-                            room.LightEffectStrength = val;
+                            room.LightEffectStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomReflectionLevel) // DEPRECATED
@@ -631,7 +631,7 @@ namespace TombLib.LevelData.IO
                         if (val > 0 && room.LightEffect != RoomLightEffect.Glow)
                         {
                             room.LightEffect = RoomLightEffect.Reflection;
-                            room.LightEffectStrength = val;
+                            room.LightEffectStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomType)
