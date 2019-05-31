@@ -2604,7 +2604,8 @@ namespace TombEditor
                 bool roomOverlaps = false;
                 for (int x = 1; x < (room.NumXSectors - 1); ++x)
                     for (int z = 1; z < (room.NumZSectors - 1); ++z)
-                        if (!room.Blocks[x, z].IsAnyWall)
+                        // TODO: maybe we could improve this, for now keep it disabled and test 
+                        if (!room.Blocks[x, z].IsAnyWall  || true)
                         {
                             VectorInt2 worldPos = room.SectorPos + new VectorInt2(x, z);
                             Room existingRoom;
