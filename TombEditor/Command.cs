@@ -1600,6 +1600,7 @@ namespace TombEditor
 
             AddCommand("ToggleFlyMode", "Toggle Fly Mode", CommandType.General, delegate (CommandArgs args)
             {
+                args.Editor.SendMessage("Push ESC to exit fly mode.", PopupType.Info);
                 args.Editor.ToggleFlyMode(!args.Editor.FlyMode);
             });
 
