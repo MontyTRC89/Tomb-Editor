@@ -206,7 +206,7 @@ namespace TombLib.Utils
 
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
         public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;
-        public bool TextureIsTriangle => TexCoord2 == TexCoord3 || (TexCoord3.X == 0 && TexCoord3.Y == 0);
+        public bool TextureIsTriangle => TexCoord2 == TexCoord3;
 
         public bool TriangleCoordsOutOfBounds
         {
