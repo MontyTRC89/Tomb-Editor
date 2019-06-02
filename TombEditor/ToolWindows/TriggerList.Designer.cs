@@ -90,6 +90,7 @@
             this.lstTriggers.ItemHeight = 18;
             this.lstTriggers.Location = new System.Drawing.Point(2, 2);
             this.lstTriggers.Name = "lstTriggers";
+            this.lstTriggers.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstTriggers.Size = new System.Drawing.Size(280, 114);
             this.lstTriggers.TabIndex = 0;
             this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
