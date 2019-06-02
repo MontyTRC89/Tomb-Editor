@@ -523,6 +523,26 @@ namespace TombEditor.Forms
             }
         }
 
+        // Script path
+        private void tbScriptPath_TextChanged(object sender, EventArgs e)
+        {
+            if (_levelSettings.ScriptDirectory == tbScriptPath.Text)
+                return;
+            _levelSettings.ScriptDirectory = tbScriptPath.Text;
+            UpdateDialog();
+        }
+
+        private void scriptPathBut_Click(object sender, EventArgs e)
+        {
+            string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.ScriptDirectory,
+                "Select the script TXT files folder", VariableType.LevelDirectory);
+            if (result != null)
+            {
+                _levelSettings.ScriptDirectory = result;
+                UpdateDialog();
+            }
+        }
+
         // Font Texture
         private void fontTextureFilePathOptAuto_CheckedChanged(object sender, EventArgs e)
         {
@@ -936,17 +956,6 @@ namespace TombEditor.Forms
         private void butCancel_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void scriptPathBut_Click(object sender, EventArgs e)
-        {
-            string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.ScriptDirectory,
-                "Select the folder of TXT sources for script", VariableType.ScriptDirectory);
-            if (result != null)
-            {
-                _levelSettings.ScriptDirectory = result;
-                UpdateDialog();
-            }
         }
 
         private void panelRoomAmbientLight_Click(object sender, EventArgs e)

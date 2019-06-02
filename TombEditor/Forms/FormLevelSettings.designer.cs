@@ -1163,6 +1163,7 @@
             this.scriptPathBut.Size = new System.Drawing.Size(92, 22);
             this.scriptPathBut.TabIndex = 3;
             this.scriptPathBut.Text = "Search";
+            this.scriptPathBut.Click += new System.EventHandler(this.scriptPathBut_Click);
             // 
             // darkLabel15
             // 
@@ -1181,6 +1182,7 @@
             this.tbScriptPath.Name = "tbScriptPath";
             this.tbScriptPath.Size = new System.Drawing.Size(443, 22);
             this.tbScriptPath.TabIndex = 2;
+            this.tbScriptPath.TextChanged += new System.EventHandler(this.tbScriptPath_TextChanged);
             // 
             // panel6
             // 
@@ -1201,6 +1203,7 @@
             this.levelFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.levelFilePathBut.TabIndex = 3;
             this.levelFilePathBut.Text = "Search";
+            this.levelFilePathBut.Click += new System.EventHandler(this.levelFilePathBut_Click);
             // 
             // darkLabel6
             // 
@@ -1219,6 +1222,7 @@
             this.levelFilePathTxt.Name = "levelFilePathTxt";
             this.levelFilePathTxt.Size = new System.Drawing.Size(443, 22);
             this.levelFilePathTxt.TabIndex = 2;
+            this.levelFilePathTxt.TextChanged += new System.EventHandler(this.levelFilePathTxt_TextChanged);
             // 
             // panel12
             // 
