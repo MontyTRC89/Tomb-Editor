@@ -34,7 +34,7 @@ namespace TombEditor.ToolWindows
             {
                 lstObjects.BeginUpdate();
                 lstObjects.Items.Clear();
-                lstObjects.Items.AddRange(_editor.SelectedRoom.AnyObjects.ToArray());
+                lstObjects.Items.AddRange(_editor.SelectedRoom.Objects.ToArray());
                 lstObjects.EndUpdate();
             }
 
@@ -63,11 +63,17 @@ namespace TombEditor.ToolWindows
             }
         }
 
+        private void lstObjects_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+                butDeleteObject_Click(sender, e);
+        }
+
         private void butDeleteObject_Click(object sender, EventArgs e)
         {
             var instance = lstObjects.SelectedItem as ObjectInstance;
             if (instance != null)
-                EditorActions.DeleteObjectWithoutUpdate(instance);
+                EditorActions.DeleteObject(instance);
         }
 
         private void butEditObject_Click(object sender, EventArgs e)
