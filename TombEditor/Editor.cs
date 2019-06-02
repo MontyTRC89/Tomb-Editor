@@ -33,6 +33,13 @@ namespace TombEditor
         Change
     }
 
+    public enum LastSelectionType
+    {
+        None,
+        Block,
+        PositionBasedObject
+    }
+
     public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
     {
         Room Room { get; }
@@ -187,6 +194,8 @@ namespace TombEditor
         private EditorTool _lastGeometryTool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
         private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
 
+        public LastSelectionType LastSelection = LastSelectionType.None;
+
         public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {
             public IReadOnlyList<Room> Previous { get; internal set; }
@@ -260,9 +269,6 @@ namespace TombEditor
             get { return _selectedObject; }
             set
             {
-                if (value == _selectedObject)
-                    return;
-
                 // Check that selected object is a valid choice
                 if (value != null)
                 {
@@ -271,6 +277,13 @@ namespace TombEditor
                     if (Array.IndexOf(Level.Rooms, value.Room) == -1)
                         throw new ArgumentException("The object to be selected is not part of the level.");
                 }
+
+                if(value != null && value is PositionBasedObjectInstance)
+                    LastSelection = LastSelectionType.PositionBasedObject;
+
+                if (value == _selectedObject)
+                    return;
+
                 var previous = _selectedObject;
                 _selectedObject = value;
                 RaiseEvent(new SelectedObjectChangedEvent { Previous = previous, Current = value });
@@ -288,6 +301,9 @@ namespace TombEditor
             get { return _selectedSectors; }
             set
             {
+                if(value != SectorSelection.None)
+                    LastSelection = LastSelectionType.Block;
+
                 if (value == _selectedSectors)
                     return;
                 var previous = _selectedSectors;
