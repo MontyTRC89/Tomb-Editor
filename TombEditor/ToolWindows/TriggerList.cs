@@ -86,7 +86,7 @@ namespace TombEditor.ToolWindows
             var triggersToRemove = new List<ObjectInstance>();
             foreach (object obj in lstTriggers.SelectedItems)
                 triggersToRemove.Add((ObjectInstance)obj);
-            triggersToRemove.ForEach(obj => { EditorActions.DeleteObjectWithoutUpdate(obj); });
+            triggersToRemove.ForEach(obj => { if (obj != null) EditorActions.DeleteObjectWithoutUpdate(obj); });
         }
 
         private void lstTriggers_KeyDown(object sender, KeyEventArgs e)

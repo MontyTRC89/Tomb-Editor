@@ -81,6 +81,7 @@
             this.lstObjects.Size = new System.Drawing.Size(280, 114);
             this.lstObjects.TabIndex = 0;
             this.lstObjects.SelectedIndexChanged += new System.EventHandler(this.lstObjects_SelectedIndexChanged);
+            this.lstObjects.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjects_KeyDown);
             this.lstObjects.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstObjects_MouseDoubleClick);
             // 
             // toolTip
