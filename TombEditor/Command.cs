@@ -299,33 +299,36 @@ namespace TombEditor
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
                     EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false);
-                else if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 256, 0), new Vector3(), true);
             });
 
             AddCommand("RaiseQA4Click", "Raise selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
+
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
                     EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false);
-                else if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 1024, 0), new Vector3(), true);
             });
 
             AddCommand("LowerQA1Click", "Lower selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
+
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
                     EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false);
-                else if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
             });
 
             AddCommand("LowerQA4Click", "Lower selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
+
+                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
                     EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false);
-                else if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -1024, 0), new Vector3(), true);
             });
 

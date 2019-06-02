@@ -489,8 +489,6 @@ namespace TombEditor.Controls
                 {
                     PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
 
-                    _editor.SelectedObject = null;
-
                     // Ignore block picking if it's not from current room.
                     // Alternately, if room autoswitch is active, switch and select it.
 
@@ -698,9 +696,9 @@ namespace TombEditor.Controls
                         _editor.ChosenItem = ((ItemInstance)obj).ItemType;
                     else
                     {
-                        _editor.SelectedObject = obj;
-                        if (!(obj is ImportedGeometryInstance))
+                        if(_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance))
                             EditorActions.BookmarkObject(obj);
+                        _editor.SelectedObject = obj;
                     }
                 }
                 else if (newPicking == null)
