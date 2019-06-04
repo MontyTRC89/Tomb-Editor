@@ -425,6 +425,8 @@ namespace TombLib.Wad
                             textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
                             if (id3 == Wad2Chunks.MeshQuad)
                                 textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                            else
+                                textureArea.TexCoord3 = textureArea.TexCoord2;
                             textureArea.BlendMode = (BlendMode)LEB128.ReadLong(chunkIO.Raw);
                             textureArea.DoubleSided = chunkIO.Raw.ReadBoolean();
                             polygon.Texture = textureArea;
