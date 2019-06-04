@@ -222,7 +222,7 @@ namespace TombLib.LevelData
                   Direction >  PortalDirection.Ceiling)
             {
                 ///@FIXME: I am not sure if 1 plane subtraction is needed for horizontal portals --Lwmte
-                int planeSub = Direction > PortalDirection.Ceiling ? 0 : 1;
+                int planeSub = 0; // Direction > PortalDirection.Ceiling ? 0 : 1;
                 if (detectInside)
                     return (pos.X >= ((Area.X0 - planeSub) * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && pos.Z >= ((Area.Y0 - planeSub) * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024));
                 else
