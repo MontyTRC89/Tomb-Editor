@@ -641,7 +641,10 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomLightEffect)
                         room.LightEffect = (RoomLightEffect)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLightEffectStrength)
+                    {
                         room.LightEffectStrength = chunkIO.ReadChunkByte(chunkSize2);
+                        if (room.LightEffectStrength >= 4) room.LightEffectStrength = 3;
+                    }
                     else if (id2 == Prj2Chunks.RoomReverberation)
                         room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLocked)
