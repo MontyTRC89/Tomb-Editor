@@ -3112,6 +3112,23 @@ namespace TombEditor
             return results.Where(result => result != null);
         }
 
+        public static void ClearAllTexturesInLevel(Level level)
+        {
+            var emptyTexture = new TextureArea() { Texture = null };
+            foreach (var room in level.Rooms)
+            {
+                if (room != null)
+                {
+                    var selection = new SectorSelection();
+                    selection.Area = new RectangleInt2(VectorInt2.Zero, new VectorInt2(room.NumXSectors - 1, room.NumZSectors - 1));
+
+                    EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Floor);
+                    EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Ceiling);
+                    EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Wall);
+                }
+            }
+        }
+
         public static void UpdateTextureFilepath(IWin32Window owner, LevelTexture toReplace)
         {
             var settings = _editor.Level.Settings;
@@ -3138,8 +3155,9 @@ namespace TombEditor
             if (DarkMessageBox.Show(owner, "Are you sure to DELETE ALL " + _editor.Level.Settings.Textures.Count +
                 " texture files loaded? Everything will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-            _editor.Level.Settings.Textures.Clear();
             _editor.Level.RemoveTextures(texture => true);
+            //ClearAllTexturesInLevel(_editor.Level);
+            _editor.Level.Settings.Textures.Clear();
             _editor.LoadedTexturesChange();
         }
 

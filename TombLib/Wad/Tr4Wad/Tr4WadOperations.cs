@@ -191,7 +191,7 @@ namespace TombLib.Wad.Tr4Wad
                 poly.Index2 = oldPoly.V3;
                 if (poly.Shape == WadPolygonShape.Quad)
                     poly.Index3 = oldPoly.V4;
-
+                
                 // Polygon special effects
                 poly.ShineStrength = (byte)((oldPoly.Attributes & 0x7c) >> 2);
 
@@ -709,12 +709,14 @@ namespace TombLib.Wad.Tr4Wad
                             textureArea.TexCoord0 = ne;
                             textureArea.TexCoord1 = nw;
                             textureArea.TexCoord2 = se;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         else
                         {
                             textureArea.TexCoord0 = nw;
                             textureArea.TexCoord1 = ne;
                             textureArea.TexCoord2 = sw;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         break;
 
@@ -724,12 +726,14 @@ namespace TombLib.Wad.Tr4Wad
                             textureArea.TexCoord0 = nw;
                             textureArea.TexCoord1 = sw;
                             textureArea.TexCoord2 = ne;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         else
                         {
                             textureArea.TexCoord0 = ne;
                             textureArea.TexCoord1 = se;
                             textureArea.TexCoord2 = nw;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         break;
 
@@ -739,12 +743,14 @@ namespace TombLib.Wad.Tr4Wad
                             textureArea.TexCoord0 = sw;
                             textureArea.TexCoord1 = se;
                             textureArea.TexCoord2 = nw;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         else
                         {
                             textureArea.TexCoord0 = se;
                             textureArea.TexCoord1 = sw;
                             textureArea.TexCoord2 = ne;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         break;
 
@@ -754,18 +760,19 @@ namespace TombLib.Wad.Tr4Wad
                             textureArea.TexCoord0 = se;
                             textureArea.TexCoord1 = ne;
                             textureArea.TexCoord2 = sw;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         else
                         {
                             textureArea.TexCoord0 = sw;
                             textureArea.TexCoord1 = nw;
                             textureArea.TexCoord2 = se;
+                            textureArea.TexCoord3 = textureArea.TexCoord2;
                         }
                         break;
                     default:
                         throw new NotImplementedException("Unknown texture shape " + shape + " found in the wad.");
                 }
-                textureArea.TexCoord3 = textureArea.TexCoord2;
             }
 
             return textureArea;

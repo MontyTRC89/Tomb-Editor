@@ -1042,19 +1042,7 @@ namespace TombEditor
 
             AddCommand("ClearAllTexturesInLevel", "Clear all textures in level", CommandType.Textures, delegate (CommandArgs args)
             {
-                var emptyTexture = new TextureArea() { Texture = null };
-                foreach (var room in args.Editor.Level.Rooms)
-                {
-                    if (room != null)
-                    {
-                        var selection = new SectorSelection();
-                        selection.Area = new RectangleInt2(VectorInt2.Zero, new VectorInt2(room.NumXSectors - 1, room.NumZSectors - 1));
-
-                        EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Floor);
-                        EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Ceiling);
-                        EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Wall);
-                    }
-                }
+                EditorActions.ClearAllTexturesInLevel(args.Editor.Level);
             });
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
