@@ -2427,7 +2427,7 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    if (!theRoom.Alternated)
+                    if (!theRoom.Alternated || theRoom.Alternated && theRoom.AlternateBaseRoom == null)
                     {
                         visitedRooms.Add(theRoom);
                         if (!result.Contains(theRoom))
