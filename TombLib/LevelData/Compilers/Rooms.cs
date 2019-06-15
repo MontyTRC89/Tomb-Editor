@@ -355,12 +355,14 @@ namespace TombLib.LevelData.Compilers
                                 };
 
                                 // Pack the light according to chosen lighting model
-                                if (geometry.LightingModel == ImportedGeometryLightingModel.NoLighting)
-                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
-                                else if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                                if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                                     trVertex.Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color);
-                                else
+                                else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom && 
+                                         position.X >= 0 && position.Z >= 0 && 
+                                         position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
                                     trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal));
+                                else
+                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
 
                                 // Check for maximum vertices reached
                                 if (roomVertices.Count >= 65536)
@@ -440,6 +442,10 @@ namespace TombLib.LevelData.Compilers
                         {
                             var xv = trVertex.Position.X / 1024;
                             var zv = trVertex.Position.Z / 1024;
+
+                            // Check for imported geometry out of room bounds
+                            if (xv < 0 || zv < 0 || xv >= room.NumXSectors || zv >= room.NumZSectors)
+                                continue;
 
                             var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
                             var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
@@ -1126,6 +1132,13 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < vertices.Count; ++i)
                 {
                     tr_room_vertex vertex = vertices[i];
+
+                    // Imported geometry can be (wrongly) placed outside room's boundaries so we need this check
+                    if (vertex.Position.X < 0 || vertex.Position.Z < 0 ||
+                        vertex.Position.X >= trRoom.NumXSectors * 1024.0f ||
+                        vertex.Position.Z >= trRoom.NumZSectors * 1024.0f)
+                        continue;
+
                     if (!vertexLookup.ContainsKey(vertex.Position))
                         vertexLookup.Add(vertex.Position, vertex.Lighting2);
                 }
