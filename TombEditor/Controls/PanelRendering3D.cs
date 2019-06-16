@@ -2372,7 +2372,7 @@ namespace TombEditor.Controls
                     }
                     else
                     {
-                        if (!room.Alternated)
+                        if (!room.Alternated || room.Alternated && room.AlternateBaseRoom == null)
                         {
                             result.Add(room);
                         }
