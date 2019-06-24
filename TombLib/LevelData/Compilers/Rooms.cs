@@ -438,7 +438,14 @@ namespace TombLib.LevelData.Compilers
                     foreach (var portal in room.Portals)
                     {
                         // Assign movement from bottom water or quicksand room
-                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
+                        if (waterPortals.Contains(portal) && 
+                            (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                             portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false)))
+                        {
+                            flags |= 0x2000;
+                            break;
+                        }
+                        /*if (false && (waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
                         {
                             var xv = trVertex.Position.X / 1024;
                             var zv = trVertex.Position.Z / 1024;
@@ -469,10 +476,10 @@ namespace TombLib.LevelData.Compilers
                                 flags |= 0x2000;
                                 break;
                             }
-                        }
+                        }*/
 
-                        // Enable reflection for dry room above water/quicksand room or vice versa
-                        if (lightEffect == RoomLightEffect.Reflection && 
+                       // Enable reflection for dry room above water/quicksand room or vice versa
+                       else if (lightEffect == RoomLightEffect.Reflection && 
                             ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                         {
                             // Assign reflection, if set, for all enclosed portal faces
