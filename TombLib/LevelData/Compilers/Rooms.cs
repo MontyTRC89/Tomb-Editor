@@ -433,53 +433,30 @@ namespace TombLib.LevelData.Compilers
                         lightEffect == RoomLightEffect.GlowAndMovement)
                         flags |= 0x4000;
 
-                    bool allowMovement = true;
-
-                    foreach (var portal in room.Portals)
+                    foreach (var portal in waterPortals)
                     {
-                        // Assign movement from bottom water or quicksand room
-                        if (waterPortals.Contains(portal) && 
-                            (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                             portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false)))
-                        {
-                            flags |= 0x2000;
-                            break;
-                        }
-                        /*if (false && (waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
+                        if (trVertex.Position.X > portal.Area.X0 * 1024 && trVertex.Position.X <= portal.Area.X1 * 1024 &&
+                            trVertex.Position.Z > portal.Area.Y0 * 1024 && trVertex.Position.Z <= portal.Area.Y1 * 1024 &&
+                            trVertex.Position.Y == -(room.GetLowestCorner() * 256 + room.WorldPos.Y))
                         {
                             var xv = trVertex.Position.X / 1024;
                             var zv = trVertex.Position.Z / 1024;
-
-                            // Check for imported geometry out of room bounds
-                            if (xv < 0 || zv < 0 || xv >= room.NumXSectors || zv >= room.NumZSectors)
-                                continue;
 
                             var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
                             var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
                             var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
                             var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
 
-                            // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
+                            // A ccandidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
                             if (connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
                                 !room.Blocks[xv, zv].IsAnyWall &&
-                                connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal && 
-                                connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal && 
-                                !room.Blocks[xv - 1, zv].IsAnyWall && 
-                                connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal && 
-                                connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal && 
-                                !room.Blocks[xv, zv - 1].IsAnyWall && 
-                                connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal && 
-                                connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal && 
-                                !room.Blocks[xv - 1, zv - 1].IsAnyWall && 
-                                connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal)
+                                connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv - 1, zv].IsAnyWall && connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv, zv - 1].IsAnyWall && connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv - 1, zv - 1].IsAnyWall && connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal)
                             {
                                 flags |= 0x2000;
-                                break;
                             }
-                        }*/
+                        }
 
-                       // Enable reflection for dry room above water/quicksand room or vice versa
-                       else if (lightEffect == RoomLightEffect.Reflection && 
+                        if (lightEffect == RoomLightEffect.Reflection &&
                             ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                         {
                             // Assign reflection, if set, for all enclosed portal faces
@@ -490,17 +467,7 @@ namespace TombLib.LevelData.Compilers
                                 break;
                             }
                         }
-                        // Disable movement for portal faces
-                        else 
-                        {
-                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
-                                allowMovement = false;
-                        }
                     }
-
-                    if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
-                        flags |= 0x2000;
 
                     trVertex.Attributes = flags;
                     roomVertices[i] = trVertex;
