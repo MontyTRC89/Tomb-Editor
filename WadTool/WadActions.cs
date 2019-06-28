@@ -25,11 +25,11 @@ namespace WadTool
         {
             // Load the WAD/Wad2
             Wad2 newWad = null;
-            //try
-            //{
+            try
+            {
                 newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
-            /*}
+            }
             catch (OperationCanceledException)
             {
                 return;
@@ -39,7 +39,7 @@ namespace WadTool
                 logger.Info(exc, "Unable to load " + (destination ? "destination" : "source") + " file from '" + fileName + "'.");
                 DarkMessageBox.Show(owner, "Loading the file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
                 return;
-            }*/
+            }
 
             // Set wad
             if (destination)
