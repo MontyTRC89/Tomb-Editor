@@ -23,12 +23,13 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btExport = new DarkUI.Controls.DarkButton();
-            this.dataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.panel1 = new System.Windows.Forms.Panel();
             this.picSprite = new System.Windows.Forms.PictureBox();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.butReplaceSprite = new DarkUI.Controls.DarkButton();
+            this.dataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -98,6 +99,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.butReplaceSprite);
             this.panel2.Controls.Add(this.btExport);
             this.panel2.Controls.Add(this.dataGridViewControls);
             this.panel2.Controls.Add(this.dataGridView);
@@ -119,17 +121,6 @@
             this.btExport.TabIndex = 49;
             this.toolTip1.SetToolTip(this.btExport, "Export to file.");
             this.btExport.Click += new System.EventHandler(this.btExport_Click);
-            // 
-            // dataGridViewControls
-            // 
-            this.dataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewControls.Enabled = false;
-            this.dataGridViewControls.Location = new System.Drawing.Point(309, 14);
-            this.dataGridViewControls.MinimumSize = new System.Drawing.Size(24, 24);
-            this.dataGridViewControls.Name = "dataGridViewControls";
-            this.dataGridViewControls.Size = new System.Drawing.Size(27, 486);
-            this.dataGridViewControls.TabIndex = 47;
             // 
             // panel1
             // 
@@ -175,6 +166,29 @@
             this.btCancel.Text = "Cancel";
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
             // 
+            // butReplaceSprite
+            // 
+            this.butReplaceSprite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceSprite.Image = global::WadTool.Properties.Resources.replace_16;
+            this.butReplaceSprite.Location = new System.Drawing.Point(309, 105);
+            this.butReplaceSprite.Name = "butReplaceSprite";
+            this.butReplaceSprite.Size = new System.Drawing.Size(27, 25);
+            this.butReplaceSprite.TabIndex = 50;
+            this.toolTip1.SetToolTip(this.butReplaceSprite, "Replace sprite");
+            this.butReplaceSprite.Click += new System.EventHandler(this.ButReplaceSprite_Click);
+            // 
+            // dataGridViewControls
+            // 
+            this.dataGridViewControls.AlwaysInsertAtZero = false;
+            this.dataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewControls.Enabled = false;
+            this.dataGridViewControls.Location = new System.Drawing.Point(309, 14);
+            this.dataGridViewControls.MinimumSize = new System.Drawing.Size(24, 24);
+            this.dataGridViewControls.Name = "dataGridViewControls";
+            this.dataGridViewControls.Size = new System.Drawing.Size(27, 486);
+            this.dataGridViewControls.TabIndex = 47;
+            // 
             // FormSpriteSequenceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -213,5 +227,6 @@
         private System.Windows.Forms.DataGridViewImageColumn PreviewColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SizeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn IdColumn;
+        private DarkUI.Controls.DarkButton butReplaceSprite;
     }
 }
