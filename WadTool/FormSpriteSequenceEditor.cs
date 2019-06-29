@@ -59,7 +59,8 @@ namespace WadTool
                     {
                         fileDialog.InitialDirectory = Path.GetDirectoryName(_currentPath);
                         fileDialog.FileName = Path.GetFileName(_currentPath);
-                    } catch { }
+                    }
+                    catch { }
                 fileDialog.Title = "Select sprite files that you want to see imported.";
 
                 DialogResult dialogResult = fileDialog.ShowDialog(this);
@@ -71,7 +72,7 @@ namespace WadTool
                 List<WadSprite> sprites = new List<WadSprite>();
                 foreach (string fileName in fileDialog.FileNames)
                 {
-                    Retry:
+                Retry:
                     ;
                     try
                     {
@@ -180,6 +181,50 @@ namespace WadTool
             // Close
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void ButReplaceSprite_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.SelectedRows.Count == 0)
+                return;
+            var row = dataGridView.SelectedRows[0];
+
+            using (var fileDialog = new OpenFileDialog())
+            {
+                fileDialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
+                fileDialog.Multiselect = false;
+                if (!string.IsNullOrWhiteSpace(_currentPath))
+                    try
+                    {
+                        fileDialog.InitialDirectory = Path.GetDirectoryName(_currentPath);
+                        fileDialog.FileName = Path.GetFileName(_currentPath);
+                    }
+                    catch { }
+                fileDialog.Title = "Select sprite file that you want to see imported.";
+
+                DialogResult dialogResult = fileDialog.ShowDialog(this);
+                _currentPath = fileDialog.FileName;
+                if (dialogResult != DialogResult.OK)
+                    return;
+
+                // Load sprites
+                WadSprite sprite;
+                try
+                {
+                    sprite = new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileDialog.FileName)) };
+                    dataGridView.EditableRowCollection[row.Index] = sprite;
+                    dataGridView.Refresh();
+                    dataGridView.Invalidate();
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Unable to open file '" + fileDialog.FileName + "'.");
+                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc, "Unable to load sprite",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+                      
         }
     }
 }
