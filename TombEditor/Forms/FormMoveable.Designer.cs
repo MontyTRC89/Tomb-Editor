@@ -138,6 +138,7 @@ namespace TombEditor.Forms
             this.tbOCB.Name = "tbOCB";
             this.tbOCB.Size = new System.Drawing.Size(166, 22);
             this.tbOCB.TabIndex = 15;
+            this.tbOCB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbOCB_KeyPress);
             // 
             // label1
             // 
