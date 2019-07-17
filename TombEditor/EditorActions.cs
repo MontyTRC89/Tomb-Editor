@@ -2023,7 +2023,7 @@ namespace TombEditor
                         if ((currentBlock.Block.Flags & flag) != BlockFlags.None) prevalence++;
                     }
 
-                bool toggle = (prevalence != amount && prevalence >= (amount / 2)) || prevalence == 0;
+                bool toggle = (prevalence == 0 || prevalence <= (amount / 2));
 
                 // Do actual flag editing
                 for (int x = area.X0; x <= area.X1; x++)
@@ -2031,7 +2031,7 @@ namespace TombEditor
                     {
                         var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
                         if (toggle) currentBlock.Block.Flags |= flag;
-                        else currentBlock.Block.Flags &= ~flag; 
+                        else currentBlock.Block.Flags &= ~flag;
                     }
             }
             else
