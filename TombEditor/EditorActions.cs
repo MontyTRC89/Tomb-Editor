@@ -4128,7 +4128,7 @@ namespace TombEditor
                 _editor.Mode != EditorMode.Geometry && toolIndex > 6)
                 return;
 
-            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = _editor.Tool.TextureUVFixer };
+            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = _editor.Tool.TextureUVFixer, GridSize = _editor.Tool.GridSize };
 
             switch (toolIndex)
             {
