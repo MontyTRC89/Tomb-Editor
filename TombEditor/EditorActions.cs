@@ -2010,13 +2010,40 @@ namespace TombEditor
             // Do undo
             _editor.UndoManager.PushGeometryChanged(roomsToUpdate);
 
-            // Do actual flag editing
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-                    var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
-                    currentBlock.Block.Flags ^= flag;
-                }
+            if (_editor.Configuration.UI_SetAttributesAtOnce)
+            {
+                // Set or unset flag, based on already existing flag prevalence in selected area
+                int amount = (area.Width + 1) * (area.Height + 1);
+                int prevalence = 0;
+
+                for (int x = area.X0; x <= area.X1; x++)
+                    for (int z = area.Y0; z <= area.Y1; z++)
+                    {
+                        var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                        if ((currentBlock.Block.Flags & flag) != BlockFlags.None) prevalence++;
+                    }
+
+                bool toggle = (prevalence != amount && prevalence >= (amount / 2)) || prevalence == 0;
+
+                // Do actual flag editing
+                for (int x = area.X0; x <= area.X1; x++)
+                    for (int z = area.Y0; z <= area.Y1; z++)
+                    {
+                        var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                        if (toggle) currentBlock.Block.Flags |= flag;
+                        else currentBlock.Block.Flags &= ~flag; 
+                    }
+            }
+            else
+            {
+                // Do actual flag editing
+                for (int x = area.X0; x <= area.X1; x++)
+                    for (int z = area.Y0; z <= area.Y1; z++)
+                    {
+                        var currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
+                        currentBlock.Block.Flags ^= flag;
+                    }
+            }
 
             foreach (var currentRoom in roomsToUpdate)
                 _editor.RoomSectorPropertiesChange(currentRoom);

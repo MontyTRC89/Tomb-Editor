@@ -141,6 +141,7 @@
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox30 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox28 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox27 = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel68 = new DarkUI.Controls.DarkLabel();
@@ -228,7 +229,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox30 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox31 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -679,7 +680,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(364, 860);
+            this.panel2.Size = new System.Drawing.Size(364, 882);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
@@ -735,7 +736,7 @@
             this.darkGroupBox8.Controls.Add(this.darkLabel42);
             this.darkGroupBox8.Controls.Add(this.panelColorSelector1);
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox8.Location = new System.Drawing.Point(3, 113);
+            this.darkGroupBox8.Location = new System.Drawing.Point(3, 135);
             this.darkGroupBox8.Name = "darkGroupBox8";
             this.darkGroupBox8.Size = new System.Drawing.Size(358, 744);
             this.darkGroupBox8.TabIndex = 3;
@@ -1245,6 +1246,7 @@
             // 
             // darkGroupBox6
             // 
+            this.darkGroupBox6.Controls.Add(this.darkCheckBox31);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox25);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox24);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox15);
@@ -1252,7 +1254,7 @@
             this.darkGroupBox6.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox6.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox6.Name = "darkGroupBox6";
-            this.darkGroupBox6.Size = new System.Drawing.Size(358, 113);
+            this.darkGroupBox6.Size = new System.Drawing.Size(358, 135);
             this.darkGroupBox6.TabIndex = 2;
             this.darkGroupBox6.TabStop = false;
             this.darkGroupBox6.Text = "General";
@@ -1707,6 +1709,16 @@
             this.darkGroupBox4.TabIndex = 19;
             this.darkGroupBox4.TabStop = false;
             this.darkGroupBox4.Text = "Rendering";
+            // 
+            // darkCheckBox30
+            // 
+            this.darkCheckBox30.AutoSize = true;
+            this.darkCheckBox30.Location = new System.Drawing.Point(6, 136);
+            this.darkCheckBox30.Name = "darkCheckBox30";
+            this.darkCheckBox30.Size = new System.Drawing.Size(230, 17);
+            this.darkCheckBox30.TabIndex = 40;
+            this.darkCheckBox30.Tag = "Rendering3D_AutoBookmarkSelectedObject";
+            this.darkCheckBox30.Text = "Automatically bookmark selected object";
             // 
             // darkCheckBox28
             // 
@@ -2982,15 +2994,15 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkCheckBox30
+            // darkCheckBox31
             // 
-            this.darkCheckBox30.AutoSize = true;
-            this.darkCheckBox30.Location = new System.Drawing.Point(6, 136);
-            this.darkCheckBox30.Name = "darkCheckBox30";
-            this.darkCheckBox30.Size = new System.Drawing.Size(230, 17);
-            this.darkCheckBox30.TabIndex = 40;
-            this.darkCheckBox30.Tag = "Rendering3D_AutoBookmarkSelectedObject";
-            this.darkCheckBox30.Text = "Automatically bookmark selected object";
+            this.darkCheckBox31.AutoSize = true;
+            this.darkCheckBox31.Location = new System.Drawing.Point(6, 113);
+            this.darkCheckBox31.Name = "darkCheckBox31";
+            this.darkCheckBox31.Size = new System.Drawing.Size(269, 17);
+            this.darkCheckBox31.TabIndex = 26;
+            this.darkCheckBox31.Tag = "UI_SetAttributesAtOnce";
+            this.darkCheckBox31.Text = "Set or unset selected area\'s sector flags at once";
             // 
             // FormOptions
             // 
@@ -3301,5 +3313,6 @@
         private DarkUI.Controls.DarkLabel darkLabel69;
         private DarkUI.Controls.DarkCheckBox darkCheckBox29;
         private DarkUI.Controls.DarkCheckBox darkCheckBox30;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox31;
     }
 }

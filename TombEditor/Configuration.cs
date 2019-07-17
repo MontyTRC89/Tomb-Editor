@@ -139,6 +139,7 @@ namespace TombEditor
 
         public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool UI_ProbeAttributesThroughPortals { get; set; } = true;
+        public bool UI_SetAttributesAtOnce { get; set; } = true;
         public bool UI_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
         public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public ColorScheme UI_ColorScheme { get; set; } = new ColorScheme();
