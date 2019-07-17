@@ -16,7 +16,9 @@ namespace TombLib.LevelData
         HugeCollision = 512,
         HardShatter = 1024,
         EnableHeavyTriggerOnCollision = 2048,
-        Scalable = 4096
+        Scalable = 4096,
+        SpecificShatter = 8192,
+        All = 16380
     }
 
     public class StaticInstance : ItemInstance
