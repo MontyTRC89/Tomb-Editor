@@ -1738,7 +1738,7 @@ namespace TombLib.LevelData
         public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, 
                                                       Vector3 normal, bool forRooms)
         {
-            if (!light.Enabled || !light.IsStaticallyUsed)
+            if (!light.Enabled || !light.IsStaticallyUsed || (!light.IsUsedForImportedGeometry && !forRooms))
                 return Vector3.Zero;
 
             Vector3 lightDirection;

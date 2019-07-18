@@ -44,6 +44,7 @@
             this.numDirectionX = new DarkUI.Controls.DarkNumericUpDown();
             this.numDirectionY = new DarkUI.Controls.DarkNumericUpDown();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.cbLightIsUsedForImportedGeometry = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).BeginInit();
@@ -58,7 +59,7 @@
             this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsDynamicallyUsed.Enabled = false;
             this.cbLightIsDynamicallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(360, 102);
+            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(360, 85);
             this.cbLightIsDynamicallyUsed.Name = "cbLightIsDynamicallyUsed";
             this.cbLightIsDynamicallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsDynamicallyUsed.TabIndex = 17;
@@ -71,7 +72,7 @@
             this.cbLightIsStaticallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsStaticallyUsed.Enabled = false;
             this.cbLightIsStaticallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(360, 77);
+            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(360, 66);
             this.cbLightIsStaticallyUsed.Name = "cbLightIsStaticallyUsed";
             this.cbLightIsStaticallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsStaticallyUsed.TabIndex = 16;
@@ -84,7 +85,7 @@
             this.cbLightIsObstructedByRoomGeometry.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsObstructedByRoomGeometry.Enabled = false;
             this.cbLightIsObstructedByRoomGeometry.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsObstructedByRoomGeometry.Location = new System.Drawing.Point(360, 52);
+            this.cbLightIsObstructedByRoomGeometry.Location = new System.Drawing.Point(360, 47);
             this.cbLightIsObstructedByRoomGeometry.Name = "cbLightIsObstructedByRoomGeometry";
             this.cbLightIsObstructedByRoomGeometry.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsObstructedByRoomGeometry.TabIndex = 15;
@@ -97,7 +98,7 @@
             this.cbLightEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightEnabled.Enabled = false;
             this.cbLightEnabled.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightEnabled.Location = new System.Drawing.Point(360, 27);
+            this.cbLightEnabled.Location = new System.Drawing.Point(360, 28);
             this.cbLightEnabled.Name = "cbLightEnabled";
             this.cbLightEnabled.Size = new System.Drawing.Size(70, 22);
             this.cbLightEnabled.TabIndex = 14;
@@ -498,10 +499,24 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
+            // cbLightIsUsedForImportedGeometry
+            // 
+            this.cbLightIsUsedForImportedGeometry.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbLightIsUsedForImportedGeometry.Enabled = false;
+            this.cbLightIsUsedForImportedGeometry.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLightIsUsedForImportedGeometry.Location = new System.Drawing.Point(360, 104);
+            this.cbLightIsUsedForImportedGeometry.Name = "cbLightIsUsedForImportedGeometry";
+            this.cbLightIsUsedForImportedGeometry.Size = new System.Drawing.Size(70, 22);
+            this.cbLightIsUsedForImportedGeometry.TabIndex = 81;
+            this.cbLightIsUsedForImportedGeometry.Text = "Imported";
+            this.toolTip.SetToolTip(this.cbLightIsUsedForImportedGeometry, "Use light for imported geometry");
+            this.cbLightIsUsedForImportedGeometry.CheckedChanged += new System.EventHandler(this.cbLightIsUsedForImportedGeometry_CheckedChanged);
+            // 
             // Lighting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbLightIsUsedForImportedGeometry);
             this.Controls.Add(this.numDirectionY);
             this.Controls.Add(this.numDirectionX);
             this.Controls.Add(this.numOuterAngle);
@@ -577,5 +592,6 @@
         private DarkUI.Controls.DarkNumericUpDown numDirectionX;
         private DarkUI.Controls.DarkNumericUpDown numDirectionY;
         private System.Windows.Forms.ToolTip toolTip;
+        private DarkUI.Controls.DarkCheckBox cbLightIsUsedForImportedGeometry;
     }
 }
