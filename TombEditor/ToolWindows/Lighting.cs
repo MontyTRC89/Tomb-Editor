@@ -43,7 +43,7 @@ namespace TombEditor.ToolWindows
                 bool HasInOutAngle = false;
                 bool HasDirection = false;
                 bool CanCastShadows = false;
-                bool CanIlluminateStaticAndDynamicGeometry = false;
+                bool CanIlluminateGeometry = false;
 
                 if (light != null)
                     switch (light.Type)
@@ -51,13 +51,13 @@ namespace TombEditor.ToolWindows
                         case LightType.Point:
                             HasInOutRange = true;
                             CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
+                            CanIlluminateGeometry = true;
                             break;
 
                         case LightType.Shadow:
                             HasInOutRange = true;
                             CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
+                            CanIlluminateGeometry = true;
                             break;
 
                         case LightType.Effect:
@@ -73,13 +73,13 @@ namespace TombEditor.ToolWindows
                             HasInOutAngle = true;
                             HasDirection = true;
                             CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
+                            CanIlluminateGeometry = true;
                             break;
 
                         case LightType.Sun:
                             HasDirection = true;
                             CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
+                            CanIlluminateGeometry = true;
                             break;
                     }
 
@@ -89,8 +89,9 @@ namespace TombEditor.ToolWindows
                 panelLightColor.Enabled = light != null;
                 cbLightEnabled.Enabled = light != null;
                 cbLightIsObstructedByRoomGeometry.Enabled = CanCastShadows;
-                cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
-                cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
+                cbLightIsDynamicallyUsed.Enabled = CanIlluminateGeometry;
+                cbLightIsStaticallyUsed.Enabled = CanIlluminateGeometry;
+                cbLightIsUsedForImportedGeometry.Enabled = CanIlluminateGeometry;
                 numIntensity.Enabled = light != null;
                 numInnerRange.Enabled = HasInOutRange;
                 numOuterRange.Enabled = HasInOutRange;
@@ -112,6 +113,7 @@ namespace TombEditor.ToolWindows
                 cbLightIsObstructedByRoomGeometry.Checked = light?.IsObstructedByRoomGeometry ?? false;
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
+                cbLightIsUsedForImportedGeometry.Checked = light?.IsUsedForImportedGeometry ?? false;
             }
 
             // Update tooltip texts
@@ -144,6 +146,12 @@ namespace TombEditor.ToolWindows
         {
             EditorActions.UpdateLight<bool>((light, value) => light.IsDynamicallyUsed == value, (light, value) => light.IsDynamicallyUsed = value,
                 light => cbLightIsDynamicallyUsed.Checked);
+        }
+
+        private void cbLightIsUsedForImportedGeometry_CheckedChanged(object sender, EventArgs e)
+        {
+            EditorActions.UpdateLight<bool>((light, value) => light.IsUsedForImportedGeometry == value, (light, value) => light.IsUsedForImportedGeometry = value,
+                light => cbLightIsUsedForImportedGeometry.Checked);
         }
 
         private static bool Compare(float firstValue, float secondValue, NumericUpDown control)

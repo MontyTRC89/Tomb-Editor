@@ -900,7 +900,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectLight)
+                else if (id3 == Prj2Chunks.ObjectLight || id3 == Prj2Chunks.ObjectLight2)
                 {
                     var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -915,6 +915,12 @@ namespace TombLib.LevelData.IO
                     instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
                     instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
                     instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
+
+                    if (id3 == Prj2Chunks.ObjectLight2)
+                        instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
+                    else
+                        instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

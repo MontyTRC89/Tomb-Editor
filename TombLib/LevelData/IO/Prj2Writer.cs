@@ -469,7 +469,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.EmbeddedSoundInfo == null ? -1 : soundInfos[instance.EmbeddedSoundInfo]);
                         }
                     else if (o is LightInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight2, LEB128.MaximumSize2Byte))
                         {
                             var instance = (LightInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -487,6 +487,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.IsObstructedByRoomGeometry);
                             chunkIO.Raw.Write(instance.IsDynamicallyUsed);
                             chunkIO.Raw.Write(instance.IsStaticallyUsed);
+                            chunkIO.Raw.Write(instance.IsUsedForImportedGeometry);
                         }
                     else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, LEB128.MaximumSize2Byte))

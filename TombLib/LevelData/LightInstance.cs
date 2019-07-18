@@ -21,6 +21,7 @@ namespace TombLib.LevelData
         public bool IsObstructedByRoomGeometry { get; set; } = true;
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
+        public bool IsUsedForImportedGeometry { get; set; } = true;
 
         private float _rotationX;
         private float _rotationY;
@@ -55,6 +56,7 @@ namespace TombLib.LevelData
                 case LightType.FogBulb:
                     IsObstructedByRoomGeometry = false;
                     IsStaticallyUsed = false;
+                    IsUsedForImportedGeometry = false;
                     break;
             }
         }
