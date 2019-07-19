@@ -19,12 +19,19 @@ namespace TombEditor.ToolWindows
             // Update palette
             lightPalette.SelectedColorChanged += delegate
             {
-                LightInstance light = _editor.SelectedObject as LightInstance;
-                if (light == null)
-                    return;
-                light.Color = lightPalette.SelectedColor.ToFloat3Color();
-                _editor.SelectedRoom.BuildGeometry();
-                _editor.ObjectChange(light, ObjectChangeType.Change);
+                if (_editor.SelectedObject is LightInstance)
+                {
+                    var light = _editor.SelectedObject as LightInstance;
+                    light.Color = lightPalette.SelectedColor.ToFloat3Color();
+                    _editor.SelectedRoom.BuildGeometry();
+                    _editor.ObjectChange(light, ObjectChangeType.Change);
+                }
+                else if (_editor.SelectedObject is StaticInstance)
+                {
+                    var instance = _editor.SelectedObject as StaticInstance;
+                    instance.Color = lightPalette.SelectedColor.ToFloat3Color() * 2.0f;
+                    _editor.ObjectChange(instance, ObjectChangeType.Change);
+                }
             };
         }
 
