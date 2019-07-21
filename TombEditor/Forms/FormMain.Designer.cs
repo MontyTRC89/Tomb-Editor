@@ -1198,6 +1198,7 @@
             this.averageCeilingToolStripMenuItem,
             this.flattenFloorToolStripMenuItem,
             this.flattenCeilingToolStripMenuItem,
+            this.resetGeometryToolStripMenuItem,
             this.toolStripMenuSeparator13,
             this.gridWallsIn3ToolStripMenuItem,
             this.gridWallsIn5ToolStripMenuItem,
