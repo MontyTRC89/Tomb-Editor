@@ -1589,6 +1589,15 @@ namespace TombEditor
                     EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, false, true);
             });
 
+            AddCommand("ResetGeometry", "Reset all geometry", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
+                {
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, false, true, false);
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, true, true, true);
+                }
+            });
+
             AddCommand("ToggleFlyMode", "Toggle Fly Mode", CommandType.General, delegate (CommandArgs args)
             {
                 args.Editor.SendMessage("Push ESC to exit fly mode.", PopupType.Info);

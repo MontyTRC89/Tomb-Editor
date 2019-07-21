@@ -2597,7 +2597,7 @@ namespace TombEditor
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type == BlockType.Wall))
+                    if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type != BlockType.Floor))
                     {
 
                         if (ceiling)

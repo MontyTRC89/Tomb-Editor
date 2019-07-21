@@ -173,6 +173,7 @@
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
+            this.resetGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1791,6 +1792,15 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
+            // resetGeometryToolStripMenuItem
+            // 
+            this.resetGeometryToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.resetGeometryToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.resetGeometryToolStripMenuItem.Name = "resetGeometryToolStripMenuItem";
+            this.resetGeometryToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.resetGeometryToolStripMenuItem.Tag = "ResetGeometry";
+            this.resetGeometryToolStripMenuItem.Text = "ResetGeometry";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -1976,5 +1986,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearAllTexturesInRoomToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem gridWallsIn3SquaresToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gridWallsIn5SquaresToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resetGeometryToolStripMenuItem;
     }
 }
