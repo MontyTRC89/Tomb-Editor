@@ -297,6 +297,18 @@ namespace TombEditor
                     EditorActions.MoveRooms(new VectorInt3(0, -1, 0), args.Editor.SelectedRoom.Versions);
             });
 
+            AddCommand("MoveRoomUp4Clicks", "Move room up (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, 4, 0), args.Editor.SelectedRoom.Versions);
+            });
+
+            AddCommand("MoveRoomDown4Clicks", "Move room down (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, -4, 0), args.Editor.SelectedRoom.Versions);
+            });
+
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
