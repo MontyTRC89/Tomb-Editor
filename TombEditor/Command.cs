@@ -128,7 +128,7 @@ namespace TombEditor
                 args.Editor.Mode = EditorMode.Lighting;
             });
 
-            AddCommand("ResetCamera", "Reset camera position to default", CommandType.View, delegate (CommandArgs args)
+            AddCommand("ResetCamera", "Reset camera position", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.ResetCamera();
             });
