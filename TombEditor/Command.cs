@@ -1616,6 +1616,36 @@ namespace TombEditor
                 args.Editor.ToggleFlyMode(!args.Editor.FlyMode);
             });
 
+            AddCommand("SelectSkyRooms", "Select Sky Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectSkyRooms();
+            });
+
+            AddCommand("SelectWaterRooms", "Select Water Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectWaterRooms();
+            });
+
+            AddCommand("SelectOutsideRooms", "Select Outside Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectOutsideRooms();
+            });
+
+            AddCommand("SelectQuicksandRooms", "Select Quicksand Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectQuicksandRooms();
+            });
+
+            AddCommand("SetRoomTags", "Set Room Tags, separated by spaces", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                args.Editor.SelectedRoom.Tags = args.Editor.SelectedRoom.Tags;
+                args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+            });
+
+            AddCommand("SelectRoomsByTags", "Select Rooms by Tags", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectRoomsByTags(args.Window,args.Editor);
+            });
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }

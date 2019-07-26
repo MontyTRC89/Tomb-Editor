@@ -93,7 +93,13 @@ namespace TombEditor.ToolWindows
                 cbHorizon.Checked = room.FlagHorizon;
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
-
+                if(room.Tags != null && room.Tags.Length > 0)
+                {
+                    tbRoomTags.Text = string.Join(" ", room.Tags);
+                }else
+                {
+                    tbRoomTags.Text = "";
+                }
                 if (room.AlternateBaseRoom != null)
                 {
                     butLocked.Enabled = false;
@@ -262,6 +268,16 @@ namespace TombEditor.ToolWindows
                 return;
 
             _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
+        }
+
+        private void TbTags_TextChanged(object sender, EventArgs e)
+        {
+            if(_editor.SelectedRoom == null)
+            {
+                return;
+            }
+            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(' ');
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
