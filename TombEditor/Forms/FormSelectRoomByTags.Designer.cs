@@ -40,17 +40,18 @@
             this.butOk.Location = new System.Drawing.Point(12, 54);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(75, 23);
-            this.butOk.TabIndex = 0;
+            this.butOk.TabIndex = 1;
             this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.ButOk_Click);
             // 
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(153, 54);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(75, 23);
-            this.butCancel.TabIndex = 1;
+            this.butCancel.TabIndex = 2;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.ButCancel_Click);
             // 
@@ -72,10 +73,12 @@
             this.tbTagSearch.Location = new System.Drawing.Point(12, 29);
             this.tbTagSearch.Name = "tbTagSearch";
             this.tbTagSearch.Size = new System.Drawing.Size(216, 20);
-            this.tbTagSearch.TabIndex = 3;
+            this.tbTagSearch.TabIndex = 0;
             // 
             // FormSelectRoomByTags
             // 
+            this.AcceptButton = this.butOk;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(240, 89);
             this.Controls.Add(this.tbTagSearch);
             this.Controls.Add(this.darkLabel1);
