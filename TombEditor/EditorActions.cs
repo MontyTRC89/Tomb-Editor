@@ -4226,12 +4226,10 @@ namespace TombEditor
         private static void TrySelectRooms(IEnumerable<Room> rooms)
         {
             if(rooms.Count<Room>() > 0)
-            {
+
                 _editor.SelectRooms(rooms);
-            }else
-            {
+                else
                 _editor.SelectedRoom = null;
-            }
         }
     }
 }
