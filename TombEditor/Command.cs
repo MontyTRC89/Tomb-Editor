@@ -95,6 +95,8 @@ namespace TombEditor
         {
             if (_commands.Any(cmd => cmd.Name.Equals(commandName, StringComparison.InvariantCultureIgnoreCase)))
                 throw new InvalidOperationException("You cannot add multiple commands with the same name.");
+
+            command += delegate { logger.Info(commandName); };
             _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Execute = command, Type = type });
         }
 
