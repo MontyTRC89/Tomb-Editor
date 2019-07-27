@@ -37,7 +37,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butOk.Location = new System.Drawing.Point(12, 54);
+            this.butOk.Location = new System.Drawing.Point(72, 54);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(75, 23);
             this.butOk.TabIndex = 1;
@@ -62,17 +62,18 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(12, 9);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(216, 17);
+            this.darkLabel1.Size = new System.Drawing.Size(43, 20);
             this.darkLabel1.TabIndex = 2;
-            this.darkLabel1.Text = "Enter tags separated by space";
+            this.darkLabel1.Text = "´Tags:";
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tbTagSearch
             // 
             this.tbTagSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTagSearch.Location = new System.Drawing.Point(12, 29);
+            this.tbTagSearch.Location = new System.Drawing.Point(72, 11);
             this.tbTagSearch.Name = "tbTagSearch";
-            this.tbTagSearch.Size = new System.Drawing.Size(216, 20);
+            this.tbTagSearch.Size = new System.Drawing.Size(156, 20);
             this.tbTagSearch.TabIndex = 0;
             // 
             // FormSelectRoomByTags
