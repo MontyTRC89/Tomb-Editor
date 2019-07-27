@@ -4229,7 +4229,7 @@ namespace TombEditor
         public static void SetAmbientLightForSelectedRooms(IWin32Window owner)
         {
             IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
-            using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
+            using (var colorDialog = new RealtimeColorDialog(c =>
             {
                 foreach(Room room  in SelectedRooms)
                 {
