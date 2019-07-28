@@ -318,7 +318,8 @@
             "Reflection",
             "Glow",
             "Movement",
-            "Glow & Movement"});
+            "Glow & Movement",
+            "Mist"});
             this.comboLightEffect.Location = new System.Drawing.Point(82, 186);
             this.comboLightEffect.Name = "comboLightEffect";
             this.comboLightEffect.Size = new System.Drawing.Size(140, 23);

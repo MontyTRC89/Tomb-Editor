@@ -646,7 +646,7 @@ namespace TombLib.LevelData.IO
                     if ((flags1 & 0x0200) != 0)
                         room.LightEffect = RoomLightEffect.Reflection;
                     else if ((flags1 & 0x0100) != 0)
-                        room.LightEffect = RoomLightEffect.Glow;
+                        room.LightEffect = RoomLightEffect.Mist;
                     else
                         room.LightEffect = RoomLightEffect.Default;
 
