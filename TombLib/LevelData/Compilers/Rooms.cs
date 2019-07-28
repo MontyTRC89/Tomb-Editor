@@ -479,13 +479,13 @@ namespace TombLib.LevelData.Compilers
                                 flags |= 0x4000;
                                 break;
                             }
-                            // Disable movement for portal faces
-                            else
-                            {
-                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
-                                    allowMovement = false;
-                            }
+                        }
+                        // Disable movement for portal faces
+                        else
+                        {
+                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                allowMovement = false;
                         }
                     }
                     
