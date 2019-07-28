@@ -1664,19 +1664,13 @@ namespace TombEditor.Controls
             if (drawRoomBounds)
             {
                 if(_editor.SelectedRooms.Count > 0)
-                {
                     foreach(Room room in _editor.SelectedRooms)
-                    {
                         // Draw room bounding box around every selected Room
                         DrawRoomBoundingBox(viewProjection, solidEffect, room);
-                    }
-                }
                 else
-                {
                     // Draw room bounding box
                     DrawRoomBoundingBox(viewProjection, solidEffect, _editor.SelectedRoom);
-                }
-                
+
             }
         }
 
