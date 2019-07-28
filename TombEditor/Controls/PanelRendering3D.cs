@@ -1663,21 +1663,32 @@ namespace TombEditor.Controls
 
             if (drawRoomBounds)
             {
-                // Draw room bounding box
-                _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesCube.VertexBuffer));
-                _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
+                if(_editor.SelectedRooms.Count > 0)
+                    foreach(Room room in _editor.SelectedRooms)
+                        // Draw room bounding box around every selected Room
+                        DrawRoomBoundingBox(viewProjection, solidEffect, room);
+                else
+                    // Draw room bounding box
+                    DrawRoomBoundingBox(viewProjection, solidEffect, _editor.SelectedRoom);
 
-                float height = _editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner();
-                Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(_editor.SelectedRoom.NumXSectors * 4.0f, height, _editor.SelectedRoom.NumZSectors * 4.0f);
-                float boxX = _editor.SelectedRoom.WorldPos.X + (_editor.SelectedRoom.NumXSectors * 1024.0f) / 2.0f;
-                float boxY = _editor.SelectedRoom.WorldPos.Y + (_editor.SelectedRoom.GetHighestCorner() + _editor.SelectedRoom.GetLowestCorner()) * 256.0f / 2.0f;
-                float boxZ = _editor.SelectedRoom.WorldPos.Z + (_editor.SelectedRoom.NumZSectors * 1024.0f) / 2.0f;
-                Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
-                solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * viewProjection).ToSharpDX());
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
             }
+        }
+
+        private void DrawRoomBoundingBox(Matrix4x4 viewProjection, Effect solidEffect, Room room)
+        {
+            _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
+            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesCube.VertexBuffer));
+            _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
+
+            float height = _editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner();
+            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(_editor.SelectedRoom.NumXSectors * 4.0f, height, room.NumZSectors * 4.0f);
+            float boxX = room.WorldPos.X + (room.NumXSectors * 1024.0f) / 2.0f;
+            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + _editor.SelectedRoom.GetLowestCorner()) * 256.0f / 2.0f;
+            float boxZ = room.WorldPos.Z + (room.NumZSectors * 1024.0f) / 2.0f;
+            Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
+            solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * viewProjection).ToSharpDX());
+            solidEffect.CurrentTechnique.Passes[0].Apply();
+            _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
         }
 
         private string BuildTriggeredByMessage(ObjectInstance instance)
