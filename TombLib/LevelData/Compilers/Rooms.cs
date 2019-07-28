@@ -469,8 +469,8 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        if (lightEffect == RoomLightEffect.Reflection &&
-                            ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
+                        if ((lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor) ||
+                             lightEffect == RoomLightEffect.Reflection && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                         {
                             // Assign reflection, if set, for all enclosed portal faces
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
