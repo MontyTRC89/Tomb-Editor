@@ -1,4 +1,6 @@
-﻿namespace TombEditor.Forms
+﻿using System.Windows.Forms;
+
+namespace TombEditor.Forms
 {
     partial class FormSelectRoomByTags
     {
@@ -32,12 +34,13 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tbTagSearch = new DarkUI.Controls.DarkTextBox();
+            this.cbAllTags = new DarkUI.Controls.DarkCheckBox();
             this.SuspendLayout();
             // 
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(126, 38);
+            this.butOk.Location = new System.Drawing.Point(94, 61);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -48,7 +51,7 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(212, 38);
+            this.butCancel.Location = new System.Drawing.Point(180, 61);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -60,30 +63,44 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(12, 9);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(108, 20);
+            this.darkLabel1.Size = new System.Drawing.Size(77, 20);
             this.darkLabel1.TabIndex = 2;
-            this.darkLabel1.Text = "´Tags:";
+            this.darkLabel1.Text = "Tags:";
             this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tbTagSearch
             // 
             this.tbTagSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTagSearch.Location = new System.Drawing.Point(126, 11);
+            this.tbTagSearch.Location = new System.Drawing.Point(95, 11);
             this.tbTagSearch.Name = "tbTagSearch";
-            this.tbTagSearch.Size = new System.Drawing.Size(166, 20);
+            this.tbTagSearch.Size = new System.Drawing.Size(165, 20);
             this.tbTagSearch.TabIndex = 0;
+            // 
+            // cbAllTags
+            // 
+            ToolTip tooltip = new ToolTip();
+            tooltip.SetToolTip(cbAllTags, "Only Select Rooms that contain the specified tags instead of containing any");
+            this.cbAllTags.AutoSize = true;
+            this.cbAllTags.Location = new System.Drawing.Point(95, 37);
+            this.cbAllTags.Name = "cbAllTags";
+            this.cbAllTags.Size = new System.Drawing.Size(129, 17);
+            this.cbAllTags.TabIndex = 3;
+            this.cbAllTags.Tag = "cbAllTags";
+            this.cbAllTags.Text = "All tags instead of any";
+            this.cbAllTags.CheckedChanged += new System.EventHandler(this.CbAllTags_CheckedChanged);
             // 
             // FormSelectRoomByTags
             // 
             this.AcceptButton = this.butOk;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(304, 73);
+            this.ClientSize = new System.Drawing.Size(272, 96);
+            this.Controls.Add(this.cbAllTags);
             this.Controls.Add(this.tbTagSearch);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
-            this.MinimumSize = new System.Drawing.Size(320, 112);
+            this.MinimumSize = new System.Drawing.Size(288, 135);
             this.Name = "FormSelectRoomByTags";
             this.Text = "Select Rooms by Tags";
             this.ResumeLayout(false);
@@ -97,5 +114,6 @@
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkLabel darkLabel1;
         public DarkUI.Controls.DarkTextBox tbTagSearch;
+        public DarkUI.Controls.DarkCheckBox cbAllTags;
     }
 }
