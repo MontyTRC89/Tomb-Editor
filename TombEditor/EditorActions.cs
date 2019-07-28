@@ -4228,5 +4228,33 @@ namespace TombEditor
             else
                 _editor.SelectedRoom = null;
         }
+
+        public static void SetAmbientLightForSelectedRooms(IWin32Window owner)
+        {
+            IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                foreach(Room room  in SelectedRooms)
+                {
+                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                    room.BuildGeometry();
+                    _editor.RoomPropertiesChange(room);
+                }
+                
+            }, _editor.Configuration.UI_ColorScheme))
+            {
+
+                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
+                    foreach (Room room in SelectedRooms)
+                        room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+
+            }
+            foreach(Room room in SelectedRooms)
+            {
+                room.BuildGeometry();
+                _editor.RoomPropertiesChange(room);
+            }
+            
+        }
     }
 }
