@@ -10,6 +10,7 @@ namespace TombEditor.Forms
 {
     public partial class FormSelectRoomByTags : DarkUI.Forms.DarkForm
     {
+        public bool findAllTags;
         public FormSelectRoomByTags()
         {
             InitializeComponent();
@@ -23,6 +24,11 @@ namespace TombEditor.Forms
         private void ButCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
+        }
+
+        private void CbAllTags_CheckedChanged(object sender, EventArgs e)
+        {
+            findAllTags = cbAllTags.Checked;
         }
     }
 }
