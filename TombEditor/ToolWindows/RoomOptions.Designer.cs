@@ -30,6 +30,7 @@
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butSearch = new DarkUI.Controls.DarkButton();
+            this.tbRoomTags = new DarkUI.Controls.DarkTextBox();
             this.butLocked = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butRoomUp = new DarkUI.Controls.DarkButton();
@@ -45,7 +46,7 @@
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
             this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.tbRoomTags = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -99,7 +100,7 @@
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(79, 170);
+            this.darkLabel16.Location = new System.Drawing.Point(79, 186);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(125, 13);
             this.darkLabel16.TabIndex = 96;
@@ -155,7 +156,7 @@
             this.panelRoomAmbientLight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panelRoomAmbientLight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelRoomAmbientLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 186);
+            this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 202);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 23);
             this.panelRoomAmbientLight.TabIndex = 15;
@@ -167,7 +168,7 @@
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(0, 170);
+            this.darkLabel3.Location = new System.Drawing.Point(0, 186);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(77, 13);
             this.darkLabel3.TabIndex = 88;
@@ -201,6 +202,18 @@
             this.butSearch.TabIndex = 106;
             this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
+            // tbRoomTags
+            // 
+            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRoomTags.Location = new System.Drawing.Point(3, 159);
+            this.tbRoomTags.Name = "tbRoomTags";
+            this.tbRoomTags.Size = new System.Drawing.Size(222, 22);
+            this.tbRoomTags.TabIndex = 109;
+            this.tbRoomTags.Tag = "SetRoomTags";
+            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
+            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
             // 
             // butLocked
             // 
@@ -320,7 +333,7 @@
             "Movement",
             "Glow & Movement",
             "Mist"});
-            this.comboLightEffect.Location = new System.Drawing.Point(82, 186);
+            this.comboLightEffect.Location = new System.Drawing.Point(82, 202);
             this.comboLightEffect.Name = "comboLightEffect";
             this.comboLightEffect.Size = new System.Drawing.Size(140, 23);
             this.comboLightEffect.TabIndex = 16;
@@ -391,7 +404,7 @@
             0,
             0,
             65536});
-            this.numLightEffectStrength.Location = new System.Drawing.Point(228, 186);
+            this.numLightEffectStrength.Location = new System.Drawing.Point(228, 202);
             this.numLightEffectStrength.Maximum = new decimal(new int[] {
             3,
             0,
@@ -409,27 +422,28 @@
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(225, 170);
+            this.darkLabel1.Location = new System.Drawing.Point(225, 186);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(52, 13);
             this.darkLabel1.TabIndex = 108;
             this.darkLabel1.Text = "Strength";
             // 
-            // tbRoomTags
+            // darkLabel2
             // 
-            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRoomTags.Location = new System.Drawing.Point(0, 146);
-            this.tbRoomTags.Name = "tbRoomTags";
-            this.tbRoomTags.Size = new System.Drawing.Size(284, 22);
-            this.tbRoomTags.TabIndex = 109;
-            this.tbRoomTags.Tag = "SetRoomTags";
-            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(0, 143);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(29, 13);
+            this.darkLabel2.TabIndex = 110;
+            this.darkLabel2.Text = "Tags";
             // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.tbRoomTags);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.numLightEffectStrength);
@@ -461,10 +475,10 @@
             this.Controls.Add(this.butSplitRoom);
             this.DockText = "Room Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 212);
+            this.MinimumSize = new System.Drawing.Size(284, 228);
             this.Name = "RoomOptions";
             this.SerializationKey = "RoomOptions";
-            this.Size = new System.Drawing.Size(284, 212);
+            this.Size = new System.Drawing.Size(284, 228);
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -503,5 +517,6 @@
         private DarkUI.Controls.DarkNumericUpDown numLightEffectStrength;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkTextBox tbRoomTags;
+        private DarkUI.Controls.DarkLabel darkLabel2;
     }
 }

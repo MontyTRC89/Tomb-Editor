@@ -4194,15 +4194,12 @@ namespace TombEditor
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
             IEnumerable<Room> quicksandRooms = allRooms.Where((r, b) => { return r != null && r.Type == RoomType.Quicksand; });
             TrySelectRooms(quicksandRooms);
-
         }
         public static void SelectOutsideRooms()
         {
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
             IEnumerable<Room> outsideRooms = allRooms.Where((r, b) => { return r != null && r.FlagOutside; });
             TrySelectRooms(outsideRooms);
-
-
         }
 
         public static void SelectRoomsByTags(IWin32Window owner, Editor editor)
@@ -4213,25 +4210,23 @@ namespace TombEditor
                     return;
 
                 string[] tags = formTags.tbTagSearch.Text.Split(' ');
+                if (tags.Count() < 1)
+                    return;
+
                 IEnumerable<Room> allRooms = editor.Level.Rooms;
                 IEnumerable<Room> matchingRooms = allRooms.Where((r, b) => {
                     return r != null && r.Tags.Except(tags).Count() == 0;
                 });
-                editor.SelectRooms(matchingRooms);
+                TrySelectRooms(matchingRooms);
             }
-                
-           
         }
 
         private static void TrySelectRooms(IEnumerable<Room> rooms)
         {
-            if(rooms.Count<Room>() > 0)
-            {
+            if(rooms.Count() > 0)
                 _editor.SelectRooms(rooms);
-            }else
-            {
+            else
                 _editor.SelectedRoom = null;
-            }
         }
     }
 }
