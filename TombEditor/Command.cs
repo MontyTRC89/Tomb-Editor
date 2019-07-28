@@ -1638,15 +1638,14 @@ namespace TombEditor
                 EditorActions.SelectQuicksandRooms();
             });
 
-            AddCommand("SetRoomTags", "Set Room Tags, separated by spaces", CommandType.Rooms, delegate (CommandArgs args)
-            {
-                args.Editor.SelectedRoom.Tags = args.Editor.SelectedRoom.Tags;
-                args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
-            });
-
             AddCommand("SelectRoomsByTags", "Select Rooms by Tags", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.SelectRoomsByTags(args.Window,args.Editor);
+                EditorActions.SelectRoomsByTags(args.Window, args.Editor);
+            });
+
+            AddCommand("SetAmbientLightForSelectedRooms", "Set Ambient Light For Selected Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SetAmbientLightForSelectedRooms(args.Window);
             });
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
