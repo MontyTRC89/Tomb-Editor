@@ -36,10 +36,10 @@
             // 
             // butOk
             // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butOk.Location = new System.Drawing.Point(12, 54);
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Location = new System.Drawing.Point(126, 38);
             this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(75, 23);
+            this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
             this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.ButOk_Click);
@@ -48,45 +48,44 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(153, 54);
+            this.butCancel.Location = new System.Drawing.Point(212, 38);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(75, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.ButCancel_Click);
             // 
             // darkLabel1
             // 
-            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(12, 9);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(216, 17);
+            this.darkLabel1.Size = new System.Drawing.Size(108, 20);
             this.darkLabel1.TabIndex = 2;
-            this.darkLabel1.Text = "Enter tags separated by space";
+            this.darkLabel1.Text = "´Tags:";
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tbTagSearch
             // 
             this.tbTagSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTagSearch.Location = new System.Drawing.Point(12, 29);
+            this.tbTagSearch.Location = new System.Drawing.Point(126, 11);
             this.tbTagSearch.Name = "tbTagSearch";
-            this.tbTagSearch.Size = new System.Drawing.Size(216, 20);
+            this.tbTagSearch.Size = new System.Drawing.Size(166, 20);
             this.tbTagSearch.TabIndex = 0;
             // 
             // FormSelectRoomByTags
             // 
             this.AcceptButton = this.butOk;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(240, 89);
+            this.ClientSize = new System.Drawing.Size(304, 73);
             this.Controls.Add(this.tbTagSearch);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
-            this.MaximumSize = new System.Drawing.Size(256, 128);
-            this.MinimumSize = new System.Drawing.Size(256, 128);
+            this.MinimumSize = new System.Drawing.Size(320, 112);
             this.Name = "FormSelectRoomByTags";
+            this.Text = "Select Rooms by Tags";
             this.ResumeLayout(false);
             this.PerformLayout();
 
