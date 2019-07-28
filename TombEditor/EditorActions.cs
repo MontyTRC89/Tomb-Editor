@@ -4210,6 +4210,9 @@ namespace TombEditor
                     return;
 
                 string[] tags = formTags.tbTagSearch.Text.Split(' ');
+                if (tags.Count() < 1)
+                    return;
+
                 IEnumerable<Room> allRooms = editor.Level.Rooms;
                 IEnumerable<Room> matchingRooms = allRooms.Where((r, b) => {
                     return r != null && r.Tags.Except(tags).Count() == 0;
@@ -4222,7 +4225,7 @@ namespace TombEditor
         {
             if(rooms.Count() > 0)
                 _editor.SelectRooms(rooms);
-                else
+            else
                 _editor.SelectedRoom = null;
         }
     }
