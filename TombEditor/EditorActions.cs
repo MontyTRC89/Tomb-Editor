@@ -4213,9 +4213,13 @@ namespace TombEditor
                 if (tags.Count() < 1)
                     return;
 
+                bool findAllTags = formTags.findAllTags;
                 IEnumerable<Room> allRooms = editor.Level.Rooms;
                 IEnumerable<Room> matchingRooms = allRooms.Where((r, b) => {
-                    return r != null && r.Tags.Except(tags).Count() == 0;
+                    if (findAllTags)
+                        return r != null && r.Tags.Intersect(tags).Count() == tags.Count();
+                    else
+                        return r != null && r.Tags.Intersect(tags).Any();
                 });
                 TrySelectRooms(matchingRooms);
             }
@@ -4225,8 +4229,6 @@ namespace TombEditor
         {
             if(rooms.Count() > 0)
                 _editor.SelectRooms(rooms);
-            else
-                _editor.SelectedRoom = null;
         }
 
         public static void SetAmbientLightForSelectedRooms(IWin32Window owner)
