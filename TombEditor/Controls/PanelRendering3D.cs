@@ -731,15 +731,32 @@ namespace TombEditor.Controls
                     else if (newPicking is PickingResultBlock)
                     {
                         var block = (PickingResultBlock)newPicking;
-                        if (block.Room != _editor.SelectedRoom)
+                        Room pickedRoom = block.Room;
+                        if (pickedRoom != _editor.SelectedRoom)
                         {
-                            _editor.SelectedRoom = block.Room;
-                            if (_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && (ModifierKeys == Keys.None))
+                            if(Control.ModifierKeys == Keys.Shift)
                             {
-                                Vector3 center = block.Room.GetLocalCenter();
-                                var nextPos = new Vector3(block.Pos.X * 1024.0f + 512.0f, center.Y, block.Pos.Y * 1024.0f + 512.0f) + block.Room.WorldPos;
-                                AnimateCamera(nextPos);
+                                List<Room> newlySelectedRooms = _editor.SelectedRooms.ToList();
+                                if (newlySelectedRooms.Contains(pickedRoom) )
+
+                                    newlySelectedRooms.Remove(pickedRoom);
+                                 else
+                                    newlySelectedRooms.Add(pickedRoom);
+
+                                _editor.SelectRooms(newlySelectedRooms);
+
                             }
+                            else
+                            {
+                                _editor.SelectedRoom = pickedRoom;
+                                if (_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && (ModifierKeys == Keys.None))
+                                {
+                                    Vector3 center = block.Room.GetLocalCenter();
+                                    var nextPos = new Vector3(block.Pos.X * 1024.0f + 512.0f, center.Y, block.Pos.Y * 1024.0f + 512.0f) + block.Room.WorldPos;
+                                    AnimateCamera(nextPos);
+                                }
+                            }
+                            
                         }
                     }
                     break;
