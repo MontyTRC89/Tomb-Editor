@@ -297,13 +297,21 @@ namespace TombEditor.Forms
             if (objectList.Columns[e.ColumnIndex].Name == objectListColumnName.Name)
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
-                e.Value = entry.Value.ToString();
+                if(entry.Value is Room)
+                {
+                    e.Value = (entry.Value as Room).Name;
+                }
+                else
+                {
+                    e.Value = entry.Value.ToString();
+                }
+                
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnRoom.Name)
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
                 Room room = GetRoom(entry.Value);
-                e.Value = room == null ? "<Unknown>" : _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room;
+                e.Value = room == null ? "<Unknown>" : _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room.Name;
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnType.Name)
             {
