@@ -203,8 +203,8 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Clamp water scheme to maximum possible un-garbaged value for movement effect
-            if((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 12)
-                newRoom.WaterScheme = 12;
+            if((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 10)
+                newRoom.WaterScheme = 10;
 
             // Light effect
             switch (lightEffect)
@@ -423,12 +423,6 @@ namespace TombLib.LevelData.Compilers
                     var trVertex = roomVertices[i];
                     ushort flags = 0x0000;
 
-                    ///@FIXME: commented code by Monty for MIST light type
-                    //var xv = trVertex.Position.X / 1024;
-                    //var zv = trVertex.Position.Z / 1024;
-                    // For a better effect (see City of the dead) I don't set this effect to border walls (TODO: tune this)
-                    //if (xv > 1 && zv > 1 && xv < room.NumXSectors - 2 && zv < room.NumZSectors - 2)
-
                     if (lightEffect == RoomLightEffect.Glow ||
                         lightEffect == RoomLightEffect.GlowAndMovement)
                         flags |= 0x4000;
@@ -437,6 +431,8 @@ namespace TombLib.LevelData.Compilers
 
                     foreach (var portal in room.Portals)
                     {
+                        // A bit complex but working code for water surface movement.
+                        // Works better than winroomedit as it takes adjacent portals into account.
                         if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
                         {
                             var xv = trVertex.Position.X / 1024;
@@ -469,8 +465,16 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        if ((lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor) ||
-                             lightEffect == RoomLightEffect.Reflection && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
+                        if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor)
+                        {
+                            // Assign mist, if set, for vertices inside portal
+                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                            {
+                                flags |= 0x4000;
+                                break;
+                            }
+                        }
+                        else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                         {
                             // Assign reflection, if set, for all enclosed portal faces
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
@@ -480,15 +484,15 @@ namespace TombLib.LevelData.Compilers
                                 break;
                             }
                         }
-                        // Disable movement for portal faces
-                        else
+                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
                         {
+                            // Disable movement for portal faces
                             if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
                                 portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                 allowMovement = false;
                         }
                     }
-                    
+
                     if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x2000;
 

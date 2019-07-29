@@ -642,7 +642,7 @@ namespace TombLib.LevelData.Compilers.Util
         private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true)
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
-            // frames can be dublicated with Repeat function or simply because of complex animator functions applied.
+            // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
             var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
 
             if (!result.HasValue)
