@@ -217,17 +217,58 @@ namespace TombLib.LevelData
 
         public bool PositionOnPortal(VectorInt3 pos, bool detectInside, bool nonPlaneResult)
         {
-            if (((Direction == PortalDirection.Floor && pos.Y == -(Room.GetLowestCorner() * 256 + Room.WorldPos.Y)) ||
-                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * 256 + Room.WorldPos.Y))) ||
-                  Direction >  PortalDirection.Ceiling)
+            int compX0, compX1, compY0, compY1;
+
+            switch (Direction)
             {
-                ///@FIXME: I am not sure if 1 plane subtraction is needed for horizontal portals --Lwmte
-                int planeSub = 0; // Direction > PortalDirection.Ceiling ? 0 : 1;
+                case (PortalDirection.WallPositiveZ):
+                    compX0 = Area.X0;
+                    compX1 = Area.X1 + 1;
+                    compY0 = Area.Y0;
+                    compY1 = Area.Y1;
+                    break;
+                case (PortalDirection.WallNegativeZ):
+                    compX0 = Area.X0;
+                    compX1 = Area.X1 + 1;
+                    compY0 = Area.Y0 + 1;
+                    compY1 = Area.Y1 + 1;
+                    break;
+                case (PortalDirection.WallPositiveX):
+                    compX0 = Area.X0;
+                    compX1 = Area.X1;
+                    compY0 = Area.Y0;
+                    compY1 = Area.Y1 + 1;
+                    break;
+                case (PortalDirection.WallNegativeX):
+                    compX0 = Area.X0 + 1;
+                    compX1 = Area.X1 + 1;
+                    compY0 = Area.Y0;
+                    compY1 = Area.Y1 + 1;
+                    break;
+                default:
+                    compX0 = Area.X0;
+                    compX1 = Area.X1 + 1;
+                    compY0 = Area.Y0;
+                    compY1 = Area.Y1 + 1;
+                    break;
+            }
+
+            compX0 *= 1024;
+            compX1 *= 1024;
+            compY0 *= 1024;
+            compY1 *= 1024;
+
+            if (((Direction == PortalDirection.Floor   && pos.Y == -(Room.GetLowestCorner()  * 256 + Room.WorldPos.Y))  ||
+                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * 256 + Room.WorldPos.Y))) ||
+                  Direction  > PortalDirection.Ceiling)
+            {
                 if (detectInside)
-                    return (pos.X >= ((Area.X0 - planeSub) * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && pos.Z >= ((Area.Y0 - planeSub) * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024));
+                    return (((pos.X >  compX0 && pos.X <  compX1) ||  pos.X == compX0 && compX0 == compX1) && 
+                            ((pos.Z >  compY0 && pos.Z <  compY1) ||  pos.Z == compY0 && compY0 == compY1) &&
+                           !((pos.X == compX0 || pos.X == compX1) && (pos.Z == compY0 || pos.Z  == compY1)));
                 else
-                    return ((pos.X >= (Area.X0 * 1024) && pos.X <= ((Area.X1 + 1) * 1024) && (pos.Z == (Area.Y0 * 1024) || pos.Z == ((Area.Y1 + 1) * 1024))) ||
-                             pos.Z >= (Area.Y0 * 1024) && pos.Z <= ((Area.Y1 + 1) * 1024) && (pos.X == (Area.X0 * 1024) || pos.X == ((Area.X1 + 1) * 1024)));
+                    return (((pos.X == compX0 || pos.X == compX1) && (pos.Z >= compY0 && pos.Z <= compY1)) ||
+                            ((pos.X >= compX0 && pos.X <= compX1) && (pos.Z == compY0 || pos.Z == compY1)));
             }
             else
                 return nonPlaneResult;

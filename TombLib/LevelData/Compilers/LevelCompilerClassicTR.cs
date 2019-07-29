@@ -288,7 +288,7 @@ namespace TombLib.LevelData.Compilers
             }
             _flyByCameras.Sort(new ComparerFlyBy());
 
-            // Check camera dublicates
+            // Check camera duplicates
             int lastSeq   = -1;
             int lastIndex = -1;
 
@@ -301,7 +301,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 if (_flyByCameras[i].Index == lastIndex && _flyByCameras[i].Sequence == lastSeq)
-                    _progressReporter.ReportWarn("Warning: flyby sequence " + _flyByCameras[i].Sequence + " has dublicated camera with ID " + lastIndex);
+                    _progressReporter.ReportWarn("Warning: flyby sequence " + _flyByCameras[i].Sequence + " has duplicated camera with ID " + lastIndex);
                 lastIndex = _flyByCameras[i].Index;
             }
 
