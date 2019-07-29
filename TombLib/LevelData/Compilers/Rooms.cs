@@ -431,65 +431,67 @@ namespace TombLib.LevelData.Compilers
 
                     foreach (var portal in room.Portals)
                     {
-                        // A bit complex but working code for water surface movement.
-                        // Works better than winroomedit as it takes adjacent portals into account.
-                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
+                        var xv = trVertex.Position.X / 1024;
+                        var zv = trVertex.Position.Z / 1024;
+
+                        // Check for imported geometry out of room bounds
+                        if (xv >= 0 && zv >= 0 && xv < room.NumXSectors && zv < room.NumZSectors)
                         {
-                            var xv = trVertex.Position.X / 1024;
-                            var zv = trVertex.Position.Z / 1024;
+                            var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
+                            var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
+                            var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
+                            var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
 
-                            // Check for imported geometry out of room bounds
-                            if (xv >= 0 && zv >= 0 && xv < room.NumXSectors && zv < room.NumZSectors)
+                            bool fullTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                         connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                         connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                         connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
+
+                            // A bit complex but working code for water surface movement.
+                            // Works better than winroomedit as it takes adjacent portals into account.
+                            if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
                             {
-                                var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
-                                var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
-                                var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
-                                var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
-
                                 // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
-                                if (connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
+                                if (fullTraversablePortal &&
+                                    connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
                                     !room.Blocks[xv, zv].IsAnyWall &&
-                                    connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
                                     connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
                                     !room.Blocks[xv - 1, zv].IsAnyWall &&
-                                    connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
                                     connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal &&
                                     !room.Blocks[xv, zv - 1].IsAnyWall &&
-                                    connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
                                     connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
-                                    !room.Blocks[xv - 1, zv - 1].IsAnyWall && 
-                                    connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal)
+                                    !room.Blocks[xv - 1, zv - 1].IsAnyWall)
                                 {
                                     flags |= 0x2000;
                                 }
                             }
-                        }
 
-                        if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor)
-                        {
-                            // Assign mist, if set, for vertices inside portal
-                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                            if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && fullTraversablePortal)
                             {
-                                flags |= 0x4000;
-                                break;
+                                // Assign mist, if set, for vertices inside portal
+                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                {
+                                    flags |= 0x4000;
+                                    break;
+                                }
                             }
-                        }
-                        else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
-                        {
-                            // Assign reflection, if set, for all enclosed portal faces
-                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                            else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                             {
-                                flags |= 0x4000;
-                                break;
+                                // Assign reflection, if set, for all enclosed portal faces
+                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true , false))
+                                {
+                                    flags |= 0x4000;
+                                    break;
+                                }
                             }
-                        }
-                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
-                        {
-                            // Disable movement for portal faces
-                            if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
-                                allowMovement = false;
+                            else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                            {
+                                // Disable movement for portal faces
+                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true , false))
+                                    allowMovement = false;
+                            }
                         }
                     }
 
