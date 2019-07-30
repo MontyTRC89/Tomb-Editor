@@ -39,8 +39,11 @@ namespace TombLib.LevelData.Compilers
                 _tempRooms.Add(room, BuildRoom(room));
             }
 
+            // Remove WaterScheme values for water rooms
+            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
+
 #if DEBUG
-            using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
+                using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
             {
                 for (int r = 0; r < _tempRooms.Count; r++)
                 {
@@ -163,26 +166,12 @@ namespace TombLib.LevelData.Compilers
             var lightEffect = room.LightEffect;
             var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Type >= RoomType.Water).ToList();
 
-            // Calculate bottom room-based water scheme, if mode is default or reflection
+            // Calculate bottom room-based water scheme in advance, if mode is default or reflection
             if (waterPortals.Count > 0 && room.Type < RoomType.Water && 
                 (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection))
             {
                 var waterRoom = waterPortals.First().AdjoiningRoom;
-                int effectiveReflectionLevel = room.LightEffectStrength;
-                if (effectiveReflectionLevel <= 0)
-                    effectiveReflectionLevel = 2;
-                if (effectiveReflectionLevel > 4)
-                    effectiveReflectionLevel = 4;
-
-                int effectiveWaterLevel = Math.Min(Math.Max(waterRoom.LightEffectStrength, (byte)1), (byte)4);
-                newRoom.WaterScheme = (byte)(effectiveWaterLevel * 4 + effectiveReflectionLevel);
-            }
-            else
-            {
-                if (room.Type == RoomType.Water && lightEffect == RoomLightEffect.Default) // Reset water scheme for default water room effect
-                    newRoom.WaterScheme = 0;
-                else
-                    newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5); // Normal calculation
+                newRoom.WaterScheme = (byte)(((waterRoom.LightEffectStrength + 1) * 4) + room.LightEffectStrength + 1);
             }
 
             // Force different effect type 
@@ -202,16 +191,19 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            // Clamp water scheme to maximum possible un-garbaged value for movement effect
-            if((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) && newRoom.WaterScheme > 10)
-                newRoom.WaterScheme = 10;
-
             // Light effect
             switch (lightEffect)
             {
-                case RoomLightEffect.Glow:
-                case RoomLightEffect.Movement:
                 case RoomLightEffect.GlowAndMovement:
+                case RoomLightEffect.Movement:
+                    newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
+                    if (lightEffect == RoomLightEffect.GlowAndMovement)
+                        newRoom.Flags |= 0x0100;
+                    break;
+
+                case RoomLightEffect.Glow:
+                case RoomLightEffect.Mist:
+                    newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
                     break;
 
