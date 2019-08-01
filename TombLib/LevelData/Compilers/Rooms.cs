@@ -166,12 +166,15 @@ namespace TombLib.LevelData.Compilers
             var lightEffect = room.LightEffect;
             var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Type >= RoomType.Water).ToList();
 
-            // Calculate bottom room-based water scheme in advance, if mode is default or reflection
+            bool waterSchemeSet = false;
+
+            // Calculate bottom room-based water scheme in advance, if mode is default, mist or reflection
             if (waterPortals.Count > 0 && room.Type < RoomType.Water && 
-                (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection))
+                (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection || lightEffect == RoomLightEffect.Mist))
             {
                 var waterRoom = waterPortals.First().AdjoiningRoom;
                 newRoom.WaterScheme = (byte)(((waterRoom.LightEffectStrength + 1) * 4) + room.LightEffectStrength + 1);
+                waterSchemeSet = true;
             }
 
             // Force different effect type 
@@ -196,14 +199,14 @@ namespace TombLib.LevelData.Compilers
             {
                 case RoomLightEffect.GlowAndMovement:
                 case RoomLightEffect.Movement:
-                    newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
                     if (lightEffect == RoomLightEffect.GlowAndMovement)
                         newRoom.Flags |= 0x0100;
                     break;
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
-                    newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
                     break;
 
