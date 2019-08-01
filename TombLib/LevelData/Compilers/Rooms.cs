@@ -414,12 +414,9 @@ namespace TombLib.LevelData.Compilers
                 {
                     var trVertex = roomVertices[i];
                     ushort flags = 0x0000;
-
-                    if (lightEffect == RoomLightEffect.Glow ||
-                        lightEffect == RoomLightEffect.GlowAndMovement)
-                        flags |= 0x4000;
-
+                    
                     bool allowMovement = true;
+                    bool allowGlow = true;
 
                     foreach (var portal in room.Portals)
                     {
@@ -471,7 +468,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 // Assign reflection, if set, for all enclosed portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true , false))
+                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                 {
                                     flags |= 0x4000;
                                     break;
@@ -481,14 +478,36 @@ namespace TombLib.LevelData.Compilers
                             {
                                 // Disable movement for portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true , false))
-                                    allowMovement = false;
+                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                {
+                                    // Still allow movement, if adjoining room has very same properties
+                                    if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Movement ||
+                                           portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
+                                           portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                        allowMovement = false;
+                                }
+                            }
+
+                            if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
+                            {
+                                // Disable glow for portal faces
+                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                {
+                                    // Still allow glow, if adjoining room has very same properties
+                                    if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Glow ||
+                                           portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
+                                           portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                        allowGlow = false;
+                                }
                             }
                         }
                     }
 
                     if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x2000;
+                    if (allowGlow     && (lightEffect == RoomLightEffect.Glow     || lightEffect == RoomLightEffect.GlowAndMovement))
+                        flags |= 0x4000;
 
                     trVertex.Attributes = flags;
                     roomVertices[i] = trVertex;
