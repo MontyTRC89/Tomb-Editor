@@ -58,7 +58,7 @@
             this.cbNoPathfinding.Location = new System.Drawing.Point(129, 130);
             this.cbNoPathfinding.Name = "cbNoPathfinding";
             this.cbNoPathfinding.Size = new System.Drawing.Size(96, 17);
-            this.cbNoPathfinding.TabIndex = 12;
+            this.cbNoPathfinding.TabIndex = 9;
             this.cbNoPathfinding.Tag = "SetRoomNoPathfinding";
             this.cbNoPathfinding.Text = "No pathfinding";
             // 
@@ -69,7 +69,7 @@
             this.cbHorizon.Location = new System.Drawing.Point(3, 130);
             this.cbHorizon.Name = "cbHorizon";
             this.cbHorizon.Size = new System.Drawing.Size(58, 17);
-            this.cbHorizon.TabIndex = 10;
+            this.cbHorizon.TabIndex = 7;
             this.cbHorizon.Tag = "SetRoomSkybox";
             this.cbHorizon.Text = "Skybox";
             // 
@@ -114,7 +114,7 @@
             this.cbFlagOutside.Location = new System.Drawing.Point(3, 151);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(50, 17);
-            this.cbFlagOutside.TabIndex = 14;
+            this.cbFlagOutside.TabIndex = 10;
             this.cbFlagOutside.Tag = "SetRoomOutside";
             this.cbFlagOutside.Text = "Wind";
             // 
@@ -126,7 +126,7 @@
             this.cbFlagCold.Location = new System.Drawing.Point(64, 151);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
-            this.cbFlagCold.TabIndex = 13;
+            this.cbFlagCold.TabIndex = 11;
             this.cbFlagCold.Tag = "SetRoomCold";
             this.cbFlagCold.Text = "Cold";
             // 
@@ -137,7 +137,7 @@
             this.cbFlagDamage.Location = new System.Drawing.Point(64, 130);
             this.cbFlagDamage.Name = "cbFlagDamage";
             this.cbFlagDamage.Size = new System.Drawing.Size(64, 17);
-            this.cbFlagDamage.TabIndex = 9;
+            this.cbFlagDamage.TabIndex = 8;
             this.cbFlagDamage.Tag = "SetRoomDamage";
             this.cbFlagDamage.Text = "Damage";
             // 
@@ -182,7 +182,7 @@
             this.cbNoLensflare.Location = new System.Drawing.Point(129, 151);
             this.cbNoLensflare.Name = "cbNoLensflare";
             this.cbNoLensflare.Size = new System.Drawing.Size(88, 17);
-            this.cbNoLensflare.TabIndex = 11;
+            this.cbNoLensflare.TabIndex = 12;
             this.cbNoLensflare.Tag = "SetRoomNoLensflare";
             this.cbNoLensflare.Text = "No lensflare";
             // 
@@ -200,7 +200,7 @@
             this.butSearch.Name = "butSearch";
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 23);
-            this.butSearch.TabIndex = 106;
+            this.butSearch.TabIndex = 1;
             this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
@@ -213,7 +213,7 @@
             this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
             this.tbRoomTags.Name = "tbRoomTags";
             this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
-            this.tbRoomTags.TabIndex = 109;
+            this.tbRoomTags.TabIndex = 3;
             this.tbRoomTags.Tag = "SetRoomTags";
             this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
             this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
@@ -226,7 +226,7 @@
             this.butLocked.Location = new System.Drawing.Point(228, 57);
             this.butLocked.Name = "butLocked";
             this.butLocked.Size = new System.Drawing.Size(54, 22);
-            this.butLocked.TabIndex = 2;
+            this.butLocked.TabIndex = 15;
             this.butLocked.Tag = "LockRoom";
             // 
             // butSplitRoom
@@ -236,7 +236,7 @@
             this.butSplitRoom.Location = new System.Drawing.Point(228, 143);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
-            this.butSplitRoom.TabIndex = 4;
+            this.butSplitRoom.TabIndex = 20;
             this.butSplitRoom.Tag = "SplitRoom";
             // 
             // butRoomUp
@@ -246,7 +246,7 @@
             this.butRoomUp.Location = new System.Drawing.Point(258, 114);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Size = new System.Drawing.Size(24, 23);
-            this.butRoomUp.TabIndex = 5;
+            this.butRoomUp.TabIndex = 19;
             this.butRoomUp.Tag = "MoveRoomUp";
             // 
             // butRoomDown
@@ -256,7 +256,7 @@
             this.butRoomDown.Location = new System.Drawing.Point(258, 143);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(24, 23);
-            this.butRoomDown.TabIndex = 6;
+            this.butRoomDown.TabIndex = 21;
             this.butRoomDown.Tag = "MoveRoomDown";
             // 
             // butEditRoomName
@@ -266,7 +266,7 @@
             this.butEditRoomName.Location = new System.Drawing.Point(258, 28);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
-            this.butEditRoomName.TabIndex = 1;
+            this.butEditRoomName.TabIndex = 2;
             this.butEditRoomName.Tag = "EditRoomName";
             // 
             // butCropRoom
@@ -276,7 +276,7 @@
             this.butCropRoom.Location = new System.Drawing.Point(228, 114);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Size = new System.Drawing.Size(24, 23);
-            this.butCropRoom.TabIndex = 3;
+            this.butCropRoom.TabIndex = 18;
             this.butCropRoom.Tag = "CropRoom";
             // 
             // comboFlipMap
@@ -303,7 +303,7 @@
             this.comboFlipMap.Location = new System.Drawing.Point(90, 101);
             this.comboFlipMap.Name = "comboFlipMap";
             this.comboFlipMap.Size = new System.Drawing.Size(55, 23);
-            this.comboFlipMap.TabIndex = 7;
+            this.comboFlipMap.TabIndex = 5;
             this.comboFlipMap.SelectedIndexChanged += new System.EventHandler(this.comboFlipMap_SelectedIndexChanged);
             // 
             // comboReverberation
@@ -320,7 +320,7 @@
             this.comboReverberation.Location = new System.Drawing.Point(151, 101);
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(71, 23);
-            this.comboReverberation.TabIndex = 18;
+            this.comboReverberation.TabIndex = 6;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
             // comboLightEffect
@@ -339,7 +339,7 @@
             this.comboLightEffect.Location = new System.Drawing.Point(82, 194);
             this.comboLightEffect.Name = "comboLightEffect";
             this.comboLightEffect.Size = new System.Drawing.Size(140, 23);
-            this.comboLightEffect.TabIndex = 16;
+            this.comboLightEffect.TabIndex = 13;
             this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
             // 
             // comboRoomType
@@ -360,7 +360,7 @@
             this.comboRoomType.Location = new System.Drawing.Point(3, 101);
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(81, 23);
-            this.comboRoomType.TabIndex = 8;
+            this.comboRoomType.TabIndex = 4;
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 
             // comboRoom
@@ -383,7 +383,7 @@
             this.butDublicateRoom.Location = new System.Drawing.Point(228, 85);
             this.butDublicateRoom.Name = "butDublicateRoom";
             this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
-            this.butDublicateRoom.TabIndex = 104;
+            this.butDublicateRoom.TabIndex = 16;
             this.butDublicateRoom.Tag = "DuplicateRoom";
             // 
             // butDeleteRoom
@@ -393,7 +393,7 @@
             this.butDeleteRoom.Location = new System.Drawing.Point(258, 85);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 23);
-            this.butDeleteRoom.TabIndex = 105;
+            this.butDeleteRoom.TabIndex = 17;
             this.butDeleteRoom.Tag = "DeleteRooms";
             // 
             // numLightEffectStrength
@@ -416,7 +416,7 @@
             this.numLightEffectStrength.MousewheelSingleIncrement = true;
             this.numLightEffectStrength.Name = "numLightEffectStrength";
             this.numLightEffectStrength.Size = new System.Drawing.Size(54, 23);
-            this.numLightEffectStrength.TabIndex = 107;
+            this.numLightEffectStrength.TabIndex = 14;
             this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
             // 
             // darkLabel1
