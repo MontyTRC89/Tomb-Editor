@@ -58,7 +58,7 @@ namespace TombLib.LevelData
         public bool Locked { get; set; }
         public ImportedGeometryMesh ExternalRoomMesh { get; set; }
 
-        public string[] Tags { get; set; } = new string[] { "" };
+        public List<string> Tags { get; set; } = new List<string>();
 
         public Level Level { get; set; }
 
@@ -872,7 +872,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return Name + "( " + string.Join(" ",Tags) +  " )";
+            return Name + " (" + string.Join(" ", Tags) +  ")";
         }
 
         /// <summary>Transforms the coordinates of QAFaces in such a way that the lowest one falls on Y = 0</summary>

@@ -16,6 +16,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoomOptions));
             this.cbNoPathfinding = new DarkUI.Controls.DarkCheckBox();
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
@@ -30,7 +31,7 @@
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butSearch = new DarkUI.Controls.DarkButton();
-            this.tbRoomTags = new DarkUI.Controls.DarkTextBox();
+            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             this.butLocked = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butRoomUp = new DarkUI.Controls.DarkButton();
@@ -207,6 +208,8 @@
             // 
             this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRoomTags.AutocompleteWords = ((System.Collections.Generic.List<string>)(resources.GetObject("tbRoomTags.AutocompleteWords")));
+            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
             this.tbRoomTags.Name = "tbRoomTags";
             this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
@@ -516,7 +519,7 @@
         private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkNumericUpDown numLightEffectStrength;
         private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkTextBox tbRoomTags;
+        private TombLib.Controls.DarkAutocompleteTextBox tbRoomTags;
         private DarkUI.Controls.DarkLabel darkLabel2;
     }
 }
