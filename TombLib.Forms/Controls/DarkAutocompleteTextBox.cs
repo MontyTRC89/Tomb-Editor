@@ -18,7 +18,7 @@ namespace TombLib.Controls
         {
             get
             {
-                String[] result = Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                String[] result = Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 return new List<String>(result);
             }
         }
