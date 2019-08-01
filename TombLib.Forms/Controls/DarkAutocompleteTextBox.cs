@@ -27,6 +27,7 @@ namespace TombLib.Controls
         {
             _listBox = new DarkListBox();
             _listBox.MouseDown += listbox_MouseDown;
+            _listBox.MouseMove += listbox_MouseMove;
 
             KeyDown += this_KeyDown;
             KeyUp += this_KeyUp;
@@ -66,6 +67,11 @@ namespace TombLib.Controls
         {
             _listBox.SelectedIndex = _listBox.IndexFromPoint(e.Location);
             AddWordFromList();
+        }
+
+        private void listbox_MouseMove(object sender, MouseEventArgs e)
+        {
+            _listBox.SelectedIndex = _listBox.IndexFromPoint(e.Location);
         }
 
         private void this_KeyUp(object sender, KeyEventArgs e)
