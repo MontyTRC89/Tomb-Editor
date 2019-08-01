@@ -419,8 +419,9 @@ namespace TombEditor.Forms
 
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input
             var activeControlType = GetFocusedControl(this)?.GetType().Name;
-            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
+            if ((keyData.HasFlag(Keys.Control | Keys.A) || !keyData.HasFlag(Keys.Control)) && !keyData.HasFlag(Keys.Alt) &&
                 (activeControlType == "DarkTextBox" ||
+                 activeControlType == "DarkAutocompleteTextBox" ||
                  activeControlType == "DarkComboBox" ||
                  activeControlType == "DarkListBox" ||
                  activeControlType == "UpDownEdit"))

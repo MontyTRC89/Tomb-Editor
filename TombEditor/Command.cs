@@ -875,6 +875,12 @@ namespace TombEditor
                 }
             });
 
+            AddCommand("ApplyAmbientLightToSelectedRooms", "Apply current ambient light to selected rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.ApplyAmbientLightToSelectedRooms(args.Window);
+                args.Editor.SendMessage("Ambient light was applied to selected rooms.", PopupType.Info);
+            });
+
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.AddWad(args.Window);
@@ -1612,41 +1618,37 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("ToggleFlyMode", "Toggle Fly Mode", CommandType.General, delegate (CommandArgs args)
+            AddCommand("ToggleFlyMode", "Toggle fly mode", CommandType.General, delegate (CommandArgs args)
             {
                 args.Editor.SendMessage("Push ESC to exit fly mode.", PopupType.Info);
                 args.Editor.ToggleFlyMode(!args.Editor.FlyMode);
             });
 
-            AddCommand("SelectSkyRooms", "Select Sky Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("SelectSkyRooms", "Select sky rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SelectSkyRooms();
             });
 
-            AddCommand("SelectWaterRooms", "Select Water Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("SelectWaterRooms", "Select water rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SelectWaterRooms();
             });
 
-            AddCommand("SelectOutsideRooms", "Select Outside Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("SelectOutsideRooms", "Select outside rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SelectOutsideRooms();
             });
 
-            AddCommand("SelectQuicksandRooms", "Select Quicksand Rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("SelectQuicksandRooms", "Select quicksand rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SelectQuicksandRooms();
             });
 
-            AddCommand("SelectRoomsByTags", "Select Rooms by Tags", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("SelectRoomsByTags", "Select rooms by tags", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SelectRoomsByTags(args.Window, args.Editor);
             });
 
-            AddCommand("SetAmbientLightForSelectedRooms", "Set Ambient Light For Selected Rooms", CommandType.Rooms, delegate (CommandArgs args)
-            {
-                EditorActions.SetAmbientLightForSelectedRooms(args.Window);
-            });
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }

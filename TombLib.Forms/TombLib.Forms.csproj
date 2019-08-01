@@ -103,6 +103,9 @@
     <Compile Include="Controls\AnimationTrackBar.Designer.cs">
       <DependentUpon>AnimationTrackBar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DarkAutocompleteTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkDataGridViewControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
