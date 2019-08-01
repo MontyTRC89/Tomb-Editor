@@ -104,10 +104,13 @@ namespace TombEditor.ToolWindows
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
 
-                if(room.Tags.Count > 0)
-                    tbRoomTags.Text = string.Join(" ", room.Tags);
-                else
-                    tbRoomTags.Text = "";
+                if (!tbRoomTags.ReadOnly) // Only update tags field if we're not in the process of editing
+                {
+                    if (room.Tags.Count > 0)
+                        tbRoomTags.Text = string.Join(" ", room.Tags);
+                    else
+                        tbRoomTags.Text = "";
+                }
 
                 if (room.AlternateBaseRoom != null)
                 {
@@ -282,11 +285,15 @@ namespace TombEditor.ToolWindows
 
         private void TbTags_TextChanged(object sender, EventArgs e)
         {
-            if(_editor.SelectedRoom == null)
+            if (_editor.SelectedRoom == null)
                 return;
 
-            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(' ').ToList();
+            tbRoomTags.ReadOnly = true; // Prevent textbox from internally recalling this event
+
+            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
+
+            tbRoomTags.ReadOnly = false; // Re-enable editing
         }
     }
 }

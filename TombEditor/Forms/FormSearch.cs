@@ -299,7 +299,8 @@ namespace TombEditor.Forms
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
                 if(entry.Value is Room)
                 {
-                    e.Value = (entry.Value as Room).Name;
+                    var room = (entry.Value as Room);
+                    e.Value = room.Name + " ( " + string.Join(" ", room.Tags) + " )";
                 }
                 else
                 {
