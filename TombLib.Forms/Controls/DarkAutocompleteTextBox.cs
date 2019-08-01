@@ -26,7 +26,7 @@ namespace TombLib.Controls
         public DarkAutocompleteTextBox()
         {
             _listBox = new DarkListBox();
-            _listBox.MouseClick += delegate { AddWordFromList(); };
+            _listBox.MouseDown += listbox_MouseDown;
 
             KeyDown += this_KeyDown;
             KeyUp += this_KeyUp;
@@ -60,6 +60,12 @@ namespace TombLib.Controls
             InsertWord((String)_listBox.SelectedItem);
             HideListBox();
             _formerValue = Text;
+        }
+
+        private void listbox_MouseDown(object sender, MouseEventArgs e)
+        {
+            _listBox.SelectedIndex = _listBox.IndexFromPoint(e.Location);
+            AddWordFromList();
         }
 
         private void this_KeyUp(object sender, KeyEventArgs e)
