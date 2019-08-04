@@ -4256,5 +4256,19 @@ namespace TombEditor
             if(rooms.Count() > 0)
                 _editor.SelectRooms(rooms);
         }
+
+        public static void SetStaticMeshColorToRoomAmbientLight()
+        {
+            IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+            foreach (Room room in SelectedRooms)
+            {
+                IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
+                foreach (StaticInstance staticMesh in staticMeshes)
+                {
+                    staticMesh.Color = room.AmbientLight;
+                    _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
+                }
+            }
+        }
     }
 }
