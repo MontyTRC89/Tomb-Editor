@@ -4257,7 +4257,7 @@ namespace TombEditor
                 _editor.SelectRooms(rooms);
         }
 
-        public static void SetStaticMeshColorToRoomAmbientLight()
+        public static void SetStaticMeshesColorToRoomAmbientLight()
         {
             IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
             foreach (Room room in SelectedRooms)
@@ -4269,6 +4269,27 @@ namespace TombEditor
                     _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
                 }
             }
+        }
+
+        public static void SetStaticMeshesColor(IWin32Window owner)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                if(colorDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+                    foreach (Room room in SelectedRooms)
+                    {
+                        IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
+                        foreach (StaticInstance staticMesh in staticMeshes)
+                        {
+                            staticMesh.Color = colorDialog.Color.ToFloat3Color();
+                            _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
+                        }
+                    }
+                }
+            }
+            
         }
     }
 }

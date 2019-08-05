@@ -1649,9 +1649,14 @@ namespace TombEditor
                 EditorActions.SelectRoomsByTags(args.Window, args.Editor);
             });
 
-            AddCommand("SetStaticMeshColorToRoomLight", "Set static meshes color to room color", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("SetStaticMeshesColorToRoomLight", "Set room static meshes color to room color", CommandType.Objects, delegate (CommandArgs args)
             {
-                EditorActions.SetStaticMeshColorToRoomAmbientLight();
+                EditorActions.SetStaticMeshesColorToRoomAmbientLight();
+            });
+
+            AddCommand("SetStaticMeshesColor", "Set room static meshes color", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.SetStaticMeshesColor(args.Window);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();
