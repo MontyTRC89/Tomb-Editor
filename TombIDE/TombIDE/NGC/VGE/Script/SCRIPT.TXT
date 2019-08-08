@@ -1,0 +1,27 @@
+[PSXExtensions]
+Level= .PSX
+Cut= .CUT
+FMV= .FMV
+
+[PCExtensions]
+Level= .TR4
+Cut= .TR4
+FMV= .BIK
+
+[Language]
+File= 0, ENGLISH.TXT
+
+[Options]
+Title= ENABLED
+PlayAnyLevel= ENABLED
+LoadSave= ENABLED
+FlyCheat= ENABLED
+
+[Title]
+LoadCamera= 84246, -533, 78233, 81622, -1514, 78208, 40
+Level= DATA\TITLE, 104
+
+[Level]
+Name= ABC
+Level= DATA\ABC, 110
+Horizon= ENABLED

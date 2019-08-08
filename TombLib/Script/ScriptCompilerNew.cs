@@ -156,9 +156,9 @@ namespace TombLib.Script
                             if (command == "File")
                             {
                                 var tokensFile = value.Split(',');
-                                if (tokensFile.Length < 2 || !File.Exists(_srcPath + "\\" + tokensFile[1]))
+                                if (tokensFile.Length < 2 || !File.Exists(_srcPath + "\\" + tokensFile[1].Trim()))
                                     continue;
-                                _languageFiles.Add(tokensFile[1]);
+                                _languageFiles.Add(tokensFile[1].Trim());
                             }
                         }
 

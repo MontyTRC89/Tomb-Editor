@@ -54,7 +54,6 @@ namespace TombLib.Controls
                     commentColor, regularColor);
 
             // Apply styles (THE ORDER IS IMPORTANT!)
-            e.ChangedRange.SetStyle(whitespaceColor, "·");
             e.ChangedRange.SetStyle(commentColor, @"--.*$", RegexOptions.Multiline);
             e.ChangedRange.SetStyle(regularColor, @"[\[\],]");
             e.ChangedRange.SetStyle(operatorsColor, @"(" + string.Join("|", operators) + @")");

@@ -224,6 +224,8 @@
     <Compile Include="LevelData\StaticInstance.cs" />
     <Compile Include="LevelData\TextureFootStepSound.cs" />
     <Compile Include="LevelData\TriggerInstance.cs" />
+    <Compile Include="Projects\Project.cs" />
+    <Compile Include="Projects\ProjectLevel.cs" />
     <Compile Include="Script\IScriptCompiler.cs" />
     <Compile Include="Script\LanguageScript.cs" />
     <Compile Include="Script\LevelScript.cs" />
