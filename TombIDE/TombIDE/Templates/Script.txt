@@ -1,0 +1,42 @@
+﻿;--------------------------------------
+; Platform Definitions
+;--------------------------------------
+
+[PSXExtensions]
+Level= .PSX
+Cut= .CUT
+FMV= .FMV
+
+[PCExtensions]
+Level= .TR4
+Cut= .TR4
+FMV= .BIK
+
+;--------------------------------------
+; Language Filenames
+;--------------------------------------
+
+[Language]
+File= 0, ENGLISH.TXT
+
+;--------------------------------------
+; Options
+;--------------------------------------
+
+[Options]
+Title= ENABLED
+PlayAnyLevel= ENABLED
+LoadSave= ENABLED
+FlyCheat= ENABLED
+
+;--------------------------------------
+; Title
+;--------------------------------------
+
+[Title]
+LoadCamera= 84246, -533, 78233, 81622, -1514, 78208, 40
+Level= DATA\TITLE, 104
+
+;--------------------------------------
+; Levels
+;--------------------------------------
