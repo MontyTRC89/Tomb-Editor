@@ -206,25 +206,25 @@ namespace TombIDE.Shared
 
 		#region RequestedPresenceCheck
 
-		public class RequestedScriptPresenceCheck : IProjectMasterEvent
+		public class RequestedScriptPresenceCheckEvent : IProjectMasterEvent
 		{
 			public string LevelName { get; internal set; }
 		}
 
 		public bool IsLevelScriptDefined(string levelName)
 		{
-			RaiseEvent(new RequestedScriptPresenceCheck { LevelName = levelName });
+			RaiseEvent(new RequestedScriptPresenceCheckEvent { LevelName = levelName });
 			return LevelScriptDefined;
 		}
 
-		public class RequestedLanguageStringPresenceCheck : IProjectMasterEvent
+		public class RequestedLanguageStringPresenceCheckEvent : IProjectMasterEvent
 		{
 			public string LevelName { get; internal set; }
 		}
 
 		public bool IsLanguageStringDefined(string levelName)
 		{
-			RaiseEvent(new RequestedLanguageStringPresenceCheck { LevelName = levelName });
+			RaiseEvent(new RequestedLanguageStringPresenceCheckEvent { LevelName = levelName });
 			return LevelLanguageStringDefined;
 		}
 
@@ -235,14 +235,14 @@ namespace TombIDE.Shared
 
 		#region RequestedScriptEntryRename
 
-		public class RequestedScriptEntryRename : IProjectMasterEvent
+		public class RequestedScriptEntryRenameEvent : IProjectMasterEvent
 		{
 			public string PreviousName { get; internal set; }
 			public string CurrentName { get; internal set; }
 		}
 
 		public void RenameSelectedLevelScriptEntry(string newName) =>
-			RaiseEvent(new RequestedScriptEntryRename { PreviousName = SelectedLevel.Name, CurrentName = newName });
+			RaiseEvent(new RequestedScriptEntryRenameEvent { PreviousName = SelectedLevel.Name, CurrentName = newName });
 
 		#endregion RequestedScriptEntryRename
 
