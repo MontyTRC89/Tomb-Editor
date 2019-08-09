@@ -204,6 +204,30 @@ namespace TombIDE.Shared
 
 		#endregion PRJ2FileDeleted
 
+		public class LevelRenameFormOpened : IProjectMasterEvent
+		{
+			public string LevelName { get; internal set; }
+		}
+
+		public bool IsLevelDefinedInScriptFile(string levelName)
+		{
+			RaiseEvent(new LevelRenameFormOpened { LevelName = levelName });
+			return LevelDefined;
+		}
+
+		public class AskedForScriptEntryRename : IProjectMasterEvent
+		{
+			public string PreviousName { get; internal set; }
+			public string CurrentName { get; internal set; }
+		}
+
+		public void RenameSelectedLevelScriptEntry(string newName)
+		{
+			RaiseEvent(new AskedForScriptEntryRename { PreviousName = SelectedLevel.Name, CurrentName = newName });
+		}
+
+		public bool LevelDefined { get; set; }
+
 		// Construction and destruction
 		public IDE(Configuration configuration, List<Project> availableProjects)
 		{

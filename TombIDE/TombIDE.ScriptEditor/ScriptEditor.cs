@@ -75,6 +75,117 @@ namespace TombIDE.ScriptEditor
 					_textBox.Navigate(_textBox.Lines.Count - 1);
 				}
 			}
+			else if (obj is IDE.LevelRenameFormOpened)
+			{
+				string levelName = ((IDE.LevelRenameFormOpened)obj).LevelName;
+
+				TabPage cachedTab = tabControl_Editor.SelectedTab;
+
+				bool wasScriptAlreadyOpened = IsFileAlreadyOpened(GetScriptFilePath());
+				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
+
+				bool levelDefinedInScript = false;
+				bool levelDefinedInLanguageFile = false;
+
+				OpenScriptFile(); // Changes the current _textBox as well
+
+				// Scan all lines
+				foreach (string line in _textBox.Lines)
+				{
+					Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
+
+					if (rgx.IsMatch(line))
+					{
+						// Get the level name without "Name = " from the line string
+						string scriptLevelName = rgx.Replace(line, string.Empty).Trim();
+
+						if (scriptLevelName == levelName)
+							levelDefinedInScript = true;
+					}
+				}
+
+				OpenLanguageFile("english"); // Changes the current _textBox as well
+
+				// Scan all lines
+				foreach (string line in _textBox.Lines)
+				{
+					if (line == levelName)
+						levelDefinedInLanguageFile = true;
+				}
+
+				_ide.LevelDefined = levelDefinedInScript && levelDefinedInLanguageFile;
+
+				if (!wasScriptAlreadyOpened)
+				{
+					OpenScriptFile();
+					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
+				}
+
+				if (!wasLanguageFileAlreadyOpened)
+				{
+					OpenLanguageFile("english");
+					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
+				}
+
+				tabControl_Editor.SelectTab(cachedTab);
+			}
+			else if (obj is IDE.AskedForScriptEntryRename)
+			{
+				string oldName = ((IDE.AskedForScriptEntryRename)obj).PreviousName;
+				string newName = ((IDE.AskedForScriptEntryRename)obj).CurrentName;
+
+				OpenScriptFile(); // Changes the current _textBox as well
+
+				int affectedScriptFileLine = 0;
+
+				// Scan all lines
+				for (int i = 0; i < _textBox.LinesCount; i++)
+				{
+					Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
+
+					string line = _textBox.GetLineText(i);
+
+					if (rgx.IsMatch(line))
+					{
+						// Get the level name without "Name = " from the line string
+						string scriptLevelName = rgx.Replace(line, string.Empty).Trim();
+
+						if (scriptLevelName == oldName)
+						{
+							line = line.Replace(oldName, newName);
+							_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
+							_textBox.SelectedText = line;
+
+							_textBox.Navigate(i);
+							break;
+						}
+					}
+				}
+
+				HandleTextChangedIndicator();
+
+				OpenLanguageFile("english"); // Changes the current _textBox as well
+
+				// Scan all lines
+				for (int i = 0; i < _textBox.LinesCount; i++)
+				{
+					string line = _textBox.GetLineText(i);
+
+					if (line == oldName)
+					{
+						line = line.Replace(oldName, newName);
+						_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
+						_textBox.SelectedText = line;
+
+						_textBox.Navigate(i);
+						break;
+					}
+				}
+
+				HandleTextChangedIndicator();
+
+				OpenScriptFile();
+			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
 				if (AreAllFilesSaved())
