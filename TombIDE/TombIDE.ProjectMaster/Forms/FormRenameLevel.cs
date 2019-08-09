@@ -120,6 +120,19 @@ namespace TombIDE.ProjectMaster
 				checkBox_RenameScriptEntry.Checked = false;
 				checkBox_RenameScriptEntry.Enabled = false;
 			}
+			// If the name changed but the level folder name is the same
+			else if (textBox_NewName.Text != _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) == textBox_NewName.Text)
+			{
+				checkBox_RenameDirectory.Checked = false;
+				checkBox_RenameDirectory.Enabled = false;
+
+				// If there are no errors in the script (in this case, if no errors are displayed)
+				if (!label_ScriptError.Visible && !label_LanguageError.Visible)
+				{
+					checkBox_RenameScriptEntry.Enabled = true;
+					checkBox_RenameScriptEntry.Checked = true;
+				}
+			}
 			// If the name hasn't changed and the level folder name is the same
 			else if (textBox_NewName.Text == _ide.SelectedLevel.Name)
 			{

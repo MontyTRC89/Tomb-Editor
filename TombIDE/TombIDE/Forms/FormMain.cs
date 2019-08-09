@@ -90,6 +90,12 @@ namespace TombIDE
 					timer_ScriptButtonBlinking.Start();
 				}
 			}
+			else if (obj is IDE.RequestedScriptEntryRename)
+			{
+				// Indicate changes inside the Script Editor
+				timer_ScriptButtonBlinking.Interval = 1;
+				timer_ScriptButtonBlinking.Start();
+			}
 			else if (obj is IDE.ProjectScriptPathChangedEvent)
 			{
 				DialogResult result = DarkMessageBox.Show(this, "To apply the changes, you must restart TombIDE.\n" +
