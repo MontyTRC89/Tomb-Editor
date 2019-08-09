@@ -22,7 +22,19 @@ namespace TombIDE.ProjectMaster
 			{
 				checkBox_RenameDirectory.Checked = false;
 				checkBox_RenameDirectory.Enabled = false;
-				checkBox_RenameDirectory.Visible = false;
+			}
+
+			if (!_ide.IsLevelDefinedInScriptFile(_ide.SelectedLevel.Name))
+			{
+				checkBox_RenameScriptEntry.Checked = false;
+				checkBox_RenameScriptEntry.Enabled = false;
+				checkBox_RenameScriptEntry.Visible = false;
+
+				Height = 135;
+				panel_02.Height = 41;
+
+				button_Apply.Height = 23;
+				button_Cancel.Height = 23;
 			}
 		}
 
@@ -43,6 +55,7 @@ namespace TombIDE.ProjectMaster
 
 				string newName = textBox_NewName.Text.Trim();
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
+				bool renameScriptEntry = checkBox_RenameScriptEntry.Checked;
 
 				if (newName == _ide.SelectedLevel.Name)
 				{
@@ -64,6 +77,9 @@ namespace TombIDE.ProjectMaster
 					if (level.Name == newName)
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
+
+				if (renameScriptEntry)
+					_ide.RenameSelectedLevelScriptEntry(newName);
 
 				_ide.SelectedLevel.Rename(newName, renameDirectory);
 				_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());

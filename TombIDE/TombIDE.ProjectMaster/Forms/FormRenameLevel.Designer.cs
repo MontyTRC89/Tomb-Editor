@@ -24,6 +24,7 @@
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.textBox_NewName = new DarkUI.Controls.DarkTextBox();
 			this.panel_02 = new System.Windows.Forms.Panel();
+			this.checkBox_RenameScriptEntry = new DarkUI.Controls.DarkCheckBox();
 			this.panel_01.SuspendLayout();
 			this.panel_02.SuspendLayout();
 			this.SuspendLayout();
@@ -34,7 +35,7 @@
 			this.button_Apply.Location = new System.Drawing.Point(301, 8);
 			this.button_Apply.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
 			this.button_Apply.Name = "button_Apply";
-			this.button_Apply.Size = new System.Drawing.Size(75, 23);
+			this.button_Apply.Size = new System.Drawing.Size(75, 46);
 			this.button_Apply.TabIndex = 1;
 			this.button_Apply.Text = "Apply";
 			this.button_Apply.Click += new System.EventHandler(this.button_Apply_Click);
@@ -45,7 +46,7 @@
 			this.button_Cancel.Location = new System.Drawing.Point(379, 8);
 			this.button_Cancel.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
 			this.button_Cancel.Name = "button_Cancel";
-			this.button_Cancel.Size = new System.Drawing.Size(75, 23);
+			this.button_Cancel.Size = new System.Drawing.Size(75, 46);
 			this.button_Cancel.TabIndex = 2;
 			this.button_Cancel.Text = "Cancel";
 			// 
@@ -95,14 +96,26 @@
 			// panel_02
 			// 
 			this.panel_02.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_02.Controls.Add(this.checkBox_RenameScriptEntry);
 			this.panel_02.Controls.Add(this.checkBox_RenameDirectory);
 			this.panel_02.Controls.Add(this.button_Cancel);
 			this.panel_02.Controls.Add(this.button_Apply);
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel_02.Location = new System.Drawing.Point(0, 55);
 			this.panel_02.Name = "panel_02";
-			this.panel_02.Size = new System.Drawing.Size(464, 41);
+			this.panel_02.Size = new System.Drawing.Size(464, 67);
 			this.panel_02.TabIndex = 2;
+			// 
+			// checkBox_RenameScriptEntry
+			// 
+			this.checkBox_RenameScriptEntry.Checked = true;
+			this.checkBox_RenameScriptEntry.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBox_RenameScriptEntry.Location = new System.Drawing.Point(11, 34);
+			this.checkBox_RenameScriptEntry.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+			this.checkBox_RenameScriptEntry.Name = "checkBox_RenameScriptEntry";
+			this.checkBox_RenameScriptEntry.Size = new System.Drawing.Size(260, 23);
+			this.checkBox_RenameScriptEntry.TabIndex = 3;
+			this.checkBox_RenameScriptEntry.Text = "Rename script entry and language string as well";
 			// 
 			// FormRenameLevel
 			// 
@@ -110,7 +123,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.button_Cancel;
-			this.ClientSize = new System.Drawing.Size(464, 96);
+			this.ClientSize = new System.Drawing.Size(464, 122);
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
@@ -136,5 +149,6 @@
 		private DarkUI.Controls.DarkTextBox textBox_NewName;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
+		private DarkUI.Controls.DarkCheckBox checkBox_RenameScriptEntry;
 	}
 }
