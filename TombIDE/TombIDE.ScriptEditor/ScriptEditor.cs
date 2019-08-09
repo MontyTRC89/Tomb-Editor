@@ -66,9 +66,9 @@ namespace TombIDE.ScriptEditor
 				if (scriptMessages.Count > 0)
 					WriteGeneratedCode(scriptMessages);
 			}
-			else if (obj is IDE.RequestedScriptPresenceCheck)
+			else if (obj is IDE.RequestedScriptPresenceCheckEvent)
 			{
-				string levelName = ((IDE.RequestedScriptPresenceCheck)obj).LevelName;
+				string levelName = ((IDE.RequestedScriptPresenceCheckEvent)obj).LevelName;
 
 				TabPage cachedTab = tabControl_Editor.SelectedTab;
 				bool wasScriptFileAlreadyOpened = IsFileAlreadyOpened(GetScriptFilePath());
@@ -83,9 +83,9 @@ namespace TombIDE.ScriptEditor
 
 				tabControl_Editor.SelectTab(cachedTab);
 			}
-			else if (obj is IDE.RequestedLanguageStringPresenceCheck)
+			else if (obj is IDE.RequestedLanguageStringPresenceCheckEvent)
 			{
-				string levelName = ((IDE.RequestedLanguageStringPresenceCheck)obj).LevelName;
+				string levelName = ((IDE.RequestedLanguageStringPresenceCheckEvent)obj).LevelName;
 
 				TabPage cachedTab = tabControl_Editor.SelectedTab;
 				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
@@ -100,10 +100,10 @@ namespace TombIDE.ScriptEditor
 
 				tabControl_Editor.SelectTab(cachedTab);
 			}
-			else if (obj is IDE.RequestedScriptEntryRename)
+			else if (obj is IDE.RequestedScriptEntryRenameEvent)
 			{
-				string oldName = ((IDE.RequestedScriptEntryRename)obj).PreviousName;
-				string newName = ((IDE.RequestedScriptEntryRename)obj).CurrentName;
+				string oldName = ((IDE.RequestedScriptEntryRenameEvent)obj).PreviousName;
+				string newName = ((IDE.RequestedScriptEntryRenameEvent)obj).CurrentName;
 
 				RenameRequestedLevelScript(oldName, newName);
 				RenameRequestedLanguageString(oldName, newName);
