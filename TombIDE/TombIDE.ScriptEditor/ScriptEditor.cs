@@ -64,62 +64,33 @@ namespace TombIDE.ScriptEditor
 
 				// Check if the message is not empty
 				if (scriptMessages.Count > 0)
-				{
-					AppendMessagesToScriptFile(scriptMessages);
-					AddLevelNameToLanguageFile(scriptMessages);
-
-					// Show the main Script file after everything is done
-					OpenScriptFile(); // Changes the current _textBox as well
-
-					// Scroll to the line where changes were made (the last line)
-					_textBox.Navigate(_textBox.Lines.Count - 1);
-				}
+					WriteGeneratedCode(scriptMessages);
 			}
-			else if (obj is IDE.LevelRenameFormOpened)
+			else if (obj is IDE.RequestedScriptPresenceCheck)
 			{
-				string levelName = ((IDE.LevelRenameFormOpened)obj).LevelName;
+				string levelName = ((IDE.RequestedScriptPresenceCheck)obj).LevelName;
 
 				TabPage cachedTab = tabControl_Editor.SelectedTab;
+				bool wasScriptFileAlreadyOpened = IsFileAlreadyOpened(GetScriptFilePath());
 
-				bool wasScriptAlreadyOpened = IsFileAlreadyOpened(GetScriptFilePath());
-				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
+				_ide.LevelScriptDefined = IsLevelScriptDefined(levelName);
 
-				bool levelDefinedInScript = false;
-				bool levelDefinedInLanguageFile = false;
-
-				OpenScriptFile(); // Changes the current _textBox as well
-
-				// Scan all lines
-				foreach (string line in _textBox.Lines)
-				{
-					Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
-
-					if (rgx.IsMatch(line))
-					{
-						// Get the level name without "Name = " from the line string
-						string scriptLevelName = rgx.Replace(line, string.Empty).Trim();
-
-						if (scriptLevelName == levelName)
-							levelDefinedInScript = true;
-					}
-				}
-
-				OpenLanguageFile("english"); // Changes the current _textBox as well
-
-				// Scan all lines
-				foreach (string line in _textBox.Lines)
-				{
-					if (line == levelName)
-						levelDefinedInLanguageFile = true;
-				}
-
-				_ide.LevelDefined = levelDefinedInScript && levelDefinedInLanguageFile;
-
-				if (!wasScriptAlreadyOpened)
+				if (!wasScriptFileAlreadyOpened)
 				{
 					OpenScriptFile();
 					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
 				}
+
+				tabControl_Editor.SelectTab(cachedTab);
+			}
+			else if (obj is IDE.RequestedLanguageStringPresenceCheck)
+			{
+				string levelName = ((IDE.RequestedLanguageStringPresenceCheck)obj).LevelName;
+
+				TabPage cachedTab = tabControl_Editor.SelectedTab;
+				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
+
+				_ide.LevelLanguageStringDefined = IsLevelLanguageStringDefined(levelName);
 
 				if (!wasLanguageFileAlreadyOpened)
 				{
@@ -129,62 +100,15 @@ namespace TombIDE.ScriptEditor
 
 				tabControl_Editor.SelectTab(cachedTab);
 			}
-			else if (obj is IDE.AskedForScriptEntryRename)
+			else if (obj is IDE.RequestedScriptEntryRename)
 			{
-				string oldName = ((IDE.AskedForScriptEntryRename)obj).PreviousName;
-				string newName = ((IDE.AskedForScriptEntryRename)obj).CurrentName;
+				string oldName = ((IDE.RequestedScriptEntryRename)obj).PreviousName;
+				string newName = ((IDE.RequestedScriptEntryRename)obj).CurrentName;
 
-				OpenScriptFile(); // Changes the current _textBox as well
+				RenameRequestedLevelScript(oldName, newName);
+				RenameRequestedLanguageString(oldName, newName);
 
-				int affectedScriptFileLine = 0;
-
-				// Scan all lines
-				for (int i = 0; i < _textBox.LinesCount; i++)
-				{
-					Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
-
-					string line = _textBox.GetLineText(i);
-
-					if (rgx.IsMatch(line))
-					{
-						// Get the level name without "Name = " from the line string
-						string scriptLevelName = rgx.Replace(line, string.Empty).Trim();
-
-						if (scriptLevelName == oldName)
-						{
-							line = line.Replace(oldName, newName);
-							_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
-							_textBox.SelectedText = line;
-
-							_textBox.Navigate(i);
-							break;
-						}
-					}
-				}
-
-				HandleTextChangedIndicator();
-
-				OpenLanguageFile("english"); // Changes the current _textBox as well
-
-				// Scan all lines
-				for (int i = 0; i < _textBox.LinesCount; i++)
-				{
-					string line = _textBox.GetLineText(i);
-
-					if (line == oldName)
-					{
-						line = line.Replace(oldName, newName);
-						_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
-						_textBox.SelectedText = line;
-
-						_textBox.Navigate(i);
-						break;
-					}
-				}
-
-				HandleTextChangedIndicator();
-
-				OpenScriptFile();
+				OpenScriptFile(); // Because that's the most important file affected
 			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
@@ -369,48 +293,6 @@ namespace TombIDE.ScriptEditor
 
 		#region Event Methods
 
-		private void AppendMessagesToScriptFile(List<string> scriptMessages)
-		{
-			OpenScriptFile(); // Changes the current _textBox as well
-
-			// Join the messages into a single string and append it into the _textBox
-			_textBox.AppendText(string.Join(Environment.NewLine, scriptMessages) + "\n");
-
-			HandleTextChangedIndicator();
-		}
-
-		private void AddLevelNameToLanguageFile(List<string> scriptMessages)
-		{
-			OpenLanguageFile("english"); // Changes the current _textBox as well
-
-			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
-			{
-				// Find a free "Level Name String" slot in the language file
-				if (_textBox.GetLineText(i).ToLower().StartsWith("level name "))
-				{
-					// Select the line and replace its text with the added level name
-					_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
-
-					string levelName = scriptMessages[1].Replace("Name= ", string.Empty);
-					_textBox.SelectedText = levelName;
-					break;
-				}
-
-				if (i == _textBox.LinesCount - 1)
-				{
-					DarkMessageBox.Show(this,
-						"Warning, you ran out of free Level Name String slots in the main Language File.\n" +
-						"Your current level will not be visible in-game after compiling the script.", "Warning",
-						MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-					return;
-				}
-			}
-
-			HandleTextChangedIndicator();
-		}
-
 		private void OnSaveButtonClicked()
 		{
 			if (!SaveFile(_textBox))
@@ -432,6 +314,9 @@ namespace TombIDE.ScriptEditor
 		{
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
+				if (tab.Text.TrimEnd('*') == "Untitled")
+					continue;
+
 				ScriptTextBox tabTextBox = tab.Controls.OfType<ScriptTextBox>().First();
 				SaveFile(tabTextBox);
 
@@ -613,6 +498,9 @@ namespace TombIDE.ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
+				if (tab.Text.TrimEnd('*') == "Untitled")
+					continue;
+
 				ScriptTextBox tabTextBox = tab.Controls.OfType<ScriptTextBox>().First();
 
 				if (tabTextBox.IsChanged)
@@ -623,6 +511,154 @@ namespace TombIDE.ScriptEditor
 		}
 
 		#endregion Event Methods
+
+		#region Script Generator Methods
+
+		private void WriteGeneratedCode(List<string> scriptMessages)
+		{
+			AppendMessagesToScriptFile(scriptMessages);
+			AddLevelNameToLanguageFile(scriptMessages);
+
+			// Show the main Script file after everything is done
+			OpenScriptFile(); // Changes the current _textBox as well
+
+			// Scroll to the line where changes were made (the last line)
+			_textBox.Navigate(_textBox.Lines.Count - 1);
+		}
+
+		private void AppendMessagesToScriptFile(List<string> scriptMessages)
+		{
+			OpenScriptFile(); // Changes the current _textBox as well
+
+			// Join the messages into a single string and append it into the _textBox
+			_textBox.AppendText(string.Join(Environment.NewLine, scriptMessages) + "\n");
+
+			HandleTextChangedIndicator();
+		}
+
+		private void AddLevelNameToLanguageFile(List<string> scriptMessages)
+		{
+			OpenLanguageFile("english"); // Changes the current _textBox as well
+
+			// Scan all lines
+			for (int i = 0; i < _textBox.LinesCount; i++)
+			{
+				// Find a free "Level Name " string slot in the language file
+				if (_textBox.GetLineText(i).StartsWith("Level Name "))
+				{
+					// Select the line and replace its text with the added level name
+					_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
+
+					string levelName = scriptMessages[1].Replace("Name= ", string.Empty);
+					_textBox.SelectedText = levelName;
+					break;
+				}
+
+				if (i == _textBox.LinesCount - 1)
+				{
+					DarkMessageBox.Show(this,
+						"Warning, you ran out of free Level Name String slots in the main Language File.\n" +
+						"Your current level will not be visible in-game after compiling the script.", "Warning",
+						MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+					return;
+				}
+			}
+
+			HandleTextChangedIndicator();
+		}
+
+		private void RenameRequestedLanguageString(string oldName, string newName)
+		{
+			OpenLanguageFile("english"); // Changes the current _textBox as well
+
+			// Scan all lines
+			for (int i = 0; i < _textBox.LinesCount; i++)
+			{
+				string line = _textBox.GetLineText(i);
+
+				if (line == oldName)
+				{
+					line = line.Replace(oldName, newName);
+					_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
+					_textBox.SelectedText = line;
+
+					_textBox.Navigate(i);
+					break;
+				}
+			}
+
+			HandleTextChangedIndicator();
+		}
+
+		private void RenameRequestedLevelScript(string oldName, string newName)
+		{
+			OpenScriptFile(); // Changes the current _textBox as well
+
+			// Scan all lines
+			for (int i = 0; i < _textBox.LinesCount; i++)
+			{
+				string line = _textBox.GetLineText(i);
+
+				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
+
+				if (rgx.IsMatch(line))
+				{
+					// Get the level name without "Name = " from the line string
+					string scriptLevelName = rgx.Replace(line, string.Empty).Trim();
+
+					if (scriptLevelName == oldName)
+					{
+						line = line.Replace(oldName, newName);
+						_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
+						_textBox.SelectedText = line;
+
+						_textBox.Navigate(i);
+						break;
+					}
+				}
+			}
+
+			HandleTextChangedIndicator();
+		}
+
+		private bool IsLevelScriptDefined(string levelName)
+		{
+			OpenScriptFile(); // Changes the current _textBox as well
+
+			// Scan all lines
+			foreach (string line in _textBox.Lines)
+			{
+				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
+
+				if (rgx.IsMatch(line))
+				{
+					// Get the level name without "Name = " from the line string
+					string scriptLevelName = rgx.Replace(line, string.Empty).Trim();
+
+					if (scriptLevelName == levelName)
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsLevelLanguageStringDefined(string levelName)
+		{
+			OpenLanguageFile("english"); // Changes the current _textBox as well
+
+			// Scan all lines
+			foreach (string line in _textBox.Lines)
+			{
+				if (line == levelName)
+					return true;
+			}
+
+			return false;
+		}
+
+		#endregion Script Generator Methods
 
 		#region Compilers
 
@@ -877,7 +913,7 @@ namespace TombIDE.ScriptEditor
 			for (int i = 0; i < _textBox.LinesCount; i++)
 			{
 				// Find the line that contains the node text
-				if (_textBox.GetLineText(i).ToLower().Contains(treeView_Objects.SelectedNodes[0].Text.ToLower()))
+				if (_textBox.GetLineText(i).Contains(treeView_Objects.SelectedNodes[0].Text))
 				{
 					_textBox.Focus();
 
@@ -1241,6 +1277,9 @@ namespace TombIDE.ScriptEditor
 			return scriptFilePath;
 		}
 
+		/// <summary>
+		/// Valid arguments: "english", "spanish", "german" etc.
+		/// </summary>
 		private string GetLanguageFilePath(string language)
 		{
 			string languageFilePath = string.Empty;

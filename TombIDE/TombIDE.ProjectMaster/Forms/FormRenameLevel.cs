@@ -20,22 +20,39 @@ namespace TombIDE.ProjectMaster
 			// Disable renaming external level folders (level folders which are outside of the project's /Levels/ folder)
 			if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
 			{
+				checkBox_RenameDirectory.Text = "Can't rename external level folders";
 				checkBox_RenameDirectory.Checked = false;
 				checkBox_RenameDirectory.Enabled = false;
 			}
 
-			if (!_ide.IsLevelDefinedInScriptFile(_ide.SelectedLevel.Name))
+			// Check if there are errors in the script
+			if (!_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) || !_ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
 			{
+				// Disable the checkBox if so
 				checkBox_RenameScriptEntry.Checked = false;
 				checkBox_RenameScriptEntry.Enabled = false;
-				checkBox_RenameScriptEntry.Visible = false;
 
-				Height = 135;
-				panel_02.Height = 41;
-
-				button_Apply.Height = 23;
-				button_Cancel.Height = 23;
+				// Display ScriptError + LanguageError
+				if (!_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) && !_ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+				{
+					label_ScriptError.Visible = true;
+					label_LanguageError.Visible = true;
+				}
+				// Display ScriptError only
+				else if (!_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) && _ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+				{
+					Height = 212;
+					label_ScriptError.Visible = true;
+				}
+				// Display LanguageError only
+				else if (_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) && !_ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+				{
+					Height = 212;
+					label_LanguageError.Visible = true;
+				}
 			}
+			else // No errors
+				Height = 193;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -50,9 +67,6 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				if (string.IsNullOrWhiteSpace(textBox_NewName.Text))
-					throw new ArgumentException("Invalid name.");
-
 				string newName = textBox_NewName.Text.Trim();
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
 				bool renameScriptEntry = checkBox_RenameScriptEntry.Checked;
@@ -89,6 +103,50 @@ namespace TombIDE.ProjectMaster
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				DialogResult = DialogResult.None;
 			}
+		}
+
+		private void textBox_NewName_TextChanged(object sender, EventArgs e)
+		{
+			// If the name hasn't changed but the level folder name is different
+			if (textBox_NewName.Text == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) != textBox_NewName.Text)
+			{
+				// If the level is not an external level
+				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+				{
+					checkBox_RenameDirectory.Enabled = true;
+					checkBox_RenameDirectory.Checked = true;
+				}
+
+				checkBox_RenameScriptEntry.Checked = false;
+				checkBox_RenameScriptEntry.Enabled = false;
+			}
+			// If the name hasn't changed and the level folder name is the same
+			else if (textBox_NewName.Text == _ide.SelectedLevel.Name)
+			{
+				checkBox_RenameDirectory.Checked = false;
+				checkBox_RenameDirectory.Enabled = false;
+
+				checkBox_RenameScriptEntry.Checked = false;
+				checkBox_RenameScriptEntry.Enabled = false;
+			}
+			else // Basically every other scenario
+			{
+				// If the level is not an external level
+				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+				{
+					checkBox_RenameDirectory.Enabled = true;
+					checkBox_RenameDirectory.Checked = true;
+				}
+
+				// If there are no errors in the script (in this case, if no errors are displayed)
+				if (!label_ScriptError.Visible && !label_LanguageError.Visible)
+				{
+					checkBox_RenameScriptEntry.Enabled = true;
+					checkBox_RenameScriptEntry.Checked = true;
+				}
+			}
+
+			button_Apply.Enabled = !string.IsNullOrWhiteSpace(textBox_NewName.Text);
 		}
 	}
 }
