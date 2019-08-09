@@ -204,29 +204,47 @@ namespace TombIDE.Shared
 
 		#endregion PRJ2FileDeleted
 
-		public class LevelRenameFormOpened : IProjectMasterEvent
+		#region RequestedPresenceCheck
+
+		public class RequestedScriptPresenceCheck : IProjectMasterEvent
 		{
 			public string LevelName { get; internal set; }
 		}
 
-		public bool IsLevelDefinedInScriptFile(string levelName)
+		public bool IsLevelScriptDefined(string levelName)
 		{
-			RaiseEvent(new LevelRenameFormOpened { LevelName = levelName });
-			return LevelDefined;
+			RaiseEvent(new RequestedScriptPresenceCheck { LevelName = levelName });
+			return LevelScriptDefined;
 		}
 
-		public class AskedForScriptEntryRename : IProjectMasterEvent
+		public class RequestedLanguageStringPresenceCheck : IProjectMasterEvent
+		{
+			public string LevelName { get; internal set; }
+		}
+
+		public bool IsLanguageStringDefined(string levelName)
+		{
+			RaiseEvent(new RequestedLanguageStringPresenceCheck { LevelName = levelName });
+			return LevelLanguageStringDefined;
+		}
+
+		public bool LevelScriptDefined { get; set; }
+		public bool LevelLanguageStringDefined { get; set; }
+
+		#endregion RequestedPresenceCheck
+
+		#region RequestedScriptEntryRename
+
+		public class RequestedScriptEntryRename : IProjectMasterEvent
 		{
 			public string PreviousName { get; internal set; }
 			public string CurrentName { get; internal set; }
 		}
 
-		public void RenameSelectedLevelScriptEntry(string newName)
-		{
-			RaiseEvent(new AskedForScriptEntryRename { PreviousName = SelectedLevel.Name, CurrentName = newName });
-		}
+		public void RenameSelectedLevelScriptEntry(string newName) =>
+			RaiseEvent(new RequestedScriptEntryRename { PreviousName = SelectedLevel.Name, CurrentName = newName });
 
-		public bool LevelDefined { get; set; }
+		#endregion RequestedScriptEntryRename
 
 		// Construction and destruction
 		public IDE(Configuration configuration, List<Project> availableProjects)
