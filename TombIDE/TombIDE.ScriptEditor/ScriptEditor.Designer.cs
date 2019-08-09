@@ -507,6 +507,7 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_Redo.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_redo_16;
 			this.menuItem_Redo.Name = "menuItem_Redo";
 			this.menuItem_Redo.ShortcutKeyDisplayString = "Ctrl+Y";
+			this.menuItem_Redo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
 			this.menuItem_Redo.Size = new System.Drawing.Size(167, 22);
 			this.menuItem_Redo.Text = "&Redo";
 			this.menuItem_Redo.Click += new System.EventHandler(this.Edit_Redo_Click);
