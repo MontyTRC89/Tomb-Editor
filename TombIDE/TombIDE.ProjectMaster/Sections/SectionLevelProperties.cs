@@ -1,9 +1,11 @@
 ﻿using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.LevelData;
@@ -203,12 +205,24 @@ namespace TombIDE.ProjectMaster
 					return;
 			}
 
-			ProcessStartInfo startInfo = new ProcessStartInfo
-			{
-				FileName = treeView_Resources.SelectedNodes[0].Text
-			};
+			ProcessStartInfo startInfo = new ProcessStartInfo();
 
-			Process.Start(startInfo);
+			if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1])
+			{
+				startInfo.FileName = "WadTool.exe";
+				startInfo.Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"";
+			}
+			else
+				startInfo.FileName = treeView_Resources.SelectedNodes[0].Text;
+
+			try
+			{
+				Process.Start(startInfo);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private void ShowResourceContextMenu()
@@ -380,14 +394,9 @@ namespace TombIDE.ProjectMaster
 				Text = "Imported Geometry",
 			};
 
-			if (level.Settings.Textures.Count > 0)
-				treeView_Resources.Nodes.Add(texturesNode);
-
-			if (level.Settings.Wads.Count > 0)
-				treeView_Resources.Nodes.Add(wadFilesNode);
-
-			if (level.Settings.ImportedGeometries.Count > 0)
-				treeView_Resources.Nodes.Add(geometryNode);
+			treeView_Resources.Nodes.Add(texturesNode);
+			treeView_Resources.Nodes.Add(wadFilesNode);
+			treeView_Resources.Nodes.Add(geometryNode);
 		}
 
 		private void AddTextureFileNodes(Level level, LevelSettings settings)
@@ -414,7 +423,28 @@ namespace TombIDE.ProjectMaster
 		{
 			foreach (ReferencedWad wad in level.Settings.Wads)
 			{
-				string wadFilePath = settings.MakeAbsolute(wad.Wad.FileName);
+				string wadFilePath = string.Empty;
+
+				// FIX THIS IN TombLib PLEASE !!!
+				//
+
+				if (wad.Path.Contains("$(LevelDirectory)"))
+				{
+					int foldersToGoBackCount = Regex.Matches(wad.Path, @"\\\.\.").Count;
+
+					string partialPath = settings.MakeAbsolute(wad.Path).Substring(2);
+					string missingPart = level.Settings.LevelFilePath;
+
+					for (int i = 0; i <= foldersToGoBackCount; i++)
+						missingPart = Path.GetDirectoryName(missingPart);
+
+					wadFilePath = missingPart + partialPath;
+				}
+				else
+					wadFilePath = settings.MakeAbsolute(wad.Path);
+
+				//
+				// THIS IS AN AWFUL SOLUTION !!!
 
 				if (!File.Exists(wadFilePath))
 					continue;
