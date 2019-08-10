@@ -116,7 +116,7 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the /Levels/ folder path for the project.");
 
-				string projectName = textBox_ProjectName.Text.Trim();
+				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
 
 				// Check for name duplicates
 				foreach (Project project in _ide.AvailableProjects)

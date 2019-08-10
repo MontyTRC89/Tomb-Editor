@@ -56,7 +56,7 @@ namespace TombIDE
 			};
 
 			if (dialog.ShowDialog(this) == DialogResult.OK)
-				textBox_ProjectPath.Text = Path.Combine(dialog.Folder, textBox_ProjectName.Text);
+				textBox_ProjectPath.Text = Path.Combine(dialog.Folder, SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim()));
 		}
 
 		private void button_BrowseScript_Click(object sender, EventArgs e)
@@ -106,7 +106,7 @@ namespace TombIDE
 				if (radio_Levels_02.Checked && string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the custom /Levels/ folder path.");
 
-				string projectName = textBox_ProjectName.Text.Trim();
+				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
 
 				// Check for name duplicates
 				foreach (Project project in _ide.AvailableProjects)
