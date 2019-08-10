@@ -295,7 +295,7 @@ namespace TombIDE.ScriptEditor
 
 		private void OnSaveButtonClicked()
 		{
-			if (!SaveFile(_textBox))
+			if (!SaveFile(tabControl_Editor.SelectedTab, _textBox))
 				return; // File saving failed
 
 			HandleTextChangedIndicator();
@@ -314,11 +314,12 @@ namespace TombIDE.ScriptEditor
 		{
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				if (tab.Text.TrimEnd('*') == "Untitled")
+				ScriptTextBox tabTextBox = tab.Controls.OfType<ScriptTextBox>().First();
+
+				if (tabTextBox.FilePath == null)
 					continue;
 
-				ScriptTextBox tabTextBox = tab.Controls.OfType<ScriptTextBox>().First();
-				SaveFile(tabTextBox);
+				SaveFile(tab, tabTextBox);
 
 				HandleTextChangedIndicator(tab, tabTextBox);
 				UpdateUndoRedoSaveStates();
@@ -575,7 +576,7 @@ namespace TombIDE.ScriptEditor
 			// Scan all lines
 			for (int i = 0; i < _textBox.LinesCount; i++)
 			{
-				string line = _textBox.GetLineText(i);
+				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
 
 				if (line == oldName)
 				{
@@ -598,7 +599,7 @@ namespace TombIDE.ScriptEditor
 			// Scan all lines
 			for (int i = 0; i < _textBox.LinesCount; i++)
 			{
-				string line = _textBox.GetLineText(i);
+				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
 
 				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
@@ -627,8 +628,10 @@ namespace TombIDE.ScriptEditor
 			OpenScriptFile(); // Changes the current _textBox as well
 
 			// Scan all lines
-			foreach (string line in _textBox.Lines)
+			for (int i = 0; i < _textBox.LinesCount; i++)
 			{
+				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
+
 				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
 				if (rgx.IsMatch(line))
@@ -649,8 +652,10 @@ namespace TombIDE.ScriptEditor
 			OpenLanguageFile("english"); // Changes the current _textBox as well
 
 			// Scan all lines
-			foreach (string line in _textBox.Lines)
+			for (int i = 0; i < _textBox.LinesCount; i++)
 			{
+				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
+
 				if (line == levelName)
 					return true;
 			}
@@ -886,6 +891,8 @@ namespace TombIDE.ScriptEditor
 
 		private void AddLevelNode(string line, string filter)
 		{
+			line = Regex.Replace(line, ";.*$", string.Empty).Trim(); // Removed comments
+
 			Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
 			if (rgx.IsMatch(line))
@@ -1204,7 +1211,7 @@ namespace TombIDE.ScriptEditor
 					MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
-					return SaveFile(textBox);
+					return SaveFile(tab, textBox);
 				else if (result == DialogResult.Cancel)
 					return false;
 			}
@@ -1221,14 +1228,14 @@ namespace TombIDE.ScriptEditor
 			return true; // When the file is saved
 		}
 
-		private bool SaveFile(ScriptTextBox textBox)
+		private bool SaveFile(TabPage tab, ScriptTextBox textBox)
 		{
 			if (_ide.Configuration.Tidy_ReindentOnSave)
 				textBox.TidyDocument();
 
 			try
 			{
-				if (_textBox.FilePath == null) // For "Untitled"
+				if (textBox.FilePath == null) // For "Untitled"
 				{
 					SaveFileDialog dialog = new SaveFileDialog()
 					{
@@ -1237,7 +1244,10 @@ namespace TombIDE.ScriptEditor
 					};
 
 					if (dialog.ShowDialog(this) == DialogResult.OK)
+					{
 						textBox.FilePath = dialog.FileName;
+						tab.Text = Path.GetFileName(textBox.FilePath);
+					}
 					else
 						return false;
 				}
@@ -1249,7 +1259,7 @@ namespace TombIDE.ScriptEditor
 				DialogResult result = DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
 				if (result == DialogResult.Retry)
-					return SaveFile(textBox); // Retry saving
+					return SaveFile(tab, textBox); // Retry saving
 
 				return false;
 			}
