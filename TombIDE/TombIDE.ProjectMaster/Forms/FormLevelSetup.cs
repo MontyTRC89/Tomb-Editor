@@ -31,7 +31,7 @@ namespace TombIDE.ProjectMaster
 				if (string.IsNullOrWhiteSpace(textBox_LevelName.Text))
 					throw new ArgumentException("You must enter a name for your level.");
 
-				string levelName = textBox_LevelName.Text.Trim();
+				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
 
 				// Check for name duplicates
 				foreach (ProjectLevel projectlevel in _ide.Project.Levels)

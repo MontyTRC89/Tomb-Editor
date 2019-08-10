@@ -67,7 +67,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string newName = textBox_NewName.Text.Trim();
+				string newName = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
 				bool renameScriptEntry = checkBox_RenameScriptEntry.Checked;
 
@@ -107,8 +107,10 @@ namespace TombIDE.ProjectMaster
 
 		private void textBox_NewName_TextChanged(object sender, EventArgs e)
 		{
+			string textBoxContent = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
+
 			// If the name hasn't changed but the level folder name is different
-			if (textBox_NewName.Text == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) != textBox_NewName.Text)
+			if (textBoxContent == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) != textBoxContent)
 			{
 				// If the level is not an external level
 				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
@@ -121,7 +123,7 @@ namespace TombIDE.ProjectMaster
 				checkBox_RenameScriptEntry.Enabled = false;
 			}
 			// If the name changed but the level folder name is the same
-			else if (textBox_NewName.Text != _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) == textBox_NewName.Text)
+			else if (textBoxContent != _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) == textBoxContent)
 			{
 				checkBox_RenameDirectory.Checked = false;
 				checkBox_RenameDirectory.Enabled = false;
@@ -134,7 +136,7 @@ namespace TombIDE.ProjectMaster
 				}
 			}
 			// If the name hasn't changed and the level folder name is the same
-			else if (textBox_NewName.Text == _ide.SelectedLevel.Name)
+			else if (textBoxContent == _ide.SelectedLevel.Name)
 			{
 				checkBox_RenameDirectory.Checked = false;
 				checkBox_RenameDirectory.Enabled = false;

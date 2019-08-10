@@ -47,13 +47,15 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(textBox_LevelName.Text))
 					throw new ArgumentException("You must enter a name for the level.");
 
+				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
+
 				if (radioButton_SelectedCopy.Checked && treeView.SelectedNodes.Count == 0)
 					throw new ArgumentException("You must select which .prj2 files you want to import.");
 
 				// Check for name duplicates
 				foreach (ProjectLevel level in _ide.Project.Levels)
 				{
-					if (level.Name == textBox_LevelName.Text.Trim())
+					if (level.Name == levelName)
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
 
@@ -61,9 +63,9 @@ namespace TombIDE
 					throw new ArgumentException("You must specify the ambient sound ID for the [Level] section.");
 
 				if (radioButton_SpecifiedCopy.Checked || radioButton_SelectedCopy.Checked)
-					ImportAndCopyFiles();
+					ImportAndCopyFiles(levelName);
 				else if (radioButton_FolderKeep.Checked)
-					ImportButKeepFiles();
+					ImportButKeepFiles(levelName);
 			}
 			catch (Exception ex)
 			{
@@ -73,11 +75,10 @@ namespace TombIDE
 			}
 		}
 
-		private void ImportAndCopyFiles()
+		private void ImportAndCopyFiles(string levelName)
 		{
 			string fullSpecifiedPrj2FilePath = textBox_Prj2Path.Tag.ToString();
 
-			string levelName = textBox_LevelName.Text.Trim();
 			string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName); // A path inside the project's /Levels/ folder
 			string specificFileName = Path.GetFileName(fullSpecifiedPrj2FilePath); // The user specified file name
 
@@ -118,11 +119,10 @@ namespace TombIDE
 			CreateAndAddLevelToProject(levelName, levelFolderPath, specificFileName);
 		}
 
-		private void ImportButKeepFiles()
+		private void ImportButKeepFiles(string levelName)
 		{
 			string fullSpecifiedPrj2FilePath = textBox_Prj2Path.Tag.ToString();
 
-			string levelName = textBox_LevelName.Text.Trim();
 			string levelFolderPath = Path.GetDirectoryName(fullSpecifiedPrj2FilePath);
 			string specificFile = Path.GetFileName(fullSpecifiedPrj2FilePath);
 

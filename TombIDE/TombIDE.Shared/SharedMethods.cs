@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using TombLib.LevelData;
@@ -34,6 +35,11 @@ namespace TombIDE.Shared
 			level.Settings.GameVersion = destProject.GameVersion;
 
 			Prj2Writer.SaveToPrj2(prj2FilePath, level);
+		}
+
+		public static string RemoveIllegalSymbols(string fileName)
+		{
+			return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
 
 		[DllImport("shell32.dll")]
