@@ -147,6 +147,10 @@ namespace TombIDE
 
 		#region Events
 
+		private void button_Main_New_Click(object sender, EventArgs e) => ShowProjectSetupForm();
+		private void button_Main_Open_Click(object sender, EventArgs e) => OpenTRPROJ();
+		private void button_Main_Import_Click(object sender, EventArgs e) => ImportExe();
+
 		private void button_New_Click(object sender, EventArgs e) => ShowProjectSetupForm();
 		private void button_Open_Click(object sender, EventArgs e) => OpenTRPROJ();
 		private void button_Import_Click(object sender, EventArgs e) => ImportExe();
@@ -309,7 +313,6 @@ namespace TombIDE
 			}
 
 			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			treeView.Invalidate();
 			RefreshAndReserializeProjects();
 		}
 
@@ -334,7 +337,6 @@ namespace TombIDE
 			}
 
 			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			treeView.Invalidate();
 			RefreshAndReserializeProjects();
 		}
 
@@ -401,6 +403,7 @@ namespace TombIDE
 		private void RefreshAndReserializeProjects()
 		{
 			RepositionProjectNodeIcons();
+			treeView.Invalidate();
 
 			_ide.AvailableProjects.Clear();
 
@@ -408,6 +411,8 @@ namespace TombIDE
 				_ide.AvailableProjects.Add((Project)node.Tag);
 
 			XmlHandling.UpdateProjectsXml(_ide.AvailableProjects);
+
+			ToggleMainButtons(treeView.Nodes.Count == 0);
 		}
 
 		private void RepositionProjectNodeIcons() // DarkUI sucks
@@ -417,6 +422,13 @@ namespace TombIDE
 				int iconHeight = (40 * node.VisibleIndex) + 4;
 				node.IconArea = new Rectangle(new Point(4, iconHeight), new Size(32, 32));
 			}
+		}
+
+		private void ToggleMainButtons(bool state)
+		{
+			button_Main_New.Visible = state;
+			button_Main_Open.Visible = state;
+			button_Main_Import.Visible = state;
 		}
 
 		#endregion Methods

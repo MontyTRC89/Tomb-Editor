@@ -20,6 +20,9 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormStart));
 			this.button_Delete = new System.Windows.Forms.ToolStripButton();
 			this.button_Import = new System.Windows.Forms.ToolStripButton();
+			this.button_Main_Import = new DarkUI.Controls.DarkButton();
+			this.button_Main_New = new DarkUI.Controls.DarkButton();
+			this.button_Main_Open = new DarkUI.Controls.DarkButton();
 			this.button_MoveDown = new System.Windows.Forms.ToolStripButton();
 			this.button_MoveUp = new System.Windows.Forms.ToolStripButton();
 			this.button_New = new System.Windows.Forms.ToolStripButton();
@@ -64,6 +67,45 @@
 			this.button_Import.Size = new System.Drawing.Size(23, 27);
 			this.button_Import.Text = "Import Project from .exe";
 			this.button_Import.Click += new System.EventHandler(this.button_Import_Click);
+			// 
+			// button_Main_Import
+			// 
+			this.button_Main_Import.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Main_Import.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_Import.Location = new System.Drawing.Point(17, 298);
+			this.button_Main_Import.Margin = new System.Windows.Forms.Padding(9, 9, 9, 26);
+			this.button_Main_Import.Name = "button_Main_Import";
+			this.button_Main_Import.Size = new System.Drawing.Size(460, 104);
+			this.button_Main_Import.TabIndex = 4;
+			this.button_Main_Import.Text = "Import Project from .exe";
+			this.button_Main_Import.Visible = false;
+			this.button_Main_Import.Click += new System.EventHandler(this.button_Main_Import_Click);
+			// 
+			// button_Main_New
+			// 
+			this.button_Main_New.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Main_New.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_New.Location = new System.Drawing.Point(17, 54);
+			this.button_Main_New.Margin = new System.Windows.Forms.Padding(9, 24, 9, 9);
+			this.button_Main_New.Name = "button_Main_New";
+			this.button_Main_New.Size = new System.Drawing.Size(460, 104);
+			this.button_Main_New.TabIndex = 2;
+			this.button_Main_New.Text = "Create New Project...";
+			this.button_Main_New.Visible = false;
+			this.button_Main_New.Click += new System.EventHandler(this.button_Main_New_Click);
+			// 
+			// button_Main_Open
+			// 
+			this.button_Main_Open.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Main_Open.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_Open.Location = new System.Drawing.Point(17, 176);
+			this.button_Main_Open.Margin = new System.Windows.Forms.Padding(9);
+			this.button_Main_Open.Name = "button_Main_Open";
+			this.button_Main_Open.Size = new System.Drawing.Size(460, 104);
+			this.button_Main_Open.TabIndex = 3;
+			this.button_Main_Open.Text = "Open .trproj File";
+			this.button_Main_Open.Visible = false;
+			this.button_Main_Open.Click += new System.EventHandler(this.button_Main_Open_Click);
 			// 
 			// button_MoveDown
 			// 
@@ -166,6 +208,9 @@
 			// panel_01
 			// 
 			this.panel_01.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_01.Controls.Add(this.button_Main_Import);
+			this.panel_01.Controls.Add(this.button_Main_Open);
+			this.panel_01.Controls.Add(this.button_Main_New);
 			this.panel_01.Controls.Add(this.treeView);
 			this.panel_01.Controls.Add(this.toolStrip);
 			this.panel_01.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -272,6 +317,9 @@
 
 		#endregion
 
+		private DarkUI.Controls.DarkButton button_Main_Import;
+		private DarkUI.Controls.DarkButton button_Main_New;
+		private DarkUI.Controls.DarkButton button_Main_Open;
 		private DarkUI.Controls.DarkButton button_OpenProject;
 		private DarkUI.Controls.DarkCheckBox checkBox_Remember;
 		private DarkUI.Controls.DarkToolStrip toolStrip;
