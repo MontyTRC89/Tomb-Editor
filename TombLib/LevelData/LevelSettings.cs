@@ -562,5 +562,9 @@ namespace TombLib.LevelData
                 default: return WadGameVersion.TR4_TRNG;
             }
         }
+
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) {
+            return (AutoStaticMeshMerges.Where(e => e.wadStaticMesh.Id == staticMesh.Id).Any());
+            }
     }
 }
