@@ -1416,7 +1416,7 @@ namespace TombLib.LevelData.Compilers
 
         private bool IsStaticMeshInMergeList(StaticInstance instance)
         {
-            return (_level.Settings.AutoStaticMeshMerges.Any(e => e.Merge && e.wadStaticMesh.Id == instance.WadObjectId));
+            return (_level.Settings.AutoStaticMeshMerges.Any(e => e.Merge && e.meshId == instance.WadObjectId.TypeId));
         }
 
     }

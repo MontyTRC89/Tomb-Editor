@@ -406,7 +406,18 @@ namespace TombLib.LevelData.IO
                     });
                     settings.AnimatedTextureSets = animatedTextureSets;
                 }
-                else
+                else if(id == Prj2Chunks.AutoMergeStaticMeshList)
+                {
+                    chunkIO.ReadChunks((id2, size) => {
+                        if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
+                        {
+                            int value = chunkIO.ReadChunkInt(size);
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry((uint)value, true, settings));
+                            return true;
+                        }
+                        else return false;
+                    });
+                }else
                     return false;
                 return true;
             });

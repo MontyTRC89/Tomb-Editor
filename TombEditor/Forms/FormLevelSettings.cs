@@ -323,14 +323,14 @@ namespace TombEditor.Forms
                 bool added = false;
                 foreach (var entry in _levelSettings.AutoStaticMeshMerges)
                 {
-                    if(entry.wadStaticMesh.Equals( staticMesh.Value))
+                    if(entry.meshId.Equals( staticMesh.Value.Id.TypeId))
                     {
                         _staticMeshMergeGridViewDataSource.Add(entry);
                         added = true;
                     }
                 }
                 if(!added)
-                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value,false,_levelSettings));
+                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,_levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
             // Initialize controls
