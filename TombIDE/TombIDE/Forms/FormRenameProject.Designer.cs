@@ -51,8 +51,6 @@
 			// 
 			// checkBox_RenameDirectory
 			// 
-			this.checkBox_RenameDirectory.Checked = true;
-			this.checkBox_RenameDirectory.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.checkBox_RenameDirectory.Location = new System.Drawing.Point(11, 8);
 			this.checkBox_RenameDirectory.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_RenameDirectory.Name = "checkBox_RenameDirectory";

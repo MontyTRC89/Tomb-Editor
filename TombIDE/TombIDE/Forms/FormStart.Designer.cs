@@ -82,7 +82,6 @@
 			this.button_Main_Import.TabIndex = 2;
 			this.button_Main_Import.Text = "Import Project from .exe";
 			this.button_Main_Import.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_Main_Import.Visible = false;
 			this.button_Main_Import.Click += new System.EventHandler(this.button_Main_Import_Click);
 			// 
 			// button_Main_New
@@ -97,7 +96,6 @@
 			this.button_Main_New.TabIndex = 0;
 			this.button_Main_New.Text = "Create New Project...";
 			this.button_Main_New.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_Main_New.Visible = false;
 			this.button_Main_New.Click += new System.EventHandler(this.button_Main_New_Click);
 			// 
 			// button_Main_Open
@@ -112,7 +110,6 @@
 			this.button_Main_Open.TabIndex = 1;
 			this.button_Main_Open.Text = "Open .trproj File";
 			this.button_Main_Open.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_Main_Open.Visible = false;
 			this.button_Main_Open.Click += new System.EventHandler(this.button_Main_Open_Click);
 			// 
 			// button_MoveDown
@@ -237,6 +234,7 @@
 			this.panel_Main_Buttons.Name = "panel_Main_Buttons";
 			this.panel_Main_Buttons.Size = new System.Drawing.Size(494, 400);
 			this.panel_Main_Buttons.TabIndex = 2;
+			this.panel_Main_Buttons.Visible = false;
 			// 
 			// treeView
 			// 
