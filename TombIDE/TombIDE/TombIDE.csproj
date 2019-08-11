@@ -208,6 +208,9 @@
     <Content Include="Resources\ide-play-30.png" />
     <Content Include="Resources\ide-script-30.png" />
     <Content Include="Resources\ide-tools-30.png" />
+    <Content Include="Resources\import-52.png" />
+    <Content Include="Resources\opened-folder-50.png" />
+    <Content Include="Resources\plus-math-60.png" />
     <Content Include="Templates\English.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
