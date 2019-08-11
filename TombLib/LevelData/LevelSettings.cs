@@ -33,18 +33,17 @@ namespace TombLib.LevelData
     {
         public string StaticMesh
         {
-            get { return wadStaticMesh.ToString(parent.WadGameVersion); }
+            get { return parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.WadGameVersion); }
         }
-        public WadStatic wadStaticMesh;
 
         private LevelSettings parent;
-
+        public uint meshId;
         public bool Merge { get; set; }
 
-        public AutoStaticMeshMergeEntry(WadStatic staticMesh,bool merge,LevelSettings parent)
+        public AutoStaticMeshMergeEntry(uint staticMesh,bool merge,LevelSettings parent)
         {
+            this.meshId = staticMesh;
             this.parent = parent;
-            this.wadStaticMesh = staticMesh;
             this.Merge = merge;
         }
 
@@ -63,7 +62,7 @@ namespace TombLib.LevelData
             if(obj is AutoStaticMeshMergeEntry)
             {
                 AutoStaticMeshMergeEntry other = (AutoStaticMeshMergeEntry)obj;
-                if(other.wadStaticMesh.Id == wadStaticMesh.Id)
+                if(other.meshId == meshId)
                 {
                     return true;
                 }
@@ -74,7 +73,7 @@ namespace TombLib.LevelData
 
         public override int GetHashCode()
         {
-            return (int)wadStaticMesh.Id.TypeId;
+            return (int)meshId;
         }
     }
     public class OldWadSoundPath : ICloneable
@@ -564,7 +563,7 @@ namespace TombLib.LevelData
         }
 
         public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) {
-            return (AutoStaticMeshMerges.Where(e => e.wadStaticMesh.Id == staticMesh.Id).Any());
+            return (AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any());
             }
     }
 }

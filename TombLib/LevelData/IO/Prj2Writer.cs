@@ -237,6 +237,13 @@ namespace TombLib.LevelData.IO
                         }
                     chunkIO.WriteChunkEnd();
                 }
+                using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshList,UInt16.MaxValue))
+                {
+                    foreach(var entry in settings.AutoStaticMeshMerges)
+                    {
+                        chunkIO.WriteChunkInt(Prj2Chunks.AutoMergeStaticMeshEntry, entry.meshId);
+                    }
+                }
                 chunkIO.WriteChunkEnd();
             };
 
