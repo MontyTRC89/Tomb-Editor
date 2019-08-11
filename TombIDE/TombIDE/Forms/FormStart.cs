@@ -412,7 +412,7 @@ namespace TombIDE
 
 			XmlHandling.UpdateProjectsXml(_ide.AvailableProjects);
 
-			ToggleMainButtons(treeView.Nodes.Count == 0);
+			panel_Main_Buttons.Visible = treeView.Nodes.Count == 0;
 		}
 
 		private void RepositionProjectNodeIcons() // DarkUI sucks
@@ -422,13 +422,6 @@ namespace TombIDE
 				int iconHeight = (40 * node.VisibleIndex) + 4;
 				node.IconArea = new Rectangle(new Point(4, iconHeight), new Size(32, 32));
 			}
-		}
-
-		private void ToggleMainButtons(bool state)
-		{
-			button_Main_New.Visible = state;
-			button_Main_Open.Visible = state;
-			button_Main_Import.Visible = state;
 		}
 
 		#endregion Methods

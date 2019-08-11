@@ -32,6 +32,7 @@
 			this.button_Rename = new System.Windows.Forms.ToolStripButton();
 			this.checkBox_Remember = new DarkUI.Controls.DarkCheckBox();
 			this.panel_01 = new System.Windows.Forms.Panel();
+			this.panel_Main_Buttons = new System.Windows.Forms.Panel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
@@ -39,6 +40,7 @@
 			this.separator_03 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel_02 = new System.Windows.Forms.Panel();
 			this.panel_01.SuspendLayout();
+			this.panel_Main_Buttons.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.panel_02.SuspendLayout();
 			this.SuspendLayout();
@@ -71,14 +73,13 @@
 			// button_Main_Import
 			// 
 			this.button_Main_Import.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Main_Import.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
 			this.button_Main_Import.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_Main_Import.Image = global::TombIDE.Properties.Resources.import_52;
-			this.button_Main_Import.Location = new System.Drawing.Point(17, 298);
-			this.button_Main_Import.Margin = new System.Windows.Forms.Padding(9, 9, 9, 26);
+			this.button_Main_Import.Location = new System.Drawing.Point(16, 271);
+			this.button_Main_Import.Margin = new System.Windows.Forms.Padding(9, 9, 9, 17);
 			this.button_Main_Import.Name = "button_Main_Import";
-			this.button_Main_Import.Size = new System.Drawing.Size(460, 104);
-			this.button_Main_Import.TabIndex = 4;
+			this.button_Main_Import.Size = new System.Drawing.Size(460, 109);
+			this.button_Main_Import.TabIndex = 2;
 			this.button_Main_Import.Text = "Import Project from .exe";
 			this.button_Main_Import.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_Main_Import.Visible = false;
@@ -87,14 +88,13 @@
 			// button_Main_New
 			// 
 			this.button_Main_New.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Main_New.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
 			this.button_Main_New.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_Main_New.Image = global::TombIDE.Properties.Resources.plus_math_60;
-			this.button_Main_New.Location = new System.Drawing.Point(17, 54);
-			this.button_Main_New.Margin = new System.Windows.Forms.Padding(9, 24, 9, 9);
+			this.button_Main_New.Location = new System.Drawing.Point(16, 17);
+			this.button_Main_New.Margin = new System.Windows.Forms.Padding(9, 17, 9, 9);
 			this.button_Main_New.Name = "button_Main_New";
-			this.button_Main_New.Size = new System.Drawing.Size(460, 104);
-			this.button_Main_New.TabIndex = 2;
+			this.button_Main_New.Size = new System.Drawing.Size(460, 109);
+			this.button_Main_New.TabIndex = 0;
 			this.button_Main_New.Text = "Create New Project...";
 			this.button_Main_New.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_Main_New.Visible = false;
@@ -103,14 +103,13 @@
 			// button_Main_Open
 			// 
 			this.button_Main_Open.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Main_Open.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
 			this.button_Main_Open.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_Main_Open.Image = global::TombIDE.Properties.Resources.opened_folder_50;
-			this.button_Main_Open.Location = new System.Drawing.Point(17, 176);
+			this.button_Main_Open.Location = new System.Drawing.Point(16, 144);
 			this.button_Main_Open.Margin = new System.Windows.Forms.Padding(9);
 			this.button_Main_Open.Name = "button_Main_Open";
-			this.button_Main_Open.Size = new System.Drawing.Size(460, 104);
-			this.button_Main_Open.TabIndex = 3;
+			this.button_Main_Open.Size = new System.Drawing.Size(460, 109);
+			this.button_Main_Open.TabIndex = 1;
 			this.button_Main_Open.Text = "Open .trproj File";
 			this.button_Main_Open.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_Main_Open.Visible = false;
@@ -217,9 +216,7 @@
 			// panel_01
 			// 
 			this.panel_01.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel_01.Controls.Add(this.button_Main_Import);
-			this.panel_01.Controls.Add(this.button_Main_Open);
-			this.panel_01.Controls.Add(this.button_Main_New);
+			this.panel_01.Controls.Add(this.panel_Main_Buttons);
 			this.panel_01.Controls.Add(this.treeView);
 			this.panel_01.Controls.Add(this.toolStrip);
 			this.panel_01.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -227,6 +224,19 @@
 			this.panel_01.Name = "panel_01";
 			this.panel_01.Size = new System.Drawing.Size(496, 432);
 			this.panel_01.TabIndex = 0;
+			// 
+			// panel_Main_Buttons
+			// 
+			this.panel_Main_Buttons.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.panel_Main_Buttons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_Main_Buttons.Controls.Add(this.button_Main_New);
+			this.panel_Main_Buttons.Controls.Add(this.button_Main_Import);
+			this.panel_Main_Buttons.Controls.Add(this.button_Main_Open);
+			this.panel_Main_Buttons.Location = new System.Drawing.Point(0, 30);
+			this.panel_Main_Buttons.Margin = new System.Windows.Forms.Padding(0);
+			this.panel_Main_Buttons.Name = "panel_Main_Buttons";
+			this.panel_Main_Buttons.Size = new System.Drawing.Size(494, 400);
+			this.panel_Main_Buttons.TabIndex = 2;
 			// 
 			// treeView
 			// 
@@ -317,6 +327,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "TombIDE - Start";
 			this.panel_01.ResumeLayout(false);
+			this.panel_Main_Buttons.ResumeLayout(false);
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
 			this.panel_02.ResumeLayout(false);
@@ -335,6 +346,7 @@
 		private DarkUI.Controls.DarkTreeView treeView;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
+		private System.Windows.Forms.Panel panel_Main_Buttons;
 		private System.Windows.Forms.ToolStripButton button_Delete;
 		private System.Windows.Forms.ToolStripButton button_Import;
 		private System.Windows.Forms.ToolStripButton button_MoveDown;
