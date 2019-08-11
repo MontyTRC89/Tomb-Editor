@@ -350,7 +350,7 @@ namespace TombIDE.Shared.Scripting
 			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 		}
 
-		private void DoSyntaxHighlighting(TextChangedEventArgs e)
+		private void DoSyntaxHighlighting(TextChangedEventArgs e, bool noLoop = false)
 		{
 			// Clear styles
 			e.ChangedRange.ClearStyle(
@@ -358,16 +358,44 @@ namespace TombIDE.Shared.Scripting
 					sectionColor, newCommandColor, oldCommandColor, unknownCommandColor);
 
 			// Apply styles (THE ORDER IS IMPORTANT!)
-			e.ChangedRange.SetStyle(commentColor, @";.*$", RegexOptions.Multiline);
+			e.ChangedRange.SetStyle(commentColor, @";.*");
 			e.ChangedRange.SetStyle(regularColor, @"[\[\],=]");
-			e.ChangedRange.SetStyle(referenceColor, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
-			e.ChangedRange.SetStyle(valueColor, @"=\s?.*$", RegexOptions.Multiline);
+			e.ChangedRange.SetStyle(referenceColor, @"\$[a-f0-9]*", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(referenceColor, @"#(define|first_id|include)", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(newCommandColor, ">");
 			e.ChangedRange.SetStyle(sectionColor, @"\[(" + string.Join("|", KeyWords.Sections) + @")\]");
-			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.NewCommands) + @")\s?=\s?");
-			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s?=\s?");
-			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.TR5MainCommands) + @")\s?=\s?");
-			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.TR5Commands) + @")\s?=\s?");
-			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s?=\s?");
+			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.NewCommands) + @")\s*?=");
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=");
+			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.TR5MainCommands) + @")\s*?=");
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.TR5Commands) + @")\s*?=");
+			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=");
+			e.ChangedRange.SetStyle(valueColor, "=.*");
+
+			e.ChangedRange.SetStyle(valueColor, @">\s*?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + ")");
+
+			if (noLoop)
+				return;
+
+			for (int i = e.ChangedRange.FromLine; i > 0; i--)
+			{
+				if (GetLineText(i).Contains("="))
+				{
+					for (int j = i + 1; j > 0; j++)
+					{
+						if (GetLineText(j).Contains("="))
+						{
+							Place start = new Place(0, i);
+							Place end = new Place(GetLineText(j).Length, j);
+							e.ChangedRange = new Range(this, start, end);
+							DoSyntaxHighlighting(e, true);
+
+							break;
+						}
+					}
+
+					break;
+				}
+			}
 		}
 
 		#endregion Other methods
