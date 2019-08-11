@@ -92,7 +92,9 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true, bool adjustUV = false)
+        public static Level LoadFromPrj(string filename, string soundsPath, 
+                                        IProgressReporter progressReporter, 
+                                        bool remapFlybyBitmask = true, bool adjustUV = false)
         {
             var level = new Level();
 
@@ -578,7 +580,7 @@ namespace TombLib.LevelData.IO
                                 var sound = new SoundSourceInstance()
                                 {
                                     ScriptId = unchecked((ushort)objectsThings2[j]),
-                                    WadReferencedSoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
+                                    SoundId = objSlot,
                                     Position = position
                                 };
                                 room.AddObject(level, sound);
@@ -1249,6 +1251,33 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
+                // TODO_SOUNDS: Read sounds catalog. We need it just for names, because we'll take 
+                // sound infos from SFX/SAM.
+                WadSounds sounds;
+                {
+                    // If no sounds file was provided, just take the default one
+                    if (soundsPath == "")
+                        soundsPath = "Sounds\\TR4\\Sounds.xml";
+
+                    // If provided sounds file is in TXT format, let's convert it to XML
+                    if (Path.GetExtension(soundsPath).ToLower() == "txt")
+                    {
+                        sounds = WadSounds.ReadFromTxt(soundsPath);
+                    }
+                    else if (Path.GetExtension(soundsPath).ToLower() == "xml")
+                    {
+                        sounds = WadSounds.ReadFromXml(soundsPath);
+                    }
+                    else
+                    {
+                        soundsPath = "Sounds\\TR4\\Sounds.xml";
+                        sounds = WadSounds.ReadFromXml(soundsPath);
+                    }
+                }
+
+                level.Settings.BaseSoundsXmlFilePath = soundsPath;
+                level.Settings.BaseSounds = sounds;
+
                 // Read WAD path
                 {
                     var stringBuffer = GetPrjString(reader);
@@ -1263,6 +1292,16 @@ namespace TombLib.LevelData.IO
                         level.Settings.Wads.Add(newWad);
                         if (newWad.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
+
+                        // TODO_SOUNDS: we actually have a valid WAD loaded, let's change names using the catalog
+                        // and mark them automatically for compilation
+                        foreach (var soundInfo in newWad.Wad.Sounds.SoundInfos)
+                        {
+                            var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
+                            if (catalogInfo != null)
+                                soundInfo.Name = catalogInfo.Name;
+                            level.Settings.SelectedSounds.Add(soundInfo.Id);
+                        }
 
                         progressReporter.ReportProgress(60, "Loaded WAD '" + wadPath + "'");
 

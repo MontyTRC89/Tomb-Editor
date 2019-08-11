@@ -98,6 +98,35 @@ namespace TombLib.LevelData
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
 
+        // New sound system
+        public string BaseSoundsXmlFilePath { get; set; } = null;
+        public WadSounds BaseSounds { get; set; } = new WadSounds();
+        public List<int> SelectedSounds { get; set; } = new List<int>();
+        public List<WadSoundInfo> GlobalSoundMap
+        {
+            get
+            {
+                var soundmap = new SortedDictionary<int, WadSoundInfo>();
+
+                // First collect all sounds from base file
+                foreach (var sound in BaseSounds.SoundInfos)
+                    if (!soundmap.ContainsKey(sound.Id))
+                        soundmap.Add(sound.Id, sound);
+
+                // Then collect sounds from all wads, using the most recent found
+                foreach (var wadRef in Wads)
+                    foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
+                    {
+                        if (!soundmap.ContainsKey(sound.Id))
+                            soundmap.Add(sound.Id, sound);
+                        else
+                            soundmap[sound.Id] = sound;
+                    }
+
+                return soundmap.Values.ToList();
+            }
+        }
+
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
@@ -419,27 +448,6 @@ namespace TombLib.LevelData
             return null;
         }
 
-        public WadFixedSoundInfo WadTryGetFixedSoundInfo(WadFixedSoundInfoId id)
-        {
-            WadFixedSoundInfo result;
-            foreach (ReferencedWad wad in Wads)
-                if (wad.Wad != null && wad.Wad.FixedSoundInfos.TryGetValue(id, out result))
-                    return result;
-            return null;
-        }
-
-        public WadSoundInfo WadTryGetSoundInfo(string soundName)
-        {
-            foreach (ReferencedWad wad in Wads)
-                if (wad.Wad != null)
-                {
-                    WadSoundInfo result = wad.Wad.TryGetSound(soundName);
-                    if (result != null)
-                        return result;
-                }
-            return null;
-        }
-
         public SortedList<WadMoveableId, WadMoveable> WadGetAllMoveables()
         {
             SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();
@@ -472,24 +480,6 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> WadGetAllFixedSoundInfos()
-        {
-            SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> result = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
-            foreach (ReferencedWad wad in Wads)
-                foreach (KeyValuePair<WadFixedSoundInfoId, WadFixedSoundInfo> moveable in wad.Wad.FixedSoundInfos)
-                    if (!result.ContainsKey(moveable.Key))
-                        result.Add(moveable.Key, moveable.Value);
-            return result;
-        }
-
-        public HashSet<WadSoundInfo> WadGetAllSoundInfos()
-        {
-            HashSet<WadSoundInfo> result = new HashSet<WadSoundInfo>();
-            foreach (ReferencedWad wad in Wads)
-                result.UnionWith(wad.Wad.SoundInfosUnique);
-            return result;
-        }
-
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
             new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new[] { new FileFormat("Tomb Editor Level", "prj2") };
@@ -501,6 +491,12 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]
+        {
+            new FileFormat("TRLE sounds catalog", "txt"),
+            new FileFormat("Tomb Editor sounds catalog", "xml")
+        };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsXmlFiles = new[] { new FileFormat("XML file", "xml") };
 
         public static WadGameVersion WadGameVersionFromGameVersion(GameVersion v)
         {
@@ -512,6 +508,14 @@ namespace TombLib.LevelData
                 case GameVersion.TR5Main: return WadGameVersion.TR5Main;
                 default: return WadGameVersion.TR4_TRNG;
             }
+        }
+
+        public WadSoundInfo WadTryGetSoundInfo(int id)
+        {
+            foreach (var soundInfo in GlobalSoundMap)
+                if (soundInfo.Id == id)
+                    return soundInfo;
+            return null;
         }
     }
 }

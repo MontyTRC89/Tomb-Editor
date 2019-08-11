@@ -121,6 +121,13 @@
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.dgvSounds = new DarkUI.Controls.DarkDataGridView();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.butSearchBaseXmlFilePath = new DarkUI.Controls.DarkButton();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
+            this.tbBaseSoundsXmlFilePath = new DarkUI.Controls.DarkTextBox();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.panel11 = new System.Windows.Forms.Panel();
@@ -128,6 +135,10 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsXml = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -160,6 +171,9 @@
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
+            this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSounds)).BeginInit();
+            this.panel4.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.panel11.SuspendLayout();
             this.SuspendLayout();
@@ -229,6 +243,7 @@
             this.tabbedContainer.Controls.Add(this.tabPage3);
             this.tabbedContainer.Controls.Add(this.tabPage6);
             this.tabbedContainer.Controls.Add(this.tabPage7);
+            this.tabbedContainer.Controls.Add(this.tabPage9);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
@@ -1316,6 +1331,90 @@
             this.darkLabel12.TabIndex = 101;
             this.darkLabel12.Text = "Texture tile padding:";
             // 
+            // tabPage9
+            // 
+            this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage9.Controls.Add(this.darkLabel18);
+            this.tabPage9.Controls.Add(this.dgvSounds);
+            this.tabPage9.Controls.Add(this.panel4);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(563, 434);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Sounds";
+            // 
+            // darkLabel18
+            // 
+            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel18.Location = new System.Drawing.Point(3, 61);
+            this.darkLabel18.Name = "darkLabel18";
+            this.darkLabel18.Size = new System.Drawing.Size(384, 17);
+            this.darkLabel18.TabIndex = 97;
+            this.darkLabel18.Text = "Sounds to save in compiled level:";
+            // 
+            // dgvSounds
+            // 
+            this.dgvSounds.AllowUserToAddRows = false;
+            this.dgvSounds.AllowUserToDeleteRows = false;
+            this.dgvSounds.AllowUserToDragDropRows = false;
+            this.dgvSounds.AllowUserToOrderColumns = true;
+            this.dgvSounds.AllowUserToPasteCells = false;
+            this.dgvSounds.AllowUserToResizeRows = true;
+            this.dgvSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvSounds.ColumnHeadersHeight = 17;
+            this.dgvSounds.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colSoundsId,
+            this.colSoundsName,
+            this.colSoundsXml,
+            this.colSoundsEnabled});
+            this.dgvSounds.Location = new System.Drawing.Point(3, 81);
+            this.dgvSounds.Name = "dgvSounds";
+            this.dgvSounds.RowHeadersWidth = 41;
+            this.dgvSounds.Size = new System.Drawing.Size(555, 347);
+            this.dgvSounds.TabIndex = 96;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.butSearchBaseXmlFilePath);
+            this.panel4.Controls.Add(this.darkLabel17);
+            this.panel4.Controls.Add(this.tbBaseSoundsXmlFilePath);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel4.Location = new System.Drawing.Point(3, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(557, 52);
+            this.panel4.TabIndex = 95;
+            // 
+            // butSearchBaseXmlFilePath
+            // 
+            this.butSearchBaseXmlFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearchBaseXmlFilePath.Location = new System.Drawing.Point(462, 20);
+            this.butSearchBaseXmlFilePath.Name = "butSearchBaseXmlFilePath";
+            this.butSearchBaseXmlFilePath.Size = new System.Drawing.Size(92, 22);
+            this.butSearchBaseXmlFilePath.TabIndex = 3;
+            this.butSearchBaseXmlFilePath.Text = "Search";
+            this.butSearchBaseXmlFilePath.Click += new System.EventHandler(this.ButSearchBaseXmlFilePath_Click);
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(0, 0);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(384, 17);
+            this.darkLabel17.TabIndex = 1;
+            this.darkLabel17.Text = "Full file path for base sounds XML file:";
+            // 
+            // tbBaseSoundsXmlFilePath
+            // 
+            this.tbBaseSoundsXmlFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbBaseSoundsXmlFilePath.Location = new System.Drawing.Point(3, 20);
+            this.tbBaseSoundsXmlFilePath.Name = "tbBaseSoundsXmlFilePath";
+            this.tbBaseSoundsXmlFilePath.Size = new System.Drawing.Size(453, 22);
+            this.tbBaseSoundsXmlFilePath.TabIndex = 2;
+            // 
             // darkSectionPanel1
             // 
             this.darkSectionPanel1.Controls.Add(this.optionsList);
@@ -1387,6 +1486,32 @@
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
             // 
+            // colSoundsId
+            // 
+            this.colSoundsId.HeaderText = "ID";
+            this.colSoundsId.Name = "colSoundsId";
+            this.colSoundsId.Width = 40;
+            // 
+            // colSoundsName
+            // 
+            this.colSoundsName.HeaderText = "Name";
+            this.colSoundsName.Name = "colSoundsName";
+            this.colSoundsName.Width = 200;
+            // 
+            // colSoundsXml
+            // 
+            this.colSoundsXml.HeaderText = "XML";
+            this.colSoundsXml.Name = "colSoundsXml";
+            this.colSoundsXml.Width = 200;
+            // 
+            // colSoundsEnabled
+            // 
+            this.colSoundsEnabled.HeaderText = "Compile";
+            this.colSoundsEnabled.Name = "colSoundsEnabled";
+            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colSoundsEnabled.Width = 60;
+            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
@@ -1445,6 +1570,10 @@
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSounds)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1563,5 +1692,16 @@
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkCheckBox cbAgressiveTexturePacking;
         private DarkUI.Controls.DarkCheckBox cbAgressiveFloordataPacking;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.Panel panel4;
+        private DarkUI.Controls.DarkButton butSearchBaseXmlFilePath;
+        private DarkUI.Controls.DarkLabel darkLabel17;
+        private DarkUI.Controls.DarkTextBox tbBaseSoundsXmlFilePath;
+        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkDataGridView dgvSounds;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsXml;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colSoundsEnabled;
     }
 }

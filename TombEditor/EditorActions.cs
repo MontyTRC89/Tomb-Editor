@@ -724,7 +724,7 @@ namespace TombEditor
             }
             else if (instance is SoundSourceInstance)
             {
-                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Settings.WadGetAllSoundInfos()))
+                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Settings.GlobalSoundMap))
                     if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -3985,19 +3985,27 @@ namespace TombEditor
             if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
-            if (string.IsNullOrEmpty(fileName))
+            /*if (string.IsNullOrEmpty(fileName))
                 fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, null, false);
             if (string.IsNullOrEmpty(fileName))
-                return;
+                return;*/
 
-            Level newLevel = null;
-            using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
-                newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrection)))
+            using (var formImport = new FormImportPrj())
             {
-                if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                if (formImport.ShowDialog() != DialogResult.OK)
                     return;
-                _editor.Level = newLevel;
-                newLevel = null;
+
+                Level newLevel = null;
+                using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
+                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath, progressReporter, 
+                    _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, 
+                    _editor.Configuration.Editor_UseHalfPixelCorrection)))
+                {
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return;
+                    _editor.Level = newLevel;
+                    newLevel = null;
+                }
             }
         }
 

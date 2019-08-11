@@ -13,6 +13,7 @@ using TombLib.Script;
 using TombLib.Utils;
 using System.Collections.Generic;
 using TombLib.Wad.TrLevels;
+using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -664,6 +665,9 @@ namespace TombEditor.Forms
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            WadSounds sounds = WadSounds.ReadFromTxt("Sounds\\TR4\\sounds.txt");
+            WadSounds.SaveToXml("Sounds\\TR4\\Sounds.xml", sounds);
+
             /*using (var reader = new BinaryReader(File.OpenRead("Font.tr5.pc")))
             {
                 var bmp = new Bitmap(256, 768);

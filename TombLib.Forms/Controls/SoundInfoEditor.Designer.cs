@@ -69,6 +69,8 @@
             this.lblModeTooltip = new DarkUI.Controls.DarkLabel();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
             this.dataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.tbID = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).BeginInit();
@@ -190,7 +192,7 @@
             // 
             this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
-            this.butClipboardPaste.Location = new System.Drawing.Point(378, 0);
+            this.butClipboardPaste.Location = new System.Drawing.Point(378, 31);
             this.butClipboardPaste.Name = "butClipboardPaste";
             this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
             this.butClipboardPaste.TabIndex = 22;
@@ -202,7 +204,7 @@
             // 
             this.butClipboardCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butClipboardCopy.Image = global::TombLib.Properties.Resources.general_copy_16;
-            this.butClipboardCopy.Location = new System.Drawing.Point(350, 0);
+            this.butClipboardCopy.Location = new System.Drawing.Point(350, 31);
             this.butClipboardCopy.Name = "butClipboardCopy";
             this.butClipboardCopy.Size = new System.Drawing.Size(22, 22);
             this.butClipboardCopy.TabIndex = 22;
@@ -265,7 +267,7 @@
             this.trackBar.AutoSize = false;
             this.trackBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.trackBar.Cursor = System.Windows.Forms.Cursors.SizeWE;
-            this.trackBar.Location = new System.Drawing.Point(0, 196);
+            this.trackBar.Location = new System.Drawing.Point(3, 230);
             this.trackBar.Maximum = 227;
             this.trackBar.Minimum = 5;
             this.trackBar.Name = "trackBar";
@@ -293,7 +295,7 @@
             this.trackBar_100MillisecondMark.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.trackBar_100MillisecondMark.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
             this.trackBar_100MillisecondMark.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.trackBar_100MillisecondMark.Location = new System.Drawing.Point(120, 204);
+            this.trackBar_100MillisecondMark.Location = new System.Drawing.Point(123, 238);
             this.trackBar_100MillisecondMark.Name = "trackBar_100MillisecondMark";
             this.trackBar_100MillisecondMark.Size = new System.Drawing.Size(21, 9);
             this.trackBar_100MillisecondMark.TabIndex = 24;
@@ -304,7 +306,7 @@
             this.butPlayPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlayPreview.Image = global::TombLib.Properties.Resources.actions_play_16;
             this.butPlayPreview.ImagePadding = 3;
-            this.butPlayPreview.Location = new System.Drawing.Point(220, 0);
+            this.butPlayPreview.Location = new System.Drawing.Point(220, 31);
             this.butPlayPreview.Name = "butPlayPreview";
             this.butPlayPreview.Size = new System.Drawing.Size(124, 22);
             this.butPlayPreview.TabIndex = 2;
@@ -325,11 +327,11 @@
             this.PlayButtonColumn,
             this.DurationColumn,
             this.SizeColumn});
-            this.dataGridView.Location = new System.Drawing.Point(0, 195);
+            this.dataGridView.Location = new System.Drawing.Point(0, 230);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowHeadersWidth = 41;
             this.dataGridView.RowTemplate.Height = 64;
-            this.dataGridView.Size = new System.Drawing.Size(368, 151);
+            this.dataGridView.Size = new System.Drawing.Size(368, 196);
             this.dataGridView.TabIndex = 20;
             this.dataGridView.Tag = "s";
             this.dataGridView.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.dataGridView_CellFormattingSafe);
@@ -483,7 +485,7 @@
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(46, 0);
+            this.tbName.Location = new System.Drawing.Point(46, 31);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(168, 22);
             this.tbName.TabIndex = 1;
@@ -492,7 +494,7 @@
             // tbNameLabel
             // 
             this.tbNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbNameLabel.Location = new System.Drawing.Point(-3, 2);
+            this.tbNameLabel.Location = new System.Drawing.Point(-3, 33);
             this.tbNameLabel.Name = "tbNameLabel";
             this.tbNameLabel.Size = new System.Drawing.Size(42, 13);
             this.tbNameLabel.TabIndex = 0;
@@ -534,7 +536,7 @@
             // 
             this.darkLabel8.AutoSize = true;
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel8.Location = new System.Drawing.Point(0, 180);
+            this.darkLabel8.Location = new System.Drawing.Point(3, 214);
             this.darkLabel8.Name = "darkLabel8";
             this.darkLabel8.Size = new System.Drawing.Size(168, 13);
             this.darkLabel8.TabIndex = 19;
@@ -577,7 +579,7 @@
             this.darkGroupBox1.Controls.Add(this.comboLoop);
             this.darkGroupBox1.Controls.Add(this.numericPitch);
             this.darkGroupBox1.Controls.Add(this.numericRange);
-            this.darkGroupBox1.Location = new System.Drawing.Point(0, 28);
+            this.darkGroupBox1.Location = new System.Drawing.Point(0, 59);
             this.darkGroupBox1.Name = "darkGroupBox1";
             this.darkGroupBox1.Size = new System.Drawing.Size(400, 138);
             this.darkGroupBox1.TabIndex = 30;
@@ -608,20 +610,42 @@
             // 
             // dataGridViewControls
             // 
+            this.dataGridViewControls.AlwaysInsertAtZero = false;
             this.dataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewControls.Enabled = false;
-            this.dataGridViewControls.Location = new System.Drawing.Point(374, 195);
+            this.dataGridViewControls.Location = new System.Drawing.Point(374, 230);
             this.dataGridViewControls.MinimumSize = new System.Drawing.Size(24, 24);
             this.dataGridViewControls.Name = "dataGridViewControls";
-            this.dataGridViewControls.Size = new System.Drawing.Size(26, 151);
+            this.dataGridViewControls.Size = new System.Drawing.Size(26, 196);
             this.dataGridViewControls.TabIndex = 21;
+            // 
+            // tbID
+            // 
+            this.tbID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbID.Location = new System.Drawing.Point(46, 3);
+            this.tbID.Name = "tbID";
+            this.tbID.Size = new System.Drawing.Size(100, 22);
+            this.tbID.TabIndex = 32;
+            // 
+            // darkLabel9
+            // 
+            this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel9.Location = new System.Drawing.Point(-3, 5);
+            this.darkLabel9.Name = "darkLabel9";
+            this.darkLabel9.Size = new System.Drawing.Size(42, 13);
+            this.darkLabel9.TabIndex = 31;
+            this.darkLabel9.Text = "ID:";
+            this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // SoundInfoEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.Controls.Add(this.tbID);
+            this.Controls.Add(this.darkLabel9);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.trackBar_100MillisecondMark);
             this.Controls.Add(this.trackBar);
@@ -637,7 +661,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(400, 346);
             this.Name = "SoundInfoEditor";
-            this.Size = new System.Drawing.Size(400, 346);
+            this.Size = new System.Drawing.Size(400, 426);
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).EndInit();
@@ -693,5 +717,7 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkLabel lblModeTooltip;
         private DarkUI.Controls.DarkLabel darkLabel7;
+        private DarkUI.Controls.DarkTextBox tbID;
+        private DarkUI.Controls.DarkLabel darkLabel9;
     }
 }

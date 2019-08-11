@@ -74,7 +74,7 @@ namespace TombLib.Controls
                     ;
                     try
                     {
-                        WadSample result = new WadSample(WadSample.ConvertSampleFormat(File.ReadAllBytes(fileName), fileSampleRate =>
+                        WadSample result = new WadSample(fileName, WadSample.ConvertSampleFormat(File.ReadAllBytes(fileName), fileSampleRate =>
                         {
                             if (fileSampleRate == TargetSampleRate)
                                 return new WadSample.ResampleInfo { Resample = false, SampleRate = TargetSampleRate };
@@ -161,13 +161,15 @@ namespace TombLib.Controls
 
         private void butClipboardCopy_Click(object sender, EventArgs e)
         {
-            Wad2 tempWad = new Wad2();
+            // TODO_SOUNDS
+
+           /*Wad2 tempWad = new Wad2();
             tempWad.FixedSoundInfos.Add(new WadFixedSoundInfoId(), new WadFixedSoundInfo(new WadFixedSoundInfoId()) { SoundInfo = SoundInfo });
             using (MemoryStream stream = new MemoryStream())
             {
                 Wad2Writer.SaveToStream(tempWad, stream);
                 Clipboard.SetData(_clipboardName, stream.ToArray());
-            }
+            }*/
         }
 
         private void butClipboardPaste_Click(object sender, EventArgs e)
@@ -183,7 +185,7 @@ namespace TombLib.Controls
             using (MemoryStream stream = new MemoryStream(data, false))
             {
                 Wad2 tempWad = Wad2Loader.LoadFromStream(stream);
-                SoundInfo = tempWad.FixedSoundInfos.Values.First().SoundInfo;
+                SoundInfo = tempWad.FixedSoundInfosObsolete.Values.First().SoundInfo;
             }
         }
 
@@ -358,7 +360,7 @@ namespace TombLib.Controls
             {
                 _targetSampleRate = value;
                 comboSampleRate.Text = comboSampleRateTextBox.Text = value.ToString();
-                numericPitch.Maximum = 100m * (decimal)WadSoundInfoMetaData.GetMaxPitch(value);
+                numericPitch.Maximum = 100m * (decimal)WadSoundInfo.GetMaxPitch(value);
             }
         }
 
@@ -403,7 +405,11 @@ namespace TombLib.Controls
         {
             get
             {
-                WadSoundInfoMetaData result = new WadSoundInfoMetaData(tbName.Text);
+                // TODO_SOUNDS
+
+                return new WadSoundInfo(0);
+                /*
+                WadSoundInfo result = new WadSoundInfo(tbName.Text);
                 result.Volume = (float)(numericVolume.Value * 0.01m);
                 result.PitchFactor = (float)(numericPitch.Value * 0.01m);
                 result.RangeInSectors = (float)numericRange.Value;
@@ -414,11 +420,11 @@ namespace TombLib.Controls
                 result.LoopBehaviour = (WadSoundLoopBehaviour)(comboLoop.SelectedIndex);
                 if (dataGridView.DataSource != null)
                     result.Samples.AddRange((IEnumerable<WadSample>)dataGridView.DataSource);
-                return new WadSoundInfo(result);
+                return new WadSoundInfo(result);*/
             }
             set
             {
-                try
+                /*try
                 {
                     // Prevent a number of sound info changed events
                     _soundInfoCurrentlyChanging = true;
@@ -446,7 +452,7 @@ namespace TombLib.Controls
                 finally
                 {
                     _soundInfoCurrentlyChanging = false;
-                }
+                }*/
             }
         }
 

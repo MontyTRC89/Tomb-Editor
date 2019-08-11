@@ -118,6 +118,11 @@ namespace TombLib.LevelData.IO
                     settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
                     settings.SkyTextureFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.BaseSoundsXmlFilePath)
+                {
+                    settings.BaseSoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
+                    settings.BaseSounds = WadSounds.ReadFromXml(settings.BaseSoundsXmlFilePath);
+                }
                 else if (id == Prj2Chunks.Tr5ExtraSpritesFilePath)
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.OldWadSoundPaths)
@@ -188,6 +193,17 @@ namespace TombLib.LevelData.IO
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.SelectedSounds)
+                {
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.SelectedSound)
+                            return false;
+
+                        settings.SelectedSounds.Add(chunkIO.ReadChunkInt(chunkSize2));
+                        return true;
+                    });
+                }
                 else if (id == Prj2Chunks.Wads)
                 {
                     progressReporter?.ReportInfo("Reading wads...");
@@ -875,7 +891,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectSoundSource3 || id3 == Prj2Chunks.ObjectSoundSource2 || id3 == Prj2Chunks.ObjectSoundSource)
+                else if (id3 == Prj2Chunks.ObjectSoundSource4 || id3 == Prj2Chunks.ObjectSoundSource3 || id3 == Prj2Chunks.ObjectSoundSource2 || id3 == Prj2Chunks.ObjectSoundSource)
                 {
                     var instance = new SoundSourceInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -892,6 +908,12 @@ namespace TombLib.LevelData.IO
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
+                    else if (id3 == Prj2Chunks.ObjectSoundSource4)
+                    {
+                        instance.SoundId = chunkIO.Raw.ReadInt32();  
+                        chunkIO.Raw.ReadInt16(); // Unused
+                        chunkIO.Raw.ReadByte(); // Unused
+                    }
                     else
                     {
                         instance.WadReferencedSoundName = chunkIO.Raw.ReadStringUTF8();
@@ -899,7 +921,7 @@ namespace TombLib.LevelData.IO
                         // Use an embedded sound info
                         long soundInfoId = LEB128.ReadLong(chunkIO.Raw);
                         if (soundInfoId >= 0)
-                            instance.EmbeddedSoundInfo = embeddedSoundInfoWad.FixedSoundInfos[new WadFixedSoundInfoId((uint)soundInfoId)].SoundInfo;
+                            instance.EmbeddedSoundInfo = embeddedSoundInfoWad.FixedSoundInfosObsolete[new WadFixedSoundInfoId((uint)soundInfoId)].SoundInfo;
                     }
 
                     addObject(instance);

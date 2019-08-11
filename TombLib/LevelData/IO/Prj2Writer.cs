@@ -62,10 +62,9 @@ namespace TombLib.LevelData.IO
 
                 // Write settings
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
-                Dictionary<WadSoundInfo, int> soundInfos = WriteEmbeddedSoundInfoWad(chunkIO, rooms.Keys.SelectMany(room => room.Objects));
-
+               
                 // Write rooms
-                WriteRooms(chunkIO, rooms, levelSettingIds, soundInfos);
+                WriteRooms(chunkIO, rooms, levelSettingIds);
                 chunkIO.WriteChunkEnd();
             }
         }
@@ -85,10 +84,9 @@ namespace TombLib.LevelData.IO
                 foreach (ObjectInstance instance in objects)
                     instance.CopyDependentLevelSettings(copyInstance);
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
-                Dictionary<WadSoundInfo, int> soundInfos = WriteEmbeddedSoundInfoWad(chunkIO, objects);
 
                 // Write objects
-                WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup, soundInfos);
+                WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup);
                 chunkIO.WriteChunkEnd();
             }
         }
@@ -139,6 +137,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.BaseSoundsXmlFilePath, settings.BaseSoundsXmlFilePath ?? "");
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
                     foreach (ReferencedWad wad in settings.Wads)
@@ -147,6 +146,12 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkString(Prj2Chunks.WadPath, wad.Path ?? "");
                             chunkIO.WriteChunkEnd();
                         }
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkSelectedSounds = chunkIO.WriteChunk(Prj2Chunks.SelectedSounds, long.MaxValue))
+                {
+                    foreach (int selectedSound in settings.SelectedSounds)
+                        chunkIO.WriteChunkInt(Prj2Chunks.SelectedSound, selectedSound);
                     chunkIO.WriteChunkEnd();
                 }
                 using (var chunkTextures = chunkIO.WriteChunk(Prj2Chunks.Textures, long.MaxValue))
@@ -243,37 +248,7 @@ namespace TombLib.LevelData.IO
             return levelSettingIds;
         }
 
-        private static Dictionary<WadSoundInfo, int> WriteEmbeddedSoundInfoWad(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects)
-        {
-            // Collect embedded sound infos
-            var soundInfoList = new List<WadSoundInfo>();
-            var SoundInfos = new Dictionary<WadSoundInfo, int>();
-            foreach (SoundSourceInstance soundSource in objects.OfType<SoundSourceInstance>())
-                if (soundSource.EmbeddedSoundInfo != null)
-                    if (!SoundInfos.ContainsKey(soundSource.EmbeddedSoundInfo))
-                    {
-                        SoundInfos.Add(soundSource.EmbeddedSoundInfo, soundInfoList.Count);
-                        soundInfoList.Add(soundSource.EmbeddedSoundInfo);
-                    }
-
-            // Write embedded sound info wad
-            if (soundInfoList.Count > 0)
-            {
-                Wad2 tempEmbeddedWad = new Wad2();
-                for (int i = 0; i < soundInfoList.Count; ++i)
-                {
-                    var id = new WadFixedSoundInfoId((uint)i);
-                    tempEmbeddedWad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfoList[i] });
-                }
-                using (var chunk = chunkIO.WriteChunk(Prj2Chunks.EmbeddedSoundInfoWad, long.MaxValue))
-                    Wad2Writer.SaveToBinaryWriterFast(tempEmbeddedWad, chunkIO.Raw);
-            }
-
-            return SoundInfos;
-        }
-
-
-        private static void WriteRooms(ChunkWriter chunkIO, Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds, Dictionary<WadSoundInfo, int> soundInfos)
+        private static void WriteRooms(ChunkWriter chunkIO, Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds)
         {
             // Allocate object indices
             var objectInstanceLookup = new Dictionary<ObjectInstance, int>();
@@ -380,7 +355,7 @@ namespace TombLib.LevelData.IO
                             }
 
                         // Write room objects
-                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup, soundInfos);
+                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup);
                         chunkIO.WriteChunkEnd();
                     }
                 chunkIO.WriteChunkEnd();
@@ -389,7 +364,7 @@ namespace TombLib.LevelData.IO
 
         private static void WriteObjects(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects,
             Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds,
-            Dictionary<ObjectInstance, int> objectInstanceLookup, Dictionary<WadSoundInfo, int> soundInfos)
+            Dictionary<ObjectInstance, int> objectInstanceLookup)
         {
             using (var chunkObjects = chunkIO.WriteChunk(Prj2Chunks.Objects, long.MaxValue))
             {
@@ -461,13 +436,13 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Strength);
                         }
                     else if (o is SoundSourceInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource3, LEB128.MaximumSize1Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource4, LEB128.MaximumSize1Byte))
                         {
                             var instance = (SoundSourceInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.WriteStringUTF8(instance.WadReferencedSoundName ?? "");
-                            LEB128.Write(chunkIO.Raw, instance.EmbeddedSoundInfo == null ? -1 : soundInfos[instance.EmbeddedSoundInfo]);
+                            chunkIO.Raw.Write(instance.SoundId);
+                            LEB128.Write(chunkIO.Raw, -1);
                         }
                     else if (o is LightInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight, LEB128.MaximumSize2Byte))

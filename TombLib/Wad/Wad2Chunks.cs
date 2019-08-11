@@ -34,6 +34,7 @@ namespace TombLib.Wad
         /****/public static readonly ChunkId SoundInfoLoopBehaviour = ChunkId.FromString("W2Loop");
         /****/public static readonly ChunkId SoundInfoTargetSampleRate = ChunkId.FromString("W2SamplRate");
         /****/public static readonly ChunkId SoundInfoSampleIndex = ChunkId.FromString("W2SamplePtr");
+        /****/public static readonly ChunkId SoundInfoSampleName = ChunkId.FromString("W2SampleName");
         public static readonly ChunkId FixedSoundInfos = ChunkId.FromString("W2FixedSounds");
         /**/public static readonly ChunkId FixedSoundInfo = ChunkId.FromString("W2FixedSound");
         /****/public static readonly ChunkId FixedSoundInfoId = ChunkId.FromString("W2Id");

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData
 {

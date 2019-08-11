@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
+using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -13,6 +15,10 @@ namespace TombLib.LevelData.Compilers
         private static readonly bool _writeDbgWadTxt = false;
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
+        private List<WadSoundInfo> _finalSoundInfosList;
+        private List<WadSample> _finalSamplesList;
+        private int _soundMapSize = 0;
+        private short[] _finalSoundMap;
 
         private void FixWadTextureCoordinates(ref TextureArea texture)
         {
@@ -391,11 +397,8 @@ namespace TombLib.LevelData.Compilers
                             case WadAnimCommandType.PlaySound:
                                 _animCommands.Add(0x05);
 
-                                ushort soundIndex = _soundManager.AllocateSoundInfo(command.SoundInfo);
-                                if (soundIndex > 0x3FFF)
-                                    throw new IndexOutOfRangeException("Sound index '" + soundIndex + "' too big.");
                                 _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(soundIndex | (command.Parameter2 & 0xC000))));
+                                _animCommands.Add(unchecked((short)(command.Parameter2)));
 
                                 break;
 
@@ -631,7 +634,8 @@ namespace TombLib.LevelData.Compilers
         }
 
         private void BuildMeshTree(WadBone bone, List<tr_meshtree> meshTrees, List<WadMesh> usedMeshes)
-        {tr_meshtree tree = new tr_meshtree();
+        {
+            tr_meshtree tree = new tr_meshtree();
             tree.X = (int)bone.Translation.X;
             tree.Y = (int)-bone.Translation.Y;
             tree.Z = (int)bone.Translation.Z;
@@ -662,6 +666,202 @@ namespace TombLib.LevelData.Compilers
 
             for (int i = 0; i < bone.Children.Count; i++)
                 BuildMeshTree(bone.Children[i], meshTrees, usedMeshes);
+        }
+
+        private void PrepareSoundsData()
+        {
+            // Step 1: create the real list of sounds to compile
+            _finalSoundInfosList = new List<WadSoundInfo>();
+            foreach (var soundInfo in _level.Settings.GlobalSoundMap)
+                if (_level.Settings.SelectedSounds.Contains(soundInfo.Id))
+                    _finalSoundInfosList.Add(soundInfo);
+
+            // Step 2: create the sound map
+            switch (_level.Settings.GameVersion)
+            {
+                case GameVersion.TRNG:
+                    _soundMapSize = 2048;
+                    break;
+                case GameVersion.TR2:
+                case GameVersion.TR3:
+                case GameVersion.TR4:
+                    _soundMapSize = 370;
+                    break;
+                case GameVersion.TR5:
+                case GameVersion.TR5Main:
+                    _soundMapSize = 450;
+                    break;
+
+                default:
+                    throw new Exception("Unknown game version " + _level.Settings.GameVersion);
+            }
+
+            _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
+            foreach (var sound in _finalSoundInfosList)
+                _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
+
+            // Step 3: load samples
+            var samples = new List<WadSample>();
+            foreach (var soundInfo in _finalSoundInfosList)
+                foreach (var sample in soundInfo.EmbeddedSamples)
+                    samples.Add(sample);
+
+            _finalSamplesList = new List<WadSample>();
+            SortedDictionary<int, WadSample> loadedSamples = new SortedDictionary<int, WadSample>();
+
+            Parallel.For(0, samples.Count, i =>
+            {
+                WadSample currentSample = WadSample.NullSample;
+                try
+                {
+                    string samplePath = samples[i].SamplePath;
+                    bool found = false;
+
+                    // Search the sample in all registered paths, in descending order
+                    for (int p = 0; p < _level.Settings.OldWadSoundPaths.Count; p++)
+                    {
+                        string newPath = _level.Settings.MakeAbsolute(_level.Settings.OldWadSoundPaths[p].Path);
+                        if (newPath == null)
+                            continue;
+                        newPath = Path.Combine(newPath, samplePath);
+                        if (File.Exists(newPath))
+                        {
+                            samplePath = newPath;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    // If sample was found, then load it...
+                    if (found)
+                    {
+                        using (var stream = new FileStream(samplePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            var buffer = new byte[stream.Length];
+                            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
+                                throw new EndOfStreamException();
+                            currentSample = new WadSample(samplePath, WadSample.ConvertSampleFormat(buffer, false));
+                        }
+                    }
+                    // ... otherwise output null sample
+                    else
+                    {
+                        currentSample = WadSample.NullSample;
+                        logger.Warn(new FileNotFoundException(), "Unable to find sample '" + samplePath + "'");
+                    }
+                }
+                catch (Exception exc)
+                {
+                    //logger.Warn(exc, "Unable to read file '" + samplePathInfos[i].FullPath + "'");
+                }
+
+                lock (loadedSamples)
+                    loadedSamples.Add(i, currentSample);
+            });
+
+            _finalSamplesList = loadedSamples.Values.ToList();
+        }
+
+        private void WriteSoundMetadata(BinaryWriter writer)
+        {
+            // In TRNG NumDemoData is used as sound map size
+            writer.Write((ushort)(_level.Settings.GameVersion == GameVersion.TRNG ? _soundMapSize : 0));
+
+            using (var ms = new MemoryStream())
+            {
+                using (var bw = new BinaryWriterEx(ms))
+                {
+                    // Write soundmap to level file
+                    for (int i = 0; i < _finalSoundMap.Length; i++)
+                        bw.Write(_finalSoundMap[i]);
+
+                    int numSounds = 0;
+                    for (int i = 0; i < _level.Settings.GlobalSoundMap.Count; i++)
+                        if (_level.Settings.SelectedSounds.Contains(_level.Settings.GlobalSoundMap[i].Id))
+                            numSounds++;
+
+                    // Write sound details
+                    int lastSampleIndex = 0;
+                    bw.Write((uint)_finalSoundInfosList.Count);
+                    for (int i = 0; i < _finalSoundInfosList.Count; i++)
+                    {
+                        var soundDetail = _finalSoundInfosList[i];
+
+                        if (soundDetail.EmbeddedSamples.Count > 0x3f)
+                            throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
+                        ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
+                        characteristics |= (ushort)(soundDetail.EmbeddedSamples.Count << 2);
+                        if (soundDetail.DisablePanning)
+                            characteristics |= 0x1000;
+                        if (soundDetail.RandomizePitch)
+                            characteristics |= 0x2000;
+                        if (soundDetail.RandomizeVolume)
+                            characteristics |= 0x4000;
+
+                        if (_level.Settings.GameVersion == GameVersion.TR2)
+                        {
+                            var newSoundDetail = new tr_sound_details();
+                            newSoundDetail.Sample = (ushort)lastSampleIndex;
+                            newSoundDetail.Volume = soundDetail.VolumeByte;
+                            newSoundDetail.Chance = soundDetail.ChanceByte;
+                            newSoundDetail.Characteristics = characteristics;
+                            bw.WriteBlock(newSoundDetail);
+                        }
+                        else
+                        {
+                            var newSoundDetail = new tr3_sound_details();
+                            newSoundDetail.Sample = (ushort)lastSampleIndex;
+                            newSoundDetail.Volume = soundDetail.VolumeByte;
+                            newSoundDetail.Chance = soundDetail.ChanceByte;
+                            newSoundDetail.Range = soundDetail.RangeInSectorsByte;
+                            newSoundDetail.Pitch = soundDetail.PitchFactorByte;
+                            newSoundDetail.Characteristics = characteristics;
+                            bw.WriteBlock(newSoundDetail);
+                        }
+
+                        lastSampleIndex += soundDetail.EmbeddedSamples.Count;
+                    }
+
+                    bw.Write((uint)lastSampleIndex);
+                    for (int i = 0; i < lastSampleIndex; i++)
+                        bw.Write(0);
+                }
+
+                writer.Write(ms.ToArray());
+            }
+        }
+
+        private void WriteSoundData(BinaryWriter writer)
+        {
+            writer.Write((uint)_finalSamplesList.Count); // Write sample count
+            if (_level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main)
+            { // We have to compress the samples first
+              // TR5 uses compressed MS-ADPCM samples
+                byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
+                int[] uncompressedSizes = new int[_finalSamplesList.Count];
+                Parallel.For(0, _finalSamplesList.Count, delegate (int i)
+                {
+                    compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
+                });
+                for (int i = 0; i < _finalSamplesList.Count; ++i)
+                {
+                    writer.Write((uint)uncompressedSizes[i]);
+                    writer.Write((uint)compressedSamples[i].Length);
+                    writer.Write(compressedSamples[i]);
+                }
+            }
+            else
+            { // Uncompressed samples
+                foreach (WadSample sample in _finalSamplesList)
+                {
+                    writer.Write((uint)sample.Data.Length);
+                    writer.Write((uint)sample.Data.Length);
+                    writer.Write(sample.Data, 0, 24);
+                    writer.Write((uint)WadSample.GameSupportedSampleRate); // Overwrite sample rate because the engine actually doens't read this and assumes 22050 anyway. Anything else than 22050 would just be a lie.
+                    writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
+                    writer.Write(sample.Data, 32, sample.Data.Length - 32);
+                }
+            }
         }
     }
 }

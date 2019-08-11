@@ -88,10 +88,10 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version, out game))
-                return "Unknown #" + id;
+                return "UNKNOWN_SOUND_" + id;
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "UNKNOWN_SOUND_" + id;
             return game.Sounds[id].Name;
         }
 
