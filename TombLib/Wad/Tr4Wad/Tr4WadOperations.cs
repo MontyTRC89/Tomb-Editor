@@ -12,17 +12,10 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
-    public class SamplePathInfo
-    {
-        public string Name { get; set; }
-        public string FullPath { get; set; } = null;
-        public bool Found { get { return (!string.IsNullOrEmpty(FullPath)) && File.Exists(FullPath); } }
-    }
-
     internal static class Tr4WadOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
+        
         public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths, IDialogHandler progressReporter)
         {
             logger.Info("Converting TR4 WAD to Wad2");
@@ -34,7 +27,7 @@ namespace TombLib.Wad.Tr4Wad
             var samples = new List<SamplePathInfo>();
             for (var i = 0; i < oldWad.Sounds.Count; i++)
                 samples.Add(new SamplePathInfo { Name = oldWad.Sounds[i] });
-            Func<bool> FindTr4Samples = () =>
+            /*Func<bool> FindTr4Samples = () =>
             {
                 bool everythingOk = true;
                 for (var i = 0; i < oldWad.Sounds.Count; i++)
@@ -52,7 +45,7 @@ namespace TombLib.Wad.Tr4Wad
                 soundPathInformation.FindTr4Samples = FindTr4Samples;
                 progressReporter?.RaiseDialog(soundPathInformation);
                 samples = soundPathInformation.Samples;
-            }
+            }*/
 
             // Convert all textures
             Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);
@@ -64,7 +57,7 @@ namespace TombLib.Wad.Tr4Wad
 
             // Convert moveables
             for (int i = 0; i < oldWad.Moveables.Count; i++)
-                ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures, soundInfos);
+                ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures);
             logger.Info("Moveables read.");
 
             // Convert statics
@@ -76,21 +69,7 @@ namespace TombLib.Wad.Tr4Wad
             ConvertTr4Sprites(wad, oldWad);
             logger.Info("Sprites read.");
 
-            // Insert also additional sounds
-            AddAdditionalSoundInfos(wad, oldWad, soundInfos);
-
             return wad;
-        }
-
-        private static void AddAdditionalSoundInfos(Wad2 wad, Tr4Wad oldWad, WadSoundInfo[] infos)
-        {
-            var newSoundInfos = wad.SoundInfosUnique.ToList();
-            for (uint i = 0; i < infos.Length; ++i)
-                if (infos[i] != null && !newSoundInfos.Contains(infos[i]))
-                {
-                    var id = new WadAdditionalSoundInfoId(TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, i));
-                    wad.AdditionalSoundInfos.Add(id, new WadAdditionalSoundInfo(id) { SoundInfo = infos[i] });
-                }
         }
 
         private static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad, Wad2 wad)
@@ -262,20 +241,15 @@ namespace TombLib.Wad.Tr4Wad
         internal static WadSoundInfo[] ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<SamplePathInfo> samplePathInfos)
         {
             // Load samples
-            var loadedSamples = new Dictionary<int, WadSample>();
+            /*var loadedSamples = new Dictionary<int, WadSample>();
             Parallel.For(0, oldWad.Sounds.Count, i =>
             {
                 WadSample currentSample = WadSample.NullSample;
                 try
                 {
                     if (samplePathInfos[i].Found)
-                        using (var stream = new FileStream(samplePathInfos[i].FullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        {
-                            var buffer = new byte[stream.Length];
-                            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
-                                throw new EndOfStreamException();
-                            currentSample = new WadSample(WadSample.ConvertSampleFormat(buffer, false));
-                        }
+                        // TODO_SOUNDS: for now we just load references to samples
+                        currentSample = new WadSample(samplePathInfos[i].FullPath);
                 }
                 catch (Exception exc)
                 {
@@ -284,7 +258,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 lock (loadedSamples)
                     loadedSamples.Add(i, currentSample);
-            });
+            });*/
 
             // Load sound infos
             int soundMapSize = oldWad.Version == 130 ? 2048 : 370;
@@ -297,7 +271,8 @@ namespace TombLib.Wad.Tr4Wad
 
                 // Fill the new sound info
                 var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
-                var newInfo = new WadSoundInfoMetaData(TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)i));
+                var newInfo = new WadSoundInfo(i);
+                newInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)i);
                 newInfo.VolumeByte = oldInfo.Volume;
                 newInfo.RangeInSectorsByte = oldInfo.Range;
                 newInfo.ChanceByte = oldInfo.Chance;
@@ -311,33 +286,25 @@ namespace TombLib.Wad.Tr4Wad
                 int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
-                    WadSample sample;
-                    if (!loadedSamples.TryGetValue(j, out sample))
+                    /*WadSample sample;
+                    if (!samplePathInfos.TryGetValue(j, out sample))
                     {
                         logger.Warn("Unable to find sample '" + oldWad.Sounds[j] + "'.");
                         sample = WadSample.NullSample;
-                    }
-                    newInfo.Samples.Add(sample);
+                    }*/
+                    newInfo.EmbeddedSamples.Add(new WadSample(oldWad.Sounds[j]));
                 }
-                soundInfos[i] = new WadSoundInfo(newInfo);
+                soundInfos[i] = newInfo;
             }
 
-            // Fix some sounds
-            for (int i = 0; i < soundMapSize; i++)
-                if (soundInfos[i] != null)
-                    if (TrCatalog.IsSoundFixedByDefault(WadGameVersion.TR4_TRNG, (uint)i))
-                    {
-                        var id = new WadFixedSoundInfoId((uint)i);
-                        wad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfos[i] });
-                    }
+            // Assign loaded sounds to Wad2
+            wad.Sounds = new WadSounds(soundInfos);
 
             return soundInfos;
         }
 
         internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
-                                                                    /*List<WadMesh> meshes, */
-                                                                    Dictionary<int, WadTexture> textures,
-                                                                    WadSoundInfo[] soundInfos)
+                                                                    Dictionary<int, WadTexture> textures)
         {
             wad_moveable oldMoveable = oldWad.Moveables[moveableIndex];
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
@@ -476,22 +443,6 @@ namespace TombLib.Wad.Tr4Wad
                                 command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - newFrameStart);
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
-
-                                // Setup sound info reference
-                                int soundInfoIndex = command.Parameter2 & 0x3FFF;
-                                if (soundInfoIndex >= soundInfos.Length)
-                                {
-                                    logger.Warn("Invalid sound with index " + soundInfoIndex + " in anim command " +
-                                        commandType + ". Sound map has only " + soundInfos.Length + " entries.");
-                                    continue;
-                                }
-                                command.SoundInfo = soundInfos[soundInfoIndex];
-                                if (command.SoundInfo == null)
-                                {
-                                    logger.Warn("Sound with index " + (soundInfoIndex) + " missing but used by animation.");
-                                    continue;
-                                }
-                                command.Parameter2 &= unchecked((short)0xC000); // Clear sound ID
                                 break;
 
                             case 6:
@@ -499,6 +450,7 @@ namespace TombLib.Wad.Tr4Wad
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
+
                             default: // Ignore invalid anim commands (see for example karnak.wad)
                                 logger.Warn("Invalid anim command " + commandType);
                                 goto ExitForLoop;

@@ -173,7 +173,8 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_aiItems);
 
                 // Write sound meta data
-                _soundManager.WriteSoundMetadata(writer);
+                PrepareSoundsData();
+                WriteSoundMetadata(writer);
 
                 // Finish it
                 writer.Write((ushort)0xcdcd);
@@ -258,7 +259,7 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(geometryData);
 
                     ReportProgress(98, "Writing WAVE sounds");
-                    _soundManager.WriteSoundData(writer);
+                    WriteSoundData(writer);
 
                     // Write extra data
                     using (var ms = new MemoryStream())

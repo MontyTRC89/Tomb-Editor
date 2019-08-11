@@ -16,6 +16,7 @@ using DarkUI.Controls;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -258,6 +259,7 @@ namespace TombEditor.Forms
             {
                 _levelSettings.Wads.Clear();
                 _levelSettings.Wads.AddRange(_objectFileDataGridViewDataSource.Select(o => o.Wad));
+                ReloadSounds();
             };
             objectFileDataGridView.DataSource = _objectFileDataGridViewDataSource;
             objectFileDataGridViewControls.DataGridView = objectFileDataGridView;
@@ -318,6 +320,7 @@ namespace TombEditor.Forms
 
             // Initialize controls
             UpdateDialog();
+            ReloadSounds();
         }
 
         protected override void Dispose(bool disposing)
@@ -343,6 +346,9 @@ namespace TombEditor.Forms
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
+            tbBaseSoundsXmlFilePath.Text = _levelSettings.BaseSoundsXmlFilePath;
+            if (tbBaseSoundsXmlFilePath.Text != "")
+                _levelSettings.BaseSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -1031,6 +1037,38 @@ namespace TombEditor.Forms
         {
             _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
             UpdateDialog();
+        }
+
+        private void ButSearchBaseXmlFilePath_Click(object sender, EventArgs e)
+        {
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
+                                                       "Select the base XML sounds file", 
+                                                       LevelSettings.FileFormatsSoundsXmlFiles,
+                                                       VariableType.EditorDirectory,
+                                                       false);
+            if (result != null)
+            {
+                _levelSettings.BaseSoundsXmlFilePath = result;
+                _levelSettings.BaseSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
+
+                foreach (var soundInfo in _levelSettings.BaseSounds.SoundInfos)
+                {
+                    if (soundInfo.Global && !_levelSettings.SelectedSounds.Contains(soundInfo.Id))
+                        _levelSettings.SelectedSounds.Add(soundInfo.Id);
+                }
+                ReloadSounds();
+                UpdateDialog();
+            }
+        }
+
+        private void ReloadSounds()
+        {
+            dgvSounds.Rows.Clear();
+            foreach (var soundInfo in _levelSettings.GlobalSoundMap)
+            {
+                bool compile = _levelSettings.SelectedSounds.Contains(soundInfo.Id);
+                dgvSounds.Rows.Add(soundInfo.Id, soundInfo.Name, "", compile);
+            }
         }
     }
 }

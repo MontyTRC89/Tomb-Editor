@@ -119,6 +119,7 @@ namespace WadTool
             // Save the wad2
             try
             {
+                // TODO_SOUNDS
                 Wad2Writer.SaveToFile(wadToSave, outPath);
             }
             catch (Exception exc)
@@ -594,7 +595,8 @@ namespace WadTool
 
         public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)
         {
-            try
+            // TODO_SOUNDS
+            /*try
             {
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -633,12 +635,14 @@ namespace WadTool
             {
                 logger.Warn(exc, "'ExportAnimationToXml' failed.");
                 return false;
-            }
+            }*/
+
+            return true;
         }
 
         public static bool ExportAnimation(WadMoveable moveable, WadAnimation animation, string fileName)
         {
-            try
+            /*try
             {
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -660,7 +664,9 @@ namespace WadTool
             {
                 logger.Warn(exc, "'ExportAnimation' failed.");
                 return false;
-            }
+            }*/
+
+            return true;
         }
 
         public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
@@ -673,23 +679,6 @@ namespace WadTool
                 object obj = deserializer.Deserialize(reader);
                 WadAnimation animation = (WadAnimation)obj;
                 reader.Close();
-
-                // Try to link sounds
-                foreach (var cmd in animation.AnimCommands)
-                {
-                    if (cmd.Type == WadAnimCommandType.PlaySound)
-                    {
-                        // Try to get a sound with the same name
-                        foreach (var soundInfo in wad.SoundInfosUnique)
-                            if (soundInfo.Name == cmd.XmlSerializer_SoundInfoName)
-                            {
-                                cmd.SoundInfo = soundInfo;
-                                break;
-                            }
-                        if (cmd.SoundInfo == null)
-                            cmd.SoundInfo = wad.SoundInfosUnique.First();
-                    }
-                }
 
                 return animation;
             }

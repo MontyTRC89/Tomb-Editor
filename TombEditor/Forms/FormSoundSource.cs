@@ -16,37 +16,43 @@ namespace TombEditor.Forms
 
         private readonly SoundSourceInstance _soundSource;
         private readonly IEnumerable<WadSoundInfo> _soundInfos;
-        private static readonly WadSoundInfo _newSoundDefault = new WadSoundInfo(new WadSoundInfoMetaData("Empty") { LoopBehaviour = WadSoundLoopBehaviour.Looped });
+        private readonly Editor _editor = Editor.Instance;
+        private int _soundId = -1;
 
         public FormSoundSource(SoundSourceInstance soundSource, IEnumerable<WadSoundInfo> soundInfos)
         {
             _soundSource = soundSource;
             _soundInfos = soundInfos;
+            _soundId = _soundSource.SoundId;
 
             InitializeComponent();
 
-            optionPlaySoundFromWad.Checked = !string.IsNullOrEmpty(soundSource.WadReferencedSoundName);
-            optionPlayCustomSound.Checked = string.IsNullOrEmpty(soundSource.WadReferencedSoundName);
-
-            soundInfoEditor.SoundInfo = soundSource.EmbeddedSoundInfo ?? _newSoundDefault;
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Name))
-                lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Name) { Tag = sound });
-            SetSoundName(_soundSource.WadReferencedSoundName ?? "");
+                lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
+            SelectSound(_soundSource.SoundId);
         }
 
-        private void SetSoundName(string soundName)
+        private void SelectSound(int id)
         {
-            if (tbSound.Text == soundName)
+            if (id == -1)
                 return;
-            tbSound.Text = soundName;
+
+            WadSoundInfo info = _editor.Level.Settings.WadTryGetSoundInfo(id);
+            if (info == null)
+                return;
+
+            tbSound.Text = info.Name;
 
             for (int i = 0; i < lstSounds.Items.Count; ++i)
-                if (((WadSoundInfo)lstSounds.Items[i].Tag).Name.Equals(tbSound.Text, StringComparison.InvariantCultureIgnoreCase))
+                if (((WadSoundInfo)lstSounds.Items[i].Tag).Id == id)
                 {
                     lstSounds.SelectItem(i);
                     tbSound.BackColor = BackColor;
+                    _soundId = id;
                     return;
                 }
+
+            _soundId = -1;
             lstSounds.SelectedIndices.Clear();
             tbSound.BackColor = Color.DarkRed;
         }
@@ -54,25 +60,21 @@ namespace TombEditor.Forms
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            WadSoundPlayer.StopSample();
+            //WadSoundPlayer.StopSample();
             Close();
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (optionPlaySoundFromWad.Checked)
-                _soundSource.WadReferencedSoundName = tbSound.Text;
-            else
-                _soundSource.EmbeddedSoundInfo = soundInfoEditor.SoundInfo == WadSoundInfo.Empty ? null : soundInfoEditor.SoundInfo;
-
+            _soundSource.SoundId = _soundId;
             DialogResult = DialogResult.OK;
-            WadSoundPlayer.StopSample();
+            //WadSoundPlayer.StopSample();
             Close();
         }
 
         private void butPlay_Click(object sender, EventArgs e)
         {
-            string text = tbSound.Text;
+            /*string text = tbSound.Text;
             var soundInfo = _soundInfos.FirstOrDefault(soundInfo_ => soundInfo_.Name == text);
             if (soundInfo == null)
             {
@@ -87,30 +89,13 @@ namespace TombEditor.Forms
             {
                 logger.Warn(exc, "Unable to play sample");
                 DarkMessageBox.Show(this, "Playing sound failed. " + exc, "Unable to play sound.", MessageBoxIcon.Information);
-            }
-        }
-
-        private void tbSound_TextChanged(object sender, EventArgs e)
-        {
-            SetSoundName(tbSound.Text);
+            }*/
         }
 
         private void lstSounds_SelectedIndicesChanged(object sender, EventArgs e)
         {
             if (lstSounds.SelectedIndices.Count == 1)
-                SetSoundName(((WadSoundInfo)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag).Name);
-        }
-
-        private void optionPlayCustomSound_CheckedChanged(object sender, EventArgs e)
-        {
-            optionPlayCustomSoundGroupBox.Visible = true;
-            optionPlaySoundFromWadGroupBox.Visible = false;
-        }
-
-        private void optionPlaySoundFromWad_CheckedChanged(object sender, EventArgs e)
-        {
-            optionPlayCustomSoundGroupBox.Visible = false;
-            optionPlaySoundFromWadGroupBox.Visible = true;
+                SelectSound(((WadSoundInfo)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag).Id);
         }
     }
 }

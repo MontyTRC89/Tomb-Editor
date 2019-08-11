@@ -147,7 +147,8 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_aiItems);
 
                 // Write sound meta data
-                _soundManager.WriteSoundMetadata(writer);
+                PrepareSoundsData();
+                WriteSoundMetadata(writer);
 
                 // Finish it
                 writer.Write((short)0);
@@ -225,7 +226,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(geometryData);
 
                 ReportProgress(97, "Writing WAVE sounds");
-                _soundManager.WriteSoundData(writer);
+                WriteSoundData(writer);
 
                 // Write NG header
                 if(!string.IsNullOrEmpty(ngVersion))

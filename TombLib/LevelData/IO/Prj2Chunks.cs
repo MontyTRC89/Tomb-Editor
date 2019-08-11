@@ -11,6 +11,7 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId ObsoleteWadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId SkyTextureFilePath = ChunkId.FromString("TeSkyTextureFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId BaseSoundsXmlFilePath = ChunkId.FromString("TeBaseSoundsXmlFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5ExtraSpritesFilePath = ChunkId.FromString("TeTr5ExtraSpritesFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");
         /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");
@@ -30,6 +31,8 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId AgressiveFloordataPacking = ChunkId.FromString("TeAgressiveFloordataPacking");
         /**/public static readonly ChunkId Wads = ChunkId.FromString("TeWads");
         /****/public static readonly ChunkId Wad = ChunkId.FromString("TeWad");
+        /**/public static readonly ChunkId SelectedSounds = ChunkId.FromString("TeSelectedSounds");
+        /****/public static readonly ChunkId SelectedSound = ChunkId.FromString("TeSelSnd");
         /******/public static readonly ChunkId WadPath = ChunkId.FromString("TePath");
         /**/public static readonly ChunkId Textures = ChunkId.FromString("TeTextures");
         /******/public static readonly ChunkId InvisibleTexture = ChunkId.FromString("TeInvisibleTexture");
@@ -109,6 +112,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectSoundSource = ChunkId.FromString("TeSou");
         /**********/public static readonly ChunkId ObjectSoundSource2 = ChunkId.FromString("TeSou2");
         /**********/public static readonly ChunkId ObjectSoundSource3 = ChunkId.FromString("TeSou3");
+        /**********/public static readonly ChunkId ObjectSoundSource4 = ChunkId.FromString("TeSou4");
         /**********/public static readonly ChunkId ObjectImportedGeometry = ChunkId.FromString("TeImp");
         /**********/public static readonly ChunkId ObjectImportedGeometry2 = ChunkId.FromString("TeImp2");
         /**********/public static readonly ChunkId ObjectImportedGeometry3 = ChunkId.FromString("TeImp3");
