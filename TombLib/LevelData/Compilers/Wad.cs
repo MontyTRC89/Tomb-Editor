@@ -521,9 +521,15 @@ namespace TombLib.LevelData.Compilers
 
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
-
-                ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
-
+                //do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
+                 if(!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
+                {
+                    ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
+                } else
+                {
+                    _progressReporter.ReportInfo("Creating Dummy Mesh for automatically Merged Mesh :" + oldStaticMesh.ToString(_level.Settings.WadGameVersion));
+                    CreateDummyWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
+                }
                 _staticMeshes.Add(newStaticMesh);
             }
 
@@ -663,5 +669,63 @@ namespace TombLib.LevelData.Compilers
             for (int i = 0; i < bone.Children.Count; i++)
                 BuildMeshTree(bone.Children[i], meshTrees, usedMeshes);
         }
+
+        private tr_mesh CreateDummyWadMesh(WadMesh oldMesh, bool isStatic, int objectId,
+                                       bool isWaterfall = false, bool isOptics = false,
+                                       WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
+        {
+            int currentMeshSize = 0;
+            var newMesh = new tr_mesh
+            {
+                Center = new tr_vertex
+                {
+                    X = (short)oldMesh.BoundingSphere.Center.X,
+                    Y = (short)-oldMesh.BoundingSphere.Center.Y,
+                    Z = (short)oldMesh.BoundingSphere.Center.Z
+                },
+                Radius = (short)oldMesh.BoundingSphere.Radius
+            };
+            int numShades = 0;
+            currentMeshSize += 10;
+            newMesh.NumVertices = 0;
+            currentMeshSize += 2;
+            int numNormals = 0;
+            newMesh.Vertices = new tr_vertex[0];
+
+            newMesh.NumNormals = 0;
+            currentMeshSize += 2;
+            short numQuads = 0;
+            short numTriangles = 0;
+
+            newMesh.NumTexturedQuads = numQuads;
+            currentMeshSize += 2;
+
+            newMesh.NumTexturedTriangles = numTriangles;
+            currentMeshSize += 2;
+
+            int lastQuad = 0;
+            int lastTriangle = 0;
+
+            newMesh.TexturedQuads = new tr_face4[numQuads];
+            newMesh.TexturedTriangles = new tr_face3[numTriangles];
+            if (_level.Settings.GameVersion <= GameVersion.TR3)
+                currentMeshSize += 4; // Num colored quads and triangles
+
+            if (currentMeshSize % 4 != 0)
+            {
+                currentMeshSize += 2;
+            }
+
+            newMesh.MeshSize = currentMeshSize;
+            newMesh.MeshPointer = _totalMeshSize;
+            _meshPointers.Add((uint)_totalMeshSize);
+
+            _totalMeshSize += currentMeshSize;
+
+            _meshes.Add(newMesh);
+
+            return newMesh;
+        }
+
     }
 }
