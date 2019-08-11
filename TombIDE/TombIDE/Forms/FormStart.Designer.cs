@@ -71,39 +71,48 @@
 			// button_Main_Import
 			// 
 			this.button_Main_Import.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Main_Import.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
 			this.button_Main_Import.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_Import.Image = global::TombIDE.Properties.Resources.import_52;
 			this.button_Main_Import.Location = new System.Drawing.Point(17, 298);
 			this.button_Main_Import.Margin = new System.Windows.Forms.Padding(9, 9, 9, 26);
 			this.button_Main_Import.Name = "button_Main_Import";
 			this.button_Main_Import.Size = new System.Drawing.Size(460, 104);
 			this.button_Main_Import.TabIndex = 4;
 			this.button_Main_Import.Text = "Import Project from .exe";
+			this.button_Main_Import.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_Main_Import.Visible = false;
 			this.button_Main_Import.Click += new System.EventHandler(this.button_Main_Import_Click);
 			// 
 			// button_Main_New
 			// 
 			this.button_Main_New.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Main_New.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
 			this.button_Main_New.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_New.Image = global::TombIDE.Properties.Resources.plus_math_60;
 			this.button_Main_New.Location = new System.Drawing.Point(17, 54);
 			this.button_Main_New.Margin = new System.Windows.Forms.Padding(9, 24, 9, 9);
 			this.button_Main_New.Name = "button_Main_New";
 			this.button_Main_New.Size = new System.Drawing.Size(460, 104);
 			this.button_Main_New.TabIndex = 2;
 			this.button_Main_New.Text = "Create New Project...";
+			this.button_Main_New.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_Main_New.Visible = false;
 			this.button_Main_New.Click += new System.EventHandler(this.button_Main_New_Click);
 			// 
 			// button_Main_Open
 			// 
 			this.button_Main_Open.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Main_Open.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
 			this.button_Main_Open.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_Open.Image = global::TombIDE.Properties.Resources.opened_folder_50;
 			this.button_Main_Open.Location = new System.Drawing.Point(17, 176);
 			this.button_Main_Open.Margin = new System.Windows.Forms.Padding(9);
 			this.button_Main_Open.Name = "button_Main_Open";
 			this.button_Main_Open.Size = new System.Drawing.Size(460, 104);
 			this.button_Main_Open.TabIndex = 3;
 			this.button_Main_Open.Text = "Open .trproj File";
+			this.button_Main_Open.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_Main_Open.Visible = false;
 			this.button_Main_Open.Click += new System.EventHandler(this.button_Main_Open_Click);
 			// 
