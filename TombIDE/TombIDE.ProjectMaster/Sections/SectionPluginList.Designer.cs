@@ -55,6 +55,7 @@
 			this.button_Install.Name = "button_Install";
 			this.button_Install.Size = new System.Drawing.Size(23, 25);
 			this.button_Install.Text = "Install New Plugin";
+			this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
 			// 
 			// button_Uninstall
 			// 
