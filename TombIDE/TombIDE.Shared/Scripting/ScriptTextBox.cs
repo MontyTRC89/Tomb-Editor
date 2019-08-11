@@ -371,7 +371,7 @@ namespace TombIDE.Shared.Scripting
 			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=");
 			e.ChangedRange.SetStyle(valueColor, "=.*");
 
-			e.ChangedRange.SetStyle(valueColor, @">\s*?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + ")");
+			e.ChangedRange.SetStyle(valueColor, @">\s*?(;.*)?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + ")");
 
 			if (noLoop)
 				return;
