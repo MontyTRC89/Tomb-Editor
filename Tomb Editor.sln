@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\TombEditor.csproj", "{330CCD5E-D061-4C40-B568-BF367213C525}"
 EndProject
@@ -33,6 +33,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptEditor", "ScriptEditor\ScriptEditor.csproj", "{499107F9-09FF-4598-B6B2-9A65663FEB47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombInspect", "TombInspect\TombInspect.csproj", "{6ED36911-8338-4BCA-8F80-A11AAEF96E3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundTool", "SoundTool\SoundTool.csproj", "{AE350FF9-E471-473F-9898-2746D889D1BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +82,10 @@ Global
 		{6ED36911-8338-4BCA-8F80-A11AAEF96E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ED36911-8338-4BCA-8F80-A11AAEF96E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ED36911-8338-4BCA-8F80-A11AAEF96E3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE350FF9-E471-473F-9898-2746D889D1BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE350FF9-E471-473F-9898-2746D889D1BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE350FF9-E471-473F-9898-2746D889D1BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE350FF9-E471-473F-9898-2746D889D1BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

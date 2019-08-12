@@ -130,6 +130,12 @@
     <Compile Include="Controls\SoundInfoEditor.Designer.cs">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SoundInfoEditorOld.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SoundInfoEditorOld.Designer.cs">
+      <DependentUpon>SoundInfoEditorOld.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TaskbarProgress.cs" />
     <Compile Include="Controls\TriggerParameterControl.cs">
       <SubType>UserControl</SubType>
@@ -202,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SoundInfoEditorOld.resx">
+      <DependentUpon>SoundInfoEditorOld.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>

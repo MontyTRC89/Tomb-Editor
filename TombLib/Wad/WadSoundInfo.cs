@@ -55,6 +55,23 @@ namespace TombLib.Wad
             EmbeddedSamples = new List<WadSample>();
         }
 
+        public WadSoundInfo(WadSoundInfo s)
+        {
+            Id = s.Id;
+            Name = s.Name;
+            Volume = s.Volume;
+            RangeInSectors = s.RangeInSectors;
+            Chance = s.Chance;
+            PitchFactor = s.PitchFactor;
+            DisablePanning = s.DisablePanning;
+            RandomizePitch = s.RandomizePitch;
+            RandomizeVolume = s.RandomizeVolume;
+            LoopBehaviour = s.LoopBehaviour;
+            EmbeddedSamples = new List<WadSample>();
+            foreach (var sample in s.EmbeddedSamples)
+                EmbeddedSamples.Add(new WadSample(sample.SamplePath));
+        }
+
         [XmlIgnore]
         public byte VolumeByte
         {

@@ -31,7 +31,7 @@
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.optionPlayCustomSoundGroupBox = new DarkUI.Controls.DarkGroupBox();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditorOld();
             this.lstSounds = new DarkUI.Controls.DarkListView();
             this.tbSound = new DarkUI.Controls.DarkTextBox();
             this.label1 = new DarkUI.Controls.DarkLabel();
@@ -193,7 +193,7 @@
         private DarkUI.Controls.DarkButton butOK;
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkGroupBox optionPlayCustomSoundGroupBox;
-        private TombLib.Controls.SoundInfoEditor soundInfoEditor;
+        private TombLib.Controls.SoundInfoEditorOld soundInfoEditor;
         private DarkUI.Controls.DarkListView lstSounds;
         private DarkUI.Controls.DarkTextBox tbSound;
         private DarkUI.Controls.DarkLabel label1;
