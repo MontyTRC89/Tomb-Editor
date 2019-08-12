@@ -1,6 +1,6 @@
 ﻿namespace TombLib.Controls
 {
-    partial class SoundInfoEditor
+    partial class SoundInfoEditorOld
     {
         /// <summary>
         /// Required designer variable.
@@ -36,10 +36,19 @@
             this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
             this.butClipboardPaste = new DarkUI.Controls.DarkButton();
             this.butClipboardCopy = new DarkUI.Controls.DarkButton();
+            this.butExport = new DarkUI.Controls.DarkButton();
             this.cbRandomizePitch = new DarkUI.Controls.DarkCheckBox();
             this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
             this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
+            this.trackBar = new System.Windows.Forms.TrackBar();
+            this.comboSampleRateLabel = new DarkUI.Controls.DarkLabel();
+            this.trackBar_100MillisecondMark = new DarkUI.Controls.DarkLabel();
             this.butPlayPreview = new DarkUI.Controls.DarkButton();
+            this.dataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.WaveformColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.PlayButtonColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.DurationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.numericChanceLabel = new DarkUI.Controls.DarkLabel();
             this.numericRangeLabel = new DarkUI.Controls.DarkLabel();
             this.numericPitchLabel = new DarkUI.Controls.DarkLabel();
@@ -52,25 +61,23 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.tbNameLabel = new DarkUI.Controls.DarkLabel();
+            this.comboSampleRateTextBox = new DarkUI.Controls.DarkTextBox();
+            this.comboSampleRate = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel8 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.lblModeTooltip = new DarkUI.Controls.DarkLabel();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
+            this.dataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.tbID = new DarkUI.Controls.DarkTextBox();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
-            this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
-            this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
-            this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.butAddSample = new DarkUI.Controls.DarkButton();
-            this.butDeleteSample = new DarkUI.Controls.DarkButton();
-            this.butMoveUp = new DarkUI.Controls.DarkButton();
-            this.butMoveDown = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.darkGroupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
             this.SuspendLayout();
             // 
             // toolTip
@@ -204,6 +211,19 @@
             this.toolTip.SetToolTip(this.butClipboardCopy, "Copy all settings and samples into the clipboard.");
             this.butClipboardCopy.Click += new System.EventHandler(this.butClipboardCopy_Click);
             // 
+            // butExport
+            // 
+            this.butExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butExport.Image = global::TombLib.Properties.Resources.general_Export_16;
+            this.butExport.Location = new System.Drawing.Point(374, 255);
+            this.butExport.Name = "butExport";
+            this.butExport.Size = new System.Drawing.Size(26, 23);
+            this.butExport.TabIndex = 22;
+            this.butExport.Text = "Play";
+            this.butExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butExport, "Export to audio file.");
+            this.butExport.Click += new System.EventHandler(this.butExport_Click);
+            // 
             // cbRandomizePitch
             // 
             this.cbRandomizePitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -240,6 +260,47 @@
             this.toolTip.SetToolTip(this.cbDisablePanning, "Disable directional audio for this sound.");
             this.cbDisablePanning.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
+            // trackBar
+            // 
+            this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBar.AutoSize = false;
+            this.trackBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.trackBar.Cursor = System.Windows.Forms.Cursors.SizeWE;
+            this.trackBar.Location = new System.Drawing.Point(3, 230);
+            this.trackBar.Maximum = 227;
+            this.trackBar.Minimum = 5;
+            this.trackBar.Name = "trackBar";
+            this.trackBar.Size = new System.Drawing.Size(195, 15);
+            this.trackBar.TabIndex = 23;
+            this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar.Value = 116;
+            this.trackBar.Scroll += new System.EventHandler(this.trackBar_Scroll);
+            this.trackBar.Resize += new System.EventHandler(this.trackBar_Resize);
+            // 
+            // comboSampleRateLabel
+            // 
+            this.comboSampleRateLabel.AutoSize = true;
+            this.comboSampleRateLabel.BackColor = System.Drawing.Color.Transparent;
+            this.comboSampleRateLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.comboSampleRateLabel.Location = new System.Drawing.Point(152, 114);
+            this.comboSampleRateLabel.Name = "comboSampleRateLabel";
+            this.comboSampleRateLabel.Size = new System.Drawing.Size(20, 13);
+            this.comboSampleRateLabel.TabIndex = 27;
+            this.comboSampleRateLabel.Text = "Hz";
+            // 
+            // trackBar_100MillisecondMark
+            // 
+            this.trackBar_100MillisecondMark.AutoSize = true;
+            this.trackBar_100MillisecondMark.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.trackBar_100MillisecondMark.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
+            this.trackBar_100MillisecondMark.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.trackBar_100MillisecondMark.Location = new System.Drawing.Point(123, 238);
+            this.trackBar_100MillisecondMark.Name = "trackBar_100MillisecondMark";
+            this.trackBar_100MillisecondMark.Size = new System.Drawing.Size(21, 9);
+            this.trackBar_100MillisecondMark.TabIndex = 24;
+            this.trackBar_100MillisecondMark.Text = "0.1 s";
+            // 
             // butPlayPreview
             // 
             this.butPlayPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -251,8 +312,60 @@
             this.butPlayPreview.TabIndex = 2;
             this.butPlayPreview.Text = "In-game preview";
             this.butPlayPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butPlayPreview.Visible = false;
             this.butPlayPreview.Click += new System.EventHandler(this.butPlayPreview_Click);
+            // 
+            // dataGridView
+            // 
+            this.dataGridView.AllowUserToResizeRows = true;
+            this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView.AutoGenerateColumns = false;
+            this.dataGridView.ColumnHeadersHeight = 17;
+            this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.WaveformColumn,
+            this.PlayButtonColumn,
+            this.DurationColumn,
+            this.SizeColumn});
+            this.dataGridView.Location = new System.Drawing.Point(0, 230);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.RowHeadersWidth = 41;
+            this.dataGridView.RowTemplate.Height = 64;
+            this.dataGridView.Size = new System.Drawing.Size(368, 196);
+            this.dataGridView.TabIndex = 20;
+            this.dataGridView.Tag = "s";
+            this.dataGridView.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.dataGridView_CellFormattingSafe);
+            this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
+            this.dataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView_CellPainting);
+            // 
+            // WaveformColumn
+            // 
+            this.WaveformColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.WaveformColumn.HeaderText = "Waveform";
+            this.WaveformColumn.Name = "WaveformColumn";
+            // 
+            // PlayButtonColumn
+            // 
+            this.PlayButtonColumn.HeaderText = "Play";
+            this.PlayButtonColumn.Name = "PlayButtonColumn";
+            this.PlayButtonColumn.ReadOnly = true;
+            this.PlayButtonColumn.Width = 33;
+            // 
+            // DurationColumn
+            // 
+            this.DurationColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.DurationColumn.HeaderText = "Duration";
+            this.DurationColumn.Name = "DurationColumn";
+            this.DurationColumn.ReadOnly = true;
+            this.DurationColumn.Width = 77;
+            // 
+            // SizeColumn
+            // 
+            this.SizeColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.SizeColumn.HeaderText = "Size";
+            this.SizeColumn.Name = "SizeColumn";
+            this.SizeColumn.ReadOnly = true;
+            this.SizeColumn.Width = 51;
             // 
             // numericChanceLabel
             // 
@@ -388,6 +501,57 @@
             this.tbNameLabel.Text = "Name:";
             this.tbNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // comboSampleRateTextBox
+            // 
+            this.comboSampleRateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.comboSampleRateTextBox.Location = new System.Drawing.Point(79, 114);
+            this.comboSampleRateTextBox.MaxLength = 6;
+            this.comboSampleRateTextBox.Name = "comboSampleRateTextBox";
+            this.comboSampleRateTextBox.Size = new System.Drawing.Size(46, 15);
+            this.comboSampleRateTextBox.TabIndex = 28;
+            this.comboSampleRateTextBox.TextChanged += new System.EventHandler(this.comboSampleRateTextBox_TextChanged);
+            this.comboSampleRateTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboSampleRateTextBox_KeyDown);
+            this.comboSampleRateTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.comboSampleRateTextBox_Validating);
+            this.comboSampleRateTextBox.Validated += new System.EventHandler(this.comboSampleRateTextBox_Validated);
+            // 
+            // comboSampleRate
+            // 
+            this.comboSampleRate.DropDownHeight = 200;
+            this.comboSampleRate.FormattingEnabled = true;
+            this.comboSampleRate.IntegralHeight = false;
+            this.comboSampleRate.Items.AddRange(new object[] {
+            "8000",
+            "11025",
+            "16000",
+            "22050",
+            "32000",
+            "44100"});
+            this.comboSampleRate.Location = new System.Drawing.Point(78, 110);
+            this.comboSampleRate.Name = "comboSampleRate";
+            this.comboSampleRate.Size = new System.Drawing.Size(68, 23);
+            this.comboSampleRate.TabIndex = 26;
+            this.comboSampleRate.SelectedValueChanged += new System.EventHandler(this.comboSampleRate_SelectedValueChanged);
+            // 
+            // darkLabel8
+            // 
+            this.darkLabel8.AutoSize = true;
+            this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel8.Location = new System.Drawing.Point(3, 214);
+            this.darkLabel8.Name = "darkLabel8";
+            this.darkLabel8.Size = new System.Drawing.Size(168, 13);
+            this.darkLabel8.TabIndex = 19;
+            this.darkLabel8.Text = "List of samples (plays randomly)";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(2, 113);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(70, 13);
+            this.darkLabel1.TabIndex = 29;
+            this.darkLabel1.Text = "Sample rate:";
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // darkGroupBox1
             // 
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -395,6 +559,10 @@
             this.darkGroupBox1.Controls.Add(this.lblModeTooltip);
             this.darkGroupBox1.Controls.Add(this.darkLabel7);
             this.darkGroupBox1.Controls.Add(this.numericVolume);
+            this.darkGroupBox1.Controls.Add(this.darkLabel1);
+            this.darkGroupBox1.Controls.Add(this.comboSampleRate);
+            this.darkGroupBox1.Controls.Add(this.comboSampleRateLabel);
+            this.darkGroupBox1.Controls.Add(this.comboSampleRateTextBox);
             this.darkGroupBox1.Controls.Add(this.cbDisablePanning);
             this.darkGroupBox1.Controls.Add(this.cbRandomizeVolume);
             this.darkGroupBox1.Controls.Add(this.cbRandomizePitch);
@@ -420,14 +588,14 @@
             // lblModeTooltip
             // 
             this.lblModeTooltip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblModeTooltip.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblModeTooltip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblModeTooltip.Location = new System.Drawing.Point(174, 108);
+            this.lblModeTooltip.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblModeTooltip.ForeColor = System.Drawing.Color.Gray;
+            this.lblModeTooltip.Location = new System.Drawing.Point(206, 99);
             this.lblModeTooltip.Name = "lblModeTooltip";
-            this.lblModeTooltip.Size = new System.Drawing.Size(226, 27);
+            this.lblModeTooltip.Size = new System.Drawing.Size(191, 36);
             this.lblModeTooltip.TabIndex = 31;
-            this.lblModeTooltip.Text = "hint";
-            this.lblModeTooltip.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblModeTooltip.Text = "(hint)";
+            this.lblModeTooltip.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel7
             // 
@@ -440,12 +608,25 @@
             this.darkLabel7.TabIndex = 30;
             this.darkLabel7.Text = "Randomize:";
             // 
+            // dataGridViewControls
+            // 
+            this.dataGridViewControls.AlwaysInsertAtZero = false;
+            this.dataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewControls.Enabled = false;
+            this.dataGridViewControls.Location = new System.Drawing.Point(374, 230);
+            this.dataGridViewControls.MinimumSize = new System.Drawing.Size(24, 24);
+            this.dataGridViewControls.Name = "dataGridViewControls";
+            this.dataGridViewControls.Size = new System.Drawing.Size(26, 196);
+            this.dataGridViewControls.TabIndex = 21;
+            // 
             // tbID
             // 
+            this.tbID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbID.Location = new System.Drawing.Point(46, 3);
             this.tbID.Name = "tbID";
-            this.tbID.ReadOnly = true;
-            this.tbID.Size = new System.Drawing.Size(56, 22);
+            this.tbID.Size = new System.Drawing.Size(100, 22);
             this.tbID.TabIndex = 32;
             // 
             // darkLabel9
@@ -458,121 +639,25 @@
             this.darkLabel9.Text = "ID:";
             this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // colSampleName
-            // 
-            this.colSampleName.HeaderText = "Name";
-            this.colSampleName.Name = "colSampleName";
-            this.colSampleName.Width = 150;
-            // 
-            // cbGlobal
-            // 
-            this.cbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbGlobal.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbGlobal.Location = new System.Drawing.Point(288, 4);
-            this.cbGlobal.Name = "cbGlobal";
-            this.cbGlobal.Size = new System.Drawing.Size(107, 17);
-            this.cbGlobal.TabIndex = 33;
-            this.cbGlobal.Text = "Global sound";
-            this.toolTip.SetToolTip(this.cbGlobal, "Disable directional audio for this sound.");
-            this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // dgvSamples
-            // 
-            this.dgvSamples.AllowUserToAddRows = false;
-            this.dgvSamples.AllowUserToDeleteRows = false;
-            this.dgvSamples.AllowUserToDragDropRows = false;
-            this.dgvSamples.AllowUserToOrderColumns = true;
-            this.dgvSamples.AllowUserToPasteCells = false;
-            this.dgvSamples.AllowUserToResizeRows = true;
-            this.dgvSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvSamples.ColumnHeadersHeight = 17;
-            this.dgvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.SamplePathColumn});
-            this.dgvSamples.Location = new System.Drawing.Point(3, 233);
-            this.dgvSamples.Name = "dgvSamples";
-            this.dgvSamples.RowHeadersWidth = 41;
-            this.dgvSamples.Size = new System.Drawing.Size(394, 190);
-            this.dgvSamples.TabIndex = 97;
-            this.dgvSamples.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.DgvSamples_RowsAdded);
-            this.dgvSamples.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DgvSamples_RowsRemoved);
-            // 
-            // SamplePathColumn
-            // 
-            this.SamplePathColumn.HeaderText = "Sample name";
-            this.SamplePathColumn.Name = "SamplePathColumn";
-            this.SamplePathColumn.Width = 200;
-            // 
-            // butAddSample
-            // 
-            this.butAddSample.Image = global::TombLib.Properties.Resources.general_plus_math_16;
-            this.butAddSample.ImagePadding = 3;
-            this.butAddSample.Location = new System.Drawing.Point(3, 205);
-            this.butAddSample.Name = "butAddSample";
-            this.butAddSample.Size = new System.Drawing.Size(83, 22);
-            this.butAddSample.TabIndex = 98;
-            this.butAddSample.Text = "Add new";
-            this.butAddSample.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddSample.Click += new System.EventHandler(this.ButAddSample_Click);
-            // 
-            // butDeleteSample
-            // 
-            this.butDeleteSample.Image = global::TombLib.Properties.Resources.general_trash_16;
-            this.butDeleteSample.ImagePadding = 3;
-            this.butDeleteSample.Location = new System.Drawing.Point(92, 205);
-            this.butDeleteSample.Name = "butDeleteSample";
-            this.butDeleteSample.Size = new System.Drawing.Size(83, 22);
-            this.butDeleteSample.TabIndex = 99;
-            this.butDeleteSample.Text = "Delete";
-            this.butDeleteSample.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteSample.Click += new System.EventHandler(this.ButDeleteSample_Click);
-            // 
-            // butMoveUp
-            // 
-            this.butMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butMoveUp.Image = global::TombLib.Properties.Resources.general_ArrowUp_16;
-            this.butMoveUp.ImagePadding = 3;
-            this.butMoveUp.Location = new System.Drawing.Point(181, 205);
-            this.butMoveUp.Name = "butMoveUp";
-            this.butMoveUp.Size = new System.Drawing.Size(83, 22);
-            this.butMoveUp.TabIndex = 100;
-            this.butMoveUp.Text = "Move up";
-            this.butMoveUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butMoveUp.Visible = false;
-            // 
-            // butMoveDown
-            // 
-            this.butMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butMoveDown.Image = global::TombLib.Properties.Resources.general_ArrowDown_16;
-            this.butMoveDown.ImagePadding = 3;
-            this.butMoveDown.Location = new System.Drawing.Point(270, 205);
-            this.butMoveDown.Name = "butMoveDown";
-            this.butMoveDown.Size = new System.Drawing.Size(102, 22);
-            this.butMoveDown.TabIndex = 101;
-            this.butMoveDown.Text = "Move down";
-            this.butMoveDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butMoveDown.Visible = false;
-            // 
             // SoundInfoEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.Controls.Add(this.butMoveDown);
-            this.Controls.Add(this.butMoveUp);
-            this.Controls.Add(this.butDeleteSample);
-            this.Controls.Add(this.butAddSample);
-            this.Controls.Add(this.dgvSamples);
-            this.Controls.Add(this.cbGlobal);
             this.Controls.Add(this.tbID);
             this.Controls.Add(this.darkLabel9);
             this.Controls.Add(this.darkGroupBox1);
+            this.Controls.Add(this.trackBar_100MillisecondMark);
+            this.Controls.Add(this.trackBar);
             this.Controls.Add(this.butPlayPreview);
+            this.Controls.Add(this.dataGridView);
+            this.Controls.Add(this.butExport);
             this.Controls.Add(this.tbName);
             this.Controls.Add(this.butClipboardPaste);
             this.Controls.Add(this.tbNameLabel);
             this.Controls.Add(this.butClipboardCopy);
+            this.Controls.Add(this.dataGridViewControls);
+            this.Controls.Add(this.darkLabel8);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(400, 346);
             this.Name = "SoundInfoEditor";
@@ -581,15 +666,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
+
+        private DarkUI.Controls.DarkButton butExport;
         private DarkUI.Controls.DarkComboBox comboLoop;
         private DarkUI.Controls.DarkLabel darkLabel6;
         private DarkUI.Controls.DarkLabel darkLabel5;
@@ -609,22 +697,27 @@
         private DarkUI.Controls.DarkLabel numericVolumeLabel;
         private DarkUI.Controls.DarkLabel numericPitchLabel;
         private DarkUI.Controls.DarkLabel numericChanceLabel;
+        private DarkUI.Controls.DarkDataGridView dataGridView;
+        private DarkDataGridViewControls dataGridViewControls;
         private DarkUI.Controls.DarkButton butPlayPreview;
+        private DarkUI.Controls.DarkLabel darkLabel8;
+        private System.Windows.Forms.DataGridViewImageColumn WaveformColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn PlayButtonColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DurationColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SizeColumn;
+        private System.Windows.Forms.TrackBar trackBar;
+        private DarkUI.Controls.DarkLabel trackBar_100MillisecondMark;
+        private DarkUI.Controls.DarkComboBox comboSampleRate;
+        private DarkUI.Controls.DarkLabel comboSampleRateLabel;
+        private DarkUI.Controls.DarkTextBox comboSampleRateTextBox;
         private DarkUI.Controls.DarkLabel numericRangeLabel;
         private DarkUI.Controls.DarkButton butClipboardCopy;
         private DarkUI.Controls.DarkButton butClipboardPaste;
+        private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
+        private DarkUI.Controls.DarkLabel lblModeTooltip;
         private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkTextBox tbID;
         private DarkUI.Controls.DarkLabel darkLabel9;
-        private DarkUI.Controls.DarkLabel lblModeTooltip;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colSampleName;
-        private DarkUI.Controls.DarkCheckBox cbGlobal;
-        private DarkUI.Controls.DarkDataGridView dgvSamples;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SamplePathColumn;
-        private DarkUI.Controls.DarkButton butAddSample;
-        private DarkUI.Controls.DarkButton butDeleteSample;
-        private DarkUI.Controls.DarkButton butMoveUp;
-        private DarkUI.Controls.DarkButton butMoveDown;
     }
 }

@@ -47,7 +47,7 @@ namespace TombLib.Controls
         // Interaction state
         private float _lastX;
         private float _lastY;
-        private SoundInfoEditor _soundInfoEditor;
+        private SoundInfoEditorOld _soundInfoEditor;
         private IWadObject _currentObject = null;
 
         // Rendering state
@@ -60,7 +60,7 @@ namespace TombLib.Controls
         public PanelItemPreview()
         {
             // Init fixed sound info editor
-            _soundInfoEditor = new SoundInfoEditor();
+            _soundInfoEditor = new SoundInfoEditorOld();
             _soundInfoEditor.Name = "_soundInfoEditor";
             _soundInfoEditor.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
             Rectangle clientRectangle = ClientRectangle;
