@@ -121,6 +121,10 @@
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.panel11 = new System.Windows.Forms.Panel();
@@ -160,6 +164,8 @@
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
+            this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.panel11.SuspendLayout();
             this.SuspendLayout();
@@ -229,6 +235,7 @@
             this.tabbedContainer.Controls.Add(this.tabPage3);
             this.tabbedContainer.Controls.Add(this.tabPage6);
             this.tabbedContainer.Controls.Add(this.tabPage7);
+            this.tabbedContainer.Controls.Add(this.tabPage9);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
@@ -1316,6 +1323,53 @@
             this.darkLabel12.TabIndex = 101;
             this.darkLabel12.Text = "Texture tile padding:";
             // 
+            // tabPage9
+            // 
+            this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage9.Controls.Add(this.staticMeshMergeDataGridView);
+            this.tabPage9.Controls.Add(this.darkLabel18);
+            this.tabPage9.Controls.Add(this.darkLabel17);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Size = new System.Drawing.Size(563, 434);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Static Meshes";
+            // 
+            // staticMeshMergeDataGridView
+            // 
+            this.staticMeshMergeDataGridView.AllowUserToAddRows = false;
+            this.staticMeshMergeDataGridView.AllowUserToDeleteRows = false;
+            this.staticMeshMergeDataGridView.AllowUserToDragDropRows = false;
+            this.staticMeshMergeDataGridView.AllowUserToPasteCells = false;
+            this.staticMeshMergeDataGridView.AllowUserToResizeColumns = false;
+            this.staticMeshMergeDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.staticMeshMergeDataGridView.ColumnHeadersHeight = 17;
+            this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(7, 20);
+            this.staticMeshMergeDataGridView.MultiSelect = false;
+            this.staticMeshMergeDataGridView.Name = "staticMeshMergeDataGridView";
+            this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
+            this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(551, 335);
+            this.staticMeshMergeDataGridView.TabIndex = 2;
+            // 
+            // darkLabel18
+            // 
+            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel18.Location = new System.Drawing.Point(4, 358);
+            this.darkLabel18.Name = "darkLabel18";
+            this.darkLabel18.Size = new System.Drawing.Size(554, 76);
+            this.darkLabel18.TabIndex = 1;
+            this.darkLabel18.Text = resources.GetString("darkLabel18.Text");
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.AutoSize = true;
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(4, 4);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(388, 13);
+            this.darkLabel17.TabIndex = 0;
+            this.darkLabel17.Text = "Static meshes which should be automatically merged with room geometry:";
+            // 
             // darkSectionPanel1
             // 
             this.darkSectionPanel1.Controls.Add(this.optionsList);
@@ -1445,6 +1499,9 @@
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).EndInit();
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1563,5 +1620,9 @@
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkCheckBox cbAgressiveTexturePacking;
         private DarkUI.Controls.DarkCheckBox cbAgressiveFloordataPacking;
+        private System.Windows.Forms.TabPage tabPage9;
+        private DarkUI.Controls.DarkLabel darkLabel17;
+        private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
+        private DarkUI.Controls.DarkLabel darkLabel18;
     }
 }

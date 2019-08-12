@@ -209,6 +209,7 @@ namespace TombEditor.Forms
         private readonly BindingList<ReferencedWadWrapper> _objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
         private readonly BindingList<ReferencedTextureWrapper> _textureFileDataGridViewDataSource = new BindingList<ReferencedTextureWrapper>();
         private readonly BindingList<OldWadSoundPath> _soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
+        private readonly BindingList<AutoStaticMeshMergeEntry> _staticMeshMergeGridViewDataSource = new BindingList<AutoStaticMeshMergeEntry>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
         private FormPreviewWad _previewWad = null;
         private FormPreviewTexture _previewTexture = null;
@@ -316,6 +317,22 @@ namespace TombEditor.Forms
             // Initialize options list
             tabbedContainer.LinkedListView = optionsList;
 
+            // Initialize Static Mesh merge list
+            foreach (var staticMesh in _levelSettings.WadGetAllStatics())
+            {
+                bool added = false;
+                foreach (var entry in _levelSettings.AutoStaticMeshMerges)
+                {
+                    if(entry.meshId.Equals( staticMesh.Value.Id.TypeId))
+                    {
+                        _staticMeshMergeGridViewDataSource.Add(entry);
+                        added = true;
+                    }
+                }
+                if(!added)
+                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,_levelSettings));
+            }
+            staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
             // Initialize controls
             UpdateDialog();
         }
@@ -948,7 +965,12 @@ namespace TombEditor.Forms
             settings.Textures.Clear();
             foreach (var reference in _textureFileDataGridViewDataSource)
                 settings.Textures.Add(reference.Texture);
-
+            settings.AutoStaticMeshMerges.Clear();
+            foreach (var entry in _staticMeshMergeGridViewDataSource)
+            {
+                if (entry.Merge)
+                    settings.AutoStaticMeshMerges.Add(entry);
+            }
             _editor.UpdateLevelSettings(settings);
             Close();
         }
