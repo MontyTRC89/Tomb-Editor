@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -14,6 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
 
+        private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
         private void BuildRooms()
         {
             ReportProgress(15, "Building rooms");
@@ -213,6 +215,10 @@ namespace TombLib.LevelData.Compilers
                 case RoomLightEffect.Reflection:
                     newRoom.Flags |= 0x0200;
                     break;
+                case RoomLightEffect.None:
+                    if (!waterSchemeSet)
+                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
+                    break;
             }
 
             // Generate geometry
@@ -308,7 +314,101 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
                         }
+                //we dont want merged meshes to be taken into account for portal connections
+                //so we save the last vertex of the original room
+                int maxRoomVertexCount = roomVertices.Count;
+                foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
+                {
+                    if (!IsStaticMeshInMergeList(staticMesh))
+                        continue;
+                    int meshVertexBase = roomVertices.Count;
+                    var worldTransform = staticMesh.RotationMatrix *
+                                         Matrix4x4.CreateTranslation(staticMesh.Position);
+                    var normalTransform = staticMesh.RotationMatrix;
+                    WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
+                    for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
+                    {
+                        // Apply the transform to the vertex
+                        Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
+                        Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
+                        normal = Vector3.Normalize(normal);
+                        int lightingEffect = wadStatic.Mesh.VerticesShades[j];
+                        if(lightingEffect > 4227 )
+                        {
+                            lightingEffect = 0x2000;
+                        }else if (lightingEffect > 0)
+                        {
+                            lightingEffect = 0x4000;
+                        }else
+                        {
+                            lightingEffect = 0x0;
+                        }
+                        var trVertex = new tr_room_vertex
+                        {
+                            Position = new tr_vertex
+                            {
+                                X = (short)position.X,
+                                Y = (short)-(position.Y + room.WorldPos.Y),
+                                Z = (short)position.Z
+                            },
+                            Lighting1 = 0,
+                            Lighting2 = 0,
+                            Attributes = (ushort)lightingEffect
+                        };
+                        trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal));
+                        // Check for maximum vertices reached
+                        if (roomVertices.Count >= 65536)
+                        {
+                            throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
+                        }
 
+                        roomVertices.Add(trVertex);
+                    }
+                    for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
+                    {
+                        WadPolygon poly = wadStatic.Mesh.Polys[i];
+                        ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
+                        ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
+                        ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
+                        ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+                        if (poly.Shape == WadPolygonShape.Triangle)
+                        {
+                            
+                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                            {
+                                var result = _mergedStaticMeshTextureInfos[poly];
+                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
+                                roomTriangles.Add(tri);
+                            }
+                            else
+                            {
+                                FixWadTextureCoordinates(ref poly.Texture);
+                                var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
+                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
+                                roomTriangles.Add(tri);
+                                _mergedStaticMeshTextureInfos.Add(poly, result);
+                            }
+                        }
+                        else 
+                        {
+                            if(_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                            {
+                                var result = _mergedStaticMeshTextureInfos[poly];
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
+                                roomQuads.Add(quad);
+                            }
+                            else
+                            {
+                                FixWadTextureCoordinates(ref poly.Texture);
+                                var result = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
+                                roomQuads.Add(quad);
+                                _mergedStaticMeshTextureInfos.Add(poly, result);
+                            }
+                            
+                        }
+                    }
+                }
                 // Add geometry imported objects
                 int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
@@ -413,7 +513,7 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-                for (int i = 0; i < roomVertices.Count; ++i)
+                for (int i = 0; i < maxRoomVertexCount; ++i)
                 {
                     var trVertex = roomVertices[i];
                     ushort flags = 0x0000;
@@ -1327,5 +1427,11 @@ namespace TombLib.LevelData.Compilers
             result.Blue = (byte)color.Z;
             return result;
         }
+
+        private bool IsStaticMeshInMergeList(StaticInstance instance)
+        {
+            return (_level.Settings.AutoStaticMeshMerges.Any(e => e.Merge && e.meshId == instance.WadObjectId.TypeId));
+        }
+
     }
 }
