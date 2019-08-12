@@ -257,7 +257,7 @@ namespace TombIDE
 			OpenFileDialog dialog = new OpenFileDialog
 			{
 				Title = "Choose the .exe file of the program you want to add",
-				Filter = "Executable Files|*.exe"
+				Filter = "Executable Files|*.exe|Batch Files|*.bat"
 			};
 
 			if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -303,6 +303,10 @@ namespace TombIDE
 			button.ContextMenuStrip = contextMenu_ProgramButton;
 
 			string programName = FileVersionInfo.GetVersionInfo(filePath).ProductName;
+
+			if (string.IsNullOrEmpty(programName))
+				programName = Path.GetFileNameWithoutExtension(filePath);
+
 			toolTip.SetToolTip(button, programName);
 
 			// Add the button exactly where the button_AddProgram is and move the button_AddProgram lower
