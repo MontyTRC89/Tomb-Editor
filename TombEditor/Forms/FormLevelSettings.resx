@@ -181,6 +181,12 @@ Each required sound file will reqested from the this list in top to bottom order
   <metadata name="pathVariablesDataGridViewValueColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="darkLabel18.Text" xml:space="preserve">
+    <value>WARNING: TR4 and below have a vertex limit of around 3000. Make sure you dont use too many merged static meshes in a single room!
+
+WARNING: TRNG scripts,flipeffects and OCB values won't work anymore for merged static meshes!
+</value>
+  </data>
   <metadata name="colorDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>407, 20</value>
   </metadata>
