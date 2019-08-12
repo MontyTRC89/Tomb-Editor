@@ -36,11 +36,18 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormPluginLibrary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormPluginLibrary.Designer.cs">
+      <DependentUpon>FormPluginLibrary.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormImportLevel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormLevelSetup.resx">
       <DependentUpon>FormLevelSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormPluginLibrary.resx">
+      <DependentUpon>FormPluginLibrary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameLevel.resx">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
