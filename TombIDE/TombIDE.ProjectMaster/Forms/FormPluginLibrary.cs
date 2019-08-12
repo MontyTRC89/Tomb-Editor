@@ -4,18 +4,26 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TombIDE.Shared;
+using TombLib.Projects;
 
 namespace TombIDE.ProjectMaster
 {
 	public partial class FormPluginLibrary : DarkForm
 	{
-		public FormPluginLibrary()
+		private IDE _ide;
+
+		public FormPluginLibrary(IDE ide)
 		{
+			_ide = ide;
+
 			InitializeComponent();
 
-			UpdateTreeView();
+			UpdateAvailablePluginsTreeView();
+			UpdateInstalledPluginsTreeView();
 		}
 
 		private void button_OpenArchive_Click(object sender, EventArgs e)
@@ -39,14 +47,48 @@ namespace TombIDE.ProjectMaster
 					{
 						using (IReader reader = ReaderFactory.Open(stream))
 						{
+							foreach (string directory in Directory.GetDirectories("Plugins"))
+							{
+								if (Path.GetFileName(directory) == Path.GetFileNameWithoutExtension(filePath))
+									throw new ArgumentException("Plugin already installed.");
+							}
+
+							string extractionPath = Path.Combine("Plugins", Path.GetFileNameWithoutExtension(filePath));
+
 							while (reader.MoveToNextEntry())
 							{
 								if (!reader.Entry.IsDirectory)
+									reader.WriteEntryToDirectory(extractionPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+							}
+
+							foreach (string file in Directory.GetFiles(extractionPath, "*.script"))
+								File.Copy(file, Path.Combine("NGC", Path.GetFileName(file)), true);
+
+							string pluginName = Path.GetFileName(extractionPath);
+
+							if (Directory.GetFiles(extractionPath, "*.btn").Length > 0)
+							{
+								string btnFilePath = Directory.GetFiles(extractionPath, "*.btn").First();
+								string[] btnFileContent = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252));
+
+								foreach (string line in btnFileContent)
 								{
-									reader.WriteEntryToDirectory(Path.Combine("Plugins", Path.GetFileNameWithoutExtension(filePath)),
-										new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+									if (line.StartsWith("NAME#"))
+									{
+										pluginName = line.Replace("NAME#", string.Empty).Trim();
+										break;
+									}
 								}
 							}
+
+							Plugin plugin = new Plugin
+							{
+								Name = pluginName,
+								InternalPath = extractionPath
+							};
+
+							_ide.Configuration.AvailablePlugins.Add(plugin);
+							_ide.Configuration.Save();
 						}
 					}
 				}
@@ -55,44 +97,107 @@ namespace TombIDE.ProjectMaster
 					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 
-				UpdateTreeView();
+				UpdateAvailablePluginsTreeView();
 			}
 		}
 
-		private void UpdateTreeView()
+		private void button_Install_Click(object sender, EventArgs e)
+		{
+			foreach (DarkTreeNode node in treeView_AvailablePlugins.SelectedNodes)
+			{
+				try
+				{
+					string pluginFolderPath = ((Plugin)node.Tag).InternalPath;
+					string dllFilePath = Directory.GetFiles(pluginFolderPath, "*.dll").First();
+
+					File.Copy(dllFilePath, Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath)), true);
+
+					_ide.Project.InstalledPlugins.Add((Plugin)node.Tag);
+					XmlHandling.SaveTRPROJ(_ide.Project);
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+
+			UpdateAvailablePluginsTreeView();
+			UpdateInstalledPluginsTreeView();
+		}
+
+		private void button_Uninstall_Click(object sender, EventArgs e)
+		{
+			foreach (DarkTreeNode node in treeView_Installed.SelectedNodes)
+			{
+				try
+				{
+					string pluginFolderPath = ((Plugin)node.Tag).InternalPath;
+					string dllFilePath = Directory.GetFiles(pluginFolderPath, "*.dll").First();
+
+					string dllProjectPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
+
+					if (File.Exists(dllProjectPath))
+						File.Delete(dllProjectPath);
+
+					_ide.Project.InstalledPlugins.Remove((Plugin)node.Tag);
+					XmlHandling.SaveTRPROJ(_ide.Project);
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+
+			UpdateAvailablePluginsTreeView();
+			UpdateInstalledPluginsTreeView();
+		}
+
+		private void UpdateAvailablePluginsTreeView()
 		{
 			treeView_AvailablePlugins.Nodes.Clear();
 
-			DirectoryInfo directoryInfo = new DirectoryInfo("Plugins");
-
-			foreach (DirectoryInfo directory in directoryInfo.GetDirectories())
+			foreach (Plugin availablePlugin in _ide.Configuration.AvailablePlugins)
 			{
-				string pluginName = directory.Name;
+				bool isPluginInstalled = false;
 
-				foreach (FileInfo file in directory.GetFiles())
+				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
 				{
-					if (Path.GetExtension(file.Name) == ".btn")
+					if (availablePlugin.InternalPath == installedPlugin.InternalPath)
 					{
-						string[] fileContent = File.ReadAllLines(file.FullName, Encoding.GetEncoding(1252));
-
-						foreach (string line in fileContent)
-						{
-							if (line.StartsWith("NAME#"))
-							{
-								pluginName = line.Replace("NAME#", string.Empty).Trim();
-								break;
-							}
-						}
+						isPluginInstalled = true;
+						break;
 					}
 				}
 
-				DarkTreeNode node = new DarkTreeNode(pluginName)
+				if (isPluginInstalled)
+					continue;
+
+				DarkTreeNode node = new DarkTreeNode(availablePlugin.Name)
 				{
-					Tag = directory.FullName
+					Tag = availablePlugin
 				};
 
 				treeView_AvailablePlugins.Nodes.Add(node);
 			}
+
+			treeView_AvailablePlugins.Invalidate();
+		}
+
+		private void UpdateInstalledPluginsTreeView()
+		{
+			treeView_Installed.Nodes.Clear();
+
+			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+			{
+				DarkTreeNode node = new DarkTreeNode(plugin.Name)
+				{
+					Tag = plugin
+				};
+
+				treeView_Installed.Nodes.Add(node);
+			}
+
+			treeView_Installed.Invalidate();
 		}
 	}
 }
