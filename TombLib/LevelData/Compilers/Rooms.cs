@@ -215,6 +215,10 @@ namespace TombLib.LevelData.Compilers
                 case RoomLightEffect.Reflection:
                     newRoom.Flags |= 0x0200;
                     break;
+                case RoomLightEffect.None:
+                    if (!waterSchemeSet)
+                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
+                    break;
             }
 
             // Generate geometry
@@ -328,7 +332,17 @@ namespace TombLib.LevelData.Compilers
                         Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
                         Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
                         normal = Vector3.Normalize(normal);
-
+                        int lightingEffect = wadStatic.Mesh.VerticesShades[j];
+                        if(lightingEffect > 4227 )
+                        {
+                            lightingEffect = 0x2000;
+                        }else if (lightingEffect > 0)
+                        {
+                            lightingEffect = 0x4000;
+                        }else
+                        {
+                            lightingEffect = 0x0;
+                        }
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -339,7 +353,7 @@ namespace TombLib.LevelData.Compilers
                             },
                             Lighting1 = 0,
                             Lighting2 = 0,
-                            Attributes = 0
+                            Attributes = (ushort)lightingEffect
                         };
                         trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal));
                         // Check for maximum vertices reached
