@@ -1,8 +1,9 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
+using SharpCompress.Common;
+using SharpCompress.Readers;
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Windows.Forms;
 
@@ -21,7 +22,8 @@ namespace TombIDE.ProjectMaster
 		{
 			OpenFileDialog dialog = new OpenFileDialog
 			{
-				Filter = "All Supported Files|*.zip;*.rar"
+				Title = "Select a .ZIP / .GZIP / .LZIP / .BZIP2 / .TAR / .RAR / .XZ File",
+				Filter = "All Supported Files|*.zip;*.gzip;*.lzip;*.bzip2;*.tar;*.rar;*.xz"
 			};
 
 			if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -33,14 +35,25 @@ namespace TombIDE.ProjectMaster
 					if (!Directory.Exists("Plugins"))
 						Directory.CreateDirectory("Plugins");
 
-					if (Path.GetExtension(filePath) == ".zip")
-						ZipFile.ExtractToDirectory(filePath, Path.Combine("Plugins", Path.GetFileNameWithoutExtension(filePath)));
-					else if (Path.GetExtension(filePath) == ".rar")
+					using (Stream stream = File.OpenRead(filePath))
 					{
-						// bruh...
+						using (IReader reader = ReaderFactory.Open(stream))
+						{
+							while (reader.MoveToNextEntry())
+							{
+								if (!reader.Entry.IsDirectory)
+								{
+									reader.WriteEntryToDirectory(Path.Combine("Plugins", Path.GetFileNameWithoutExtension(filePath)),
+										new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+								}
+							}
+						}
 					}
 				}
-				catch { }
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 
 				UpdateTreeView();
 			}
@@ -48,7 +61,7 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTreeView()
 		{
-			treeView.Nodes.Clear();
+			treeView_AvailablePlugins.Nodes.Clear();
 
 			DirectoryInfo directoryInfo = new DirectoryInfo("Plugins");
 
@@ -78,7 +91,7 @@ namespace TombIDE.ProjectMaster
 					Tag = directory.FullName
 				};
 
-				treeView.Nodes.Add(node);
+				treeView_AvailablePlugins.Nodes.Add(node);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ namespace TombIDE.ProjectMaster
 			// TODO
 		}
 
-		private void button_Install_Click(object sender, System.EventArgs e)
+		private void button_ManagePlugins_Click(object sender, System.EventArgs e)
 		{
 			using (FormPluginLibrary form = new FormPluginLibrary())
 			{

@@ -17,13 +17,11 @@
 
 		private void InitializeComponent()
 		{
-			this.button_Install = new System.Windows.Forms.ToolStripButton();
-			this.button_Uninstall = new System.Windows.Forms.ToolStripButton();
+			this.button_ManagePlugins = new DarkUI.Controls.DarkButton();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_02 = new DarkUI.Controls.DarkLabel();
 			this.panel_List = new System.Windows.Forms.Panel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
-			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
 			this.panel_Logo = new System.Windows.Forms.Panel();
 			this.panel_Properties = new System.Windows.Forms.Panel();
 			this.tabControl = new System.Windows.Forms.CustomTabControl();
@@ -36,7 +34,6 @@
 			this.richTextBox_Changelog = new System.Windows.Forms.RichTextBox();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.panel_List.SuspendLayout();
-			this.toolStrip.SuspendLayout();
 			this.panel_Properties.SuspendLayout();
 			this.tabControl.SuspendLayout();
 			this.tabPage_Overview.SuspendLayout();
@@ -45,29 +42,15 @@
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// button_Install
+			// button_ManagePlugins
 			// 
-			this.button_Install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.button_Install.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.button_Install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.button_Install.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_plus_math_16;
-			this.button_Install.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.button_Install.Name = "button_Install";
-			this.button_Install.Size = new System.Drawing.Size(23, 25);
-			this.button_Install.Text = "Install New Plugin";
-			this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
-			// 
-			// button_Uninstall
-			// 
-			this.button_Uninstall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.button_Uninstall.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.button_Uninstall.Enabled = false;
-			this.button_Uninstall.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.button_Uninstall.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
-			this.button_Uninstall.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.button_Uninstall.Name = "button_Uninstall";
-			this.button_Uninstall.Size = new System.Drawing.Size(23, 25);
-			this.button_Uninstall.Text = "Uninstall Plugin";
+			this.button_ManagePlugins.Location = new System.Drawing.Point(6, 6);
+			this.button_ManagePlugins.Margin = new System.Windows.Forms.Padding(6, 6, 6, 0);
+			this.button_ManagePlugins.Name = "button_ManagePlugins";
+			this.button_ManagePlugins.Size = new System.Drawing.Size(242, 23);
+			this.button_ManagePlugins.TabIndex = 1;
+			this.button_ManagePlugins.Text = "Manage Plugins";
+			this.button_ManagePlugins.Click += new System.EventHandler(this.button_ManagePlugins_Click);
 			// 
 			// label_01
 			// 
@@ -99,8 +82,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel_List.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_List.Controls.Add(this.button_ManagePlugins);
 			this.panel_List.Controls.Add(this.treeView);
-			this.panel_List.Controls.Add(this.toolStrip);
 			this.panel_List.Location = new System.Drawing.Point(1, 25);
 			this.panel_List.Margin = new System.Windows.Forms.Padding(0);
 			this.panel_List.Name = "panel_List";
@@ -109,28 +92,16 @@
 			// 
 			// treeView
 			// 
+			this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView.Location = new System.Drawing.Point(0, 28);
+			this.treeView.Location = new System.Drawing.Point(0, 35);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.Name = "treeView";
-			this.treeView.Size = new System.Drawing.Size(254, 262);
+			this.treeView.Size = new System.Drawing.Size(254, 255);
 			this.treeView.TabIndex = 0;
-			// 
-			// toolStrip
-			// 
-			this.toolStrip.AutoSize = false;
-			this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.button_Install,
-            this.button_Uninstall});
-			this.toolStrip.Location = new System.Drawing.Point(0, 0);
-			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			this.toolStrip.Size = new System.Drawing.Size(254, 28);
-			this.toolStrip.TabIndex = 1;
 			// 
 			// panel_Logo
 			// 
@@ -301,8 +272,6 @@
 			this.Name = "SectionPluginList";
 			this.Size = new System.Drawing.Size(662, 320);
 			this.panel_List.ResumeLayout(false);
-			this.toolStrip.ResumeLayout(false);
-			this.toolStrip.PerformLayout();
 			this.panel_Properties.ResumeLayout(false);
 			this.tabControl.ResumeLayout(false);
 			this.tabPage_Overview.ResumeLayout(false);
@@ -316,10 +285,10 @@
 
 		#endregion
 
+		private DarkUI.Controls.DarkButton button_ManagePlugins;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
-		private DarkUI.Controls.DarkToolStrip toolStrip;
 		private DarkUI.Controls.DarkTreeView treeView;
 		private System.Windows.Forms.CustomTabControl tabControl;
 		private System.Windows.Forms.Panel panel_List;
@@ -332,7 +301,5 @@
 		private System.Windows.Forms.TabPage tabPage_Overview;
 		private System.Windows.Forms.TextBox textBox_DLLName;
 		private System.Windows.Forms.TextBox textBox_Title;
-		private System.Windows.Forms.ToolStripButton button_Install;
-		private System.Windows.Forms.ToolStripButton button_Uninstall;
 	}
 }
