@@ -18,5 +18,13 @@ namespace TombIDE.ProjectMaster
 
 			// TODO
 		}
+
+		private void button_Install_Click(object sender, System.EventArgs e)
+		{
+			using (FormPluginLibrary form = new FormPluginLibrary())
+			{
+				form.ShowDialog(this);
+			}
+		}
 	}
 }

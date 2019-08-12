@@ -263,7 +263,6 @@ namespace TombIDE.ProjectMaster
 				// Remove node and clear selection
 				treeView.SelectedNodes[0].Remove();
 				treeView.SelectedNodes.Clear();
-				treeView.Invalidate();
 				CheckItemSelection();
 
 				// Send the new list (without the removed node) into the .trproj file
@@ -292,7 +291,6 @@ namespace TombIDE.ProjectMaster
 			}
 
 			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			treeView.Invalidate();
 			ReserializeTRPROJ();
 		}
 
@@ -317,7 +315,6 @@ namespace TombIDE.ProjectMaster
 			}
 
 			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			treeView.Invalidate();
 			ReserializeTRPROJ();
 		}
 
@@ -461,6 +458,8 @@ namespace TombIDE.ProjectMaster
 
 		public void ReserializeTRPROJ()
 		{
+			treeView.Invalidate();
+
 			_ide.Project.Levels.Clear();
 
 			foreach (DarkTreeNode node in treeView.Nodes)
