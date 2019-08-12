@@ -79,6 +79,7 @@
 			this.button_Install.Size = new System.Drawing.Size(30, 204);
 			this.button_Install.TabIndex = 2;
 			this.button_Install.Text = ">>";
+			this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
 			// 
 			// button_OpenArchive
 			// 
@@ -112,6 +113,7 @@
 			this.button_Uninstall.Size = new System.Drawing.Size(30, 204);
 			this.button_Uninstall.TabIndex = 3;
 			this.button_Uninstall.Text = "<<";
+			this.button_Uninstall.Click += new System.EventHandler(this.button_Uninstall_Click);
 			// 
 			// darkSectionPanel1
 			// 

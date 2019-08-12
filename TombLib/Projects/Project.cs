@@ -40,6 +40,11 @@ namespace TombLib.Projects
 		public List<ProjectLevel> Levels { get; set; } = new List<ProjectLevel>();
 
 		/// <summary>
+		/// A list of the project's installed plugins.
+		/// </summary>
+		public List<Plugin> InstalledPlugins { get; set; } = new List<Plugin>();
+
+		/// <summary>
 		/// Creates and returns an exact copy of the current project without overwriting the original data.
 		/// </summary>
 		public Project Clone()
@@ -55,6 +60,9 @@ namespace TombLib.Projects
 
 			foreach (ProjectLevel level in Levels)
 				projectCopy.Levels.Add(level.Clone());
+
+			foreach (Plugin plugin in InstalledPlugins)
+				projectCopy.InstalledPlugins.Add(plugin.Clone());
 
 			return projectCopy;
 		}

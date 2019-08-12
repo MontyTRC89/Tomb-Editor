@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using TombLib.Projects;
 
 namespace TombIDE.Shared
 {
@@ -18,6 +19,7 @@ namespace TombIDE.Shared
 
 		public string RememberedProject { get; set; }
 		public List<string> PinnedProgramPaths { get; set; }
+		public List<Plugin> AvailablePlugins { get; set; }
 
 		/* ProjectMaster */
 
