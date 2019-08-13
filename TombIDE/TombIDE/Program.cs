@@ -25,8 +25,9 @@ namespace TombIDE
 
 			Configuration configuration = Configuration.Load();
 			List<Project> availableProjects = XmlHandling.GetProjectsFromXml();
+			List<Plugin> availablePlugins = XmlHandling.GetPluginsFromXml();
 
-			using (IDE ide = new IDE(configuration, availableProjects))
+			using (IDE ide = new IDE(configuration, availableProjects, availablePlugins))
 			{
 				using (FormStart form = new FormStart(ide))
 					Application.Run(form);

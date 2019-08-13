@@ -19,7 +19,6 @@ namespace TombIDE.Shared
 
 		public string RememberedProject { get; set; }
 		public List<string> PinnedProgramPaths { get; set; }
-		public List<Plugin> AvailablePlugins { get; set; }
 
 		/* ProjectMaster */
 

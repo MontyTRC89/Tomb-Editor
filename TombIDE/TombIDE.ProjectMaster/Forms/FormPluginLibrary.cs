@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -81,14 +82,16 @@ namespace TombIDE.ProjectMaster
 								}
 							}
 
+							string dllFilePath = Directory.GetFiles(extractionPath, "*.dll").First();
+
 							Plugin plugin = new Plugin
 							{
 								Name = pluginName,
-								InternalPath = extractionPath
+								InternalDllPath = dllFilePath
 							};
 
-							_ide.Configuration.AvailablePlugins.Add(plugin);
-							_ide.Configuration.Save();
+							_ide.AvailablePlugins.Add(plugin);
+							XmlHandling.SaveXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>), _ide.AvailablePlugins);
 						}
 					}
 				}
@@ -107,7 +110,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string pluginFolderPath = ((Plugin)node.Tag).InternalPath;
+					string pluginFolderPath = Path.GetDirectoryName(((Plugin)node.Tag).InternalDllPath);
 					string dllFilePath = Directory.GetFiles(pluginFolderPath, "*.dll").First();
 
 					File.Copy(dllFilePath, Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath)), true);
@@ -131,7 +134,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string pluginFolderPath = ((Plugin)node.Tag).InternalPath;
+					string pluginFolderPath = Path.GetDirectoryName(((Plugin)node.Tag).InternalDllPath);
 					string dllFilePath = Directory.GetFiles(pluginFolderPath, "*.dll").First();
 
 					string dllProjectPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
@@ -156,13 +159,13 @@ namespace TombIDE.ProjectMaster
 		{
 			treeView_AvailablePlugins.Nodes.Clear();
 
-			foreach (Plugin availablePlugin in _ide.Configuration.AvailablePlugins)
+			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 			{
 				bool isPluginInstalled = false;
 
 				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
 				{
-					if (availablePlugin.InternalPath == installedPlugin.InternalPath)
+					if (availablePlugin.InternalDllPath == installedPlugin.InternalDllPath)
 					{
 						isPluginInstalled = true;
 						break;
