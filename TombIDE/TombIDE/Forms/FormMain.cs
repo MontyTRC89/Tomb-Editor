@@ -330,8 +330,17 @@ namespace TombIDE
 			// Check if a button is being dragged
 			if (_draggedButton != null)
 			{
-				Button clickedButton = (Button)sender;
-				Process.Start(clickedButton.Tag.ToString());
+				string programFilePath = ((Button)sender).Tag.ToString();
+
+				ProcessStartInfo startInfo = new ProcessStartInfo
+				{
+					FileName = programFilePath
+				};
+
+				if (programFilePath.EndsWith(".bat"))
+					startInfo.WorkingDirectory = Path.GetDirectoryName(programFilePath);
+
+				Process.Start(startInfo);
 			}
 		}
 
