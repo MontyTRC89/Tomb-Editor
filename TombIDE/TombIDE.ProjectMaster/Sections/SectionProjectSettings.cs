@@ -12,6 +12,7 @@ namespace TombIDE.ProjectMaster
 
 		public void Initialize(IDE ide)
 		{
+			settings_SpecialFunctions.Initialize(ide);
 			settings_ProjectInfo.Initialize(ide);
 			settings_GameIcon.Initialize(ide);
 			settings_StartupImage.Initialize(ide);

@@ -113,6 +113,9 @@ namespace TombIDE
 
 					RestartApplication();
 				}
+				else if (result == DialogResult.No)
+					DarkMessageBox.Show(this, "No paths have been affected.", "Operation cancelled",
+						MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			else if (obj is IDE.ProjectLevelsPathChangedEvent)
 			{
@@ -132,6 +135,9 @@ namespace TombIDE
 
 					RestartApplication();
 				}
+				else if (result == DialogResult.No)
+					DarkMessageBox.Show(this, "No paths have been affected.", "Operation cancelled",
+						MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 
@@ -155,7 +161,7 @@ namespace TombIDE
 					projectMaster.Initialize(_ide);
 					scriptEditor.Initialize(_ide);
 
-					// Run through all tabs to avoid invalidation glitches
+					// Run through all tabs to avoid validation glitches
 					_ide.SelectIDETab("Project Master");
 					_ide.SelectIDETab("Script Editor");
 					_ide.SelectIDETab("Tools");
@@ -203,8 +209,7 @@ namespace TombIDE
 
 		private void AddPinnedPrograms()
 		{
-			// If there are any pinned program paths in the config
-			if (_ide.Configuration.PinnedProgramPaths.Count > 0)
+			if (_ide.Configuration.PinnedProgramPaths.Count > 0) // If there are any pinned program paths in the config
 			{
 				foreach (string programPath in _ide.Configuration.PinnedProgramPaths)
 					AddProgramButton(programPath, false);
@@ -304,7 +309,10 @@ namespace TombIDE
 
 			string programName = FileVersionInfo.GetVersionInfo(filePath).ProductName;
 
-			if (string.IsNullOrEmpty(programName))
+			// Handle batch files and programs without ProductNames
+			if (string.IsNullOrEmpty(programName) && Path.GetExtension(filePath) == ".bat")
+				programName = Path.GetFileNameWithoutExtension(filePath) + " (Batch File)";
+			else if (string.IsNullOrEmpty(programName))
 				programName = Path.GetFileNameWithoutExtension(filePath);
 
 			toolTip.SetToolTip(button, programName);

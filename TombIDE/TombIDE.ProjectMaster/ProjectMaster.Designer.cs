@@ -26,6 +26,7 @@
 			this.splitContainer_Info = new System.Windows.Forms.SplitContainer();
 			this.splitContainer_Levels = new System.Windows.Forms.SplitContainer();
 			this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
+			this.dllFileWatcher = new System.IO.FileSystemWatcher();
 			((System.ComponentModel.ISupportInitialize)(this.levelFolderWatcher)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.prj2FileWatcher)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).BeginInit();
@@ -40,6 +41,7 @@
 			this.splitContainer_Main.Panel1.SuspendLayout();
 			this.splitContainer_Main.Panel2.SuspendLayout();
 			this.splitContainer_Main.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// levelFolderWatcher
@@ -157,6 +159,14 @@
 			this.splitContainer_Main.SplitterWidth = 5;
 			this.splitContainer_Main.TabIndex = 0;
 			// 
+			// dllFileWatcher
+			// 
+			this.dllFileWatcher.EnableRaisingEvents = true;
+			this.dllFileWatcher.Filter = "*.dll";
+			this.dllFileWatcher.IncludeSubdirectories = true;
+			this.dllFileWatcher.SynchronizingObject = this;
+			this.dllFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.dllFileWatcher_Deleted);
+			// 
 			// ProjectMaster
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -179,6 +189,7 @@
 			this.splitContainer_Main.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).EndInit();
 			this.splitContainer_Main.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -194,5 +205,6 @@
 		private System.Windows.Forms.SplitContainer splitContainer_Info;
 		private System.Windows.Forms.SplitContainer splitContainer_Levels;
 		private System.Windows.Forms.SplitContainer splitContainer_Main;
+		private System.IO.FileSystemWatcher dllFileWatcher;
 	}
 }

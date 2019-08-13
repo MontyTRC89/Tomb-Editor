@@ -124,6 +124,12 @@
     <Compile Include="Sections\Settings Sections\SettingsLogo.Designer.cs">
       <DependentUpon>SettingsLogo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sections\Settings Sections\SettingsSpecialFunctions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Sections\Settings Sections\SettingsSpecialFunctions.Designer.cs">
+      <DependentUpon>SettingsSpecialFunctions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sections\Settings Sections\SettingsStartupImage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -171,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsLogo.resx">
       <DependentUpon>SettingsLogo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sections\Settings Sections\SettingsSpecialFunctions.resx">
+      <DependentUpon>SettingsSpecialFunctions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsStartupImage.resx">
       <DependentUpon>SettingsStartupImage.cs</DependentUpon>
