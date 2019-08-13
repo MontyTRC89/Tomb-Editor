@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.LevelData;
@@ -19,16 +18,10 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			string programPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			string pluginsPath = Path.Combine(programPath, "Plugins");
-
-			if (!Directory.Exists(pluginsPath))
-				Directory.CreateDirectory(pluginsPath);
-
 			// Initialize the watchers
 			prj2FileWatcher.Path = _ide.Project.LevelsPath;
 			levelFolderWatcher.Path = _ide.Project.LevelsPath;
-			dllFileWatcher.Path = pluginsPath;
+			dllFileWatcher.Path = _ide.Project.ProjectPath;
 
 			// Initialize the sections
 			section_LevelList.Initialize(_ide);
