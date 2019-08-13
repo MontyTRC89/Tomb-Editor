@@ -15,8 +15,15 @@ namespace TombIDE.ProjectMaster
 		public void Initialize(IDE ide)
 		{
 			_ide = ide;
+			_ide.IDEEventRaised += OnIDEEventRaised;
+		}
 
-			// TODO
+		private void OnIDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.PluginDeletedEvent)
+			{
+				UpdatePluginList();
+			}
 		}
 
 		private void button_ManagePlugins_Click(object sender, System.EventArgs e)
@@ -25,6 +32,10 @@ namespace TombIDE.ProjectMaster
 			{
 				form.ShowDialog(this);
 			}
+		}
+
+		private void UpdatePluginList()
+		{
 		}
 	}
 }
