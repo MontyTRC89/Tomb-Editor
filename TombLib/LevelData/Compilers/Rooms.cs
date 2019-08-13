@@ -317,6 +317,9 @@ namespace TombLib.LevelData.Compilers
                 //we dont want merged meshes to be taken into account for portal connections
                 //so we save the last vertex of the original room
                 int maxRoomVertexCount = roomVertices.Count;
+                _progressReporter.ReportInfo(string.Format("Amount of vertices for room {0} : {1}",newRoom,maxRoomVertexCount));
+                _progressReporter.ReportProgress(17,"Now merging static meshes...");
+
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
                     if (!IsStaticMeshInMergeList(staticMesh))
@@ -332,17 +335,24 @@ namespace TombLib.LevelData.Compilers
                         Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
                         Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
                         normal = Vector3.Normalize(normal);
-                        int lightingEffect = wadStatic.Mesh.VerticesShades[j];
-                        if(lightingEffect > 4227 )
+                        int lightingEffect = 0;
+                        if (j < wadStatic.Mesh.VerticesShades.Count)
                         {
-                            lightingEffect = 0x2000;
-                        }else if (lightingEffect > 0)
-                        {
-                            lightingEffect = 0x4000;
-                        }else
-                        {
-                            lightingEffect = 0x0;
+                            lightingEffect = wadStatic.Mesh.VerticesShades[j];
+                            if (lightingEffect > 4227)
+                            {
+                                lightingEffect = 0x2000;
+                            }
+                            else if (lightingEffect > 0)
+                            {
+                                lightingEffect = 0x4000;
+                            }
+                            else
+                            {
+                                lightingEffect = 0x0;
+                            }
                         }
+
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -409,6 +419,7 @@ namespace TombLib.LevelData.Compilers
                         }
                     }
                 }
+                _progressReporter.ReportProgress(19, "Merging of static meshes done.");
                 // Add geometry imported objects
                 int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
