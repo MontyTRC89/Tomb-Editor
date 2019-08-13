@@ -39,5 +39,11 @@ namespace TombIDE.ProjectMaster
 
 		private void levelFolderWatcher_Deleted(object sender, FileSystemEventArgs e) =>
 			_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+
+		private void dllFileWatcher_Deleted(object sender, FileSystemEventArgs e)
+		{
+			if(e.Name.ToLower().StartsWith("plugin_"))
+				_ide.RaiseEvent(new IDE.PluginDeletedEvent());
+		}	
 	}
 }

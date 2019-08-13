@@ -4,6 +4,7 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -202,5 +203,14 @@ namespace TombIDE.ProjectMaster
 
 			treeView_Installed.Invalidate();
 		}
+
+		private void button_Download_Click(object sender, EventArgs e) =>
+			Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
+
+		private void dllFileWatcher_Deleted(object sender, FileSystemEventArgs e) =>
+			_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+
+		private void pluginFolderWatcher_Deleted(object sender, FileSystemEventArgs e) =>
+			_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
 	}
 }
