@@ -42,20 +42,20 @@
 			// button_Apply
 			// 
 			this.button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Apply.Location = new System.Drawing.Point(541, 8);
-			this.button_Apply.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
+			this.button_Apply.Location = new System.Drawing.Point(621, 5);
+			this.button_Apply.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
 			this.button_Apply.Name = "button_Apply";
-			this.button_Apply.Size = new System.Drawing.Size(75, 23);
+			this.button_Apply.Size = new System.Drawing.Size(75, 28);
 			this.button_Apply.TabIndex = 0;
 			this.button_Apply.Text = "Apply";
 			// 
 			// button_Cancel
 			// 
 			this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button_Cancel.Location = new System.Drawing.Point(619, 8);
-			this.button_Cancel.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
+			this.button_Cancel.Location = new System.Drawing.Point(699, 5);
+			this.button_Cancel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
 			this.button_Cancel.Name = "button_Cancel";
-			this.button_Cancel.Size = new System.Drawing.Size(75, 23);
+			this.button_Cancel.Size = new System.Drawing.Size(75, 28);
 			this.button_Cancel.TabIndex = 1;
 			this.button_Cancel.Text = "Cancel";
 			// 
@@ -73,10 +73,10 @@
 			// button_Install
 			// 
 			this.button_Install.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Install.Location = new System.Drawing.Point(336, 8);
+			this.button_Install.Location = new System.Drawing.Point(376, 8);
 			this.button_Install.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_Install.Name = "button_Install";
-			this.button_Install.Size = new System.Drawing.Size(30, 204);
+			this.button_Install.Size = new System.Drawing.Size(30, 248);
 			this.button_Install.TabIndex = 2;
 			this.button_Install.Text = ">>";
 			this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
@@ -107,10 +107,10 @@
 			// button_Uninstall
 			// 
 			this.button_Uninstall.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Uninstall.Location = new System.Drawing.Point(336, 218);
+			this.button_Uninstall.Location = new System.Drawing.Point(376, 262);
 			this.button_Uninstall.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
 			this.button_Uninstall.Name = "button_Uninstall";
-			this.button_Uninstall.Size = new System.Drawing.Size(30, 204);
+			this.button_Uninstall.Size = new System.Drawing.Size(30, 248);
 			this.button_Uninstall.TabIndex = 3;
 			this.button_Uninstall.Text = "<<";
 			this.button_Uninstall.Click += new System.EventHandler(this.button_Uninstall_Click);
@@ -123,7 +123,7 @@
 			this.darkSectionPanel1.Location = new System.Drawing.Point(0, 0);
 			this.darkSectionPanel1.Name = "darkSectionPanel1";
 			this.darkSectionPanel1.SectionHeader = "Available Plugins (TombIDE)";
-			this.darkSectionPanel1.Size = new System.Drawing.Size(330, 430);
+			this.darkSectionPanel1.Size = new System.Drawing.Size(370, 518);
 			this.darkSectionPanel1.TabIndex = 0;
 			// 
 			// treeView_AvailablePlugins
@@ -136,7 +136,7 @@
 			this.treeView_AvailablePlugins.MaxDragChange = 40;
 			this.treeView_AvailablePlugins.MultiSelect = true;
 			this.treeView_AvailablePlugins.Name = "treeView_AvailablePlugins";
-			this.treeView_AvailablePlugins.Size = new System.Drawing.Size(328, 376);
+			this.treeView_AvailablePlugins.Size = new System.Drawing.Size(368, 464);
 			this.treeView_AvailablePlugins.TabIndex = 0;
 			// 
 			// toolStrip
@@ -152,7 +152,7 @@
 			this.toolStrip.Location = new System.Drawing.Point(1, 25);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			this.toolStrip.Size = new System.Drawing.Size(328, 28);
+			this.toolStrip.Size = new System.Drawing.Size(368, 28);
 			this.toolStrip.TabIndex = 1;
 			// 
 			// separator_01
@@ -167,10 +167,10 @@
 			// 
 			this.darkSectionPanel2.Controls.Add(this.treeView_Installed);
 			this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Right;
-			this.darkSectionPanel2.Location = new System.Drawing.Point(372, 0);
+			this.darkSectionPanel2.Location = new System.Drawing.Point(412, 0);
 			this.darkSectionPanel2.Name = "darkSectionPanel2";
 			this.darkSectionPanel2.SectionHeader = "Installed Plugins (Current Project)";
-			this.darkSectionPanel2.Size = new System.Drawing.Size(330, 430);
+			this.darkSectionPanel2.Size = new System.Drawing.Size(370, 518);
 			this.darkSectionPanel2.TabIndex = 1;
 			// 
 			// treeView_Installed
@@ -183,7 +183,7 @@
 			this.treeView_Installed.MaxDragChange = 40;
 			this.treeView_Installed.MultiSelect = true;
 			this.treeView_Installed.Name = "treeView_Installed";
-			this.treeView_Installed.Size = new System.Drawing.Size(328, 404);
+			this.treeView_Installed.Size = new System.Drawing.Size(368, 492);
 			this.treeView_Installed.TabIndex = 0;
 			// 
 			// panel_01
@@ -196,7 +196,7 @@
 			this.panel_01.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel_01.Location = new System.Drawing.Point(0, 0);
 			this.panel_01.Name = "panel_01";
-			this.panel_01.Size = new System.Drawing.Size(704, 432);
+			this.panel_01.Size = new System.Drawing.Size(784, 520);
 			this.panel_01.TabIndex = 0;
 			// 
 			// panel_02
@@ -205,9 +205,9 @@
 			this.panel_02.Controls.Add(this.button_Cancel);
 			this.panel_02.Controls.Add(this.button_Apply);
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel_02.Location = new System.Drawing.Point(0, 432);
+			this.panel_02.Location = new System.Drawing.Point(0, 520);
 			this.panel_02.Name = "panel_02";
-			this.panel_02.Size = new System.Drawing.Size(704, 41);
+			this.panel_02.Size = new System.Drawing.Size(784, 41);
 			this.panel_02.TabIndex = 1;
 			// 
 			// FormPluginLibrary
@@ -215,7 +215,7 @@
 			this.AcceptButton = this.button_Apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(704, 473);
+			this.ClientSize = new System.Drawing.Size(784, 561);
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
