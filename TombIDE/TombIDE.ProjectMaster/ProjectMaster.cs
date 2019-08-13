@@ -42,8 +42,8 @@ namespace TombIDE.ProjectMaster
 
 		private void dllFileWatcher_Deleted(object sender, FileSystemEventArgs e)
 		{
-			if(e.Name.ToLower().StartsWith("plugin_"))
+			if (e.Name.ToLower().StartsWith("plugin_"))
 				_ide.RaiseEvent(new IDE.PluginDeletedEvent());
-		}	
+		}
 	}
 }
