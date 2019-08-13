@@ -16,8 +16,8 @@ namespace TombIDE.Shared
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				Arguments = path,
-				FileName = "explorer.exe"
+				FileName = "explorer.exe",
+				Arguments = path
 			};
 
 			Process.Start(startInfo);
@@ -45,6 +45,9 @@ namespace TombIDE.Shared
 		[DllImport("shell32.dll")]
 		public static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out]StringBuilder lpszPath, int nFolder, bool fCreate);
 
+		/// <summary>
+		/// Returns either the "System32" path or the "SysWOW64" path.
+		/// </summary>
 		public static string GetSystemDirectory()
 		{
 			StringBuilder path = new StringBuilder(260);

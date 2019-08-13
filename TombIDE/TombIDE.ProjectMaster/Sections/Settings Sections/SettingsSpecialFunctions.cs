@@ -26,6 +26,8 @@ namespace TombIDE.ProjectMaster
 			{
 				string[] files = Directory.GetFiles(_ide.Project.ProjectPath);
 
+				bool wereFilesDeleted = false;
+
 				foreach (string file in files)
 				{
 					string fileName = Path.GetFileName(file);
@@ -35,11 +37,18 @@ namespace TombIDE.ProjectMaster
 						fileName == "LastExtraction.lst" ||
 						(fileName.StartsWith("Last_Crash_") && (fileName.EndsWith(".txt") || fileName.EndsWith(".mem"))) ||
 						fileName.EndsWith("_warm_up_log.txt"))
+					{
 						File.Delete(file);
+						wereFilesDeleted = true;
+					}
 				}
 
-				DarkMessageBox.Show(this, "Successfully deleted all log files\n" +
+				if (wereFilesDeleted)
+					DarkMessageBox.Show(this, "Successfully deleted all log files\n" +
 					"and error dumps from the project folder.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				else
+					DarkMessageBox.Show(this, "No log files or error dumps were found.", "Information",
+						MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			catch (Exception ex)
 			{

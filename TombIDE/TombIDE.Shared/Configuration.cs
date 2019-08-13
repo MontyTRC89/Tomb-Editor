@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
-using TombLib.Projects;
 
 namespace TombIDE.Shared
 {
