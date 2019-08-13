@@ -102,6 +102,7 @@
 			this.treeView.Name = "treeView";
 			this.treeView.Size = new System.Drawing.Size(254, 255);
 			this.treeView.TabIndex = 0;
+			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
 			// 
 			// panel_Logo
 			// 
@@ -181,6 +182,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox_DLLName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_DLLName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBox_DLLName.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_DLLName.Location = new System.Drawing.Point(75, 237);
 			this.textBox_DLLName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.textBox_DLLName.Name = "textBox_DLLName";
@@ -194,6 +196,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox_Title.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_Title.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBox_Title.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_Title.Location = new System.Drawing.Point(75, 211);
 			this.textBox_Title.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_Title.Name = "textBox_Title";
