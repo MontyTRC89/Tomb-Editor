@@ -17,23 +17,11 @@
 
 		private void InitializeComponent()
 		{
-			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.button_BuildGame = new DarkUI.Controls.DarkButton();
 			this.button_DeleteLogs = new DarkUI.Controls.DarkButton();
+			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// sectionPanel
-			// 
-			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.sectionPanel.Controls.Add(this.button_BuildGame);
-			this.sectionPanel.Controls.Add(this.button_DeleteLogs);
-			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
-			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "Special Functions";
-			this.sectionPanel.Size = new System.Drawing.Size(640, 65);
-			this.sectionPanel.TabIndex = 0;
 			// 
 			// button_BuildGame
 			// 
@@ -47,13 +35,26 @@
 			// 
 			// button_DeleteLogs
 			// 
+			this.button_DeleteLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_DeleteLogs.Location = new System.Drawing.Point(4, 34);
 			this.button_DeleteLogs.Margin = new System.Windows.Forms.Padding(3, 9, 2, 3);
 			this.button_DeleteLogs.Name = "button_DeleteLogs";
 			this.button_DeleteLogs.Size = new System.Drawing.Size(313, 25);
 			this.button_DeleteLogs.TabIndex = 0;
-			this.button_DeleteLogs.Text = "Delete All Logs / Error Dumps";
+			this.button_DeleteLogs.Text = "Delete All Logs / Error Dumps from the Project Folder";
 			this.button_DeleteLogs.Click += new System.EventHandler(this.button_DeleteLogs_Click);
+			// 
+			// sectionPanel
+			// 
+			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.sectionPanel.Controls.Add(this.button_BuildGame);
+			this.sectionPanel.Controls.Add(this.button_DeleteLogs);
+			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
+			this.sectionPanel.Name = "sectionPanel";
+			this.sectionPanel.SectionHeader = "Special Functions";
+			this.sectionPanel.Size = new System.Drawing.Size(640, 65);
+			this.sectionPanel.TabIndex = 0;
 			// 
 			// SettingsSpecialFunctions
 			// 
@@ -71,8 +72,9 @@
 		}
 
 		#endregion
-		private DarkUI.Controls.DarkSectionPanel sectionPanel;
-		private DarkUI.Controls.DarkButton button_DeleteLogs;
+
 		private DarkUI.Controls.DarkButton button_BuildGame;
+		private DarkUI.Controls.DarkButton button_DeleteLogs;
+		private DarkUI.Controls.DarkSectionPanel sectionPanel;
 	}
 }

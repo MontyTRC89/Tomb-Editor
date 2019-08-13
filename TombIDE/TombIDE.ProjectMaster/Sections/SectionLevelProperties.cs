@@ -89,6 +89,10 @@ namespace TombIDE.ProjectMaster
 					|| exeFileName == "ng_center.exe" || exeFileName == "tomb4.exe" || exeFileName == "pctomb5.exe")
 					continue;
 
+				// Exclude batch files
+				if (exeFileName.EndsWith(".bat"))
+					continue;
+
 				// Get the ProductName and the icon of the program
 				string programName = FileVersionInfo.GetVersionInfo(programPath).ProductName;
 				Image image = ImageHandling.ResizeImage(Icon.ExtractAssociatedIcon(programPath).ToBitmap(), 16, 16);
@@ -170,7 +174,7 @@ namespace TombIDE.ProjectMaster
 			if (radioButton_LatestFile.Checked)
 				return;
 
-			UpdatePrjFileList();
+			UpdatePrj2FileList();
 
 			// If the user unchecked the checkBox and the SpecificFile was a backup file
 			if (!checkBox_ShowAllFiles.Checked && ProjectLevel.IsBackupFile(_ide.SelectedLevel.SpecificFile))
@@ -205,18 +209,18 @@ namespace TombIDE.ProjectMaster
 					return;
 			}
 
-			ProcessStartInfo startInfo = new ProcessStartInfo();
-
-			if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1])
-			{
-				startInfo.FileName = "WadTool.exe";
-				startInfo.Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"";
-			}
-			else
-				startInfo.FileName = treeView_Resources.SelectedNodes[0].Text;
-
 			try
 			{
+				ProcessStartInfo startInfo = new ProcessStartInfo();
+
+				if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1]) // Wad handling
+				{
+					startInfo.FileName = "WadTool.exe";
+					startInfo.Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"";
+				}
+				else
+					startInfo.FileName = treeView_Resources.SelectedNodes[0].Text;
+
 				Process.Start(startInfo);
 			}
 			catch (Exception ex)
@@ -245,8 +249,8 @@ namespace TombIDE.ProjectMaster
 
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"",
-				FileName = programPath
+				FileName = programPath,
+				Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\""
 			};
 
 			Process.Start(startInfo);
@@ -321,7 +325,7 @@ namespace TombIDE.ProjectMaster
 			// then check this checkbox, otherwise it will reset the SpecificFile to a non-backup file and we don't want that
 			checkBox_ShowAllFiles.Checked = ProjectLevel.IsBackupFile(_ide.SelectedLevel.SpecificFile);
 
-			UpdatePrjFileList();
+			UpdatePrj2FileList();
 		}
 
 		private void ClearAndDisablePrj2FileList()
@@ -335,7 +339,7 @@ namespace TombIDE.ProjectMaster
 			checkBox_ShowAllFiles.Enabled = false;
 		}
 
-		private void UpdatePrjFileList()
+		private void UpdatePrj2FileList()
 		{
 			treeView_AllPrjFiles.Nodes.Clear();
 
