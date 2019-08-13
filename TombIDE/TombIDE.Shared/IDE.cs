@@ -22,6 +22,8 @@ namespace TombIDE.Shared
 
 		public List<Project> AvailableProjects { get; }
 
+		public List<Plugin> AvailablePlugins { get; }
+
 		#region ProjectAdded
 
 		public class ProjectAddedEvent : IIDEEvent
@@ -204,6 +206,13 @@ namespace TombIDE.Shared
 
 		#endregion PRJ2FileDeleted
 
+		#region PluginDeleted
+
+		public class PluginDeletedEvent : IProjectMasterEvent
+		{ }
+
+		#endregion PluginDeleted
+
 		#region RequestedPresenceCheck
 
 		public class RequestedScriptPresenceCheckEvent : IProjectMasterEvent
@@ -247,10 +256,11 @@ namespace TombIDE.Shared
 		#endregion RequestedScriptEntryRename
 
 		// Construction and destruction
-		public IDE(Configuration configuration, List<Project> availableProjects)
+		public IDE(Configuration configuration, List<Project> availableProjects, List<Plugin> availablePlugins)
 		{
 			Configuration = configuration;
 			AvailableProjects = availableProjects;
+			AvailablePlugins = availablePlugins;
 		}
 
 		public void Dispose()

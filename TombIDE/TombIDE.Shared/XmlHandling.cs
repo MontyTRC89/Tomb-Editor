@@ -36,6 +36,32 @@ namespace TombIDE.Shared
 			}
 		}
 
+		public static List<Plugin> GetPluginsFromXml()
+		{
+			try
+			{
+				List<Plugin> pluginList = (List<Plugin>)ReadXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>));
+
+				List<Plugin> validPlugins = new List<Plugin>();
+
+				foreach (Plugin plugin in pluginList)
+				{
+					if (File.Exists(plugin.InternalDllPath))
+						validPlugins.Add(plugin);
+				}
+
+				UpdatePluginsXml(validPlugins);
+
+				return validPlugins;
+			}
+			catch (FileNotFoundException) // TombIDEPlugins.xml doesn't exist
+			{
+				// Create a new (empty) .xml file
+				SaveXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>), new List<Plugin>());
+				return new List<Plugin>();
+			}
+		}
+
 		/// <summary>
 		/// Updates TombIDEProjects.xml with the Projects' .trproj file paths.
 		/// </summary>
@@ -47,6 +73,11 @@ namespace TombIDE.Shared
 				projectFilePaths.Add(proj.GetTRPROJFilePath());
 
 			SaveXmlFile("TombIDEProjects.xml", typeof(List<string>), projectFilePaths);
+		}
+
+		public static void UpdatePluginsXml(List<Plugin> pluginList)
+		{
+			SaveXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>), pluginList);
 		}
 
 		public static Project ReadTRPROJ(string path)
