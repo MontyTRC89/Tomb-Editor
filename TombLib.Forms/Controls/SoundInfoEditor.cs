@@ -109,12 +109,13 @@ namespace TombLib.Controls
         {
             get
             {
+                // TODO_SOUNDS
                 WadSoundInfo result = new WadSoundInfo(int.Parse(tbID.Text));
                 result.Name = tbName.Text;
-                result.Volume = (float)(numericVolume.Value * 0.01m);
-                result.PitchFactor = (float)(numericPitch.Value * 0.01m);
-                result.RangeInSectors = (float)numericRange.Value;
-                result.Chance = (float)(numericChance.Value * 0.01m);
+                result.Volume = /*(float)*/(int)(numericVolume.Value * 0.01m);
+                result.PitchFactor = /*(float)*/(int)(numericPitch.Value * 0.01m);
+                result.RangeInSectors = /*(float)*/(int)numericRange.Value;
+                result.Chance = /*(float)*/(int)(numericChance.Value * 0.01m);
                 result.RandomizeVolume = cbRandomizeVolume.Checked;
                 result.RandomizePitch = cbRandomizePitch.Checked;
                 result.DisablePanning = cbDisablePanning.Checked;

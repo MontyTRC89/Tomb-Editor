@@ -273,10 +273,10 @@ namespace TombLib.Wad.Tr4Wad
                 var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
                 var newInfo = new WadSoundInfo(i);
                 newInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)i);
-                newInfo.VolumeByte = oldInfo.Volume;
-                newInfo.RangeInSectorsByte = oldInfo.Range;
-                newInfo.ChanceByte = oldInfo.Chance;
-                newInfo.PitchFactorByte = oldInfo.Pitch;
+                newInfo.Volume = (int)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
+                newInfo.RangeInSectors = oldInfo.Range;
+                newInfo.Chance = (int)Math.Round(oldInfo.Chance * 100.0f / 255.0f);
+                newInfo.PitchFactor = (int)Math.Round((oldInfo.Pitch > 127 ? oldInfo.Pitch - 256 : oldInfo.Pitch) * 100.0f / 128.0f);
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
                 newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.DisablePanning = ((oldInfo.Characteristics & 0x1000) != 0);
@@ -286,12 +286,6 @@ namespace TombLib.Wad.Tr4Wad
                 int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
-                    /*WadSample sample;
-                    if (!samplePathInfos.TryGetValue(j, out sample))
-                    {
-                        logger.Warn("Unable to find sample '" + oldWad.Sounds[j] + "'.");
-                        sample = WadSample.NullSample;
-                    }*/
                     newInfo.EmbeddedSamples.Add(new WadSample(oldWad.Sounds[j]));
                 }
                 soundInfos[i] = newInfo;

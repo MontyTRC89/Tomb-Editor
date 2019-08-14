@@ -20,6 +20,10 @@ namespace TombLib.Wad
             // Save Wad2 file
             using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
                 SaveToStream(wad, fileStream);
+
+            // Save sounds to XML file
+            string xmlFilename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + ".xml");
+            WadSounds.SaveToXml(xmlFilename, wad.Sounds);
         }
 
         public static void SaveToStream(Wad2 wad, Stream stream)

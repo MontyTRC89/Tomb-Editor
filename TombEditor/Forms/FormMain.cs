@@ -14,6 +14,8 @@ using TombLib.Utils;
 using System.Collections.Generic;
 using TombLib.Wad.TrLevels;
 using TombLib.Wad;
+using System.IO;
+using System.Xml;
 
 namespace TombEditor.Forms
 {
@@ -665,65 +667,30 @@ namespace TombEditor.Forms
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadSounds sounds = WadSounds.ReadFromTxt("Sounds\\TR4\\sounds.txt");
-            WadSounds.SaveToXml("Sounds\\TR4\\Sounds.xml", sounds);
-
-            /*using (var reader = new BinaryReader(File.OpenRead("Font.tr5.pc")))
+            /*List<string> soundNames = new List<string>();
+            using (var reader = new StreamReader(File.OpenRead("H:\\Sounds.txt")))
             {
-                var bmp = new Bitmap(256, 768);
-                for (var y=0;y<768;y++)
-                    for (var x=0;x<256;x++)
-                    {
-                        var r = reader.ReadByte();
-                        var g = reader.ReadByte();
-                        var b = reader.ReadByte();
-                        var a = reader.ReadByte();
-                        bmp.SetPixel(x, y, Color.FromArgb(a, r, g, b));
-                    }
-                bmp.Save("Font.Tr5.png");
-            }*/
-
-            /*for (var j = 3; j <= 5; j++)
-            {
-                var list = OriginalSoundsDefinitions.LoadSounds(File.OpenRead("Sounds\\TR" + j + "\\sounds.txt"));
-
-                using (var writer = new StreamWriter(File.OpenWrite("Sounds\\TR" + j + "\\Samples.Tr" + j + ".xml")))
+                while (!reader.EndOfStream)
                 {
-                    writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-                    writer.WriteLine("\t<Sounds>");
-
-                    var i = 0;
-                    foreach (var sound in list)
-                    {
-                        writer.WriteLine("\t\t<Sound Id=\"" + i + "\">");
-
-                        writer.WriteLine("\t\t\t<Name>" + sound.Name.Replace("&", "&amp;") + "</Name>");
-                        writer.WriteLine("\t\t\t<Volume>" + sound.Volume + "</Volume>");
-                        writer.WriteLine("\t\t\t<Pitch>" + sound.Pitch + "</Pitch>");
-                        writer.WriteLine("\t\t\t<Range>" + sound.Range + "</Range>");
-                        writer.WriteLine("\t\t\t<Chance>" + sound.Chance + "</Chance>");
-                        writer.WriteLine("\t\t\t<L>" + sound.FlagL + "</L>");
-                        writer.WriteLine("\t\t\t<N>" + sound.FlagN + "</N>");
-                        writer.WriteLine("\t\t\t<P>" + sound.FlagP + "</P>");
-                        writer.WriteLine("\t\t\t<R>" + sound.FlagR + "</R>");
-                        writer.WriteLine("\t\t\t<V>" + sound.FlagV + "</V>");
-
-                        writer.WriteLine("\t\t\t<Samples>");
-                        foreach (var sample in sound.Samples)
-                        {
-                            writer.WriteLine("\t\t\t\t<Sample>" + sample.Replace("&", "&amp;") + "</Sample>");
-                        }
-                        writer.WriteLine("\t\t\t</Samples>");
-
-                        writer.WriteLine("\t\t</Sound>");
-
-                        i++;
-                    }
-
-                    writer.WriteLine("\t</Sounds>");
-                    writer.WriteLine("</xml>");
+                    string line = reader.ReadLine();
+                    soundNames.Add(line.Split(':')[0]);
                 }
             }*/
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load("H:\\TrCatalog.xml");
+
+            var gameNode = doc.SelectSingleNode("//*[@id='TR2']");
+            var soundsNode = gameNode.ChildNodes[2];
+            foreach (XmlNode node in soundsNode.ChildNodes)
+            {
+                int id = int.Parse(node.Attributes["id"].InnerText);
+                node.Attributes.Append(doc.CreateAttribute("description"));
+                node.Attributes["description"].InnerText = node.Attributes["name"].InnerText;
+                node.Attributes["name"].InnerText = "SOUND_" + id;
+            }
+
+            doc.Save("H:\\TrCatalog.xml");
         }
 
         private void debugScriptToolStripMenuItem_Click(object sender, EventArgs e)

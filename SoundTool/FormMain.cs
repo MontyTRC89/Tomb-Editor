@@ -64,7 +64,8 @@ namespace SoundTool
 
         private void AboutSoundToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            using (var form = new FormAbout(null))
+                form.ShowDialog(this);
         }
 
         private void NewXMLToolStripMenuItem_Click(object sender, EventArgs e)

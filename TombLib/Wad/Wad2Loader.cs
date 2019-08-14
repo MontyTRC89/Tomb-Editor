@@ -191,18 +191,24 @@ namespace TombLib.Wad
         {
             var tempSoundInfo = new WadSoundInfo(0);
             long tempIndex = 0;
+            float volume = 0;
+            float chance = 0;
+            float pitch = 0;
+            float range = 0;
+
             chunkIO.ReadChunks((id2, chunkSize2) =>
             {
+                // TODO_SOUNDS
                 if (id2 == Wad2Chunks.SoundInfoIndex)
                     tempIndex = chunkIO.ReadChunkLong(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoVolume)
-                    tempSoundInfo.Volume = chunkIO.ReadChunkFloat(chunkSize2);
+                    volume = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoRange)
-                    tempSoundInfo.RangeInSectors = chunkIO.ReadChunkFloat(chunkSize2);
+                    range = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoPitch)
-                    tempSoundInfo.PitchFactor = chunkIO.ReadChunkFloat(chunkSize2);
+                    pitch = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoChance)
-                    tempSoundInfo.Chance = chunkIO.ReadChunkFloat(chunkSize2);
+                    chance = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoDisablePanning)
                     tempSoundInfo.DisablePanning = chunkIO.ReadChunkBool(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoRandomizePitch)
@@ -220,6 +226,12 @@ namespace TombLib.Wad
                 _legacySounds = true;
                 return true;
             });
+
+            // Convert from floats to ints
+            tempSoundInfo.Volume = (int)Math.Round(volume * 100.0f);
+            tempSoundInfo.RangeInSectors = (int)range;
+            tempSoundInfo.Chance = (int)Math.Round(chance * 100.0f);
+            tempSoundInfo.PitchFactor = (int)Math.Round((pitch - 1.0f) * 100.0f);
 
             if (string.IsNullOrWhiteSpace(tempSoundInfo.Name))
                 tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, unchecked((uint)tempIndex));
