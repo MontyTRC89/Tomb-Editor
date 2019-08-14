@@ -17,8 +17,8 @@
 
 		private void InitializeComponent()
 		{
-			this.button_Apply = new DarkUI.Controls.DarkButton();
-			this.button_Cancel = new DarkUI.Controls.DarkButton();
+			this.components = new System.ComponentModel.Container();
+			this.button_Close = new DarkUI.Controls.DarkButton();
 			this.button_Delete = new System.Windows.Forms.ToolStripButton();
 			this.button_Download = new DarkUI.Controls.DarkButton();
 			this.button_Install = new DarkUI.Controls.DarkButton();
@@ -27,6 +27,7 @@
 			this.button_OpenInExplorer = new System.Windows.Forms.ToolStripButton();
 			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
 			this.button_Uninstall = new DarkUI.Controls.DarkButton();
+			this.dllFileWatcher = new System.IO.FileSystemWatcher();
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.sectionPanel_Installed = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView_Installed = new DarkUI.Controls.DarkTreeView();
@@ -36,36 +37,25 @@
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_02 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel_02 = new System.Windows.Forms.Panel();
-			this.dllFileWatcher = new System.IO.FileSystemWatcher();
 			this.pluginFolderWatcher = new System.IO.FileSystemWatcher();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).BeginInit();
 			this.panel_01.SuspendLayout();
 			this.sectionPanel_Installed.SuspendLayout();
 			this.sectionPanel_Available.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.panel_02.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pluginFolderWatcher)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// button_Apply
+			// button_Close
 			// 
-			this.button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Apply.Location = new System.Drawing.Point(621, 5);
-			this.button_Apply.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
-			this.button_Apply.Name = "button_Apply";
-			this.button_Apply.Size = new System.Drawing.Size(75, 28);
-			this.button_Apply.TabIndex = 0;
-			this.button_Apply.Text = "Apply";
-			// 
-			// button_Cancel
-			// 
-			this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button_Cancel.Location = new System.Drawing.Point(699, 5);
-			this.button_Cancel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
-			this.button_Cancel.Name = "button_Cancel";
-			this.button_Cancel.Size = new System.Drawing.Size(75, 28);
-			this.button_Cancel.TabIndex = 1;
-			this.button_Cancel.Text = "Cancel";
+			this.button_Close.Location = new System.Drawing.Point(646, 5);
+			this.button_Close.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
+			this.button_Close.Name = "button_Close";
+			this.button_Close.Size = new System.Drawing.Size(128, 28);
+			this.button_Close.TabIndex = 0;
+			this.button_Close.Text = "Close";
 			// 
 			// button_Delete
 			// 
@@ -83,7 +73,7 @@
 			this.button_Download.Location = new System.Drawing.Point(8, 5);
 			this.button_Download.Margin = new System.Windows.Forms.Padding(0, 3, 0, 6);
 			this.button_Download.Name = "button_Download";
-			this.button_Download.Size = new System.Drawing.Size(125, 28);
+			this.button_Download.Size = new System.Drawing.Size(128, 28);
 			this.button_Download.TabIndex = 2;
 			this.button_Download.Text = "Download Plugins";
 			this.button_Download.Click += new System.EventHandler(this.button_Download_Click);
@@ -97,6 +87,7 @@
 			this.button_Install.Size = new System.Drawing.Size(30, 248);
 			this.button_Install.TabIndex = 2;
 			this.button_Install.Text = ">>";
+			this.toolTip.SetToolTip(this.button_Install, "Install Plugin to the Current Project");
 			this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
 			// 
 			// button_OpenArchive
@@ -121,6 +112,7 @@
 			this.button_OpenFolder.Name = "button_OpenFolder";
 			this.button_OpenFolder.Size = new System.Drawing.Size(23, 25);
 			this.button_OpenFolder.Text = "Add Plugin from Folder";
+			this.button_OpenFolder.Click += new System.EventHandler(this.Button_OpenFolder_Click);
 			// 
 			// button_OpenInExplorer
 			// 
@@ -154,7 +146,16 @@
 			this.button_Uninstall.Size = new System.Drawing.Size(30, 248);
 			this.button_Uninstall.TabIndex = 3;
 			this.button_Uninstall.Text = "<<";
+			this.toolTip.SetToolTip(this.button_Uninstall, "Uninstall Plugin from the Current Project");
 			this.button_Uninstall.Click += new System.EventHandler(this.button_Uninstall_Click);
+			// 
+			// dllFileWatcher
+			// 
+			this.dllFileWatcher.EnableRaisingEvents = true;
+			this.dllFileWatcher.Filter = "*.dll";
+			this.dllFileWatcher.IncludeSubdirectories = true;
+			this.dllFileWatcher.SynchronizingObject = this;
+			this.dllFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.dllFileWatcher_Deleted);
 			// 
 			// panel_01
 			// 
@@ -255,21 +256,12 @@
 			// 
 			this.panel_02.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel_02.Controls.Add(this.button_Download);
-			this.panel_02.Controls.Add(this.button_Cancel);
-			this.panel_02.Controls.Add(this.button_Apply);
+			this.panel_02.Controls.Add(this.button_Close);
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel_02.Location = new System.Drawing.Point(0, 520);
 			this.panel_02.Name = "panel_02";
 			this.panel_02.Size = new System.Drawing.Size(784, 41);
 			this.panel_02.TabIndex = 1;
-			// 
-			// dllFileWatcher
-			// 
-			this.dllFileWatcher.EnableRaisingEvents = true;
-			this.dllFileWatcher.Filter = "*.dll";
-			this.dllFileWatcher.IncludeSubdirectories = true;
-			this.dllFileWatcher.SynchronizingObject = this;
-			this.dllFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.dllFileWatcher_Deleted);
 			// 
 			// pluginFolderWatcher
 			// 
@@ -279,7 +271,7 @@
 			// 
 			// FormPluginLibrary
 			// 
-			this.AcceptButton = this.button_Apply;
+			this.AcceptButton = this.button_Close;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
@@ -293,13 +285,13 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Install Plugin from Library";
+			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).EndInit();
 			this.panel_01.ResumeLayout(false);
 			this.sectionPanel_Installed.ResumeLayout(false);
 			this.sectionPanel_Available.ResumeLayout(false);
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
 			this.panel_02.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pluginFolderWatcher)).EndInit();
 			this.ResumeLayout(false);
 
@@ -307,8 +299,7 @@
 
 		#endregion
 
-		private DarkUI.Controls.DarkButton button_Apply;
-		private DarkUI.Controls.DarkButton button_Cancel;
+		private DarkUI.Controls.DarkButton button_Close;
 		private DarkUI.Controls.DarkButton button_Download;
 		private DarkUI.Controls.DarkButton button_Install;
 		private DarkUI.Controls.DarkButton button_Uninstall;
@@ -318,6 +309,7 @@
 		private DarkUI.Controls.DarkTreeView treeView_AvailablePlugins;
 		private DarkUI.Controls.DarkTreeView treeView_Installed;
 		private System.IO.FileSystemWatcher dllFileWatcher;
+		private System.IO.FileSystemWatcher pluginFolderWatcher;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
 		private System.Windows.Forms.ToolStripButton button_Delete;
@@ -327,6 +319,6 @@
 		private System.Windows.Forms.ToolStripButton button_Refresh;
 		private System.Windows.Forms.ToolStripSeparator separator_01;
 		private System.Windows.Forms.ToolStripSeparator separator_02;
-		private System.IO.FileSystemWatcher pluginFolderWatcher;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }
