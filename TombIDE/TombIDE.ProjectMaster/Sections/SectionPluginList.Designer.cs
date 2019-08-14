@@ -18,8 +18,11 @@
 		private void InitializeComponent()
 		{
 			this.button_ManagePlugins = new DarkUI.Controls.DarkButton();
+			this.button_OpenFolder = new DarkUI.Controls.DarkButton();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_02 = new DarkUI.Controls.DarkLabel();
+			this.label_NoInfo = new DarkUI.Controls.DarkLabel();
+			this.label_NoLogo = new DarkUI.Controls.DarkLabel();
 			this.panel_List = new System.Windows.Forms.Panel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.panel_Logo = new System.Windows.Forms.Panel();
@@ -30,27 +33,40 @@
 			this.textBox_Title = new System.Windows.Forms.TextBox();
 			this.tabPage_Description = new System.Windows.Forms.TabPage();
 			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
-			this.tabPage_Changelog = new System.Windows.Forms.TabPage();
-			this.richTextBox_Changelog = new System.Windows.Forms.RichTextBox();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.panel_List.SuspendLayout();
+			this.panel_Logo.SuspendLayout();
 			this.panel_Properties.SuspendLayout();
 			this.tabControl.SuspendLayout();
 			this.tabPage_Overview.SuspendLayout();
 			this.tabPage_Description.SuspendLayout();
-			this.tabPage_Changelog.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_ManagePlugins
 			// 
+			this.button_ManagePlugins.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_ManagePlugins.Location = new System.Drawing.Point(6, 6);
-			this.button_ManagePlugins.Margin = new System.Windows.Forms.Padding(6, 6, 6, 0);
+			this.button_ManagePlugins.Margin = new System.Windows.Forms.Padding(6, 6, 1, 0);
 			this.button_ManagePlugins.Name = "button_ManagePlugins";
-			this.button_ManagePlugins.Size = new System.Drawing.Size(242, 23);
+			this.button_ManagePlugins.Size = new System.Drawing.Size(112, 23);
 			this.button_ManagePlugins.TabIndex = 1;
 			this.button_ManagePlugins.Text = "Manage Plugins";
+			this.button_ManagePlugins.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_ManagePlugins.Click += new System.EventHandler(this.button_ManagePlugins_Click);
+			// 
+			// button_OpenFolder
+			// 
+			this.button_OpenFolder.Enabled = false;
+			this.button_OpenFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
+			this.button_OpenFolder.Location = new System.Drawing.Point(120, 6);
+			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(1, 6, 6, 0);
+			this.button_OpenFolder.Name = "button_OpenFolder";
+			this.button_OpenFolder.Size = new System.Drawing.Size(128, 23);
+			this.button_OpenFolder.TabIndex = 2;
+			this.button_OpenFolder.Text = "Open Plugin Folder";
+			this.button_OpenFolder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
 			// 
 			// label_01
 			// 
@@ -76,12 +92,38 @@
 			this.label_02.Text = "DLL name:";
 			this.label_02.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// label_NoInfo
+			// 
+			this.label_NoInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_NoInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_NoInfo.ForeColor = System.Drawing.Color.Gray;
+			this.label_NoInfo.Location = new System.Drawing.Point(0, 0);
+			this.label_NoInfo.Name = "label_NoInfo";
+			this.label_NoInfo.Size = new System.Drawing.Size(378, 197);
+			this.label_NoInfo.TabIndex = 1;
+			this.label_NoInfo.Text = "Please select a plugin from the list to view its info.";
+			this.label_NoInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// label_NoLogo
+			// 
+			this.label_NoLogo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_NoLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_NoLogo.ForeColor = System.Drawing.Color.Gray;
+			this.label_NoLogo.Location = new System.Drawing.Point(0, 0);
+			this.label_NoLogo.Name = "label_NoLogo";
+			this.label_NoLogo.Size = new System.Drawing.Size(378, 197);
+			this.label_NoLogo.TabIndex = 0;
+			this.label_NoLogo.Text = "No logo image found.";
+			this.label_NoLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label_NoLogo.Visible = false;
+			// 
 			// panel_List
 			// 
 			this.panel_List.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel_List.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_List.Controls.Add(this.button_OpenFolder);
 			this.panel_List.Controls.Add(this.button_ManagePlugins);
 			this.panel_List.Controls.Add(this.treeView);
 			this.panel_List.Location = new System.Drawing.Point(1, 25);
@@ -96,9 +138,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.treeView.Indent = 0;
+			this.treeView.ItemHeight = 30;
 			this.treeView.Location = new System.Drawing.Point(0, 35);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6);
-			this.treeView.MaxDragChange = 20;
+			this.treeView.MaxDragChange = 30;
 			this.treeView.Name = "treeView";
 			this.treeView.Size = new System.Drawing.Size(254, 255);
 			this.treeView.TabIndex = 0;
@@ -112,6 +156,8 @@
 			this.panel_Logo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.panel_Logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.panel_Logo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_Logo.Controls.Add(this.label_NoInfo);
+			this.panel_Logo.Controls.Add(this.label_NoLogo);
 			this.panel_Logo.Location = new System.Drawing.Point(6, 6);
 			this.panel_Logo.Margin = new System.Windows.Forms.Padding(6, 6, 6, 3);
 			this.panel_Logo.Name = "panel_Logo";
@@ -134,7 +180,6 @@
 			// 
 			this.tabControl.Controls.Add(this.tabPage_Overview);
 			this.tabControl.Controls.Add(this.tabPage_Description);
-			this.tabControl.Controls.Add(this.tabPage_Changelog);
 			this.tabControl.DisplayStyle = System.Windows.Forms.TabStyle.Dark;
 			// 
 			// 
@@ -224,35 +269,9 @@
 			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.RightMargin = 3;
 			this.richTextBox_Description.Size = new System.Drawing.Size(392, 263);
 			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
-			// 
-			// tabPage_Changelog
-			// 
-			this.tabPage_Changelog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_Changelog.Controls.Add(this.richTextBox_Changelog);
-			this.tabPage_Changelog.Location = new System.Drawing.Point(4, 23);
-			this.tabPage_Changelog.Name = "tabPage_Changelog";
-			this.tabPage_Changelog.Size = new System.Drawing.Size(392, 263);
-			this.tabPage_Changelog.TabIndex = 2;
-			this.tabPage_Changelog.Text = "Changelog";
-			// 
-			// richTextBox_Changelog
-			// 
-			this.richTextBox_Changelog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.richTextBox_Changelog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.richTextBox_Changelog.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox_Changelog.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.richTextBox_Changelog.ForeColor = System.Drawing.Color.Gainsboro;
-			this.richTextBox_Changelog.Location = new System.Drawing.Point(0, 0);
-			this.richTextBox_Changelog.Name = "richTextBox_Changelog";
-			this.richTextBox_Changelog.ReadOnly = true;
-			this.richTextBox_Changelog.RightMargin = 3;
-			this.richTextBox_Changelog.Size = new System.Drawing.Size(392, 263);
-			this.richTextBox_Changelog.TabIndex = 0;
-			this.richTextBox_Changelog.Text = "";
 			// 
 			// sectionPanel
 			// 
@@ -262,7 +281,7 @@
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "Project Plugins (Not implemented)";
+			this.sectionPanel.SectionHeader = "Project Plugins";
 			this.sectionPanel.Size = new System.Drawing.Size(662, 320);
 			this.sectionPanel.TabIndex = 0;
 			// 
@@ -275,12 +294,12 @@
 			this.Name = "SectionPluginList";
 			this.Size = new System.Drawing.Size(662, 320);
 			this.panel_List.ResumeLayout(false);
+			this.panel_Logo.ResumeLayout(false);
 			this.panel_Properties.ResumeLayout(false);
 			this.tabControl.ResumeLayout(false);
 			this.tabPage_Overview.ResumeLayout(false);
 			this.tabPage_Overview.PerformLayout();
 			this.tabPage_Description.ResumeLayout(false);
-			this.tabPage_Changelog.ResumeLayout(false);
 			this.sectionPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -289,17 +308,18 @@
 		#endregion
 
 		private DarkUI.Controls.DarkButton button_ManagePlugins;
+		private DarkUI.Controls.DarkButton button_OpenFolder;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
+		private DarkUI.Controls.DarkLabel label_NoInfo;
+		private DarkUI.Controls.DarkLabel label_NoLogo;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
 		private DarkUI.Controls.DarkTreeView treeView;
 		private System.Windows.Forms.CustomTabControl tabControl;
 		private System.Windows.Forms.Panel panel_List;
 		private System.Windows.Forms.Panel panel_Logo;
 		private System.Windows.Forms.Panel panel_Properties;
-		private System.Windows.Forms.RichTextBox richTextBox_Changelog;
 		private System.Windows.Forms.RichTextBox richTextBox_Description;
-		private System.Windows.Forms.TabPage tabPage_Changelog;
 		private System.Windows.Forms.TabPage tabPage_Description;
 		private System.Windows.Forms.TabPage tabPage_Overview;
 		private System.Windows.Forms.TextBox textBox_DLLName;

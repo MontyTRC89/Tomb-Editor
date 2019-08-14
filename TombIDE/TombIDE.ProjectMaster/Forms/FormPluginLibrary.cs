@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.Projects;
+using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
@@ -150,7 +151,7 @@ namespace TombIDE.ProjectMaster
 
 		private bool IsValidPluginFolder(string path)
 		{
-			return Directory.GetFiles(path, "plugin_*.dll").Length > 0;
+			return Directory.GetFiles(path, "plugin_*.dll", SearchOption.AllDirectories).Length > 0;
 		}
 
 		private void button_Install_Click(object sender, EventArgs e)
@@ -260,5 +261,105 @@ namespace TombIDE.ProjectMaster
 
 		private void pluginFolderWatcher_Deleted(object sender, FileSystemEventArgs e) =>
 			_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+
+		private void Button_OpenFolder_Click(object sender, EventArgs e)
+		{
+			BrowseFolderDialog dialog = new BrowseFolderDialog
+			{
+				Title = "Select the folder of the plugin you want to install"
+			};
+
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+			{
+				string folderPath = dialog.Folder;
+
+				try
+				{
+					if (!Directory.Exists("Plugins"))
+						Directory.CreateDirectory("Plugins");
+
+					foreach (string directory in Directory.GetDirectories("Plugins"))
+					{
+						if (Path.GetFileName(directory) == Path.GetFileName(folderPath))
+							throw new ArgumentException("Plugin already installed.");
+					}
+
+					if (!IsValidPluginFolder(folderPath))
+						throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
+
+					string extractionPath = Path.Combine("Plugins", Path.GetFileName(folderPath));
+
+					if (Directory.GetFileSystemEntries(extractionPath).Length == 1)
+					{
+						string nextFolderPath = Path.Combine(extractionPath, Path.GetFileName(Directory.GetFileSystemEntries(extractionPath).First()));
+						string cachedFolderPath = nextFolderPath;
+
+						while (Directory.GetFileSystemEntries(nextFolderPath).Length == 1)
+						{
+							string nextEntry = Path.Combine(nextFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(nextFolderPath).First()));
+
+							if ((File.GetAttributes(nextEntry) & FileAttributes.Directory) == FileAttributes.Directory)
+								nextFolderPath = nextEntry;
+							else if (!Path.GetFileName(nextEntry).ToLower().StartsWith("plugin_") || !Path.GetFileName(nextEntry).ToLower().EndsWith(".dll"))
+							{
+								Directory.Delete(extractionPath, true);
+								throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
+							}
+						}
+
+						if (!IsValidPluginFolder(nextFolderPath))
+						{
+							Directory.Delete(extractionPath, true);
+							throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
+						}
+
+						foreach (string file in Directory.GetFiles(nextFolderPath))
+							File.Move(file, Path.Combine(extractionPath, Path.GetFileName(file)));
+
+						foreach (string directory in Directory.GetDirectories(nextFolderPath))
+							Directory.Move(directory, Path.Combine(extractionPath, Path.GetFileName(directory)));
+
+						Directory.Delete(cachedFolderPath, true);
+					}
+
+					foreach (string file in Directory.GetFiles(extractionPath, "*.script"))
+						File.Copy(file, Path.Combine("NGC", Path.GetFileName(file)), true);
+
+					string pluginName = Path.GetFileName(extractionPath);
+
+					if (Directory.GetFiles(extractionPath, "*.btn").Length > 0)
+					{
+						string btnFilePath = Directory.GetFiles(extractionPath, "*.btn").First();
+						string[] btnFileContent = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252));
+
+						foreach (string line in btnFileContent)
+						{
+							if (line.StartsWith("NAME#"))
+							{
+								pluginName = line.Replace("NAME#", string.Empty).Trim();
+								break;
+							}
+						}
+					}
+
+					string dllFilePath = Directory.GetFiles(extractionPath, "plugin_*.dll").First();
+
+					Plugin plugin = new Plugin
+					{
+						Name = pluginName,
+						InternalDllPath = dllFilePath
+					};
+
+					_ide.AvailablePlugins.Add(plugin);
+					XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+
+				UpdateAvailablePluginsTreeView();
+			}
+		}
 	}
 }
