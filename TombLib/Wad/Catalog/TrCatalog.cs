@@ -22,6 +22,7 @@ namespace TombLib.Wad.Catalog
         private struct ItemSound
         {
             public string Name { get; set; }
+            public string Description { get; set; }
             public bool FixedByDefault { get; set; }
         }
 
@@ -242,8 +243,9 @@ namespace TombLib.Wad.Catalog
 
                         uint id = uint.Parse(soundNode.Attributes["id"].Value);
                         string name = soundNode.Attributes["name"]?.Value ?? "";
+                        string description = soundNode.Attributes["description"]?.Value ?? "";
                         bool fixedByDefault = bool.Parse(soundNode.Attributes["fixed_by_default"]?.Value ?? "false");
-                        game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault });
+                        game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault, Description = description });
                     }
 
                 // Parse sprite sequences

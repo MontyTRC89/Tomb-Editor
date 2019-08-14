@@ -22,10 +22,10 @@ namespace TombLib.Wad
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public float Volume { get; set; } // Increasing the volume above 1 is not supported by old games.
-        public float RangeInSectors { get; set; }
-        public float Chance { get; set; } // Must be a value between 0 and 1.
-        public float PitchFactor { get; set; } // 1.0f here will keep the pitch identical, 2.0f will double it. (Attention about the value range of this, it depends on the sample frequency, by default almost 2.0 is the maximum)
+        public int Volume { get; set; } // Increasing the volume above 1 is not supported by old games.
+        public int RangeInSectors { get; set; }
+        public int Chance { get; set; } // Must be a value between 0 and 1.
+        public int PitchFactor { get; set; } // 1.0f here will keep the pitch identical, 2.0f will double it. (Attention about the value range of this, it depends on the sample frequency, by default almost 2.0 is the maximum)
         public bool DisablePanning { get; set; }
         public bool RandomizePitch { get; set; } // The pitch is sped up and slowed down by 6000/(2^16). (Not relative to the pitch)
         public bool RandomizeVolume { get; set; } // The volume is reduced by an absolete value of 1/8 of the full volume. (Not relative to the volume value)
@@ -44,10 +44,10 @@ namespace TombLib.Wad
         {
             Id = id;
             Name = "UNKNOWN_SOUND";
-            Volume = 1.0f;
-            RangeInSectors = 8.0f;
-            Chance = 1.0f;
-            PitchFactor = 1.0f;
+            Volume = 1;
+            RangeInSectors = 8;
+            Chance = 1;
+            PitchFactor = 1;
             DisablePanning = false;
             RandomizePitch = false;
             RandomizeVolume = false;
@@ -73,41 +73,41 @@ namespace TombLib.Wad
         }
 
         [XmlIgnore]
-        public byte VolumeByte
+        public byte VolumeByte2
         {
-            get { return (byte)Math.Max(0, Math.Min(255, Volume * 255 + 0.5f)); }
-            set { Volume = value / 255.0f; }
+            get { return (byte)(Math.Max(0, Math.Min(255, Volume * 255 + 0.5f)) / 100.0f); }
+            set { Volume = (int)Math.Round(value * 100.0f / 255.0f); }
         }
 
         [XmlIgnore]
-        public byte RangeInSectorsByte
+        public byte RangeInSectorsByte2
         {
-            get { return (byte)Math.Max(0, Math.Min(255, RangeInSectors)); }
-            set { RangeInSectors = value; }
+            get { return (byte)(Math.Max(0, Math.Min(255, RangeInSectors))); }
+            set { RangeInSectors = (int)(value); }
         }
 
         [XmlIgnore]
-        public byte ChanceByte
+        public byte ChanceByte2
         {
             get
             {
                 byte result = (byte)Math.Max(0, Math.Min(255, Chance * 255 + 0.5f));
                 return result == 255 ? (byte)0 : result;
             }
-            set { Chance = (value == 0) ? 1.0f : (value / 255.0f); }
+            set { Chance = (int)Math.Round((value == 0) ? 1.0f : (value / 255.0f)); }
         }
 
         [XmlIgnore]
-        public byte PitchFactorByte
+        public byte PitchFactorByte2
         {
             get
             {
                 float actualPitchFactor = PitchFactor;
                 if (EmbeddedSamples.Count > 0 && EmbeddedSamples[0].IsLoaded)
                     actualPitchFactor *= (float)EmbeddedSamples[0].SampleRate / (float)WadSample.GameSupportedSampleRate;
-                return (byte)(0x80 ^ (byte)Math.Max(0, Math.Min(255, actualPitchFactor * 128 + 0.5f)));
+                return (byte)((/*0x80 ^*/ (byte)Math.Max(0, Math.Min(255, actualPitchFactor * 128 + 0.5f))) / 100.0f);
             }
-            set { PitchFactor = (value ^ 0x80) / 128.0f; }
+            set { PitchFactor = (int)Math.Round((value /*^ 0x80*/) * 100.0f / 128.0f); }
         }
 
         public static float GetMaxPitch(uint sampleFrequency)

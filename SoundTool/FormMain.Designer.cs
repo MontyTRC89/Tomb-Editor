@@ -37,9 +37,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertTXTToXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildMAINSFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.batchEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
@@ -50,6 +48,7 @@
             this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
+            this.resampleFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -135,21 +134,12 @@
             // 
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertTXTToXMLToolStripMenuItem,
             this.buildMAINSFXToolStripMenuItem,
-            this.batchEditToolStripMenuItem});
+            this.resampleFilesToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // convertTXTToXMLToolStripMenuItem
-            // 
-            this.convertTXTToXMLToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.convertTXTToXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.convertTXTToXMLToolStripMenuItem.Name = "convertTXTToXMLToolStripMenuItem";
-            this.convertTXTToXMLToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.convertTXTToXMLToolStripMenuItem.Text = "Convert TXT to XML";
             // 
             // buildMAINSFXToolStripMenuItem
             // 
@@ -157,17 +147,9 @@
             this.buildMAINSFXToolStripMenuItem.Enabled = false;
             this.buildMAINSFXToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.buildMAINSFXToolStripMenuItem.Name = "buildMAINSFXToolStripMenuItem";
-            this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.buildMAINSFXToolStripMenuItem.Text = "Build MAIN.SFX";
             this.buildMAINSFXToolStripMenuItem.Click += new System.EventHandler(this.buildMAINSFXToolStripMenuItem_Click);
-            // 
-            // batchEditToolStripMenuItem
-            // 
-            this.batchEditToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.batchEditToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.batchEditToolStripMenuItem.Name = "batchEditToolStripMenuItem";
-            this.batchEditToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.batchEditToolStripMenuItem.Text = "Batch edit";
             // 
             // helpToolStripMenuItem
             // 
@@ -184,7 +166,7 @@
             this.aboutSoundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutSoundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutSoundToolToolStripMenuItem.Name = "aboutSoundToolToolStripMenuItem";
-            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutSoundToolToolStripMenuItem.Text = "About Sound Tool";
             this.aboutSoundToolToolStripMenuItem.Click += new System.EventHandler(this.AboutSoundToolToolStripMenuItem_Click);
             // 
@@ -277,6 +259,15 @@
             this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteSoundInfo.Click += new System.EventHandler(this.ButDeleteSoundInfo_Click);
             // 
+            // resampleFilesToolStripMenuItem
+            // 
+            this.resampleFilesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.resampleFilesToolStripMenuItem.Enabled = false;
+            this.resampleFilesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.resampleFilesToolStripMenuItem.Name = "resampleFilesToolStripMenuItem";
+            this.resampleFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resampleFilesToolStripMenuItem.Text = "Resample files";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -318,9 +309,7 @@
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem convertTXTToXMLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildMAINSFXToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem batchEditToolStripMenuItem;
         private TombLib.Controls.SoundInfoEditor soundInfoEditor;
         private DarkUI.Controls.DarkDataGridView dgvSoundInfos;
         private System.Windows.Forms.DataGridViewTextBoxColumn colID;
@@ -328,6 +317,7 @@
         private System.Windows.Forms.ToolStripMenuItem newXMLToolStripMenuItem;
         private DarkUI.Controls.DarkButton butAddNewSoundInfo;
         private DarkUI.Controls.DarkButton butDeleteSoundInfo;
+        private System.Windows.Forms.ToolStripMenuItem resampleFilesToolStripMenuItem;
     }
 }
 
