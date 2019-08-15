@@ -68,6 +68,8 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				string newName = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
+				newName = newName.Replace(";", string.Empty);
+
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
 				bool renameScriptEntry = checkBox_RenameScriptEntry.Checked;
 
@@ -108,6 +110,7 @@ namespace TombIDE.ProjectMaster
 		private void textBox_NewName_TextChanged(object sender, EventArgs e)
 		{
 			string textBoxContent = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
+			textBoxContent = textBoxContent.Replace(";", string.Empty);
 
 			// If the name hasn't changed but the level folder name is different
 			if (textBoxContent == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) != textBoxContent)
@@ -161,7 +164,7 @@ namespace TombIDE.ProjectMaster
 				}
 			}
 
-			button_Apply.Enabled = !string.IsNullOrWhiteSpace(textBox_NewName.Text);
+			button_Apply.Enabled = !string.IsNullOrWhiteSpace(textBoxContent);
 		}
 	}
 }
