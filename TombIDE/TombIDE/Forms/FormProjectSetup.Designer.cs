@@ -273,7 +273,6 @@
 			this.MaximizeBox = false;
 			this.Name = "FormProjectSetup";
 			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Create New Project";
 			this.panel_LevelsRadioChoice.ResumeLayout(false);

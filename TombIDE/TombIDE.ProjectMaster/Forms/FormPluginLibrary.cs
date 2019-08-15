@@ -257,10 +257,10 @@ namespace TombIDE.ProjectMaster
 			Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
 
 		private void dllFileWatcher_Deleted(object sender, FileSystemEventArgs e) =>
-			_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+			_ide.RaiseEvent(new IDE.PluginDeletedFromTombIDEEvent());
 
 		private void pluginFolderWatcher_Deleted(object sender, FileSystemEventArgs e) =>
-			_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+			_ide.RaiseEvent(new IDE.PluginDeletedFromTombIDEEvent());
 
 		private void Button_OpenFolder_Click(object sender, EventArgs e)
 		{

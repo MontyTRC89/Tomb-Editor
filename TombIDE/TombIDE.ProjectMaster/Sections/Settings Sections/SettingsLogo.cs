@@ -30,8 +30,7 @@ namespace TombIDE.ProjectMaster
 				string pakFilePath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
 				byte[] pakData = PakFile.GetDecompressedData(pakFilePath);
 
-				Image image = ImageHandling.GetImageFromRawData(pakData, 512, 256);
-				panel_Preview.BackgroundImage = image;
+				panel_Preview.BackgroundImage = ImageHandling.GetImageFromRawData(pakData, 512, 256);
 
 				label_Blank.Visible = IsBlankImage(pakData);
 			}
@@ -43,27 +42,27 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Filter = "All Supported Files|*.bmp;*.png|Bitmap Files|*.bmp|PNG Files|*.png"
-			};
+				dialog.Filter = "All Supported Files|*.bmp;*.png|Bitmap Files|*.bmp|PNG Files|*.png";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				try
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					using (Image image = Image.FromFile(dialog.FileName))
+					try
 					{
-						if (image.Width == 512 && image.Height == 256)
+						using (Image image = Image.FromFile(dialog.FileName))
 						{
+							if (image.Width != 512 || image.Height != 256)
+								throw new ArgumentException("Wrong image size. The size of the logo has to be 512x256 px.");
+
 							string pakFilePath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
 
-							if (Path.GetExtension(dialog.FileName).ToLower().Contains("bmp"))
+							if (Path.GetExtension(dialog.FileName).ToLower() == ".bmp")
 							{
 								byte[] rawImageData = ImageHandling.GetRawDataFromBitmap((Bitmap)image);
 								PakFile.SavePakFile(pakFilePath, rawImageData);
 							}
-							else if (Path.GetExtension(dialog.FileName).ToLower().Contains("png"))
+							else if (Path.GetExtension(dialog.FileName).ToLower() == ".png")
 							{
 								byte[] rawImageData = ImageHandling.GetRawDataFromImage(image);
 								PakFile.SavePakFile(pakFilePath, rawImageData);
@@ -71,13 +70,11 @@ namespace TombIDE.ProjectMaster
 
 							UpdatePreview();
 						}
-						else
-							throw new ArgumentException("Wrong image size. The size of the logo has to be 512x256 px.");
 					}
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
@@ -121,10 +118,10 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string sourcePathPath = Path.Combine("Templates", "uklogo.pak");
+					string sourcePakPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", "uklogo.pak");
 					string destPakPath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
 
-					File.Copy(sourcePathPath, destPakPath, true);
+					File.Copy(sourcePakPath, destPakPath, true);
 					UpdatePreview();
 				}
 				catch (Exception ex)

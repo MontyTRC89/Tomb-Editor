@@ -26,6 +26,7 @@ namespace TombIDE.ProjectMaster
 
 			tabControl.HideTab("Description");
 
+			UpdateProjectPlugins();
 			UpdateTreeView();
 
 			ClearPluginInfo();
@@ -33,10 +34,44 @@ namespace TombIDE.ProjectMaster
 
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
-			if (obj is IDE.PluginDeletedEvent)
+			if (obj is IDE.ProjectPluginFileDeletedEvent || obj is IDE.PluginDeletedFromTombIDEEvent)
 			{
+				UpdateProjectPlugins();
 				UpdateTreeView();
 			}
+		}
+
+		private void UpdateProjectPlugins()
+		{
+			List<Plugin> projectPlugins = new List<Plugin>();
+
+			foreach (string pluginFile in Directory.GetFiles(_ide.Project.ProjectPath, "plugin_*.dll", SearchOption.TopDirectoryOnly))
+			{
+				bool pluginFound = false;
+
+				foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+				{
+					if (Path.GetFileName(availablePlugin.InternalDllPath.ToLower()) == Path.GetFileName(pluginFile.ToLower()))
+					{
+						projectPlugins.Add(availablePlugin);
+						pluginFound = true;
+						break;
+					}
+				}
+
+				if (!pluginFound)
+				{
+					Plugin plugin = new Plugin
+					{
+						Name = Path.GetFileName(pluginFile)
+					};
+
+					projectPlugins.Add(plugin);
+				}
+			}
+
+			_ide.Project.InstalledPlugins = projectPlugins;
+			XmlHandling.SaveTRPROJ(_ide.Project);
 		}
 
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
@@ -104,16 +139,25 @@ namespace TombIDE.ProjectMaster
 
 		private void FillPluginInfo()
 		{
-			button_OpenFolder.Enabled = true;
 			label_NoInfo.Visible = false;
+
+			Plugin plugin = (Plugin)treeView.SelectedNodes[0].Tag;
+
+			textBox_Title.Text = plugin.Name;
+
+			if (string.IsNullOrEmpty(plugin.InternalDllPath))
+			{
+				textBox_DLLName.Text = Path.GetFileName(treeView.SelectedNodes[0].Text);
+				button_OpenFolder.Enabled = false;
+			}
+			else
+			{
+				textBox_DLLName.Text = Path.GetFileName(plugin.InternalDllPath);
+				button_OpenFolder.Enabled = true;
+			}
 
 			try
 			{
-				Plugin plugin = (Plugin)treeView.SelectedNodes[0].Tag;
-
-				textBox_Title.Text = plugin.Name;
-				textBox_DLLName.Text = Path.GetFileName(plugin.InternalDllPath);
-
 				bool logoFound = false;
 
 				foreach (string file in Directory.GetFiles(Path.GetDirectoryName(plugin.InternalDllPath)))

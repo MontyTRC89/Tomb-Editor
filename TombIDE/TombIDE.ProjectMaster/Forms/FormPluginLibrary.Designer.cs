@@ -268,6 +268,7 @@
 			this.pluginFolderWatcher.EnableRaisingEvents = true;
 			this.pluginFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
 			this.pluginFolderWatcher.SynchronizingObject = this;
+			this.pluginFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.pluginFolderWatcher_Deleted);
 			// 
 			// FormPluginLibrary
 			// 
@@ -282,7 +283,6 @@
 			this.MaximizeBox = false;
 			this.Name = "FormPluginLibrary";
 			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Install Plugin from Library";
 			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).EndInit();

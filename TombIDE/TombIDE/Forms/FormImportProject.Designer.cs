@@ -196,7 +196,6 @@
 			this.MaximizeBox = false;
 			this.Name = "FormImportProject";
 			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Import Project";
 			this.panel_01.ResumeLayout(false);

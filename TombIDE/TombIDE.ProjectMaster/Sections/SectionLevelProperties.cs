@@ -97,6 +97,9 @@ namespace TombIDE.ProjectMaster
 				string programName = FileVersionInfo.GetVersionInfo(programPath).ProductName;
 				Image image = ImageHandling.ResizeImage(Icon.ExtractAssociatedIcon(programPath).ToBitmap(), 16, 16);
 
+				if (string.IsNullOrEmpty(programName))
+					programName = Path.GetFileNameWithoutExtension(programPath);
+
 				// Create the menu item
 				ToolStripMenuItem item = new ToolStripMenuItem
 				{

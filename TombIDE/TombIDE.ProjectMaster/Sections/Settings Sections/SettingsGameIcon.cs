@@ -59,14 +59,14 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Title = "Choose the .ico file you want to inject into your game's .exe file",
-				Filter = "Icon Files|*.ico"
-			};
+				dialog.Title = "Choose the .ico file you want to inject into your game's .exe file";
+				dialog.Filter = "Icon Files|*.ico";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				ApplyIconToExe(dialog.FileName);
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					ApplyIconToExe(dialog.FileName);
+			}
 		}
 
 		private void button_Reset_Click(object sender, EventArgs e)
@@ -75,7 +75,7 @@ namespace TombIDE.ProjectMaster
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (result == DialogResult.Yes)
-				ApplyIconToExe(Path.Combine("Templates", _ide.Project.GameVersion + ".ico"));
+				ApplyIconToExe(Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", _ide.Project.GameVersion + ".ico"));
 		}
 
 		#endregion Events

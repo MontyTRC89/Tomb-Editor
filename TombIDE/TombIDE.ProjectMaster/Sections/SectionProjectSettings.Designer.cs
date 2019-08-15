@@ -17,7 +17,6 @@
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.panel_Background = new System.Windows.Forms.Panel();
 			this.settings_SpecialFunctions = new TombIDE.ProjectMaster.SettingsSpecialFunctions();
 			this.settings_Logo = new TombIDE.ProjectMaster.SettingsLogo();
@@ -25,7 +24,6 @@
 			this.settings_GameIcon = new TombIDE.ProjectMaster.SettingsGameIcon();
 			this.settings_ProjectInfo = new TombIDE.ProjectMaster.SettingsProjectInfo();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.panel_Background.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -112,12 +110,6 @@
 			this.sectionPanel.Size = new System.Drawing.Size(662, 1300);
 			this.sectionPanel.TabIndex = 0;
 			// 
-			// toolTip
-			// 
-			this.toolTip.AutomaticDelay = 0;
-			this.toolTip.UseAnimation = false;
-			this.toolTip.UseFading = false;
-			// 
 			// SectionProjectSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -141,6 +133,5 @@
 		private SettingsSpecialFunctions settings_SpecialFunctions;
 		private SettingsStartupImage settings_StartupImage;
 		private System.Windows.Forms.Panel panel_Background;
-		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

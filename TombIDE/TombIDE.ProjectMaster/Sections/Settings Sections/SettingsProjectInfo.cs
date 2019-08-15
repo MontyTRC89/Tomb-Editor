@@ -61,36 +61,36 @@ namespace TombIDE.ProjectMaster
 
 		private void button_ChangeScriptPath_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose a new /Script/ folder for the project"
-			};
+				dialog.Title = "Choose a new /Script/ folder for the project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				try
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					if (!IsScriptFolderValid(new DirectoryInfo(dialog.Folder)))
-						throw new ArgumentException("Selected /Script/ folder does not contain a Script.txt file.");
+					try
+					{
+						if (!IsScriptFolderValid(new DirectoryInfo(dialog.Folder)))
+							throw new ArgumentException("Selected /Script/ folder does not contain a Script.txt file.");
 
-					_ide.ChangeScriptFolder(dialog.Folder);
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						_ide.ChangeScriptFolder(dialog.Folder);
+					}
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
 
 		private void button_ChangeLevelsPath_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose a new /Levels/ folder for the project"
-			};
+				dialog.Title = "Choose a new /Levels/ folder for the project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				_ide.ChangeLevelsFolder(dialog.Folder);
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					_ide.ChangeLevelsFolder(dialog.Folder);
+			}
 		}
 
 		private bool IsScriptFolderValid(DirectoryInfo directory)

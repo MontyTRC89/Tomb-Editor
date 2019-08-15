@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,18 @@ namespace TombIDE.Shared
 			};
 
 			Process.Start(startInfo);
+		}
+
+		public static List<string> GenerateLevelSectionMessages(ProjectLevel level, int ambientSoundID, bool horizon)
+		{
+			return new List<string>
+			{
+				"\n[Level]",
+				"Name= " + level.Name,
+				"Level= DATA\\" + level.Name.ToUpper().Replace(' ', '_') + ", " + ambientSoundID,
+				"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
+				"Horizon= " + (horizon? "ENABLED" : "DISABLED")
+			};
 		}
 
 		public static void UpdatePrj2GameSettings(string prj2FilePath, ProjectLevel destLevel, Project destProject)

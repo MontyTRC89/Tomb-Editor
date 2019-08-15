@@ -50,35 +50,35 @@ namespace TombIDE
 
 		private void button_BrowseProject_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose where you want to install your project"
-			};
+				dialog.Title = "Choose where you want to install your project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				textBox_ProjectPath.Text = Path.Combine(dialog.Folder, SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim()));
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					textBox_ProjectPath.Text = Path.Combine(dialog.Folder, SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim()));
+			}
 		}
 
 		private void button_BrowseScript_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose a custom /Script/ folder for your project"
-			};
+				dialog.Title = "Choose a custom /Script/ folder for your project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				textBox_ScriptPath.Text = dialog.Folder;
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					textBox_ScriptPath.Text = dialog.Folder;
+			}
 		}
 
 		private void button_BrowseLevels_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose a custom /Levels/ folder for your project"
-			};
+				dialog.Title = "Choose a custom /Levels/ folder for your project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				textBox_LevelsPath.Text = dialog.Folder;
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					textBox_LevelsPath.Text = dialog.Folder;
+			}
 		}
 
 		private void button_Create_Click(object sender, EventArgs e)
@@ -94,8 +94,10 @@ namespace TombIDE
 
 			try
 			{
-				if (string.IsNullOrWhiteSpace(textBox_ProjectName.Text))
-					throw new ArgumentException("You must enter a name for your project.");
+				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(projectName))
+					throw new ArgumentException("You must enter a valid name for your project.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
 					throw new ArgumentException("You must select a folder where you want to install your project.");
@@ -105,8 +107,6 @@ namespace TombIDE
 
 				if (radio_Levels_02.Checked && string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the custom /Levels/ folder path.");
-
-				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
 
 				// Check for name duplicates
 				foreach (Project project in _ide.AvailableProjects)
@@ -201,7 +201,7 @@ namespace TombIDE
 
 		private void InstallEngine(Project project)
 		{
-			string engineBasePath = @"Templates\Engines"; // The folder where all engine bases are located
+			string engineBasePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\Engines");
 
 			switch (project.GameVersion)
 			{
@@ -239,8 +239,8 @@ namespace TombIDE
 			}
 
 			// Copy Script templates into the ScriptPath folder
-			File.Copy(@"Templates\Script.txt", Path.Combine(project.ScriptPath, "Script.txt"));
-			File.Copy(@"Templates\English.txt", Path.Combine(project.ScriptPath, "English.txt"));
+			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\Script.txt"), Path.Combine(project.ScriptPath, "Script.txt"));
+			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\English.txt"), Path.Combine(project.ScriptPath, "English.txt"));
 
 			progressBar.Increment(1);
 
