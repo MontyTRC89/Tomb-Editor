@@ -380,7 +380,7 @@ namespace TombIDE.Shared.Scripting
 				{
 					for (int j = i + 1; j < LinesCount; j++)
 					{
-						if (GetLineText(j).Contains("=") || Regex.IsMatch(GetLineText(j), @"\[*.\]") || j == LinesCount - 1)
+						if (GetLineText(j).Contains("=") || Regex.IsMatch(GetLineText(j), @"\[.*\]") || j == LinesCount - 1)
 						{
 							Place start = new Place(0, i);
 							Place end = new Place(GetLineText(j).Length, j);
