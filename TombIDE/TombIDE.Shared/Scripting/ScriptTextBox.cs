@@ -376,7 +376,7 @@ namespace TombIDE.Shared.Scripting
 
 			for (int i = e.ChangedRange.FromLine; i > 0; i--)
 			{
-				if (GetLineText(i).Contains("=") || Regex.IsMatch(GetLineText(i), @"\[*.\]"))
+				if (GetLineText(i).Contains("=") || Regex.IsMatch(GetLineText(i), @"\[.*\]"))
 				{
 					for (int j = i + 1; j < LinesCount; j++)
 					{
