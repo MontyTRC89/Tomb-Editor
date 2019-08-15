@@ -161,7 +161,7 @@ namespace TombLib.Controls
 
         private void butClipboardCopy_Click(object sender, EventArgs e)
         {
-            // TODO_SOUNDS
+            // XML_SOUND_SYSTEM
 
            /*Wad2 tempWad = new Wad2();
             tempWad.FixedSoundInfos.Add(new WadFixedSoundInfoId(), new WadFixedSoundInfo(new WadFixedSoundInfoId()) { SoundInfo = SoundInfo });
@@ -405,7 +405,7 @@ namespace TombLib.Controls
         {
             get
             {
-                // TODO_SOUNDS
+                // XML_SOUND_SYSTEM
 
                 return new WadSoundInfo(0);
                 /*

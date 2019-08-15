@@ -651,6 +651,8 @@ namespace TombEditor.Forms
 
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Conversions.ConvertWad2ToNewSoundFormat("test\\Caesum\\Lara\\Lara.wad2", "Converted.wad2");
+
             //   _editor.Level.)
             /*RoomGeometryExporter.LoadModel("low-poly-wooden-door.obj");
             ImportedGeometryInstance instance = new ImportedGeometryInstance();

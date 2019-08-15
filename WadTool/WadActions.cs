@@ -29,6 +29,25 @@ namespace WadTool
             {
                 newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+                if (newWad.SoundSystem == WadSoundSystem.Dynamic)
+                {
+                    if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
+                                            "to the new Xml sound system. A backup copy will be created under the same directory. " +
+                                            "Do you want to continue?",
+                                            "Convert Wad2", MessageBoxButtons.YesNo,
+                                            MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+
+                    File.Copy(fileName, fileName + ".bak", true);
+                    if (!Conversions.ConvertWad2ToNewSoundFormat(fileName, fileName, "Sounds\\TR4\\Sounds.txt"))
+                    {
+                        DarkMessageBox.Show(owner, "Converting the file failed!", "Loading failed", MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
+                        .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+                }
             }
             catch (OperationCanceledException)
             {
@@ -119,7 +138,7 @@ namespace WadTool
             // Save the wad2
             try
             {
-                // TODO_SOUNDS
+                // XML_SOUND_SYSTEM
                 Wad2Writer.SaveToFile(wadToSave, outPath);
             }
             catch (Exception exc)
@@ -595,7 +614,7 @@ namespace WadTool
 
         public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)
         {
-            // TODO_SOUNDS
+            // XML_SOUND_SYSTEM
             /*try
             {
                 if (File.Exists(fileName))

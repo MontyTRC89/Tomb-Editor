@@ -26,7 +26,7 @@ namespace WadTool
                 get { return NewSoundInfo.Name; }
                 set
                 {
-                    // TODO_SOUNDS
+                    // XML_SOUND_SYSTEM
                     /*WadSoundInfoMetaData metaData = NewSoundInfo.Data;
                     metaData.Name = value;*/
                     NewSoundInfo = new WadSoundInfo(-1);
@@ -53,7 +53,7 @@ namespace WadTool
                         {
                             string animCommandName = moveableName + " - " + animation.Name + " - frame " + animation.AnimCommands[i].Parameter1;
                             int iCapturedByLambda = i;
-                            // TODO_SOUNDS
+                            // XML_SOUND_SYSTEM
                             SoundUses.Add(new SoundUse
                             {
                                 Name = animCommandName,
@@ -139,7 +139,7 @@ namespace WadTool
             }
             else
             {
-                // TODO_SOUNDS
+                // XML_SOUND_SYSTEM
                 usedForDataGridView.DataSource = null;
                 //soundInfoEditor.SoundInfo = WadSoundInfo.Empty;
                 usedForDataGridView.Enabled = false;

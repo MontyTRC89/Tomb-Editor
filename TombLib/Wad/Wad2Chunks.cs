@@ -7,6 +7,7 @@ namespace TombLib.Wad
         public static readonly byte[] MagicNumberObsolete = new byte[] { 0x57, 0x61, 0x64, 0x32 };
         public static readonly byte[] MagicNumber = new byte[] { 0x57, 0x41, 0x44, 0x32 };
         public static readonly ChunkId SuggestedGameVersion = ChunkId.FromString("W2SuggestedGameVersion");
+        public static readonly ChunkId SoundSystem = ChunkId.FromString("W2SoundSystem");
         //public static readonly ChunkId TrNgWadObsolete = ChunkId.FromString("W2TrNgWad");
         //public static readonly ChunkId SoundManagementSystemObsolete = ChunkId.FromString("W2SoundMgmt");
         public static readonly ChunkId Textures = ChunkId.FromString("W2Textures");

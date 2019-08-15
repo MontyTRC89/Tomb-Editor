@@ -25,6 +25,7 @@ namespace TombLib.Wad
 
     public class Wad2
     {
+        public WadSoundSystem SoundSystem { get; set; }
         public WadGameVersion SuggestedGameVersion { get; set; } = WadGameVersion.TR4_TRNG;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
@@ -34,6 +35,7 @@ namespace TombLib.Wad
         public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfosObsolete { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
         // DEPRECATED
         public SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo> AdditionalSoundInfosObsolete { get; set; } = new SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo>();
+        public Dictionary<long, WadSoundInfo> AllLoadesSoundInfos { get; set; } = new Dictionary<long, WadSoundInfo>();
 
         public WadSounds Sounds { get; set; }
         public string FileName { get; set; }
@@ -50,12 +52,11 @@ namespace TombLib.Wad
                 var soundInfos = new HashSet<WadSoundInfo>();
                 foreach (WadFixedSoundInfo fixedSoundInfo in FixedSoundInfosObsolete.Values)
                     soundInfos.Add(fixedSoundInfo.SoundInfo);
-                // TODO_SOUNDS
-                /*foreach (WadMoveable moveable in Moveables.Values)
+                foreach (WadMoveable moveable in Moveables.Values)
                     foreach (WadAnimation animation in moveable.Animations)
                         foreach (WadAnimCommand animCommand in animation.AnimCommands)
                             if (animCommand.Type == WadAnimCommandType.PlaySound)
-                                soundInfos.Add(animCommand.SoundInfo);*/
+                                soundInfos.Add(animCommand.SoundInfoObsolete);
                 foreach (var info in AdditionalSoundInfosObsolete.Values)
                     soundInfos.Add(info.SoundInfo);
                 return soundInfos;

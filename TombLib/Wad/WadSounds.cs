@@ -31,6 +31,16 @@ namespace TombLib.Wad
             SoundInfos = soundInfos.Where(s => s != null).ToList();
         }
 
+        public static WadSounds ReadFromFile(string filename)
+        {
+            string extension = Path.GetExtension(filename).ToLower();
+            if (extension == ".xml")
+                return ReadFromXml(filename);
+            else if (extension == ".txt")
+                return ReadFromTxt(filename);
+            throw new ArgumentException("Invalid file format");
+        }
+
         public static WadSounds ReadFromXml(string filename)
         {
             var sounds = new WadSounds();
