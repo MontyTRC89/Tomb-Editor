@@ -29,6 +29,7 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
+				levelName = levelName.Replace(";", string.Empty);
 
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for your level.");
