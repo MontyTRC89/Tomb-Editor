@@ -46,24 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomTabControl\CustomTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomTabControl\NativeMethods.cs" />
-    <Compile Include="CustomTabControl\TabStyle.cs" />
-    <Compile Include="CustomTabControl\TabStyleProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomTabControl\TabStyleProviders\TabStyleDarkProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomTabControl\TabStyleProviders\TabStyleDefaultProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomTabControl\TabStyleProviders\TabStyleNoneProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomTabControl\ThemedColors.cs" />
     <Compile Include="Forms\FormLoading.cs">
       <SubType>Form</SubType>
     </Compile>
