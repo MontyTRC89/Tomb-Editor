@@ -96,6 +96,15 @@ namespace TombLib.Wad.Catalog
             return game.Sounds[id].Name;
         }
 
+        public static int TryGetSoundInfoIdByDescription(WadGameVersion version, string name)
+        {
+            var sounds = Games[version].Sounds;
+            foreach (var pair in sounds)
+                if (pair.Value.Description == name)
+                    return (int)pair.Key;
+            return -1;
+        }
+
         public static string GetSpriteSequenceName(WadGameVersion version, uint id)
         {
             Game game;

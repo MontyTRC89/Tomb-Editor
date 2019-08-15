@@ -248,7 +248,7 @@ namespace TombLib.Wad.Tr4Wad
                 try
                 {
                     if (samplePathInfos[i].Found)
-                        // TODO_SOUNDS: for now we just load references to samples
+                        // XML_SOUND_SYSTEM: for now we just load references to samples
                         currentSample = new WadSample(samplePathInfos[i].FullPath);
                 }
                 catch (Exception exc)

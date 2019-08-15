@@ -41,6 +41,7 @@ namespace TombLib.Wad
         private static void WriteWad2(ChunkWriter chunkIO, Wad2 wad)
         {
             chunkIO.WriteChunkInt(Wad2Chunks.SuggestedGameVersion, (long)wad.SuggestedGameVersion);
+            chunkIO.WriteChunkInt(Wad2Chunks.SoundSystem, (long)wad.SoundSystem);
 
             var meshTable = new List<WadMesh>(wad.MeshesUnique);
             var spriteTable = new List<WadSprite>(wad.SpriteSequences.Values.SelectMany(spriteSequence => spriteSequence.Sprites));

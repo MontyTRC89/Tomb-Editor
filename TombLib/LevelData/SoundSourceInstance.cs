@@ -7,7 +7,7 @@ namespace TombLib.LevelData
     {
         public int SoundId { get; set; }
 
-        // TODO_SOUNDS: legacy stuff present only for loading. Probably we'll force user to to a one-way migration on 
+        // XML_SOUND_SYSTEM: legacy stuff present only for loading. Probably we'll force user to to a one-way migration on 
         // load time so we need just properties
         private string _wadReferencedSoundName = null;
         public string WadReferencedSoundName

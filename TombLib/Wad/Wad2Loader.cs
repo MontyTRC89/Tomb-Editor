@@ -70,7 +70,12 @@ namespace TombLib.Wad
                     wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
                     return true;
                 }
-                if (LoadTextures(chunkIO, id, wad, ref textures))
+                else if (id == Wad2Chunks.SoundSystem)
+                {
+                    wad.SoundSystem = (WadSoundSystem)chunkIO.ReadChunkLong(chunkSize);
+                    return true;
+                }
+                else if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
                 else if (LoadSamples(chunkIO, id, wad, ref samples, obsolete))
                     return true;
@@ -98,6 +103,10 @@ namespace TombLib.Wad
                         var Id = new WadFixedSoundInfoId(checked((uint)soundInfo.Key));
                         wad.FixedSoundInfosObsolete.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfo.Value });
                     }
+
+            // XML_SOUND_SYSTEM: Used for conversion of Wad2 to new sound system
+            wad.AllLoadesSoundInfos = soundInfos;
+
             return wad;
         }
 
@@ -198,7 +207,7 @@ namespace TombLib.Wad
 
             chunkIO.ReadChunks((id2, chunkSize2) =>
             {
-                // TODO_SOUNDS
+                // XML_SOUND_SYSTEM
                 if (id2 == Wad2Chunks.SoundInfoIndex)
                     tempIndex = chunkIO.ReadChunkLong(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoVolume)
@@ -232,6 +241,9 @@ namespace TombLib.Wad
             tempSoundInfo.RangeInSectors = (int)range;
             tempSoundInfo.Chance = (int)Math.Round(chance * 100.0f);
             tempSoundInfo.PitchFactor = (int)Math.Round((pitch - 1.0f) * 100.0f);
+
+            // Try to get the old ID
+            tempSoundInfo.Id = TrCatalog.TryGetSoundInfoIdByDescription(wad.SuggestedGameVersion, tempSoundInfo.Name);
 
             if (string.IsNullOrWhiteSpace(tempSoundInfo.Name))
                 tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, unchecked((uint)tempIndex));
@@ -780,6 +792,8 @@ namespace TombLib.Wad
                                     if (id4 == Wad2Chunks.AnimCommandSoundInfo)
                                     {
                                         var info = chunkIO.ReadChunkInt(chunkSize4);
+                                        if (info != -1)
+                                            command.SoundInfoObsolete = soundInfos[info];
                                         return true;
                                     }
                                     else

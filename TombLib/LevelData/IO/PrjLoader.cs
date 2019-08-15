@@ -1251,7 +1251,7 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
-                // TODO_SOUNDS: Read sounds catalog. We need it just for names, because we'll take 
+                // XML_SOUND_SYSTEM: Read sounds catalog. We need it just for names, because we'll take 
                 // sound infos from SFX/SAM.
                 WadSounds sounds;
                 {
@@ -1293,7 +1293,7 @@ namespace TombLib.LevelData.IO
                         if (newWad.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
 
-                        // TODO_SOUNDS: we actually have a valid WAD loaded, let's change names using the catalog
+                        // XML_SOUND_SYSTEM: we actually have a valid WAD loaded, let's change names using the catalog
                         // and mark them automatically for compilation
                         foreach (var soundInfo in newWad.Wad.Sounds.SoundInfos)
                         {

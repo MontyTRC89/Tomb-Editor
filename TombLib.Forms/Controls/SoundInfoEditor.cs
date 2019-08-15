@@ -109,7 +109,7 @@ namespace TombLib.Controls
         {
             get
             {
-                // TODO_SOUNDS
+                // XML_SOUND_SYSTEM
                 WadSoundInfo result = new WadSoundInfo(int.Parse(tbID.Text));
                 result.Name = tbName.Text;
                 result.Volume = /*(float)*/(int)(numericVolume.Value * 0.01m);
