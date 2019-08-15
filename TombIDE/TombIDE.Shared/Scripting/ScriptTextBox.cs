@@ -156,9 +156,7 @@ namespace TombIDE.Shared.Scripting
 		{
 			try
 			{
-				string fileContent = File.ReadAllText(filePath, Encoding.GetEncoding(1252));
-
-				Text = fileContent;
+				base.OpenFile(filePath);
 				FilePath = filePath;
 
 				IsChanged = false;
@@ -362,7 +360,7 @@ namespace TombIDE.Shared.Scripting
 			e.ChangedRange.SetStyle(regularColor, @"[\[\],=]");
 			e.ChangedRange.SetStyle(referenceColor, @"\$[a-f0-9]*", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(referenceColor, @"#(define|first_id|include)", RegexOptions.IgnoreCase);
-			e.ChangedRange.SetStyle(newCommandColor, ">");
+			e.ChangedRange.SetStyle(newCommandColor, @",\s?>\s*?(;.*)?" + Environment.NewLine);
 			e.ChangedRange.SetStyle(sectionColor, @"\[(" + string.Join("|", KeyWords.Sections) + @")\]");
 			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.NewCommands) + @")\s*?=");
 			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=");
@@ -371,21 +369,22 @@ namespace TombIDE.Shared.Scripting
 			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=");
 			e.ChangedRange.SetStyle(valueColor, "=.*");
 
-			e.ChangedRange.SetStyle(valueColor, @">\s*?(;.*)?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + ")");
+			e.ChangedRange.SetStyle(valueColor, @">\s*?(;.*)?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + @"|\z)");
 
 			if (noLoop)
 				return;
 
 			for (int i = e.ChangedRange.FromLine; i > 0; i--)
 			{
-				if (GetLineText(i).Contains("="))
+				if (GetLineText(i).Contains("=") || Regex.IsMatch(GetLineText(i), @"\[*.\]"))
 				{
-					for (int j = i + 1; j > 0; j++)
+					for (int j = i + 1; j < LinesCount; j++)
 					{
-						if (GetLineText(j).Contains("="))
+						if (GetLineText(j).Contains("=") || Regex.IsMatch(GetLineText(j), @"\[*.\]") || j == LinesCount - 1)
 						{
 							Place start = new Place(0, i);
 							Place end = new Place(GetLineText(j).Length, j);
+
 							e.ChangedRange = new Range(this, start, end);
 							DoSyntaxHighlighting(e, true);
 

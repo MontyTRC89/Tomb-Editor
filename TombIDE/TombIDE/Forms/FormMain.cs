@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 
@@ -217,10 +216,8 @@ namespace TombIDE
 			else
 			{
 				// Add the default buttons
-				string localPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-				AddProgramButton(Path.Combine(localPath, "TombEditor.exe"), false);
-				AddProgramButton(Path.Combine(localPath, "WadTool.exe"), false);
+				AddProgramButton(Path.Combine(SharedMethods.GetProgramDirectory(), "TombEditor.exe"), false);
+				AddProgramButton(Path.Combine(SharedMethods.GetProgramDirectory(), "WadTool.exe"), false);
 			}
 
 			// Update the list with only valid programs

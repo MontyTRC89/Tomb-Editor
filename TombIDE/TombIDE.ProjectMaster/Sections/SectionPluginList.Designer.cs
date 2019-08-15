@@ -17,6 +17,7 @@
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.button_ManagePlugins = new DarkUI.Controls.DarkButton();
 			this.button_OpenFolder = new DarkUI.Controls.DarkButton();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
@@ -34,6 +35,7 @@
 			this.tabPage_Description = new System.Windows.Forms.TabPage();
 			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.panel_List.SuspendLayout();
 			this.panel_Logo.SuspendLayout();
 			this.panel_Properties.SuspendLayout();
@@ -47,9 +49,9 @@
 			// 
 			this.button_ManagePlugins.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_ManagePlugins.Location = new System.Drawing.Point(6, 6);
-			this.button_ManagePlugins.Margin = new System.Windows.Forms.Padding(6, 6, 1, 0);
+			this.button_ManagePlugins.Margin = new System.Windows.Forms.Padding(6, 6, 0, 3);
 			this.button_ManagePlugins.Name = "button_ManagePlugins";
-			this.button_ManagePlugins.Size = new System.Drawing.Size(112, 23);
+			this.button_ManagePlugins.Size = new System.Drawing.Size(213, 23);
 			this.button_ManagePlugins.TabIndex = 1;
 			this.button_ManagePlugins.Text = "Manage Plugins";
 			this.button_ManagePlugins.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -59,20 +61,19 @@
 			// 
 			this.button_OpenFolder.Enabled = false;
 			this.button_OpenFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
-			this.button_OpenFolder.Location = new System.Drawing.Point(120, 6);
-			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(1, 6, 6, 0);
+			this.button_OpenFolder.Location = new System.Drawing.Point(224, 5);
+			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(5, 5, 5, 2);
 			this.button_OpenFolder.Name = "button_OpenFolder";
-			this.button_OpenFolder.Size = new System.Drawing.Size(128, 23);
+			this.button_OpenFolder.Size = new System.Drawing.Size(25, 25);
 			this.button_OpenFolder.TabIndex = 2;
-			this.button_OpenFolder.Text = "Open Plugin Folder";
-			this.button_OpenFolder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Selected Plugin Folder");
 			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
 			// 
 			// label_01
 			// 
 			this.label_01.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_01.Location = new System.Drawing.Point(10, 211);
+			this.label_01.Location = new System.Drawing.Point(10, 212);
 			this.label_01.Margin = new System.Windows.Forms.Padding(9, 3, 0, 3);
 			this.label_01.Name = "label_01";
 			this.label_01.Size = new System.Drawing.Size(59, 20);
@@ -84,7 +85,7 @@
 			// 
 			this.label_02.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_02.Location = new System.Drawing.Point(10, 237);
+			this.label_02.Location = new System.Drawing.Point(10, 238);
 			this.label_02.Margin = new System.Windows.Forms.Padding(9, 3, 0, 6);
 			this.label_02.Name = "label_02";
 			this.label_02.Size = new System.Drawing.Size(59, 20);
@@ -99,7 +100,7 @@
 			this.label_NoInfo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoInfo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoInfo.Name = "label_NoInfo";
-			this.label_NoInfo.Size = new System.Drawing.Size(378, 197);
+			this.label_NoInfo.Size = new System.Drawing.Size(378, 198);
 			this.label_NoInfo.TabIndex = 1;
 			this.label_NoInfo.Text = "Please select a plugin from the list to view its info.";
 			this.label_NoInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -111,7 +112,7 @@
 			this.label_NoLogo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoLogo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoLogo.Name = "label_NoLogo";
-			this.label_NoLogo.Size = new System.Drawing.Size(378, 197);
+			this.label_NoLogo.Size = new System.Drawing.Size(378, 198);
 			this.label_NoLogo.TabIndex = 0;
 			this.label_NoLogo.Text = "No logo image found.";
 			this.label_NoLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -141,7 +142,7 @@
 			this.treeView.Indent = 0;
 			this.treeView.ItemHeight = 30;
 			this.treeView.Location = new System.Drawing.Point(0, 35);
-			this.treeView.Margin = new System.Windows.Forms.Padding(6);
+			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.treeView.MaxDragChange = 30;
 			this.treeView.Name = "treeView";
 			this.treeView.Size = new System.Drawing.Size(254, 255);
@@ -161,7 +162,7 @@
 			this.panel_Logo.Location = new System.Drawing.Point(6, 6);
 			this.panel_Logo.Margin = new System.Windows.Forms.Padding(6, 6, 6, 3);
 			this.panel_Logo.Name = "panel_Logo";
-			this.panel_Logo.Size = new System.Drawing.Size(380, 199);
+			this.panel_Logo.Size = new System.Drawing.Size(380, 200);
 			this.panel_Logo.TabIndex = 0;
 			// 
 			// panel_Properties
@@ -228,7 +229,7 @@
 			this.textBox_DLLName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_DLLName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBox_DLLName.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_DLLName.Location = new System.Drawing.Point(75, 237);
+			this.textBox_DLLName.Location = new System.Drawing.Point(75, 238);
 			this.textBox_DLLName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.textBox_DLLName.Name = "textBox_DLLName";
 			this.textBox_DLLName.ReadOnly = true;
@@ -242,7 +243,7 @@
 			this.textBox_Title.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_Title.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBox_Title.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_Title.Location = new System.Drawing.Point(75, 211);
+			this.textBox_Title.Location = new System.Drawing.Point(75, 212);
 			this.textBox_Title.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_Title.Name = "textBox_Title";
 			this.textBox_Title.ReadOnly = true;
@@ -324,5 +325,6 @@
 		private System.Windows.Forms.TabPage tabPage_Overview;
 		private System.Windows.Forms.TextBox textBox_DLLName;
 		private System.Windows.Forms.TextBox textBox_Title;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }
