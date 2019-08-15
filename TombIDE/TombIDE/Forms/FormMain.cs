@@ -471,7 +471,7 @@ namespace TombIDE
 					// A friendly reminder
 					DarkMessageBox.Show(this,
 						"Before launching the game, you must compile\n" +
-						"your first script using the Script Editor", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						"your first script using the Script Editor.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 					_ide.SelectIDETab("Script Editor");
 					return;
