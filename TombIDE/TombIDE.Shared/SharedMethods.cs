@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using TombLib.LevelData;
@@ -40,6 +41,11 @@ namespace TombIDE.Shared
 		public static string RemoveIllegalSymbols(string fileName)
 		{
 			return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
+		}
+
+		public static string GetProgramDirectory()
+		{
+			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		}
 
 		[DllImport("shell32.dll")]

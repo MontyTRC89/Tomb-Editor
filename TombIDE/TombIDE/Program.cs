@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -38,7 +37,7 @@ namespace TombIDE
 		{
 			try
 			{
-				string programPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				string programPath = SharedMethods.GetProgramDirectory();
 
 				if (IsUnicodePath(programPath))
 					throw new ArgumentException(

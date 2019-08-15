@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
@@ -691,15 +690,15 @@ namespace TombIDE.ScriptEditor
 				// Recreate the directory
 				Directory.CreateDirectory(@"NGC\VGE\Script");
 
-				string currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				string programPath = SharedMethods.GetProgramDirectory();
 
 				// Create all of the subdirectories
 				foreach (string dirPath in Directory.GetDirectories(_ide.Project.ScriptPath, "*", SearchOption.AllDirectories))
-					Directory.CreateDirectory(dirPath.Replace(_ide.Project.ScriptPath, currentDir + @"\NGC\VGE\Script"));
+					Directory.CreateDirectory(dirPath.Replace(_ide.Project.ScriptPath, programPath + @"\NGC\VGE\Script"));
 
 				// Copy all the files into the VGE /Script/ folder
 				foreach (string newPath in Directory.GetFiles(_ide.Project.ScriptPath, "*.*", SearchOption.AllDirectories))
-					File.Copy(newPath, newPath.Replace(_ide.Project.ScriptPath, currentDir + @"\NGC\VGE\Script"));
+					File.Copy(newPath, newPath.Replace(_ide.Project.ScriptPath, programPath + @"\NGC\VGE\Script"));
 
 				AdjustOldFormatting();
 
@@ -773,7 +772,7 @@ namespace TombIDE.ScriptEditor
 				string logFileContent = File.ReadAllText(logFilePath);
 
 				// Replace the VGE paths in the log file with the current project ones
-				string vgePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\NGC\VGE";
+				string vgePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE";
 				File.WriteAllText(logFilePath, logFileContent.Replace(vgePath, _ide.Project.ProjectPath), Encoding.GetEncoding(1252));
 
 				application.Close(); // Done!
