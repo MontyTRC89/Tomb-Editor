@@ -45,7 +45,7 @@ namespace TombLib.Projects
 		public List<Plugin> InstalledPlugins { get; set; } = new List<Plugin>();
 
 		/// <summary>
-		/// Creates and returns an exact copy of the current project without overwriting the original data.
+		/// Creates and returns an exact copy of the current project without overwriting the original data while in use.
 		/// </summary>
 		public Project Clone()
 		{
@@ -62,13 +62,13 @@ namespace TombLib.Projects
 				projectCopy.Levels.Add(level.Clone());
 
 			foreach (Plugin plugin in InstalledPlugins)
-				projectCopy.InstalledPlugins.Add(plugin.Clone());
+				projectCopy.InstalledPlugins.Add(plugin);
 
 			return projectCopy;
 		}
 
 		/// <summary>
-		/// Renames the project (and it's directory if renameDirectory is true).
+		/// Renames the project (and its directory if renameDirectory is true).
 		/// </summary>
 		public void Rename(string newName, bool renameDirectory = true)
 		{
@@ -134,22 +134,22 @@ namespace TombLib.Projects
 		/// <summary>
 		/// .trproj file name = game's .exe file name. (tomb4, PCTomb5, ...)
 		/// <para>Returns null if the paths haven't been decoded yet.</para>
-		/// <para>To decode paths use DecodeProjectPaths(string trprojFilePath)</para>
+		/// <para>To decode paths use DecodeProjectPaths()</para>
 		/// </summary>
 		public string GetTRPROJFilePath()
 		{
 			DirectoryInfo directoryInfo = new DirectoryInfo(ProjectPath);
 
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles())
+			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.exe", SearchOption.TopDirectoryOnly))
 			{
 				if (GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG)
 				{
-					if (fileInfo.Name.ToLower().Contains("tomb4.exe"))
+					if (fileInfo.Name == "tomb4.exe")
 						return Path.Combine(Path.GetDirectoryName(fileInfo.FullName), Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".trproj");
 				}
 				else if (GameVersion == GameVersion.TR5 || GameVersion == GameVersion.TR5Main)
 				{
-					if (fileInfo.Name.ToLower().Contains("pctomb5.exe"))
+					if (fileInfo.Name == "PCTomb5.exe")
 						return Path.Combine(Path.GetDirectoryName(fileInfo.FullName), Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".trproj");
 				}
 			}
@@ -224,9 +224,9 @@ namespace TombLib.Projects
 		{
 			DirectoryInfo directoryInfo = new DirectoryInfo(ProjectPath);
 
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles())
+			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (fileInfo.Name.ToLower() == "tomb4.exe" || fileInfo.Name.ToLower() == "pctomb5.exe")
+				if (fileInfo.Name == "tomb4.exe" || fileInfo.Name == "PCTomb5.exe")
 					return true;
 			}
 
@@ -237,7 +237,7 @@ namespace TombLib.Projects
 		{
 			DirectoryInfo directoryInfo = new DirectoryInfo(ScriptPath);
 
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles())
+			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.txt", SearchOption.TopDirectoryOnly))
 			{
 				if (fileInfo.Name.ToLower() == "script.txt")
 					return true;

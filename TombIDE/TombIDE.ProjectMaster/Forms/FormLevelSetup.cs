@@ -28,10 +28,10 @@ namespace TombIDE.ProjectMaster
 
 			try
 			{
-				if (string.IsNullOrWhiteSpace(textBox_LevelName.Text))
-					throw new ArgumentException("You must enter a name for your level.");
-
 				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(levelName))
+					throw new ArgumentException("You must enter a valid name for your level.");
 
 				// Check for name duplicates
 				foreach (ProjectLevel projectlevel in _ide.Project.Levels)
@@ -71,14 +71,10 @@ namespace TombIDE.ProjectMaster
 
 				if (checkBox_GenerateSection.Checked)
 				{
-					List<string> scriptMessages = new List<string>
-					{
-						"\n[Level]",
-						"Name= " + addedProjectLevel.Name,
-						"Level= DATA\\" + addedProjectLevel.Name.ToUpper().Replace(' ', '_') + ", " + textBox_SoundID.Text.Trim(),
-						"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
-						"Horizon= " + (checkBox_EnableHorizon.Checked? "ENABLED" : "DISABLED")
-					};
+					int ambientSoundID = (int)numeric_SoundID.Value;
+					bool horizon = checkBox_EnableHorizon.Checked;
+
+					List<string> scriptMessages = SharedMethods.GenerateLevelSectionMessages(addedProjectLevel, ambientSoundID, horizon);
 
 					_ide.AddLevelToProject(addedProjectLevel, scriptMessages);
 				}

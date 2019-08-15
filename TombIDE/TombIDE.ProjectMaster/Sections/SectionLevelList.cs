@@ -195,33 +195,33 @@ namespace TombIDE.ProjectMaster
 		private void ShowLevelSetupForm()
 		{
 			using (FormLevelSetup form = new FormLevelSetup(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger the IDE.LevelAddedEvent
+				form.ShowDialog(this); // After the form is done, it will trigger IDE.LevelAddedEvent
 		}
 
 		private void ImportLevel()
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Title = "Choose the .prj2 file you want to import",
-				Filter = "Tomb Editor Levels|*.prj2"
-			};
+				dialog.Title = "Choose the .prj2 file you want to import";
+				dialog.Filter = "Tomb Editor Levels|*.prj2";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				try
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					if (dialog.FileName.StartsWith(_ide.Project.LevelsPath))
-						throw new ArgumentException("You cannot import levels which are already inside the project's /Levels/ folder.");
+					try
+					{
+						if (dialog.FileName.StartsWith(_ide.Project.LevelsPath))
+							throw new ArgumentException("You cannot import levels which are already inside the project's /Levels/ folder.");
 
-					if (ProjectLevel.IsBackupFile(Path.GetFileName(dialog.FileName)))
-						throw new ArgumentException("You cannot import backup files.");
+						if (ProjectLevel.IsBackupFile(Path.GetFileName(dialog.FileName)))
+							throw new ArgumentException("You cannot import backup files.");
 
-					using (FormImportLevel form = new FormImportLevel(_ide, dialog.FileName))
-						form.ShowDialog(this); // After the form is done, it will trigger the IDE.LevelAddedEvent
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						using (FormImportLevel form = new FormImportLevel(_ide, dialog.FileName))
+							form.ShowDialog(this); // After the form is done, it will trigger IDE.LevelAddedEvent
+					}
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
@@ -229,7 +229,7 @@ namespace TombIDE.ProjectMaster
 		private void ShowRenameLevelForm()
 		{
 			using (FormRenameLevel form = new FormRenameLevel(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger the IDE.SelectedLevelSettingsChangedEvent
+				form.ShowDialog(this); // After the form is done, it will trigger IDE.SelectedLevelSettingsChangedEvent
 		}
 
 		private void DeleteLevel()
@@ -260,7 +260,7 @@ namespace TombIDE.ProjectMaster
 				if (isInternalLevel) // Move the level folder into the recycle bin in this case
 					FileSystem.DeleteDirectory(affectedLevel.FolderPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 
-				// Remove node and clear selection
+				// Remove the node and clear selection
 				treeView.SelectedNodes[0].Remove();
 				treeView.SelectedNodes.Clear();
 				CheckItemSelection();
@@ -326,7 +326,7 @@ namespace TombIDE.ProjectMaster
 			{
 				cachedNodeText = treeView.SelectedNodes[0].Text;
 
-				// Reinitialize the selected level (That's for the treeView_Resources in SectionLevelProperties)
+				// Reinitialize the selected level (That's for treeView_Resources in SectionLevelProperties)
 				_ide.SelectedLevel = null;
 				_ide.SelectedLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
 			}
@@ -400,7 +400,7 @@ namespace TombIDE.ProjectMaster
 			button_OpenInExplorer.Enabled = treeView.SelectedNodes.Count > 0;
 
 			// Set the SelectedLevel variable if a node is selected
-			// Triggers the IDE.SelectedLevelChangedEvent
+			// Triggers IDE.SelectedLevelChangedEvent
 			if (treeView.SelectedNodes.Count > 0)
 			{
 				ProjectLevel nodeLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
@@ -445,8 +445,8 @@ namespace TombIDE.ProjectMaster
 
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				Arguments = "\"" + prj2Path + "\"",
-				FileName = "TombEditor.exe"
+				FileName = "TombEditor.exe",
+				Arguments = "\"" + prj2Path + "\""
 			};
 
 			Process.Start(startInfo);

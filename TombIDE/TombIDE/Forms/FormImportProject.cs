@@ -81,24 +81,24 @@ namespace TombIDE
 
 		private void button_BrowseScript_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose an existing /Script/ folder for the project"
-			};
+				dialog.Title = "Choose an existing /Script/ folder for the project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				textBox_ScriptPath.Text = dialog.Folder;
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					textBox_ScriptPath.Text = dialog.Folder;
+			}
 		}
 
 		private void button_BrowseLevels_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
 			{
-				Title = "Choose a /Levels/ folder for the project"
-			};
+				dialog.Title = "Choose a /Levels/ folder for the project";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				textBox_LevelsPath.Text = dialog.Folder;
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					textBox_LevelsPath.Text = dialog.Folder;
+			}
 		}
 
 		private void button_Import_Click(object sender, EventArgs e)
@@ -107,16 +107,16 @@ namespace TombIDE
 
 			try
 			{
-				if (string.IsNullOrWhiteSpace(textBox_ProjectName.Text))
-					throw new ArgumentException("You must enter a name for the project.");
+				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(projectName))
+					throw new ArgumentException("You must enter a valid name for the project.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ScriptPath.Text))
 					throw new ArgumentException("You must specify the /Script/ folder path of the project.");
 
 				if (string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the /Levels/ folder path for the project.");
-
-				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
 
 				// Check for name duplicates
 				foreach (Project project in _ide.AvailableProjects)
@@ -173,13 +173,13 @@ namespace TombIDE
 		{
 			GameVersion gameVersion = 0;
 
-			switch (Path.GetFileName(exeFilePath).ToLower())
+			switch (Path.GetFileName(exeFilePath))
 			{
 				case "tomb4.exe":
 					gameVersion = GameVersion.TR4;
 					break;
 
-				case "pctomb5.exe":
+				case "PCTomb5.exe":
 					gameVersion = GameVersion.TR5;
 					break;
 			}

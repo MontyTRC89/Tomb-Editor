@@ -42,13 +42,13 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Filter = "Bitmap Files|*.bmp"
-			};
+				dialog.Filter = "Bitmap Files|*.bmp";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-				ReplaceImage(dialog.FileName);
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					ReplaceImage(dialog.FileName);
+			}
 		}
 
 		private void button_UseBlank_Click(object sender, EventArgs e)
@@ -79,7 +79,7 @@ namespace TombIDE.ProjectMaster
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (result == DialogResult.Yes)
-				ReplaceImage(Path.Combine("Templates", "load.bmp"));
+				ReplaceImage(Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", "load.bmp"));
 		}
 
 		private void ReplaceImage(string imagePath)

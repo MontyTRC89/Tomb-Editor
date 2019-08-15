@@ -193,74 +193,74 @@ namespace TombIDE
 		private void ShowProjectSetupForm()
 		{
 			using (FormProjectSetup form = new FormProjectSetup(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger the IDE.ProjectAddedEvent
+				form.ShowDialog(this); // After the form is done, it will trigger IDE.ProjectAddedEvent
 		}
 
 		private void OpenTRPROJ()
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Title = "Choose the .trproj file you want to open",
-				Filter = "TombIDE Project Files|*.trproj"
-			};
+				dialog.Title = "Choose the .trproj file you want to open";
+				dialog.Filter = "TombIDE Project Files|*.trproj";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				try
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					Project openedProject = XmlHandling.ReadTRPROJ(dialog.FileName);
-
-					// Check for name duplicates
-					foreach (Project project in _ide.AvailableProjects)
+					try
 					{
-						if (project.Name == openedProject.Name)
-							throw new ArgumentException("A project with the same name already exists on the list.");
+						Project openedProject = XmlHandling.ReadTRPROJ(dialog.FileName);
+
+						// Check for name duplicates
+						foreach (Project project in _ide.AvailableProjects)
+						{
+							if (project.Name == openedProject.Name)
+								throw new ArgumentException("A project with the same name already exists on the list.");
+						}
+
+						// Check if the opened project is valid
+						if (!openedProject.IsValidProject())
+							throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
+
+						_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
 					}
-
-					// Check if the opened project is valid
-					if (!openedProject.IsValidProject())
-						throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
-
-					_ide.AddProjectToList(openedProject); // Triggers the IDE.ProjectAddedEvent
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
 
 		private void ImportExe()
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Title = "Choose the .exe file of the game project you want to import",
-				Filter = "Executable Files|*.exe"
-			};
+				dialog.Title = "Choose the .exe file of the game project you want to import";
+				dialog.Filter = "Executable Files|*.exe";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				try
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					string exeFilePath = dialog.FileName;
-
-					// Check if the imported .exe file is a TR game that's actually supported
-					if (Path.GetFileName(exeFilePath).ToLower() != "tomb4.exe" && Path.GetFileName(exeFilePath).ToLower() != "pctomb5.exe")
-						throw new ArgumentException("Invalid game .exe file.");
-
-					// Check if a project that's using the same .exe file already exists on the list
-					foreach (Project project in _ide.AvailableProjects)
+					try
 					{
-						if (project.ProjectPath == Path.GetDirectoryName(exeFilePath))
-							throw new ArgumentException("Project already exists on the list.\nIt's called \"" + project.Name + "\"");
-					}
+						string exeFilePath = dialog.FileName;
 
-					using (FormImportProject form = new FormImportProject(_ide, exeFilePath))
-						form.ShowDialog(this); // After the form is done, it will trigger the IDE.ProjectAddedEvent
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						// Check if the imported .exe file is a TR game that's actually supported
+						if (Path.GetFileName(exeFilePath) != "tomb4.exe" && Path.GetFileName(exeFilePath) != "PCTomb5.exe")
+							throw new ArgumentException("Invalid game .exe file.");
+
+						// Check if a project that's using the same .exe file already exists on the list
+						foreach (Project project in _ide.AvailableProjects)
+						{
+							if (project.ProjectPath == Path.GetDirectoryName(exeFilePath))
+								throw new ArgumentException("Project already exists on the list.\nIt's called \"" + project.Name + "\"");
+						}
+
+						using (FormImportProject form = new FormImportProject(_ide, exeFilePath))
+							form.ShowDialog(this); // After the form is done, it will trigger IDE.ProjectAddedEvent
+					}
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
@@ -268,7 +268,7 @@ namespace TombIDE
 		private void ShowRenameProjectForm()
 		{
 			using (FormRenameProject form = new FormRenameProject(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger the IDE.ActiveProjectRenamedEvent
+				form.ShowDialog(this); // After the form is done, it will trigger IDE.ActiveProjectRenamedEvent
 		}
 
 		private void DeleteProject()
@@ -351,7 +351,7 @@ namespace TombIDE
 			button_OpenProject.Enabled = treeView.SelectedNodes.Count > 0;
 
 			// Set the active project if a node is selected
-			// Triggers the IDE.ActiveProjectChangedEvent
+			// Triggers IDE.ActiveProjectChangedEvent
 			if (treeView.SelectedNodes.Count > 0)
 				_ide.Project = (Project)treeView.SelectedNodes[0].Tag;
 			else
@@ -366,7 +366,7 @@ namespace TombIDE
 			if (!_ide.Project.IsValidProject())
 				return;
 
-			// Set the RememberedProject if checkBox_Remember is checked
+			// Set RememberedProject if checkBox_Remember is checked
 			if (checkBox_Remember.Checked)
 				_ide.Configuration.RememberedProject = _ide.Project.Name;
 
@@ -382,14 +382,14 @@ namespace TombIDE
 
 				if (result == DialogResult.OK) // OK means the user wants to switch projects
 				{
-					// Reset the RememberedProject
+					// Reset the RememberedProject setting
 					_ide.Configuration.RememberedProject = string.Empty;
 					_ide.Configuration.Save();
 
 					// Restart the application
 					Application.Restart();
 
-					// Using Show(); instead would cause many ObjectDisposed exceptions
+					// Using Show(); instead would cause ObjectDisposed exceptions
 				}
 				else if (result == DialogResult.Cancel) // Cancel means the user closed the program
 					Application.Exit();

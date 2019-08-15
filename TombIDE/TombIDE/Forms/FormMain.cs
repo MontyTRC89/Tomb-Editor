@@ -59,7 +59,7 @@ namespace TombIDE
 					case "Script Editor":
 					{
 						if (timer_ScriptButtonBlinking.Enabled)
-							timer_ScriptButtonBlinking.Stop();
+							timer_ScriptButtonBlinking.Stop(); // Stop the blinking
 
 						panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
 						panelButton_ScriptEditor.BackColor = Color.FromArgb(135, 135, 135);
@@ -95,7 +95,7 @@ namespace TombIDE
 				timer_ScriptButtonBlinking.Interval = 1;
 				timer_ScriptButtonBlinking.Start();
 			}
-			else if (obj is IDE.ProjectScriptPathChangedEvent)
+			else if (obj is IDE.ProjectScriptPathChangedEvent || obj is IDE.ProjectLevelsPathChangedEvent)
 			{
 				DialogResult result = DarkMessageBox.Show(this, "To apply the changes, you must restart TombIDE.\n" +
 					"Are you sure you want to do that?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -105,38 +105,29 @@ namespace TombIDE
 					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
 
 					if (_ide.ClosingCancelled)
-						return; // User pressed "Cancel"
+					{
+						// User pressed "Cancel"
 
-					_ide.Project.ScriptPath = ((IDE.ProjectScriptPathChangedEvent)obj).NewPath;
+						DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
+						   MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+						return;
+					}
+
+					if (obj is IDE.ProjectScriptPathChangedEvent)
+						_ide.Project.ScriptPath = ((IDE.ProjectScriptPathChangedEvent)obj).NewPath;
+					else if (obj is IDE.ProjectLevelsPathChangedEvent)
+					{
+						_ide.Project.LevelsPath = ((IDE.ProjectLevelsPathChangedEvent)obj).NewPath;
+						_ide.Project.Levels.Clear();
+					}
+
 					XmlHandling.SaveTRPROJ(_ide.Project);
-
 					RestartApplication();
 				}
 				else if (result == DialogResult.No)
-					DarkMessageBox.Show(this, "No paths have been affected.", "Operation cancelled",
-						MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-			else if (obj is IDE.ProjectLevelsPathChangedEvent)
-			{
-				DialogResult result = DarkMessageBox.Show(this, "To apply the changes, you must restart TombIDE.\n" +
-					"Are you sure you want to do that?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-				if (result == DialogResult.Yes)
-				{
-					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
-
-					if (_ide.ClosingCancelled)
-						return; // User pressed "Cancel"
-
-					_ide.Project.LevelsPath = ((IDE.ProjectLevelsPathChangedEvent)obj).NewPath;
-					_ide.Project.Levels.Clear();
-					XmlHandling.SaveTRPROJ(_ide.Project);
-
-					RestartApplication();
-				}
-				else if (result == DialogResult.No)
-					DarkMessageBox.Show(this, "No paths have been affected.", "Operation cancelled",
-						MessageBoxButtons.OK, MessageBoxIcon.Information);
+					DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
+						   MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 
@@ -256,25 +247,25 @@ namespace TombIDE
 
 		private void button_AddProgram_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Title = "Choose the .exe file of the program you want to add",
-				Filter = "Executable Files|*.exe|Batch Files|*.bat"
-			};
+				dialog.Title = "Choose the .exe file of the program you want to add";
+				dialog.Filter = "Executable Files|*.exe|Batch Files|*.bat";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				// Check if the program shortcut already exists
-				foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					if (button.Tag.ToString() == dialog.FileName)
+					// Check if the program shortcut already exists
+					foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
 					{
-						DarkMessageBox.Show(this, "Program shortcut already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
+						if (button.Tag.ToString() == dialog.FileName)
+						{
+							DarkMessageBox.Show(this, "Program shortcut already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							return;
+						}
 					}
-				}
 
-				AddProgramButton(dialog.FileName);
+					AddProgramButton(dialog.FileName);
+				}
 			}
 		}
 
@@ -307,7 +298,7 @@ namespace TombIDE
 			string programName = FileVersionInfo.GetVersionInfo(filePath).ProductName;
 
 			// Handle batch files and programs without ProductNames
-			if (string.IsNullOrEmpty(programName) && Path.GetExtension(filePath) == ".bat")
+			if (string.IsNullOrEmpty(programName) && Path.GetExtension(filePath).ToLower() == ".bat")
 				programName = Path.GetFileNameWithoutExtension(filePath) + " (Batch File)";
 			else if (string.IsNullOrEmpty(programName))
 				programName = Path.GetFileNameWithoutExtension(filePath);
@@ -331,11 +322,9 @@ namespace TombIDE
 
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					FileName = programFilePath
+					FileName = programFilePath,
+					WorkingDirectory = Path.GetDirectoryName(programFilePath)
 				};
-
-				if (programFilePath.EndsWith(".bat"))
-					startInfo.WorkingDirectory = Path.GetDirectoryName(programFilePath);
 
 				Process.Start(startInfo);
 			}
@@ -490,8 +479,8 @@ namespace TombIDE
 
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					WorkingDirectory = _ide.Project.ProjectPath,
-					FileName = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName())
+					FileName = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName()),
+					WorkingDirectory = _ide.Project.ProjectPath
 				};
 
 				Process.Start(startInfo);

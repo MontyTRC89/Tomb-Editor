@@ -30,10 +30,11 @@ namespace TombIDE
 		{
 			try
 			{
-				if (string.IsNullOrWhiteSpace(textBox_NewName.Text))
+				string newName = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(newName))
 					throw new ArgumentException("Invalid name.");
 
-				string newName = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
 
 				if (newName == _ide.Project.Name)

@@ -11,9 +11,6 @@ using TombLib.Projects;
 
 namespace TombIDE
 {
-	// TODO: Rewrite this class because it's messy
-	// (Will probably never do lol)
-
 	public partial class FormImportLevel : DarkForm
 	{
 		private IDE _ide;
@@ -44,10 +41,10 @@ namespace TombIDE
 
 			try
 			{
-				if (string.IsNullOrWhiteSpace(textBox_LevelName.Text))
-					throw new ArgumentException("You must enter a name for the level.");
-
 				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(levelName))
+					throw new ArgumentException("You must enter a valid name for the level.");
 
 				if (radioButton_SelectedCopy.Checked && treeView.SelectedNodes.Count == 0)
 					throw new ArgumentException("You must select which .prj2 files you want to import.");
@@ -58,9 +55,6 @@ namespace TombIDE
 					if (level.Name == levelName)
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
-
-				if (checkBox_GenerateSection.Checked && string.IsNullOrWhiteSpace(textBox_SoundID.Text))
-					throw new ArgumentException("You must specify the ambient sound ID for the [Level] section.");
 
 				if (radioButton_SpecifiedCopy.Checked || radioButton_SelectedCopy.Checked)
 					ImportAndCopyFiles(levelName);
@@ -80,7 +74,7 @@ namespace TombIDE
 			string fullSpecifiedPrj2FilePath = textBox_Prj2Path.Tag.ToString();
 
 			string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName); // A path inside the project's /Levels/ folder
-			string specificFileName = Path.GetFileName(fullSpecifiedPrj2FilePath); // The user specified file name
+			string specificFileName = Path.GetFileName(fullSpecifiedPrj2FilePath); // The user-specified file name
 
 			// Create the level folder
 			if (!Directory.Exists(levelFolderPath))
@@ -98,7 +92,7 @@ namespace TombIDE
 			}
 			else if (radioButton_SelectedCopy.Checked)
 			{
-				// Check if the user specified file was selected on the list, if not, then set the specificFile property to "$(LatestFile)"
+				// Check if the user-specified file was selected on the list, if not, then set the specificFile property to "$(LatestFile)"
 				bool specificFileSelected = false;
 
 				// Copy all selected files into the created levelFolderPath
@@ -112,7 +106,7 @@ namespace TombIDE
 					File.Copy(nodePrj2Path, destPath);
 				}
 
-				if (!specificFileSelected) // If the user specified file was not selected on the list
+				if (!specificFileSelected) // If the user-specified file was not selected on the list
 					specificFileName = "$(LatestFile)";
 			}
 
@@ -161,14 +155,10 @@ namespace TombIDE
 
 			if (checkBox_GenerateSection.Checked)
 			{
-				List<string> scriptMessages = new List<string>
-				{
-					"\n[Level]",
-					"Name= " + importedLevel.Name,
-					"Level= DATA\\" + importedLevel.Name.ToUpper().Replace(' ', '_') + ", " + textBox_SoundID.Text.Trim(),
-					"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
-					"Horizon= " + (checkBox_EnableHorizon.Checked? "ENABLED" : "DISABLED")
-				};
+				int ambientSoundID = (int)numeric_SoundID.Value;
+				bool horizon = checkBox_EnableHorizon.Checked;
+
+				List<string> scriptMessages = SharedMethods.GenerateLevelSectionMessages(importedLevel, ambientSoundID, horizon);
 
 				_ide.AddLevelToProject(importedLevel, scriptMessages);
 			}
@@ -205,7 +195,7 @@ namespace TombIDE
 
 			textBox_Prj2Path.Text = textBox_Prj2Path.Tag.ToString(); // Switch back to the full path
 			textBox_Prj2Path.BackColor = Color.FromArgb(48, 48, 48); // Reset the BackColor
-			DisableTreeView();
+			DisableAndClearTreeView();
 		}
 
 		private void radioButton_SelectedCopy_CheckedChanged(object sender, EventArgs e)
@@ -225,7 +215,7 @@ namespace TombIDE
 
 			textBox_Prj2Path.Text = Path.GetDirectoryName(textBox_Prj2Path.Tag.ToString()); // Switch to just the folder path
 			textBox_Prj2Path.BackColor = Color.FromArgb(64, 80, 96); // Change the BackColor to indicate the change
-			DisableTreeView();
+			DisableAndClearTreeView();
 		}
 
 		private void button_SelectAll_Click(object sender, EventArgs e)
@@ -240,7 +230,7 @@ namespace TombIDE
 			treeView.Invalidate();
 		}
 
-		private void DisableTreeView()
+		private void DisableAndClearTreeView()
 		{
 			treeView.SelectedNodes.Clear();
 			treeView.Nodes.Clear();

@@ -23,10 +23,11 @@
 			this.checkBox_GenerateSection = new DarkUI.Controls.DarkCheckBox();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_02 = new DarkUI.Controls.DarkLabel();
+			this.numeric_SoundID = new DarkUI.Controls.DarkNumericUpDown();
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.panel_ScriptSettings = new System.Windows.Forms.Panel();
-			this.textBox_SoundID = new DarkUI.Controls.DarkTextBox();
 			this.textBox_LevelName = new DarkUI.Controls.DarkTextBox();
+			((System.ComponentModel.ISupportInitialize)(this.numeric_SoundID)).BeginInit();
 			this.panel_01.SuspendLayout();
 			this.panel_ScriptSettings.SuspendLayout();
 			this.SuspendLayout();
@@ -101,6 +102,32 @@
 			this.label_02.Text = "Ambient sound ID:";
 			this.label_02.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// numeric_SoundID
+			// 
+			this.numeric_SoundID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+			this.numeric_SoundID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.numeric_SoundID.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+			this.numeric_SoundID.Location = new System.Drawing.Point(104, 6);
+			this.numeric_SoundID.Margin = new System.Windows.Forms.Padding(1, 6, 3, 3);
+			this.numeric_SoundID.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+			this.numeric_SoundID.MousewheelSingleIncrement = true;
+			this.numeric_SoundID.Name = "numeric_SoundID";
+			this.numeric_SoundID.Size = new System.Drawing.Size(220, 20);
+			this.numeric_SoundID.TabIndex = 1;
+			this.numeric_SoundID.Value = new decimal(new int[] {
+            110,
+            0,
+            0,
+            0});
+			// 
 			// panel_01
 			// 
 			this.panel_01.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -115,24 +142,15 @@
 			// panel_ScriptSettings
 			// 
 			this.panel_ScriptSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_ScriptSettings.Controls.Add(this.numeric_SoundID);
 			this.panel_ScriptSettings.Controls.Add(this.button_OpenAudioFolder);
 			this.panel_ScriptSettings.Controls.Add(this.checkBox_EnableHorizon);
-			this.panel_ScriptSettings.Controls.Add(this.textBox_SoundID);
 			this.panel_ScriptSettings.Controls.Add(this.label_02);
 			this.panel_ScriptSettings.Location = new System.Drawing.Point(6, 32);
 			this.panel_ScriptSettings.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.panel_ScriptSettings.Name = "panel_ScriptSettings";
 			this.panel_ScriptSettings.Size = new System.Drawing.Size(432, 68);
 			this.panel_ScriptSettings.TabIndex = 1;
-			// 
-			// textBox_SoundID
-			// 
-			this.textBox_SoundID.Location = new System.Drawing.Point(104, 6);
-			this.textBox_SoundID.Margin = new System.Windows.Forms.Padding(1, 6, 3, 3);
-			this.textBox_SoundID.Name = "textBox_SoundID";
-			this.textBox_SoundID.Size = new System.Drawing.Size(220, 20);
-			this.textBox_SoundID.TabIndex = 1;
-			this.textBox_SoundID.Text = "110";
 			// 
 			// textBox_LevelName
 			// 
@@ -158,12 +176,11 @@
 			this.MaximizeBox = false;
 			this.Name = "FormLevelSetup";
 			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Create New Level";
+			((System.ComponentModel.ISupportInitialize)(this.numeric_SoundID)).EndInit();
 			this.panel_01.ResumeLayout(false);
 			this.panel_ScriptSettings.ResumeLayout(false);
-			this.panel_ScriptSettings.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -177,8 +194,8 @@
 		private DarkUI.Controls.DarkCheckBox checkBox_GenerateSection;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
+		private DarkUI.Controls.DarkNumericUpDown numeric_SoundID;
 		private DarkUI.Controls.DarkTextBox textBox_LevelName;
-		private DarkUI.Controls.DarkTextBox textBox_SoundID;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_ScriptSettings;
 	}

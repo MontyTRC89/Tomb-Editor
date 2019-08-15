@@ -4,7 +4,18 @@
 ; You are only allowed to edit the existing ones.
 ;
 ; Setting strings to nothing (whitespace) is also considered removing.
-; If you want to remove a string, replace it with "-" or any other valid ASCII symbol
+; If you want to remove a string, replace it with "-" or any other valid ASCII symbol.
+;
+; If you are using TRNG and you want more string slots, create a [ExtraNG] section after "THE LAST STRING ENTRY"
+; In that section you can add up to 2458 strings and deleting them won't cause trouble.
+; The section has a specific syntax, which looks like this:
+;
+; [ExtraNG]
+; 0: First string
+; 1: Another one
+; 2: and another one
+; ...
+; 2457: and the last one
 ;--------------------------------------
 
 [Strings]
