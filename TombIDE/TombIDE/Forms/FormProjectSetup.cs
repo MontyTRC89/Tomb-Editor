@@ -55,7 +55,7 @@ namespace TombIDE
 				dialog.Title = "Choose where you want to install your project";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_ProjectPath.Text = Path.Combine(dialog.Folder, SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim()));
+					textBox_ProjectPath.Text = Path.Combine(dialog.Folder, SharedMethods.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim()));
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace TombIDE
 
 			try
 			{
-				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
+				string projectName = SharedMethods.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for your project.");
@@ -152,7 +152,7 @@ namespace TombIDE
 
 				DarkMessageBox.Show(this, "Project installation finished successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-				// Trigger the IDE.ProjectAddedEvent
+				// Trigger IDE.ProjectAddedEvent
 				_ide.AddProjectToList(createdProject);
 			}
 			catch (Exception ex)

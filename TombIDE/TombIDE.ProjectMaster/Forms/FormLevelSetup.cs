@@ -28,8 +28,8 @@ namespace TombIDE.ProjectMaster
 
 			try
 			{
-				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
-				levelName = levelName.Replace(";", string.Empty);
+				string levelName = SharedMethods.RemoveIllegalPathSymbols(textBox_LevelName.Text.Trim());
+				levelName = LevelHandling.RemoveIllegalNameSymbols(levelName);
 
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for your level.");
@@ -75,7 +75,7 @@ namespace TombIDE.ProjectMaster
 					int ambientSoundID = (int)numeric_SoundID.Value;
 					bool horizon = checkBox_EnableHorizon.Checked;
 
-					List<string> scriptMessages = SharedMethods.GenerateLevelSectionMessages(addedProjectLevel, ambientSoundID, horizon);
+					List<string> scriptMessages = LevelHandling.GenerateSectionMessages(addedProjectLevel, ambientSoundID, horizon);
 
 					_ide.AddLevelToProject(addedProjectLevel, scriptMessages);
 				}

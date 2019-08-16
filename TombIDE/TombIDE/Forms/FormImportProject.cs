@@ -107,7 +107,7 @@ namespace TombIDE
 
 			try
 			{
-				string projectName = SharedMethods.RemoveIllegalSymbols(textBox_ProjectName.Text.Trim());
+				string projectName = SharedMethods.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for the project.");

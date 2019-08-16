@@ -26,7 +26,7 @@ namespace TombIDE
 			// Setup some information
 			textBox_Prj2Path.BackColor = Color.FromArgb(48, 48, 48); // Mark as uneditable
 			textBox_Prj2Path.Text = prj2FilePath;
-			textBox_Prj2Path.Tag = prj2FilePath; // Keep the full path in the Tag
+			textBox_Prj2Path.Tag = prj2FilePath; // Keep the full path in the Tag (because we are visually changing the text later)
 
 			textBox_LevelName.Text = Path.GetFileNameWithoutExtension(prj2FilePath);
 		}
@@ -41,8 +41,8 @@ namespace TombIDE
 
 			try
 			{
-				string levelName = SharedMethods.RemoveIllegalSymbols(textBox_LevelName.Text.Trim());
-				levelName = levelName.Replace(";", string.Empty);
+				string levelName = SharedMethods.RemoveIllegalPathSymbols(textBox_LevelName.Text.Trim());
+				levelName = LevelHandling.RemoveIllegalNameSymbols(levelName);
 
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for the level.");
@@ -139,7 +139,7 @@ namespace TombIDE
 			if (radioButton_SpecifiedCopy.Checked)
 			{
 				string specifiedFilePath = textBox_Prj2Path.Tag.ToString();
-				SharedMethods.UpdatePrj2GameSettings(specifiedFilePath, importedLevel, _ide.Project);
+				LevelHandling.UpdatePrj2GameSettings(specifiedFilePath, importedLevel, _ide.Project);
 			}
 			else if (radioButton_SelectedCopy.Checked)
 			{
@@ -159,7 +159,7 @@ namespace TombIDE
 				int ambientSoundID = (int)numeric_SoundID.Value;
 				bool horizon = checkBox_EnableHorizon.Checked;
 
-				List<string> scriptMessages = SharedMethods.GenerateLevelSectionMessages(importedLevel, ambientSoundID, horizon);
+				List<string> scriptMessages = LevelHandling.GenerateSectionMessages(importedLevel, ambientSoundID, horizon);
 
 				_ide.AddLevelToProject(importedLevel, scriptMessages);
 			}
@@ -179,7 +179,7 @@ namespace TombIDE
 			foreach (FileInfo file in files)
 			{
 				if (!ProjectLevel.IsBackupFile(file.Name))
-					SharedMethods.UpdatePrj2GameSettings(file.FullName, importedLevel, _ide.Project);
+					LevelHandling.UpdatePrj2GameSettings(file.FullName, importedLevel, _ide.Project);
 
 				progressBar.Increment(1);
 			}
@@ -196,7 +196,7 @@ namespace TombIDE
 
 			textBox_Prj2Path.Text = textBox_Prj2Path.Tag.ToString(); // Switch back to the full path
 			textBox_Prj2Path.BackColor = Color.FromArgb(48, 48, 48); // Reset the BackColor
-			DisableAndClearTreeView();
+			ClearAndDisableTreeView();
 		}
 
 		private void radioButton_SelectedCopy_CheckedChanged(object sender, EventArgs e)
@@ -216,7 +216,7 @@ namespace TombIDE
 
 			textBox_Prj2Path.Text = Path.GetDirectoryName(textBox_Prj2Path.Tag.ToString()); // Switch to just the folder path
 			textBox_Prj2Path.BackColor = Color.FromArgb(64, 80, 96); // Change the BackColor to indicate the change
-			DisableAndClearTreeView();
+			ClearAndDisableTreeView();
 		}
 
 		private void button_SelectAll_Click(object sender, EventArgs e)
@@ -231,7 +231,7 @@ namespace TombIDE
 			treeView.Invalidate();
 		}
 
-		private void DisableAndClearTreeView()
+		private void ClearAndDisableTreeView()
 		{
 			treeView.SelectedNodes.Clear();
 			treeView.Nodes.Clear();

@@ -15,7 +15,7 @@ namespace TombIDE
 	// All program buttons are instances of the DarkButton class.
 	// Other buttons on the left tool strip (such as Project Master, Script Editor etc.) are simple panels.
 	// Program button names are just numbers from 0 to *darkbuttons.Count*.
-	// The number depends on the position of the button.
+	// The name number depends on the position of the button.
 	// Swapping 2 buttons will affect their names.
 	// Program button Tags contain .exe paths.
 
@@ -305,7 +305,7 @@ namespace TombIDE
 
 			toolTip.SetToolTip(button, programName);
 
-			// Add the button exactly where the button_AddProgram is and move the button_AddProgram lower
+			// Add the button exactly where button_AddProgram is and move button_AddProgram lower
 			panel_Programs.Controls.Add(button);
 			button_AddProgram.Location = new Point(button_AddProgram.Location.X, button_AddProgram.Location.Y + 46); // 40 + 6 (Margins)
 
