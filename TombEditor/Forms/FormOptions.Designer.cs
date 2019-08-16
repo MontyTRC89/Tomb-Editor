@@ -110,6 +110,7 @@
             this.darkLabel42 = new DarkUI.Controls.DarkLabel();
             this.panelColorSelector1 = new System.Windows.Forms.Panel();
             this.darkGroupBox6 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox31 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox25 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox24 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox15 = new DarkUI.Controls.DarkCheckBox();
@@ -229,7 +230,8 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox31 = new DarkUI.Controls.DarkCheckBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.darkCheckBox32 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -298,6 +300,7 @@
             this.darkSectionPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -339,6 +342,7 @@
             this.tabbedContainer.Controls.Add(this.tabPage8);
             this.tabbedContainer.Controls.Add(this.tabPage3);
             this.tabbedContainer.Controls.Add(this.tabPage4);
+            this.tabbedContainer.Controls.Add(this.tabPage7);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
@@ -890,7 +894,7 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 545);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(121, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
@@ -1030,7 +1034,7 @@
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel52.Location = new System.Drawing.Point(12, 342);
             this.darkLabel52.Name = "darkLabel52";
-            this.darkLabel52.Size = new System.Drawing.Size(46, 13);
+            this.darkLabel52.Size = new System.Drawing.Size(45, 13);
             this.darkLabel52.TabIndex = 48;
             this.darkLabel52.Text = "Trigger:";
             // 
@@ -1258,6 +1262,16 @@
             this.darkGroupBox6.TabIndex = 2;
             this.darkGroupBox6.TabStop = false;
             this.darkGroupBox6.Text = "General";
+            // 
+            // darkCheckBox31
+            // 
+            this.darkCheckBox31.AutoSize = true;
+            this.darkCheckBox31.Location = new System.Drawing.Point(6, 113);
+            this.darkCheckBox31.Name = "darkCheckBox31";
+            this.darkCheckBox31.Size = new System.Drawing.Size(269, 17);
+            this.darkCheckBox31.TabIndex = 26;
+            this.darkCheckBox31.Tag = "UI_SetAttributesAtOnce";
+            this.darkCheckBox31.Text = "Set or unset selected area\'s sector flags at once";
             // 
             // darkCheckBox25
             // 
@@ -2118,7 +2132,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
@@ -2994,15 +3008,26 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkCheckBox31
+            // tabPage7
             // 
-            this.darkCheckBox31.AutoSize = true;
-            this.darkCheckBox31.Location = new System.Drawing.Point(6, 113);
-            this.darkCheckBox31.Name = "darkCheckBox31";
-            this.darkCheckBox31.Size = new System.Drawing.Size(269, 17);
-            this.darkCheckBox31.TabIndex = 26;
-            this.darkCheckBox31.Tag = "UI_SetAttributesAtOnce";
-            this.darkCheckBox31.Text = "Set or unset selected area\'s sector flags at once";
+            this.tabPage7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage7.Controls.Add(this.darkCheckBox32);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(387, 332);
+            this.tabPage7.TabIndex = 16;
+            this.tabPage7.Text = "Trigger";
+            // 
+            // darkCheckBox32
+            // 
+            this.darkCheckBox32.AutoSize = true;
+            this.darkCheckBox32.Location = new System.Drawing.Point(6, 6);
+            this.darkCheckBox32.Name = "darkCheckBox32";
+            this.darkCheckBox32.Size = new System.Drawing.Size(342, 17);
+            this.darkCheckBox32.TabIndex = 45;
+            this.darkCheckBox32.Tag = "Window_FormTrigger_AutoFill_Switch_Key";
+            this.darkCheckBox32.Text = "Auto fill \"Key\" and \"Switch\" trigger types with selected objects";
             // 
             // FormOptions
             // 
@@ -3106,6 +3131,8 @@
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3314,5 +3341,7 @@
         private DarkUI.Controls.DarkCheckBox darkCheckBox29;
         private DarkUI.Controls.DarkCheckBox darkCheckBox30;
         private DarkUI.Controls.DarkCheckBox darkCheckBox31;
+        private System.Windows.Forms.TabPage tabPage7;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox32;
     }
 }

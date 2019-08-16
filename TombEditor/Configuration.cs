@@ -144,7 +144,6 @@ namespace TombEditor
         public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public ColorScheme UI_ColorScheme { get; set; } = new ColorScheme();
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
-
         // Window options
 
         public Point Window_FormMain_Position { get; set; } = new Point(0);
@@ -171,7 +170,7 @@ namespace TombEditor
         public Point Window_FormTrigger_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
         public bool Window_FormTrigger_Maximized { get; set; } = false;
-
+        public bool Window_FormTrigger_AutoFill_Switch_Key { get; set; } = false;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
