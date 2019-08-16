@@ -213,6 +213,13 @@ namespace TombIDE.Shared
 
 		#endregion PluginListsUpdated
 
+		#region RequestedPluginListRefresh
+
+		public class RequestedPluginListRefreshEvent : IProjectMasterEvent
+		{ }
+
+		#endregion RequestedPluginListRefresh
+
 		#region RequestedPresenceCheck
 
 		public class RequestedScriptPresenceCheckEvent : IProjectMasterEvent

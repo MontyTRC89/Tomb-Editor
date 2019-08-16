@@ -143,7 +143,7 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Install_Click(object sender, EventArgs e)
 		{
-			foreach (DarkTreeNode node in treeView_AvailablePlugins.SelectedNodes)
+			foreach (DarkTreeNode node in treeView_Available.SelectedNodes)
 			{
 				try
 				{
@@ -163,6 +163,17 @@ namespace TombIDE.ProjectMaster
 
 			UpdateAvailablePluginsTreeView();
 			UpdateInstalledPluginsTreeView();
+
+			treeView_Installed.SelectedNodes.Clear();
+			treeView_Installed.Invalidate();
+
+			treeView_Available.SelectedNodes.Clear();
+			treeView_Available.Invalidate();
+
+			button_Install.Enabled = false;
+			button_Uninstall.Enabled = false;
+
+			button_OpenInExplorer.Enabled = false;
 		}
 
 		private void button_Uninstall_Click(object sender, EventArgs e)
@@ -190,6 +201,17 @@ namespace TombIDE.ProjectMaster
 
 			UpdateAvailablePluginsTreeView();
 			UpdateInstalledPluginsTreeView();
+
+			treeView_Installed.SelectedNodes.Clear();
+			treeView_Installed.Invalidate();
+
+			treeView_Available.SelectedNodes.Clear();
+			treeView_Available.Invalidate();
+
+			button_Install.Enabled = false;
+			button_Uninstall.Enabled = false;
+
+			button_OpenInExplorer.Enabled = false;
 		}
 
 		private void button_Download_Click(object sender, EventArgs e) =>
@@ -267,7 +289,7 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateAvailablePluginsTreeView()
 		{
-			treeView_AvailablePlugins.Nodes.Clear();
+			treeView_Available.Nodes.Clear();
 
 			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 			{
@@ -290,10 +312,10 @@ namespace TombIDE.ProjectMaster
 					Tag = availablePlugin
 				};
 
-				treeView_AvailablePlugins.Nodes.Add(node);
+				treeView_Available.Nodes.Add(node);
 			}
 
-			treeView_AvailablePlugins.Invalidate();
+			treeView_Available.Invalidate();
 		}
 
 		private void UpdateInstalledPluginsTreeView()
@@ -315,14 +337,66 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Delete_Click(object sender, EventArgs e)
 		{
+			DialogResult result = DarkMessageBox.Show(this, "Are you sure?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
+			{
+				// TODO
+			}
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)
 		{
+			string pluginFolderPath = string.Empty;
+
+			if (treeView_Installed.SelectedNodes.Count == 1)
+				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Installed.SelectedNodes[0].Tag).InternalDllPath);
+			else if (treeView_Available.SelectedNodes.Count == 1)
+				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Available.SelectedNodes[0].Tag).InternalDllPath);
+
+			SharedMethods.OpenFolderInExplorer(pluginFolderPath);
 		}
 
-		private void button_OpenInExplorer_Click_1(object sender, EventArgs e)
+		private void button_Refresh_Click(object sender, EventArgs e)
 		{
+			_ide.RaiseEvent(new IDE.RequestedPluginListRefreshEvent());
+
+			treeView_Installed.SelectedNodes.Clear();
+			treeView_Installed.Invalidate();
+
+			treeView_Available.SelectedNodes.Clear();
+			treeView_Available.Invalidate();
+
+			button_Install.Enabled = false;
+			button_Uninstall.Enabled = true;
+		}
+
+		private void treeView_Available_SelectedNodesChanged(object sender, EventArgs e)
+		{
+			if (treeView_Available.SelectedNodes.Count == 0)
+				return;
+
+			treeView_Installed.SelectedNodes.Clear();
+			treeView_Installed.Invalidate();
+
+			button_Install.Enabled = true;
+			button_Uninstall.Enabled = false;
+
+			button_OpenInExplorer.Enabled = treeView_Available.SelectedNodes.Count == 1;
+		}
+
+		private void treeView_Installed_SelectedNodesChanged(object sender, EventArgs e)
+		{
+			if (treeView_Installed.SelectedNodes.Count == 0)
+				return;
+
+			treeView_Available.SelectedNodes.Clear();
+			treeView_Available.Invalidate();
+
+			button_Install.Enabled = false;
+			button_Uninstall.Enabled = true;
+
+			button_OpenInExplorer.Enabled = treeView_Installed.SelectedNodes.Count == 1;
 		}
 	}
 }
