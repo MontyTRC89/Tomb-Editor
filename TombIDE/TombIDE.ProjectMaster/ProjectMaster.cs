@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.LevelData;
@@ -21,14 +22,20 @@ namespace TombIDE.ProjectMaster
 		public void Initialize(IDE ide)
 		{
 			_ide = ide;
+			_ide.IDEEventRaised += OnIDEEventRaised;
 
 			// Initialize the watchers
 			prj2FileWatcher.Path = _ide.Project.LevelsPath;
 			levelFolderWatcher.Path = _ide.Project.LevelsPath;
 
+			string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
+
+			if (!Directory.Exists(pluginsFolderPath))
+				Directory.CreateDirectory(pluginsFolderPath);
+
 			projectDLLFileWatcher.Path = _ide.Project.ProjectPath;
-			internalDLLFileWatcher.Path = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
-			internalPluginFolderWatcher.Path = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
+			internalDLLFileWatcher.Path = pluginsFolderPath;
+			internalPluginFolderWatcher.Path = pluginsFolderPath;
 
 			// Initialize the sections
 			section_LevelList.Initialize(_ide);
@@ -41,6 +48,12 @@ namespace TombIDE.ProjectMaster
 				splitContainer_Info.Panel2Collapsed = true;
 
 			CheckPlugins();
+		}
+
+		private void OnIDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.RequestedPluginListRefreshEvent)
+				CheckPlugins();
 		}
 
 		// Deleting .prj2 files is critical, so watch out
@@ -76,6 +89,7 @@ namespace TombIDE.ProjectMaster
 
 		/// <summary>
 		/// Removes invalid plugins from the AvailablePlugins list.
+		/// <para>Also handles .script reference files.</para>
 		/// </summary>
 		private void UpdateInternalPluginList()
 		{
@@ -90,11 +104,15 @@ namespace TombIDE.ProjectMaster
 					invalidPlugins.Add(plugin);
 			}
 
-			_ide.AvailablePlugins.Clear();
-			_ide.AvailablePlugins.AddRange(validPlugins);
+			// Copy missing .script reference files into the NGC folder
 
-			foreach (Plugin plugin in validPlugins)
+			List<Plugin> validPluginsLoopList = new List<Plugin>();
+			validPluginsLoopList.AddRange(validPlugins);
+
+			foreach (Plugin plugin in validPluginsLoopList)
 			{
+				List<string> invalidReferenceFiles = new List<string>();
+
 				foreach (string referenceFile in plugin.ReferenceFilePaths)
 				{
 					if (!File.Exists(referenceFile))
@@ -107,11 +125,23 @@ namespace TombIDE.ProjectMaster
 						catch (Exception ex)
 						{
 							DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							invalidReferenceFiles.Add(referenceFile);
 						}
 					}
 				}
+
+				if (invalidReferenceFiles.Count > 0)
+				{
+					validPlugins.Remove(plugin);
+
+					foreach (string invalidFile in invalidReferenceFiles)
+						plugin.ReferenceFilePaths.Remove(invalidFile);
+
+					validPlugins.Add(plugin);
+				}
 			}
 
+			// Delete .script files of invalid plugins from the NGC folder
 			foreach (Plugin plugin in invalidPlugins)
 			{
 				foreach (string referenceFile in plugin.ReferenceFilePaths)
@@ -120,6 +150,9 @@ namespace TombIDE.ProjectMaster
 						File.Delete(referenceFile);
 				}
 			}
+
+			_ide.AvailablePlugins.Clear();
+			_ide.AvailablePlugins.AddRange(validPlugins);
 		}
 
 		/// <summary>
@@ -136,6 +169,9 @@ namespace TombIDE.ProjectMaster
 					continue;
 
 				if (IsPluginFolderAlreadyDefined(directory.FullName))
+					continue;
+
+				if (IsDLLFileADuplicate(directory.FullName))
 					continue;
 
 				Plugin plugin = Plugin.InstallPluginFolder(directory.FullName);
@@ -185,6 +221,20 @@ namespace TombIDE.ProjectMaster
 			foreach (Plugin plugin in _ide.AvailablePlugins)
 			{
 				if (Path.GetDirectoryName(plugin.InternalDllPath) == path)
+					return true;
+			}
+
+			return false;
+		}
+
+		private bool IsDLLFileADuplicate(string pluginFolderPath)
+		{
+			foreach (Plugin plugin in _ide.AvailablePlugins)
+			{
+				string existingDLLFileName = Path.GetFileName(plugin.InternalDllPath.ToLower());
+				string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First().ToLower());
+
+				if (existingDLLFileName == installedDLLFileName)
 					return true;
 			}
 

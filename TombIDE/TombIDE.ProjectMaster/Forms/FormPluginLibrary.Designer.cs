@@ -25,12 +25,13 @@
 			this.button_OpenArchive = new System.Windows.Forms.ToolStripButton();
 			this.button_OpenFolder = new System.Windows.Forms.ToolStripButton();
 			this.button_OpenInExplorer = new DarkUI.Controls.DarkButton();
+			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
 			this.button_Uninstall = new DarkUI.Controls.DarkButton();
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.sectionPanel_Installed = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView_Installed = new DarkUI.Controls.DarkTreeView();
 			this.sectionPanel_Available = new DarkUI.Controls.DarkSectionPanel();
-			this.treeView_AvailablePlugins = new DarkUI.Controls.DarkTreeView();
+			this.treeView_Available = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel_02 = new System.Windows.Forms.Panel();
@@ -44,6 +45,7 @@
 			// 
 			// button_Close
 			// 
+			this.button_Close.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button_Close.Location = new System.Drawing.Point(646, 5);
 			this.button_Close.Margin = new System.Windows.Forms.Padding(0, 3, 0, 6);
 			this.button_Close.Name = "button_Close";
@@ -76,6 +78,7 @@
 			// button_Install
 			// 
 			this.button_Install.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Install.Enabled = false;
 			this.button_Install.Location = new System.Drawing.Point(376, 8);
 			this.button_Install.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_Install.Name = "button_Install";
@@ -111,6 +114,7 @@
 			// 
 			// button_OpenInExplorer
 			// 
+			this.button_OpenInExplorer.Enabled = false;
 			this.button_OpenInExplorer.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenInExplorer.ImagePadding = 6;
 			this.button_OpenInExplorer.Location = new System.Drawing.Point(303, 5);
@@ -120,11 +124,25 @@
 			this.button_OpenInExplorer.TabIndex = 1;
 			this.button_OpenInExplorer.Text = "Open Selected Plugin Folder";
 			this.button_OpenInExplorer.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_OpenInExplorer.Click += new System.EventHandler(this.button_OpenInExplorer_Click_1);
+			this.button_OpenInExplorer.Click += new System.EventHandler(this.button_OpenInExplorer_Click);
+			// 
+			// button_Refresh
+			// 
+			this.button_Refresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.button_Refresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.button_Refresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.button_Refresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.button_Refresh.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_refresh_16;
+			this.button_Refresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.button_Refresh.Name = "button_Refresh";
+			this.button_Refresh.Size = new System.Drawing.Size(23, 25);
+			this.button_Refresh.Text = "Refresh Plugin List";
+			this.button_Refresh.Click += new System.EventHandler(this.button_Refresh_Click);
 			// 
 			// button_Uninstall
 			// 
 			this.button_Uninstall.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Uninstall.Enabled = false;
 			this.button_Uninstall.Location = new System.Drawing.Point(376, 262);
 			this.button_Uninstall.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
 			this.button_Uninstall.Name = "button_Uninstall";
@@ -169,10 +187,11 @@
 			this.treeView_Installed.Name = "treeView_Installed";
 			this.treeView_Installed.Size = new System.Drawing.Size(368, 492);
 			this.treeView_Installed.TabIndex = 0;
+			this.treeView_Installed.SelectedNodesChanged += new System.EventHandler(this.treeView_Installed_SelectedNodesChanged);
 			// 
 			// sectionPanel_Available
 			// 
-			this.sectionPanel_Available.Controls.Add(this.treeView_AvailablePlugins);
+			this.sectionPanel_Available.Controls.Add(this.treeView_Available);
 			this.sectionPanel_Available.Controls.Add(this.toolStrip);
 			this.sectionPanel_Available.Dock = System.Windows.Forms.DockStyle.Left;
 			this.sectionPanel_Available.Location = new System.Drawing.Point(0, 0);
@@ -181,18 +200,19 @@
 			this.sectionPanel_Available.Size = new System.Drawing.Size(370, 518);
 			this.sectionPanel_Available.TabIndex = 0;
 			// 
-			// treeView_AvailablePlugins
+			// treeView_Available
 			// 
-			this.treeView_AvailablePlugins.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.treeView_AvailablePlugins.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView_AvailablePlugins.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.treeView_AvailablePlugins.ItemHeight = 40;
-			this.treeView_AvailablePlugins.Location = new System.Drawing.Point(1, 53);
-			this.treeView_AvailablePlugins.MaxDragChange = 40;
-			this.treeView_AvailablePlugins.MultiSelect = true;
-			this.treeView_AvailablePlugins.Name = "treeView_AvailablePlugins";
-			this.treeView_AvailablePlugins.Size = new System.Drawing.Size(368, 464);
-			this.treeView_AvailablePlugins.TabIndex = 0;
+			this.treeView_Available.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.treeView_Available.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView_Available.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView_Available.ItemHeight = 40;
+			this.treeView_Available.Location = new System.Drawing.Point(1, 53);
+			this.treeView_Available.MaxDragChange = 40;
+			this.treeView_Available.MultiSelect = true;
+			this.treeView_Available.Name = "treeView_Available";
+			this.treeView_Available.Size = new System.Drawing.Size(368, 464);
+			this.treeView_Available.TabIndex = 0;
+			this.treeView_Available.SelectedNodesChanged += new System.EventHandler(this.treeView_Available_SelectedNodesChanged);
 			// 
 			// toolStrip
 			// 
@@ -203,7 +223,8 @@
             this.button_OpenArchive,
             this.button_OpenFolder,
             this.separator_01,
-            this.button_Delete});
+            this.button_Delete,
+            this.button_Refresh});
 			this.toolStrip.Location = new System.Drawing.Point(1, 25);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -265,13 +286,14 @@
 		private DarkUI.Controls.DarkSectionPanel sectionPanel_Available;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel_Installed;
 		private DarkUI.Controls.DarkToolStrip toolStrip;
-		private DarkUI.Controls.DarkTreeView treeView_AvailablePlugins;
+		private DarkUI.Controls.DarkTreeView treeView_Available;
 		private DarkUI.Controls.DarkTreeView treeView_Installed;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
 		private System.Windows.Forms.ToolStripButton button_Delete;
 		private System.Windows.Forms.ToolStripButton button_OpenArchive;
 		private System.Windows.Forms.ToolStripButton button_OpenFolder;
+		private System.Windows.Forms.ToolStripButton button_Refresh;
 		private System.Windows.Forms.ToolStripSeparator separator_01;
 		private System.Windows.Forms.ToolTip toolTip;
 	}
