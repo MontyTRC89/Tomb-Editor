@@ -34,13 +34,12 @@ namespace TombIDE.ProjectMaster
 
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
-			if (obj is IDE.ProjectPluginFileDeletedEvent || obj is IDE.PluginDeletedFromTombIDEEvent)
+			if (obj is IDE.PluginListsUpdatedEvent)
 			{
 				UpdateProjectPlugins();
 				UpdateTreeView();
 			}
 		}
-
 		private void UpdateProjectPlugins()
 		{
 			List<Plugin> projectPlugins = new List<Plugin>();

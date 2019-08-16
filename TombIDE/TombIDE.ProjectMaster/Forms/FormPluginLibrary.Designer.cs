@@ -24,10 +24,8 @@
 			this.button_Install = new DarkUI.Controls.DarkButton();
 			this.button_OpenArchive = new System.Windows.Forms.ToolStripButton();
 			this.button_OpenFolder = new System.Windows.Forms.ToolStripButton();
-			this.button_OpenInExplorer = new System.Windows.Forms.ToolStripButton();
-			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
+			this.button_OpenInExplorer = new DarkUI.Controls.DarkButton();
 			this.button_Uninstall = new DarkUI.Controls.DarkButton();
-			this.dllFileWatcher = new System.IO.FileSystemWatcher();
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.sectionPanel_Installed = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView_Installed = new DarkUI.Controls.DarkTreeView();
@@ -35,23 +33,19 @@
 			this.treeView_AvailablePlugins = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
-			this.separator_02 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel_02 = new System.Windows.Forms.Panel();
-			this.pluginFolderWatcher = new System.IO.FileSystemWatcher();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).BeginInit();
 			this.panel_01.SuspendLayout();
 			this.sectionPanel_Installed.SuspendLayout();
 			this.sectionPanel_Available.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.panel_02.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pluginFolderWatcher)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// button_Close
 			// 
 			this.button_Close.Location = new System.Drawing.Point(646, 5);
-			this.button_Close.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
+			this.button_Close.Margin = new System.Windows.Forms.Padding(0, 3, 0, 6);
 			this.button_Close.Name = "button_Close";
 			this.button_Close.Size = new System.Drawing.Size(128, 28);
 			this.button_Close.TabIndex = 0;
@@ -67,6 +61,7 @@
 			this.button_Delete.Name = "button_Delete";
 			this.button_Delete.Size = new System.Drawing.Size(23, 25);
 			this.button_Delete.Text = "Delete Plugin from TombIDE";
+			this.button_Delete.Click += new System.EventHandler(this.button_Delete_Click);
 			// 
 			// button_Download
 			// 
@@ -112,30 +107,20 @@
 			this.button_OpenFolder.Name = "button_OpenFolder";
 			this.button_OpenFolder.Size = new System.Drawing.Size(23, 25);
 			this.button_OpenFolder.Text = "Add Plugin from Folder";
-			this.button_OpenFolder.Click += new System.EventHandler(this.Button_OpenFolder_Click);
+			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
 			// 
 			// button_OpenInExplorer
 			// 
-			this.button_OpenInExplorer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.button_OpenInExplorer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.button_OpenInExplorer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.button_OpenInExplorer.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
-			this.button_OpenInExplorer.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.button_OpenInExplorer.ImagePadding = 6;
+			this.button_OpenInExplorer.Location = new System.Drawing.Point(303, 5);
+			this.button_OpenInExplorer.Margin = new System.Windows.Forms.Padding(167, 3, 167, 6);
 			this.button_OpenInExplorer.Name = "button_OpenInExplorer";
-			this.button_OpenInExplorer.Size = new System.Drawing.Size(23, 25);
-			this.button_OpenInExplorer.Text = "Open Plugins Folder in Explorer";
-			// 
-			// button_Refresh
-			// 
-			this.button_Refresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.button_Refresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.button_Refresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.button_Refresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.button_Refresh.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_refresh_16;
-			this.button_Refresh.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.button_Refresh.Name = "button_Refresh";
-			this.button_Refresh.Size = new System.Drawing.Size(23, 25);
-			this.button_Refresh.Text = "Refresh List";
+			this.button_OpenInExplorer.Size = new System.Drawing.Size(176, 28);
+			this.button_OpenInExplorer.TabIndex = 1;
+			this.button_OpenInExplorer.Text = "Open Selected Plugin Folder";
+			this.button_OpenInExplorer.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_OpenInExplorer.Click += new System.EventHandler(this.button_OpenInExplorer_Click_1);
 			// 
 			// button_Uninstall
 			// 
@@ -148,14 +133,6 @@
 			this.button_Uninstall.Text = "<<";
 			this.toolTip.SetToolTip(this.button_Uninstall, "Uninstall Plugin from the Current Project");
 			this.button_Uninstall.Click += new System.EventHandler(this.button_Uninstall_Click);
-			// 
-			// dllFileWatcher
-			// 
-			this.dllFileWatcher.EnableRaisingEvents = true;
-			this.dllFileWatcher.Filter = "*.dll";
-			this.dllFileWatcher.IncludeSubdirectories = true;
-			this.dllFileWatcher.SynchronizingObject = this;
-			this.dllFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.dllFileWatcher_Deleted);
 			// 
 			// panel_01
 			// 
@@ -226,10 +203,7 @@
             this.button_OpenArchive,
             this.button_OpenFolder,
             this.separator_01,
-            this.button_Delete,
-            this.separator_02,
-            this.button_OpenInExplorer,
-            this.button_Refresh});
+            this.button_Delete});
 			this.toolStrip.Location = new System.Drawing.Point(1, 25);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -244,17 +218,10 @@
 			this.separator_01.Name = "separator_01";
 			this.separator_01.Size = new System.Drawing.Size(6, 28);
 			// 
-			// separator_02
-			// 
-			this.separator_02.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.separator_02.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-			this.separator_02.Name = "separator_02";
-			this.separator_02.Size = new System.Drawing.Size(6, 28);
-			// 
 			// panel_02
 			// 
 			this.panel_02.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_02.Controls.Add(this.button_OpenInExplorer);
 			this.panel_02.Controls.Add(this.button_Download);
 			this.panel_02.Controls.Add(this.button_Close);
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -262,13 +229,6 @@
 			this.panel_02.Name = "panel_02";
 			this.panel_02.Size = new System.Drawing.Size(784, 41);
 			this.panel_02.TabIndex = 1;
-			// 
-			// pluginFolderWatcher
-			// 
-			this.pluginFolderWatcher.EnableRaisingEvents = true;
-			this.pluginFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
-			this.pluginFolderWatcher.SynchronizingObject = this;
-			this.pluginFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.pluginFolderWatcher_Deleted);
 			// 
 			// FormPluginLibrary
 			// 
@@ -285,14 +245,12 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Install Plugin from Library";
-			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).EndInit();
 			this.panel_01.ResumeLayout(false);
 			this.sectionPanel_Installed.ResumeLayout(false);
 			this.sectionPanel_Available.ResumeLayout(false);
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
 			this.panel_02.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pluginFolderWatcher)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -302,23 +260,19 @@
 		private DarkUI.Controls.DarkButton button_Close;
 		private DarkUI.Controls.DarkButton button_Download;
 		private DarkUI.Controls.DarkButton button_Install;
+		private DarkUI.Controls.DarkButton button_OpenInExplorer;
 		private DarkUI.Controls.DarkButton button_Uninstall;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel_Available;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel_Installed;
 		private DarkUI.Controls.DarkToolStrip toolStrip;
 		private DarkUI.Controls.DarkTreeView treeView_AvailablePlugins;
 		private DarkUI.Controls.DarkTreeView treeView_Installed;
-		private System.IO.FileSystemWatcher dllFileWatcher;
-		private System.IO.FileSystemWatcher pluginFolderWatcher;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
 		private System.Windows.Forms.ToolStripButton button_Delete;
 		private System.Windows.Forms.ToolStripButton button_OpenArchive;
 		private System.Windows.Forms.ToolStripButton button_OpenFolder;
-		private System.Windows.Forms.ToolStripButton button_OpenInExplorer;
-		private System.Windows.Forms.ToolStripButton button_Refresh;
 		private System.Windows.Forms.ToolStripSeparator separator_01;
-		private System.Windows.Forms.ToolStripSeparator separator_02;
 		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

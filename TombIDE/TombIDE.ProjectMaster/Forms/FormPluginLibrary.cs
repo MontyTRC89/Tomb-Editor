@@ -6,7 +6,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.Projects;
@@ -18,9 +17,12 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public FormPluginLibrary(IDE ide)
 		{
 			_ide = ide;
+			_ide.IDEEventRaised += OnIDEEventRaised;
 
 			InitializeComponent();
 
@@ -28,130 +30,115 @@ namespace TombIDE.ProjectMaster
 			UpdateInstalledPluginsTreeView();
 		}
 
+		private void OnIDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.PluginListsUpdatedEvent)
+			{
+				UpdateAvailablePluginsTreeView();
+				UpdateInstalledPluginsTreeView();
+			}
+		}
+
+		#endregion Initialization
+
+		#region Events
+
 		private void button_OpenArchive_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog
+			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				Title = "Select the archive of the plugin you want to install",
-				Filter = "All Supported Files|*.zip;*.rar;*.7z|ZIP Archives|*.zip|RAR Archives|*.rar|7ZIP Archives|*.7z"
-			};
+				dialog.Title = "Select the archive of the plugin you want to install";
+				dialog.Filter = "All Supported Files|*.zip;*.rar;*.7z|ZIP Archives|*.zip|RAR Archives|*.rar|7-Zip Archives|*.7z";
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				string filePath = dialog.FileName;
-
-				try
+				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					if (!Directory.Exists("Plugins"))
-						Directory.CreateDirectory("Plugins");
+					string filePath = dialog.FileName;
+					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
 
-					foreach (string directory in Directory.GetDirectories("Plugins"))
+					try
 					{
-						if (Path.GetFileName(directory) == Path.GetFileNameWithoutExtension(filePath))
-							throw new ArgumentException("Plugin already installed.");
+						if (!Directory.Exists(pluginsFolderPath))
+							Directory.CreateDirectory(pluginsFolderPath);
+
+						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
+						{
+							if (Path.GetFileName(directory) == Path.GetFileNameWithoutExtension(filePath))
+								throw new ArgumentException("Plugin already installed.");
+						}
+
+						using (IArchive archive = ArchiveFactory.Open(filePath))
+						{
+							if (!IsValidPluginArchive(archive))
+								throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
+
+							string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileNameWithoutExtension(filePath));
+
+							foreach (IArchiveEntry entry in archive.Entries)
+							{
+								if (!entry.IsDirectory)
+									entry.WriteToDirectory(extractionPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+							}
+
+							ValidatePluginFolder(extractionPath, true);
+
+							Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
+
+							_ide.AvailablePlugins.Add(plugin);
+							XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
+						}
+					}
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 
-					using (IArchive archive = ArchiveFactory.Open(filePath))
+					UpdateAvailablePluginsTreeView();
+				}
+			}
+		}
+
+		private void button_OpenFolder_Click(object sender, EventArgs e)
+		{
+			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
+			{
+				dialog.Title = "Select the folder of the plugin you want to install";
+
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+				{
+					string folderPath = dialog.Folder;
+					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
+
+					try
 					{
-						if (!IsValidPluginArchive(archive))
-							throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
+						if (!Directory.Exists(pluginsFolderPath))
+							Directory.CreateDirectory(pluginsFolderPath);
 
-						string extractionPath = Path.Combine("Plugins", Path.GetFileNameWithoutExtension(filePath));
-
-						foreach (IArchiveEntry entry in archive.Entries)
+						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
 						{
-							if (!entry.IsDirectory)
-								entry.WriteToDirectory(extractionPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+							if (Path.GetFileName(directory) == Path.GetFileName(folderPath))
+								throw new ArgumentException("Plugin already installed.");
 						}
 
-						if (Directory.GetFileSystemEntries(extractionPath).Length == 1)
-						{
-							string nextFolderPath = Path.Combine(extractionPath, Path.GetFileName(Directory.GetFileSystemEntries(extractionPath).First()));
-							string cachedFolderPath = nextFolderPath;
+						if (!IsValidPluginFolder(folderPath))
+							throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
 
-							while (Directory.GetFileSystemEntries(nextFolderPath).Length == 1)
-							{
-								string nextEntry = Path.Combine(nextFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(nextFolderPath).First()));
+						string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileName(folderPath));
 
-								if ((File.GetAttributes(nextEntry) & FileAttributes.Directory) == FileAttributes.Directory)
-									nextFolderPath = nextEntry;
-								else if (!Path.GetFileName(nextEntry).ToLower().StartsWith("plugin_") || !Path.GetFileName(nextEntry).ToLower().EndsWith(".dll"))
-								{
-									Directory.Delete(extractionPath, true);
-									throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
-								}
-							}
+						ValidatePluginFolder(extractionPath, true);
 
-							if (!IsValidPluginFolder(nextFolderPath))
-							{
-								Directory.Delete(extractionPath, true);
-								throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
-							}
-
-							foreach (string file in Directory.GetFiles(nextFolderPath))
-								File.Move(file, Path.Combine(extractionPath, Path.GetFileName(file)));
-
-							foreach (string directory in Directory.GetDirectories(nextFolderPath))
-								Directory.Move(directory, Path.Combine(extractionPath, Path.GetFileName(directory)));
-
-							Directory.Delete(cachedFolderPath, true);
-						}
-
-						foreach (string file in Directory.GetFiles(extractionPath, "*.script"))
-							File.Copy(file, Path.Combine("NGC", Path.GetFileName(file)), true);
-
-						string pluginName = Path.GetFileName(extractionPath);
-
-						if (Directory.GetFiles(extractionPath, "*.btn").Length > 0)
-						{
-							string btnFilePath = Directory.GetFiles(extractionPath, "*.btn").First();
-							string[] btnFileContent = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252));
-
-							foreach (string line in btnFileContent)
-							{
-								if (line.StartsWith("NAME#"))
-								{
-									pluginName = line.Replace("NAME#", string.Empty).Trim();
-									break;
-								}
-							}
-						}
-
-						string dllFilePath = Directory.GetFiles(extractionPath, "plugin_*.dll").First();
-
-						Plugin plugin = new Plugin
-						{
-							Name = pluginName,
-							InternalDllPath = dllFilePath
-						};
+						Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
 
 						_ide.AvailablePlugins.Add(plugin);
 						XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
 					}
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+
+					UpdateAvailablePluginsTreeView();
 				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-
-				UpdateAvailablePluginsTreeView();
 			}
-		}
-
-		private bool IsValidPluginArchive(IArchive archive)
-		{
-			foreach (IArchiveEntry entry in archive.Entries)
-			{
-				if (Path.GetFileName(entry.Key).ToLower().StartsWith("plugin_") && Path.GetFileName(entry.Key).ToLower().EndsWith(".dll"))
-					return true;
-			}
-
-			return false;
-		}
-
-		private bool IsValidPluginFolder(string path)
-		{
-			return Directory.GetFiles(path, "plugin_*.dll", SearchOption.AllDirectories).Length > 0;
 		}
 
 		private void button_Install_Click(object sender, EventArgs e)
@@ -205,6 +192,79 @@ namespace TombIDE.ProjectMaster
 			UpdateInstalledPluginsTreeView();
 		}
 
+		private void button_Download_Click(object sender, EventArgs e) =>
+			Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
+
+		#endregion Events
+
+		private void ValidatePluginFolder(string pluginFolderPath, bool extractedFromArchive = false)
+		{
+			if (Directory.GetFileSystemEntries(pluginFolderPath).Length == 1)
+			{
+				string nextFolderPath = Path.Combine(pluginFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(pluginFolderPath).First()));
+				string cachedFolderPath = nextFolderPath;
+
+				while (Directory.GetFileSystemEntries(nextFolderPath).Length == 1)
+				{
+					string nextEntry = Path.Combine(nextFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(nextFolderPath).First()));
+
+					if ((File.GetAttributes(nextEntry) & FileAttributes.Directory) == FileAttributes.Directory)
+						nextFolderPath = nextEntry;
+					else if (!Path.GetFileName(nextEntry).ToLower().StartsWith("plugin_") || !Path.GetFileName(nextEntry).ToLower().EndsWith(".dll"))
+					{
+						Directory.Delete(pluginFolderPath, true);
+						throw new ArgumentException(string.Format("Selected {0} doesn't contain a valid plugin DLL file.",
+							extractedFromArchive ? "archive" : "folder"));
+					}
+				}
+
+				if (!IsValidPluginFolder(nextFolderPath))
+				{
+					Directory.Delete(pluginFolderPath, true);
+					throw new ArgumentException(string.Format("Selected {0} doesn't contain a valid plugin DLL file.",
+						extractedFromArchive ? "archive" : "folder"));
+				}
+
+				foreach (string file in Directory.GetFiles(nextFolderPath))
+					File.Move(file, Path.Combine(pluginFolderPath, Path.GetFileName(file)));
+
+				foreach (string directory in Directory.GetDirectories(nextFolderPath))
+					Directory.Move(directory, Path.Combine(pluginFolderPath, Path.GetFileName(directory)));
+
+				Directory.Delete(cachedFolderPath, true);
+			}
+
+			// Check for DLL duplicates
+			foreach (Plugin plugin in _ide.AvailablePlugins)
+			{
+				string existingDLLFileName = Path.GetFileName(plugin.InternalDllPath.ToLower());
+				string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First().ToLower());
+
+				if (existingDLLFileName == installedDLLFileName)
+				{
+					Directory.Delete(pluginFolderPath, true);
+					throw new ArgumentException(string.Format("Selected {0} has the same DLL file as the\n" +
+						"\"{1}\" plugin.", extractedFromArchive ? "archive" : "folder", plugin.Name));
+				}
+			}
+		}
+
+		private bool IsValidPluginArchive(IArchive archive)
+		{
+			foreach (IArchiveEntry entry in archive.Entries)
+			{
+				if (Path.GetFileName(entry.Key).ToLower().StartsWith("plugin_") && Path.GetFileName(entry.Key).ToLower().EndsWith(".dll"))
+					return true;
+			}
+
+			return false;
+		}
+
+		private bool IsValidPluginFolder(string path)
+		{
+			return Directory.GetFiles(path, "plugin_*.dll", SearchOption.AllDirectories).Length > 0;
+		}
+
 		private void UpdateAvailablePluginsTreeView()
 		{
 			treeView_AvailablePlugins.Nodes.Clear();
@@ -253,113 +313,16 @@ namespace TombIDE.ProjectMaster
 			treeView_Installed.Invalidate();
 		}
 
-		private void button_Download_Click(object sender, EventArgs e) =>
-			Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
-
-		private void dllFileWatcher_Deleted(object sender, FileSystemEventArgs e) =>
-			_ide.RaiseEvent(new IDE.PluginDeletedFromTombIDEEvent());
-
-		private void pluginFolderWatcher_Deleted(object sender, FileSystemEventArgs e) =>
-			_ide.RaiseEvent(new IDE.PluginDeletedFromTombIDEEvent());
-
-		private void Button_OpenFolder_Click(object sender, EventArgs e)
+		private void button_Delete_Click(object sender, EventArgs e)
 		{
-			BrowseFolderDialog dialog = new BrowseFolderDialog
-			{
-				Title = "Select the folder of the plugin you want to install"
-			};
+		}
 
-			if (dialog.ShowDialog(this) == DialogResult.OK)
-			{
-				string folderPath = dialog.Folder;
+		private void button_OpenInExplorer_Click(object sender, EventArgs e)
+		{
+		}
 
-				try
-				{
-					if (!Directory.Exists("Plugins"))
-						Directory.CreateDirectory("Plugins");
-
-					foreach (string directory in Directory.GetDirectories("Plugins"))
-					{
-						if (Path.GetFileName(directory) == Path.GetFileName(folderPath))
-							throw new ArgumentException("Plugin already installed.");
-					}
-
-					if (!IsValidPluginFolder(folderPath))
-						throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
-
-					string extractionPath = Path.Combine("Plugins", Path.GetFileName(folderPath));
-
-					if (Directory.GetFileSystemEntries(extractionPath).Length == 1)
-					{
-						string nextFolderPath = Path.Combine(extractionPath, Path.GetFileName(Directory.GetFileSystemEntries(extractionPath).First()));
-						string cachedFolderPath = nextFolderPath;
-
-						while (Directory.GetFileSystemEntries(nextFolderPath).Length == 1)
-						{
-							string nextEntry = Path.Combine(nextFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(nextFolderPath).First()));
-
-							if ((File.GetAttributes(nextEntry) & FileAttributes.Directory) == FileAttributes.Directory)
-								nextFolderPath = nextEntry;
-							else if (!Path.GetFileName(nextEntry).ToLower().StartsWith("plugin_") || !Path.GetFileName(nextEntry).ToLower().EndsWith(".dll"))
-							{
-								Directory.Delete(extractionPath, true);
-								throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
-							}
-						}
-
-						if (!IsValidPluginFolder(nextFolderPath))
-						{
-							Directory.Delete(extractionPath, true);
-							throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
-						}
-
-						foreach (string file in Directory.GetFiles(nextFolderPath))
-							File.Move(file, Path.Combine(extractionPath, Path.GetFileName(file)));
-
-						foreach (string directory in Directory.GetDirectories(nextFolderPath))
-							Directory.Move(directory, Path.Combine(extractionPath, Path.GetFileName(directory)));
-
-						Directory.Delete(cachedFolderPath, true);
-					}
-
-					foreach (string file in Directory.GetFiles(extractionPath, "*.script"))
-						File.Copy(file, Path.Combine("NGC", Path.GetFileName(file)), true);
-
-					string pluginName = Path.GetFileName(extractionPath);
-
-					if (Directory.GetFiles(extractionPath, "*.btn").Length > 0)
-					{
-						string btnFilePath = Directory.GetFiles(extractionPath, "*.btn").First();
-						string[] btnFileContent = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252));
-
-						foreach (string line in btnFileContent)
-						{
-							if (line.StartsWith("NAME#"))
-							{
-								pluginName = line.Replace("NAME#", string.Empty).Trim();
-								break;
-							}
-						}
-					}
-
-					string dllFilePath = Directory.GetFiles(extractionPath, "plugin_*.dll").First();
-
-					Plugin plugin = new Plugin
-					{
-						Name = pluginName,
-						InternalDllPath = dllFilePath
-					};
-
-					_ide.AvailablePlugins.Add(plugin);
-					XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-
-				UpdateAvailablePluginsTreeView();
-			}
+		private void button_OpenInExplorer_Click_1(object sender, EventArgs e)
+		{
 		}
 	}
 }
