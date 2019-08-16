@@ -206,19 +206,12 @@ namespace TombIDE.Shared
 
 		#endregion PRJ2FileDeleted
 
-		#region ProjectPluginFileDeleted
+		#region PluginListsUpdated
 
-		public class ProjectPluginFileDeletedEvent : IProjectMasterEvent
+		public class PluginListsUpdatedEvent : IProjectMasterEvent
 		{ }
 
-		#endregion ProjectPluginFileDeleted
-
-		#region PluginDeletedFromTombIDE
-
-		public class PluginDeletedFromTombIDEEvent : IProjectMasterEvent
-		{ }
-
-		#endregion PluginDeletedFromTombIDE
+		#endregion PluginListsUpdated
 
 		#region RequestedPresenceCheck
 

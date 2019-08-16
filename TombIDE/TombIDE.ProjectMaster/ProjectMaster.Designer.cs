@@ -17,8 +17,6 @@
 
 		private void InitializeComponent()
 		{
-			this.levelFolderWatcher = new System.IO.FileSystemWatcher();
-			this.prj2FileWatcher = new System.IO.FileSystemWatcher();
 			this.section_LevelList = new TombIDE.ProjectMaster.SectionLevelList();
 			this.section_LevelProperties = new TombIDE.ProjectMaster.SectionLevelProperties();
 			this.section_PluginList = new TombIDE.ProjectMaster.SectionPluginList();
@@ -26,9 +24,11 @@
 			this.splitContainer_Info = new System.Windows.Forms.SplitContainer();
 			this.splitContainer_Levels = new System.Windows.Forms.SplitContainer();
 			this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
-			this.dllFileWatcher = new System.IO.FileSystemWatcher();
-			((System.ComponentModel.ISupportInitialize)(this.levelFolderWatcher)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.prj2FileWatcher)).BeginInit();
+			this.projectDLLFileWatcher = new System.IO.FileSystemWatcher();
+			this.prj2FileWatcher = new System.IO.FileSystemWatcher();
+			this.levelFolderWatcher = new System.IO.FileSystemWatcher();
+			this.internalPluginFolderWatcher = new System.IO.FileSystemWatcher();
+			this.internalDLLFileWatcher = new System.IO.FileSystemWatcher();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).BeginInit();
 			this.splitContainer_Info.Panel1.SuspendLayout();
 			this.splitContainer_Info.Panel2.SuspendLayout();
@@ -41,23 +41,12 @@
 			this.splitContainer_Main.Panel1.SuspendLayout();
 			this.splitContainer_Main.Panel2.SuspendLayout();
 			this.splitContainer_Main.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.projectDLLFileWatcher)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.prj2FileWatcher)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.levelFolderWatcher)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.internalPluginFolderWatcher)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.internalDLLFileWatcher)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// levelFolderWatcher
-			// 
-			this.levelFolderWatcher.EnableRaisingEvents = true;
-			this.levelFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
-			this.levelFolderWatcher.SynchronizingObject = this;
-			this.levelFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.levelFolderWatcher_Deleted);
-			// 
-			// prj2FileWatcher
-			// 
-			this.prj2FileWatcher.EnableRaisingEvents = true;
-			this.prj2FileWatcher.Filter = "*.prj2";
-			this.prj2FileWatcher.IncludeSubdirectories = true;
-			this.prj2FileWatcher.SynchronizingObject = this;
-			this.prj2FileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.prj2FileWatcher_Deleted);
 			// 
 			// section_LevelList
 			// 
@@ -159,13 +148,52 @@
 			this.splitContainer_Main.SplitterWidth = 5;
 			this.splitContainer_Main.TabIndex = 0;
 			// 
-			// dllFileWatcher
+			// projectDLLFileWatcher
 			// 
-			this.dllFileWatcher.EnableRaisingEvents = true;
-			this.dllFileWatcher.Filter = "*.dll";
-			this.dllFileWatcher.IncludeSubdirectories = true;
-			this.dllFileWatcher.SynchronizingObject = this;
-			this.dllFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.dllFileWatcher_Deleted);
+			this.projectDLLFileWatcher.EnableRaisingEvents = true;
+			this.projectDLLFileWatcher.Filter = "*.dll";
+			this.projectDLLFileWatcher.IncludeSubdirectories = true;
+			this.projectDLLFileWatcher.SynchronizingObject = this;
+			this.projectDLLFileWatcher.Changed += new System.IO.FileSystemEventHandler(this.projectDLLFileWatcher_Changed);
+			this.projectDLLFileWatcher.Created += new System.IO.FileSystemEventHandler(this.projectDLLFileWatcher_Changed);
+			this.projectDLLFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.projectDLLFileWatcher_Changed);
+			this.projectDLLFileWatcher.Renamed += new System.IO.RenamedEventHandler(this.projectDLLFileWatcher_Renamed);
+			// 
+			// prj2FileWatcher
+			// 
+			this.prj2FileWatcher.EnableRaisingEvents = true;
+			this.prj2FileWatcher.Filter = "*.prj2";
+			this.prj2FileWatcher.IncludeSubdirectories = true;
+			this.prj2FileWatcher.SynchronizingObject = this;
+			this.prj2FileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.prj2FileWatcher_Deleted);
+			// 
+			// levelFolderWatcher
+			// 
+			this.levelFolderWatcher.EnableRaisingEvents = true;
+			this.levelFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
+			this.levelFolderWatcher.SynchronizingObject = this;
+			this.levelFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.levelFolderWatcher_Deleted);
+			// 
+			// internalPluginFolderWatcher
+			// 
+			this.internalPluginFolderWatcher.EnableRaisingEvents = true;
+			this.internalPluginFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
+			this.internalPluginFolderWatcher.SynchronizingObject = this;
+			this.internalPluginFolderWatcher.Changed += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Changed);
+			this.internalPluginFolderWatcher.Created += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Changed);
+			this.internalPluginFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Changed);
+			this.internalPluginFolderWatcher.Renamed += new System.IO.RenamedEventHandler(this.internalPluginFolderWatcher_Renamed);
+			// 
+			// internalDLLFileWatcher
+			// 
+			this.internalDLLFileWatcher.EnableRaisingEvents = true;
+			this.internalDLLFileWatcher.Filter = "*.dll";
+			this.internalDLLFileWatcher.IncludeSubdirectories = true;
+			this.internalDLLFileWatcher.SynchronizingObject = this;
+			this.internalDLLFileWatcher.Changed += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Changed);
+			this.internalDLLFileWatcher.Created += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Changed);
+			this.internalDLLFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Changed);
+			this.internalDLLFileWatcher.Renamed += new System.IO.RenamedEventHandler(this.internalDLLFileWatcher_Renamed);
 			// 
 			// ProjectMaster
 			// 
@@ -175,8 +203,6 @@
 			this.Controls.Add(this.splitContainer_Main);
 			this.Name = "ProjectMaster";
 			this.Size = new System.Drawing.Size(1005, 600);
-			((System.ComponentModel.ISupportInitialize)(this.levelFolderWatcher)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.prj2FileWatcher)).EndInit();
 			this.splitContainer_Info.Panel1.ResumeLayout(false);
 			this.splitContainer_Info.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).EndInit();
@@ -189,7 +215,11 @@
 			this.splitContainer_Main.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).EndInit();
 			this.splitContainer_Main.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dllFileWatcher)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.projectDLLFileWatcher)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.prj2FileWatcher)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.levelFolderWatcher)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.internalPluginFolderWatcher)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.internalDLLFileWatcher)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -200,11 +230,13 @@
 		private SectionLevelProperties section_LevelProperties;
 		private SectionPluginList section_PluginList;
 		private SectionProjectSettings section_ProjectInfo;
-		private System.IO.FileSystemWatcher levelFolderWatcher;
-		private System.IO.FileSystemWatcher prj2FileWatcher;
 		private System.Windows.Forms.SplitContainer splitContainer_Info;
 		private System.Windows.Forms.SplitContainer splitContainer_Levels;
 		private System.Windows.Forms.SplitContainer splitContainer_Main;
-		private System.IO.FileSystemWatcher dllFileWatcher;
+		private System.IO.FileSystemWatcher projectDLLFileWatcher;
+		private System.IO.FileSystemWatcher prj2FileWatcher;
+		private System.IO.FileSystemWatcher levelFolderWatcher;
+		private System.IO.FileSystemWatcher internalPluginFolderWatcher;
+		private System.IO.FileSystemWatcher internalDLLFileWatcher;
 	}
 }
