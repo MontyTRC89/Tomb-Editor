@@ -503,6 +503,17 @@ namespace TombEditor
             {
                 trigger.TargetType = TriggerTargetType.Object;
                 trigger.Target = @object;
+                if(_editor.Configuration.Window_FormTrigger_AutoFill_Switch_Key)
+                {
+                    string objectName = @object.ToString().ToLower();
+                    bool isHole = (objectName.Contains("key") || objectName.Contains("puzzle"))
+                        && objectName.Contains("hole");
+                    bool isSwitch = objectName.Contains("switch");
+                    if (isHole)
+                        trigger.TriggerType = TriggerType.Key;
+                    else if (isSwitch)
+                        trigger.TriggerType = TriggerType.Switch;
+                }
             }
             else if (@object is FlybyCameraInstance)
             {
