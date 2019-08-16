@@ -62,6 +62,7 @@ namespace TombIDE.Shared.Scripting
 			ServiceLinesColor = Color.FromArgb(32, 32, 32);
 
 			ToolTipNeeded += OnToolTipNeeded;
+			ToolTipDelay = 100;
 
 			Dock = DockStyle.Fill;
 
@@ -252,7 +253,7 @@ namespace TombIDE.Shared.Scripting
 
 		private void ShowSectionToolTip(ToolTipNeededEventArgs e)
 		{
-			// Get the resources from SectionToolTips.resx
+			// Get resources from SectionToolTips.resx
 			ResourceManager sectionToolTipResource = new ResourceManager(typeof(ToolTips.SectionToolTips));
 			ResourceSet resourceSet = sectionToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
@@ -270,7 +271,7 @@ namespace TombIDE.Shared.Scripting
 
 		private void ShowCommandToolTip(ToolTipNeededEventArgs e)
 		{
-			// Get the resources from CommandToolTips.resx
+			// Get resources from CommandToolTips.resx
 			ResourceManager commandToolTipResource = new ResourceManager(typeof(ToolTips.CommandToolTips));
 			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
@@ -357,7 +358,7 @@ namespace TombIDE.Shared.Scripting
 
 			// Apply styles (THE ORDER IS IMPORTANT!)
 			e.ChangedRange.SetStyle(commentColor, @";.*");
-			e.ChangedRange.SetStyle(regularColor, @"[\[\],=]");
+			e.ChangedRange.SetStyle(regularColor, @"[\[\]=,]");
 			e.ChangedRange.SetStyle(referenceColor, @"\$[a-f0-9]*", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(referenceColor, @"#(define|first_id|include)", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(newCommandColor, @",\s?>\s*?(;.*)?" + Environment.NewLine);

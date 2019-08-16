@@ -53,6 +53,7 @@
       <DependentUpon>FormLoading.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageHandling.cs" />
+    <Compile Include="LevelHandling.cs" />
     <Compile Include="PakFile.cs" />
     <Compile Include="Scripting\AutocompleteItems.cs" />
     <Compile Include="Configuration.cs" />

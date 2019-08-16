@@ -24,7 +24,7 @@ namespace TombIDE.Shared
 			get
 			{
 				CreateParams cp = base.CreateParams;
-				cp.ClassStyle = cp.ClassStyle | CP_NOCLOSE_BUTTON;
+				cp.ClassStyle |= CP_NOCLOSE_BUTTON;
 				return cp;
 			}
 		}
@@ -132,7 +132,7 @@ namespace TombIDE.Shared
 			foreach (FileInfo file in directory.GetFiles("*.prj2", SearchOption.TopDirectoryOnly))
 			{
 				if (!ProjectLevel.IsBackupFile(file.Name))
-					SharedMethods.UpdatePrj2GameSettings(file.FullName, detectedLevel, _ide.Project);
+					LevelHandling.UpdatePrj2GameSettings(file.FullName, detectedLevel, _ide.Project);
 			}
 		}
 	}

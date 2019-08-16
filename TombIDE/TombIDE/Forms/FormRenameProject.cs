@@ -30,7 +30,7 @@ namespace TombIDE
 		{
 			try
 			{
-				string newName = SharedMethods.RemoveIllegalSymbols(textBox_NewName.Text.Trim());
+				string newName = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(newName))
 					throw new ArgumentException("Invalid name.");

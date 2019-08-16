@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using TombLib.LevelData;
-using TombLib.LevelData.IO;
-using TombLib.Projects;
 
 namespace TombIDE.Shared
 {
@@ -25,33 +21,7 @@ namespace TombIDE.Shared
 			Process.Start(startInfo);
 		}
 
-		public static List<string> GenerateLevelSectionMessages(ProjectLevel level, int ambientSoundID, bool horizon)
-		{
-			return new List<string>
-			{
-				"\n[Level]",
-				"Name= " + level.Name,
-				"Level= DATA\\" + level.Name.ToUpper().Replace(' ', '_') + ", " + ambientSoundID,
-				"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
-				"Horizon= " + (horizon? "ENABLED" : "DISABLED")
-			};
-		}
-
-		public static void UpdatePrj2GameSettings(string prj2FilePath, ProjectLevel destLevel, Project destProject)
-		{
-			Level level = Prj2Loader.LoadFromPrj2(prj2FilePath, null);
-
-			string dataFileName = destLevel.Name.Replace(' ', '_') + destProject.GetLevelFileExtension();
-
-			level.Settings.GameDirectory = destProject.ProjectPath;
-			level.Settings.GameExecutableFilePath = Path.Combine(destProject.ProjectPath, destProject.GetExeFileName());
-			level.Settings.GameLevelFilePath = Path.Combine(destProject.ProjectPath, "data", dataFileName);
-			level.Settings.GameVersion = destProject.GameVersion;
-
-			Prj2Writer.SaveToPrj2(prj2FilePath, level);
-		}
-
-		public static string RemoveIllegalSymbols(string fileName)
+		public static string RemoveIllegalPathSymbols(string fileName)
 		{
 			return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
@@ -62,7 +32,7 @@ namespace TombIDE.Shared
 		}
 
 		[DllImport("shell32.dll")]
-		public static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out]StringBuilder lpszPath, int nFolder, bool fCreate);
+		private static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out]StringBuilder lpszPath, int nFolder, bool fCreate);
 
 		/// <summary>
 		/// Returns either the "System32" path or the "SysWOW64" path.
