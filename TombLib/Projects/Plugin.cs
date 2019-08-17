@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -10,26 +9,22 @@ namespace TombLib.Projects
 	{
 		public string Name { get; set; }
 		public string InternalDllPath { get; set; }
-		public List<string> ReferenceFilePaths { get; set; } = new List<string>();
 
 		public static Plugin InstallPluginFolder(string pluginFolderPath)
 		{
+			string pluginName = Path.GetFileName(pluginFolderPath);
+			string dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
+
+			string scriptFilePath = Path.Combine(pluginFolderPath, Path.GetFileNameWithoutExtension(dllFilePath) + ".script");
+			string btnFilePath = Path.Combine(pluginFolderPath, Path.GetFileNameWithoutExtension(dllFilePath) + ".btn");
+
 			string programPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-			List<string> referenceFilePaths = new List<string>();
+			if (File.Exists(scriptFilePath))
+				File.Copy(scriptFilePath, Path.Combine(programPath, "NGC", Path.GetFileName(scriptFilePath)), true);
 
-			foreach (string file in Directory.GetFiles(pluginFolderPath, "*.script"))
+			if (File.Exists(btnFilePath))
 			{
-				string destPath = Path.Combine(programPath, "NGC", Path.GetFileName(file));
-				File.Copy(file, destPath, true);
-				referenceFilePaths.Add(destPath);
-			}
-
-			string pluginName = Path.GetFileName(pluginFolderPath);
-
-			if (Directory.GetFiles(pluginFolderPath, "*.btn").Length > 0)
-			{
-				string btnFilePath = Directory.GetFiles(pluginFolderPath, "*.btn").First();
 				string[] btnFileContent = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252));
 
 				foreach (string line in btnFileContent)
@@ -42,13 +37,10 @@ namespace TombLib.Projects
 				}
 			}
 
-			string dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
-
 			return new Plugin
 			{
 				Name = pluginName,
-				InternalDllPath = dllFilePath,
-				ReferenceFilePaths = referenceFilePaths
+				InternalDllPath = dllFilePath
 			};
 		}
 	}

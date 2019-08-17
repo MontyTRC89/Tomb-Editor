@@ -1,6 +1,4 @@
-﻿using DarkUI.Forms;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,6 +11,8 @@ namespace TombIDE.ProjectMaster
 	public partial class ProjectMaster : UserControl
 	{
 		private IDE _ide;
+
+		#region Initialization
 
 		public ProjectMaster()
 		{
@@ -28,7 +28,7 @@ namespace TombIDE.ProjectMaster
 			prj2FileWatcher.Path = _ide.Project.LevelsPath;
 			levelFolderWatcher.Path = _ide.Project.LevelsPath;
 
-			string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
+			string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
 
 			if (!Directory.Exists(pluginsFolderPath))
 				Directory.CreateDirectory(pluginsFolderPath);
@@ -56,6 +56,10 @@ namespace TombIDE.ProjectMaster
 				CheckPlugins();
 		}
 
+		#endregion Initialization
+
+		#region Watchers
+
 		// Deleting .prj2 files is critical, so watch out
 		private void prj2FileWatcher_Deleted(object sender, FileSystemEventArgs e) => _ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
 		private void levelFolderWatcher_Deleted(object sender, FileSystemEventArgs e) => _ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
@@ -70,6 +74,13 @@ namespace TombIDE.ProjectMaster
 		private void internalPluginFolderWatcher_Changed(object sender, FileSystemEventArgs e) => CheckPlugins();
 		private void internalPluginFolderWatcher_Renamed(object sender, RenamedEventArgs e) => CheckPlugins();
 
+		#endregion Watchers
+
+		#region Plugin handling
+
+		/// <summary>
+		/// Updates all plugin lists.
+		/// </summary>
 		private void CheckPlugins()
 		{
 			UpdateInternalPluginList();
@@ -104,55 +115,45 @@ namespace TombIDE.ProjectMaster
 					invalidPlugins.Add(plugin);
 			}
 
-			// Copy missing .script reference files into the NGC folder
-
-			List<Plugin> validPluginsLoopList = new List<Plugin>();
-			validPluginsLoopList.AddRange(validPlugins);
-
-			foreach (Plugin plugin in validPluginsLoopList)
-			{
-				List<string> invalidReferenceFiles = new List<string>();
-
-				foreach (string referenceFile in plugin.ReferenceFilePaths)
-				{
-					if (!File.Exists(referenceFile))
-					{
-						try
-						{
-							string internalReferenceFilePath = Path.Combine(Path.GetDirectoryName(plugin.InternalDllPath), Path.GetFileName(referenceFile));
-							File.Copy(internalReferenceFilePath, referenceFile);
-						}
-						catch (Exception ex)
-						{
-							DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-							invalidReferenceFiles.Add(referenceFile);
-						}
-					}
-				}
-
-				if (invalidReferenceFiles.Count > 0)
-				{
-					validPlugins.Remove(plugin);
-
-					foreach (string invalidFile in invalidReferenceFiles)
-						plugin.ReferenceFilePaths.Remove(invalidFile);
-
-					validPlugins.Add(plugin);
-				}
-			}
-
-			// Delete .script files of invalid plugins from the NGC folder
-			foreach (Plugin plugin in invalidPlugins)
-			{
-				foreach (string referenceFile in plugin.ReferenceFilePaths)
-				{
-					if (File.Exists(referenceFile))
-						File.Delete(referenceFile);
-				}
-			}
+			DeleteReferenceFilesOfInvalidPlugins(invalidPlugins);
 
 			_ide.AvailablePlugins.Clear();
 			_ide.AvailablePlugins.AddRange(validPlugins);
+
+			CopyMissingReferenceFiles();
+		}
+
+		/// <summary>
+		/// Copies missing .script files into the /NGC/ folder.
+		/// </summary>
+		private void CopyMissingReferenceFiles()
+		{
+			foreach (Plugin plugin in _ide.AvailablePlugins)
+			{
+				string scriptFilePath = Path.Combine(
+					Path.GetDirectoryName(plugin.InternalDllPath), Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".script");
+
+				if (File.Exists(scriptFilePath))
+				{
+					string destPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC", Path.GetFileName(scriptFilePath));
+					File.Copy(scriptFilePath, destPath, true);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes .script files of invalid plugins from the /NGC/ folder.
+		/// </summary>
+		private void DeleteReferenceFilesOfInvalidPlugins(List<Plugin> invalidPlugins)
+		{
+			foreach (Plugin plugin in invalidPlugins)
+			{
+				string internalScriptFilePath = Path.Combine(
+					SharedMethods.GetProgramDirectory(), "NGC", Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".script");
+
+				if (File.Exists(internalScriptFilePath))
+					File.Delete(internalScriptFilePath);
+			}
 		}
 
 		/// <summary>
@@ -161,7 +162,7 @@ namespace TombIDE.ProjectMaster
 		/// </summary>
 		private void LookForUndefinedPlugins()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins"));
+			DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"));
 
 			foreach (DirectoryInfo directory in directoryInfo.GetDirectories())
 			{
@@ -220,7 +221,7 @@ namespace TombIDE.ProjectMaster
 		{
 			foreach (Plugin plugin in _ide.AvailablePlugins)
 			{
-				if (Path.GetDirectoryName(plugin.InternalDllPath) == path)
+				if (Path.GetDirectoryName(plugin.InternalDllPath.ToLower()) == path.ToLower())
 					return true;
 			}
 
@@ -240,5 +241,7 @@ namespace TombIDE.ProjectMaster
 
 			return false;
 		}
+
+		#endregion Plugin handling
 	}
 }
