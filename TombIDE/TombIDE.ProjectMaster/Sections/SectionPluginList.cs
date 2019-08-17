@@ -1,6 +1,6 @@
 ﻿using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -14,6 +14,8 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public SectionPluginList()
 		{
 			InitializeComponent();
@@ -24,81 +26,51 @@ namespace TombIDE.ProjectMaster
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			tabControl.HideTab("Description");
-
-			UpdateProjectPlugins();
 			UpdateTreeView();
 
-			ClearPluginInfo();
+			tabControl.HideTab(1); // The "Description" tab
 		}
 
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.PluginListsUpdatedEvent)
-			{
-				UpdateProjectPlugins();
 				UpdateTreeView();
-			}
 		}
-		private void UpdateProjectPlugins()
-		{
-			List<Plugin> projectPlugins = new List<Plugin>();
 
-			foreach (string pluginFile in Directory.GetFiles(_ide.Project.ProjectPath, "plugin_*.dll", SearchOption.TopDirectoryOnly))
-			{
-				bool pluginFound = false;
+		#endregion Initialization
 
-				foreach (Plugin availablePlugin in _ide.AvailablePlugins)
-				{
-					if (Path.GetFileName(availablePlugin.InternalDllPath.ToLower()) == Path.GetFileName(pluginFile.ToLower()))
-					{
-						projectPlugins.Add(availablePlugin);
-						pluginFound = true;
-						break;
-					}
-				}
-
-				if (!pluginFound)
-				{
-					Plugin plugin = new Plugin
-					{
-						Name = Path.GetFileName(pluginFile)
-					};
-
-					projectPlugins.Add(plugin);
-				}
-			}
-
-			_ide.Project.InstalledPlugins = projectPlugins;
-			XmlHandling.SaveTRPROJ(_ide.Project);
-		}
+		#region Events
 
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
 		{
 			using (FormPluginLibrary form = new FormPluginLibrary(_ide))
-			{
-				DialogResult result = form.ShowDialog(this);
-
-				if (result == DialogResult.OK)
-					UpdateTreeView();
-			}
+				form.ShowDialog(this);
 		}
+
+		private void button_OpenInExplorer_Click(object sender, EventArgs e)
+		{
+			Plugin selectedPlugin = (Plugin)treeView.SelectedNodes[0].Tag;
+			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
+		}
+
+		private void treeView_SelectedNodesChanged(object sender, EventArgs e)
+		{
+			button_OpenInExplorer.Enabled = treeView.SelectedNodes.Count > 0;
+
+			if (treeView.SelectedNodes.Count > 0)
+				UpdatePluginInfoOverview();
+		}
+
+		#endregion Events
+
+		#region Methods
 
 		private void UpdateTreeView()
 		{
-			List<Plugin> installedPlugins = new List<Plugin>();
-
-			foreach (Plugin plugin in _ide.AvailablePlugins)
-			{
-				string localDllFilePath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(plugin.InternalDllPath));
-
-				if (File.Exists(localDllFilePath))
-					installedPlugins.Add(plugin);
-			}
-
+			treeView.SelectedNodes.Clear();
 			treeView.Nodes.Clear();
 
-			foreach (Plugin plugin in installedPlugins)
+			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
 			{
 				DarkTreeNode node = new DarkTreeNode
 				{
@@ -112,95 +84,80 @@ namespace TombIDE.ProjectMaster
 			treeView.Invalidate();
 		}
 
-		private void treeView_SelectedNodesChanged(object sender, EventArgs e)
-		{
-			if (treeView.SelectedNodes.Count == 0)
-				ClearPluginInfo();
-			else
-				FillPluginInfo();
-		}
-
-		private void ClearPluginInfo()
-		{
-			button_OpenFolder.Enabled = false;
-
-			panel_Logo.BackgroundImage = null;
-
-			label_NoLogo.Visible = false;
-			label_NoInfo.Visible = true;
-
-			textBox_Title.Text = string.Empty;
-			textBox_DLLName.Text = string.Empty;
-
-			richTextBox_Description.Text = string.Empty;
-			tabControl.HideTab(1);
-		}
-
-		private void FillPluginInfo()
+		private void UpdatePluginInfoOverview()
 		{
 			label_NoInfo.Visible = false;
 
-			Plugin plugin = (Plugin)treeView.SelectedNodes[0].Tag;
+			Plugin selectedPlugin = (Plugin)treeView.SelectedNodes[0].Tag;
 
-			textBox_Title.Text = plugin.Name;
+			textBox_Title.Text = selectedPlugin.Name;
 
-			if (string.IsNullOrEmpty(plugin.InternalDllPath))
+			if (string.IsNullOrEmpty(selectedPlugin.InternalDllPath))
 			{
 				textBox_DLLName.Text = Path.GetFileName(treeView.SelectedNodes[0].Text);
-				button_OpenFolder.Enabled = false;
+				button_OpenInExplorer.Enabled = false;
+
+				label_NoLogo.Visible = true;
+
+				if (tabControl.SelectedTab.Text == "Description")
+					tabControl.SelectedIndex = 0;
+
+				richTextBox_Description.Text = string.Empty;
+				tabControl.HideTab(1); // The "Description" tab
 			}
 			else
 			{
-				textBox_DLLName.Text = Path.GetFileName(plugin.InternalDllPath);
-				button_OpenFolder.Enabled = true;
-			}
+				textBox_DLLName.Text = Path.GetFileName(selectedPlugin.InternalDllPath);
+				button_OpenInExplorer.Enabled = true;
 
-			try
-			{
-				bool logoFound = false;
-
-				foreach (string file in Directory.GetFiles(Path.GetDirectoryName(plugin.InternalDllPath)))
+				try
 				{
-					string extension = Path.GetExtension(file.ToLower());
+					bool logoFound = false;
 
-					if (extension == ".jpg" || extension == ".png" || extension == ".bmp" || extension == ".gif")
+					foreach (string file in Directory.GetFiles(Path.GetDirectoryName(selectedPlugin.InternalDllPath)))
 					{
-						panel_Logo.BackgroundImage = Image.FromFile(file);
-						logoFound = true;
-						break;
+						string extension = Path.GetExtension(file.ToLower());
+
+						if (extension == ".jpg" || extension == ".png" || extension == ".bmp" || extension == ".gif")
+						{
+							panel_Logo.BackgroundImage = Image.FromFile(file);
+							logoFound = true;
+							break;
+						}
+					}
+
+					if (!logoFound)
+					{
+						panel_Logo.BackgroundImage = null;
+						label_NoLogo.Visible = true;
+					}
+					else
+						label_NoLogo.Visible = false;
+
+					string descriptionFilePath = Path.Combine(
+						Path.GetDirectoryName(selectedPlugin.InternalDllPath),
+						Path.GetFileNameWithoutExtension(selectedPlugin.InternalDllPath) + ".txt");
+
+					if (File.Exists(descriptionFilePath))
+					{
+						richTextBox_Description.Text = File.ReadAllText(descriptionFilePath, Encoding.GetEncoding(1252));
+						tabControl.ShowTab(1); // The "Description" tab
+					}
+					else
+					{
+						if (tabControl.SelectedTab.Text == "Description")
+							tabControl.SelectedIndex = 0;
+
+						tabControl.HideTab(1); // The "Description" tab
 					}
 				}
-
-				if (!logoFound)
+				catch (Exception ex)
 				{
-					panel_Logo.BackgroundImage = null;
-					label_NoLogo.Visible = true;
-				}
-				else
-					label_NoLogo.Visible = false;
-
-				string descriptionFilePath = Path.Combine(Path.GetDirectoryName(plugin.InternalDllPath), Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".txt");
-
-				if (File.Exists(descriptionFilePath))
-				{
-					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath, Encoding.GetEncoding(1252));
-					tabControl.ShowTab(1);
-				}
-				else
-				{
-					if (tabControl.SelectedTab.Text == "Description")
-						tabControl.SelectedIndex = 0;
-
-					tabControl.HideTab(1);
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-			catch { }
 		}
 
-		private void button_OpenFolder_Click(object sender, EventArgs e)
-		{
-			Plugin selectedPlugin = (Plugin)treeView.SelectedNodes[0].Tag;
-			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
-		}
+		#endregion Methods
 	}
 }
