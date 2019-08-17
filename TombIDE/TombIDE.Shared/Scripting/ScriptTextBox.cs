@@ -362,12 +362,12 @@ namespace TombIDE.Shared.Scripting
 			e.ChangedRange.SetStyle(referenceColor, @"\$[a-f0-9]*", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(referenceColor, @"#(define|first_id|include)", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(newCommandColor, @",\s?>\s*?(;.*)?" + Environment.NewLine);
-			e.ChangedRange.SetStyle(sectionColor, @"\[(" + string.Join("|", KeyWords.Sections) + @")\]");
-			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.NewCommands) + @")\s*?=");
-			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=");
-			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.TR5MainCommands) + @")\s*?=");
-			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.TR5Commands) + @")\s*?=");
-			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=");
+			e.ChangedRange.SetStyle(sectionColor, @"\[(" + string.Join("|", KeyWords.Sections) + @")\]", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.NewCommands) + @")\s*?=", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.TR5MainCommands) + @")\s*?=", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.TR5Commands) + @")\s*?=", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(valueColor, "=.*");
 
 			e.ChangedRange.SetStyle(valueColor, @">\s*?(;.*)?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + @"|\z)");

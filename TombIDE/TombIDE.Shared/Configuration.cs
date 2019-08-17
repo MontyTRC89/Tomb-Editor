@@ -53,6 +53,7 @@ namespace TombIDE.Shared
 		public bool View_ShowStatusStrip { get; set; } = true;
 		public bool View_ShowLineNumbers { get; set; } = true;
 		public bool View_ShowToolTips { get; set; } = true;
+		public bool View_SwapPanels { get; set; } = false;
 
 		public string ScriptColors_Comment { get; set; } = ColorTranslator.ToHtml(Color.Green);
 		public string ScriptColors_Section { get; set; } = ColorTranslator.ToHtml(Color.SteelBlue);

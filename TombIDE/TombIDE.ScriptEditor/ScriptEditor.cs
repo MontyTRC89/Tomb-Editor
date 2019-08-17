@@ -183,6 +183,7 @@ namespace TombIDE.ScriptEditor
 			ToggleStatusStrip(_ide.Configuration.View_ShowStatusStrip);
 			ToggleLineNumbers(_ide.Configuration.View_ShowLineNumbers);
 			ToggleToolTips(_ide.Configuration.View_ShowToolTips);
+			SwapPanels(_ide.Configuration.View_SwapPanels);
 		}
 
 		private bool AreAllFilesSaved()
@@ -235,6 +236,7 @@ namespace TombIDE.ScriptEditor
 		private void View_StatusStrip_Click(object sender, EventArgs e) => ToggleStatusStrip(!menuItem_StatusStrip.Checked);
 		private void View_LineNumbers_Click(object sender, EventArgs e) => ToggleLineNumbers(!menuItem_LineNumbers.Checked);
 		private void View_ToolTips_Click(object sender, EventArgs e) => ToggleToolTips(!menuItem_ToolTips.Checked);
+		private void View_SwapPanels_Click(object sender, EventArgs e) => SwapPanels(!menuItem_SwapPanels.Checked);
 
 		private void Help_About_Click(object sender, EventArgs e) => ShowAboutForm();
 
@@ -287,6 +289,8 @@ namespace TombIDE.ScriptEditor
 		private void Editor_ZoomChanged(object sender, EventArgs e) => DoStatusCounting();
 		private void Editor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
 		private void Editor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
+
+		private void sectionPanel_Files_Resize(object sender, EventArgs e) => AdjustFileListButtons();
 
 		#endregion Events
 
@@ -489,6 +493,42 @@ namespace TombIDE.ScriptEditor
 				tab.Controls.OfType<ScriptTextBox>().First().ShowToolTips = state;
 
 			_ide.Configuration.View_ShowToolTips = state;
+		}
+
+		private void SwapPanels(bool state)
+		{
+			menuItem_SwapPanels.Checked = state;
+
+			if (menuItem_SwapPanels.Checked)
+			{
+				sectionPanel_Files.Dock = DockStyle.Bottom;
+				sectionPanel_Files.Height = 200;
+
+				sectionPanel_InfoBox.Dock = DockStyle.Right;
+				sectionPanel_InfoBox.Width = 384;
+
+				splitter_Right.MinSize = 384;
+
+				Controls.SetChildIndex(splitter_Right, 5);
+				Controls.SetChildIndex(splitter_Bottom, 3);
+			}
+			else
+			{
+				sectionPanel_Files.Dock = DockStyle.Right;
+				sectionPanel_Files.Width = 200;
+
+				sectionPanel_InfoBox.Dock = DockStyle.Bottom;
+				sectionPanel_InfoBox.Height = 200;
+
+				splitter_Right.MinSize = 200;
+
+				Controls.SetChildIndex(splitter_Bottom, 5);
+				Controls.SetChildIndex(splitter_Right, 3);
+			}
+
+			AdjustFileListButtons();
+
+			_ide.Configuration.View_SwapPanels = state;
 		}
 
 		private bool IsEveryTabSaved()
@@ -1005,6 +1045,17 @@ namespace TombIDE.ScriptEditor
 			treeView_Files.Nodes.Add(node);
 		}
 
+		private void AdjustFileListButtons() // 𝓡𝓮𝓼𝓹𝓸𝓷𝓼𝓲𝓿𝓮𝓷𝓮𝓼𝓼
+		{
+			button_EditScript.Width = (sectionPanel_Files.Width / 2) - 5;
+			button_EditLanguages.Location = new Point((sectionPanel_Files.Width / 2), button_EditLanguages.Location.Y);
+
+			if (sectionPanel_Files.Width % 2 > 0)
+				button_EditLanguages.Width = (sectionPanel_Files.Width / 2) - 5;
+			else
+				button_EditLanguages.Width = (sectionPanel_Files.Width / 2) - 6;
+		}
+
 		private void FolderWatcher_Changed(object sender, FileSystemEventArgs e) => UpdateFileList();
 		private void FolderWatcher_Renamed(object sender, RenamedEventArgs e) => UpdateFileList();
 
@@ -1030,17 +1081,6 @@ namespace TombIDE.ScriptEditor
 				return;
 
 			OpenFile(clickedFilePath);
-		}
-
-		private void FileList_Splitter_Moved(object sender, SplitterEventArgs e) // 𝓡𝓮𝓼𝓹𝓸𝓷𝓼𝓲𝓿𝓮𝓷𝓮𝓼𝓼
-		{
-			button_EditScript.Width = (sectionPanel_Files.Width / 2) - 5;
-			button_EditLanguages.Location = new Point((sectionPanel_Files.Width / 2), button_EditLanguages.Location.Y);
-
-			if (sectionPanel_Files.Width % 2 > 0)
-				button_EditLanguages.Width = (sectionPanel_Files.Width / 2) - 5;
-			else
-				button_EditLanguages.Width = (sectionPanel_Files.Width / 2) - 6;
 		}
 
 		#endregion FileList

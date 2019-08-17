@@ -40,10 +40,10 @@
             "SOUND SFX INDICES LIST",
             "STATICS INDICES LIST",
             "VARIABLE PLACEFOLDERS"});
-			this.comboBox_References.Location = new System.Drawing.Point(4, 4);
-			this.comboBox_References.Margin = new System.Windows.Forms.Padding(4);
+			this.comboBox_References.Location = new System.Drawing.Point(3, 3);
+			this.comboBox_References.Margin = new System.Windows.Forms.Padding(3, 3, 0, 4);
 			this.comboBox_References.Name = "comboBox_References";
-			this.comboBox_References.Size = new System.Drawing.Size(256, 21);
+			this.comboBox_References.Size = new System.Drawing.Size(205, 21);
 			this.comboBox_References.TabIndex = 0;
 			this.comboBox_References.SelectedIndexChanged += new System.EventHandler(this.comboBox_References_SelectedIndexChanged);
 			// 
@@ -78,7 +78,7 @@
 			this.dataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 			this.dataGrid.ColumnHeadersHeight = 4;
-			this.dataGrid.Location = new System.Drawing.Point(0, 31);
+			this.dataGrid.Location = new System.Drawing.Point(0, 30);
 			this.dataGrid.Margin = new System.Windows.Forms.Padding(2);
 			this.dataGrid.MultiSelect = false;
 			this.dataGrid.Name = "dataGrid";
@@ -86,7 +86,7 @@
 			this.dataGrid.RowHeadersWidth = 42;
 			this.dataGrid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.dataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-			this.dataGrid.Size = new System.Drawing.Size(800, 129);
+			this.dataGrid.Size = new System.Drawing.Size(800, 130);
 			this.dataGrid.TabIndex = 2;
 			this.dataGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGrid_CellMouseClick);
 			// 
@@ -94,10 +94,10 @@
 			// 
 			this.textBox_Search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox_Search.Location = new System.Drawing.Point(267, 4);
-			this.textBox_Search.Margin = new System.Windows.Forms.Padding(3, 4, 4, 5);
+			this.textBox_Search.Location = new System.Drawing.Point(211, 4);
+			this.textBox_Search.Margin = new System.Windows.Forms.Padding(3, 4, 4, 4);
 			this.textBox_Search.Name = "textBox_Search";
-			this.textBox_Search.Size = new System.Drawing.Size(529, 20);
+			this.textBox_Search.Size = new System.Drawing.Size(585, 20);
 			this.textBox_Search.TabIndex = 1;
 			this.textBox_Search.Text = "Search references...";
 			this.textBox_Search.TextChanged += new System.EventHandler(this.textBox_Search_TextChanged);
