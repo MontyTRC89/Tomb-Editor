@@ -85,7 +85,7 @@
 			this.button_Install.Size = new System.Drawing.Size(30, 248);
 			this.button_Install.TabIndex = 2;
 			this.button_Install.Text = ">>";
-			this.toolTip.SetToolTip(this.button_Install, "Install Plugin to the Current Project");
+			this.toolTip.SetToolTip(this.button_Install, "Install Plugin into the Current Project");
 			this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
 			// 
 			// button_OpenArchive

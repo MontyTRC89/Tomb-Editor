@@ -1,5 +1,6 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
+using Microsoft.VisualBasic.FileIO;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 using System;
@@ -26,8 +27,7 @@ namespace TombIDE.ProjectMaster
 
 			InitializeComponent();
 
-			UpdateAvailablePluginsTreeView();
-			UpdateInstalledPluginsTreeView();
+			_ide.RaiseEvent(new IDE.RequestedPluginListRefreshEvent());
 		}
 
 		private void OnIDEEventRaised(IIDEEvent obj)
@@ -36,6 +36,8 @@ namespace TombIDE.ProjectMaster
 			{
 				UpdateAvailablePluginsTreeView();
 				UpdateInstalledPluginsTreeView();
+
+				ResetUIElements();
 			}
 		}
 
@@ -53,7 +55,7 @@ namespace TombIDE.ProjectMaster
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
 					string filePath = dialog.FileName;
-					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
+					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
 
 					try
 					{
@@ -62,7 +64,7 @@ namespace TombIDE.ProjectMaster
 
 						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
 						{
-							if (Path.GetFileName(directory) == Path.GetFileNameWithoutExtension(filePath))
+							if (Path.GetFileName(directory.ToLower()) == Path.GetFileNameWithoutExtension(filePath.ToLower()))
 								throw new ArgumentException("Plugin already installed.");
 						}
 
@@ -82,6 +84,16 @@ namespace TombIDE.ProjectMaster
 							ValidatePluginFolder(extractionPath, true);
 
 							Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
+
+							// Check for name duplicates
+							foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+							{
+								if (availablePlugin.Name == plugin.Name)
+								{
+									Directory.Delete(extractionPath, true);
+									throw new ArgumentException("A plugin with the same name already exists on the list.");
+								}
+							}
 
 							_ide.AvailablePlugins.Add(plugin);
 							XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
@@ -106,7 +118,7 @@ namespace TombIDE.ProjectMaster
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
 					string folderPath = dialog.Folder;
-					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Plugins");
+					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
 
 					try
 					{
@@ -115,7 +127,7 @@ namespace TombIDE.ProjectMaster
 
 						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
 						{
-							if (Path.GetFileName(directory) == Path.GetFileName(folderPath))
+							if (Path.GetFileName(directory.ToLower()) == Path.GetFileName(folderPath.ToLower()))
 								throw new ArgumentException("Plugin already installed.");
 						}
 
@@ -127,6 +139,16 @@ namespace TombIDE.ProjectMaster
 						ValidatePluginFolder(extractionPath, true);
 
 						Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
+
+						// Check for name duplicates
+						foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+						{
+							if (availablePlugin.Name == plugin.Name)
+							{
+								Directory.Delete(extractionPath, true);
+								throw new ArgumentException("A plugin with the same name already exists on the list.");
+							}
+						}
 
 						_ide.AvailablePlugins.Add(plugin);
 						XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
@@ -141,16 +163,30 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
+		private void button_Delete_Click(object sender, EventArgs e)
+		{
+			Plugin affectedPlugin = (Plugin)treeView_Available.SelectedNodes[0].Tag;
+
+			DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to delete the \"" + affectedPlugin.Name + "\" plugin?\n" +
+					"This will send the plugin folder with all its files into the recycle bin.", "Are you sure?",
+					MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
+				FileSystem.DeleteDirectory(Path.GetDirectoryName(affectedPlugin.InternalDllPath), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+		}
+
+		private void button_Refresh_Click(object sender, EventArgs e) => _ide.RaiseEvent(new IDE.RequestedPluginListRefreshEvent());
+
 		private void button_Install_Click(object sender, EventArgs e)
 		{
 			foreach (DarkTreeNode node in treeView_Available.SelectedNodes)
 			{
 				try
 				{
-					string pluginFolderPath = Path.GetDirectoryName(((Plugin)node.Tag).InternalDllPath);
-					string dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
+					string dllFilePath = ((Plugin)node.Tag).InternalDllPath;
+					string destPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
 
-					File.Copy(dllFilePath, Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath)), true);
+					File.Copy(dllFilePath, destPath, true);
 
 					_ide.Project.InstalledPlugins.Add((Plugin)node.Tag);
 					XmlHandling.SaveTRPROJ(_ide.Project);
@@ -164,16 +200,7 @@ namespace TombIDE.ProjectMaster
 			UpdateAvailablePluginsTreeView();
 			UpdateInstalledPluginsTreeView();
 
-			treeView_Installed.SelectedNodes.Clear();
-			treeView_Installed.Invalidate();
-
-			treeView_Available.SelectedNodes.Clear();
-			treeView_Available.Invalidate();
-
-			button_Install.Enabled = false;
-			button_Uninstall.Enabled = false;
-
-			button_OpenInExplorer.Enabled = false;
+			ResetUIElements();
 		}
 
 		private void button_Uninstall_Click(object sender, EventArgs e)
@@ -182,13 +209,26 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string pluginFolderPath = Path.GetDirectoryName(((Plugin)node.Tag).InternalDllPath);
-					string dllFilePath = Directory.GetFiles(pluginFolderPath, "*.dll").First();
+					string dllFilePath = ((Plugin)node.Tag).InternalDllPath;
 
-					string dllProjectPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
+					if (string.IsNullOrEmpty(dllFilePath))
+					{
+						DialogResult result = DarkMessageBox.Show(this, "The \"" + ((Plugin)node.Tag).Name + "\" plugin is not installed in TombIDE.\n" +
+							"Would you like to move the DLL file into the recycle bin instead?", "Are you sure?",
+							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-					if (File.Exists(dllProjectPath))
-						File.Delete(dllProjectPath);
+						if (result == DialogResult.Yes)
+							FileSystem.DeleteFile(Path.Combine(_ide.Project.ProjectPath, ((Plugin)node.Tag).Name), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+						else
+							return;
+					}
+					else
+					{
+						string dllProjectPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
+
+						if (File.Exists(dllProjectPath))
+							File.Delete(dllProjectPath);
+					}
 
 					_ide.Project.InstalledPlugins.Remove((Plugin)node.Tag);
 					XmlHandling.SaveTRPROJ(_ide.Project);
@@ -202,22 +242,72 @@ namespace TombIDE.ProjectMaster
 			UpdateAvailablePluginsTreeView();
 			UpdateInstalledPluginsTreeView();
 
+			ResetUIElements();
+		}
+
+		private void button_Download_Click(object sender, EventArgs e) => Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
+
+		private void button_OpenInExplorer_Click(object sender, EventArgs e)
+		{
+			string pluginFolderPath = string.Empty;
+
+			if (treeView_Installed.SelectedNodes.Count == 1)
+				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Installed.SelectedNodes[0].Tag).InternalDllPath);
+			else if (treeView_Available.SelectedNodes.Count == 1)
+				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Available.SelectedNodes[0].Tag).InternalDllPath);
+
+			SharedMethods.OpenFolderInExplorer(pluginFolderPath);
+		}
+
+		private void treeView_Available_SelectedNodesChanged(object sender, EventArgs e)
+		{
+			if (treeView_Available.SelectedNodes.Count == 0)
+				return;
+
+			treeView_Installed.SelectedNodes.Clear();
+			treeView_Installed.Invalidate();
+
+			button_Delete.Enabled = true;
+
+			button_Install.Enabled = true;
+			button_Uninstall.Enabled = false;
+
+			button_OpenInExplorer.Enabled = treeView_Available.SelectedNodes.Count == 1;
+		}
+
+		private void treeView_Installed_SelectedNodesChanged(object sender, EventArgs e)
+		{
+			if (treeView_Installed.SelectedNodes.Count == 0)
+				return;
+
+			treeView_Available.SelectedNodes.Clear();
+			treeView_Available.Invalidate();
+
+			button_Delete.Enabled = false;
+
+			button_Install.Enabled = false;
+			button_Uninstall.Enabled = true;
+
+			button_OpenInExplorer.Enabled = treeView_Installed.SelectedNodes.Count == 1;
+		}
+
+		#endregion Events
+
+		private void ResetUIElements()
+		{
 			treeView_Installed.SelectedNodes.Clear();
 			treeView_Installed.Invalidate();
 
 			treeView_Available.SelectedNodes.Clear();
 			treeView_Available.Invalidate();
 
+			button_Delete.Enabled = false;
+
 			button_Install.Enabled = false;
 			button_Uninstall.Enabled = false;
 
 			button_OpenInExplorer.Enabled = false;
 		}
-
-		private void button_Download_Click(object sender, EventArgs e) =>
-			Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
-
-		#endregion Events
 
 		private void ValidatePluginFolder(string pluginFolderPath, bool extractedFromArchive = false)
 		{
@@ -284,7 +374,7 @@ namespace TombIDE.ProjectMaster
 
 		private bool IsValidPluginFolder(string path)
 		{
-			return Directory.GetFiles(path, "plugin_*.dll", SearchOption.AllDirectories).Length > 0;
+			return Directory.GetFiles(path, "plugin_*.dll", System.IO.SearchOption.AllDirectories).Length > 0;
 		}
 
 		private void UpdateAvailablePluginsTreeView()
@@ -333,70 +423,6 @@ namespace TombIDE.ProjectMaster
 			}
 
 			treeView_Installed.Invalidate();
-		}
-
-		private void button_Delete_Click(object sender, EventArgs e)
-		{
-			DialogResult result = DarkMessageBox.Show(this, "Are you sure?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-			if (result == DialogResult.Yes)
-			{
-				// TODO
-			}
-		}
-
-		private void button_OpenInExplorer_Click(object sender, EventArgs e)
-		{
-			string pluginFolderPath = string.Empty;
-
-			if (treeView_Installed.SelectedNodes.Count == 1)
-				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Installed.SelectedNodes[0].Tag).InternalDllPath);
-			else if (treeView_Available.SelectedNodes.Count == 1)
-				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Available.SelectedNodes[0].Tag).InternalDllPath);
-
-			SharedMethods.OpenFolderInExplorer(pluginFolderPath);
-		}
-
-		private void button_Refresh_Click(object sender, EventArgs e)
-		{
-			_ide.RaiseEvent(new IDE.RequestedPluginListRefreshEvent());
-
-			treeView_Installed.SelectedNodes.Clear();
-			treeView_Installed.Invalidate();
-
-			treeView_Available.SelectedNodes.Clear();
-			treeView_Available.Invalidate();
-
-			button_Install.Enabled = false;
-			button_Uninstall.Enabled = true;
-		}
-
-		private void treeView_Available_SelectedNodesChanged(object sender, EventArgs e)
-		{
-			if (treeView_Available.SelectedNodes.Count == 0)
-				return;
-
-			treeView_Installed.SelectedNodes.Clear();
-			treeView_Installed.Invalidate();
-
-			button_Install.Enabled = true;
-			button_Uninstall.Enabled = false;
-
-			button_OpenInExplorer.Enabled = treeView_Available.SelectedNodes.Count == 1;
-		}
-
-		private void treeView_Installed_SelectedNodesChanged(object sender, EventArgs e)
-		{
-			if (treeView_Installed.SelectedNodes.Count == 0)
-				return;
-
-			treeView_Available.SelectedNodes.Clear();
-			treeView_Available.Invalidate();
-
-			button_Install.Enabled = false;
-			button_Uninstall.Enabled = true;
-
-			button_OpenInExplorer.Enabled = treeView_Installed.SelectedNodes.Count == 1;
 		}
 	}
 }
