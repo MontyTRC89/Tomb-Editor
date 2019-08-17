@@ -138,6 +138,8 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.BaseSoundsXmlFilePath, settings.BaseSoundsXmlFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.CustomSoundsXmlFilePath, settings.CustomSoundsXmlFilePath ?? "");
+                chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
                     foreach (ReferencedWad wad in settings.Wads)

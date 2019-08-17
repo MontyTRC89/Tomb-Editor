@@ -8,10 +8,12 @@ namespace TombLib.LevelData.IO
         public static readonly byte[] MagicNumber = new byte[] { 0x50, 0x52, 0x4A, 0x32 };
 
         public static readonly ChunkId Settings = ChunkId.FromString("TeSettings");
+        /**/public static readonly ChunkId SoundSystem = ChunkId.FromString("TeSoundSystem"); // UTF-8 string
         /**/public static readonly ChunkId ObsoleteWadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId SkyTextureFilePath = ChunkId.FromString("TeSkyTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId BaseSoundsXmlFilePath = ChunkId.FromString("TeBaseSoundsXmlFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId CustomSoundsXmlFilePath = ChunkId.FromString("TeCustomSoundsXmlFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5ExtraSpritesFilePath = ChunkId.FromString("TeTr5ExtraSpritesFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");
         /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");

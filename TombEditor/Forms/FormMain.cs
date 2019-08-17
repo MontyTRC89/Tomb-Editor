@@ -653,6 +653,8 @@ namespace TombEditor.Forms
         {
             //Conversions.ConvertWad2ToNewSoundFormat("test\\Caesum\\Lara\\Lara.wad2", "Converted.wad2");
 
+            Conversions.ConvertPrj2ToNewSoundFormat("Karnak_import.prj2", "Karnak_import_converted.prj2", "Sounds\\TR4\\Sounds.xml");
+
             //   _editor.Level.)
             /*RoomGeometryExporter.LoadModel("low-poly-wooden-door.obj");
             ImportedGeometryInstance instance = new ImportedGeometryInstance();

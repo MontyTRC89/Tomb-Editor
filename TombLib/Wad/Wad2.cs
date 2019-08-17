@@ -25,7 +25,7 @@ namespace TombLib.Wad
 
     public class Wad2
     {
-        public WadSoundSystem SoundSystem { get; set; }
+        public SoundSystem SoundSystem { get; set; }
         public WadGameVersion SuggestedGameVersion { get; set; } = WadGameVersion.TR4_TRNG;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
