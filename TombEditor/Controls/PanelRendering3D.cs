@@ -1950,7 +1950,7 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * viewProjection,
                             "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") +
-                                "](" + instance.SoundNameToDisplay + ")\n" + GetObjectPositionString(room, instance)));
+                                "](" + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") + ")\n" + GetObjectPositionString(room, instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);

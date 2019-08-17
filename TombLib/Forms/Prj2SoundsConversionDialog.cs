@@ -10,12 +10,12 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.Forms
 {
-    public partial class Wad2SoundsConversionDialog : DarkForm
+    public partial class Prj2SoundsConversionDialog : DarkForm
     {
         private readonly WadGameVersion _version;
         private readonly List<Conversions.SoundInfoConversionRow> _conversionRows;
 
-        public Wad2SoundsConversionDialog(WadGameVersion version, List<Conversions.SoundInfoConversionRow> conversionRows)
+        public Prj2SoundsConversionDialog(WadGameVersion version, List<Conversions.SoundInfoConversionRow> conversionRows)
         {
             _version = version;
             _conversionRows = conversionRows;
@@ -23,7 +23,7 @@ namespace TombLib.Forms
             InitializeComponent();
         }
 
-        private void Wad2SoundsConversionDialog_Load(object sender, EventArgs e)
+        private void Prj2SoundsConversionDialog_Load(object sender, EventArgs e)
         {
             // Add rows
             ReloadSoundInfos();
@@ -35,7 +35,7 @@ namespace TombLib.Forms
 
             foreach (var row in _conversionRows)
             {
-                dgvSoundInfos.Rows.Add(row.OldName, (row.NewId != -1 ? row.NewId.ToString() : ""), row.NewName, 
+                dgvSoundInfos.Rows.Add(row.SoundInfo.Name, (row.NewId != -1 ? row.NewId.ToString() : ""), row.NewName, 
                                        row.SaveToXml, row.ExportSamples);
                 if (row.NewId != -1)
                     dgvSoundInfos.Rows[dgvSoundInfos.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;

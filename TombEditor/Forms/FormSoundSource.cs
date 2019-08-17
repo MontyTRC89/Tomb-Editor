@@ -18,6 +18,7 @@ namespace TombEditor.Forms
         private readonly IEnumerable<WadSoundInfo> _soundInfos;
         private readonly Editor _editor = Editor.Instance;
         private int _soundId = -1;
+        bool _loaded = false;
 
         public FormSoundSource(SoundSourceInstance soundSource, IEnumerable<WadSoundInfo> soundInfos)
         {
@@ -30,6 +31,7 @@ namespace TombEditor.Forms
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Name))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
             SelectSound(_soundSource.SoundId);
+            _loaded = true;
         }
 
         private void SelectSound(int id)
@@ -44,6 +46,8 @@ namespace TombEditor.Forms
             tbSound.Text = info.Name;
 
             for (int i = 0; i < lstSounds.Items.Count; ++i)
+            {
+                Console.WriteLine(i);
                 if (((WadSoundInfo)lstSounds.Items[i].Tag).Id == id)
                 {
                     lstSounds.SelectItem(i);
@@ -51,6 +55,7 @@ namespace TombEditor.Forms
                     _soundId = id;
                     return;
                 }
+            }
 
             _soundId = -1;
             lstSounds.SelectedIndices.Clear();
@@ -93,6 +98,12 @@ namespace TombEditor.Forms
         }
 
         private void lstSounds_SelectedIndicesChanged(object sender, EventArgs e)
+        {
+   
+            
+        }
+
+        private void LstSounds_Click(object sender, EventArgs e)
         {
             if (lstSounds.SelectedIndices.Count == 1)
                 SelectSound(((WadSoundInfo)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag).Id);

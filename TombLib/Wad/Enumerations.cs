@@ -10,7 +10,7 @@
         TR5Main = 18
     }
 
-    public enum WadSoundSystem : long
+    public enum SoundSystem : long
     {
         Dynamic = 0,
         Xml = 1

@@ -30,15 +30,12 @@
         {
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
-            this.optionPlayCustomSoundGroupBox = new DarkUI.Controls.DarkGroupBox();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditorOld();
+            this.optionPlaySoundFromWadGroupBox = new DarkUI.Controls.DarkGroupBox();
             this.lstSounds = new DarkUI.Controls.DarkListView();
             this.tbSound = new DarkUI.Controls.DarkTextBox();
             this.label1 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
-            this.optionPlaySoundFromWadGroupBox = new DarkUI.Controls.DarkGroupBox();
-            this.optionPlayCustomSoundGroupBox.SuspendLayout();
             this.optionPlaySoundFromWadGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,31 +60,22 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
-            // optionPlayCustomSoundGroupBox
+            // optionPlaySoundFromWadGroupBox
             // 
-            this.optionPlayCustomSoundGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.optionPlaySoundFromWadGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.optionPlayCustomSoundGroupBox.Controls.Add(this.soundInfoEditor);
-            this.optionPlayCustomSoundGroupBox.Location = new System.Drawing.Point(12, 63);
-            this.optionPlayCustomSoundGroupBox.Name = "optionPlayCustomSoundGroupBox";
-            this.optionPlayCustomSoundGroupBox.Size = new System.Drawing.Size(460, 438);
-            this.optionPlayCustomSoundGroupBox.TabIndex = 5;
-            this.optionPlayCustomSoundGroupBox.TabStop = false;
-            this.optionPlayCustomSoundGroupBox.Text = "Custom sound settings";
-            // 
-            // soundInfoEditor
-            // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.soundInfoEditor.Location = new System.Drawing.Point(6, 20);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(448, 411);
-            this.soundInfoEditor.TabIndex = 1;
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.butPlaySound);
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.darkLabel1);
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.label1);
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.tbSound);
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.lstSounds);
+            this.optionPlaySoundFromWadGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.optionPlaySoundFromWadGroupBox.Name = "optionPlaySoundFromWadGroupBox";
+            this.optionPlaySoundFromWadGroupBox.Size = new System.Drawing.Size(460, 489);
+            this.optionPlaySoundFromWadGroupBox.TabIndex = 66;
+            this.optionPlaySoundFromWadGroupBox.TabStop = false;
+            this.optionPlaySoundFromWadGroupBox.Text = "Play sound from wad settings";
             // 
             // lstSounds
             // 
@@ -100,6 +88,7 @@
             this.lstSounds.TabIndex = 61;
             this.lstSounds.Text = "darkListView1";
             this.lstSounds.SelectedIndicesChanged += new System.EventHandler(this.lstSounds_SelectedIndicesChanged);
+            this.lstSounds.Click += new System.EventHandler(this.LstSounds_Click);
             // 
             // tbSound
             // 
@@ -144,24 +133,6 @@
             this.butPlaySound.Visible = false;
             this.butPlaySound.Click += new System.EventHandler(this.butPlay_Click);
             // 
-            // optionPlaySoundFromWadGroupBox
-            // 
-            this.optionPlaySoundFromWadGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.butPlaySound);
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.darkLabel1);
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.label1);
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.tbSound);
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.lstSounds);
-            this.optionPlaySoundFromWadGroupBox.Location = new System.Drawing.Point(12, 12);
-            this.optionPlaySoundFromWadGroupBox.Name = "optionPlaySoundFromWadGroupBox";
-            this.optionPlaySoundFromWadGroupBox.Size = new System.Drawing.Size(460, 489);
-            this.optionPlaySoundFromWadGroupBox.TabIndex = 66;
-            this.optionPlaySoundFromWadGroupBox.TabStop = false;
-            this.optionPlaySoundFromWadGroupBox.Text = "Play sound from wad settings";
-            this.optionPlaySoundFromWadGroupBox.Visible = false;
-            // 
             // FormSoundSource
             // 
             this.AcceptButton = this.butOK;
@@ -172,7 +143,6 @@
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.optionPlaySoundFromWadGroupBox);
-            this.Controls.Add(this.optionPlayCustomSoundGroupBox);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(500, 520);
@@ -182,7 +152,6 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sound source";
-            this.optionPlayCustomSoundGroupBox.ResumeLayout(false);
             this.optionPlaySoundFromWadGroupBox.ResumeLayout(false);
             this.optionPlaySoundFromWadGroupBox.PerformLayout();
             this.ResumeLayout(false);
@@ -192,13 +161,11 @@
         #endregion
         private DarkUI.Controls.DarkButton butOK;
         private DarkUI.Controls.DarkButton butCancel;
-        private DarkUI.Controls.DarkGroupBox optionPlayCustomSoundGroupBox;
-        private TombLib.Controls.SoundInfoEditorOld soundInfoEditor;
-        private DarkUI.Controls.DarkListView lstSounds;
-        private DarkUI.Controls.DarkTextBox tbSound;
-        private DarkUI.Controls.DarkLabel label1;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkButton butPlaySound;
         private DarkUI.Controls.DarkGroupBox optionPlaySoundFromWadGroupBox;
+        private DarkUI.Controls.DarkButton butPlaySound;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkLabel label1;
+        private DarkUI.Controls.DarkTextBox tbSound;
+        private DarkUI.Controls.DarkListView lstSounds;
     }
 }

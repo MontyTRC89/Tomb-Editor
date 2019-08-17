@@ -347,8 +347,12 @@ namespace TombEditor.Forms
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
             tbBaseSoundsXmlFilePath.Text = _levelSettings.BaseSoundsXmlFilePath;
-            if (tbBaseSoundsXmlFilePath.Text != "")
+            tbCustomSoundsXmlFilePath.Text = _levelSettings.CustomSoundsXmlFilePath;
+            /*if (tbBaseSoundsXmlFilePath.Text != "")
                 _levelSettings.BaseSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
+            if (tbCustomSoundsXmlFilePath.Text != "")
+                            _levelSettings.CustomSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.CustomSoundsXmlFilePath));
+            */
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -1069,6 +1073,46 @@ namespace TombEditor.Forms
                 bool compile = _levelSettings.SelectedSounds.Contains(soundInfo.Id);
                 dgvSounds.Rows.Add(soundInfo.Id, soundInfo.Name, "", compile);
             }
+        }
+
+        private void ButSearchCustomXmlFilePath_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ButSearchCustomSoundsXmlPath_Click(object sender, EventArgs e)
+        {
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
+                                                     "Select the custom XML sounds file",
+                                                     LevelSettings.FileFormatsSoundsXmlFiles,
+                                                     VariableType.EditorDirectory,
+                                                     false);
+            if (result != null)
+            {
+                _levelSettings.CustomSoundsXmlFilePath = result;
+                _levelSettings.CustomSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
+
+                foreach (var soundInfo in _levelSettings.CustomSounds.SoundInfos)
+                {
+                    if (soundInfo.Global && !_levelSettings.SelectedSounds.Contains(soundInfo.Id))
+                        _levelSettings.SelectedSounds.Add(soundInfo.Id);
+                }
+                ReloadSounds();
+                UpdateDialog();
+            }
+        }
+
+        private void ButSelectAllSoundsFromWads_Click(object sender, EventArgs e)
+        {
+            foreach (var wadRef in _levelSettings.Wads)
+                if (wadRef.Wad != null)
+                    foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
+                        foreach (DataGridViewRow row in dgvSounds.Rows)
+                        {
+                            int id = int.Parse(row.Cells[0].Value.ToString());
+                            if (id == sound.Id)
+                                row.Cells[3].Value = true;
+                        }
         }
     }
 }

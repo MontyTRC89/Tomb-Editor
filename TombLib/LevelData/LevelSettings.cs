@@ -99,8 +99,11 @@ namespace TombLib.LevelData
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
 
         // New sound system
+        public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public string BaseSoundsXmlFilePath { get; set; } = null;
         public WadSounds BaseSounds { get; set; } = new WadSounds();
+        public string CustomSoundsXmlFilePath { get; set; } = null;
+        public WadSounds CustomSounds { get; set; } = new WadSounds();
         public List<int> SelectedSounds { get; set; } = new List<int>();
         public List<WadSoundInfo> GlobalSoundMap
         {

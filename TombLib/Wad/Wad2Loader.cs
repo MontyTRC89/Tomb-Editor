@@ -72,7 +72,7 @@ namespace TombLib.Wad
                 }
                 else if (id == Wad2Chunks.SoundSystem)
                 {
-                    wad.SoundSystem = (WadSoundSystem)chunkIO.ReadChunkLong(chunkSize);
+                    wad.SoundSystem = (SoundSystem)chunkIO.ReadChunkLong(chunkSize);
                     return true;
                 }
                 else if (LoadTextures(chunkIO, id, wad, ref textures))

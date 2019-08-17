@@ -102,6 +102,8 @@ namespace TombLib.LevelData.IO
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
 
+            bool foundSoundSystem = false;
+
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id == Prj2Chunks.ObsoleteWadFilePath)
@@ -114,6 +116,11 @@ namespace TombLib.LevelData.IO
                     settings.Wads.Clear();
                     settings.Wads.Add(wad);
                 }
+                else if (id == Prj2Chunks.SoundSystem)
+                {
+                    foundSoundSystem = true;
+                    settings.SoundSystem = (SoundSystem)chunkIO.ReadChunkInt(chunkSize);
+                }
                 else if (id == Prj2Chunks.FontTextureFilePath)
                     settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
@@ -121,7 +128,12 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.BaseSoundsXmlFilePath)
                 {
                     settings.BaseSoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
-                    settings.BaseSounds = WadSounds.ReadFromXml(settings.BaseSoundsXmlFilePath);
+                    settings.BaseSounds = WadSounds.ReadFromXml(settings.MakeAbsolute(settings.BaseSoundsXmlFilePath));
+                }
+                else if (id == Prj2Chunks.CustomSoundsXmlFilePath)
+                {
+                    settings.CustomSoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
+                    settings.CustomSounds = WadSounds.ReadFromXml(settings.MakeAbsolute(settings.CustomSoundsXmlFilePath));
                 }
                 else if (id == Prj2Chunks.Tr5ExtraSpritesFilePath)
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
@@ -426,6 +438,9 @@ namespace TombLib.LevelData.IO
                     return false;
                 return true;
             });
+
+            if (!foundSoundSystem)
+                settings.SoundSystem = SoundSystem.Dynamic;
 
             // Load wads
             progressReporter?.ReportInfo("Loading wads into level");

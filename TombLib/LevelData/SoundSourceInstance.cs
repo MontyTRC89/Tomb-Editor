@@ -5,7 +5,7 @@ namespace TombLib.LevelData
 {
     public class SoundSourceInstance : PositionAndScriptBasedObjectInstance
     {
-        public int SoundId { get; set; }
+        public int SoundId { get; set; } = -1;
 
         // XML_SOUND_SYSTEM: legacy stuff present only for loading. Probably we'll force user to to a one-way migration on 
         // load time so we need just properties

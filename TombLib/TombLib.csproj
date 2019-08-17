@@ -132,6 +132,12 @@
   <ItemGroup>
     <Compile Include="BoundingBox.cs" />
     <Compile Include="BoundingSphere.cs" />
+    <Compile Include="Forms\Prj2SoundsConversionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Prj2SoundsConversionDialog.Designer.cs">
+      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Wad2SoundsConversionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -340,6 +346,9 @@
     <None Include="ResourcesC\pcsky.raw.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Prj2SoundsConversionDialog.resx">
+      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Wad2SoundsConversionDialog.resx">
       <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
     </EmbeddedResource>

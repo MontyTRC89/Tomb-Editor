@@ -29,7 +29,7 @@ namespace WadTool
             {
                 newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
-                if (newWad.SoundSystem == WadSoundSystem.Dynamic)
+                if (newWad.SoundSystem == SoundSystem.Dynamic)
                 {
                     if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
                                             "to the new Xml sound system. A backup copy will be created under the same directory. " +
