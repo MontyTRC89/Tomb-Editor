@@ -27,7 +27,7 @@ namespace TombIDE.ProjectMaster
 
 			InitializeComponent();
 
-			_ide.RaiseEvent(new IDE.RequestedPluginListRefreshEvent());
+			_ide.RefreshPluginLists();
 		}
 
 		private void OnIDEEventRaised(IIDEEvent obj)
@@ -95,16 +95,13 @@ namespace TombIDE.ProjectMaster
 								}
 							}
 
-							_ide.AvailablePlugins.Add(plugin);
-							XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
+							// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
 						}
 					}
 					catch (Exception ex)
 					{
 						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
-
-					UpdateAvailablePluginsTreeView();
 				}
 			}
 		}
@@ -150,15 +147,12 @@ namespace TombIDE.ProjectMaster
 							}
 						}
 
-						_ide.AvailablePlugins.Add(plugin);
-						XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
+						// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
 					}
 					catch (Exception ex)
 					{
 						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
-
-					UpdateAvailablePluginsTreeView();
 				}
 			}
 		}
@@ -173,9 +167,11 @@ namespace TombIDE.ProjectMaster
 
 			if (result == DialogResult.Yes)
 				FileSystem.DeleteDirectory(Path.GetDirectoryName(affectedPlugin.InternalDllPath), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+
+			// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
 		}
 
-		private void button_Refresh_Click(object sender, EventArgs e) => _ide.RaiseEvent(new IDE.RequestedPluginListRefreshEvent());
+		private void button_Refresh_Click(object sender, EventArgs e) => _ide.RefreshPluginLists();
 
 		private void button_Install_Click(object sender, EventArgs e)
 		{
@@ -188,19 +184,13 @@ namespace TombIDE.ProjectMaster
 
 					File.Copy(dllFilePath, destPath, true);
 
-					_ide.Project.InstalledPlugins.Add((Plugin)node.Tag);
-					XmlHandling.SaveTRPROJ(_ide.Project);
+					// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
 				}
 				catch (Exception ex)
 				{
 					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-
-			UpdateAvailablePluginsTreeView();
-			UpdateInstalledPluginsTreeView();
-
-			ResetUIElements();
 		}
 
 		private void button_Uninstall_Click(object sender, EventArgs e)
@@ -219,8 +209,6 @@ namespace TombIDE.ProjectMaster
 
 						if (result == DialogResult.Yes)
 							FileSystem.DeleteFile(Path.Combine(_ide.Project.ProjectPath, ((Plugin)node.Tag).Name), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
-						else
-							return;
 					}
 					else
 					{
@@ -230,19 +218,13 @@ namespace TombIDE.ProjectMaster
 							File.Delete(dllProjectPath);
 					}
 
-					_ide.Project.InstalledPlugins.Remove((Plugin)node.Tag);
-					XmlHandling.SaveTRPROJ(_ide.Project);
+					// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
 				}
 				catch (Exception ex)
 				{
 					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-
-			UpdateAvailablePluginsTreeView();
-			UpdateInstalledPluginsTreeView();
-
-			ResetUIElements();
 		}
 
 		private void button_Download_Click(object sender, EventArgs e) => Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
@@ -267,11 +249,10 @@ namespace TombIDE.ProjectMaster
 			treeView_Installed.SelectedNodes.Clear();
 			treeView_Installed.Invalidate();
 
-			button_Delete.Enabled = true;
-
 			button_Install.Enabled = true;
 			button_Uninstall.Enabled = false;
 
+			button_Delete.Enabled = treeView_Available.SelectedNodes.Count == 1;
 			button_OpenInExplorer.Enabled = treeView_Available.SelectedNodes.Count == 1;
 		}
 
@@ -283,15 +264,64 @@ namespace TombIDE.ProjectMaster
 			treeView_Available.SelectedNodes.Clear();
 			treeView_Available.Invalidate();
 
-			button_Delete.Enabled = false;
-
 			button_Install.Enabled = false;
 			button_Uninstall.Enabled = true;
 
+			button_Delete.Enabled = false;
 			button_OpenInExplorer.Enabled = treeView_Installed.SelectedNodes.Count == 1;
 		}
 
 		#endregion Events
+
+		#region Methods
+
+		private void UpdateAvailablePluginsTreeView()
+		{
+			treeView_Available.Nodes.Clear();
+
+			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+			{
+				bool isPluginInstalled = false;
+
+				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
+				{
+					if (availablePlugin.InternalDllPath == installedPlugin.InternalDllPath)
+					{
+						isPluginInstalled = true;
+						break;
+					}
+				}
+
+				if (isPluginInstalled)
+					continue;
+
+				DarkTreeNode node = new DarkTreeNode(availablePlugin.Name)
+				{
+					Tag = availablePlugin
+				};
+
+				treeView_Available.Nodes.Add(node);
+			}
+
+			treeView_Available.Invalidate();
+		}
+
+		private void UpdateInstalledPluginsTreeView()
+		{
+			treeView_Installed.Nodes.Clear();
+
+			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+			{
+				DarkTreeNode node = new DarkTreeNode(plugin.Name)
+				{
+					Tag = plugin
+				};
+
+				treeView_Installed.Nodes.Add(node);
+			}
+
+			treeView_Installed.Invalidate();
+		}
 
 		private void ResetUIElements()
 		{
@@ -377,52 +407,6 @@ namespace TombIDE.ProjectMaster
 			return Directory.GetFiles(path, "plugin_*.dll", System.IO.SearchOption.AllDirectories).Length > 0;
 		}
 
-		private void UpdateAvailablePluginsTreeView()
-		{
-			treeView_Available.Nodes.Clear();
-
-			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
-			{
-				bool isPluginInstalled = false;
-
-				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
-				{
-					if (availablePlugin.InternalDllPath == installedPlugin.InternalDllPath)
-					{
-						isPluginInstalled = true;
-						break;
-					}
-				}
-
-				if (isPluginInstalled)
-					continue;
-
-				DarkTreeNode node = new DarkTreeNode(availablePlugin.Name)
-				{
-					Tag = availablePlugin
-				};
-
-				treeView_Available.Nodes.Add(node);
-			}
-
-			treeView_Available.Invalidate();
-		}
-
-		private void UpdateInstalledPluginsTreeView()
-		{
-			treeView_Installed.Nodes.Clear();
-
-			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
-			{
-				DarkTreeNode node = new DarkTreeNode(plugin.Name)
-				{
-					Tag = plugin
-				};
-
-				treeView_Installed.Nodes.Add(node);
-			}
-
-			treeView_Installed.Invalidate();
-		}
+		#endregion Methods
 	}
 }

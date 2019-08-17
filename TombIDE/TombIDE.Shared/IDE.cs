@@ -218,6 +218,8 @@ namespace TombIDE.Shared
 		public class RequestedPluginListRefreshEvent : IProjectMasterEvent
 		{ }
 
+		public void RefreshPluginLists() => RaiseEvent(new RequestedPluginListRefreshEvent());
+
 		#endregion RequestedPluginListRefresh
 
 		#region RequestedPresenceCheck
