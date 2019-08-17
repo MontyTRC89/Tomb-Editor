@@ -19,7 +19,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.button_ManagePlugins = new DarkUI.Controls.DarkButton();
-			this.button_OpenFolder = new DarkUI.Controls.DarkButton();
+			this.button_OpenInExplorer = new DarkUI.Controls.DarkButton();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_02 = new DarkUI.Controls.DarkLabel();
 			this.label_NoInfo = new DarkUI.Controls.DarkLabel();
@@ -57,17 +57,18 @@
 			this.button_ManagePlugins.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_ManagePlugins.Click += new System.EventHandler(this.button_ManagePlugins_Click);
 			// 
-			// button_OpenFolder
+			// button_OpenInExplorer
 			// 
-			this.button_OpenFolder.Enabled = false;
-			this.button_OpenFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
-			this.button_OpenFolder.Location = new System.Drawing.Point(224, 5);
-			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(5, 5, 5, 2);
-			this.button_OpenFolder.Name = "button_OpenFolder";
-			this.button_OpenFolder.Size = new System.Drawing.Size(25, 25);
-			this.button_OpenFolder.TabIndex = 2;
-			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Selected Plugin Folder");
-			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
+			this.button_OpenInExplorer.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
+			this.button_OpenInExplorer.Enabled = false;
+			this.button_OpenInExplorer.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
+			this.button_OpenInExplorer.Location = new System.Drawing.Point(224, 5);
+			this.button_OpenInExplorer.Margin = new System.Windows.Forms.Padding(5, 5, 5, 2);
+			this.button_OpenInExplorer.Name = "button_OpenInExplorer";
+			this.button_OpenInExplorer.Size = new System.Drawing.Size(25, 25);
+			this.button_OpenInExplorer.TabIndex = 2;
+			this.toolTip.SetToolTip(this.button_OpenInExplorer, "Open Selected Plugin Folder");
+			this.button_OpenInExplorer.Click += new System.EventHandler(this.button_OpenInExplorer_Click);
 			// 
 			// label_01
 			// 
@@ -124,7 +125,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel_List.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel_List.Controls.Add(this.button_OpenFolder);
+			this.panel_List.Controls.Add(this.button_OpenInExplorer);
 			this.panel_List.Controls.Add(this.button_ManagePlugins);
 			this.panel_List.Controls.Add(this.treeView);
 			this.panel_List.Location = new System.Drawing.Point(1, 25);
@@ -309,7 +310,7 @@
 		#endregion
 
 		private DarkUI.Controls.DarkButton button_ManagePlugins;
-		private DarkUI.Controls.DarkButton button_OpenFolder;
+		private DarkUI.Controls.DarkButton button_OpenInExplorer;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
 		private DarkUI.Controls.DarkLabel label_NoInfo;

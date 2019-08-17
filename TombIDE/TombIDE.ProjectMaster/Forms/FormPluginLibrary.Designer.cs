@@ -57,6 +57,7 @@
 			// 
 			this.button_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.button_Delete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.button_Delete.Enabled = false;
 			this.button_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.button_Delete.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
 			this.button_Delete.ImageTransparentColor = System.Drawing.Color.Magenta;
