@@ -25,7 +25,12 @@ namespace TombLib.Projects
 			if (renameDirectory)
 			{
 				string newFolderPath = Path.Combine(Path.GetDirectoryName(FolderPath), newName);
-				Directory.Move(FolderPath, newFolderPath);
+
+				if (Directory.Exists(FolderPath + "_TEMP")) // The "_TEMP" suffix exists only when the directory name just changed letter cases
+					Directory.Move(FolderPath + "_TEMP", newFolderPath);
+				else
+					Directory.Move(FolderPath, newFolderPath);
+
 				FolderPath = newFolderPath;
 			}
 

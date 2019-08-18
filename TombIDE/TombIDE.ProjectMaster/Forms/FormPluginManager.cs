@@ -88,7 +88,7 @@ namespace TombIDE.ProjectMaster
 							// Check for name duplicates
 							foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 							{
-								if (availablePlugin.Name == plugin.Name)
+								if (availablePlugin.Name.ToLower() == plugin.Name.ToLower())
 								{
 									Directory.Delete(extractionPath, true);
 									throw new ArgumentException("A plugin with the same name already exists on the list.");
@@ -140,7 +140,7 @@ namespace TombIDE.ProjectMaster
 						// Check for name duplicates
 						foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 						{
-							if (availablePlugin.Name == plugin.Name)
+							if (availablePlugin.Name.ToLower() == plugin.Name.ToLower())
 							{
 								Directory.Delete(extractionPath, true);
 								throw new ArgumentException("A plugin with the same name already exists on the list.");

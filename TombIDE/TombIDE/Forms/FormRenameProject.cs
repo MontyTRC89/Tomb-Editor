@@ -1,5 +1,6 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -42,6 +43,8 @@ namespace TombIDE
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
 					if (Path.GetFileName(_ide.Project.ProjectPath) != newName && renameDirectory)
 					{
+						HandleDirectoryRenaming(newName);
+
 						_ide.Project.Rename(newName, true);
 						XmlHandling.SaveTRPROJ(_ide.Project);
 
@@ -49,26 +52,64 @@ namespace TombIDE
 					}
 					else
 						DialogResult = DialogResult.Cancel;
-
-					return;
 				}
-
-				// Check for name duplicates
-				foreach (Project project in XmlHandling.GetProjectsFromXml())
+				else
 				{
-					if (project.Name == newName)
-						throw new ArgumentException("A project with the same name already exists on the list.");
+					// Check for name duplicates
+					foreach (Project project in XmlHandling.GetProjectsFromXml())
+					{
+						if (project.Name.ToLower() == newName.ToLower())
+						{
+							// Check if the currently processed Project is the current _ide.Project
+							if (project.ProjectPath.ToLower() == _ide.Project.ProjectPath.ToLower())
+							{
+								if (renameDirectory)
+									HandleDirectoryRenaming(newName);
+
+								break;
+							}
+							else
+								throw new ArgumentException("A project with the same name already exists on the list.");
+						}
+					}
+
+					_ide.Project.Rename(newName, renameDirectory);
+					XmlHandling.SaveTRPROJ(_ide.Project);
+
+					_ide.RaiseEvent(new IDE.ActiveProjectRenamedEvent());
 				}
-
-				_ide.Project.Rename(newName, renameDirectory);
-				XmlHandling.SaveTRPROJ(_ide.Project);
-
-				_ide.RaiseEvent(new IDE.ActiveProjectRenamedEvent());
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				DialogResult = DialogResult.None;
+			}
+		}
+
+		private void HandleDirectoryRenaming(string newName)
+		{
+			// Allow renaming directories to the same name, but with different letters cases
+			// To do that, we must add a "_TEMP" suffix at the end of the directory name
+			// _ide.Project.Rename() will then handle the rest
+
+			string tempPath = _ide.Project.ProjectPath + "_TEMP";
+			Directory.Move(_ide.Project.ProjectPath, tempPath);
+
+			// Adjust the ProjectLevel paths too
+			if (_ide.Project.LevelsPath.StartsWith(_ide.Project.ProjectPath))
+			{
+				string newProjectPath = Path.Combine(Path.GetDirectoryName(_ide.Project.ProjectPath), newName);
+
+				List<ProjectLevel> cachedLevelList = new List<ProjectLevel>();
+				cachedLevelList.AddRange(_ide.Project.Levels);
+
+				_ide.Project.Levels.Clear();
+
+				foreach (ProjectLevel projectLevel in cachedLevelList)
+				{
+					projectLevel.FolderPath = projectLevel.FolderPath.Replace(_ide.Project.ProjectPath, newProjectPath);
+					_ide.Project.Levels.Add(projectLevel);
+				}
 			}
 		}
 	}
