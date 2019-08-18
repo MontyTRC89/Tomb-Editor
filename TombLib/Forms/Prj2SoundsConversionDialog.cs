@@ -77,13 +77,13 @@ namespace TombLib.Forms
 
                 if (value == "" || !int.TryParse(value, out id))
                 {
-                    DarkMessageBox.Show(this, "You have not selected a sound Id for sound '" +
-                                        row.Cells[0].Value + "'. You must assign all sounds for converting your Wa2 file.",
-                                        "Error",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
-
-                    return;
+                    if (DarkMessageBox.Show(this, "You have not selected a sound Id for some sounds of the list. Do you want to continue?",
+                                            "Error",
+                                            MessageBoxButtons.YesNo,
+                                            MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+                    else
+                        break;
                 }
             }
 
@@ -91,10 +91,12 @@ namespace TombLib.Forms
             {
                 DataGridViewRow row = dgvSoundInfos.Rows[i];
 
-                _conversionRows[i].NewId = int.Parse(row.Cells[1].Value.ToString());
+                string strId = row.Cells[1].Value.ToString();
+                if (strId == "" || strId == null)
+                    continue;
+
+                _conversionRows[i].NewId = int.Parse(strId);
                 _conversionRows[i].NewName = row.Cells[2].Value.ToString();
-                _conversionRows[i].SaveToXml = (bool)row.Cells[3].Value;
-                _conversionRows[i].ExportSamples = (bool)row.Cells[4].Value;
             }
 
             DialogResult = DialogResult.OK;
