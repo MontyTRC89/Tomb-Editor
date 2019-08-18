@@ -1,6 +1,6 @@
 ﻿namespace TombIDE.ProjectMaster
 {
-	partial class FormPluginLibrary
+	partial class FormPluginManager
 	{
 		private System.ComponentModel.IContainer components = null;
 
@@ -252,7 +252,7 @@
 			this.panel_02.Size = new System.Drawing.Size(784, 41);
 			this.panel_02.TabIndex = 1;
 			// 
-			// FormPluginLibrary
+			// FormPluginManager
 			// 
 			this.AcceptButton = this.button_Close;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -263,10 +263,10 @@
 			this.FlatBorder = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
-			this.Name = "FormPluginLibrary";
+			this.Name = "FormPluginManager";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Install Plugin from Library";
+			this.Text = "Plugin Manager";
 			this.panel_01.ResumeLayout(false);
 			this.sectionPanel_Installed.ResumeLayout(false);
 			this.sectionPanel_Available.ResumeLayout(false);

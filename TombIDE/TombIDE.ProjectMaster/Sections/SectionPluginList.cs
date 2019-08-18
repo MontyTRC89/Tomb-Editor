@@ -43,7 +43,7 @@ namespace TombIDE.ProjectMaster
 
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
 		{
-			using (FormPluginLibrary form = new FormPluginLibrary(_ide))
+			using (FormPluginManager form = new FormPluginManager(_ide))
 				form.ShowDialog(this);
 		}
 

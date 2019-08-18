@@ -47,11 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\FormPluginLibrary.cs">
+    <Compile Include="Forms\FormPluginManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormPluginLibrary.Designer.cs">
-      <DependentUpon>FormPluginLibrary.cs</DependentUpon>
+    <Compile Include="Forms\FormPluginManager.Designer.cs">
+      <DependentUpon>FormPluginManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormImportLevel.cs">
       <SubType>Form</SubType>
@@ -147,8 +147,8 @@
     <EmbeddedResource Include="Forms\FormLevelSetup.resx">
       <DependentUpon>FormLevelSetup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPluginLibrary.resx">
-      <DependentUpon>FormPluginLibrary.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormPluginManager.resx">
+      <DependentUpon>FormPluginManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameLevel.resx">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>

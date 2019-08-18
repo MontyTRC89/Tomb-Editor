@@ -1027,9 +1027,6 @@ namespace TombIDE.ScriptEditor
 				{
 					if (file.Name.ToLower().EndsWith(".txt") || file.Name.ToLower().EndsWith(".lua"))
 					{
-						if (file.Name.ToLower() == "script.txt" || file.Name.ToLower() == "english.txt")
-							continue;
-
 						DarkTreeNode fileNode = new DarkTreeNode(file.Name)
 						{
 							Icon = Properties.Resources.file.ToBitmap(),

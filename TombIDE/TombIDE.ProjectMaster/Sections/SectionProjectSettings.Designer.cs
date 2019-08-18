@@ -18,12 +18,12 @@
 		private void InitializeComponent()
 		{
 			this.panel_Background = new System.Windows.Forms.Panel();
+			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.settings_SpecialFunctions = new TombIDE.ProjectMaster.SettingsSpecialFunctions();
 			this.settings_Logo = new TombIDE.ProjectMaster.SettingsLogo();
 			this.settings_StartupImage = new TombIDE.ProjectMaster.SettingsStartupImage();
 			this.settings_GameIcon = new TombIDE.ProjectMaster.SettingsGameIcon();
 			this.settings_ProjectInfo = new TombIDE.ProjectMaster.SettingsProjectInfo();
-			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.panel_Background.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -43,6 +43,17 @@
 			this.panel_Background.Name = "panel_Background";
 			this.panel_Background.Size = new System.Drawing.Size(658, 1272);
 			this.panel_Background.TabIndex = 0;
+			// 
+			// sectionPanel
+			// 
+			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.sectionPanel.Controls.Add(this.panel_Background);
+			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
+			this.sectionPanel.Name = "sectionPanel";
+			this.sectionPanel.SectionHeader = "General Project Settings";
+			this.sectionPanel.Size = new System.Drawing.Size(662, 1300);
+			this.sectionPanel.TabIndex = 0;
 			// 
 			// settings_SpecialFunctions
 			// 
@@ -98,17 +109,6 @@
 			this.settings_ProjectInfo.Name = "settings_ProjectInfo";
 			this.settings_ProjectInfo.Size = new System.Drawing.Size(640, 268);
 			this.settings_ProjectInfo.TabIndex = 1;
-			// 
-			// sectionPanel
-			// 
-			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.sectionPanel.Controls.Add(this.panel_Background);
-			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
-			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "General Project Settings";
-			this.sectionPanel.Size = new System.Drawing.Size(662, 1300);
-			this.sectionPanel.TabIndex = 0;
 			// 
 			// SectionProjectSettings
 			// 

@@ -14,13 +14,13 @@ using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
-	public partial class FormPluginLibrary : DarkForm
+	public partial class FormPluginManager : DarkForm
 	{
 		private IDE _ide;
 
 		#region Initialization
 
-		public FormPluginLibrary(IDE ide)
+		public FormPluginManager(IDE ide)
 		{
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
