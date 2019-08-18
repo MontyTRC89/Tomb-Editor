@@ -1,12 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Threading;
 using TombIDE.Shared;
 
 namespace TombIDE.REGSVR
 {
 	internal class Program
 	{
-		private static void Main(string[] args)
+		private static void Main()
 		{
+			Console.WriteLine("Installing required COM libraries...");
+			Thread.Sleep(500);
+
 			RegisterNGCenterLibraries();
 		}
 
