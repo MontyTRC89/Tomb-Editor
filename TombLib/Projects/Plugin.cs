@@ -16,10 +16,15 @@ namespace TombLib.Projects
 
 			// Rename the plugin directory to the DLL file name for better consistency
 			string newPluginFolderPath = Path.Combine(Path.GetDirectoryName(pluginFolderPath), Path.GetFileNameWithoutExtension(dllFilePath));
-			Directory.Move(pluginFolderPath, newPluginFolderPath);
 
-			pluginFolderPath = newPluginFolderPath;
-			dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
+			// Check if the name isn't the correct one already
+			if (pluginFolderPath != newPluginFolderPath)
+			{
+				Directory.Move(pluginFolderPath, newPluginFolderPath);
+
+				pluginFolderPath = newPluginFolderPath;
+				dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
+			}
 
 			string pluginName = Path.GetFileName(pluginFolderPath);
 
