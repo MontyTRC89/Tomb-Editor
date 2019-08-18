@@ -13,9 +13,11 @@ namespace TombIDE.Shared
 		/// </summary>
 		public static List<Project> GetProjectsFromXml()
 		{
+			string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TombIDEProjects.xml");
+
 			try
 			{
-				List<string> projectFilePaths = (List<string>)ReadXmlFile("TombIDEProjects.xml", typeof(List<string>));
+				List<string> projectFilePaths = (List<string>)ReadXmlFile(xmlPath, typeof(List<string>));
 				// TombIDEProjects.xml only stores .trproj file paths
 
 				List<Project> projectList = new List<Project>();
@@ -31,16 +33,18 @@ namespace TombIDE.Shared
 			catch (FileNotFoundException) // TombIDEProjects.xml doesn't exist
 			{
 				// Create a new (empty) .xml file
-				SaveXmlFile("TombIDEProjects.xml", typeof(List<string>), new List<string>());
+				SaveXmlFile(xmlPath, typeof(List<string>), new List<string>());
 				return new List<Project>();
 			}
 		}
 
 		public static List<Plugin> GetPluginsFromXml()
 		{
+			string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TombIDEPlugins.xml");
+
 			try
 			{
-				List<Plugin> pluginList = (List<Plugin>)ReadXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>));
+				List<Plugin> pluginList = (List<Plugin>)ReadXmlFile(xmlPath, typeof(List<Plugin>));
 
 				List<Plugin> validPlugins = new List<Plugin>();
 
@@ -57,7 +61,7 @@ namespace TombIDE.Shared
 			catch (FileNotFoundException) // TombIDEPlugins.xml doesn't exist
 			{
 				// Create a new (empty) .xml file
-				SaveXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>), new List<Plugin>());
+				SaveXmlFile(xmlPath, typeof(List<Plugin>), new List<Plugin>());
 				return new List<Plugin>();
 			}
 		}
@@ -72,12 +76,14 @@ namespace TombIDE.Shared
 			foreach (Project proj in projects)
 				projectFilePaths.Add(proj.GetTRPROJFilePath());
 
-			SaveXmlFile("TombIDEProjects.xml", typeof(List<string>), projectFilePaths);
+			string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TombIDEProjects.xml");
+			SaveXmlFile(xmlPath, typeof(List<string>), projectFilePaths);
 		}
 
 		public static void UpdatePluginsXml(List<Plugin> pluginList)
 		{
-			SaveXmlFile("TombIDEPlugins.xml", typeof(List<Plugin>), pluginList);
+			string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TombIDEPlugins.xml");
+			SaveXmlFile(xmlPath, typeof(List<Plugin>), pluginList);
 		}
 
 		public static Project ReadTRPROJ(string path)

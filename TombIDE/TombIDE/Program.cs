@@ -15,7 +15,7 @@ namespace TombIDE
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		private static void Main()
+		private static void Main(string[] args)
 		{
 			UpdateNGCompilerPaths();
 
@@ -29,7 +29,15 @@ namespace TombIDE
 			using (IDE ide = new IDE(configuration, availableProjects, availablePlugins))
 			{
 				using (FormStart form = new FormStart(ide))
-					Application.Run(form);
+				{
+					if (args.Length > 0)
+					{
+						if (Path.GetExtension(args[0].ToLower()) == ".trproj")
+							form.OpenTRPROJWithTombIDE(args[0]);
+					}
+					else
+						Application.Run(form);
+				}
 			}
 		}
 
@@ -65,7 +73,7 @@ namespace TombIDE
 				// Merge the stringBytes array with the leftover items from the bytesToWrite_02 array, so the full array size is still 256
 				bytesToWrite_02 = stringBytes.Concat(bytesToWrite_02).ToArray();
 
-				string centerSettingsFilePath = Path.Combine("NGC", "center_settings.bin");
+				string centerSettingsFilePath = Path.Combine(programPath, "NGC", "center_settings.bin");
 
 				using (FileStream stream = File.OpenWrite(centerSettingsFilePath))
 				{
