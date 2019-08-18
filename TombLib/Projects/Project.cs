@@ -76,7 +76,11 @@ namespace TombLib.Projects
 			{
 				// Rename project (Game) directory
 				string newProjectPath = Path.Combine(Path.GetDirectoryName(ProjectPath), newName);
-				Directory.Move(ProjectPath, newProjectPath);
+
+				if (Directory.Exists(ProjectPath + "_TEMP")) // The "_TEMP" suffix exists only when the directory name just changed letter cases
+					Directory.Move(ProjectPath + "_TEMP", newProjectPath);
+				else
+					Directory.Move(ProjectPath, newProjectPath);
 
 				// Change ScriptPath / LevelsPath values of the project if they were inside the ProjectPath folder
 				if (ScriptPath.StartsWith(ProjectPath))

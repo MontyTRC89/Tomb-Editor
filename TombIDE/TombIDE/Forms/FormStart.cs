@@ -69,7 +69,7 @@ namespace TombIDE
 				// Check for name duplicates
 				foreach (Project project in _ide.AvailableProjects)
 				{
-					if (project.Name == openedProject.Name && project.ProjectPath != openedProject.ProjectPath)
+					if (project.Name.ToLower() == openedProject.Name.ToLower() && project.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
 						throw new ArgumentException("A project with the same name already exists on the list.");
 				}
 
@@ -257,7 +257,7 @@ namespace TombIDE
 						// Check for name duplicates
 						foreach (Project project in _ide.AvailableProjects)
 						{
-							if (project.Name == openedProject.Name)
+							if (project.Name.ToLower() == openedProject.Name.ToLower())
 								throw new ArgumentException("A project with the same name already exists on the list.");
 						}
 

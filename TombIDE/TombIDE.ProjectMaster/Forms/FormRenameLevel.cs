@@ -78,27 +78,40 @@ namespace TombIDE.ProjectMaster
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
 					if (Path.GetFileName(_ide.SelectedLevel.FolderPath) != newName && renameDirectory)
 					{
+						HandleDirectoryRenaming();
+
 						_ide.SelectedLevel.Rename(newName, true);
 						_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
 					}
 					else
 						DialogResult = DialogResult.Cancel;
-
-					return;
 				}
-
-				// Check for name duplicates
-				foreach (ProjectLevel level in _ide.Project.Levels)
+				else
 				{
-					if (level.Name == newName)
-						throw new ArgumentException("A level with the same name already exists on the list.");
+					// Check for name duplicates
+					foreach (ProjectLevel projectLevel in _ide.Project.Levels)
+					{
+						if (projectLevel.Name.ToLower() == newName.ToLower())
+						{
+							// Check if the currently processed ProjectLevel is the current _ide.SelectedLevel
+							if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
+							{
+								if (renameDirectory)
+									HandleDirectoryRenaming();
+
+								break;
+							}
+							else
+								throw new ArgumentException("A level with the same name already exists on the list.");
+						}
+					}
+
+					if (renameScriptEntry)
+						_ide.RenameSelectedLevelScriptEntry(newName);
+
+					_ide.SelectedLevel.Rename(newName, renameDirectory);
+					_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
 				}
-
-				if (renameScriptEntry)
-					_ide.RenameSelectedLevelScriptEntry(newName);
-
-				_ide.SelectedLevel.Rename(newName, renameDirectory);
-				_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
 			}
 			catch (Exception ex)
 			{
@@ -165,6 +178,16 @@ namespace TombIDE.ProjectMaster
 			}
 
 			button_Apply.Enabled = !string.IsNullOrWhiteSpace(textBoxContent);
+		}
+
+		private void HandleDirectoryRenaming()
+		{
+			// Allow renaming directories to the same name, but with different letters cases
+			// To do that, we must add a "_TEMP" suffix at the end of the directory name
+			// _ide.SelectedLevel.Rename() will then handle the rest
+
+			string tempPath = _ide.SelectedLevel.FolderPath + "_TEMP";
+			Directory.Move(_ide.SelectedLevel.FolderPath, tempPath);
 		}
 	}
 }

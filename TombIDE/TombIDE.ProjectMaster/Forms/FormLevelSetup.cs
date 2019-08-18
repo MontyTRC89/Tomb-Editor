@@ -35,9 +35,9 @@ namespace TombIDE.ProjectMaster
 					throw new ArgumentException("You must enter a valid name for your level.");
 
 				// Check for name duplicates
-				foreach (ProjectLevel projectlevel in _ide.Project.Levels)
+				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
 				{
-					if (projectlevel.Name == levelName)
+					if (projectLevel.Name.ToLower() == levelName.ToLower())
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
 

@@ -51,9 +51,9 @@ namespace TombIDE
 					throw new ArgumentException("You must select which .prj2 files you want to import.");
 
 				// Check for name duplicates
-				foreach (ProjectLevel level in _ide.Project.Levels)
+				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
 				{
-					if (level.Name == levelName)
+					if (projectLevel.Name.ToLower() == levelName.ToLower())
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
 
