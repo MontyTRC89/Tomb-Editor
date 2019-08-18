@@ -1,9 +1,19 @@
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Text;
+using System.Xml;
 
 namespace TombIDE.Shared.Scripting
 {
 	public class KeyWords
 	{
+		#region Public variables
+
+		public static List<string> MnemonicConstants { get; internal set; }
+		public static List<string> PluginMnemonics { get; internal set; }
+
 		public static List<string> Sections
 		{
 			get
@@ -188,5 +198,73 @@ namespace TombIDE.Shared.Scripting
 				};
 			}
 		}
+
+		#endregion Public variables
+
+		#region Methods
+
+		public static void SetupConstants()
+		{
+			SetupMnemonicConstants();
+			SetupPluginMnemonics();
+		}
+
+		private static void SetupMnemonicConstants()
+		{
+			List<string> mnemonicConstants = new List<string>();
+
+			try
+			{
+				string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", "Mnemonic Constants.xml");
+
+				using (XmlReader reader = XmlReader.Create(xmlPath))
+				{
+					using (DataSet dataSet = new DataSet())
+					{
+						dataSet.ReadXml(reader);
+
+						DataTable dataTable = dataSet.Tables[0];
+
+						for (int i = 0; i < dataTable.Rows.Count; i++)
+							mnemonicConstants.Add(dataTable.Rows[i][2].ToString());
+					}
+				}
+
+				MnemonicConstants = mnemonicConstants;
+			}
+			catch (Exception)
+			{
+				// Yes
+			}
+		}
+
+		private static void SetupPluginMnemonics()
+		{
+			List<string> pluginMnemonics = new List<string>();
+
+			try
+			{
+				string ngcPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC");
+
+				foreach (string file in Directory.GetFiles(ngcPath, "plugin_*.script", SearchOption.TopDirectoryOnly))
+				{
+					string[] lines = File.ReadAllLines(file, Encoding.GetEncoding(1252));
+
+					foreach (string line in lines)
+					{
+						if (!string.IsNullOrWhiteSpace(line) && line.Contains(":"))
+							pluginMnemonics.Add(line.Split(':')[0].Trim());
+					}
+				}
+
+				PluginMnemonics = pluginMnemonics;
+			}
+			catch (Exception)
+			{
+				// Yes
+			}
+		}
+
+		#endregion Methods
 	}
 }
