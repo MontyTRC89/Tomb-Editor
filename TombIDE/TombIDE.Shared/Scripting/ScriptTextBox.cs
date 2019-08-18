@@ -346,9 +346,10 @@ namespace TombIDE.Shared.Scripting
 				SelectedColor = Color.SteelBlue
 			};
 
-			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 			popupMenu.Font = new Font(popupMenu.Font.FontFamily, 8F);
 			popupMenu.Scale(new SizeF(2, (float)1.5));
+
+			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 		}
 
 		private void DoSyntaxHighlighting(TextChangedEventArgs e, bool noLoop = false)
@@ -362,12 +363,14 @@ namespace TombIDE.Shared.Scripting
 			e.ChangedRange.SetStyle(commentColor, @";.*");
 			e.ChangedRange.SetStyle(regularColor, @"[\[\]=,]");
 			e.ChangedRange.SetStyle(referenceColor, @"\$[a-f0-9]*", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(referenceColor, @"\b(" + string.Join("|", KeyWords.MnemonicConstants) + @")\b", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(referenceColor, @"\b(" + string.Join("|", KeyWords.PluginMnemonics) + @")\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(referenceColor, @"#(define|first_id|include)", RegexOptions.IgnoreCase);
-			e.ChangedRange.SetStyle(newCommandColor, @",\s?>\s*?(;.*)?" + Environment.NewLine);
 			e.ChangedRange.SetStyle(sectionColor, @"\[(" + string.Join("|", KeyWords.Sections) + @")\]", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(newCommandColor, @",\s?>\s*?(;.*)?" + Environment.NewLine);
 			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.NewCommands) + @")\s*?=", RegexOptions.IgnoreCase);
-			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(newCommandColor, @"\b(" + string.Join("|", KeyWords.TR5MainCommands) + @")\s*?=", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.TR5Commands) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(valueColor, "=.*");

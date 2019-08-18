@@ -33,6 +33,7 @@ namespace TombIDE.ScriptEditor
 		public ScriptEditor()
 		{
 			CommandManager.MaxHistoryLength = 512; // TODO: Add this as a setting in FormSettings
+			KeyWords.SetupConstants();
 
 			InitializeComponent();
 		}
