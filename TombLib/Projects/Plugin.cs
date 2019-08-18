@@ -12,8 +12,16 @@ namespace TombLib.Projects
 
 		public static Plugin InstallPluginFolder(string pluginFolderPath)
 		{
-			string pluginName = Path.GetFileName(pluginFolderPath);
 			string dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
+
+			// Rename the plugin directory to the DLL file name for better consistency
+			string newPluginFolderPath = Path.Combine(Path.GetDirectoryName(pluginFolderPath), Path.GetFileNameWithoutExtension(dllFilePath));
+			Directory.Move(pluginFolderPath, newPluginFolderPath);
+
+			pluginFolderPath = newPluginFolderPath;
+			dllFilePath = Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First();
+
+			string pluginName = Path.GetFileName(pluginFolderPath);
 
 			string scriptFilePath = Path.Combine(pluginFolderPath, Path.GetFileNameWithoutExtension(dllFilePath) + ".script");
 			string btnFilePath = Path.Combine(pluginFolderPath, Path.GetFileNameWithoutExtension(dllFilePath) + ".btn");

@@ -376,6 +376,13 @@ namespace TombIDE.ProjectMaster
 				Directory.Delete(cachedFolderPath, true);
 			}
 
+			if (Directory.GetFiles(pluginFolderPath, "plugin*.dll").Length == 0)
+			{
+				Directory.Delete(pluginFolderPath, true);
+				throw new ArgumentException(string.Format("Couldn't find a valid plugin DLL file in the first directory of the {0}.",
+					extractedFromArchive ? "archive" : "folder"));
+			}
+
 			// Check for DLL duplicates
 			foreach (Plugin plugin in _ide.AvailablePlugins)
 			{
