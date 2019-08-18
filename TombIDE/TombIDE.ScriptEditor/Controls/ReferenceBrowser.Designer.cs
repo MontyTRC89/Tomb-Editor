@@ -88,6 +88,7 @@
 			this.dataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
 			this.dataGrid.Size = new System.Drawing.Size(800, 130);
 			this.dataGrid.TabIndex = 2;
+			this.dataGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellDoubleClick);
 			this.dataGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGrid_CellMouseClick);
 			// 
 			// textBox_Search
