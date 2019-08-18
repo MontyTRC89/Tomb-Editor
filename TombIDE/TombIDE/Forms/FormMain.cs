@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 
@@ -238,7 +239,8 @@ namespace TombIDE
 
 			SaveSettings();
 
-			Application.Restart();
+			Application.Exit();
+			Process.Start(Assembly.GetExecutingAssembly().Location);
 		}
 
 		#endregion Initialization

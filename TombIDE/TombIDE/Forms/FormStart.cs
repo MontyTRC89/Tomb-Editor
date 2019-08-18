@@ -1,8 +1,10 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.Projects;
@@ -55,6 +57,59 @@ namespace TombIDE
 
 				// Update the TombIDEProjects.xml file as well
 				RefreshAndReserializeProjects();
+			}
+		}
+
+		public void OpenTRPROJWithTombIDE(string path)
+		{
+			try
+			{
+				Project openedProject = XmlHandling.ReadTRPROJ(path);
+
+				// Check for name duplicates
+				foreach (Project project in _ide.AvailableProjects)
+				{
+					if (project.Name == openedProject.Name && project.ProjectPath != openedProject.ProjectPath)
+						throw new ArgumentException("A project with the same name already exists on the list.");
+				}
+
+				// Check if the opened project is valid
+				if (!openedProject.IsValidProject())
+					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
+
+				bool projectExistsOnList = false;
+
+				foreach (DarkTreeNode node in treeView.Nodes)
+				{
+					Project nodeProject = (Project)node.Tag;
+
+					if (nodeProject.Name == openedProject.Name)
+					{
+						projectExistsOnList = true;
+						break;
+					}
+				}
+
+				if (!projectExistsOnList)
+					_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
+
+				foreach (DarkTreeNode node in treeView.Nodes)
+				{
+					Project nodeProject = (Project)node.Tag;
+
+					if (nodeProject.Name == openedProject.Name)
+					{
+						treeView.SelectNode(node);
+						CheckItemSelection();
+
+						OpenSelectedProject();
+						break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -387,7 +442,8 @@ namespace TombIDE
 					_ide.Configuration.Save();
 
 					// Restart the application
-					Application.Restart();
+					Application.Exit();
+					Process.Start(Assembly.GetExecutingAssembly().Location);
 
 					// Using Show(); instead would cause ObjectDisposed exceptions
 				}
