@@ -9,6 +9,8 @@ namespace TombIDE.ScriptEditor
 {
 	internal partial class ReferenceBrowser : UserControl
 	{
+		private FormMnemonicInfo form = new FormMnemonicInfo();
+
 		public ReferenceBrowser()
 		{
 			InitializeComponent();
@@ -88,5 +90,10 @@ namespace TombIDE.ScriptEditor
 
 		private void menuItem_Copy_Click(object sender, System.EventArgs e) =>
 			Clipboard.SetText(dataGrid.SelectedCells[0].Value.ToString());
+
+		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			form.Show();
+		}
 	}
 }
