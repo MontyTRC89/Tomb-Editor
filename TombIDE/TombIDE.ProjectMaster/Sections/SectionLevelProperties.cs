@@ -218,7 +218,7 @@ namespace TombIDE.ProjectMaster
 
 				if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1]) // Wad handling
 				{
-					startInfo.FileName = "WadTool.exe";
+					startInfo.FileName = Path.Combine(SharedMethods.GetProgramDirectory(), "WadTool.exe");
 					startInfo.Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"";
 				}
 				else
