@@ -347,6 +347,8 @@ namespace TombIDE.Shared.Scripting
 			};
 
 			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
+			popupMenu.Font = new Font(popupMenu.Font.FontFamily, 8F);
+			popupMenu.Scale(new SizeF(2, (float)1.5));
 		}
 
 		private void DoSyntaxHighlighting(TextChangedEventArgs e, bool noLoop = false)
