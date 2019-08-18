@@ -93,19 +93,9 @@ namespace TombIDE
 				if (!projectExistsOnList)
 					_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
 
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					Project nodeProject = (Project)node.Tag;
+				_ide.Configuration.RememberedProject = openedProject.Name;
 
-					if (nodeProject.Name == openedProject.Name)
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
-
-						OpenSelectedProject();
-						break;
-					}
-				}
+				// Continue code in Program.cs
 			}
 			catch (Exception ex)
 			{
