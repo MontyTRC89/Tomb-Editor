@@ -126,6 +126,11 @@ namespace TombLib.LevelData
                             soundmap[sound.Id] = sound;
                     }
 
+                // Last collect all custom sounds
+                foreach (var sound in CustomSounds.SoundInfos)
+                    if (!soundmap.ContainsKey(sound.Id))
+                        soundmap.Add(sound.Id, sound);
+
                 return soundmap.Values.ToList();
             }
         }

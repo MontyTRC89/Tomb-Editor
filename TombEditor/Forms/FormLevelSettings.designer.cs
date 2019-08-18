@@ -122,6 +122,7 @@
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.butSelectAllSoundsFromWads = new DarkUI.Controls.DarkButton();
             this.panel5 = new System.Windows.Forms.Panel();
             this.butSearchCustomSoundsXmlPath = new DarkUI.Controls.DarkButton();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
@@ -143,7 +144,6 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.butSelectAllSoundsFromWads = new DarkUI.Controls.DarkButton();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -1352,6 +1352,16 @@
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Sounds";
             // 
+            // butSelectAllSoundsFromWads
+            // 
+            this.butSelectAllSoundsFromWads.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectAllSoundsFromWads.Location = new System.Drawing.Point(393, 113);
+            this.butSelectAllSoundsFromWads.Name = "butSelectAllSoundsFromWads";
+            this.butSelectAllSoundsFromWads.Size = new System.Drawing.Size(164, 23);
+            this.butSelectAllSoundsFromWads.TabIndex = 99;
+            this.butSelectAllSoundsFromWads.Text = "Select all sounds from wads";
+            this.butSelectAllSoundsFromWads.Click += new System.EventHandler(this.ButSelectAllSoundsFromWads_Click);
+            // 
             // panel5
             // 
             this.panel5.Controls.Add(this.butSearchCustomSoundsXmlPath);
@@ -1558,15 +1568,6 @@
             // 
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
-            // 
-            // butSelectAllSoundsFromWads
-            // 
-            this.butSelectAllSoundsFromWads.Location = new System.Drawing.Point(393, 113);
-            this.butSelectAllSoundsFromWads.Name = "butSelectAllSoundsFromWads";
-            this.butSelectAllSoundsFromWads.Size = new System.Drawing.Size(164, 23);
-            this.butSelectAllSoundsFromWads.TabIndex = 99;
-            this.butSelectAllSoundsFromWads.Text = "Select all sounds from wads";
-            this.butSelectAllSoundsFromWads.Click += new System.EventHandler(this.ButSelectAllSoundsFromWads_Click);
             // 
             // FormLevelSettings
             // 

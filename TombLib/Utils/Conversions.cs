@@ -36,6 +36,8 @@ namespace TombLib.Utils
             }
         }
 
+        public const string SoundsCatalogPath = "Sounds\\TR4\\Sounds.xml";
+
         public static bool ConvertWad2ToNewSoundFormat(string src, string dest, string soundsCatalog)
         {
             try
@@ -48,7 +50,7 @@ namespace TombLib.Utils
 
                 // Check if the Wad2 needs to be converted
                 if (wad.SoundSystem != SoundSystem.Dynamic)
-                    throw new InvalidOperationException("This Wad2 file doesn't need to be converted");
+                    return true;
 
                 // Now collect all sound infos from obsolete lists and build a new list
                 var soundInfos = wad.AllLoadesSoundInfos.Values.ToList();
@@ -167,22 +169,24 @@ namespace TombLib.Utils
             }
         }
 
-        public static bool ConvertPrj2ToNewSoundFormat(string src, string dest, string soundsCatalog)
+        public static bool ConvertPrj2ToNewSoundFormat(Level level, string src, string dest, string soundsCatalog, bool save)
         {
             try
             {
                 // Load sounds catalog
                 WadSounds sounds = WadSounds.ReadFromFile(soundsCatalog);
 
-                // Load Prj2
-                Level level = Prj2Loader.LoadFromPrj2(src, null);
-
                 // Check for sound system
                 if (level.Settings.SoundSystem == SoundSystem.Xml)
-                    throw new InvalidOperationException("This Prj2 file doesn't need to be converted");
+                    return true;
 
                 // Collect all sounds to remap
                 var conversionList = new List<SoundInfoConversionRow>();
+
+                // We start from sound id = 602 which is the TR1 sound area of TRNG extended soundmap.
+                // This area is reserved for TR1 enemies and so it *** should *** be used rarely
+                int lastSoundId = 602;
+
                 foreach (var room in level.Rooms)
                 {
                     if (room != null)
@@ -196,46 +200,31 @@ namespace TombLib.Utils
                                     if (!conversionList.Select(f => f.OldName).Contains(soundSource.WadReferencedSoundName))
                                     {
                                         var row = new SoundInfoConversionRow(null, soundSource.WadReferencedSoundName);
-                                        row.NewId = -1;
-                                        row.NewName = "";
+                                        row.NewName = "SOUND_" + lastSoundId;
+                                        row.NewId = lastSoundId++;
                                         conversionList.Add(row);
                                     }
                                 }
                                 else if (soundSource.EmbeddedSoundInfo != null)
                                 {
-                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo, soundSource.EmbeddedSoundInfo.Name);
-                                    row.NewId = -1;
-                                    row.NewName = "";
+                                    bool found = false;
+                                    foreach (var r in conversionList)
+                                        if (r.SoundInfo != null && r.SoundInfo == soundSource.EmbeddedSoundInfo)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+
+                                    if (found)
+                                        continue;
+
+                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo,
+                                                                         soundSource.EmbeddedSoundInfo.Name);
+                                    row.NewName = "SOUND_" + lastSoundId;
+                                    row.NewId = lastSoundId++;
                                     conversionList.Add(row);
                                 }
                             }
-                        }
-
-                    if (room != null)
-                        foreach (var trigger in room.Triggers)
-                        {
-                            /*if (obj is SoundSourceInstance)
-                            {
-                                SoundSourceInstance soundSource = obj as SoundSourceInstance;
-                                if (soundSource.WadReferencedSoundName != null && soundSource.WadReferencedSoundName != "")
-                                {
-                                    if (!conversionRows.Select(f => f.SoundInfo.Name).Contains(soundSource.WadReferencedSoundName))
-                                    {
-                                        var info = level.Settings.WadTryGetSoundInfo(soundSource.WadReferencedSoundName);
-                                        if (info == null)
-                                            continue;
-
-                                        var newInfo = TrCatalog.TryGetSoundInfoIdByDescription(row.SoundInfo.Name);
-                                        var row = new SoundInfoConversionRow(info);
-                                        row.NewId = newInfo
-                                        row.NewName =
-                                    }
-                                }
-                                else if (soundSource.EmbeddedSoundInfo != null)
-                                {
-                                }
-                                //
-                            }*/
                         }
                 }
 
@@ -261,7 +250,7 @@ namespace TombLib.Utils
                 }
 
                 // Now we'll show a dialog with all conversion rows and the user will need to make some choices
-                using (var form = new Wad2SoundsConversionDialog(version, conversionList))
+                using (var form = new Prj2SoundsConversionDialog(version, conversionList))
                 {
                     if (form.ShowDialog() == DialogResult.Cancel)
                         return false;
@@ -291,28 +280,32 @@ namespace TombLib.Utils
                                 SoundSourceInstance soundSource = obj as SoundSourceInstance;
                                 if (soundSource.WadReferencedSoundName != null && soundSource.WadReferencedSoundName != "")
                                 {
+                                    soundSource.SoundId = -1;
                                     foreach (var row in conversionList)
                                         if (row.OldName == soundSource.WadReferencedSoundName && row.NewId != -1)
                                         {
                                             soundSource.SoundId = row.NewId;
-                                            soundSource.WadReferencedSoundName = "";
-                                            soundSource.EmbeddedSoundInfo = null;
                                             break;
                                         }
+
+                                    soundSource.WadReferencedSoundName = "";
+                                    soundSource.EmbeddedSoundInfo = null;
                                 }
                                 else if (soundSource.EmbeddedSoundInfo != null)
                                 {
                                     // We export embedded sound infos
                                     newSounds.SoundInfos.Add(soundSource.EmbeddedSoundInfo);
 
+                                    soundSource.SoundId = -1;
                                     foreach (var row in conversionList)
                                         if (row.SoundInfo == soundSource.EmbeddedSoundInfo && row.NewId != -1)
                                         {
                                             soundSource.SoundId = row.NewId;
-                                            soundSource.WadReferencedSoundName = "";
-                                            soundSource.EmbeddedSoundInfo = null;
                                             break;
                                         }
+
+                                    soundSource.WadReferencedSoundName = "";
+                                    soundSource.EmbeddedSoundInfo = null;
                                 }
                             }
                         }
@@ -327,7 +320,7 @@ namespace TombLib.Utils
                         {
                             if (sample.IsLoaded)
                             {
-                                string sampleName = row.NewName.ToLower() + "_" + row.SoundInfo.EmbeddedSamples.IndexOf(sample) + ".wav";
+                                string sampleName =Path.GetFileNameWithoutExtension(dest) + "_" + row.NewName.ToLower() + "_" + row.SoundInfo.EmbeddedSamples.IndexOf(sample) + ".wav";
                                 samples.Add(sampleName);
                                 File.WriteAllBytes(Path.GetDirectoryName(dest) + "\\" + sampleName, sample.Data);
                             }
@@ -342,7 +335,7 @@ namespace TombLib.Utils
                 sounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
 
                 // Make a backup copy
-                if (src == dest)
+                if (save && src == dest)
                 {
                     int index = 0;
                     string backupFilename = "";
@@ -368,9 +361,25 @@ namespace TombLib.Utils
                 level.Settings.CustomSounds = newSounds;
                 level.Settings.SoundSystem = SoundSystem.Xml;
 
+                // Assign sounds if possible
+                foreach (var sound in level.Settings.BaseSounds.SoundInfos)
+                    if (sound.Global && !level.Settings.SelectedSounds.Contains(sound.Id))
+                        level.Settings.SelectedSounds.Add(sound.Id);
+
+                foreach (var sound in level.Settings.CustomSounds.SoundInfos)
+                    if (!level.Settings.SelectedSounds.Contains(sound.Id))
+                        level.Settings.SelectedSounds.Add(sound.Id);
+
+                foreach (var wadRef in level.Settings.Wads)
+                    if (wadRef.Wad != null && wadRef.Wad.SoundSystem == SoundSystem.Xml)
+                        foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
+                            if (!level.Settings.SelectedSounds.Contains(sound.Id))
+                                level.Settings.SelectedSounds.Add(sound.Id);
+
                 // Save Prj2 with Xml sounds
-                using (var stream = File.OpenWrite(dest))
-                    Prj2Writer.SaveToPrj2(stream, level);
+                if (save)
+                    using (var stream = File.OpenWrite(dest))
+                        Prj2Writer.SaveToPrj2(stream, level);
 
                 return true;
             }
@@ -378,6 +387,11 @@ namespace TombLib.Utils
             {
                 return false;
             }
+        }
+
+        private static void Log(string msg)
+        {
+            Console.WriteLine(msg);
         }
     }
 }

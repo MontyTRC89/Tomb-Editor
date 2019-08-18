@@ -3939,6 +3939,37 @@ namespace TombEditor
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
 
+                    // Check if some wads are missing
+                    foreach (var wadRef in newLevel.Settings.Wads)
+                        if (wadRef.Wad == null)
+                        {
+                            using (var formSettings = new FormLevelSettings(_editor))
+                            {
+                                if (formSettings.ShowDialog() != DialogResult.OK)
+                                    return;
+                                break;
+                            }
+                        }
+
+                    // SOUND_SYSTEM_XML: Check if the level needs to be converted to new Xml sound system
+                    if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
+                    {
+                        // Convert the level
+                        if (!Conversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName, 
+                                                                     Conversions.SoundsCatalogPath, false))
+                        {
+                            MessageBox.Show("There was an error while converting your project to the new " +
+                                            "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            newLevel = null;
+                            return;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Your level was converted to the new Xml sound system. Please save it.",
+                                            "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
@@ -3985,11 +4016,6 @@ namespace TombEditor
             if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
-            /*if (string.IsNullOrEmpty(fileName))
-                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, null, false);
-            if (string.IsNullOrEmpty(fileName))
-                return;*/
-
             using (var formImport = new FormImportPrj())
             {
                 if (formImport.ShowDialog() != DialogResult.OK)
@@ -4003,6 +4029,7 @@ namespace TombEditor
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
+
                     _editor.Level = newLevel;
                     newLevel = null;
                 }
