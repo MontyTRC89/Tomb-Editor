@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using TombIDE.Shared;
 
 namespace TombIDE.ScriptEditor
 {
@@ -22,7 +23,9 @@ namespace TombIDE.ScriptEditor
 		{
 			try
 			{
-				using (XmlReader reader = XmlReader.Create(Path.Combine("References", comboBox_References.SelectedItem + ".xml")))
+				string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", comboBox_References.SelectedItem + ".xml");
+
+				using (XmlReader reader = XmlReader.Create(xmlPath))
 				{
 					using (DataSet dataSet = new DataSet())
 					{
