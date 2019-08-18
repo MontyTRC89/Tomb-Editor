@@ -9,8 +9,6 @@ namespace TombIDE.ScriptEditor
 {
 	internal partial class ReferenceBrowser : UserControl
 	{
-		private FormMnemonicInfo form = new FormMnemonicInfo();
-
 		public ReferenceBrowser()
 		{
 			InitializeComponent();
@@ -93,7 +91,11 @@ namespace TombIDE.ScriptEditor
 
 		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
-			form.Show();
+			if (e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
+			{
+				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString()))
+					form.ShowDialog(this);
+			}
 		}
 	}
 }

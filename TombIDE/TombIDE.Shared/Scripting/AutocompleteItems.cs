@@ -70,15 +70,6 @@ namespace TombIDE.Shared.Scripting
 					items.Add(autocompleteItem);
 			}
 
-			AutocompleteItem enabledItem = new AutocompleteItem("ENABLED");
-			AutocompleteItem disabledItem = new AutocompleteItem("DISABLED");
-
-			if (!items.Exists(x => x.Text.ToLower() == enabledItem.Text.ToLower()))
-				items.Add(enabledItem);
-
-			if (!items.Exists(x => x.Text.ToLower() == disabledItem.Text.ToLower()))
-				items.Add(disabledItem);
-
 			return items;
 		}
 	}
