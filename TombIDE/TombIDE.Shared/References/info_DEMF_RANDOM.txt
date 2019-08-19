@@ -1,0 +1,5 @@
+Used in Demo script command.
+Used in [Title] section.
+If you wish that the demos (supposing you had more than a demo binary file) had no fixed order, i.e. the first demo to be played can be different for any game section, you can add the DEMF_RANDOM flag. In this situation has no relevance the order whom you type the Demo IDs in array demo fields, since this order will be changed randomly everytime the game will be launched.
+
+Note: the DEMF_RANDOM flag doesn't work fine with DEMF_PLAY_LEVEL_SEQUENCE and DEMF_PLAY_ALL_SEQUENCE flags, since the contiguous same level number you set in the array it will be changed randomly.

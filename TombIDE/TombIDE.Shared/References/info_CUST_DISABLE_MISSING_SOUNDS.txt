@@ -1,0 +1,7 @@
+used in Customize command.
+
+Syntax: Customize=CUST_DISABLE_MISSING_SOUNDS
+
+This setting, disable in old tomb4 code the playing of obsolete sound effects like the sound for bubbles (37 - LARA_BUBBLES) and that for pickup item (62 - LARA_PICKUP).
+You should use this setting when you use Boats or other new object that uses some of above old sounds. In fact, in old example about boats on Trng website, there was a boring bad sound when lara swims underwater, and also when she picked up some item. The reason was the new boat object required to use some new sounds but, since there was way to add new sound slot, I tried to use unused sound effect of old tomb4. Unfortunately, also these (missing) sounds had a code in tomb4 to play them, so when I added the sounds for boats, the tomb4 engine played some of these sounds also as bubbles or pickup.
+Setting CUST_DISABLE_MISSING_SOUNDS, the old codes for bubbles and pickup will no more play sound s62 and 37, but new objects like boats or other, will be able to play the new sounds assigned for above sound slots.

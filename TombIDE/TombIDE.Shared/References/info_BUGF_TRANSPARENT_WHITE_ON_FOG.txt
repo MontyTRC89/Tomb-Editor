@@ -1,0 +1,5 @@
+Used with Customize=CUST_FIX_BUGS command
+Used to fix the bug in water textures when there is the distance fog enabled in the level. The transparent texture will become full white.
+
+When you enabled this fix the water textures will ignore the fog density.
+You should use it when your level has a depth fog, anyway this fix could create some trouble with fog bulbs closed to water.

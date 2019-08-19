@@ -1,0 +1,1 @@
+Works like ENV_HANG_LEFT_SPACE but it should be used when lara is in climb mode

@@ -1,0 +1,8 @@
+Used into Customize=CUST_BINOCULARS command
+When you enabled compass infos but you didn't use the compass strip, the info about compass will be showed as a number of degrees.
+The short notation is like: 123°
+where the degrees begin from 0 (north) increasing in clockwise sorting passing through 90° (EAST), 180° (SOUTH) and 270° (WEST)
+If you wish, you can use the extended notation, where the degrees will cover only 0-89° degrees, beginning from first cardinal point.
+Example:  "N 45°"
+It means NE (or 45°)
+"E 20°"  means "110°" in (about) South-east direction

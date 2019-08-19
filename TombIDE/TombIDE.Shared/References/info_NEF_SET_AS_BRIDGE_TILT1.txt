@@ -1,0 +1,4 @@
+Used in Enemy command.
+Force the specified animating to work like a BRIDGE_TILT1 item.
+The tilt1 is a bit sloped  with a difference by one click between opposite sides.
+Remark: see also the description of NEF_SET_AS_BRIDGE_FLAT flag for more infos.

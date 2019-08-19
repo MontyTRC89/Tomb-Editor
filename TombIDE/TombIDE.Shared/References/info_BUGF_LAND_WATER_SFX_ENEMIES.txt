@@ -1,0 +1,4 @@
+Used with Customize=CUST_FIX_BUGS command
+In default tomb4 there was a bug about management of sfx sound in animation commands for some enemies. 
+There was no right handling for water/land with sound effect played as animcommands.
+This bug was not present with all enemies, for instance the land/water sounds worked fine with skeleton or baddy1 or 2, but it didn't work with guide or big scorpion.

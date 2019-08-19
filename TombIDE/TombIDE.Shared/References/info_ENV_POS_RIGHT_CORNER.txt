@@ -1,0 +1,1 @@
+The corner is that of current sector where lara is. This condition is true when lara is in right corner of current sector using as reference the direction where she is looking.

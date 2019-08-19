@@ -1,0 +1,13 @@
+Used in Image= command.
+If you want was applied a transparence effect on current image you can add this flag.
+The transparent zone will be  where there are pixels with rgb color = $FF00FF  (red = 255; green=0; blue=255), this is the “traditional” transparent color for tomb raider textures.
+With transparent images you can create, for example,a round image over the game screen, where the non visible squared corners have been filled with transparent color.
+
+Remarks: 
+* The transparency effect is a bit slow to realize, so it's advisable to use it with moderation.
+
+* If you want place the CONVERTER.exe utility in your level files to develope the images in jpg format, you should avoid to supply the transparent image in .jpg format, because the double conversion bmp-
+jpg (when you place the images in your zip file) and the final re-conversion jpg-
+bmp (before playing your level) could alterate the transparent color in some side, ruining the final effect of transparency. In this situation you can simply supply the other images in .jpg format, while the image with transparency will be let in original .bmp format, in this way CONVERTER.exe (or trlm2009) will convert only other images, letting untouched your transparent (bmp) image.
+
+* When you create your transparent image you should disable the anti-aliasing feature in photoshop because, otherwise, the line between solid color and transparent color could be alterated with colors only similar to transparent color but not exaclty precise. Only the absolutly precise color 255,0,255 will be transparent, so you should avoid any distorsion.

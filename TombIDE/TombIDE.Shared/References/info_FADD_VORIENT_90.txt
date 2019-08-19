@@ -1,0 +1,8 @@
+Used in AddEffect command.
+This flag rotate (in temporary way) the item of 90 degrees in clockwise direction on vertical axis.
+
+This temporary change is usefull with some particular moveables where the position of the meshes has a different vertical orienting respect than their position in first animation.
+You can discover this situation using Wad Merger and verifying the mesh when there is no animation selected respest when it has been selected the first animation.
+
+It's important understand that all FADD_VORIENT... flags are very different than the FADD_ROTATE... flags, since the FADD_ROTATE flags will be used to give an horizontal direction (facing) for those effects moving on some ideal line, like the mist strip or fire strip.
+Differently, you cann't change the direction of effects using the FADD_VORIENT flags, but you'll use these flags only when you have to fix the bad vertical orienting  of some moveables (like the jeep for example).

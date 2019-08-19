@@ -1,0 +1,2 @@
+Used with Parameters=PARAM_LIGHTNING script command
+If the target position is set using a moveable index (different than lara) or a static item, you can destroy it with an explosion.

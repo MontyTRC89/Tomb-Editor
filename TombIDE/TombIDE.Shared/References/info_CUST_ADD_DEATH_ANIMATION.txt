@@ -1,0 +1,50 @@
+Permits to add a dying animation for some semigod or other immortal creature.
+
+Syntax: Customize=CUST_ADD_DEATH_ANIMATION, SlotOfCreature, AnimNumber
+
+This command is useful above all to kill the immortal creatures changed with Enemy script comamnd using the NEF_SET_AS_MORTAL field.
+
+ You should use Enemy command to set the NEF_SET_AS_MORTAL  flag for this immortal.
+Then you should also use CUST_ADD_DEATH_ANIMATION to set a new dead animation, where, with animation editor, you will have added a [Die] anim command.
+For example to kill setha you could use following two rows in script.txt:
+
+Enemy=		SETHA, 30, NEF_SET_AS_MORTAL+NEF_HIT_BLOOD, IGNORE, 0, IGNORE,IGNORE,IGNORE	
+Customize=	CUST_ADD_DEATH_ANIMATION, SETHA, 17
+
+Where, the "30" in Enemy command is the starting vitality (HP) of Seth (very low but it's only an example) and the "17" in Customize command is the animation of seth we'll use to kill him when his vitality reaches zero.
+In the wad of current level, I added to 17th animation of seth a [Die] anim command.
+Remark: it should be better if you add really a new animation slot in seth as death animation, instead using an already present animation.
+You could copy an existing animation and then add it as new animation, then you add a [Die] animcommand and you use this new (duplicated) animation (with [die] command) as new death animation.
+
+Differently, about usage of CUST_ADD_DEATH_ANIMATION with creature already owning a death animation this customize should be no useful since if you want change the death animation just you perform this operation using Animation Editor program.
+
+SlotOfCreature field
+--------------------
+In this field you set the number of slot (or its name) of creature to customize.
+Remark: in the reality only some slot type will have some effect. You cann't use a slot of creature that has already a dying animation or a moveable that is not a creature.
+Pratically the only slots will be elaborated correctly from this customize are:
+
+SKELETON
+GUIDE
+VON_CROY
+SETHA
+MUMMY
+SPHINX
+MUTANT
+DEMIGOD1
+DEMIGOD2
+DEMIGOD3
+HAMMERHEAD
+AHMET
+LARA_DOUBLE
+SENTRY_GUN
+
+Remark: about above list, I've not had the time to verify it this customize works fine for each creature of above list, and neither to verify if it works on other creatures non present in the list.
+Thorically you can try to use this customize on every creature but I'm not sure about results you'll get with creatures exlcuded from the list.
+
+AnimNumber field
+----------------
+AnimNumber is the number of animation to set when the creature reachs vitality = 0.
+This value works like in Animation Editor, it starts from zero.
+
+WARNING: differently by other cutstomize types, the CUST_ADD_DEATH_ANIMATION constant cann't to be used in [Title] level to extend its setting to all [Level] sections.

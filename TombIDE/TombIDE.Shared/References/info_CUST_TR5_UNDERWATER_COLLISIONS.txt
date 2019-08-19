@@ -1,0 +1,6 @@
+Used by Customize= command.
+Syntax: Customize=CUST_TR5_UNDERWATER_COLLISIONS
+
+Adding this customize in your level you enable the collision method used in tomb raider chronicles about the underwater collisions of Lara.
+The difference respect the tr4 collision is that, in tr5 engine lara, Lara will be not stopped when she touches a wall, but she will move or rotate going on in better direction.
+Differently in tomb4 any contact will stop lara.

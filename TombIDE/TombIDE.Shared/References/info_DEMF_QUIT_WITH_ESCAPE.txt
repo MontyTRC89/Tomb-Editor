@@ -1,0 +1,2 @@
+Used in Demo script command.
+If you wish allow to player the quitting of a demo while it's playing, you have to add the DEMF_QUIT_WITH_ESCAPE flag to DemoFlags, and when player will press Escape the current playing will be stopped and the controll will come back to the title level (if the demo was in [Title] section) or the controll will come back to player in common game (if the demo was in [Level] section)

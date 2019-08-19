@@ -1,0 +1,11 @@
+Used with Customize=CUST_ROLLING_BOAT command
+When you enable swinging or pitching on some boat you can enable on them the drift effect, too.
+The drift is when the boat moves byself a bit its position in the time, sliding in some direction.
+In spite this effect is a nice simulation of real beahavior of the non-moored boats, you should take care using this effect because the boat, from the start position where you placed it in the level map, it could move very far from that start point in the time necessary to the player to reach it. 
+So in this case you should place some barrier to stop the drift movement at least in this start point.
+It's not easy to know or set the direction of drift, because this movement borns like collateral effect of pitching/swinging of original tr2/3 code.
+Probably, changing the value of pitch/swing speed and heightness of the rolling, you could change also the direction of the boat. In some (few) experiment of mine, the boats move in direction of them left side but this could change using other setting for rolling effect.
+
+Remark: while for rubber boat and motor boat there is a native procedure for drift, for the kayak (and further fake boats in animating slots) the drift procedure has been created in trng engine.
+This drift simulation, to avoid risks to move kayak in positions not reachable from lara to go in newly in the kayak, tries to avoid problems keeping the kayak to at least one sector from walls (or beatch) and it avoids also to move in low depth water, one click or less.
+Knowning above features you could creare an invisible barrier to stop drift from start position simply creating a low water around the kayak, or walls in at least three sides around the kayak and in this way the drift will be temporary disabled.

@@ -1,0 +1,4 @@
+If you set this flag you force engine to set always the first texture of range when the animation will be completed.
+Differently, if you omit this flag the last texture showed depends by type of animation.
+If you have set no loop, the last texture showed will be the texture of last index of array sequence.
+If you have set a loop, the texture showed will depend by the moment when you perform the Stop texture sequence flipeffect.

@@ -1,0 +1,3 @@
+Used in StandBy command.
+This flag do sliding the horizontal orienting of camera in a range from -45 degrees to +45 degrees.
+Remark: this setting could be used only with portrait mode, since it should have no sense using it with a matrix effect, since the matrix changes continuosly the horizontal orienting byself.

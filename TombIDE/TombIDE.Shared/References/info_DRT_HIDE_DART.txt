@@ -1,0 +1,3 @@
+Used in Customize=CUST_DARTS command
+This flag get fully invisible the dart. The only case where you could use this setting is when you have added some effect to darts with the DRT_ADD_EFFECT flag and you wish that only the effect (like mist or fire) was visible.
+This setting helps also to free the cpu of a lot of 3d graphic operations.

@@ -1,0 +1,55 @@
+You can change features activated with OCB 4 or 8 in RollingBall.
+Using 4 or 8 in OCB of rollingball you enable the skill of lara to activate or moving rollingball pushing it like it was a pushing object.
+With CUST_ROLLINGBALL_PUSHING you can customize this effect: used animations, time for moving, distance for activation of pushing ect.
+
+Syntax: Customize=CUST_ROLLINGBALL_PUSHING, Distance, PushAnim, FailedAnim, FrameOfMoving, FrameOfActivation, FramesOfInvulnerability, Speed
+
+Remark: if you want omit to change some values just you type IGNORE in that field and the engine will use the default value preset in hardcoded mode.
+
+Description of fields:
+
+Distance
+--------
+Distance is the distance between Lara and the center of rolling ball.
+Only when lara is at correct distance she will be able to push it.
+The default value for distance is 600, where 1024 is the size of a single sector of game and 1 click is 256 units.
+The default distance (600) is good for spiked rolling ball you find in tut1.wad.
+Differently, if you use a non spiked rolling ball, pheraps you should increase the distance, because lara will be keeped far from collision rolling ball.
+
+PushAnim
+--------
+With this field you can change the animation used to show lara is pushing rolling ball.
+By default the animation is the anim number 316, i.e. the same use to push the big pushable button used as switch.
+
+FailedAnim
+-----------
+This is another animation number. It used when lara is not able to move the rollingball because there is some obstacle in oppisite side of rollingball.
+The default value for FailedAnim is the animation 120
+
+FrameOfMoving
+-------------
+FrameOfMoving is the frame number of PushAnim animation from that the engine will move in passive way the rollingball.
+For "passive way" I mean the rolling ball is not moving byself (since it's not yet activated) but it was moving by the pushing of lara.
+The default value is 20th frame of PushAnim animation.
+The interval while the rolling ball will be moved in passive way, it the range between FrameOfMoving and FrameOfActivation.
+If you type as FrameOfMoving a number bigger than FrameOfActivation the rolling will be never moved in passive way.
+
+FrameOfActivation
+-----------------
+FrameOfActivation is the frame number of PushAnim animation when the rolling will be really enabled, and it will begin to move byself.
+The default value is 50th frame.
+
+FramesOfInvulnerability
+-----------------------
+FramesOfInvulnerability is the number of frame of animation following the PushAnim animation, while Lara will be invulnerable.
+This invulnerability it's necessary because otherwise lara should be always killed by rolling not just it has been enabled (since she is very closed to rolling ball in that moment)
+So to give to lara some time to go away from rolling ball, there is some time of invulnerability.
+The default value is 30 frames, where 1 second = 30 frames.
+Remark: while lara is performing the PushAnim animation she is always invulnerable.
+
+Speed
+------
+The "speed" is the increment used to move rolling ball when lara push it in passive mode. Each frame will be added the "speed" increment to correct coordinate (x or z).
+The default value is 6.
+If you increase this value the pushable will be moved fastly by Lara.
+For example if you have the trouble to see lara enter in rolling ball in pushing phase this means you should: reduce the FrameOfMoving value to move immediatly rolling ball, and/or, you can increase the speed to move more fastly the rolling avoding that lara, in her movement, enters in rollingbal.

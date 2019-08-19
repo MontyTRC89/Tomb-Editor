@@ -1,0 +1,17 @@
+Used with Parameters=PARAM_SHOW_SPRITE script command.
+You add the FSS_ANIMATE flag to create an animated sprite where a sequence of spriters will be showed to create the effect of the animation.
+You use the Extra Value field to customize the animation.
+The number to type in Extra Value is given from the formula:
+FrameDurate * 256 + NumberOfSprites
+Where:
+FrameDurate is the number of frame that each frame will remain on the screen. 
+NumberOfSprites is the number of sprites that forms the animation.
+For example if your animation uses 8 sprites from the index = 4 and you wish that the animation had the max speed, where each sprite will remain on the screen for only one frame, you should type 4 in SpriteIndex field, while in the Extra Value you should type:  1*256 + 8 = 264 ($0108)
+
+Remark:
+There are two kinds of sequence:
+Standard sequence, where the indices will grow upto the max and then it repeats from the min index. Like: 
+123412341234 
+And the for-back sequence, where the index reached the max will be decreased upto coming back to min: 
+1234321234321
+If you wish use the for-back sequence you have to add the FSS_ANIMATE_FOR_BACK flag

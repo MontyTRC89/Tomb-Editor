@@ -1,0 +1,55 @@
+Used with Parameters command to store data to show sprite on screen with flipeffect show sprite.
+
+Syntax: Parameters=PARAM_SHOW_SPRITE, IdParamShowSprite, Flags Show Sprites (FSS_...), OriginX, OriginY, Width, Height, SlotSprite, SpriteIndex, IdColorRGB, GridX, GridY, Extra Value
+
+IdParamShowSprite field
+-----------------------
+Here type a progressive number to distinguish this "Parameters=PARAM_SHOW_SPRITE" command from others in same level section.
+You'll use the number in this field to signal to flipeffect trigger where looking for sprite show data.
+
+Flags Show Sprites (FSS_...) field
+----------------------------------
+You can type in this field FSS_.. constant values to customize the feature of your showing sprite operation.
+Read the description of FSS_ constants in Reference panel of NG_Center program for more infos.
+
+OriginX and OriginY fields
+--------------------------
+In these two field you should type the origin of (top-left corner) the sprite.
+Both values are in micro units, so you can use the [Get Screen Frames] tool you find in [Tools] panel of NG_Center program.
+
+Width and Height fields
+-----------------------
+You have to set the size that the sprite will have on the game screen.
+Like for the OriginX, OriginY fields, you have to type these values in microunits, hence you should use the [Get Screen Frames] tool to choose a rectangle on the screen and then copy both four values in microunits in the OriginX, OriginY, Width and Height fields.
+
+Remark: if you wish use a sprite grid (with the FSS_SHOW_SPRITE_GRID flag) please, don't confuse, you have to choose like witdh and height the size of a single sprite and not the final size of the sprite grid.
+
+SlotSprite field
+----------------
+You should type the sprite slot with the sprite you wish use.
+For example you could type DEFAULT_SPRITES, MISC_SPRITES or other slot contain sprites.
+
+SpriteIndex field
+-----------------
+Here you type the index of the sprite to use within the SlotSprite given.
+
+Remark: the first sprite has an index = 0
+
+IdColorRGB field
+----------------
+You can type in this field the Id number of a previous ColorRbg= script command to add color to the sprite.
+
+Remark: the add color feature works only when you enable the transparent feature for the sprite adding the FSS_TRANSPARENT flag. while with the full opaque sprites the IdColorRbg will be ignored.
+
+GridX and GridY fields
+----------------------
+These fields are used only with FSS_SHOW_SPRITE_GRID flag.
+For example if you wish show an image created with 2x1 sprites, you should type 2 in Gridx and 1 in GridY
+See description of FSS_SHOW_SPRITE_GRID flag for more infos.
+If you don't use FSS_SHOW_SPRITE_GRID flag the gridx, gridy flags will be ignored.
+
+
+Extra Value field
+------------------
+This field could be used in according with some FSS_ flag. 
+See the descriptions of the FSS flags to discover when this field is really used.

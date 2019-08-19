@@ -1,0 +1,6 @@
+Used in AddEffect command
+With this value you add a light of wished color to some moveable.
+For "flat light" we mean a common non-blinking, non-spot light.
+It's like a light-bulb.
+Anyway, you can create a ritmic blink also with flat light setting correct tick frame in DurateEmit and DuratePause field.
+If you use this method the blinking will be anyway different than ADD_LIGHT_BLINK since in that case the blinking is random to simulare a fire, while the blinking you get with flat light + durate emit and durate pause will be always a perfect blink, like it happens with some electronic machines.

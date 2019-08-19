@@ -1,0 +1,2 @@
+Used in Diary= command
+Start Diary image with a zoom effect.

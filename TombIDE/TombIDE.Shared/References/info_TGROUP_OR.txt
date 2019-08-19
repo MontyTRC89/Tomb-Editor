@@ -1,0 +1,3 @@
+Set as operator, to link current condition with previous conditions, the OR operator. 
+When you use the OR this means that just the previous condition or current condition are true to get true the condition group upto now.
+See description of TGROUP_AND flag to have more information about the usage of boolean operators in TriggerGroup.

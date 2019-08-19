@@ -1,0 +1,3 @@
+Used in AddEffect command
+With this value you add a blinking light to some moveable.
+The blinking light is the same of flare light, where the intensity of the light changes a bit in random way.

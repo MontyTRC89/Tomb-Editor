@@ -1,0 +1,3 @@
+Used in TestPosition command.
+This flag fix a problem with some items. In some circustance an item has a wrong facing, turned by 90 degrees, and you discover this situation when, enabling self-alignment feature, you see that lara moves in wrong position.
+Only way to discover if this flag fix the probelm is trying to use it and seeing the final moving of lara to be aligned.

@@ -1,0 +1,6 @@
+Used in LogItem= command.
+Setting this flag you get on screen also the difference between lara and the item of LogItem.
+These values are similar to those required in TestPosition command so you can use these values as reference to type reasonable ranges in TestPosition command.
+Remark: the differences for Orienting are exaactly the same used in TestPosition command, while for coordinate distances (x,y,z) the values showed on screen don't consider the relative axis used in TestPosition but they will be simply showed as absolute differences. 
+The difference between absolute and relative distance is the orientation of lara. If lara and item are both on same axis (for example Z axis) the absolute difference for Z will be the same of relative difference.
+See description of TestPosition command for more infos.

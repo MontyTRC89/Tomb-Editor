@@ -1,0 +1,4 @@
+Used in StandBy command.
+This setting changes the rotation speed in random way. 
+The range will be beteen (RotateSpeed - 50%) to (RotateSpeed + 50%)
+It's better usign this setting only with matrix effect.

@@ -1,0 +1,3 @@
+This flag works like FAN_SET_FREE_HANDS but in this case it set only temporary the "Free Hands" status. The previous status (about what lara was hanging) will be restored at end of your custom animation.
+The "free hands" it's necessary when you want perform your custom animation while lara holds weapon or torch, in fact, when "Free hands" is missing, the arm of lara will not follow your custom animation.
+Another difference about old FAN_SET_FREE_HANDS is that the FAN_SET_FREE_HANDS_TEMP fixes a bug where the "free hands" command didn't work when lara holded Torch.

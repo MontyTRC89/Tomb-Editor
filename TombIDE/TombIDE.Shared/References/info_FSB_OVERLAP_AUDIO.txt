@@ -1,0 +1,4 @@
+Used in StandBy command.
+When you set a valid value in AudioTrack field, you have to decide if the standby audio will replace (temporary) the current audio track, or if the new audio will be overlapped to old audio without stopping it.
+When you want that the standby audio was overlapped to old audio track you add the FSB_OVERLAP_AUDIO flag, differently, if you wish the old audio track was stopped before playing the new standby audio track, just you omit the FSB_OVERLAP_AUDIO flag.
+Remark: reasonably, you should use the FSB_OVERLAP_AUDIO flag only when the audio track in the level is only a list of environment sounds, like wind, sea song ect, while if the level audio is a music, it's better stop it before playing the standby audio since two musics in same moment could be chaotic.

@@ -1,0 +1,55 @@
+Used in DiagnosticType script command.
+This DGX_ADJUSTMENT_MODE allows to you, to align some trng objects like Detector and Keypad to have correct coupling between object and text.
+In some circustances, when the game screen has a resolution very high, it could born some misplacing between object and text or, for radar detector, the sprites of detected targets.
+You should use this adjustment when you discovered some misalignemtn with a resolution higher than those already adjusted by Paolone.
+
+It's better, in adjusting phase, let enabled only the DGX_ADJUSTMENT_MODE, so you should type following command in [Option] section of script file:
+
+Diagnostic = ENABLED
+DiagnosticType= DGX_ADJUSTMENT_MODE, 0
+
+In game you'll see printed on screen many variables about position and text formatting of trng objects.
+
+Keyboard commands in adjustment mode
+------------------------------------
+To choose the variable to change you use the:  [R] and [F] keys
+To change the value of current selected variable use the keys: [Y] and [U] keys
+Another keyboard command in adjustment mode is the [S] key. If you had launched the TOMB4_log utility (you find it in "tools" subfolder of trle folder), when you press [S] all current variables and values will be printed in log file.
+You should always perform this operation at end of adjustment phase.
+To locate in the log file the correct data, look for "ADJUSTMENT DATA" text, and copy and paste (to send to me ) all text between "adjustment data" and "end adjustment" in the last instance, for example:
+
+   6985:   --------- ADJUSTMENT DATA (640 x 480) ---------
+   6985:   RADAR DETECTOR:
+   6985:   TargetX=1587
+   6985:   TargetY=13669
+   6985:   SizeTextX=128.00
+   6985:   SizeTextY=170.67
+   6985:   VLineX=2624
+   6985:   VLineY=13715
+   6985:   GapX=112
+   6985:   GapY=149.33
+   6985:   TextX=736
+   6985:   TextY=15541
+   6985:   COMPASS DETECTOR:
+   6985:   VLineY=13845
+   6985:   KEYPAD:
+   6985:   OrgX=11056
+   6985:   OrgY=17685
+   6985:   TextY=2304
+   6985:   --------- END ADJUSTMENT ----------
+
+Remember to enclose alwayas also first line because I need to know the resolution used in game during your adjustment.
+
+Remarks:
+
+* The adjustment mode allows only temporary to fix the problem, at next game restart the values will come back to original (bad) values.
+The adjustemtn should be done with the final target to send the correct adjusted value to me (Paolone) and I'll insert this new best values in next version of trng dll.
+The reason that I've not performed myself this job is because to have a correct adjustment it's necessary set the game resolution to some high value but I can reach only 1024 x 768 pixles with my notebook and only a bit better (1280 x 1024) with my desktop.
+
+So, if you have a most powerfull computer with an higher resolution you can create adjusted values for these extra reolutions those I cann't reach with my current hardware.
+
+* In radar detector section you could change a lot of value but, pratically, it's advisable change only these three values:
+
+TargetY  (Set the y position of detected objects on the main (planar) panel)
+VLineY (Set the y position of detected objects on the secondary (vertical) panel)
+TextY  (Set the y position of text (distance XX meters))

@@ -1,0 +1,3 @@
+Used into Customize=CUST_BACKGROUND command
+Used to set an image for loading level phase.
+Please not this is not the load game screen where you see the savegames to load, but it is the moment when there is the progress bar and next is loading.

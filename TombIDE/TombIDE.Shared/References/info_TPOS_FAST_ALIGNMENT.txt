@@ -1,0 +1,6 @@
+Used in TestPosition command
+In the reality this flag affects the (furhter) alignemnt phase when you used the FAN_ALIGN_TO_ENV_POS constant in the Animation command that called this TestPosition command.
+When you use an Animation command and you used also the FAN_ALIGN_TO_ENV_POS, when Lara is in a good position for TestPosition command, she will be moved in perfect ideal position before performing the animation.
+Well, in some circustances the old method used to move lara byself in ideal position had a problem of continuos loop when she was too closed to target position to reach.
+To solve this problem you could use in TestPosition command the TPOS_FAST_ALIGNMENT flag, and in this case Lara will be moved very fastly in correct position avoiding the risk of looping.
+Remark: you should use the fast alignment only when you set a very low tollerance in TestPosition command, i.e. when the condition of testpostion will be true when lara is really very closed to ideal position.

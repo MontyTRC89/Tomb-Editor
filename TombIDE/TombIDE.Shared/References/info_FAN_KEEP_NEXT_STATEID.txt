@@ -1,0 +1,5 @@
+This is a very technical flag.
+My suggestion about to use it or less, it's simply to try...
+At start you should create an Animation command without using this flag, because it's more common don't use it, but if you see somewhat don't work, you could try adding this flag to see the result.
+Technically you should use this flag when your animation is for single execution and then lara will come back to some standard animation.
+While you should not use this flag when your animation has to be performed in loop, like an upward jump and many other fluid animations.

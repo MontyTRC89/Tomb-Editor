@@ -1,0 +1,10 @@
+Used in Diary= command
+This flag is used to enable some sound effect in diary viewing.
+
+The sound effects are:
+
+Click on page changing (71: GENERIC_SWOOSH)
+Sound for starting zoom phase (356: LIGHT_BEAM_JOBY)
+Sound for non valid change of page (2: LARA_NO)
+
+Remark: if you want use these sounds remember to add the sound 356 ( LIGHT_BEAM_JOBY) in your wad, while for other two sounds they should be always present.

@@ -1,0 +1,7 @@
+Used in MirrorEffect command
+You can add this flag to the index of an animating when the reflex of the item has a bad position. This could often happen in the floor mirror when the animating has not the pivot at the center of the mesh but in a corner or over a side.
+This problem happen very often with the doors.
+
+When you use this flag the engine tries to analyse the collision box of the item and then to adjust the X coordinate of the reflex.
+
+Note: the x axis is in south/north direction in the ngle view.

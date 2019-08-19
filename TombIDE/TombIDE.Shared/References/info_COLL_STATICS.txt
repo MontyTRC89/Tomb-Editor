@@ -1,0 +1,2 @@
+Used with Customize=CUST_SET_STILL_COLLISION command.
+It enables the still collision when lara touches a static item.

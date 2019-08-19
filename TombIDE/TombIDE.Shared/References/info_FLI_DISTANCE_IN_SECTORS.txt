@@ -1,0 +1,7 @@
+Used in LogItem= command.
+When you set the FLI_SHOW_DIFFERENCES flag, the distance between Lara and logged item, it will be drawn, by default, in game units, where one sector are 1024 game units.
+If you wish having the distance showed in sector (pratically, divided by 1024) you can add also the FLI_DISTANCE_IN_SECTORS flag.
+
+Note: this flag it has been thought to have a rapid info about the distance between lara and a given static item (using also FLI_STATIC_ITEM flag) to set the StaticMIP= script command for that kind of item.
+
+Pratically, if you have to discover how many sectors of distance will be required to get almost invisible a given static item (to set that value in CLimit with -1 CStaticSlot field, to skip its drawing) you could enable diagnostic using logitem for that static and then verifying (when the StaticMip script command is not yet present in script.txt) at what distance that static will be already not visible.

@@ -1,0 +1,59 @@
+Used by Customize= command.
+
+Syntax: Customize=CUST_DARTS, IdCustDarts, Dart Flags (DRT_ ...), IdAddEffect, Speed, EmittingTimer, PrimaryColorIDRgb, SecondaryColorIDRgb, IdTriggerGroup
+
+With this customize you can change speed and color of darts. Someone believes the darts are not visible but in the reality they are not very well visible only because they are too fast. Just you reduce the speed and change the color to see them very well.
+With this customize you can also restyle fully the dart: using some add effect or using them like a laser sensory ray. 
+
+IdCustDarts field
+-----------------
+Differently by other customizations you can set two or more customize profile for dards and then enable in same time one or another typing in OCB field of dart emitter object the IdCustDarts value to locate the customization to use.
+For example if you create a command like:
+
+Customize=CUST_DARTS, 3, ....
+
+When you want customize in NGLE a dart emitter with these settings just you type in OCB field of this emitter the number "3"
+
+Remark: the IdCustDarts value should be always greather than 0 becuae the 0 in OCB field will be read with the mean of: "no customize for this dart emitter"
+
+Dart Flags (DRT_ ...) field
+---------------------------
+You can add one or more DRT_ flags to enable different features for darts.
+Read the description of DRT_ constants in Reference panel of NG_Center program.
+If you don't wish use any flag you can type IGNORE in this field.
+
+IdAddEffect field
+-----------------
+If you use the DRT_ADD_EFFECT flag, you have to type in IdAddEffect field the ID of AddEffect script command to add to each dart.
+
+Speed field
+-----------
+The speed value set the value to add to coordinates of dart to move it in the space.
+Bigger values mean bigger speed.
+The default value is 256 ($100) and this is a very fast speed.
+So probably if you wish change it, you'll decrease it to have the chance to see the darts.
+You can type IGNORE in this field to let unchanged the speed.
+
+EmittingTimer field
+-------------------
+This value is in tick frames, where one second = 30 tick frames.
+The default value is 24 tick frames, and this means the engine wait 24 tick frames (a bit less than one second) before shooting another dart.
+If you increase this value there will be more time between a shooting and following.
+You can type IGNORE in this field to let unchanged this value.
+
+PrimaryColorIDRgb field
+-----------------------
+If you want change the main color of dart you can type in this field the ID of some ColorRGB= command with the rgb values to use.
+The default color is like cream.
+You can type IGNORE in this field to preserve standard color.
+
+SecondaryColorIDRgb field
+-------------------------
+If you want change the secondary color of dart you can type in this field the ID of some ColorRGB= command with the rgb values to use.
+The secondary color is black and it used for the borders. It is a good color for border anyway if you use this dart in very dark room you could use the white for border to give the idea of brightness of the darts.
+You can type IGNORE in this field to preserve standard color.
+
+IdTriggerGroup field
+--------------------
+If you use the DRT_PERFOM_TRIGGERGROUP flag you have to type in IdTriggerGroup field the ID of triggerGroup to perform when a dart touches Lara.
+See description of DRT_PERFOM_TRIGGERGROUP flag for more informations.

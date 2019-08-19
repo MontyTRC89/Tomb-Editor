@@ -1,0 +1,6 @@
+Used with Parameters=PARAM_INPUT_BOX
+Set a central alignment of text typed by user.
+The text will be centered inside of rectangle set in Image script command.
+Notes: 
+- if you omit this flag, the text will be aligned at left
+- It's not advisable using central alignment with a blinking caret because, in this case, everytime the caret will disappear, the text will become shorter and the central alignment will move the position, giving the feeling of a text shackering. 																	

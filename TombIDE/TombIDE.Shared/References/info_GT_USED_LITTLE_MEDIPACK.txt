@@ -1,0 +1,2 @@
+Trigger enabled when lara select and use a little medipack.
+Remark: if Lara has already full life and player select a little medipack from inventory the condition will be false, because in this situation the medipack will not really used.

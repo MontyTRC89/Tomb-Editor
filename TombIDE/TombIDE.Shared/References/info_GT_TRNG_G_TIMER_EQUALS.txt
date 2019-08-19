@@ -1,0 +1,8 @@
+Used in GlobalTrigger= command.
+Enabled when the Global trng timer has same value set in Parameter field.
+The value you type in Parameter field is in frame ticks, where 1 second = 30 frame ticks.
+So if you want detect when a growing timer reaches 40 seconds you have to type "1200" , since 40 * 30 = 1200.
+
+Remark: This global trigger works ONLY while the respective timer is running, this means it's not necessary (and neiter advisable) to use FGT_SINGLE_SHOT or FGT_SINGLE_SHOT_RESUMED flags.
+In the case you wish check the variation of trng timer performed in a way different than standard flipeffect "Variables. Timer. Start the <&
+TRNG Timer in (E)Mode" you should avoid these global triggers and use instead the GT_CONDITION_GROUP global trigger, placing in the ConditionTriggerGroup the id of a triggergroup with exported CONDITION triggers to test the content of variable TIMER.

@@ -1,0 +1,55 @@
+Used with Parameters= commmand
+
+Syntax: Parameters= PARAM_INPUT_BOX, InputBoxId, BckImageId, WFontId, MaxChars, SfxSound, Flags (RIB_  values), ExtraParam
+
+The data of PARAM_INPUT_BOX paramaters will be used to show (whereby a flipeffect) a background image where the player will be able to type characters (letters and/or digits) on screen. At end of this operation some trng variables ("Last Input Number" and "Last Input Text") will host the typed text and, when it is only digit text, the final number typed by user.
+When you use Input Box in "only digits" mode, it will work like a 2D graphic Keypad, pratically, but now you have also the chance to get common words in "password" style, accepting letters and digits.
+
+InputBoxId field
+-----------------
+Set here a progressive number to idenfity current PARAM_INPUT_BOX command from others, to choose it with a flipeffect trigger.
+You can have a max of 100 PARAM_INPUT_BOX  for level with ID values upto 999
+
+BckImageId field
+-----------------
+You have to supply a background image to host the Input Box feature.
+In this field you'll type the Id of an Image= script command with data about image to use as background for input box.
+
+Note: since Input Box feature is a bit different matter than a common image, the settings, in the Image= script command, should follow some rules:
+
+1) The Image= command has to be with IF_FULL_SCREEN + IF_QUIT_ESCAPE flags
+
+2) The IF_POP_IMAGE flag should be avoided, since only "overlapped" image work fine with Input Box feature, where the program waits for user input
+
+3) In spite the image will be NOT a pop-up image, you have to type in XPosition, YPosition, SizeX and SizeX fields, valid values. 
+These microunit values will be used to set the position of the text typed by user (and not, as it happens with common Image, t set the position of the image)
+
+
+WFontId field
+-------------
+This is the ID of a WindowsFont= script command  to set type a font and color, used to write on screen what the player types with the keyboard.
+Note: charsets different by western sets are not supported. Indeed, the low-level keyboard reading of Input Box process, reads a standard US/UK qwerty keyboard and, for this reason, further non-western characters will be neither "seen" by the Input Box procedure.
+
+MaxChars field
+--------------
+The max number of characters that user will be able to type on screen.
+This max length value is important to avoid that, a drunk player, typed plenty of letters, upto ruining the layout of graphic on screen, with text moving outside screen borders.
+You should perform a test to verify how many characters will be visible on the screen, in according with the font size you chose, and the start position of text rect. Then you'll type a value (as  MaxChars) a bit less than that max visible number of characters.
+
+SfxSound field
+--------------
+Index of sfx effect sound to play everytime the user hits a key of keyboard.
+Please note that, if you set IGNORE in this field, this doesn't mean that there will be no sound (silent mode) but only that you wish using a preset sound for hitting key: the sfx sound 109 (MENU_SELECT).
+The switching on/off of sounds, it will be affected only by usage (or less) of RIB_SOUND_ON_KEY flag.
+ 
+Flags (RIB_  values) field
+--------------------------
+In this field you can insert one or more RIB_ (Read Input Box) flags linked with "+" operator.
+In the case you typed IGNORE in this field, it will be used default settings, corresponding to following flags: 
+RIB_BLINK_CARET+RIB_SOUND_ON_KEY+RIB_ONLY_CAPS
+
+ExtraParam field
+----------------
+This field could keep some parameter in accordingwith some RIB_ flag. 
+
+Read the descriptions of RIB_ constants in MNEMONIC CONSTANTS section of NG_Center's Reference panel, for more infos.

@@ -1,0 +1,4 @@
+Used in Demo script command.
+By default the first demo will begin with a fade-in (from black to game screen), anyway if you used DEMF_PLAY_LEVEL_SEQUENCE or DEMF_PLAY_ALL_SEQUENCE, you can add cross fade to swap the two demo while the game screen is black.
+If you omit this flag in a demo sequence, lara will disappear from last position of first demo, and she will appear (suddenly) in new room and position of start point of second demo.
+The disvantage to use cross fade is that the last frames of first demo and the first frames of following demo, will be darked.

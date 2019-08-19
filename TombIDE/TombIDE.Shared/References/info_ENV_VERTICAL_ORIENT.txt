@@ -1,0 +1,9 @@
+Very particular flag. 
+You can set a condition in according with current vertical orienting of lara. 
+Normally lara has always zero like vertical orienting but in some animation this value could change.
+You can set a condition about current vertical orienting using the condition ENV_VERTICAL_ORIENT and setting in "Distance for env" field the range of orienting values computed in this way:
+MinValue + MaxValue * 256
+Typing in hexadecimal value it's more easy to understand. For example if you want set a range like  from 3 to 8, just type $83
+The values are 16, from 0 to 15 moving in clockwise direction.
+Remark: if you want crate a range enclosing the zero (0) you have to invert max and min value, looking the values like hours on the clock.
+For example to enable range accepting following values: 13, 14, 15, 0, 1, 2, 3  you have to type 13 like min value and 3 like max value, i.e. in hexadecimal should be: $D3  (D = 13)

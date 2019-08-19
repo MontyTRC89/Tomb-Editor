@@ -1,0 +1,4 @@
+Used with Parameters=PARAM_LIGHTNING script command
+When you set IGNORE as source position, trng will choose a random position over the target position.
+By default trng tries to set a source point almost perpendicular with the floor (and the target item), anyway if you wish see a more inclined lightning (in radom way), you can add the LGTN_INCLINED_RANDOM flag.
+Note: you should use this flag only when the target item is far from wall and other obstacle, otherwise the lightning could pass through the walls.

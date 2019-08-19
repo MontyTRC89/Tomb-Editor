@@ -1,0 +1,4 @@
+Used in Parameters=PARAM_MOVE_ITEM script command
+By default, the moving will be completed when the distance supplied in Distance field has been reached.
+Anyway, when you set some kind of gravity, and once covered the distance the item is yet above floor, falling down, the stop of moving affects a weird effect: the item will stop in the empty, at some height from the floor.
+If you wish avoid this situation you can add the FMOV_WAIT_STAND_ON_FLOOR flag, and the movement will be stopped only when, other that the distance has been covered, the item has reached the floor, falling down.

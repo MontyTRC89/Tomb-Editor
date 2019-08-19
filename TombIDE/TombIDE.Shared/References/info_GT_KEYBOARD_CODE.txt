@@ -1,0 +1,8 @@
+This global trigger detect when player hit some specific keystroke.
+You have to type the scan code value in Parameter field.
+You can find all valid scan codes in Reference Panel of NG Center, in the KEYBOARD SCANCODES list.
+
+Remark:
+This command should be not used to detect standard game command, you should use the GT_GAME_KEY1_COMMAND or GT_GAME_KEY2_COMMAND global triggers for this target. 
+In fact, you should remember that the keystrokes linked with game commands could be changed in Options screen from player, so you cann't to be sure that a given scan code was always the same to jump or roll.
+Differently you should use GT_KEYBOARD_CODE trigger when you want have your custom hot key to start some extra feature. The scan code you choose should be different by all other keyboard commands that the player could choose in Options screen. For example you could select some unused function keys like F7 or F8 to start your operation.

@@ -1,0 +1,7 @@
+Used in Customize=CUST_PARALLEL_BARS.
+By default the power of jump is given by OCB value set in parallel bar object in NGLE program. 
+If you add the PB_PROGRESSIVE_CHARGE flag the power of jump will depend by number of full turns around the bar. For each turn the power of jump will be increased by number in OCB value.
+For example, if you type 50 in OCB field, and lara perform 3 full turn before let the Action key, the power will be 50 * 3 = 150
+The max power is 10 turns, other this limit the power will be not increased furtherly.
+Remark: if you use also the flag PB_LARA_CAN_SLIDE, to permit to lara to move left/right hanged at bar, everytime lara moves left/right the counting of jump power will be cleared , restarting from OCB Value.
+This is useful when the player need to perform a correct number of turns but he has also to move lara in a different position of bar. In this way it's always possibile set the correct number of turns: when the player passed over the correct number of turn, just he moves left/right lara to reset and restart the counting.

@@ -1,0 +1,35 @@
+Used to store the four vertices to define a quadrilateral to use as fragmented trigger.
+
+Syntax: Parameters=PARAM_QUADRILATERAL, IdParamList, Xa, Ya, Xb, Yb, Xc, Yc, Xd, Yd
+
+A quadrilateral could be a rectangle, a square but also a trapezium or a rhombus.
+If it has four sides it is a quadrilateral.
+
+It's not important what is the first point you use as A(x,y) vertex, but it's necessary you type the vertices following the perimeter in clockwise order.
+
+You define a quadrilateral with four 2D vertices.
+Each vertex is a point of a game square of 1024x1024 units.
+The origin is the top-left corner (north-west corner in planar view in NGLE program)
+The X axis moves from 0 (West side of the square) to 1023 (East side of the square)
+The Y axis moves from 0 (North side of the square) to 1023 (South side of the square)
+
+IdParamList field
+-----------------
+You define an univocal id number, different than others Parameters=PARAM_QUADRILATERAL in same [Level] section.
+You'll use this number to use these data with the fragmented trigger for quadrilateral
+
+Xa, Ya fields
+-------------
+Define the A(x,y) vertex
+
+Xb, Yb fields
+-------------
+Define the B(x,y) vertex
+
+Xc, Yc fields
+-------------
+Define the C(x,y) vertex
+
+Xd, Yd fields
+-------------
+Define the D(x,y) vertex

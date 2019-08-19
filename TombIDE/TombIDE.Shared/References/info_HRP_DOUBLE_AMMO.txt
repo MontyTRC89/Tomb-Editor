@@ -1,0 +1,2 @@
+Used in Customize=CUST_HARPOON command.
+Since harpoon weaponauses the slot of crossbow,  by default the harpoon has three different ammo types (usormal, poison, explosive). If you wish having only two ammo: normal and explosive, you can use this flag.

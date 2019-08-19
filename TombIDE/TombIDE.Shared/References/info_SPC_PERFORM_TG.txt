@@ -1,0 +1,7 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+It performs the TriggerGroup with the given number.
+Example:
+
+SPC_PLAY_TG+24
+
+It will perform the triggergroup=24 from current level section of script.txt file.

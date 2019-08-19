@@ -1,0 +1,2 @@
+Used in WindowsFont= command.
+The italic attribute creates a character a bit inclined.

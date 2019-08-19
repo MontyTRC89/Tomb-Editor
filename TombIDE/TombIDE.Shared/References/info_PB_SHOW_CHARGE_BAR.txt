@@ -1,0 +1,4 @@
+Used in Customize=CUST_PARALLEL_BARS.
+This flag works only when you set also the flag PB_PROGRESSIVE_CHARGE.
+Since when the PB_PROGRESSIVE_CHARGE flag is enabled, lara is able to increase the powerness of jump turning many times, you can enable with PB_SHOW_CHARGE_BAR the view of progress bar with current jump power.
+It's advisable to add this feature because otherwise the player could have some difficulties to understand how much turns he made until that moment.

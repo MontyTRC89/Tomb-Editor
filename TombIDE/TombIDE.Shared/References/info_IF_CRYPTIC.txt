@@ -1,0 +1,14 @@
+Used in Image= command.
+If you add this flag to your Image command, the corresponding image will be crypted and its name will be changed from: Image#.bmp  to @Image#.bmp
+Once the image has been crypted (and you recognize the crypted images from the "@" character in front of their name), it will be no more possible load and view this image in common ways. 
+Only playing the level, the trng engine will decrypt at-fly the image to show it in game.
+This crypting feature has been thought to avoid that some "old-fox" player, went to watch the images in Pix folder, in advance, to discover secret maps and other stuff about the playing of your level
+
+Notes
+-----
+* It's strongly suggested to perform a backup in other folder of your original (not yet crypted) images, because, once they have been crypted, there is no way to decrypt them, and therefor you'll lose any chance to modify them.
+
+* No decrypting tool has been supplied in ng_center, because the (above) old-fox player, could download ng_center own to decrypt the images of the level he is playing. But this chance has not been foreseen. 
+When you crypt an image it will be for always.
+
+* In spite the decrypting phase, performed in game, it's very faster than the crypting process, performed into NG_Center, also the decrypting it will require a bit of time, for this reason it's better using for cryptic images also the IF_PRELOAD flag, in this way the decrypting phase it will happen at the launch of the game, while in game, when the image will be triggered, it will have been already decrypted, and therefore it will be showed fastly.

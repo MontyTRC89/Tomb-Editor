@@ -1,0 +1,3 @@
+Used in Customize=CUST_KEEP_LARA_HP command
+You use this constant to force the keeping of current HP value for all levels where lara could jump from current level.
+See the description of CUST_KEEP_LARA_HP constant for more infos.

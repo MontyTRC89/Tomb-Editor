@@ -1,5 +1,9 @@
 ﻿using DarkUI.Forms;
-using System.ComponentModel;
+using System;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
+using TombIDE.Shared;
 
 namespace TombIDE.ScriptEditor
 {
@@ -9,20 +13,30 @@ namespace TombIDE.ScriptEditor
 		{
 			InitializeComponent();
 
-			richTextBox_Description.Text = GetFlagDescription();
+			Text = "Information about " + flag.ToUpper();
+			label_FlagName.Text = flag.ToUpper();
+
+			richTextBox_Description.Text = GetFlagDescription(flag);
 		}
 
-		protected override void OnClosing(CancelEventArgs e)
+		private string GetFlagDescription(string flag)
 		{
-			Hide();
-			e.Cancel = true;
-			base.OnClosing(e);
-		}
+			try
+			{
+				foreach (string file in Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), "References"), "info_*.txt"))
+				{
+					if (Path.GetFileName(file).ToLower() == "info_" + flag.ToLower() + ".txt")
+					{
+						return File.ReadAllText(file, Encoding.GetEncoding(1252));
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 
-		private string GetFlagDescription()
-		{
-			// TODO
-			return null;
+			return string.Empty;
 		}
 	}
 }

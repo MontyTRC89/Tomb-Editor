@@ -1,0 +1,190 @@
+Customize a specific weapon.
+
+Syntax: Customize= CUST_WEAPON, SlotOfWeapon, Weapon flags (WEAP_..) , SoundForShot, FramesForRecharge, DurateFlash, Extra, MaxDistanceForAiming, FrameToTakeWeapon, FrameToLetWeapon, Random, VPositionOfWeapon, Unknown, FrameCounter, FrameMinRange, FrameMaxRange, OrigX, OrigY, OrigZ, OrigOrient
+
+Remarks: 
+*If you wish, you can omit last fields of this command and all omitted fields will be seen like IGNORE fields from trng engine, i.e. for omitted fields will be preserved the default value.
+This feature is always present in all Customize commands from 1.1.8.1 dll version.
+
+*You can customize some features of weapon also using the CUST constant named CUST_AMMO. The current CUST_WEAPON works only for setting specific for weapons, while CUST_AMMO allows to customize the single ammos.
+
+
+Description of fields
+---------------------
+
+SlotOfWeapon field
+------------------
+In this field you set the slot corresponding to weapon you mean customize.
+You can choose between following slot values:
+
+PISTOLS_ITEM
+UZI_ITEM
+SHOTGUN_ITEM
+CROSSBOW_ITEM
+GRENADE_GUN_ITEM
+SIXSHOOTER_ITEM
+
+Weapon flags (WEAP_..) field
+----------------------------
+You can add none, one or more WEAP_ flags to set some special features for current weapon.
+If you don't want set any flag you can type IGNORE in this field.
+Read the description of WEAP_ constants in MNEMONIC CONSTANTS list in Reference panel of NG_Center program.
+
+SoundForShot field
+------------------
+This field allows to change the default sound effect for this weapon. This is the sound used when the weapon does fire and not the other sound when the shot hit some target.
+You can type IGNORE if you want let unchanged this value.
+
+Default values:
+
+PISTOLS_ITEM = 8
+UZI_ITEM =    43
+SHOTGUN_ITEM= 45
+CROSSBOW_ITEM = 235
+GRENADE_GUN_ITEM (sounds are in shooting animation with playflip animcommand)
+SIXSHOOTER_ITEM  = 121
+
+FramesForRecharge field
+-----------------------
+This value is the number of frames (30 for second) used for auto-shot.
+When player keep continuosly down the action key the FramesForRecharge value will be used to set the pause between a shot and following.
+Bigger values will cause a longer pause time and hence less shots for second.
+
+Default values:
+
+PISTOLS_ITEM = 9
+UZI_ITEM = 3
+SHOTGUN_ITEM = 9
+SIXSHOOTER_ITEM = 16
+CROSSBOW_ITEM (Fixed, you cann't change it, it dependes by recharge animation length)
+GRENADE_GUN_ITEM Fixed, you cann't change it, it dependes by recharge animation length)
+
+DurateFlash field
+-----------------
+To change the number of frames (30 for second) of durate for fire flash when the weapon shots.
+
+Default values:
+ 
+PISTOLS_ITEM = 3
+UZI_ITEM = 3
+SHOTGUN_ITEM = 3
+SIXSHOOTER_ITEM = 3
+GRENADE_GUN_ITEM = 2
+CROSSBOW_ITEM = 2
+
+Extra field
+-----------
+This field may host different values in according with some WEAP_ flag.
+Read the descriptions of WEAP_ constants to discover the value to type in this field.
+
+MaxDistanceForAiming field
+--------------------------
+The automatic aiming allows to Lara to point an enmey when him is (about) in front to her and he is within a specific max aiming distance.
+The default value for all weapons is 8 sectors, if you want you can set different aiming distance for each weapon.
+For example if you set 0, when player will use this weapon he will be not able to have automatic aiming of enemies.
+If you set 3 (sectors), using this weapon the automatic aiming will work with closed enemies, withing 3 sectors of 3d distance, ect.
+
+Remark: Increasing too much this value it could compromise the speed of game engine because the compute to locate aimable enemies will be enlarged to very wide zones with meaningful wasting of CPU time.
+
+FrameToTakeWeapon and FrameToLetWeapon fields
+---------------------------------------------
+These two fields set the number of frame of get on, get off in Lara's hands animation.
+You should change these values only when you are trying to change this animation to extract weapons.
+For little weapons (pistols, uzi and sixshooter) you have to set the same frame for both field, and the game engine will use that frame -1 to place the weapon in holster, while that frame +1 to place the weapon in Lara's hands.
+The reason of this method is because the game engine will use always the same animation to extract weapon or to place them in holsters, only the frame will change a bit +1 or -1 in according with extract or place-in animation.
+
+About the big weapons like shotgun, grenade-gun and crossbow you have two different frames to extract or place-in holders operation.
+
+
+Following table shows the default values:
+
+          PlaceWeaponInHand      RemoveWeaponFromHand
+-----------------------------------------------------
+Pistols    13 (it becomes 14)    13 (it becomes 12)
+Revolver   15 (it becomes 16)    15 (it becomes 14)
+UZI        13 (it becomes 14)    13 (it becomes 12)
+
+Shotgun    10				    21 
+grenadeGun 10                    21 
+CrossBow   10	                   21 
+
+Remark: looking the orginal animations to extract weapons it could seem weird the above numbers of frames since they seem bigger than total number of frame of above animations, anyway I presume there are a sort of "FrameRate" field, like you see in animation editor program, but in this case it is an hardcoded value.
+I'm not sure and you should perform some attempts, anyway you can change that misterious value using the field named FrameCounter in this same Customize command.(see below)
+
+Random field
+------------
+I'm not sure about the meaning of this field.
+It used to change (whereby a multiplication) a random value.
+I presume it could be used to set randomly the direction or intensity for some shoting effect but I've not had the time to verify its usage.
+
+Default values:
+
+Pistols = 1456
+Revolver= 728
+UZI = 1456
+Shotgun = 0 (probably for shotgun this field will be ignored)
+GrenadeGun = 1456
+CrossBow = 1456
+
+VPositionOfWeapon field
+-----------------------
+This field apparently is a Cord Y value (up/down in 3d world) to compute the height of weapon (when lara has it in her hands) respect to water surface.
+When game engine detects that the water is touching the weapon it will force the put off the weapon.
+Anyway this is only an hypothesis.
+
+Pistols = 650
+Revolver= 650
+UZI = 650
+Shotgun = 500
+GrenadeGun = 500
+CrossBow = 500
+
+Unknown field
+-------------
+I've not any idea about what is the target of this field.
+Anyway you should discover this target performing some attempts with different values.
+In my experiments I discovered only that this value is not used when lara extracts the weapon and neither when she is shooting.
+Pherpas it works about aiming.
+
+For all weapons the default value is 1820
+
+FrameCounter field
+------------------
+Another misterious field.
+This value I presume is a number of frame and surely it will be decremented by 1 for each game cycle.
+I suppose it could be a sort of "framerate" field to multiplicate the durate of animation to slow down extract weapon animation.
+This field is used only for Pistol, UZI and revolver.
+
+Default values:
+
+Pistols = 4
+Revolver = 7
+UZI = 4
+
+FrameMinRange and FrameMaxRange fields
+--------------------------------------
+I've not yet discovered the precise usage of these two fields.
+I have discovered only they are frame values and these two values were used like the min and max values of a range.
+These two fields will be used only for Pistols, revolver and UZIs
+If you change the frame to extract weapon (see above fields FrameToTakeWeapon and  FrameToLetWeapon fields) you should remember that this number of change weapon has to be within this misterious range of FrameMinRange and FrameMaxRange fields, otherwise the animation will not change weapon in correct way.
+
+Default values:
+
+Pistols = min: 5   max: 24
+Revolver= min: 8   max: 29
+UZIs =    min: 5   max: 24
+
+OrigX, OrigY, OrigZ, OrigOrient field
+-------------------------------------
+These fields work only for weapon launching real (visible) ammo, like GrenadeGun and CrossBow.
+If you change animation of shape of weapon meshes you could require to change also the origin of bullet at start of its movement.
+The OrigX, OrigY and Origz are algebrical values (+ or - values) and they will added to default current position for bullet.
+To understand how set these three values you could read the description of AddEffect script command where there are the DispX, DispY, and DispZ field that works in same way.
+About the OrigOrient field, it set the degree about direction of bullet.
+If you set 0 the direction will be not changed respect than default value, while if you set some positive or negative value the (horizontal) direction will be changed of wished degrees.
+The way to set degree is particular.
+
+90 degrees to east will be 16384 ($4000)
+90 degrees to west will be -16384 ($C000)
+
+You can set also intermediate values, of course, anyway you can use above example to understand how compute other values.

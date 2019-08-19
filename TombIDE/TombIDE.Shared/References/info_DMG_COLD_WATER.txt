@@ -1,0 +1,1 @@
+Specify you are using current command to set the default behavior of all cold water rooms in current level.

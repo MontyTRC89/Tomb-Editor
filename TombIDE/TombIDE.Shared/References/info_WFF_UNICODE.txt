@@ -1,0 +1,21 @@
+Used in WindowsFont= command
+If you wish show a text with eastern charset, perhaps you'll need also to set this flag to show correctly your string.
+Unicode is UTF16, a fixed 2 bytes (16 bits), encoding method.
+In the case you use unicode you'll have to type your string, using the "binary hex string" format.
+This is a necessary "trick" to around the problem that NG_Center program doesn't support unicode texts.
+To add an unicode string in string panel of NG_Center, you'll have to:
+
+1) Open block notes or other (simple) text editor of your computer
+2) Type the original text in your language, included in two "$$$$" markers.
+Example:
+If your text is "MyText"
+you'll type into block notes:
+
+$$$$MyText$$$$
+
+3) Save this text in a file on disk
+4) Go to the String panel of NG_Cnter, and enable [ExtraNG] section.
+5) Click to [Add new string]
+6) Now click on [Import Binary String] button
+7) Choose the file where you saved your original text
+8) Now you can choose if you wish keep this text in an external file ("@FileName.txt") or you want keep the binary string directly in hex format.

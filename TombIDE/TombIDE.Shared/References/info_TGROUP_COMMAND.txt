@@ -1,0 +1,9 @@
+Used in TriggerGroup= command.
+Differently by other TGROUP_ values, the TGROUP_COMMAND value should be used alone(*) to introduce a fake trigger.
+Usually in triggergroups there are data about real triggers exported by NGLE program, but in the case of TGROUP_COMMAND it used only to set a command to handle the execution of (others) triggers in current triggergroup.
+Once you typed the TGROUP_COMMAND value in first value of three values, you'll set in second value a TCMD (Triggergroup CoMmandD constant) to set what kind of command it will be. While the third value will be the argument for given TCMD_ command.
+See also description of TCMD_ constants for more infos.
+
+(*) Note: The only exception, for the rule to use alone the TGROUP_COMMAND, is for TGROUP_ELSE flag, that you can add to TGROUP_COMMAND when it is first trigger of an ELSE block.
+No other TGROUP_ flag can be added to TGROUP_COMMAND. 
+In the case you use a TGROUP_COMMAND with TCMD_SET... command to modify a condition trigger, the further TGROUP_OR / TGROUP_AND / TGROUP_NOT operators, should be always added to real (following) condition trigger, never to TGROUP_COMMAND fake trigger.

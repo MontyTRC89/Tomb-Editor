@@ -1,0 +1,2 @@
+Used with GT_TITLE_SCREEN global trigger.
+Detect the main title screen, i.e. the screen where you see "New Game", "Load Game", "Options" and "Exit"

@@ -1,0 +1,3 @@
+Used with Parameters=PARAM_INPUT_BOX
+Perform a blinking of the caret while it's waiting input. 
+The blinking simulates the old MS-DOS prompt.

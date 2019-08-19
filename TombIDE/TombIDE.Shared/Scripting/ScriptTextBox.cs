@@ -63,6 +63,8 @@ namespace TombIDE.Shared.Scripting
 
 			ToolTipNeeded += OnToolTipNeeded;
 			ToolTipDelay = 100;
+			ToolTip.UseAnimation = false;
+			ToolTip.UseFading = false;
 
 			Dock = DockStyle.Fill;
 

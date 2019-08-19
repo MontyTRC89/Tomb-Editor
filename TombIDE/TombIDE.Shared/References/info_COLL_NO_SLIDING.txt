@@ -1,0 +1,2 @@
+Used with Customize=CUST_SET_STILL_COLLISION command.
+This setting set a very drastic collision mode: removing all sliding features lara will be always stopped, indifferently about current angle of impact with the item.

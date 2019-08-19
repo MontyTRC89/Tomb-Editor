@@ -1,0 +1,3 @@
+By default the start of animation cann't happen if Lara is driving some vehicle.
+Anywya if you want create new animation for lara while she is on some vehicle you have to use this ENV condition and typing in Extra field the Slot number of vehicle. 
+Remark: In Extra field you cann't type the name of slot but you can type the number you read at left of slot name in Slot moveable list of reference panel.

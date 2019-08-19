@@ -1,0 +1,8 @@
+From version 1.1.9.8 this FAN has new properties.
+When you add this flag and you set some valid ENV_POS_... flags in Evironment field (see following description) the position of lara will be forced to be the ideal position in according with ENV_POS_ values before performing your custom animation.
+For example if you set ENV_POS_HORTOGONAL, an instat before starting the special animation the lara orientation will be aligned with hortogonal axis.
+Remark: by default the alignment operation is a bit poor, since TRNG move immediatly lara in ideal position without any progressive movement. 
+Anyway from versione 1.1.9.8, when you set FAN_ALIGN_TO_ENV_POS in according with ENV_ITEM_TEST_POSITION condition, you can get a progressive self adjustment in game like you see in default tomb4 when lara open a door or push a pushable object.
+This feature will use the data you set in TestPosition command and extracts from it the ideal position to reach, using intermediate values for each difference range you set.
+This feature don't work fine if lara was performing a state id different by stand-up position or swimming underwater.
+Warning: when you set ENV_ITEM_TEST_POSITION and the FAN_ALIGN_TO_ENV_POS the orient information will be read only from TestPosition command, so the further ENV_POS_... FLAGS you add in EnvCondition will be ignored.

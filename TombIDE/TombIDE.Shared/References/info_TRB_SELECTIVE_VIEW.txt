@@ -1,0 +1,2 @@
+Used in Turbo command. TRB_SELECTIVE_VIEW excludes all computes about static objects non visible in game (because back of current camera view).
+Theorically just the directx functions perform this cutoff, but looking the source code, it appears that many computes have been performed in spite these statics object are outside of visible world. Hence, this setting allows to save some time otherwise wasted in no useful computes.

@@ -1,0 +1,28 @@
+Used with Customize command.
+
+Syntax: Customize=CUST_KEEP_LARA_HP, TargetLevel
+
+With this customize you can avoid the automatic recharging of lara HP when she jumps to another level from the current.
+
+TargetLevel field
+-----------------
+You type in this field the index of the target level where lara will arrive keeping previous HP value.
+Example:
+We suppose that your adventure has three levels, where the level 1 and the level  2 are the two halfs of a wide environment and lara jumps on and back from these two levels many times.
+Then there is the level 3 where lara will go only after solved all puzzles of first two levels.
+In this situation you could wish that lara was not able to recharge her HP simply going on and back from the gate between level 1 and level 2.
+So to keep same hp in above situation you should place in [Level] section of level 1 the command:
+
+Customize=CUST_KEEP_LARA_HP, 2
+
+While the in the [Level] section of level 2:
+
+Customize=CUST_KEEP_LARA_HP, 1
+
+About level 3 is not necessary type anything since when this command is missing by default lara will be recharged when she jumps to level 3
+
+Remark: if you wish keep always the HP of lara, i.e. no recharge for all levels, you can use the special constants KLH_ALL_LEVELS instead of the target level:
+
+Customize=CUST_KEEP_LARA_HP, KLH_ALL_LEVELS
+
+In this way, for any level where lara jumps, starting from current, she will keep the old HP value.

@@ -1,0 +1,9 @@
+Used in Equipment command.
+If your equipment command is working on a weapon slot (weapon, not ammo), you can add to the Amount field the LOAD_LASERSIGHT flag to set that the ammo has currently loaded the laser sight.
+Note: Only revolver and crossbow can use laser sight.
+
+For example the scrit command:
+
+Equipment= CROSSBOW_ITEM, 1 + LOAD_LASERSIGHT + LOAD_AMMO_TYPE3
+
+It means that the crossbow will be present in the inventory. It is using ammo type 3 and it has the lasersight already mounted on it.

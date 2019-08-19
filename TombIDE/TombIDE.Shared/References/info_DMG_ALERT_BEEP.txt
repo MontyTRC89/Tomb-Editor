@@ -1,0 +1,3 @@
+To use only with DMG_INDIRECT_BAR  flag.
+If you set this flag, when the bar will be go down until 15 % (or less) than full value, the bar will blink and a little "beep" sound will be performed togheter with blinking.
+Remark: Also when this flag is absent the bar will blink but no sound will be performed.

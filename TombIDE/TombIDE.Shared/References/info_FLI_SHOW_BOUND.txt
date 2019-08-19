@@ -1,0 +1,3 @@
+Used in LogItem= command.
+With this flag in data of item will be added also the current size and coordinates of 3d bounding box of Item.
+These infos could be useful when you are not sure about the size of item you are testing.

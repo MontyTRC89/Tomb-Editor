@@ -1,0 +1,2 @@
+Used in DiagnosticType script command.
+It enables the viewing of infos about audio tracks: the enabled channel and number of cd is playing.

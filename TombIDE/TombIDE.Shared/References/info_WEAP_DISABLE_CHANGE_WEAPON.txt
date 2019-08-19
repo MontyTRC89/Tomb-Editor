@@ -1,0 +1,1 @@
+By default, the game engine will change the current weapon with pistols when the current weaponst runs out the ammo. If you add this flag the change of weapon will be disabled and lara will keep same weapon also when the ammo has been run out.

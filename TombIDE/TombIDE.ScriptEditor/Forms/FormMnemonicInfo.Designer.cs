@@ -17,13 +17,29 @@
 
 		private void InitializeComponent()
 		{
+			this.button_Close = new DarkUI.Controls.DarkButton();
 			this.label_FlagName = new DarkUI.Controls.DarkLabel();
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.panel_02 = new System.Windows.Forms.Panel();
 			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
+			this.panel_03 = new System.Windows.Forms.Panel();
 			this.panel_01.SuspendLayout();
 			this.panel_02.SuspendLayout();
+			this.panel_03.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// button_Close
+			// 
+			this.button_Close.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Close.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button_Close.Location = new System.Drawing.Point(11, 11);
+			this.button_Close.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+			this.button_Close.Name = "button_Close";
+			this.button_Close.Size = new System.Drawing.Size(600, 24);
+			this.button_Close.TabIndex = 0;
+			this.button_Close.Text = "Close";
 			// 
 			// label_FlagName
 			// 
@@ -54,7 +70,7 @@
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel_02.Location = new System.Drawing.Point(0, 48);
 			this.panel_02.Name = "panel_02";
-			this.panel_02.Size = new System.Drawing.Size(624, 393);
+			this.panel_02.Size = new System.Drawing.Size(624, 345);
 			this.panel_02.TabIndex = 1;
 			// 
 			// richTextBox_Description
@@ -64,35 +80,51 @@
 			this.richTextBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.richTextBox_Description.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.richTextBox_Description.ForeColor = System.Drawing.Color.Gainsboro;
-			this.richTextBox_Description.Location = new System.Drawing.Point(1, 1);
+			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.Size = new System.Drawing.Size(620, 389);
-			this.richTextBox_Description.TabIndex = 1;
+			this.richTextBox_Description.Size = new System.Drawing.Size(622, 343);
+			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
+			// 
+			// panel_03
+			// 
+			this.panel_03.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_03.Controls.Add(this.button_Close);
+			this.panel_03.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.panel_03.Location = new System.Drawing.Point(0, 393);
+			this.panel_03.Name = "panel_03";
+			this.panel_03.Size = new System.Drawing.Size(624, 48);
+			this.panel_03.TabIndex = 2;
 			// 
 			// FormMnemonicInfo
 			// 
+			this.AcceptButton = this.button_Close;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(624, 441);
 			this.Controls.Add(this.panel_02);
+			this.Controls.Add(this.panel_03);
 			this.Controls.Add(this.panel_01);
+			this.MinimumSize = new System.Drawing.Size(640, 480);
 			this.Name = "FormMnemonicInfo";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Information about FLAG_NAME_GOES_HERE";
 			this.panel_01.ResumeLayout(false);
 			this.panel_02.ResumeLayout(false);
+			this.panel_03.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
+		private DarkUI.Controls.DarkButton button_Close;
 		private DarkUI.Controls.DarkLabel label_FlagName;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
+		private System.Windows.Forms.Panel panel_03;
 		private System.Windows.Forms.RichTextBox richTextBox_Description;
 	}
 }

@@ -1,0 +1,1 @@
+You should use above condition only when Lara is monkey on the ceiling and you want create an animation that permits to lara to pass from current ceiling to an heighest climbable wall, passing directly by ceiling to climbable wall.

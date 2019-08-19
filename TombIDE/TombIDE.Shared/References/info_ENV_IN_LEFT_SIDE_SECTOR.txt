@@ -1,0 +1,6 @@
+This condition checks only the position of lara respect current sector where she is.
+If lara is near to left border of current sector the condition is true.
+Since we are speaking of "left side" this means this condition is true when lara is (virtually) touching with her left arm the (further) wall in sector at left of the sector where she is.
+In DistanceForEnv you can change the comput for distance. If you set big values the condition is true also when lara is not very closed to left border of current sector, while if you set a little value the conditon will be true only when lara is very closed to left border of current sector.
+Remark: probably you should use this condition togheter with other because alone is not very useful, since it doesn't check if in sector at left of current sector there is really a wall that lara could touch. So you should use this condition togheter with [ENV_NON_TRUE+ENV_NO_BLOCK_AT_LEFT] condition to verify if really lara could touch with her left arm the wall in left side.
+Remark: the default value for DistanceForEnv is 128 (1024 = one sector), this is a good value to compute touching of left wall when lara is in stand up position. If you type IGNORE in distance for env will be used 128.

@@ -1,0 +1,4 @@
+used in Paramaters=PARAM_MOVE_ITEM script command
+This is most common gravity. Begin slowly and increase fastly until to reach a middle vertical speed downward, and then increase only slowly this middle value. Like an apple falling from the tree.
+You can change the middle value of vertical speed with a percentage of variation to type in Speed field.
+See the description of FMOV_FROG_JUMP_GRAVITY to know how compute the formula to type in that field.

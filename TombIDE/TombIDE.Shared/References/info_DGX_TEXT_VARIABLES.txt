@@ -1,0 +1,2 @@
+Used in DiagnosticType script command.
+Show on screen the content of testual variables.

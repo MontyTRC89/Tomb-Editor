@@ -1,0 +1,13 @@
+Signal a multiple condition. The effective ENV condition flags will be stored in a MultEnvCondition script command, and in DistanceForEnv you have to type the ID of MultEnvCondition command will be used.
+ The final condition will be true only if all conditions in MultEnvCondition command will be true in same time.
+Examples:
+
+If you want set in your animation command two Env condition, like: ENV_CEILING_HEIGHT with height (distance env) = $300 (3 clicks) + other condition: ENV_HOLE_FLOOR_AT_LEFT with depth (distance env) = $400 (4 clicks) you can as first step create this MultEnvCondition command:
+
+MultEnvCondition= 1, ENV_CEILING_HEIGHT, $300, ENV_HOLE_FLOOR_AT_LEFT, $400
+
+and then type in Animation command the reference for Id of above MultEnvCondition (1) and the ENV_ condition: ENV_MULT_CONDITION
+
+For example:
+
+Animation=447, KEY1_LEFT, IGNORE,IGNORE,ENV_MULT_CONDITION, 1,IGNORE,-445, -448

@@ -1,0 +1,6 @@
+Invert the current ENV condition. You have to add this value to some ENV condition when you want have that when the condition is true it will be false, and viceversa.
+For example looking belove ENV conditions you'll find the ENV_NO_BLOCK_IN_FRONT condition.
+If you use this alone it means "perform my special animation only if lara has NO block in front of her face".
+But if you want perform an animation requiring a block in front of lara, you can use that same conditon (ENV_NO_BLOCK_IN_FRONT) linked with + ENV_NON_TRUE, to inverse the condition.
+In this combination (ENV_NON_TRUE + ENV_NO_BLOCK_IN_FRONT) we have an (ugly) double negation that it means: "when lara HAS a block in front.. . perform my special animation".
+You can add ENV_NON_TRUE flag to any ENV condition, anyway remember that the ENV_NON_TRUE flag has NO effect on ENV_POS ... flags, this means the ENV_POS flags will be valued always in direct way, indifferntly if you set or less an ENV_NON_TRUE flag.

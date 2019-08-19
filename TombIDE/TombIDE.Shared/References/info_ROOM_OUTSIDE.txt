@@ -1,0 +1,2 @@
+Used in according with ENV_ROOM condition in Animation or MultEnvCondition commands.
+Lara is outside (ponytail flys in the wind)

@@ -1,0 +1,3 @@
+Used in SavegamePanel= script command.
+When the savegame list shows only a part of total managable savegames, the player will be able to scroll the saveame to see next hidden save.
+By default trng will do scrolling a single savegame at once with DOWN input, but if you wish show a block of savegames in same time you can use this option.

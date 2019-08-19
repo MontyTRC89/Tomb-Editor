@@ -1,0 +1,85 @@
+Used as first value in Parameters script command. It baptizes a parameters list as data for rotating of items, moveables or statics.
+
+Syntax: Parameters=PARAM_ROTATE_ITEM, IdParamList, FlagsRotation (FROT_), ItemIndex, DirHRotation (ROTH_...), HRotationAngle, SpeedHRotation, DirVRotation (ROTV_..), VRotationAngle, SpeedVRotation, MovingSound, FinalSound
+
+Description of fields:
+-----------------------
+
+IdParamList field
+-----------------
+This is a progressive number to identify this "Parameters=PARAM_ROTATE_ITEM" command script in trigger window of ngle.
+You'll type 1, for your first PARAM_ROTATE_ITEM command, 2 for second ect
+You have number between 1 and 99.
+
+FlagsRotation (FROT_) field
+---------------------------
+You can type one or more FROT_ constants linked with + (plus) sign.
+See description of FROT_ constants in Reference panel of NG Center.
+
+ItemIndex field
+---------------
+This is the index of item to rotate, you can read it in yellow frame that appears when you click over some item in NGLE program.
+You can choose moveable or static but remember to perform the correct flipeffect in according with nature (static or moveable) of item.
+
+DirHRotation (ROTH_...) field
+------------------------------
+If you wish have an horizontal rotation you'll type in this field a ROTH_ value to set the direction of rotation (clockwise or opposite)
+
+HRotationAngle field
+--------------------
+In this field you set the wished horizontal angle rotation.
+The unit of measurement for this field is a bit weird but it that used in tomb4 engine.
+These are some references:
+$2000  = 45 degrees
+$4000  = 90 degrees
+$8000 = 180 degrees
+
+For example if you want that some object rotates by 90 degrees you'll have to type in this field the value $4000 (or in decimal: 16384)
+
+Remarks: If you set the FROT_ flag for endless rotation the VRorationAngle field will be ignored, since the item will round continuosly.
+
+SpeedHRotation field
+--------------------
+The speed is a value that will be added to current orientation factor.
+The unit of measurement is the same of horizontal or vertical RotationAngle, but in this field you'll have to type value very littler than final angle to reach, of course.
+
+Remember that the value you type like speed will be added to current orienting 30 times for second.
+
+Remark: It's advisable to use as speed values multiple of power by 2. Typying in hexadecimal is easy to remember the good speeds: 
+$80 , $100 , $180, $200, $280, $300  ect
+If you don't use these values there is the risk that the speed value was NOT a multiple of final Rotation Angle and hence the object could be not exaclty positioned in final position.
+To discover if value for RotationAngle and Speed are good, just dividing Rotation by Speed, if you get a result with decimal point the couple of values is wrong.
+  
+
+DirVRotation (ROTV_..) field
+----------------------------
+If you wish have a vertical rotation you'll type in this field a ROTV_ value to set the direction of rotation (forward or backward)
+Remark: unfortunately for statics it's not foreseen a vertical rotation, so you can apply a vertical rotation only to moveable items.
+
+VRotationAngle field
+--------------------
+In this field you set the wished vertical angle rotation.
+The unit of measurement for this field is a bit weird but it that used in tomb4 engine.
+These are some references:
+$2000  = 45 degrees
+$4000  = 90 degrees
+$8000 = 180 degrees
+
+For example if you want that some object rotates by 90 degrees you'll have to type in this field the value $4000 (or in decimal: 16384)
+
+Remarks: If you set the FROT_ flag for endless rotation the VRorationAngle field will be ignored, since the item will round continuosly.
+
+SpeedVRotation field
+--------------------
+This field hosts the speed of vertical rotation.
+About the values to set see the description of SpeedHRotation field. The speech is the same, but in this case the rotation is vertical.
+
+MovingSound field
+-----------------
+Optional field. If you wish assign a sound to item while it is rotating, type a number of sound sfx.
+Set IGNORE if you don't wish any sound for moving.
+
+FinalSound field
+----------------
+Optional field. If you wish perform a sound when the rotation is complete you can type a sound sfx sound in this field 
+Set IGNORE if you don't wish any sound for final position.

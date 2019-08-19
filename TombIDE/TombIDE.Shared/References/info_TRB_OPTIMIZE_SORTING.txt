@@ -1,0 +1,2 @@
+Used in Turbo command. TRB_OPTIMIZE_SORTING optimizes the sorting of polygons list used by tomb4 engine before performing many draw operations. 
+Usually, this optimizing gives a gain of about 5 or 6 fps (frame per second)

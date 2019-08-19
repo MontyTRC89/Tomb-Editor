@@ -1,0 +1,1 @@
+Same mean of ENV_CLIMB_RIGHT_IN_CORNER but for outside corner.

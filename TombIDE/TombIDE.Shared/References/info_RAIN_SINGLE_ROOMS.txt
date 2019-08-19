@@ -1,0 +1,2 @@
+With this setting the rain will be showed only in specific 
+rooms signed as "Rain" in ngle and with outside status.
