@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.Scripting;
 
 namespace TombIDE.ScriptEditor
 {
@@ -21,6 +22,12 @@ namespace TombIDE.ScriptEditor
 
 		private string GetFlagDescription(string flag)
 		{
+			foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
+			{
+				if (mnemonic.Flag == flag)
+					return mnemonic.Description;
+			}
+
 			try
 			{
 				foreach (string file in Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), @"References\Mnemonics"), "info_*.txt"))

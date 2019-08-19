@@ -14,9 +14,9 @@ namespace TombIDE.Shared.Scripting
 			foreach (string item in KeyWords.MnemonicConstants)
 				items.Add(new AutocompleteItem(item));
 
-			foreach (string item in KeyWords.PluginMnemonics)
+			foreach (PluginMnemonic item in KeyWords.PluginMnemonics)
 			{
-				AutocompleteItem autocompleteItem = new AutocompleteItem(item);
+				AutocompleteItem autocompleteItem = new AutocompleteItem(item.Flag);
 
 				if (!items.Exists(x => x.Text.ToLower() == autocompleteItem.Text.ToLower()))
 					items.Add(autocompleteItem);
