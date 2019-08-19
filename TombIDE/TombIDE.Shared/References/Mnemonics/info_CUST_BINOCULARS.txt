@@ -1,0 +1,92 @@
+Used with Customize command
+Syntax: Customize=CUST_BINOCULARS, FLAGS (BINF_...), Parameter, CompassImage, CompassRectAndFlags, SextantImage, SextantRectAndFlags, LightnessRectAndFlags, ZoomRectAndFlags, LightSwitchRectAndFlags, FontID
+
+This customize allows to set many new features to binocular management but it works only in according with the usage of Customize= CUST_BACKGROUND, BKGDT_BINOCULAR ... command.
+Once you added a cust_background for binoculars, you can furtherly customize this binoculars with this, CUST_BINOCULARS, customize command.
+If you omit the customized background for binoculars the cust_background will have no effect.
+
+IMPORTANT NOTE: while when you use CUST_BACKGROUND for binoculars, alone, the binocular image for background can have any size, when you wish customize advanced features for binoculars with this CUST_BINOCULARS command, you have to use as background image for binoculars an image with size 1024 x 768.
+This requirement is necessary to work on a well-known size to grant correct alignment between the background and the different values, bars or strips that will be added to it.
+
+FLAGS (BINF_...) field
+----------------------
+In this field you add BINF_... flags to set the work mode of binoculars.
+The most of these flags are to set what special feature to enable for binoculars.
+
+Parameter field
+---------------
+In field it could be required some extra setting in accoding the some BINF_.. flag.
+See description of BINF_... flags for more infos.
+
+CompassImage field
+-------------------
+If you use the BINF_COMPASS flag in Flags field, and then, in the next CompassRectAndFlags field, you'll set the BINT_STRIP type, you have also to set in current CompassImage field the number of image to use for the compass strip.
+
+Note: if you do not use BINF_COMPASS flag or you use BINT_NUMERIC type for the compass, you can type IGNORE in this field.
+
+About the number of image to type in this field, remember that the number you type in this field is NOT an Id of some Image script command but it is own the number of image in trle\pix folder.
+For example if the image with the compass strip is "image13.bmp", you'll type 13 in this field.
+The compass strip image has to be exactly of 1400x64 pixels.
+About its look, it's more easy, to understand how it should be drawn, if you look the example of lightning demo, where it used.
+Pratically the compass strip will be a graduated scale with cardinal points (north, east, west, south) and different degrees, that will be used, moving it, to indicate where binoculars is aiming in that moment.
+Note: the compass strip has a double scale because, to preserve infinite rotation, it is necessary having two instances for each cardinal point and degrees.
+Look the example of demo lightning to study how it works.
+
+CompassRectAndFlags field
+-------------------------
+If you enabled the compass, with the BINF_COMPASS flag, you have to type here the id of PARAM_RECT command where you stored the position and size of rect where the compass data will be drawn.
+Then you can add to this rect id, a BINT_ type to set as showing the compass data. You can use only BINT_STRIP or BINT_NUMERIC types for the compass.
+
+Remember to set origin and size of the rectangle, always using as reference a screen of 1024x768 pixel.
+About the shape of the rectangle you should choose a wide rectangle (the base very wider than heigh) when you use a BINT_STRIP type for the compass.
+While for the BINT_NUMERIC type, the difference between base and height should be less but you should anyway remember that in the BINT_NUMERIC type the compass data will be printed with the format like "NE 32" and therefor these characters require some space in the base of the rectangle.
+
+Notes:
+
+- For this field is not foreseen the usage of BINT_BAR type.
+- The size of the font used to print the text, when you use the BINT_NUMERIC type, is given by the height of PARAM_RECT ractangle. For this reason, if you wish a bigger character for the compass data just you increase the height field in PARAM_RECT command.
+
+SextantImage field
+------------------
+If you wish show a sextant with vertical degress about where binoculars are looking, and you  set the BINT_STRIP type about sextant data, you have to type in this field the numbe of image for the sextant strip.
+
+About the number of image to type in this field, remember that the number you type in this field is NOT an Id of some Image script command but it is own the number of image in trle\pix folder.
+
+The sextant strip image has to be exaclty of 64x1520 pixels.
+Differently by the compass strip image, the sextant image has always a vertical shape.
+
+Note: you have to create a sextant image of given resolution (64x1520) anyway in game you can show a littler (more slim) strip, choosing in SextantRect a rectangle with a width less than 64 pixel, in this case will be taken always the lefter strip of the original image.
+
+About the look of this image and how it works I suggest to study the lightnings demo you find on trng official website ( http://www.trlevelmanager.eu/ng.htm ) in the demo section.
+
+SextantRectAndFlags field
+-------------------------
+If you use a sextant you have to type in this fild the id of PARAM_RECT command where you store the positon and size of the ractangle that will host the sextant data.
+You have also to add to the rect id the BINT_ type about how to show sextant data.
+You can choose BINT_STRIP or BINT_NUMERIC types.
+
+LightnessRectAndFlags field
+---------------------------
+If you enabled the data about lightness, you have to type in this field the id of PARAM_RECT command with the position and size where it will be drawn.
+Remember that the binocular background has always 1024x768 size and the data of ractangle should work in according with this base resolution.
+
+You have also to add to the rect id, the BINT_ type about how to show sextant data.
+You can choose BINT_BAR or BINT_NUMERIC types.
+Note that if you choose the BINT_NUMERIC, the lightness level will be described in ISO/DIN scale, with values in the range between 1 and 39, where 39 is the sunlight and 1 is the full dark.
+
+ZoomRectAndFlags field
+--------------------------
+If you wish having show infos about current zoom-in factor, you can add in Flags field the BINF_ZOOM flag, and then type in this ZoomRectAndFlags field the id of PARAM_RECT where show values about current zoom factor.
+Please, note that you can use for this field only BINT_NUMERIC type.
+
+LightSwitchRectAndFlags field
+-----------------------------
+If you added the BINF_LIGHT_SWITCH flag to flags field, now you have to set in this LightSwitchRectAndFlags field, the id of PARAM_RECT command with the infos about the position for switch light.
+The switch light is a button with two states, on and off, to show on the screen when player enabled the illuminator in binocular view.
+Please note that in the PARAM_RECT you have to use the ForeColor field to set the "on" color of the button, while in the backcolor the color for "off" state.
+This button is simply a box of a given (by you) size, the only change you can do it's to add the BINT_ROUND type, to convert the box in a circle.
+
+FontID field
+------------
+When you let literal or numeric info showing, you have to choose the font to use for these text typing.
+Note: about the size of the font, it will be arranged (stretched or enlarged) to be compatible with the height field of rectangle for the given text.

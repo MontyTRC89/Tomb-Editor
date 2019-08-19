@@ -1,2 +1,0 @@
-This flag may be used with slot of semigod to transform then in mortal enemies. 
-When you set this flag the enemy will be killed also with common ammos

@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_SCALE_ITEM
-This flag should be used only with dynamic effects. You add the FSCA_ENDLESS flag to create a continue inflating/deflating of the item, like a pulse effect. Once the item will have reached the final size, its size will go back to the BeginSizePercentage and go on, forever.

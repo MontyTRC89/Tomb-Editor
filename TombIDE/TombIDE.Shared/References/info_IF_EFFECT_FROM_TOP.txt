@@ -1,8 +1,0 @@
-Used in Image= command.
-This effect move the image from top of screen upto reach the final position you set in field PosX,PosY,SizeX and SizeY.
-The whole moving effect will be perfomed in the frames you set in EffectTime field.
-Little values as EffectTime will produce most fast in the moving.
-
-Remarks: 
-
-* At start of this effect the image will be whole outside of screen, for this reason you can apply this effect also for images to show in full screen size.

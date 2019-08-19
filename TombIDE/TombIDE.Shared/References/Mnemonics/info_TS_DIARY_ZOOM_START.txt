@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+When you enabled the zoom effect at first activation of diary this is the sound that will be played.

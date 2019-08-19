@@ -1,0 +1,45 @@
+Used with Parameters=PARAM_INPUT_BOX
+This flag allows to expand the scan codes recognized by keyboard parsing procedure.
+By default input box parses and recognizes only sure key for all QWERTY keyboard layouts but ignores many keys that change for different kind of nationalized keyboards, like "?", "!", "@" ect.
+With this flag you can say to InputBox procedure to check also for other keys, suppling some infos about scancodes and character to display on screen.
+
+When you add RIB_ADD_SCANCODE_LIST flag, you have to add also a NG extra string with (fixed) number "666" (only to remember it better, don't worry)
+The syntax of 666 ng string will be like this:
+666: AABBCC, A1B1C1, A2B2C2 ... ect ...
+Pratically you type a serie of hexadecimal number (omitting the "$" prefix) divided by commas.
+Each hex number gives infos, to input box procedure, about what scan code (read by keyboard) should be parsed (the scan codes value are those you find in "KEYBOARD SCANCODES list" of Reference Panel) and that its corresponding ASCII code to draw on screen.
+The "AA" pair will be the ascii code (UTF-7 set) , while the BB (and further, optional, "CC" and "DD") will be single scan code key to be down in same moment, to draw the "AA" ascii code.
+For instance, if you wish having also the "?" character, you need to see in Keyboard scancodes list its scan code value.
+Now you discover that it is .... MISSING.
+The reason is that the scancodes show only the code for each single key of keyboard but some keys (the most) having two or more symbols for each key.
+So, thinking about US/UK keyboards, the "?" is over "/" symbol, so you look for the "/" character in Keyboard scancodes list.
+Now we find it: "53 ($35) Backslash /"
+Well, the scan code in hex format is "$35" but to have the "?" on screen we need also to keep down the "SHIFT" key.
+To complete our picking up of information we have to discover also the ascii code of "?" character.
+It's not present in NG_Center the ascii list, anyway it's easy finding infos on internet, so we discover that the asci code for "?" character is $3F (or 63 in decimal but we'll work only in hex format)
+To complete the required infos, we check for scancode of SHIFT: $2A
+At end we can create the hex number to add "?" character to input box:
+3F352A
+Above hex number will add the "?" between printable characters.
+You should "read" above number like a serie of 2 hex digits:
+"3F": on screen we'll print ascii "3F", i.e. the "?" character
+"35" when user hits the key "/" and in same moment there is the
+"2A" key down (SHIFT)
+
+Notes:
+- There are two shift keys, left and right, with different scancodes, anyway, since it's not foreseen the "or" operator (to say "this key or this other ...), trng will extend left shift to same shift itself.
+This means that, just you type the hex scan code for only one "SHIFT" key and trng will check also for other (left or right shift) key.
+
+- About the ALT e CTRL keys, the speech above about SHIFT doesn't work, since tomb4 has a limited scanning and doesn't recognize [ALT GR] as right ALT but it sees all ALT like only one.
+For CTRL is the same but in this case it's normal that two different CTRL gave same scan code.
+
+- Max amount of numbers (divided by commas) is 64.
+
+- Remember that the position of symbols, changes between different keyboard, in accoding with nationality. For this reasone if you wish support interpuntion characters (like "," ":" ";" ect.) you have only two ways:
+
+1) Using only US/UK layout you should warn the players that some key don't work fine, showing a different character rispet that displaied on their keyboards
+
+2) Creating two or more "langauge.dat" file, to have different scan codes in according with different layout "german" "french" "italian" ect.
+
+- Theoratically you could scan also keys that have not a visible character to display, like "F1" "F2" ect. function keys. In this case it's better using also RIB_SHORTCUT_KEY+RIB_HIDE_TEXT  flags.
+Then you'll supply, as ascii code, a special character to verify its presence after inputbox.

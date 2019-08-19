@@ -1,0 +1,2 @@
+Used in Image= command.
+By default the images will be hidden when there is a fixed camera. If you wish keep this image on game screen also when there is a fixed camera you can add the IF_OVER_FIXED_CAMERA flag.

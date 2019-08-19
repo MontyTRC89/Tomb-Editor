@@ -1,3 +1,0 @@
-Used with CUST_BIKE_VS_ENEMIES customization.
-With this customize the enemy hit from the vehicle will explode at first impact.
-You should use this flag only when you wish kill an immortal enemy that has no dying animation.

@@ -1,4 +1,0 @@
-Used with Parameters=PARAM_INPUT_BOX
-This flag will omit, to draw on screen, the keys hit by user.
-In spite of this behaviour all valid keys typed by user will be stored in lastInputText variable and LastInputNumber (if only digits).
-Usually you'll use this flag togehter with RIB_HIDE_CARET flag and, probably, to manage single key command with RIB_SHORTCUT_KEY flag.

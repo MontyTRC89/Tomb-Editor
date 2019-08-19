@@ -1,0 +1,13 @@
+Used in DiagnosticType script command.
+By default the trng engine is able to give many error messages when it detects some problem with script commands, wrong indices of moveables (in some trigger) and other directx stuff.
+Unfortuntaley the most of level designers ignore them because to see these messages they should launch the tomb4_log.exe program (in the "tools" subfolder of trle) and then, at end of the game, show the log that has been caught from the logger.
+Perhaps it's a bit boring this procedure, anyway now you can in easier way having the error messages showed on game display in real time if you add the DGX_ERRORS flag to the DiagnosticType command.
+
+Note: since in the game session the errors could be so much to cover all the screen, trng uses a buffering method: it will keep on the screen an error messages only for five seconds, and more, it will ignore when a new error message is the same it had already printed on the screen in the past.
+
+At end of the game, you'll find also a text file named "error_parsing_log.txt" in the trle folder, with all error messages.
+
+If, at end of the playing, you don't find any "error_parsing_log.txt" file this means there have been no errors, of course.
+
+Remark: some error messages could be very long. To remain all in the screen you should use very little font.
+Anyway in the error_parsing_log file you'll fine all errors with no truncation.

@@ -1,3 +1,0 @@
-Used with Customize=CUST_ROLLING_BOAT command
-Normal level for swinging. 
-Remark: if you omit to type any FRB_SWINGING_... value, the NORMAL will be used by default.

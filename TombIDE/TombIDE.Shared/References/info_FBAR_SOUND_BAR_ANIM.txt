@@ -1,8 +1,0 @@
-Used in Customize=CUST_BAR command. This flag creates in current bar a floating colors like you see in audio bar in Options screen.
-When you use this flag you can also type in Extra field an IdColor (pointing to some ColorRGB= command) to set the mask color.
-The audio bar works in particular way: there is a floating effect using two colors, the MainColor (IdColor1) and the background color (IdColor2), while the mask color will be used to paint the full side of bar. 
-For example if you use this flag with BAR_HEALTH and lara has 50 % of HP, the left half of bar will be colored with MaskColor to differentiate by right (empty) half.
-The mask color doesn't paint fully the bar but it will be added to current floating effect.
-For example if you set as MaskColor the rgb, with 0,0,0 values, you'll get no difference between left side and right side of bar because adding the 0,0,0, nothing change.
-While if you set like mask color the white, with rgb values 255,255,255, the full side of bar will become fully white, losing the floating effect.
-For above reasons it is a bit complicated set a good maskcolor. You should try a mask color where the rgb value was not 0 but neither 255. For example a color like: 128,128,128 (this is the default mask color if you type IGNORE in extra field), or  63,63,63  (it used in tomb4 for audio bar in some circustances)

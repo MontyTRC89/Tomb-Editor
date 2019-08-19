@@ -1,7 +1,0 @@
-Yo yo mode is a bit curious: elevator will move endless up and down, without any stop at floors.
-Using this mode you cann't use doors, since there is no time to open and close them. 
-Lara will have to jump at fly in elevator.
-An interesting application of yo-yo mode is to give to elevators also the role of trap, since if lara will be touched by elevator she will be killed (if she is under elevator moving down, or over elevator when elevator moves up and above lara there is the ceiling) or "disturbed" if she is climbing the wall when elevator touch her (lara will be untouched by wall)
-Remarks:
-1) You cann't mix yo yo mode and stop and go mode.
-2) If you set elevator for yo you mode the number of floor will be always two (2) and the distance between floor will be the height of whole movement that elevator will cover before inverting direction.

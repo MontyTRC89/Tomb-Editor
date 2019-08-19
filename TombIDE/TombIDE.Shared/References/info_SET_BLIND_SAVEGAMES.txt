@@ -1,2 +1,0 @@
-If you want forbid players of your game to use savegame editor to change savegames, just you add this flag in Settings command.
-Any attempt of players to modify savegames will cause immediate crash at reload.

@@ -1,0 +1,2 @@
+Used in SavegamePanel= script command.
+In this layout the image is top left corner, while the info frame is belove the image. The savegame list will be in right half of screen.

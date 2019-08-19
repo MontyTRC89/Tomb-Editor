@@ -1,1 +1,0 @@
-Perform animation only when lara is jumping and she is in upward phase

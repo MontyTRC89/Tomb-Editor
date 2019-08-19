@@ -1,0 +1,3 @@
+This flag work in similar way of FAN_SET_FREE_HANDS flag but with an opposite target, of course.
+If you use this flag, when your animation will be performed the game engine will be informed that the hands of Lara are now busy and she is not able to grap to wall.
+Remark: It's very seldom you'll have to use really this flag, because, by default when your animation has correct state-id (for example for climb or monkey) the game engine set this flag by self

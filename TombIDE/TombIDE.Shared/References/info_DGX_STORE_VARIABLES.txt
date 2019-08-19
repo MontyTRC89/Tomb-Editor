@@ -1,2 +1,0 @@
-Used in DiagnosticType script command.
-Show on screen the values of all Store variables.

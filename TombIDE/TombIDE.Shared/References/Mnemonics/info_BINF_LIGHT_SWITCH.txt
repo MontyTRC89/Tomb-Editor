@@ -1,0 +1,4 @@
+Used into Customize=CUST_BINOCULARS command
+With this flag you enable a graphic switch to show when player is using light in binocular view.
+The switch will be a rectangle or cirlce zone where the color will change in according with switching on or off of the light.
+In the rectangle linked with light switch, you set as foreground color the color signals the switched ON of light, while the background color will be used when light is unused.

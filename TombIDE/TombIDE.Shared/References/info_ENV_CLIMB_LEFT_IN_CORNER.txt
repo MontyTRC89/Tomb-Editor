@@ -1,1 +1,0 @@
-Verify if lara is near at an internal corner al left. See description of ENV_HANG_LEFT_IN_CORNER constant to understand the difference between internal and outside corners.

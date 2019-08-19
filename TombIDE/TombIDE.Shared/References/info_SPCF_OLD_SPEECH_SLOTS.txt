@@ -1,6 +1,0 @@
-Used with Parameters=PARAM_ACTOR_SPEECH command
-If you wish use the old multiple slots (LARA_SPEECH_HEAD1/2/3/4  or ACTOR1_SPEECH_HEAD1/2/3/4) method, you have to add the SPCF_OLD_SPEECH_SLOTS flat.
-With old method trng engine will look for the first head mesh at index = 14 (15th mesh) of given speech slot.
-In the case you OMIT this flag, trng will use the first mesh (index=0) and it will be the mute face.
-With old method the sorting was inverted: MaxOpenMouth/OpenMouth/LitleOpen/Mute  while with new method is Mute/LittleOpen/OpenMouth/MaxOpen
-The use (or less) of this flag it will allow to manage both situations.

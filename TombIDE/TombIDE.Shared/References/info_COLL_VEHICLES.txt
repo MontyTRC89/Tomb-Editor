@@ -1,4 +1,0 @@
-Used with Customize=CUST_SET_STILL_COLLISION command.
-It enables the still collision when Lara touches some (earther) vehicle like jeep or sidecar.
-
-Remark: This settings has no effect on water vehicles like boats.

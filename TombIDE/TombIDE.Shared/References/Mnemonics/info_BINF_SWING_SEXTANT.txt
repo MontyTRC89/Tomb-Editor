@@ -1,0 +1,2 @@
+Used into Customize=CUST_BINOCULARS command
+With this flag you enable a simulation of swinging for sextant value (in strip mode) when the player moves the binoculars

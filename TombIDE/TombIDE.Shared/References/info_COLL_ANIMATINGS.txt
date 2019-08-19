@@ -1,2 +1,0 @@
-Used with Customize=CUST_SET_STILL_COLLISION command.
-It enables the still collision when Lara touches an ANIMATING slot item.

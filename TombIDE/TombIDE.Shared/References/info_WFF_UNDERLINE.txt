@@ -1,3 +1,0 @@
-Used in WindowsFont= command.
-Adding the WFF_UNDERLINE flag, all text will be underlined.
-This setting could be useful for text used as title.

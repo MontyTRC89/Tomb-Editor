@@ -1,5 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-This flag inverts all colors of game scene creating an effect like a negative film.
-This effect works alone, ignoring further color set in Paramater field.
-
-Note: This flag works only togheter with BKGDT_INVENTORY type + BKGDF_KEEP_GAME_SCREEN flag since it performs a change on original game scene.

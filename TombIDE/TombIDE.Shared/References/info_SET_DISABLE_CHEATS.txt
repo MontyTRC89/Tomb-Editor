@@ -1,2 +1,0 @@
-Disable all hidden cheats to skip level, get infinite weapons or items.
-Remark: to disable flycheat you have to use old command FlyCheat = DISABLED

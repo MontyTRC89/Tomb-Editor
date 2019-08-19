@@ -1,4 +1,0 @@
-Used in DiagnosticType script command.
-Adding this flag you can have on screen a signal when the condition for animationslot with negative AnimIndex is true or false.
-This flag works in same way of DGX_ANIMATION flag.
-You have to type an animationslot command where the AnimIndex field will have a negative value. In this way the animation will be not performed but it will be tested the conditions and when they will be true or false the result will be drawn on screen.

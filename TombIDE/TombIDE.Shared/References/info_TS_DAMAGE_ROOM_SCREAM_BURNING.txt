@@ -1,2 +1,0 @@
-Used with Customize=CUST_SFX command.
-When in a damage room the bar is empty lara will burn and this is the sound, usually a scream.

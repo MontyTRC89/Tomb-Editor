@@ -1,1 +1,0 @@
-work on current animation of lara, the condition it's true only if current animation is at last frame.

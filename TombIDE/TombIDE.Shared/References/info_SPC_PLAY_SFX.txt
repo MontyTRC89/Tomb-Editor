@@ -1,8 +1,0 @@
-Used with Parameters=PARAM_ACTOR_SPEECH command
-This command will play the sfx sound you set as argument.
-For example:
-
-SPC_PLAY_SFX+104
-
-It will play the 104 sound (HECKLER_KOCH_STOP) 
-Range of values is 0/4095

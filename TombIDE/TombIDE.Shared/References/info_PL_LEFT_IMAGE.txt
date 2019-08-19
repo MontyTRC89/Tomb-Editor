@@ -1,7 +1,0 @@
-Used in Diary= command.
-This layout work like a single wide page. The further image will be showed in top left corner of screen, and its size will be about 40% of Tomb Raider screen.
-In this layout the text will be showed in two frames: 
-
-A first frame in top-right corner of screen, with same height of image at left.
-A second and final frame in the bottom half of screen. This last frame will have the width of whole tomb screen.
-Remark: further title will be elaborated as other text and it will be showed at top of top-right corner, and then, belove it, it will start the common text

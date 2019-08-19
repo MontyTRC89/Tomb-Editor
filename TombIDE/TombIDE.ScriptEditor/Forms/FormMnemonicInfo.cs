@@ -23,7 +23,7 @@ namespace TombIDE.ScriptEditor
 		{
 			try
 			{
-				foreach (string file in Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), "References"), "info_*.txt"))
+				foreach (string file in Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), @"References\Mnemonics"), "info_*.txt"))
 				{
 					if (Path.GetFileName(file).ToLower() == "info_" + flag.ToLower() + ".txt")
 					{

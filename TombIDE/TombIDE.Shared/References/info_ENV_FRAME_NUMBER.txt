@@ -1,2 +1,0 @@
-When you set in StateId Animation array a specified number for animation current (as negative value) you can specify also the precise frame when the condition will be true.
-For example if you want you special animation starts only when lara is performing the frame number 21 of the animation 325, you type "-325" in state-id animation array (last field of Animtion command) and to set the frame 21 just set the envcondition ENV_FRAME_NUMBER while in Distance for env type 21.

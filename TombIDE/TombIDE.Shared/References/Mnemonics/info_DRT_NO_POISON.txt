@@ -1,0 +1,3 @@
+Used in Customize=CUST_DARTS command
+By default when lara will be hit by a dart she will be poisoned.
+You can use the DRT_NO_POISON to disable this feature.

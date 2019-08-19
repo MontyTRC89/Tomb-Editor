@@ -1,1 +1,0 @@
-When you use a BarName in your Damage= command, you can choose this flag to to use a little text to show the string with bar name.

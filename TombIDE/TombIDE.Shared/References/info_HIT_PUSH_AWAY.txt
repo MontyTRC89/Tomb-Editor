@@ -1,9 +1,0 @@
-Used with CUST_BIKE_VS_ENEMIES customization.
-The enemy will be pushed away from the bike. When the bike was very fast the enemy will fly for some distance.
-The distance and speed of pushed enemy will depends from many factors: the speed of the bike, the angle of impact and the size of the object. When the object is bigger it will be moved to a shorter distance.
-Remarks:
-You can use this flag also with moveable that are not enemies. For example you can use it with animatings.
-About the usage with  other special moveables you should take care about the possible results.
-If you use it with pickups you could have trouble to pickup those items after the pusing away because their position will be not at the center of the sector.
-A similar speech is for pushable objects: if they lose the alignemnt with sector grid lara could be not more able to push them in common way.
-About the rollingball, it will be activated about in the direction of the impact but aligned with hortogonal directions.  Note that the activation of the rollingball with HIT_PUSH_AWAY flag will work indifferently by the OCB codes you typed in the rollingball. Another effect that the HIT_PUSH_AWAY flag will have on already activated rollingballs will be to injury lara when the rollingball is yet moving in an collisional direction.

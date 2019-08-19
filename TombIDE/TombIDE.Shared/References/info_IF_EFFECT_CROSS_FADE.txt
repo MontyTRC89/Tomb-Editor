@@ -1,6 +1,0 @@
-Used in Image= command.
-The cross fade is when there is a fade out (the screen from normal color becomes black) followed by a fade in (the screen from black comes back to normal light.
-The image will be displayed in the black phase.
-Note: you cann't mix the effect with other effect like zoom or moving from  sides. 
-Neither the transparent flag works fine with cross fade, since when the image will be displayed the tomb raider screen will be black.
-The cross fade works only with overlapped images, not with pop up images.

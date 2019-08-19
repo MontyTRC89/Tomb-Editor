@@ -1,3 +1,0 @@
-Used in GlobalTrigger= command
-This global trigger will be enabled when the item (static or moveable) with the index typed in the Parameter field of GlobalTrigger command, has been resized and its rescaling is complete.
-Note: this global trigger works only for dynamic (but not endless) rescaling. Pratically when you perform a dynamic rescaling from percentage to percentage with a given resizing speed.

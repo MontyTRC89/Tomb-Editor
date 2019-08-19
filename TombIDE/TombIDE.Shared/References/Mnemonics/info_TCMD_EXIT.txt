@@ -1,0 +1,15 @@
+Used in TriggerGroup= command.
+This constants should be used as second value of three values, where the first was TGROUP_COMMAND.
+The TCMD_EXIT command quit the execution of current triggergroup, returning as result the value you type in third (and next) argument.
+About this returned value it can be "TRUE" or "FALSE".
+In conditional triggergroups you use can set the final result of current triggergroup condition. If you set "TRUE" as next argument the condition will be true, while with FALSE will be false, of course.
+Note: also when the Triggergroup, where you use a TCMD_EXIT command, is NOT a condition but only a serie to triggers to affect some effect in game, you HAVE to return a value as third argument and, in the case of not conditional triggergroups, you have to set always TRUE.
+
+Examples:
+The triple values:
+	TGROUP_COMMAND, TCMD_EXIT, TRUE
+will quit the execution of curren triggergroup, returning "true". Therefore, if current triggergroup was a conditon, the condition will be true.
+
+The triple values:
+	TGROUP_COMMAND, TCMD_EXIT, FALSE
+will quit the execution of curren triggergroup, returning "true". Therefore, current triggergroup was a conditon and the condition will be false.
