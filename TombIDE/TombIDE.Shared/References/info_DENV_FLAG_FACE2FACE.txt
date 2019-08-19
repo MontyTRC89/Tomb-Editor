@@ -1,0 +1,15 @@
+Work togheter with ENV_ITEM_EXTRA... conditions, but you have to add this flag to DistanceForEnv field and not to field EnvCondition. You use it to require a specific couple of orienting (facing) for Lara and object to check.
+For example if you want start your animation only when lara is face to face with SKELETON (slot id = 35) and distance is about half sector (512) you have to type:
+In field ENV Condtion:  ENV_ITEM_EXTRA_IN_FRONT 
+In field Distance for env: 512 +DENV_FLAG_FACE2FACE
+In field Extra : 35
+
+
+Remark: the flags DENV_... are DistanceENV flags you can add to distance value to set some other settings.
+About ENV_ITEM_EXTRA conditions you can add two flags DENV_ to Distance for env, to set the position about orientation of lara respect to object.
+You can choose two DENV_ flags:
+
+DENV_FLAG_FACE2FACE  (lara and object were looking face to face)
+DENV_FLAG_FACE2BACK (lara is looking object while it gives the back to lara)
+
+Remark: if you don't add any DENV_FLAG to distance, this means that the facing will be ignored.

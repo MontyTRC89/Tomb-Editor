@@ -1,0 +1,3 @@
+Used in Diary= command
+Setting this flag, when the Lara's Diary will be showed, the background audio track of game will be suspended. This setting could be useful when you use custom audio tracks for single pages of Lara's diary.
+Remark: when the diary will quit, the previous audio track of game will be restored

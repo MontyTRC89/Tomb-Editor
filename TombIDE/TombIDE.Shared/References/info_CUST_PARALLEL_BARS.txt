@@ -1,0 +1,22 @@
+You can customize the PARALLEL_BARS item in current level.
+
+Syntax: Customize=CUST_PARALLEL_BARS, FlagsParallelBar (PB_...), SpeedForSlide, MaxTurns
+
+FlagsParallelBar (PB_...) field
+--------------------------------
+You can use add one or more PB_ flags to customize all parallel bars in your level.
+See the description of PB_ constants in [Reference] panel of NG_Center, in _MNEMONIC CONSTANTS section.
+
+SpeedForSlide field
+-------------------
+If you have used the flag PB_LARA_CAN_SLIDE, you can set also the speed for sliding left/right of lara.
+The value has like unit one block = 1024. 
+The defaul value is 6, if you don't want change the default value type IGNORE in this field.
+
+MaxTurns field
+--------------
+By default the max meaningful number of turns is 10.
+You can change this value to force the max power increasing adding turns.
+Reasonable values are enclosed in the range 3 - 10
+
+If you don't want change this value you can type IGNORE.

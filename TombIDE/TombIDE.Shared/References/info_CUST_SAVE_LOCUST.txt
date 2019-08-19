@@ -1,0 +1,12 @@
+Used in Customize script command.
+
+Syntax: Customize= CUST_SAVE_LOCUST, ENABLED
+
+This customize permits to fix an old bug of tomb4 engine: when the locust swarm has been enabled, and player save the game, at reload the locusts are missing.
+The reason of this bug is that the Eidos' programmers probably prefered omit the saving of data about the locusts since they are about large and with playstation 1 version it was important reduce the size of savegames.
+Anyway now you can save all data about current particle of LOCUST_EMITTER slot, just you add in [Title] (for all levels) or in a specific [Level] section the row:
+
+Customize=CUST_SAVE_LOCUST, ENABLED
+
+Remark:
+The savegame will be bigger than about 2000 bytes if you enable the saving of locusts.

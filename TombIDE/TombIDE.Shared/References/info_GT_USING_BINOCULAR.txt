@@ -1,0 +1,2 @@
+Trigger enabled when lara is or not looking using binocular.
+WARNING: you have to place a correct value in Paramter field. If you want check the condition for lara is using binocular you must type "128" or "$80" in Paramter field, while if you want check the condition for lara is NOT using binocular, you'll type the value 0 (zero) in Paramter field.

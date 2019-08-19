@@ -1,0 +1,3 @@
+Used in WindowsFont= command.
+This setting generates very slim characters. You should use this setting only when background is a solid tint, otherwise the border of characters will be few visible on multicolor background.
+Remark: if you don't set : light, bold or ultra_bold, the character will have a normal depth, really a bit slim, too.

@@ -1,0 +1,7 @@
+This global trigger will be enabled when life bar of lara (Health value) is less than value you set in Parameter field.
+Remember that the health value for lara in enclosed in range between 0 (she dies) and 1000 (full line and no bar showed in game).
+For example if you want reduce some capabilities of lara when she has a life less than 100 hp, you can type a GlobalTrigger like this:
+
+GlobalTrigger=1, FGT_SINGLE_SHOT, GT_LARA_HP_LESS_THAN, 100, ...
+
+If you use a trigger like above to remove some capability of lara you should remember also to set some way to return these capabilities to lara when her hp grows newly over that limit (100), for example you can use GT_LARA_HP_HIGHER_THAN or GT_USED_BIG_MEDIPACK or GT_USED_LITTLE_MEDIPACK.

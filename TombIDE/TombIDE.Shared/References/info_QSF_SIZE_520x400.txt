@@ -1,0 +1,2 @@
+Used with Customize=CUST_INNER_SCREENSHOT
+The size of image with this resolution is 609 Kb for true color, while (about) 199 Kb for compressed 256 colors (non true color)

@@ -1,0 +1,1 @@
+This size is yet littler than micro char (FT_SIZE_MICRO_CHAR). The atomic size is the littlest size is able to be read with all screen resolution.

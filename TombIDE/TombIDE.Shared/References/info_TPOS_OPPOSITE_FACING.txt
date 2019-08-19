@@ -1,0 +1,4 @@
+Used in TestPosition command.
+The alignment with some objects could fail because the main mesh has an opposite facing respect to animation 0 displacement.
+You can discover this situation with Animation Editor of Wad Merger: when the position of mesh with "No Animation" is the opposite of mesh in "Animation 0" you are in this situation and the self alignment could fail.
+To fix this bug you can use the TPOS_OPPOSITE_FACING flag in the TestPosition command used by your Animation command.

@@ -1,0 +1,12 @@
+Used with Customize=CUST_SET_STILL_COLLISION command.
+It enables the still collision when Lara touches some (moveable) PANEL item.
+
+Remarks: 
+
+1) The PANEL_... items have been added with the TRNG engine. They are some invisible moveables used only to set specific collision in some side of the rooms.
+They have slot enclosed in the range 472 - 479 and names like PANEL_BORDER, PANEL_CORNER ect.
+
+2) The still collisions have some problems when it is necessary decide about sliding/stopping with an item having a diagonal facing (with 45 degrees angle).
+These troubles are given by the difficulty to value correctly the diagonal shape of the item, anyway using the specific items: PANEL_DIAGONAL or PANEL_MIDDLE_CORNER, you can enjoy of a specific code to manage in correct way at least these diagonal items. Therefore, if you have troubles with some diagonal item (when lara continues to move legs/arms) you could try to solve the problem in this way:
+- Disable the collision for this item
+- Place in same position a PANEL_DIAGONAL item to cover same collision position

@@ -1,0 +1,2 @@
+Used in Parameters=PARAM_COLOR_ITEM. The pulse use only first color, typed in Index1ColorRGB field. The engine will light up and down the color Index1ColorRGB. If you use this coltype it's adivsable to set as base color a not too light color since the engine will increase the lightning (and then reducing). For example using the (bad choice) white as color you'll have no result because it has already max lightning.
+You can set the speed of pulse choosing a value in SpeedChange field.

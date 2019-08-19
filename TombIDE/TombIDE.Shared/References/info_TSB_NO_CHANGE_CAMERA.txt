@@ -1,0 +1,2 @@
+Used in StandBy command.
+This standby type disable any change for look camera. You should use this type only when you use your triggergroup to customize the standby mode.

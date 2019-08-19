@@ -1,0 +1,5 @@
+Used into Customize=CUST_BINOCULARS command
+To show the info about compass in numeric format you have to use this BINT_NUMERIC type in the CompassRectAndFlags field.
+The default format is as simple number of degrees from 0 to 359.
+Anywya you can use also the extended format adding to the FLAGS (BINF_...) field the BINF_NOTATION_EXTENDED flag.
+See description of BINF_NOTATION_EXTENDED flag for more infos

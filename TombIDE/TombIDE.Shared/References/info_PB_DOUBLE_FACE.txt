@@ -1,0 +1,3 @@
+Used in Customize=CUST_PARALLEL_BARS.
+By default, the Chronicles parallel bar has a weird property: it works with long jumps only from a side, while from opposite side the jump is like disabled, lara simply performs a single pirouette and remains in the closed sector.
+Probably this behavior has been studied to avoid to use parallel bar to go back in the level in some situations, anyway if you want to do work in same way the bar, indifferently by current facing, you can customize the bat with the PB_DOUBLE_FACE flag.

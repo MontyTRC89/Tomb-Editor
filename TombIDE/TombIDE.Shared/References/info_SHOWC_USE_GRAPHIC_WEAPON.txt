@@ -1,0 +1,16 @@
+Used in Cutomize=CUST_SHOW_AMMO_COUNTER command.
+This setting force the rimotion of literal name of ammo type and replace it with a graphic character to signal the current extracted weapon.
+
+The character used are the following:
+
+Name_in_font_Editor     Ammo_Type
+----------------------------------
+127: [GRAPHIC]          Pistol
+129: [GRAPHIC]          Revolver
+141: [GRAPHIC]          UZI
+143: [GRAPHIC]          Shotgun
+144: [GRAPHIC]          Crossbow
+157: [GRAPHIC]          Grenadegun
+-----------------------------------
+
+For infos about how inserting the weapon icons in the font see the description of SHOWC_USE_GRAPHIC_AMMO constant.

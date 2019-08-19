@@ -1,0 +1,1 @@
+perform animation of death and at end explode it

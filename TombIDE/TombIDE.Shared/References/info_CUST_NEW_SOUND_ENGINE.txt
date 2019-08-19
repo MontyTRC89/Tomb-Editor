@@ -1,0 +1,67 @@
+Syntax: Customize=CUST_NEW_SOUND_ENGINE, NewSoundEngine flags (NSE_...), SoundExtension (SEXT_...), LongFadeOut, ShortFadeOut
+
+You can customize some features of new sound engine based on bass.dll created by Un4seen Developments Ltd and supported by TRNG engine.
+Remember that the new sound engine will be enabled at least you don't disable it explicity using script command:
+NewSoundEngine= DISABLED
+Field description for CUST_NEW_SOUND_ENGINE:
+NewSoundEngine flags (NSE_...) field
+---------------------------------------
+You can change some features of new sound engine adding one or more NSE_ flags.
+See description for specific NSE_ values in _MNEMONIC CONSTANTS list of Reference Panel of Ng Center program.
+Remark: currently there are no NSE_ values available, but some new NSE_ value will be added in future. Now you can type IGNORE in this field
+
+SoundExtension (SEXT_...) field
+-------------------------------
+This field is now obsolete and typing some value in this field will have no effect.
+In trng previous than 1.2.0.2 in this field was possible choose the extension of audio track (.wav, .mp3, .ogg) but now trng uses an automatic method to detect the audio tracks to play.
+Now trng checks for each track number (the first three digits "020" ...) what extension is really available.
+If there is a single file with that track number this audio track will be played.
+When there are two or more audio files for same track number, trng will play the first found file in following extension sequence: ".ogg", ".mp3", ".wav" ... all other supported audio format from bass.dll
+For example if in audio folder there are the following files:
+
+034.wav
+034_Interlude.mp3
+
+159_FlyBy.mp3
+159_TopView.ogg
+
+005.wav
+
+Trng will play the audio files:
+
+034_Interlude.mp3
+159_TopView.ogg
+005.wav
+
+
+This happens because the priority is for ".ogg" files, if .ogg file is missing it will be searched a .mp3 file, while if it's missing either .ogg and .mp3 extension, will be played the .wav file or other audio extensions (.mp2, .aiff ecc.)
+
+Remark: when there are two audio tracks with same number and same .wav extension, trng will play the long name audio track.
+For example:
+
+If in audio folder there are following files:
+
+005.wav
+005_Secret.wav
+
+Trng will play the file "005_Secret.wav"
+
+LongFadeOut field
+-------------------
+For "Fade out" we mean a gradual reduction of volume upto reach the null volume.
+The fade out used to stop a sound in sweet way.
+The value you type in this field is in microsecond units and it should be the time require to pass from current volume to zero volume.
+The "long" fade out it is used when a sound will be stopped for some change in game like loading of new level.
+The default value for long fade out is 1000 ms, i.e. one second.
+If you don't want change this value you can type IGNORE in this field.
+
+ShortFadeOut field
+-------------------
+About the mean of "Fade out" read the above description for LongFadeOut  field.
+The "short" fade out it's used when a CD sound should be stopped to permit to other CD sound to start in same channel.
+In this situation the fade out should be shorter and in fact the default value is of 300 ms.
+If you don't want change this value you can type IGNORE in this field.
+
+Remark: This customize command, like all other customize commands, works both for all levels, if you place it in [Title] section, that for single specific levels, if you place many instances of it, one for each [Level] section.
+You can do this, to place many Customize=CUST_NEW_SOUND_ENGINE in different levels, anyway it's better to do not change the default extension for audio files otherwise you could have some trouble. Differently, you can change the values for fadeout, level for level. 
+About the chance to use different NSE_ flags in different level, you should read the specific description of any specific NSE_ flags.

@@ -1,0 +1,20 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+This command allows you to have a custom seuquence of meshes but for other expressions.
+It simulates the opening and closing mouth with a sequence of heads, in same way you can simulate other expression, like smiling, angrious ect.
+
+You have to supply two number:
+
+- The index of first mesh of animated sequence
+- The number of mesh used in this sequence
+
+With this command is not possible set the frame durate of animation, it will be used the default frame rate set.
+
+Formula to type values for this command is:
+
+SPC_SEQUENCE + NumberOfMesh* 64 + IndexFirstMesh
+
+For instance:
+
+SPC_SEQUENCE + 256 + 12
+
+It means: the aimated sequence begins from mesh with index = 12 and the mesh of sequence are 4 (4 * 64 = 256)

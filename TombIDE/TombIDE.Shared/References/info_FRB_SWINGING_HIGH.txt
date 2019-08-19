@@ -1,0 +1,2 @@
+Used with Customize=CUST_ROLLING_BOAT command
+Set an high level for boat swinging. The boat will have a large movement.

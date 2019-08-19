@@ -1,0 +1,8 @@
+Condition is true when lara is belove a monkey ceiling.
+In Distance field you can set the range of distance of monkey ceiling.
+The Distance in this case is different by usual: the formula is:
+MinClick + MaxClick * 256
+For example if you want that the condition is true when the monkey ceiling is enclosed in range 5 (min) clicks  upto 7 (max) click, you'll have to type in distance field the value (7*256 + 5) = 1797 
+Remark: in hexadecimal (with '$' sign) it's more easy understand the Min and max value, for example the number 1797 in hexadecimal is $0705 where you can read the Max click ("07) and the Min click ("05")
+
+Remark: if Lara is under the monkey ceiling but the heigh is outside of the range you set in distance field, the condition will be false and the animation will be not performed.

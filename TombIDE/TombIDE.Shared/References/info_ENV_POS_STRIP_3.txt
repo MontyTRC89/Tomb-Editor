@@ -1,0 +1,1 @@
+Like above, but now she is in third strip. See description of ENV_POS_STRIP_1 for more infos.

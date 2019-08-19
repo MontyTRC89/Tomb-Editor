@@ -1,0 +1,1 @@
+The text will start from top right corner of screen, under the lowest bar (Cold bar)

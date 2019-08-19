@@ -1,0 +1,11 @@
+Used in DiagnosticType script command.
+Show current typed keystrokes to get more easy set some trng cheats.
+The cheats allowed in trng are based all on four-chars words:
+KILL (kill all enemies)
+ROOM (reverse all flip ROOMs)
+IAIR (Infinite AIR)
+GODS (set Lara  as invulnerable i.e she becomes as the semiGODS)
+DOOR (open all DOORs of the level)
+STAR (gives to lara a constant like and she brights like a STAR)
+
+Remark: the cheats work everytime there is the diagnostic mode enabled (Diagnostic=ENABLED) and the FlyCheat=ENABLED, indifferently if you enable the viewing of them with DGX_CHEATS

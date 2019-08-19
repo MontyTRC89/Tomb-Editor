@@ -1,0 +1,3 @@
+Used in Animation command.
+Check if at given distance in East direction there is a wall. 
+See ENV_DISTANCE_NORTH_WALL description for more informations.

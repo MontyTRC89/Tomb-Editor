@@ -1,0 +1,7 @@
+Used into Customize=CUST_SLOT_FLAGS command.
+When you wish that a moveable (usually a little pickups) was oversteppable from pushable objects, you can add this flag for the wished pickup items.
+Example:
+
+Customize=CUST_SLOT_FLAGS, LASERSIGHT_ITEM, FFS_PUSHABLE_CAN_OVERSTEP_IT
+
+With above command list the pushable object will be able to pass over the lasersight item on the floor.

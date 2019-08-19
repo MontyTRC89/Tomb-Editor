@@ -1,0 +1,13 @@
+Used in GlobalTrigger= command
+This global trigger is similar to GT_USED_INVENTORY_ITEM but there are important differences.
+While GT_USED_INVENTORY_ITEM works only with inventory items where there is no hardcoded feature and only when lara is still in stand up position, with the GT_SELECTED_INVENTORY_ITEM global trigger you detect the usage of the item, whose slot had been typed in Parameter field, first that tomb4 engine processes it.
+
+This fact implies some situations to remember:
+
+1) Since there is no check about current animation of lara or environment (ground, underwater, floating) it should be you, with some conditional triggergroup, to verify if it's possible in that moment using really that item.
+For example, if your item should perform an animation where lara takes in her hand this item, you should verify with right conditions if lara has free hands and she is in a reasonable state-id to manage this situation.
+
+2) The global trigger will be engaged also when there is an hardcoded management like for the binocular, medipack, weapons, or also when there is no management but, usually the tomb refuses to manage directly that item, like it happens for lasersight item.
+
+In the case you wish replace the default management of that hardcoded item, with yours, you have to add in the flags of the GlobalTrigger command the FGT_REPLACE_MANAGEMENT flag.
+See the description of FGT_REPLACE_MANAGEMENT flag for more infos.

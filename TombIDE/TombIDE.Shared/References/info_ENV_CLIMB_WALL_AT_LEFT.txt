@@ -1,0 +1,1 @@
+Condition is true when the specific wall in same sector where is Lara, is climbable.

@@ -1,0 +1,1 @@
+Enable further heavy trigger in final sector of the path.

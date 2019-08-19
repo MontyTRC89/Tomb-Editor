@@ -1,0 +1,6 @@
+Used in DiagnosticType script command.
+The trigger timing will show on screen the distance in frame ticks between a trigger activation and the following.
+This could be useful to syncronize better cutscenes with organizer in the script.
+Another interesting usage is to convert old method of rolling ball (to enable other trigger in sequence) with an organizer.
+Organizer will reduce the used triggers on the map, moving them to the script.
+The time you'll see on screen will be only the tick frames elapsed by last trigger activation.

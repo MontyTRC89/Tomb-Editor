@@ -1,0 +1,11 @@
+used in Paramaters=PARAM_MOVE_ITEM script command
+This flag will be move upward the item and then it will fall down, like a jump of a frog. The shape of the jump should be regular, i.e. the ascendent (beginning) part, will have the inverse shape in descendent final part.
+
+Note: you can type a percentage variation of vertical speed in the Speed field using following formula:
+
+PercentageOfChangeVerticalSpeed * 256 + HorizontalSpeed
+
+Remember that you can not type a value higher than 255.
+
+The value of PercentageOfChangeVerticalSpeed  work around the 100 value, that should be "no change".
+If you wish double the vertical speed, use 200, while if wish the half of preset vertical speed, you'll use 50.

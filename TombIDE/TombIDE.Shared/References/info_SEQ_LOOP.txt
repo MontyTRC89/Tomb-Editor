@@ -1,0 +1,1 @@
+The sequence will be perfomed in endless way. If you use this flag you'll have to use specific flipeffet to stop the sequence, otherwise it will be performed continuously.

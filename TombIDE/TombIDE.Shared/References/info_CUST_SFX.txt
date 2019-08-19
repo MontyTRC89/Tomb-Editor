@@ -1,0 +1,15 @@
+Used with Customize = command.
+Syntax: Customize=CUST_SFX, TypeSound (TS_...), Sound Effect Number
+
+The CUST_SFX customize allows to override the sound effect used in some trng features, like the Diary.
+You can use many Customize=CUST_SFX commands in same [Level] section.
+
+TypeSound (TS_...) field
+------------------------
+Choose a TS_ constant to set what is the sound type to change.
+See the TS_ constants in Reference panel of NG_Center program
+
+Sound Effect Number field
+-------------------------
+Type the number of new sound to use.
+You find a list of sound sfx numbers in the Reference panel of NG_Center

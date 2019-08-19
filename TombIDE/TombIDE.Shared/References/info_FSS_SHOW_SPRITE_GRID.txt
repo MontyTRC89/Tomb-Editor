@@ -1,0 +1,22 @@
+Used with Parameters=PARAM_SHOW_SPRITE script command.
+Each sprite has as max size 256 x 256 pixels but pratically, since wadmerger is not able to manage 256x256 sprites, the really used max size is 128x128 pixels.
+
+If you wish use the show sprite features to show an image bigger than 128x128, you can use the trick of sprite grid adding the FSS_SHOW_SPRITE_GRID.
+When you use this flag, the trigger will not show simply the given sprite but also all sprites following the given first, placing the others to form a grid of (GridX x GridY) pieces.
+For example to have an image very defined, you could use 6 sprites, each of 128x128 pixels, placed in a grid of 3 sprites (columns) for 2 sprites (strips).
+In this case you should type 3 in GridX field and 2 in GridY field.
+All six sprites should have exactly the same size and the engine will place them on the screen to give the idea of a single big image.
+
+Remark: by default, when you use the FSS_SHOW_SPRITE_GRID flag, the engine assumes that you have in your sprite slot the correct puzzles of sprites to compose the final image. This means that the engine will use for each frame of the grid, a sprite with growing index, beginning for the first given sprite index.
+For example, if you set as SpriteIndex the value 3, and you chose like grid, 2 columns for 3 rows, the sprites used for each single cell of the grid will be:
+Cell    Index
+--------------
+(1,1) = 3
+(2,1) = 4
+(1,2) = 5
+(2,2) = 6
+(1,3) = 7
+(2,3) = 8
+--------------
+
+Differently, in the case you wish use the sprite grid only to clone always the same sprite, you should add the FSS_CLONE_SPRITE flag.

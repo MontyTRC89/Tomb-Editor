@@ -234,7 +234,7 @@ namespace TombIDE.Shared.Scripting
 			}
 			catch (Exception)
 			{
-				// Yes
+				// Mhm
 			}
 		}
 

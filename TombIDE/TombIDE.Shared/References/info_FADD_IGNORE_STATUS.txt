@@ -1,0 +1,5 @@
+Used in AddEffect command.
+By default the add effect trigger will ignore the comand of add effect if the moveable has not yet been enabled in game or if it has already killed/removed.
+Anyway in some cirucstance this compute could be wrong and with some special items the result could be to fail the adding effect operation.
+If you work with some of these special items (like some pickups) you can add the 
+ FADD_IGNORE_STATUS flag. When trng finds this flag it ignores the status of moveable and it will apply always the effect also if item appears invisible or disabled.

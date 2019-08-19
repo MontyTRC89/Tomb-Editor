@@ -1,0 +1,2 @@
+Used in AddEffect command.
+This flag disable furhter sound linked with some effects like mist or fire.

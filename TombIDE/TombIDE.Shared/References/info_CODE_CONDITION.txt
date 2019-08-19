@@ -1,0 +1,5 @@
+Used in Plugin= command.
+In DisableFeatureArray of Plugin command you can disabling the changes that, given plugin, did about a standard trng condition trigger.
+For instance if don't agree the changes about condition 23 you can type in DisableFeatureArray the value:
+
+CODE_CONDITION + 23

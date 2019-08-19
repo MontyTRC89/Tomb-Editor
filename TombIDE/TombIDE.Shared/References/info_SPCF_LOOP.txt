@@ -1,0 +1,10 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+If you are not interested to control all syllables but you wish only having lara speaking for a given number of frames in random way, you can add the SPCF_LOOP flag and then type in Parameter field the number of frames for the speaking sequence.
+In this situation trng will perform the commands you inserted in loop mode until to reach the wished number of frames you set in parameter field.
+
+Example:
+
+Parameters= PARAM_ACTOR_SPEECH, 1, SPCF_LOOP, 120, IGNORE, LARA_SPEECH_HEAD1, 14, 0, 4, SPC_SYLL, SPC_PAUSE,SPC_SYLL+6, SPC_PAUSE,SPC_SYLL+3
+
+
+With above parameters lara will talk for 4 seconds (4 * 30 = 120) moving the mouth following the sequence of commands you typed for 4 seconds.

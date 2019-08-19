@@ -1,0 +1,7 @@
+Used in DiagnosticType script command.
+You can enable the creation of a log about cutscenes.
+The log will be saved in trle folder with name "custscene_log.txt" and it will give infos about:
+
+- Demo game commands of current demo.pak is playing. The game commands are  like "action", "jump", "left", "right" ect
+- Speech commands of currently enabled PARAM_ACTOR_SPEECH script command.
+- Organizer commands linked with current demo (only for organizer with FO_DEMO_ORGANIZER flag)

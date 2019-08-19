@@ -1,0 +1,4 @@
+Used with Parameters=PARAM_LIGHTNING script command
+If you use this flag, the color will be lightly changed, adding a value floating between 0 + 47, to each gradient (red, green, blue) different than 0 and less than 208 
+The 0 and 208 limitations are useful to avoid that the random changes modified too drammatically the main color you chose.
+To avoid this trouble, just you set to 0 or higher than 208, the gradient you don't wish was changed, and you can set in the interval 1 / 208 the gradients you allow to be changed.

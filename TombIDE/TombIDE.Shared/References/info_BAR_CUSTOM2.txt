@@ -1,0 +1,2 @@
+Used in Customize=CUST_BAR command
+Set the second customizable bar. See the description of BAR_CUSTOM1 constant for more informations about customize bars.

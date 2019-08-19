@@ -1,0 +1,2 @@
+Used in AddEffect command
+This light has the shape of a sphere. Differently than other lights this glove light is opaque, i.e. not transparent, like the yellow halo around the lights in a fogged night.

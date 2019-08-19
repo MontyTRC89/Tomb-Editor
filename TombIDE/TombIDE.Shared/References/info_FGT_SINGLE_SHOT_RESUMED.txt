@@ -1,0 +1,18 @@
+Used in GlobalTrigger command.
+This flag is similar than FGT_SINGLE_SHOT flag, but with a big difference:
+
+While the FGT_SINGLE_SHOT performs first time the trigger group when the condition is true and then it will be disabled forever, the new FGT_SINGLE_SHOT_RESUMED will be resumed when the condition results newly false. For this reason the FGT_SINGLE_SHOT_RESUMED works in the reality like a multi shot flag but avoiding to perform continuosly the trigger group if the condition results true continuosly.
+
+We could describe the different working mode with this little table:
+
+Result of Condition  multi-shot (no flag)   FGT_SINGLE_SHOT   FGT_SINGLE_SHOT_RESUMED         
+--------------------------------------------------------------------------------------
+   FALSE             No-Run Enabled          No-Run Enabled    No-Run Enabled
+   TRUE              Run Enabled             Run Enabled       Run Enabled
+   TRUE              Run Enabled             No-Run Disabled   No-Run Enabled
+   TRUE              Run Enabled             No-Run Disabled   No-Run Enabled
+   FALSE             No-Run Enabled          No-Run Disabled   No-Run Enabled
+   FALSE             No-Run Enabled          No-Run Disabled   No-Run Enabled
+   TRUE              Run Enabled             No-Run Disabled   Run Enabled
+   TRUE              Run Enabled             No-Run Disabled   No-Run Enabled
+--------------------------------------------------------------------------------------

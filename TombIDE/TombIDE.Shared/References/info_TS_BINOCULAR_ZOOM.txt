@@ -1,0 +1,3 @@
+Used with Customize=CUST_SFX command
+This is the sound when customized binocular is zooming or unzooming.
+Default value is 309 MAPPER_MOVE

@@ -1,0 +1,23 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+Move the head at right.
+This command accept two arguments:
+- The angle about turning respect to forward looking (0 degrees)
+- The time spent for turning and still in turned position.
+
+Since both arguments cann't be bigger than value 63, to have a larger choice the format is not in frame and single degrees but rather:
+- The angle will be set in double degrees of wished degrees. In this way if you type 45 the turning will be by 90 degrees.
+- The durate is in teenths of second, so with max value, 63, you can reach six seconds of right looking. The durate has to be multiplied by 64.
+
+For instance, if you wish a turning of 45 degrees, kept for 2.5 seconds, the formula will be:
+
+SPC_LOOK_RIGHT+22+1600
+
+The 22 will be multiplied by 2 from trng to get 44 (about 45), while 1600 is 25 * 64, and 25 teenth of second are 2.5 seconds, of course.
+
+Notes: 
+
+- All SPC_LOOK... and SPC_HEAD_ commands work only with Lara. If you wish have same effect for other moveable it will be necessary creating a new custom animation to move the head and then use a SPC_ANIMATION command to force that animation.
+
+- All SPC_LOOK and SPC_HEAD commands will be overlapped to the following commands in their playing. 
+This means that this command will start immediatly the turning of head, but in same frame, it will begin also next command, for example to move actor's mouth.
+If you wish that trng waits that the turning was completed before performing next command, you have to add after this LOOK command a SPC_PAUSE command with the same time durate of this LOOK command.

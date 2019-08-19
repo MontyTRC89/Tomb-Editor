@@ -1,0 +1,2 @@
+If you use this flag, the values typed in DurateEmit and DuratePause will be ignored.
+You should use this flag for effect types requiring a continue emission, like mist and flames.

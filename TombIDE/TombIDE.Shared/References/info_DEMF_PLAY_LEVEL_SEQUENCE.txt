@@ -1,0 +1,4 @@
+Used in Demo script command.
+Used in [Title] section.
+With this flag, when a demo of array will be played, if the following demo is of same level, that will be performed, too, and go on for all demos with same level number.
+The advantage to use this flag is to avoid the "load-new-level" phase followed by the "come-back-to-title-level" phase, since all single demos of that level will be played in sequence when their level has already been loaded.

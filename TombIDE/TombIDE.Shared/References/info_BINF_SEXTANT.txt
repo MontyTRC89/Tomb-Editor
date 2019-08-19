@@ -1,0 +1,4 @@
+Used into Customize=CUST_BINOCULARS command
+To add sextant to binocular view you have to add this flag.
+Sextant gives infos about vertical degrees of current view. When lara looks up the degrees will be increased, while then she looks lower the degrees will decrease.
+If you use this flag you have also to set a BINT_... value in SextantRectAndFlags field to choose the kind of data showed for sextant.

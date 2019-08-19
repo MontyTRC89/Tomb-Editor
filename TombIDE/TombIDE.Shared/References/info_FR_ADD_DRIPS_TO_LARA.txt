@@ -1,0 +1,3 @@
+Used in Customize=CUST_RAIN command.
+You can enable the drips on lara after she has been under the rain using this flag.
+By default there is no drips when lara is under the rain but only after lara has been in a pool.

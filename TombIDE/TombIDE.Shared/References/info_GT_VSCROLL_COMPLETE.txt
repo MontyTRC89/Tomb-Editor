@@ -1,0 +1,5 @@
+This global trigger is true when the vertical scrolling text of given string index has been completed.
+In Parameter field you should type the index of extra ng string used for vertical scrolling text to monitor.
+Remark: The most common usage of this global trigger is when you want create following operation:
+Showing a long scrolling text on screen and freeze lara in the meanwhile disabling the keyboard input.
+In this situation you can use this global trigger to enable newly the keyboard input when the scrolling text is complete.

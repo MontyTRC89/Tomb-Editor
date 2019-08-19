@@ -1,0 +1,3 @@
+To use only with DMG_BURNING_DEATH flag.
+If you set the DMG_BURNING_DEATH flag you can set also this flag to force lara to scream when she takes fire.
+Remark: this flag works only with indirect bar, because when indirect bar is not set, lara burns and dies immediatly and so she has no time to scream.

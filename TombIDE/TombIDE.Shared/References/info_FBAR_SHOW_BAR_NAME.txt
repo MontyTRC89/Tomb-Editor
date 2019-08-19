@@ -1,0 +1,15 @@
+Used in Customize=CUST_BAR command
+This flag works only for custom bars (BAR_CUSTOM1/2/3/4)
+If add this flag to FBAR field of customize command, everytime the bar will be showed the engine will draw also the wished text under the bar.
+The texts to use are prefixed:
+
+BAR_CUSTOM1 : Extra NG String with index = 301
+BAR_CUSTOM2 : Extra NG String with index = 302
+BAR_CUSTOM3 : Extra NG String with index = 303
+BAR_CUSTOM4 : Extra NG String with index = 304
+
+For example if you add a text for BAR_CUSTOM1 you have to add the FBAR_SHOW_BAR_NAME flag in customize command for BAR_CUSTOM1 and the in Extra NG list add a text like this:
+
+301: Jumping Power
+
+Removing the previous index showed when you click on [Add string] button.

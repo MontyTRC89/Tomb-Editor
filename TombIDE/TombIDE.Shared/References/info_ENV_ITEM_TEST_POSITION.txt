@@ -1,0 +1,10 @@
+This condition used to detect if there is an object of given TestPosition command is in correct position with respect to Lara.
+The ENV_ITEM_TEST_POSITION has same target of ENV_ITEM_EXTRA_.... conditions but in this case you can accurately compare for an item in any position with respect to Lara and in absolute precise mode.
+The other env conditions have some problems to detect the exact distance when the pivot of Lara and the item are too different.
+To use the ENV_ITEM_TEST_POSITION you have to type in script a "TestPosition=" script command with all data necessary for the detection, and then you'll type in DistanceForEnv field of Animation= or MultEnvCondition= commands the IdTestPosition (first argument of TestPosition).
+
+Remark:
+The ENV_ITEM_TEST_POSITION condition (like other ENV_ITEM_EXTRA_... conditions) has the limit to check only for items in same room where lara is. 
+If you want detect an item in a room different than Lara room, the only way is to set in TestPosition command the flag TPOS_TEST_ITEM_INDEX in this way you can set in Slot field (of TestPosition) an index of specific item instead a generic slot type.
+
+See description of TestPosition script command in the list "SCRIPT NEW commands" of Reference panel of NG_Center program, to have more informations.

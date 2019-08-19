@@ -1,0 +1,15 @@
+Used in Settings= command.
+Note: from 1.2.2.7 version the previous SET_SOFT_FULL_SCREEN has been removed, anyway current SET_FORCE_SOFT_FULL_SCREEN constant performs the same job.
+So, the real news, it's another: now the player is able to set or remove the soft full screen setting it byself, because this setting has been included in tomb raider setup window.
+For this reason I changed the name of set_soft_full_screen to remember to you that now it's different that in the past.
+Now you can omit any soft full screen setting, and the player will be able to enable or less it as he wish.
+For this reason, it should be better do not use this forcing of soft full screen, because if you use it in the script, the player will be not able to disable it from setup window. It's more logical that it was the player to choose if to use or less this option, since he knows his computer, and how it works, better than you.
+
+There are complicated questions about this setting.
+When the game  (tomb4) works in full screen it's difficultous for trng starts a movie (FMV) because this screen mode, known as "full screen", is really an Exclusive mode, i.e. the game catches the screen and don't wish release it to other directx task (like the FMV viewer).
+From version 1.2.0.9 I tried a way to stole to tomb4 the screen to play the FMV but this fight is complicated and so on some computers you could see some blinking at start and at end of FMV viewing.
+If you think that these blinking are too boring you can use the  SET_FORCE_SOFT_FULL_SCREEN setting in the Settings= command.
+With this setting the Exclusive Full Screen Video Mode will be converted at fly in a Software (cooperative) Full Screen mode.
+Pratically the game will be showed in full screen, too, but the directx mode will be not exclusive and therefore the FMV will be showed with no need to fight. So no blinking or slow time at start or end the FMV.
+
+Remark: This setting will have no effect if the user set tomb4 to work in windowed mode. This settings works only when tomb raider has been set to work in full screen mode.

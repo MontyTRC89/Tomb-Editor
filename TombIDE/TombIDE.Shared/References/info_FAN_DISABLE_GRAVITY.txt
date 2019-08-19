@@ -1,0 +1,2 @@
+This flag work in similar way of FAN_ENABLE_GRAVITY but in this case is to disable the gravity compute. 
+See description of FAN_ENABLE_GRAVITY for more infos.

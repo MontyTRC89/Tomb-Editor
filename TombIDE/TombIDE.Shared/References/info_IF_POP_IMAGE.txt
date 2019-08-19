@@ -1,0 +1,7 @@
+Used in Image= command.
+This flag will change fully the work mode about viewing of image.
+A pop up image, in fact, will be drawn over the game screen letting the game goes on, differently, a non pop up image, will be drawn over game screen while the game is still.
+For this reason, the pop up image will be usually littler than game screen, used as a sort of tv logo, while, differently, the non pop up images, could be drawn covering whole game screen, and stopping it upto the view time was completed.
+
+I wish to precise: above is not a fixed rule but only a reasonable suggestion.
+The only precise rule is that with pop up image the game will go on, while with non pop up images the game will be frozen upto the viewing of image has been completed.

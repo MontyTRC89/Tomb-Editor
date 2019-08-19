@@ -1,0 +1,6 @@
+Used in Parameters=PARAM_MOVE_ITEM script command
+This is a flag that you add to any DIR_ direction value.
+When you add this flag a relative direction with turning, you the same kind of turning but with opposite forward movememnt.
+For instance the pair:
+DIR_TURNING_RIGHT_90+DIR_INVERT_DIRECTION  
+it will move the item backward, turning at its right.

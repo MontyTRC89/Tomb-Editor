@@ -1,0 +1,3 @@
+Used in Customize=CUST_FLARE command.
+Add to flare a little colored bulb light. 
+Remark: the glow light will have same color you set in Customize=CUST_FLARE command.

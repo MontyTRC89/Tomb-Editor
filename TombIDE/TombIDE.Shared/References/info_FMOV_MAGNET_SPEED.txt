@@ -1,0 +1,5 @@
+used in Paramaters=PARAM_MOVE_ITEM script command
+This flag will set a non costant horizontal speed for the item.
+The item will begin slowly to increase its speed, until to increase alwayws faster this speed. Like an item attracted from a (far) source.
+The value you type in Speed field will be used as percentage to change the preset speed of this effect.
+If you type 100, no change will be performed. 200 will double the speed, 50 will reduce by half the preset speed. Ect.

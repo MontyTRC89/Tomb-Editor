@@ -1,0 +1,3 @@
+Set newly as index of moveable to use for following (and current) triggers, the real source index set in exported trigger.
+This flag requires to be used only when you had changed the default index in previous triggers or conditions. Differently, if you have never used any TGROUP flag to modify the index to use, it's not necessary use this flag, because by default the index of moveabl is that set in data of exported trigger.
+See also description of TGROUP_USE_FOUND_ITEM_INDEX flag to have more informations about the mechanism of changing of moveable index

@@ -1,0 +1,22 @@
+Used in TriggerGroup= command.
+This constant should be used as second value of three values, where the first was TGROUP_COMMAND.
+This command set in global timer variable the value (in seconds) typed in next argument (and third value of this command trigger).
+Please do not confuse this command with the other script commands like "TCMD_SET_FULL_TIMER" or "TCMD_SET_EXTRA_TIMER".
+There is a big difference: while both TCMD_SET_... commands will change the "timer/extra timer" argument of following trigger in triggergroup sequence, the TCMD_TIMER_FIELD command will NOT change any argument of following triggers, but it will store the "real timer value in seconds to use" for (*)all next triggers in current triggergroup.
+
+To explain better the difference, just thinking to use an Action trigger like A43: "Trigger. (Moveable) Activate (#)Object with (E)Timer value".
+Above trigger has its own (extra)timer field, and you could change it using the TCMD_SET_EXTRA_TIMER command. 
+Anyway the max value to store in (E)timer argument is 127 and, using signed values, the range will be: -64/+63
+So, using TCMD_SET_EXTRA_TIMER command, you could set only a limited time in seconds for that trigger.
+Differently, using TCMD_TIMER_FIELD command, you can pre-set for all timer usage in next triggers a (**)bigger value, like 1000 or -800.
+Warning: please notice that the TCMD_TIMER_FIELD command will affect (*)ALL following trigger using a timer value (and not only that next trigger), so you could get unwished results if there are more than one trigger using a "timer value" in the triggergroup sequence.
+In above situation there is a trick to disable the previous timer_field set value: just using another TCMD_TIMER_FIELD (before of trigger you want skip from timer_field value) with a 0 number of seconds and in this way the following triggers will not use the value set with (first) TCMD_TIMER_FIELD command and they will come back to use their own timer value set in the triggers.
+
+(*) Note: really the only triggers that will be affected by this command are those action triggers used to trigger objects (like traditional tomb trigger) but with the chance to be exported (since they are trng Action trigger).
+Since only action trigger that use really the timer value for activation, will use the value set with TCMD_TIMER_FIELD, the affected triggers will be only the A26, A41, A43 and A44 action triggers.
+
+(**) Note: The values you can use as number of seconds has to be in the range: -1092 / + 1092 (about 18 minutes)
+
+TRUE:1   ;Used as argument for TGROUP_COMMAND, TCMD_EXIT  command trigger
+
+FALSE:0  ;Used as argument for TGROUP_COMMAND, TCMD_EXIT  command trigger

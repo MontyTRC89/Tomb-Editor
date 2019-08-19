@@ -1,0 +1,2 @@
+The condition is true when lara holds in her hands the HOLD_... item typed in Extra field.
+See descriptions of HOLD_ constants in MNEMONIC LIST of Reference panel.

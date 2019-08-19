@@ -1,0 +1,3 @@
+Used in Animation command.
+Lara is on the ground, i.e. she is out of water. For ground we could mean also when lara is falling down, other that climbing, monkey, jumping.
+The most signficative description for "ground" is: "not in water"

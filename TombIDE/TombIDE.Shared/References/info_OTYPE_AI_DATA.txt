@@ -1,0 +1,2 @@
+Used with Parameters=PARAM_LIGHTNING script command.
+You add this value to the OCB value stored in the null mesh object you wish use, to inform that is an AI_DATA item.
