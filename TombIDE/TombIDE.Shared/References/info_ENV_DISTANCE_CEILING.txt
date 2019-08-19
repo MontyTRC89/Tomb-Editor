@@ -1,2 +1,0 @@
-Condition is true if distance from lara to ceiling is greater or equal to value typed in DistanceForEnv. 
-For example type in DistanceForEnv the value $300 (3 clicks) the condition will be true if the coordinateY of lara (on her feet when she is stand up) is distance from Ceiling 3 click or more in current sector where lara is.

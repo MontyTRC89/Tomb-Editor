@@ -1,0 +1,1 @@
+Perform animation only when lara is jumping and she is in fall down phase

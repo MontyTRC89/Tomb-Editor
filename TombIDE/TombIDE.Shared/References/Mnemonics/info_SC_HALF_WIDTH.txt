@@ -1,0 +1,1 @@
+It will be reduced by half the width of characters, while the height will be not changed

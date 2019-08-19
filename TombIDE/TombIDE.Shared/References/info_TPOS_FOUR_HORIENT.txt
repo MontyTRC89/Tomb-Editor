@@ -1,4 +1,0 @@
-Used in TestPosition command
-With this flag the correct position will be each position for each side of object.
-The example could be a cube like a squared pushable object, where lara is able to interact with every side of the pushable.
-Remark: To work fine, it's necessary that the object had its pivot (origin x,y,z of object) exactly in central position of object mesh.

@@ -1,0 +1,1 @@
+show blood when it has been hit

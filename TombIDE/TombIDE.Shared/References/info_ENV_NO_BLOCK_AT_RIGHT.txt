@@ -1,2 +1,0 @@
-Condition is true only if there is no wall in sector at right of lara.
-In Distance (next field) you can type the height of wall. See "Distance for Env field"

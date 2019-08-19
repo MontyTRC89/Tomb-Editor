@@ -1,2 +1,0 @@
-This hair mode disable any type of plaits or ponytails. Pratically this hair mode disable floating hair for Lara.
-If you set this value you should cover the hole that lara has on her nape-neck, changing the mesh of lara's head and screaming head.

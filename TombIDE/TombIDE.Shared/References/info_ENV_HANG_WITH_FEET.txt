@@ -1,2 +1,0 @@
-To use only when Lara is hanged to wall corner. The condition is true only when the wall where Lara hanged is enough height to host also feet of lara. 
-In Distance field you can change the height of this wall, the default value is $300  (3 clicks)  but in some circustances it's better to use as Distance a lower value, like $200 (2 click)

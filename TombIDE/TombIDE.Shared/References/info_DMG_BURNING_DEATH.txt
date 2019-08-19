@@ -1,6 +1,0 @@
-When the time of damage bar will be completed, lara will be killed burning her with real fire.
-To use only for damage rooms waterless.
-If this flag is enabled, lara will burns when:
-The indirect bar is empty (if indirect bar is present)
-The HP bar is empty  (if you don't enabled indirect bar for damage room)
-You could use this flag to simulate a room where the temperature grows until burning lara.

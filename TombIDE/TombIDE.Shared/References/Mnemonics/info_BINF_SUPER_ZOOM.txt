@@ -1,0 +1,5 @@
+Used into Customize=CUST_BINOCULARS command
+This flag improves the zoom-in factor of binocular.
+The max magnifying will pass from 4.2x upto about 40x.
+Note that you can omit this flag from script, and enable it using a flipeffect. This method may be useful in game to simulate a change to binocular to improve it thanks to some target reached by lara in game.
+This means that it's possible improve binoculars in game, but it's not possible to do the opposite, removing the superzoom once it has been supplied.

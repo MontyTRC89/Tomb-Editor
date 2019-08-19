@@ -1,0 +1,1 @@
+If you want that your animation starts not from first frame (0) but from some specific frame number, you can add the FAN_START_FROM_EXTRA_FRAME falg in FAN_ field, and then type in Extra field the number of frame from what to begin the animation.

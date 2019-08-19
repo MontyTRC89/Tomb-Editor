@@ -1,0 +1,1 @@
+This value reduce by half both width and height of characters

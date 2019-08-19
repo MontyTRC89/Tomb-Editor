@@ -1,1 +1,0 @@
-Disable the repeat function of shooting. By default when the player keep down the action key the weapon will continue to shoot, while, using this flag, the weapon will shot once and the player will have to release the action key if he want shot newly.

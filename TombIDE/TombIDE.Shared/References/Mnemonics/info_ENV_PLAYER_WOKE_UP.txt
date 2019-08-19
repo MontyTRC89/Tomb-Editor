@@ -1,0 +1,8 @@
+Used in Animation= command.
+This env condition is the opposite of ENV_PLAYER_IS_SLEEPING. It happens when there is any game command.
+In ENV_PLAYER_IS_SLEEPING description has been described a way to create stand-by animations in death times of the game.
+There is also another method, a bit more complicated, and it's in this situation you need of ENV_PLAYER_WOKE_UP.
+If you want perform a custom animation when there is no game commands (player is sleeping) you could put in continue mode lara in a new position, for example that she sit down and wait.
+In this situation, since you used a non-standard state-id, no keyboard command will be accepted, so it should be you with an Animation command and condtion ENV_PLAYER_WOKE_UP, to force another custom animation having the target to move lara from sit down position to common stand-up position. In this new animation it will be set like next animation the standard still stand-up animation, so from this moment lara will be newly able to receive game commands.
+In game the player could see this little show:
+Lara (bored) sit down, and looks at left and right, then, when player hit some game command like for example the JUMP, lara will no jump, but she'll back to stand-up position, and if player hit newly jump (or other commands) lara  will come back to respond to these commands.

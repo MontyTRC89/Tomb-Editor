@@ -1,6 +1,0 @@
-Used in Customize=CUST_FMV_CUTSCENE command.
-This flag is very alike than FMV_SHORT_BLACK_RESTART, so read also the description of that flag to have more infos.
-This long version of black restart, remains with a black screen for one second after the end of FMV.
-There are some reasons to use this long black restart (instead of shorter version).
-Some changing in game required a bit of time to be engaged. For example a rope just enabled will have a starting animation, a change of position of lara will require a moving of follow-me camera to look lara correctly.
-If the changes you perform after the FMV require some time you can use the long black screen to show to player only final and stable game position.

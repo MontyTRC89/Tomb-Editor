@@ -1,3 +1,0 @@
-Used with Customize=CUST_ROLLING_BOAT command
-Normal level for pitching. 
-Remark: if you omit to type any FRB_PITCHING_... value, the NORMAL will be used by default.

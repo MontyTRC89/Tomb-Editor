@@ -1,0 +1,3 @@
+Used with SPC_PAUSE command of Parameters=PARAM_ACTOR_SPEECH command
+This is a special flag that you can use only adding it to SPC_PAUSE command to force an absolute pause until current demo reaches the given frame.
+See the SPC_PAUSE command for more infos.

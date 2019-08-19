@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+When the detector will be showed on the screen for first time.

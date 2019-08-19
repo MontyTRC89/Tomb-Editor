@@ -1,0 +1,2 @@
+Used in DiagnosticType script command.
+It enables the viewing on screen of current sound sample played and infos about further missing sound sample.

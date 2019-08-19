@@ -1,5 +1,0 @@
-Used in GlobalTrigger= command.
-This is a special global trigger.
-Usually a global trigger perform the wished TriggerGroup when it happened some specific global condition in the game.
-Differently the GT_ALWAYS global trigger will be always performed (if it enabled), frame or frame of the game.
-You can use this global trigger to have a triggergroup working endless.

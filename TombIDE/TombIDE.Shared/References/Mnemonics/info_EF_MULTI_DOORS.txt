@@ -1,0 +1,5 @@
+If you want that trng engine handle for you all doors in front any floor you can set this flag and then set in IndexFirstDoor the index of door at first floor.
+The management of game engine is very simple: when elevator reach a floor the door of that floor will be opened.
+When elevator leaves a floor the door in that floor will be closed.
+If you use this multi-doors handling is important you place all doors in your project exaclty at same vertical distance you set in ClickFloorDistance field. It's important, because is you place some door to different distance that door will be not found by trng engine and you'll have troubles.
+Pratically just you place each door at same height where the elevator will stop it, floor for floor.

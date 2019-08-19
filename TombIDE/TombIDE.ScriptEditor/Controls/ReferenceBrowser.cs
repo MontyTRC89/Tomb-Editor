@@ -91,7 +91,7 @@ namespace TombIDE.ScriptEditor
 
 		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
-			if (e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
+			if (comboBox_References.SelectedIndex == 0 && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
 			{
 				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString()))
 					form.ShowDialog(this);

@@ -1,4 +1,0 @@
-Used with Parameters=PARAM_LIGHTNING script command
-By default, if you omit this flag, the sound will be local, i.w. it will be played in the target position, and when lara is far to that point the sound will be very light. 
-Differently the global sound will have always same (max) volume from any point of the level.
-You should add the LGTN_GLOBAL_SOUND flag only for random target (from sky) lighning, while it's better don't use it for electric conductor.

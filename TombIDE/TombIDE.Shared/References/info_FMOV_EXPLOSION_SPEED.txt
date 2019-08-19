@@ -1,6 +1,0 @@
-used in Paramaters=PARAM_MOVE_ITEM script command
-This flag will give to the item a speed beginning from max value and decreasing enough slowly (remaining therefor on high values) in the progress.
-This happen when an explosion throws awyay all items closed to it.
-Note: warning there is no check about collisions. The item will stop its race only when it reaches the distance you set in Distance field.
-The value you type in Speed field will be used as percentage to change the preset speed of this explosion movement.
-If you type 100, no change will be performed. 200 will double the speed (unsuggested, increase this speed), 50 will reduce by half the preset speed. Ect.

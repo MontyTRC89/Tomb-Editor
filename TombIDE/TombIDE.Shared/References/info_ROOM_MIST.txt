@@ -1,2 +1,0 @@
-Used in according with ENV_ROOM condition in Animation or MultEnvCondition commands.
-Lara is in a room marked as mist room (the [M] button in 2d plane)

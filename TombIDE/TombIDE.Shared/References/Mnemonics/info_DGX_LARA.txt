@@ -1,0 +1,2 @@
+Used in DiagnosticType script command.
+Show in diagnostic the info about Lara: coordinates, orienting, room, flags

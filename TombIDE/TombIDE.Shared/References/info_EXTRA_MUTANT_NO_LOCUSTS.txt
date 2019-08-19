@@ -1,2 +1,0 @@
-Used in Enemy= command.
-If you are customizing the MUTANT slot with an Enemy script command, you can disable the swarm locust attack adding this flag in Extra field of Enemy command.

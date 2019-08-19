@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_SHOW_SPRITE script command.
-This is an effect to move the sprite from the right of the screen, upto the final position you set in OriginX, OriginY field.
-In the Extra Value field you type the number of frames required to complete the movement. If you type l

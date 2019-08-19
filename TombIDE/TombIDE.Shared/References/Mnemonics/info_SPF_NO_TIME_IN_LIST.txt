@@ -1,0 +1,7 @@
+Used in SavegamePanel= script command.
+By default in the savegame list will be showed the savegame with (old) format:
+
+002  Name of Level       1 days  02:41:11
+
+The game time is “1 days  02:41:11” part. If you use the SPF_NO_TIME_IN_LIST flag the game will be omitted and for this reason the width required to host savegame list will be less.
+You could use this flag when the layout requires savegame list in left (or right) half of screen.

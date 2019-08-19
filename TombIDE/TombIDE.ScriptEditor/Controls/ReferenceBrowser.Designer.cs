@@ -31,15 +31,15 @@
 			this.comboBox_References.FormattingEnabled = true;
 			this.comboBox_References.Items.AddRange(new object[] {
             "Mnemonic Constants",
-            "DamageEnemyList",
-            "KeyboardScancodeList",
-            "OCB LIST",
-            "SCRIPT NEW COMMANDS",
-            "SCRIPT OLD COMMANDS",
-            "SLOT MOVEABLES INDICES LIST",
-            "SOUND SFX INDICES LIST",
-            "STATICS INDICES LIST",
-            "VARIABLE PLACEFOLDERS"});
+            "Enemy Damage List",
+            "Keyboard Scancodes",
+            "OCB LIST (Unavailable)",
+            "SCRIPT NEW COMMANDS (Unavailable)",
+            "SCRIPT OLD COMMANDS (Unavailable)",
+            "Moveable Slot Indices",
+            "SOUND SFX INDICES LIST (Unavailable)",
+            "Static Object Indices",
+            "Variable Placeholders"});
 			this.comboBox_References.Location = new System.Drawing.Point(3, 3);
 			this.comboBox_References.Margin = new System.Windows.Forms.Padding(3, 3, 0, 4);
 			this.comboBox_References.Name = "comboBox_References";

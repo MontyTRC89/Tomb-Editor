@@ -1,4 +1,0 @@
-You can start your global trigger when screen timer reach the supplied number of seconds. You have to type the number of seconds in following field named Parameter.
-For example, to start your trigger when timer screen reach 240 seconds (4 minutes) you can type: "GlobalTrigger=1, IGNORE, GT_SCREEN_TIMER_REACHED, 240, ..."
-Remark: 
-* For this global trigger is strongly suggested to use flag FGT_SINGLE_SHOT, otherwise it, when the condition becomes true,  will performed 30 times for second, forever.

@@ -1,0 +1,5 @@
+Used in Demo script command.
+This flag add the cinema screen effect while the demo is playing.
+For cinema effect we mean when two black bars, at top and bottom of the screen, give a wide screen effect. This is alike that  effect you see in the flyby sequence but in this case the black bars are higher to cover the (further) hp bar (otherwise it is only partially covered, bad effect) and to distinguish demo cutscenes respect flyby camera.
+
+Note: A problem with cinema screen is that top and bottom legend demo will be covered by the black bars. For this reason if you enable cinema screen you should use a vertcal center alignment for demo legend or disable the demo legend text.

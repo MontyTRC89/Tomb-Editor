@@ -1,2 +1,0 @@
-Used in Paramaters=PARAM_SET_CAMERA
-This flag disable the combat camera until the PARAM_SET_CAMERA is working.

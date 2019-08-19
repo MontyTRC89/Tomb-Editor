@@ -1,0 +1,2 @@
+Used in Customize=CUST_FLARE command
+This flag add a little smoke when you are adding sparks to flare. Pratically this flag has effect only when you used also the FFL_ADD_SPARKS flag.

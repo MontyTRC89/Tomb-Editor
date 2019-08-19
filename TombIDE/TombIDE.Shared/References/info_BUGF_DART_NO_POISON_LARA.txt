@@ -1,3 +1,0 @@
-Used with Customize=CUST_FIX_BUGS command
-In default Tomb4 there was a bug about poisoning with darts.
-While the poison of scorpion and harpies worked correctly with the screen deformation and lara losing HP, the poison of dart remained only an instant and it was immediatly removed.

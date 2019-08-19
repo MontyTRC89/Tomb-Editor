@@ -1,7 +1,0 @@
-Used in Customize=CUST_PARALLEL_BARS.
-This flag works only when you set also the flag PB_PROGRESSIVE_CHARGE
-The charge counter is a text showing the currnet number of turns. If you use this flag the counter text will printed on screen while lara is turning on the bar.
-You can use this flag also togheter with PB_SHOW_CHARGE_BAR if you wish.
-
-Remark: the source of charge counter text is always the PSX string with index = 220.
-If you want change the text or create an other language version for it you can do, just you remember to use alwasy the PSX 220 string and to let always the formatter "%02d" in some point of the text because that formatter will be replaced with current number of turns.

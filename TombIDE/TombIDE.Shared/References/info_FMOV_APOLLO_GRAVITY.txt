@@ -1,4 +1,0 @@
-used in Paramaters=PARAM_MOVE_ITEM script command
-This flag move up the item with a slow vertical speed for a short time, than it will reach the max speed and it remain to max speed always upward.
-You can change the max vertical speed with a percentage of variation to type in Speed field.
-See the description of FMOV_FROG_JUMP_GRAVITY to know how compute the formula to type in that field.

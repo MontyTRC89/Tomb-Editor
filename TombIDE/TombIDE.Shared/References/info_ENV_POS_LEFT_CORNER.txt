@@ -1,1 +1,0 @@
-Works like ENV_POS_RIGHT_CORNER but for left side. See descrition of ENV_POS_RIGHT_CORNER for more infos.

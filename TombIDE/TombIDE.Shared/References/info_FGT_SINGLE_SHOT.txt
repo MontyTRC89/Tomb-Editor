@@ -1,1 +1,0 @@
-This flag set the current global trigger for single execution. When the global trigger will be executed it will be disabled to avoid further executions.

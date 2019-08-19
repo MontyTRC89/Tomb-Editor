@@ -1,3 +1,0 @@
-This global trigger is true when lara is holding in her hands the item you specified in Parameter field. The value set in Parameter could be also a vehicle or pole or rope.
-Remark: in Parameter field cann't type a SLOT value but an HOLD_ constant.
-You can find the list of available HOLD_ values in MNEMONIC CONSTANTS list of Reference panel.

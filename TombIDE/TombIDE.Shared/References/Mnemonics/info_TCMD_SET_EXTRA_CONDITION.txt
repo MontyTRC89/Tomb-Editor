@@ -1,0 +1,6 @@
+Used in TriggerGroup= command.
+This constant should be used as second value of three values, where the first was TGROUP_COMMAND.
+It changes the following (real) trigger of current TriggerGroup, replacing the Extra Timer value with that taken from trng variable set in next value (third value of current command trigger)
+
+Range: 0/31
+Scope: Used only with Conditional trigger. It is the "(E)xtra" parameter of conditions.

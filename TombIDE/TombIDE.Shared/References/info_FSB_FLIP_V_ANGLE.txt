@@ -1,2 +1,0 @@
-Used in StandBy command.
-This flag changes slowly the vertical angle moving it from a minimum of (VAngle - 50%) to a max of (VAngle + 50%)

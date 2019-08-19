@@ -1,0 +1,32 @@
+used with Paramaters= script command
+Syntax: Paramaters=PARAM_SWAP_ANIMATIONS, ASwapId, SourceFirstAnim, TargetFirstAnim, NumberOfAnimations
+
+This paramater host data for flipeffect 393.
+The F393 trigger swap animations from SourceFirstAnim to TargetFirstAnim. The animation slots swapped will be NumberOfAnimations.
+
+Usually, you'll perform another swap of same set of animations to restore previous situation.
+
+ASwapId field
+-------------
+A progressive id to identify these paramter data. You'll chose this id in F393 trigger to link it with swapping data of this specific parameters=PARAM_SWAP_ANIMATIONS command.
+
+SourceFirstAnim field
+---------------------
+You type here the animation number of first animation of the group of animation slot to swap.
+Remember that it's necessary that both group of animations to swap was in the same slot, i.e. store for the same object type.
+Remember that the indices are zero based. This means that if you wish replace all first 8 animations (for instance) you'll type "0" to choose first animation slot.
+
+TargetFirstAnim field
+---------------------
+In this field you type the first benginning animation of the second group whom swap the animations.
+Please note that nothing changes if you invert the values in the TargetFirstAnim field with that of SourceFirstAnim, since this is a swapping and at end both group animation will be yet present in the slot, but in different (inverted) position.
+
+NumberOfAnimations field
+------------------------
+In this field you type the number of animations to swap, i.e. the number of animations for each group to swap.
+You can swap a single animation, typing 1, or a bigger number, anyway take care to do not overlap the two, target and soruce, groups.
+For instance this parameter is surely wrong:
+
+Parameteres=PARAM_SWAP_ANIMATIONS, 0,  4, 6
+
+Because the number of animation to swap (6) is bigger than the distance between first source anim (0) and first target anim (4), in this way you'll mess the animations of that slot.

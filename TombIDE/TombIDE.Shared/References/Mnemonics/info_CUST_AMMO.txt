@@ -1,0 +1,175 @@
+Used to customize ammo of weapons.
+
+Syntax: Customize=CUST_AMMO, SlotOfAmmo, Ammo flags (AMMO_....), Damage, ShotsForBox, ShotsWithWeapon, Extra, IdTriggerGroupWhenHitEnemy, DamageForExplosion, Speed, Gravity, IdAddEffectToAmmo, IdTriggerGroupAtEnd
+
+Description of fields
+---------------------
+
+SlotOfAmmo field
+----------------
+You have to type in this field the slot of ammo you mean customize.
+You can choose one of following values:
+
+PISTOLS_AMMO_ITEM
+UZI_AMMO_ITEM
+SHOTGUN_AMMO1_ITEM (normal)
+SHOTGUN_AMMO2_ITEM (wideshot)
+CROSSBOW_AMMO1_ITEM (normal)
+CROSSBOW_AMMO2_ITEM (explosive)
+CROSSBOW_AMMO3_ITEM (poisoned)
+GRENADE_GUN_AMMO1_ITEM (normal)
+GRENADE_GUN_AMMO2_ITEM (power)
+GRENADE_GUN_AMMO3_ITEM (lightning)
+SIXSHOOTER_AMMO_ITEM
+
+Ammo flags (AMMO_....) field
+----------------------------
+You can add in this field one or more AMMO_ flags to set different features of current ammo.
+Type IGNORE if you don't want use any AMMO_ flag.
+See description of AMMO_ flags in MNEMONIC CONSTANTS list of Reference panel of NG Center program.
+
+Damage field
+------------
+You can change the normal damage (to Lara) of this ammo.
+If for this ammo is not foreseen a damage (like for GRENADE_GUN_AMMO3_ITEM (lightning)) the damage will be ignored.
+Remark: this is a normal damage, while if this ammo in also explosive you have to set the damage for explosion in other field named DamageForExplosion (see below)
+
+Default values:
+
+Ammo              Default     MaxValue
+-----------------------------------
+Pistols           1           255
+UZI               1           255
+Revolver          21          255
+ShotGun normal    3 (*6)    255
+ShotGun Wide      3 (*5)    1000
+GrenadeGun Normal 20          255
+GrenadeGun Power  20          1000
+CrossBow Normal   5           255
+CrossBow Explos.  5           1000
+-----------------------------------
+
+Remarks:
+* Some ammo have 0 damage because their damage is only for explosion, anyway you can force also a common damage for them.
+* The wide shot shotgun ammo are not really more powerful like the people thinks.
+The damage for them is computed like a random rain of fragments where the wide property reduces the number of fragments reaching the target. Usually this number is only 5 while for normal shotgun ammo is 6, hence the normal shotgun ammo are most powerful than wide shot ammo, the only exception is when the enemy is really very big.
+If you wish render really most powerfull the wideshot shotgun ammo just you set some value for damage in this field and it will be added to compute for damage.
+
+ShotsForBox field
+-----------------
+When Lara picks up an ammo box, a given number of single shots will be added in inventory for that ammo.
+Using this field you can set what is the number of shots for each ammo box of this kind.
+
+Ammo                    Default          MaxForBox
+------------------------------------------------------------
+PISTOLS_AMMO_ITEM       Unlimited (-2)   1000
+UZI_AMMO_ITEM           30               1000
+SHOTGUN_AMMO1_ITEM      6                1000
+SHOTGUN_AMMO2_ITEM      6                42
+CROSSBOW_AMMO1_ITEM     10               1000
+CROSSBOW_AMMO2_ITEM     10               255
+CROSSBOW_AMMO3_ITEM     10               255
+GRENADE_GUN_AMMO1_ITEM  10               255
+GRENADE_GUN_AMMO2_ITEM  4                255
+GRENADE_GUN_AMMO3_ITEM  4                255
+SIXSHOOTER_AMMO_ITEM    6                1000
+------------------------------------------------------------
+
+Remarks:
+
+* If you want let unchanged this field type IGNORE
+
+* There are technical reasons (within the orignal tomb4 code) because some ammo have different max value you can set.
+Please don't pass over the showed limits otherwise you'll have crashes or bad working of TRNG engine.
+
+* The value -1 should be mean "unlimited ammo" but really this is not possible because the -1 value is the same of IGNORE value used in NG_Center, for this reason if you want set as number of shot for box an "unlimited ammo" quantity you should type another negative number different than -1, for example -2.
+
+ShotsWithWeapon field
+---------------------
+Everytime Lara picks up a weapon (not ammo  box , but a *weapon*) the tomb4 engine gives to her also some shots for that weapons. It's a present, pheraps to mean that shots are within the weapon when Lara pickups it.
+Anyway you can change the number of given shots with weapon, using this field.
+If you wish you can set also 0  (no shots "present") this value, and I retain more logical this choice, however you can use any value you wish.
+
+Default values:
+
+Given with weapon     Number Shots      MaxAllowedValue
+----------------------------------------------------------------
+Pistols               Unlimited (-2)    1000
+Revolver              6                 255
+UZI                   30                255
+ShotGun               6   (normal)      42
+CrossBow              10  (normal)      255
+GrenadeGun            10  (normal)      255
+----------------------------------------------------------------
+
+Remarks:
+
+* If you want let unchanged this field type IGNORE
+
+* There are technical reasons (within the orignal tomb4 code) because some ammo have different max value you can set.
+Please don't pass over the showed limits otherwise you'll have crashes or bad working of TRNG engine.
+
+* The value -1 should be mean "unlimited ammo" but really this is not possible because the -1 value is the same of IGNORE value used in NG_Center, for this reason if you want set as number of given shot with weapon an "unlimited ammo" quantity you should type another negative number different than -1, for example -2.
+
+Extra field
+-----------
+This optional field could be used in some circustance for special ammo.
+Read the AMMO_ constant descriptions to discover the possible usage of this field.
+
+IdTriggerGroupWhenHitEnemy field
+--------------------------------
+You can perform a TriggerGroup script command, when this ammo hit some enemy.
+If you wish use this feature you have to type the ID of TriggerGroup script command.
+
+Remarks:
+* When the enemy will be reached by ammo, the game engine will perform the TriggerGroup you set and it will set as "Found item" the index of enemy hit by ammo.
+If you want perform some special ACTION stored in trigger group on hit enemy, remember to add to exported trigger the flag TGROUP_USE_FOUND_ITEM_INDEX, in this way the action trigger you placed in trigger group will use the index of enemy hit by ammo, instead of moveable you had set originally in exported action trigger.
+Using this method you can give special functions to this ammo.
+
+* If you don't want perform any trigger group type IGNORE in this field.
+
+DamageForExplosion field
+-------------------------
+This field used to set damage for explosive ammo, like normal and powerfull grenade ammo or for explosive crossbow ammo.
+Remark: when you customize crossbow poisoned dart you can use this field to set the intensity of poison. The default value for poison is 1
+
+Default value is 30 for all explsive ammo kinds.
+Max value for damage is 1000.
+
+Speed field
+-----------
+For the visible ammo (like grenades and crossbow darts) you can change the (horizontal) speed.
+
+Default values:      Default   MaxValue
+-------------------------------------------------
+Grenade (all types): 128       1024
+Darts (all types):   512       1024
+-------------------------------------------------
+
+Remark: you can set different speed for each grenade or dart type. This mean you can have, for example, a dart (like explosive) moving fastly than poisoned dart.
+
+Gravity field
+-------------
+For the visible ammo (like grenades and crossbow darts) you can change the gravity.
+
+Default values:      Default   MaxValue
+------------------------------------------------
+Grenade (all types)  3         255
+Darts (all types)    0         255
+------------------------------------------------
+
+Remarks:
+* The gravity is not simply a vertical (down) speed but it is an accelleration value used to incread the vertical speed.
+* For darts it was not foreseen the usage of gravity, but you can use it if you wish
+
+IdAddEffectToAmmo field
+-----------------------
+This setting works only for visibile ammo (grenade and dart).
+If you wish you can set a special effect using a AddEffect script command, and then type in this field its id to attach that effect to this ammo everytime it will be shot.
+For example if you create an AddEffect to add a blue mist wake and then type the id in this field, the ammo will have a blue mist wake.
+
+IdTriggerGroupAtEnd field
+-------------------------
+This setting works only for visibile ammo (grenade and dart).
+This field works in similar way of previous described field "IdTriggerGroupWhenHitEnemy" but in this case it's not important if the ammo hit or less some enemy. The TriggerGroup, of that you typed the id, will be performed non just the ammo hit anything: enemies, wall, floor, statics ect.
+In this TriggerGroup the "found enemy index" will be the index of current ammo. If you place in the triggergroup some ACTION you can force to perform this action on ammo item (in final position) using the constant TGROUP_USE_FOUND_ITEM_INDEX.

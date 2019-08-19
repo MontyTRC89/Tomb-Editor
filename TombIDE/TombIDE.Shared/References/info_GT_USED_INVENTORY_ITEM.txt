@@ -1,8 +1,0 @@
-With this global trigger you can detect when the player chooses a specifc item from inventory. You have to specify the slot id in following field  named Parameter.
-For example to enable a global trigger when player select the QUEST_ITEM2 with slotid = 253, you can type "GlobalTrigger=1, IGNORE, GT_USED_INVENTORY_ITEM , 253, ...".
-
-Remarks: 
-*If you want remove the chosen item from inventory when global trigger has been engaged you have to insert in perform TriggerGroup the specific flipeffect "Inventory-Item. Remove <&
-inventory-item from inventory". If you don't use this flipeffect the selected item will remain in inventory for further activations.
-
-*Please, try to avoid to use QUEST_ITEM1 for your global trigger because QUEST_ITEM1 is used already for Detector activation.
