@@ -12,7 +12,7 @@ namespace TombIDE.Shared.Scripting
 		#region Public variables
 
 		public static List<string> MnemonicConstants { get; internal set; }
-		public static List<string> PluginMnemonics { get; internal set; }
+		public static List<PluginMnemonic> PluginMnemonics { get; internal set; }
 
 		public static List<string> Sections
 		{
@@ -240,7 +240,7 @@ namespace TombIDE.Shared.Scripting
 
 		private static void SetupPluginMnemonics()
 		{
-			List<string> pluginMnemonics = new List<string>();
+			List<PluginMnemonic> pluginMnemonics = new List<PluginMnemonic>();
 
 			try
 			{
@@ -252,14 +252,56 @@ namespace TombIDE.Shared.Scripting
 
 					foreach (string line in lines)
 					{
+						if (line.ToLower().StartsWith("<start_constants>"))
+							continue;
+
+						if (line.ToLower().StartsWith("<end>"))
+							break;
+
+						if (line.Contains(":$"))
+							continue;
+
 						if (!string.IsNullOrWhiteSpace(line) && line.Contains(":"))
-							pluginMnemonics.Add(line.Split(':')[0].Trim());
+						{
+							string fullDescription = string.Empty;
+							int decimalValue;
+
+							if (line.Contains(";"))
+							{
+								string description = line.Split(';')[1].Trim();
+								string[] descriptionLines = description.Split('>');
+
+								List<string> trimmedText = new List<string>();
+
+								// Trim whitespace on every line and add it to the list
+								for (int i = 0; i < descriptionLines.Length; i++)
+								{
+									string currentLineText = (descriptionLines.Length >= i) ? descriptionLines[i] : Environment.NewLine;
+									trimmedText.Add(currentLineText.Trim());
+								}
+
+								fullDescription = string.Join("\r\n", trimmedText);
+
+								decimalValue = int.Parse(line.Split(';')[0].Trim().Split(':')[1].Trim());
+							}
+							else
+								decimalValue = int.Parse(line.Split(':')[1].Trim());
+
+							PluginMnemonic mnemonic = new PluginMnemonic
+							{
+								Flag = line.Split(':')[0].Trim(),
+								Description = fullDescription,
+								Decimal = (short)decimalValue
+							};
+
+							pluginMnemonics.Add(mnemonic);
+						}
 					}
 				}
 
 				PluginMnemonics = pluginMnemonics;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				// Yes
 			}

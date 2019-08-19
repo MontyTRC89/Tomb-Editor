@@ -58,6 +58,7 @@
     <Compile Include="PakFile.cs" />
     <Compile Include="Scripting\AutocompleteItems.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Scripting\PluginMnemonic.cs" />
     <Compile Include="Scripting\ScriptTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

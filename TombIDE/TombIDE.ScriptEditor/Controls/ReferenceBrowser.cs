@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using TombIDE.Shared;
+using TombIDE.Shared.Scripting;
 
 namespace TombIDE.ScriptEditor
 {
@@ -32,6 +33,15 @@ namespace TombIDE.ScriptEditor
 						dataSet.ReadXml(reader);
 
 						DataTable dataTable = dataSet.Tables[0];
+
+						if (comboBox_References.SelectedIndex == 0)
+						{
+							DataTable pluginMnemonicTable = GetPluginMnemonicTable();
+
+							foreach (DataRow row in pluginMnemonicTable.Rows)
+								dataTable.Rows.Add(row.ItemArray[0], row.ItemArray[1], row.ItemArray[2]);
+						}
+
 						DataColumn dcRowString = dataTable.Columns.Add("_RowString", typeof(string));
 
 						foreach (DataRow dataRow in dataTable.Rows)
@@ -63,6 +73,27 @@ namespace TombIDE.ScriptEditor
 			{
 				// Whatever.
 			}
+		}
+
+		private DataTable GetPluginMnemonicTable()
+		{
+			DataTable dataTable = new DataTable();
+
+			dataTable.Columns.Add("decimal", typeof(int));
+			dataTable.Columns.Add("address", typeof(string));
+			dataTable.Columns.Add("flag", typeof(string));
+
+			foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
+			{
+				DataRow row = dataTable.NewRow();
+				row["decimal"] = mnemonic.Decimal;
+				row["address"] = mnemonic.Hex;
+				row["flag"] = mnemonic.Flag;
+
+				dataTable.Rows.Add(row);
+			}
+
+			return dataTable;
 		}
 
 		private void textBox_Search_GotFocus(object sender, System.EventArgs e)
