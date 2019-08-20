@@ -24,6 +24,8 @@ namespace TombIDE.ScriptEditor
 
 		private void UpdateDataGrid()
 		{
+			dataGrid.Columns.Clear();
+
 			try
 			{
 				string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", comboBox_References.SelectedItem + ".xml");
