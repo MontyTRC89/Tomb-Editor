@@ -26,6 +26,9 @@ namespace TombIDE.ScriptEditor
 		{
 			dataGrid.Columns.Clear();
 
+			if (comboBox_References.SelectedItem.ToString().Contains("(Unavailable)")) // TEMPORARY
+				return;
+
 			try
 			{
 				string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", comboBox_References.SelectedItem + ".xml");
