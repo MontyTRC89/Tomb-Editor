@@ -133,6 +133,16 @@ namespace TombIDE.ProjectMaster
 
 						string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileName(folderPath));
 
+						Directory.CreateDirectory(extractionPath);
+
+						// Create all of the subdirectories
+						foreach (string dirPath in Directory.GetDirectories(folderPath, "*", System.IO.SearchOption.AllDirectories))
+							Directory.CreateDirectory(dirPath.Replace(folderPath, extractionPath));
+
+						// Copy all the files into the folder
+						foreach (string newPath in Directory.GetFiles(folderPath, "*.*", System.IO.SearchOption.AllDirectories))
+							File.Copy(newPath, newPath.Replace(folderPath, extractionPath));
+
 						ValidatePluginFolder(extractionPath, true);
 
 						Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
