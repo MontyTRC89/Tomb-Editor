@@ -37,7 +37,7 @@
 			this.button_Close.Location = new System.Drawing.Point(11, 11);
 			this.button_Close.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
 			this.button_Close.Name = "button_Close";
-			this.button_Close.Size = new System.Drawing.Size(600, 24);
+			this.button_Close.Size = new System.Drawing.Size(760, 24);
 			this.button_Close.TabIndex = 0;
 			this.button_Close.Text = "Close";
 			// 
@@ -48,7 +48,7 @@
 			this.label_FlagName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_FlagName.Location = new System.Drawing.Point(0, 0);
 			this.label_FlagName.Name = "label_FlagName";
-			this.label_FlagName.Size = new System.Drawing.Size(622, 46);
+			this.label_FlagName.Size = new System.Drawing.Size(782, 46);
 			this.label_FlagName.TabIndex = 0;
 			this.label_FlagName.Text = "FLAG_NAME_GOES_HERE";
 			this.label_FlagName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -60,7 +60,7 @@
 			this.panel_01.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel_01.Location = new System.Drawing.Point(0, 0);
 			this.panel_01.Name = "panel_01";
-			this.panel_01.Size = new System.Drawing.Size(624, 48);
+			this.panel_01.Size = new System.Drawing.Size(784, 48);
 			this.panel_01.TabIndex = 0;
 			// 
 			// panel_02
@@ -70,7 +70,7 @@
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel_02.Location = new System.Drawing.Point(0, 48);
 			this.panel_02.Name = "panel_02";
-			this.panel_02.Size = new System.Drawing.Size(624, 345);
+			this.panel_02.Size = new System.Drawing.Size(784, 465);
 			this.panel_02.TabIndex = 1;
 			// 
 			// richTextBox_Description
@@ -83,7 +83,7 @@
 			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.Size = new System.Drawing.Size(622, 343);
+			this.richTextBox_Description.Size = new System.Drawing.Size(782, 463);
 			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
 			// 
@@ -92,9 +92,9 @@
 			this.panel_03.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel_03.Controls.Add(this.button_Close);
 			this.panel_03.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel_03.Location = new System.Drawing.Point(0, 393);
+			this.panel_03.Location = new System.Drawing.Point(0, 513);
 			this.panel_03.Name = "panel_03";
-			this.panel_03.Size = new System.Drawing.Size(624, 48);
+			this.panel_03.Size = new System.Drawing.Size(784, 48);
 			this.panel_03.TabIndex = 2;
 			// 
 			// FormMnemonicInfo
@@ -102,7 +102,7 @@
 			this.AcceptButton = this.button_Close;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(624, 441);
+			this.ClientSize = new System.Drawing.Size(784, 561);
 			this.Controls.Add(this.panel_02);
 			this.Controls.Add(this.panel_03);
 			this.Controls.Add(this.panel_01);

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using DarkUI.Forms;
+using System;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -17,8 +19,8 @@ namespace TombIDE.ScriptEditor
 			comboBox_References.SelectedItem = "Mnemonic Constants";
 		}
 
-		private void comboBox_References_SelectedIndexChanged(object sender, System.EventArgs e) => UpdateDataGrid();
-		private void textBox_Search_TextChanged(object sender, System.EventArgs e) => UpdateDataGrid();
+		private void comboBox_References_SelectedIndexChanged(object sender, EventArgs e) => UpdateDataGrid();
+		private void textBox_Search_TextChanged(object sender, EventArgs e) => UpdateDataGrid();
 
 		private void UpdateDataGrid()
 		{
@@ -39,7 +41,7 @@ namespace TombIDE.ScriptEditor
 							DataTable pluginMnemonicTable = GetPluginMnemonicTable();
 
 							foreach (DataRow row in pluginMnemonicTable.Rows)
-								dataTable.Rows.Add(row.ItemArray[0], row.ItemArray[1], row.ItemArray[2]);
+								dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
 						}
 
 						DataColumn dcRowString = dataTable.Columns.Add("_RowString", typeof(string));
@@ -69,9 +71,9 @@ namespace TombIDE.ScriptEditor
 					}
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Whatever.
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -79,15 +81,15 @@ namespace TombIDE.ScriptEditor
 		{
 			DataTable dataTable = new DataTable();
 
-			dataTable.Columns.Add("decimal", typeof(int));
-			dataTable.Columns.Add("address", typeof(string));
+			dataTable.Columns.Add("decimal", typeof(string));
+			dataTable.Columns.Add("hex", typeof(string));
 			dataTable.Columns.Add("flag", typeof(string));
 
 			foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
 			{
 				DataRow row = dataTable.NewRow();
 				row["decimal"] = mnemonic.Decimal;
-				row["address"] = mnemonic.Hex;
+				row["hex"] = mnemonic.Hex;
 				row["flag"] = mnemonic.Flag;
 
 				dataTable.Rows.Add(row);
@@ -96,13 +98,13 @@ namespace TombIDE.ScriptEditor
 			return dataTable;
 		}
 
-		private void textBox_Search_GotFocus(object sender, System.EventArgs e)
+		private void textBox_Search_GotFocus(object sender, EventArgs e)
 		{
 			if (textBox_Search.Text == "Search references...")
 				textBox_Search.Text = string.Empty;
 		}
 
-		private void textBox_Search_LostFocus(object sender, System.EventArgs e)
+		private void textBox_Search_LostFocus(object sender, EventArgs e)
 		{
 			if (textBox_Search.Text == string.Empty)
 				textBox_Search.Text = "Search references...";
@@ -117,7 +119,7 @@ namespace TombIDE.ScriptEditor
 			}
 		}
 
-		private void menuItem_Copy_Click(object sender, System.EventArgs e) =>
+		private void menuItem_Copy_Click(object sender, EventArgs e) =>
 			Clipboard.SetText(dataGrid.SelectedCells[0].Value.ToString());
 
 		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
