@@ -81,17 +81,17 @@ namespace TombLib.Projects
 			if (fileName.Length < 9)
 				return false;
 
-            DateTime dt;
+			DateTime dateTime;
 
 			// 01-01-0001 || 0001-01-01
-			if (DateTime.TryParse(fileName.Substring(0, 9), out dt))
+			if (DateTime.TryParse(fileName.Substring(0, 9), out dateTime))
 				return true;
 
 			if (fileName.Length < 7)
 				return false;
 
 			// 01-01-01
-			if (DateTime.TryParse(fileName.Substring(0, 7), out dt))
+			if (DateTime.TryParse(fileName.Substring(0, 7), out dateTime))
 				return true;
 
 			return false;
