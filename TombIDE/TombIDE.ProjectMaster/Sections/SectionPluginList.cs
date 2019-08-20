@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -44,7 +45,20 @@ namespace TombIDE.ProjectMaster
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
 		{
 			using (FormPluginManager form = new FormPluginManager(_ide))
+			{
+				string[] cachedPluginFolders = Directory.GetDirectories(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"), "plugin_*");
+
 				form.ShowDialog(this);
+
+				foreach (string folder in Directory.GetDirectories(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"), "plugin_*"))
+				{
+					if (cachedPluginFolders.ToList().Exists(x => x.ToLower() == folder.ToLower()))
+						continue;
+
+					_ide.RaiseEvent(new IDE.NewPluginsAddedEvent());
+					break;
+				}
+			}
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)

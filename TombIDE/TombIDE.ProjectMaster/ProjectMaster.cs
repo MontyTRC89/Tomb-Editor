@@ -68,10 +68,10 @@ namespace TombIDE.ProjectMaster
 		private void projectDLLFileWatcher_Changed(object sender, FileSystemEventArgs e) => CheckPlugins();
 		private void projectDLLFileWatcher_Renamed(object sender, RenamedEventArgs e) => CheckPlugins();
 
-		private void internalDLLFileWatcher_Changed(object sender, FileSystemEventArgs e) => CheckPlugins();
+		private void internalDLLFileWatcher_Deleted(object sender, FileSystemEventArgs e) => CheckPlugins();
 		private void internalDLLFileWatcher_Renamed(object sender, RenamedEventArgs e) => CheckPlugins();
 
-		private void internalPluginFolderWatcher_Changed(object sender, FileSystemEventArgs e) => CheckPlugins();
+		private void internalPluginFolderWatcher_Deleted(object sender, FileSystemEventArgs e) => CheckPlugins();
 		private void internalPluginFolderWatcher_Renamed(object sender, RenamedEventArgs e) => CheckPlugins();
 
 		#endregion Watchers
