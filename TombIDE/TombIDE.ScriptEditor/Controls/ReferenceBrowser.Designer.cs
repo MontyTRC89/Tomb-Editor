@@ -36,8 +36,8 @@
             "OCB LIST (Unavailable)",
             "SCRIPT NEW COMMANDS (Unavailable)",
             "SCRIPT OLD COMMANDS (Unavailable)",
-            "Moveable Slot Indices",
             "SOUND SFX INDICES LIST (Unavailable)",
+            "Moveable Slot Indices",
             "Static Object Indices",
             "Variable Placeholders"});
 			this.comboBox_References.Location = new System.Drawing.Point(3, 3);
