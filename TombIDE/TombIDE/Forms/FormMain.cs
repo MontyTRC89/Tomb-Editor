@@ -1,6 +1,7 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombLib.Projects;
 
 namespace TombIDE
 {
@@ -119,8 +121,16 @@ namespace TombIDE
 						_ide.Project.ScriptPath = ((IDE.ProjectScriptPathChangedEvent)obj).NewPath;
 					else if (obj is IDE.ProjectLevelsPathChangedEvent)
 					{
+						List<ProjectLevel> projectLevels = new List<ProjectLevel>();
+						projectLevels.AddRange(_ide.Project.Levels);
+
+						foreach (ProjectLevel projectLevel in projectLevels)
+						{
+							if (projectLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+								_ide.Project.Levels.Remove(projectLevel);
+						}
+
 						_ide.Project.LevelsPath = ((IDE.ProjectLevelsPathChangedEvent)obj).NewPath;
-						_ide.Project.Levels.Clear();
 					}
 
 					XmlHandling.SaveTRPROJ(_ide.Project);
