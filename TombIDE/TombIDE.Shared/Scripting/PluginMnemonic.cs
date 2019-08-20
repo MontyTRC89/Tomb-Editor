@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TombIDE.Shared.Scripting
+﻿namespace TombIDE.Shared.Scripting
 {
 	public class PluginMnemonic
 	{

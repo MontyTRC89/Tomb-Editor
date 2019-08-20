@@ -258,52 +258,50 @@ namespace TombIDE.Shared.Scripting
 						if (line.ToLower().StartsWith("<end>"))
 							break;
 
-						if (line.Contains(":$"))
-							continue;
-
 						if (!string.IsNullOrWhiteSpace(line) && line.Contains(":"))
 						{
-							string fullDescription = string.Empty;
-							int decimalValue;
+							string description = string.Empty;
+							string decimalString = string.Empty;
 
 							if (line.Contains(";"))
 							{
-								string description = line.Split(';')[1].Trim();
-								string[] descriptionLines = description.Split('>');
-
-								List<string> trimmedText = new List<string>();
-
-								// Trim whitespace on every line and add it to the list
-								for (int i = 0; i < descriptionLines.Length; i++)
-								{
-									string currentLineText = (descriptionLines.Length >= i) ? descriptionLines[i] : Environment.NewLine;
-									trimmedText.Add(currentLineText.Trim());
-								}
-
-								fullDescription = string.Join("\r\n", trimmedText);
-
-								decimalValue = int.Parse(line.Split(';')[0].Trim().Split(':')[1].Trim());
+								description = string.Join(Environment.NewLine, SyntaxTidying.TrimLines(line.Split(';')[1].Trim().Split('>')));
+								decimalString = line.Split(';')[0].Trim().Split(':')[1].Trim();
 							}
 							else
-								decimalValue = int.Parse(line.Split(':')[1].Trim());
+								decimalString = line.Split(':')[1].Trim();
 
-							PluginMnemonic mnemonic = new PluginMnemonic
+							try
 							{
-								Flag = line.Split(':')[0].Trim(),
-								Description = fullDescription,
-								Decimal = (short)decimalValue
-							};
+								short decimalValue = new short();
 
-							pluginMnemonics.Add(mnemonic);
+								if (short.TryParse(decimalString, out short result))
+									decimalValue = result;
+								else
+									decimalValue = Convert.ToInt16(decimalString.Replace("$", string.Empty), 16);
+
+								PluginMnemonic mnemonic = new PluginMnemonic
+								{
+									Flag = line.Split(':')[0].Trim(),
+									Description = description,
+									Decimal = decimalValue
+								};
+
+								pluginMnemonics.Add(mnemonic);
+							}
+							catch (Exception)
+							{
+								// Yes
+							}
 						}
 					}
 				}
 
 				PluginMnemonics = pluginMnemonics;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				// Yes
+				// https://youtu.be/T9NjXekZ8kA
 			}
 		}
 

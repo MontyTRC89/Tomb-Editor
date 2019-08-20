@@ -140,7 +140,7 @@ namespace TombIDE.Shared.Scripting
 			Bookmarks.Clear();
 
 			// Tidy
-			string tidiedText = trimOnly ? SyntaxTidying.Trim(Text) : SyntaxTidying.Reindent(Text);
+			string tidiedText = trimOnly ? SyntaxTidying.TrimScript(Text) : SyntaxTidying.ReindentScript(Text);
 			Text = tidiedText;
 
 			// Restore

@@ -7,7 +7,7 @@ namespace TombIDE.Shared.Scripting
 	{
 		private static Configuration _config;
 
-		public static string Reindent(string editorContent)
+		public static string ReindentScript(string editorContent)
 		{
 			_config = Configuration.Load();
 
@@ -18,23 +18,32 @@ namespace TombIDE.Shared.Scripting
 			editorContent = HandleSpacesAfterCommas(editorContent);
 
 			editorContent = HandleSpaceReduction(editorContent);
-			return Trim(editorContent);
+
+			return TrimScript(editorContent);
 		}
 
-		public static string Trim(string editorContent)
+		public static string TrimScript(string editorContent)
 		{
 			// Get all lines and create a list to store them
 			string[] lines = editorContent.Replace("\r", string.Empty).Split('\n');
 			List<string> trimmedText = new List<string>();
 
-			// Trim whitespace on every line and add it to the list
-			for (int i = 0; i < lines.Length; i++)
-			{
-				string currentLineText = (lines.Length >= i) ? lines[i] : Environment.NewLine;
-				trimmedText.Add(currentLineText.Trim());
-			}
+			// Trim whitespace at the end of every line and add it to the list
+			foreach (string line in lines)
+				trimmedText.Add(line.TrimEnd());
 
-			return string.Join("\r\n", trimmedText);
+			return string.Join(Environment.NewLine, trimmedText);
+		}
+
+		public static string[] TrimLines(string[] lines)
+		{
+			List<string> trimmedText = new List<string>();
+
+			// Trim whitespace at the end of every line and add it to the list
+			foreach (string line in lines)
+				trimmedText.Add(line.TrimEnd());
+
+			return trimmedText.ToArray();
 		}
 
 		private static string HandleSpacesBeforeEquals(string editorContent)
