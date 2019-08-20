@@ -95,7 +95,7 @@ namespace TombIDE.ProjectMaster
 								}
 							}
 
-							// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
+							_ide.RefreshPluginLists();
 						}
 					}
 					catch (Exception ex)
@@ -147,7 +147,7 @@ namespace TombIDE.ProjectMaster
 							}
 						}
 
-						// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
+						_ide.RefreshPluginLists();
 					}
 					catch (Exception ex)
 					{

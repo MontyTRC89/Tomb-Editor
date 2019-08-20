@@ -54,9 +54,7 @@
 			this.internalDLLFileWatcher.Filter = "*.dll";
 			this.internalDLLFileWatcher.IncludeSubdirectories = true;
 			this.internalDLLFileWatcher.SynchronizingObject = this;
-			this.internalDLLFileWatcher.Changed += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Changed);
-			this.internalDLLFileWatcher.Created += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Changed);
-			this.internalDLLFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Changed);
+			this.internalDLLFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Deleted);
 			this.internalDLLFileWatcher.Renamed += new System.IO.RenamedEventHandler(this.internalDLLFileWatcher_Renamed);
 			// 
 			// internalPluginFolderWatcher
@@ -64,9 +62,7 @@
 			this.internalPluginFolderWatcher.EnableRaisingEvents = true;
 			this.internalPluginFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
 			this.internalPluginFolderWatcher.SynchronizingObject = this;
-			this.internalPluginFolderWatcher.Changed += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Changed);
-			this.internalPluginFolderWatcher.Created += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Changed);
-			this.internalPluginFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Changed);
+			this.internalPluginFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Deleted);
 			this.internalPluginFolderWatcher.Renamed += new System.IO.RenamedEventHandler(this.internalPluginFolderWatcher_Renamed);
 			// 
 			// levelFolderWatcher

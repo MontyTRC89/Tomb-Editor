@@ -130,6 +130,24 @@ namespace TombIDE
 					DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
 						   MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
+			else if (obj is IDE.NewPluginsAddedEvent)
+			{
+				DialogResult result = DarkMessageBox.Show(this,
+					"It is highly recommended to restart TombIDE after adding new plugins,\n" +
+					"otherwise some script elements won't be available.\n" +
+					"Would you like to restart TombIDE now?", "Restart required", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+				if (result == DialogResult.Yes)
+				{
+					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
+
+					if (_ide.ClosingCancelled)
+						return; // User pressed "Cancel"
+
+					XmlHandling.SaveTRPROJ(_ide.Project);
+					RestartApplication();
+				}
+			}
 		}
 
 		protected override void OnLoad(EventArgs e)
