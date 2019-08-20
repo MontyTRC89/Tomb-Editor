@@ -71,6 +71,10 @@ namespace TombIDE.ScriptEditor
 					}
 				}
 			}
+			catch (DirectoryNotFoundException)
+			{
+				// Don't do anything
+			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
