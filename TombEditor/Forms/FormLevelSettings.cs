@@ -405,15 +405,15 @@ namespace TombEditor.Forms
             pathToolTip.SetToolTip(gameExecutableFilePathTxt, gameExecutableFilePath);
 
             // Load previews
-            string fontPath = _levelSettings.MakeAbsolute(_levelSettings.FontTextureFilePath) ?? "<default>";
-            pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath);
-            if (fontTextureFilePathPicPreviewCurrentPath != fontPath)
+            string fontPath = _levelSettings.MakeAbsolute(_levelSettings.FontTextureFilePath) ?? null;
+            pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath == null ? "<default>" : fontPath);
+            if (fontTextureFilePathPicPreviewCurrentPath == null || fontTextureFilePathPicPreviewCurrentPath != fontPath)
             {
                 fontTextureFilePathPicPreviewCurrentPath = fontPath;
                 try
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
-                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture().ToBitmap();
+                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture(fontTextureFilePathPicPreviewCurrentPath).ToBitmap();
                     fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
@@ -428,15 +428,15 @@ namespace TombEditor.Forms
                 }
             }
 
-            string skyPath = _levelSettings.MakeAbsolute(_levelSettings.SkyTextureFilePath) ?? "<default>";
-            pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath);
-            if (skyTextureFilePathPicPreviewCurrentPath != skyPath)
+            string skyPath = _levelSettings.MakeAbsolute(_levelSettings.SkyTextureFilePath) ?? null;
+            pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath == null ? "<default>" : skyPath);
+            if (skyTextureFilePathPicPreviewCurrentPath == null || skyTextureFilePathPicPreviewCurrentPath != skyPath)
             {
                 skyTextureFilePathPicPreviewCurrentPath = skyPath;
                 try
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
-                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture().ToBitmap();
+                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture(skyTextureFilePathPicPreviewCurrentPath).ToBitmap();
                     skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
