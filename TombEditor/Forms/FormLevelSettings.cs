@@ -405,15 +405,18 @@ namespace TombEditor.Forms
             pathToolTip.SetToolTip(gameExecutableFilePathTxt, gameExecutableFilePath);
 
             // Load previews
-            string fontPath = _levelSettings.MakeAbsolute(_levelSettings.FontTextureFilePath) ?? null;
-            pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath == null ? "<default>" : fontPath);
-            if (fontTextureFilePathPicPreviewCurrentPath == null || fontTextureFilePathPicPreviewCurrentPath != fontPath)
+            string fontPath = _levelSettings.MakeAbsolute(_levelSettings.FontTextureFilePath) ?? "<default>";
+            fontTextureFilePathPicPreviewCurrentPath = pathToolTip.GetToolTip(fontTextureFilePathTxt);
+
+            if (fontTextureFilePathPicPreviewCurrentPath != fontPath)
             {
+                pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath);
                 fontTextureFilePathPicPreviewCurrentPath = fontPath;
+
                 try
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
-                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture(fontTextureFilePathPicPreviewCurrentPath).ToBitmap();
+                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture(fontPath == "<default>" ? null : fontPath).ToBitmap();
                     fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
@@ -428,15 +431,18 @@ namespace TombEditor.Forms
                 }
             }
 
-            string skyPath = _levelSettings.MakeAbsolute(_levelSettings.SkyTextureFilePath) ?? null;
-            pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath == null ? "<default>" : skyPath);
-            if (skyTextureFilePathPicPreviewCurrentPath == null || skyTextureFilePathPicPreviewCurrentPath != skyPath)
+            string skyPath = _levelSettings.MakeAbsolute(_levelSettings.SkyTextureFilePath) ?? "<default>";
+            skyTextureFilePathPicPreviewCurrentPath = pathToolTip.GetToolTip(skyTextureFilePathTxt);
+
+            if (skyTextureFilePathPicPreviewCurrentPath != skyPath)
             {
+                pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath);
                 skyTextureFilePathPicPreviewCurrentPath = skyPath;
+
                 try
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
-                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture(skyTextureFilePathPicPreviewCurrentPath).ToBitmap();
+                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture(skyPath == "<default>" ? null : skyPath).ToBitmap();
                     skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
@@ -452,14 +458,17 @@ namespace TombEditor.Forms
             }
 
             string tr5SpritesPath = _levelSettings.MakeAbsolute(_levelSettings.Tr5ExtraSpritesFilePath) ?? "<default>";
-            pathToolTip.SetToolTip(tr5SpritesTextureFilePathTxt, tr5SpritesPath);
+            tr5ExtraSpritesFilePathPicPreviewCurrentPath = pathToolTip.GetToolTip(tr5SpritesTextureFilePathTxt);
+
             if (tr5ExtraSpritesFilePathPicPreviewCurrentPath != tr5SpritesPath)
             {
+                pathToolTip.SetToolTip(tr5SpritesTextureFilePathTxt, tr5SpritesPath);
                 tr5ExtraSpritesFilePathPicPreviewCurrentPath = tr5SpritesPath;
+
                 try
                 {
                     tr5SpritesTextureFilePathPicPreview.Image?.Dispose();
-                    tr5SpritesTextureFilePathPicPreview.Image = _levelSettings.LoadTr5ExtraSprites().ToBitmap();
+                    tr5SpritesTextureFilePathPicPreview.Image = _levelSettings.LoadTr5ExtraSprites(tr5SpritesPath == "<default>" ? null : tr5SpritesPath).ToBitmap();
                     tr5SpritesTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     tr5SpritesTextureFilePathPicPreview.Tag = null;
                     tr5SpritesTextureFilePathTxt.BackColor = _correctColor;
