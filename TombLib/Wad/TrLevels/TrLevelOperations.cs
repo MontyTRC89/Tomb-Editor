@@ -89,20 +89,23 @@ namespace TombLib.Wad.TrLevels
                 // Calculate UV coordinates...
                 Vector2[] coords = new Vector2[isTriangle ? 3 : 4];
                 if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                { // In old TR games there are no new flags
+                {
+                    // In old TR games there are no new flags
                     // Perhaps there is a better way that will support subpixel addressing
                     // but according to the fileformat documentation
                     // it should work on original TR games https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_object_textures
+
                     for (int j = 0; j < coords.Length; ++j)
                         coords[j] = new Vector2(
                             ((oldTexture.Vertices[j].X & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].X >> 8),
                             ((oldTexture.Vertices[j].Y & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].Y >> 8));
                 }
                 else
-                { // In new TR games we can to use new flags
-                    Vector2[] coordAddArray = LevelData.Compilers.Util.ObjectTextureManager.GetTexCoordModificationFromNewFlags(oldTexture.NewFlags, isTriangle);
+                {   
+                    // In new TR games we can use new flags
+
                     for (int j = 0; j < coords.Length; ++j)
-                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + coordAddArray[j];
+                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + (isTriangle ? TextureExtensions.CompensationTris : TextureExtensions.CompensationQuads)[(oldTexture.NewFlags & 0x7), j];
                 }
 
                 // Find the corners of the texture

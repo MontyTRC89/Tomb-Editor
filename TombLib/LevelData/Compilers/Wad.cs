@@ -187,11 +187,6 @@ namespace TombLib.LevelData.Compilers
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
-                    // lock (_objectTextureManager)
-                    // {
-                    //     result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                    // }
-
                     FixWadTextureCoordinates(ref poly.Texture);
 
                     var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, false, topmostAndUnpadded);
@@ -203,11 +198,6 @@ namespace TombLib.LevelData.Compilers
                 }
                 else
                 {
-                    // lock (_objectTextureManager)
-                    // {
-                    //     result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-                    // }
-
                     FixWadTextureCoordinates(ref poly.Texture);
 
                     var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, true, topmostAndUnpadded);

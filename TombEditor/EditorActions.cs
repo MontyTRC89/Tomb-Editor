@@ -503,7 +503,8 @@ namespace TombEditor
             {
                 trigger.TargetType = TriggerTargetType.Object;
                 trigger.Target = @object;
-                if(_editor.Configuration.Window_FormTrigger_AutoFill_Switch_Key)
+
+                if (_editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
                 {
                     string objectName = @object.ToString().ToLower();
                     bool isHole = (objectName.Contains("key") || objectName.Contains("puzzle"))

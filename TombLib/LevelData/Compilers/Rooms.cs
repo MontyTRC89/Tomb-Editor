@@ -283,12 +283,7 @@ namespace TombLib.LevelData.Compilers
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                         vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     }
-
-                                    // lock (_objectTextureManager)
-                                    // {
-                                    //      result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
-                                    // }
-
+                                    
                                     var result = _textureInfoManager.AddTexture(texture, true, false);
                                     roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                     texture.DoubleSided, 0));
@@ -302,28 +297,26 @@ namespace TombLib.LevelData.Compilers
                                     vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                     vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                     vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-
-                                    // lock (_objectTextureManager)
-                                    // {
-                                    //     result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                                    // }
-
+                                    
                                     var result = _textureInfoManager.AddTexture(texture, true, true);
                                     roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
                                                     texture.DoubleSided, 0));
                                 }
                             }
                         }
-                //we dont want merged meshes to be taken into account for portal connections
-                //so we save the last vertex of the original room
+
+                // We don't want merged meshes to be taken into account for portal connections
+                // So we save the last vertex of the original room
                 int maxRoomVertexCount = roomVertices.Count;
-                _progressReporter.ReportInfo(string.Format("Amount of vertices for room {0} : {1}",newRoom,maxRoomVertexCount));
-                _progressReporter.ReportProgress(17,"Now merging static meshes...");
+
+                //_progressReporter.ReportInfo(string.Format("Amount of vertices for room {0} : {1}",newRoom,maxRoomVertexCount));
+                //_progressReporter.ReportProgress(17,"Now merging static meshes...");
 
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
                     if (!IsStaticMeshInMergeList(staticMesh))
                         continue;
+
                     int meshVertexBase = roomVertices.Count;
                     var worldTransform = staticMesh.RotationMatrix *
                                          Matrix4x4.CreateTranslation(staticMesh.Position);
