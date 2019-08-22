@@ -91,6 +91,7 @@
 			this.comboBox_EngineType.Items.AddRange(new object[] {
             "TR4",
             "TRNG",
+            "TRNG + FLEP",
             "TR5 (Unavailable)",
             "TR5Main (Unavailable)"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(72, 54);

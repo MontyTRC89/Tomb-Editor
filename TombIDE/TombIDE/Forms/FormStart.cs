@@ -170,7 +170,11 @@ namespace TombIDE
 
 		private void AddProjectToList(Project project, bool reserialize = false)
 		{
-			string exeFilePath = Path.Combine(project.ProjectPath, project.GetExeFileName());
+			string launchFile = Path.Combine(project.ProjectPath, "launch.exe");
+			string gameFile = Path.Combine(project.ProjectPath, project.GetExeFileName());
+
+			string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
+
 			Bitmap icon = Icon.ExtractAssociatedIcon(exeFilePath).ToBitmap();
 
 			// Create the node
@@ -287,10 +291,28 @@ namespace TombIDE
 					try
 					{
 						string exeFilePath = dialog.FileName;
+						string exeFileName = Path.GetFileName(exeFilePath).ToLower();
 
 						// Check if the imported .exe file is a TR game that's actually supported
-						if (Path.GetFileName(exeFilePath).ToLower() != "tomb4.exe" && Path.GetFileName(exeFilePath).ToLower() != "pctomb5.exe")
+						if (exeFileName != "tomb4.exe" && exeFileName != "pctomb5.exe" && exeFileName != "launch.exe")
 							throw new ArgumentException("Invalid game .exe file.");
+
+						if (exeFileName == "launch.exe")
+						{
+							bool validExeFound = false;
+
+							foreach (string file in Directory.GetFiles(Path.GetDirectoryName(exeFilePath), "*.exe"))
+							{
+								if (Path.GetFileName(file).ToLower() == "tomb4.exe" || Path.GetFileName(file).ToLower() == "pctomb5.exe")
+								{
+									exeFilePath = file;
+									validExeFound = true;
+								}
+							}
+
+							if (!validExeFound)
+								throw new ArgumentException("Invalid game .exe file.");
+						}
 
 						// Check if a project that's using the same .exe file already exists on the list
 						foreach (Project project in _ide.AvailableProjects)
