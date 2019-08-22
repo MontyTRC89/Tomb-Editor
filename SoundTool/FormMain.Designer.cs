@@ -38,6 +38,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildMAINSFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resampleFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
@@ -48,10 +49,11 @@
             this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
-            this.resampleFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
+            this.darkGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkMenuStrip1
@@ -65,7 +67,7 @@
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
             this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.darkMenuStrip1.Size = new System.Drawing.Size(924, 24);
+            this.darkMenuStrip1.Size = new System.Drawing.Size(786, 24);
             this.darkMenuStrip1.TabIndex = 1;
             this.darkMenuStrip1.Text = "darkMenuStrip1";
             // 
@@ -80,7 +82,7 @@
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // newXMLToolStripMenuItem
@@ -89,7 +91,7 @@
             this.newXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newXMLToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_create_new_16;
             this.newXMLToolStripMenuItem.Name = "newXMLToolStripMenuItem";
-            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.newXMLToolStripMenuItem.Text = "New XML";
             this.newXMLToolStripMenuItem.Click += new System.EventHandler(this.NewXMLToolStripMenuItem_Click);
             // 
@@ -99,7 +101,7 @@
             this.openToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.openToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Open_16;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.openToolStripMenuItem.Text = "Open XML or TXT";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
@@ -109,7 +111,7 @@
             this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Save_16;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.saveToolStripMenuItem.Text = "Save XML";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -119,14 +121,14 @@
             this.toolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(146, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -138,7 +140,7 @@
             this.resampleFilesToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // buildMAINSFXToolStripMenuItem
@@ -147,9 +149,18 @@
             this.buildMAINSFXToolStripMenuItem.Enabled = false;
             this.buildMAINSFXToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.buildMAINSFXToolStripMenuItem.Name = "buildMAINSFXToolStripMenuItem";
-            this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.buildMAINSFXToolStripMenuItem.Text = "Build MAIN.SFX";
             this.buildMAINSFXToolStripMenuItem.Click += new System.EventHandler(this.buildMAINSFXToolStripMenuItem_Click);
+            // 
+            // resampleFilesToolStripMenuItem
+            // 
+            this.resampleFilesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.resampleFilesToolStripMenuItem.Enabled = false;
+            this.resampleFilesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.resampleFilesToolStripMenuItem.Name = "resampleFilesToolStripMenuItem";
+            this.resampleFilesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.resampleFilesToolStripMenuItem.Text = "Resample files";
             // 
             // helpToolStripMenuItem
             // 
@@ -158,7 +169,7 @@
             this.aboutSoundToolToolStripMenuItem});
             this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutSoundToolToolStripMenuItem
@@ -166,7 +177,7 @@
             this.aboutSoundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutSoundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutSoundToolToolStripMenuItem.Name = "aboutSoundToolToolStripMenuItem";
-            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.aboutSoundToolToolStripMenuItem.Text = "About Sound Tool";
             this.aboutSoundToolToolStripMenuItem.Click += new System.EventHandler(this.AboutSoundToolToolStripMenuItem_Click);
             // 
@@ -179,7 +190,7 @@
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 576);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(924, 32);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 32);
             this.darkStatusStrip1.TabIndex = 74;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -200,10 +211,10 @@
             this.dgvSoundInfos.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colID,
             this.colName});
-            this.dgvSoundInfos.Location = new System.Drawing.Point(13, 64);
+            this.dgvSoundInfos.Location = new System.Drawing.Point(10, 56);
             this.dgvSoundInfos.Name = "dgvSoundInfos";
             this.dgvSoundInfos.RowHeadersWidth = 41;
-            this.dgvSoundInfos.Size = new System.Drawing.Size(296, 503);
+            this.dgvSoundInfos.Size = new System.Drawing.Size(266, 512);
             this.dgvSoundInfos.TabIndex = 78;
             this.dgvSoundInfos.Click += new System.EventHandler(this.DgvSoundInfos_Click);
             // 
@@ -224,23 +235,22 @@
             this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.soundInfoEditor.Location = new System.Drawing.Point(317, 30);
+            this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
             this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
             this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(597, 537);
+            this.soundInfoEditor.Size = new System.Drawing.Size(483, 499);
             this.soundInfoEditor.TabIndex = 77;
             this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.SoundInfoEditor_SoundInfoChanged);
             // 
             // butAddNewSoundInfo
             // 
-            this.butAddNewSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
-            this.butAddNewSoundInfo.Location = new System.Drawing.Point(13, 35);
+            this.butAddNewSoundInfo.Location = new System.Drawing.Point(10, 27);
             this.butAddNewSoundInfo.Name = "butAddNewSoundInfo";
-            this.butAddNewSoundInfo.Size = new System.Drawing.Size(145, 23);
+            this.butAddNewSoundInfo.Size = new System.Drawing.Size(130, 23);
             this.butAddNewSoundInfo.TabIndex = 95;
             this.butAddNewSoundInfo.Text = "Add new sound info";
             this.butAddNewSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -248,35 +258,36 @@
             // 
             // butDeleteSoundInfo
             // 
-            this.butDeleteSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteSoundInfo.Image = global::SoundTool.Properties.Resources.general_trash_16;
-            this.butDeleteSoundInfo.Location = new System.Drawing.Point(164, 35);
+            this.butDeleteSoundInfo.Location = new System.Drawing.Point(146, 27);
             this.butDeleteSoundInfo.Name = "butDeleteSoundInfo";
-            this.butDeleteSoundInfo.Size = new System.Drawing.Size(145, 23);
+            this.butDeleteSoundInfo.Size = new System.Drawing.Size(130, 23);
             this.butDeleteSoundInfo.TabIndex = 94;
             this.butDeleteSoundInfo.Text = "Delete sound info";
             this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteSoundInfo.Click += new System.EventHandler(this.ButDeleteSoundInfo_Click);
             // 
-            // resampleFilesToolStripMenuItem
+            // darkGroupBox1
             // 
-            this.resampleFilesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.resampleFilesToolStripMenuItem.Enabled = false;
-            this.resampleFilesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.resampleFilesToolStripMenuItem.Name = "resampleFilesToolStripMenuItem";
-            this.resampleFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.resampleFilesToolStripMenuItem.Text = "Resample files";
+            this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkGroupBox1.Controls.Add(this.soundInfoEditor);
+            this.darkGroupBox1.Location = new System.Drawing.Point(282, 55);
+            this.darkGroupBox1.Name = "darkGroupBox1";
+            this.darkGroupBox1.Size = new System.Drawing.Size(495, 513);
+            this.darkGroupBox1.TabIndex = 96;
+            this.darkGroupBox1.TabStop = false;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(924, 608);
+            this.ClientSize = new System.Drawing.Size(786, 608);
+            this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.butAddNewSoundInfo);
             this.Controls.Add(this.butDeleteSoundInfo);
             this.Controls.Add(this.dgvSoundInfos);
-            this.Controls.Add(this.soundInfoEditor);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -292,6 +303,7 @@
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).EndInit();
+            this.darkGroupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -318,6 +330,7 @@
         private DarkUI.Controls.DarkButton butAddNewSoundInfo;
         private DarkUI.Controls.DarkButton butDeleteSoundInfo;
         private System.Windows.Forms.ToolStripMenuItem resampleFilesToolStripMenuItem;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
     }
 }
 
