@@ -289,7 +289,7 @@ namespace TombIDE
 						string exeFilePath = dialog.FileName;
 
 						// Check if the imported .exe file is a TR game that's actually supported
-						if (Path.GetFileName(exeFilePath) != "tomb4.exe" && Path.GetFileName(exeFilePath) != "PCTomb5.exe")
+						if (Path.GetFileName(exeFilePath).ToLower() != "tomb4.exe" && Path.GetFileName(exeFilePath).ToLower() != "pctomb5.exe")
 							throw new ArgumentException("Invalid game .exe file.");
 
 						// Check if a project that's using the same .exe file already exists on the list
