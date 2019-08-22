@@ -510,6 +510,8 @@ namespace TombEditor.Forms
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
+
+            cbInterpretStaticMeshVertexDataForMerge.Checked = _levelSettings.InterpretStaticMeshVertexDataForMerge;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -1061,6 +1063,12 @@ namespace TombEditor.Forms
         private void cbAgressiveFloordataPacking_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
+            UpdateDialog();
+        }
+
+        private void CbInterpretStaticMeshVertexDataForMerge_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.InterpretStaticMeshVertexDataForMerge = cbInterpretStaticMeshVertexDataForMerge.Checked;
             UpdateDialog();
         }
     }
