@@ -148,12 +148,12 @@ namespace TombLib.Projects
 			{
 				if (GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG)
 				{
-					if (fileInfo.Name == "tomb4.exe")
+					if (fileInfo.Name.ToLower() == "tomb4.exe")
 						return Path.Combine(Path.GetDirectoryName(fileInfo.FullName), Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".trproj");
 				}
 				else if (GameVersion == GameVersion.TR5 || GameVersion == GameVersion.TR5Main)
 				{
-					if (fileInfo.Name == "PCTomb5.exe")
+					if (fileInfo.Name.ToLower() == "pctomb5.exe")
 						return Path.Combine(Path.GetDirectoryName(fileInfo.FullName), Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".trproj");
 				}
 			}
@@ -230,7 +230,7 @@ namespace TombLib.Projects
 
 			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (fileInfo.Name == "tomb4.exe" || fileInfo.Name == "PCTomb5.exe")
+				if (fileInfo.Name.ToLower() == "tomb4.exe" || fileInfo.Name.ToLower() == "pctomb5.exe")
 					return true;
 			}
 

@@ -173,13 +173,13 @@ namespace TombIDE
 		{
 			GameVersion gameVersion = 0;
 
-			switch (Path.GetFileName(exeFilePath))
+			switch (Path.GetFileName(exeFilePath).ToLower())
 			{
 				case "tomb4.exe":
 					gameVersion = GameVersion.TR4;
 					break;
 
-				case "PCTomb5.exe":
+				case "pctomb5.exe":
 					gameVersion = GameVersion.TR5;
 					break;
 			}
