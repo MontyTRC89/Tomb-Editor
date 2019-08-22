@@ -67,7 +67,6 @@ namespace TombLib.LevelData.Compilers
 
         private Util.SoundManager _soundManager;
         private Util.TexInfoManager _textureInfoManager;
-        //private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -91,8 +90,6 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            //_objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
             _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
@@ -101,7 +98,7 @@ namespace TombLib.LevelData.Compilers
             ConvertWad2DataToTr4();
             BuildRooms();
 
-            // New texture packer
+            // Compile textures
             ReportProgress(30, "Packing textures");
 
             _textureInfoManager.SortAnimatedTextures();

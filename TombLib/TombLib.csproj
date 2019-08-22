@@ -159,7 +159,6 @@
     <Compile Include="IO\BinaryWriterFast.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
-    <Compile Include="LevelData\BumpMappingInfo.cs" />
     <Compile Include="LevelData\CameraInstance.cs" />
     <Compile Include="LevelData\Compilers\FloorData.cs" />
     <Compile Include="LevelData\Compilers\LevelCompiler.cs" />
@@ -173,8 +172,6 @@
     <Compile Include="LevelData\Compilers\Tr4.cs" />
     <Compile Include="LevelData\Compilers\Tr5.cs" />
     <Compile Include="LevelData\Compilers\Tr5Main.cs" />
-    <Compile Include="LevelData\Compilers\Util\ObjectTextureManager.cs" />
-    <Compile Include="LevelData\Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
     <Compile Include="LevelData\Compilers\Util\SoundManager.cs" />
     <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
     <Compile Include="LevelData\Compilers\Util\LegacyTextureAllocator.cs" />
