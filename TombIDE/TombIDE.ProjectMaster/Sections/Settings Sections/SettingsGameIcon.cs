@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -75,7 +76,16 @@ namespace TombIDE.ProjectMaster
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (result == DialogResult.Yes)
-				ApplyIconToExe(Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", _ide.Project.GameVersion + ".ico"));
+			{
+				string icoFilePath = string.Empty;
+
+				if (_ide.Project.GameVersion == GameVersion.TRNG && File.Exists(Path.Combine(_ide.Project.ProjectPath, "flep.exe")))
+					icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", "FLEP.ico");
+				else
+					icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", _ide.Project.GameVersion + ".ico");
+
+				ApplyIconToExe(icoFilePath);
+			}
 		}
 
 		#endregion Events
@@ -86,7 +96,11 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string exeFilePath = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
+				string launchFile = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
+				string gameFile = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
+
+				string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
+
 				IconInjector.InjectIcon(exeFilePath, iconPath);
 
 				UpdateIcons();
@@ -100,7 +114,10 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateIcons() // This method is trash I know, but I couldn't find a better one
 		{
-			string exeFilePath = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
+			string launchFile = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
+			string gameFile = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
+
+			string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
 
 			// Generate a random string to create a temporary .exe file.
 			// We will extract the icon from the .exe copy because Windows is caching icons which doesn't allow us to easily extract

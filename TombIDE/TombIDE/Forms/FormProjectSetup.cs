@@ -21,7 +21,7 @@ namespace TombIDE
 
 			InitializeComponent();
 
-			comboBox_EngineType.SelectedItem = "TRNG"; // TRNG should be the default selection
+			comboBox_EngineType.SelectedItem = "TRNG + FLEP"; // This should be the default selection
 		}
 
 		private void radio_Script_01_CheckedChanged(object sender, EventArgs e)
@@ -180,6 +180,10 @@ namespace TombIDE
 					gameVersion = GameVersion.TRNG;
 					break;
 
+				case "TRNG + FLEP":
+					gameVersion = GameVersion.TRNG;
+					break;
+
 				case "TR5":
 					gameVersion = GameVersion.TR5;
 					break;
@@ -210,8 +214,14 @@ namespace TombIDE
 					break;
 
 				case GameVersion.TRNG:
-					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
+				{
+					if (comboBox_EngineType.SelectedItem.ToString() == "TRNG + FLEP")
+						engineBasePath = Path.Combine(engineBasePath, "TRNG + FLEP.zip");
+					else
+						engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
+
 					break;
+				}
 
 				case GameVersion.TR5:
 					engineBasePath = Path.Combine(engineBasePath, "TR5.zip");
