@@ -126,8 +126,9 @@ namespace TombLib.LevelData.IO
         /************/public static readonly ChunkId ObjectTrigger2CodeBits = ChunkId.FromString("TeCo");
         /************/public static readonly ChunkId ObjectTrigger2OneShot = ChunkId.FromString("TeOS");
         /************/public static readonly ChunkId ObjectTrigger2LuaScript = ChunkId.FromString("TeTrLua");
-        /****/public static readonly ChunkId AutoMergeStaticMeshList = ChunkId.FromString("TeMergeStatics");
+        /****/public static readonly ChunkId AutoMergeStaticMeshes = ChunkId.FromString("TeMergeStatics");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry = ChunkId.FromString("TeMergeStaticsEntry");
+        /****/public static readonly ChunkId InterpretVertexDataForMerge = ChunkId.FromString("TeInterpretVertexDataForMerge");
         public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
     }
 }
