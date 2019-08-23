@@ -1,4 +1,4 @@
-﻿using DarkUI.Forms;
+using DarkUI.Forms;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -232,31 +232,44 @@ namespace TombIDE
 					break;
 			}
 
+			string sharedArchivePath = string.Empty;
+
+			if (project.GameVersion == GameVersion.TR4 || project.GameVersion == GameVersion.TRNG)
+				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Shared.zip");
+			else if (project.GameVersion == GameVersion.TR5 || project.GameVersion == GameVersion.TR5Main)
+				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Shared.zip");
+
 			// Un-Zip the engine base into the ProjectPath folder
-			using (ZipArchive archive = new ZipArchive(File.OpenRead(engineBasePath)))
+			using (ZipArchive engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))
 			{
-				progressBar.Maximum = archive.Entries.Count + 2; // +2 because there are 2 more events after this
-
-				foreach (ZipArchiveEntry entry in archive.Entries)
+				using (ZipArchive sharedArchive = new ZipArchive(File.OpenRead(sharedArchivePath)))
 				{
-					if (entry.FullName.EndsWith("/"))
-						Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
-					else
-						entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
+					progressBar.Maximum = engineArchive.Entries.Count + sharedArchive.Entries.Count + 1;
 
-					progressBar.Increment(1);
+					foreach (ZipArchiveEntry entry in engineArchive.Entries)
+					{
+						if (entry.FullName.EndsWith("/"))
+							Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
+						else
+							entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
+
+						progressBar.Increment(1);
+					}
+
+					foreach (ZipArchiveEntry entry in sharedArchive.Entries)
+					{
+						if (entry.FullName.EndsWith("/"))
+							Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
+						else
+							entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
+
+						progressBar.Increment(1);
+					}
 				}
 			}
 
-			// Copy Script templates into the ScriptPath folder
-			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\Script.txt"), Path.Combine(project.ScriptPath, "Script.txt"));
-			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\English.txt"), Path.Combine(project.ScriptPath, "English.txt"));
-
-			progressBar.Increment(1);
-
 			// Create the .trproj file
 			XmlHandling.SaveTRPROJ(project); // .trproj = .xml but .trproj can be opened with TombIDE
-
 			progressBar.Increment(1);
 		}
 	}

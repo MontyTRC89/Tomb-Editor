@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -79,7 +80,16 @@ namespace TombIDE.ProjectMaster
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (result == DialogResult.Yes)
-				ReplaceImage(Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", "load.bmp"));
+			{
+				string imageFilePath = string.Empty;
+
+				if (_ide.Project.GameVersion == GameVersion.TR4 || _ide.Project.GameVersion == GameVersion.TRNG)
+					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "load.bmp");
+				else if (_ide.Project.GameVersion == GameVersion.TR5 || _ide.Project.GameVersion == GameVersion.TR5Main)
+					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "load.bmp");
+
+				ReplaceImage(imageFilePath);
+			}
 		}
 
 		private void ReplaceImage(string imagePath)

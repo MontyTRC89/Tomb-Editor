@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -118,7 +119,13 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string sourcePakPath = Path.Combine(SharedMethods.GetProgramDirectory(), "Templates", "uklogo.pak");
+					string sourcePakPath = string.Empty;
+
+					if (_ide.Project.GameVersion == GameVersion.TR4 || _ide.Project.GameVersion == GameVersion.TRNG)
+						sourcePakPath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "uklogo.pak");
+					else if (_ide.Project.GameVersion == GameVersion.TR5 || _ide.Project.GameVersion == GameVersion.TR5Main)
+						sourcePakPath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "uklogo.pak");
+
 					string destPakPath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
 
 					File.Copy(sourcePakPath, destPakPath, true);
