@@ -29,7 +29,15 @@ namespace TombIDE.ProjectMaster
 			radioButton_Dark.Checked = !_ide.Configuration.LightModePreviewEnabled;
 			radioButton_Light.Checked = _ide.Configuration.LightModePreviewEnabled;
 
-			UpdateIcons();
+			if (File.Exists(Path.Combine(_ide.Project.ProjectPath, "launch.exe")))
+				UpdateIcons();
+			else
+			{
+				label_Unavailable.Visible = true;
+
+				button_Change.Enabled = false;
+				button_Reset.Enabled = false;
+			}
 		}
 
 		#endregion Initialization
@@ -101,12 +109,8 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string launchFile = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
-				string gameFile = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
-
-				string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
-
-				IconInjector.InjectIcon(exeFilePath, iconPath);
+				string launchFilePath = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
+				IconInjector.InjectIcon(launchFilePath, iconPath);
 
 				UpdateIcons();
 				UpdateWindowsIconCache();
@@ -119,10 +123,7 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateIcons() // This method is trash I know, but I couldn't find a better one
 		{
-			string launchFile = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
-			string gameFile = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
-
-			string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
+			string launchFilePath = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
 
 			// Generate a random string to create a temporary .exe file.
 			// We will extract the icon from the .exe copy because Windows is caching icons which doesn't allow us to easily extract
@@ -132,8 +133,8 @@ namespace TombIDE.ProjectMaster
 			string randomString = new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
 
 			// Create the temporary .exe file
-			string tempFilePath = exeFilePath + "." + randomString + ".exe";
-			File.Copy(exeFilePath, tempFilePath);
+			string tempFilePath = launchFilePath + "." + randomString + ".exe";
+			File.Copy(launchFilePath, tempFilePath);
 
 			panel_256.BackgroundImage = IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap();
 

@@ -21,6 +21,7 @@
 			this.button_Reset = new DarkUI.Controls.DarkButton();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_02 = new DarkUI.Controls.DarkLabel();
+			this.label_Unavailable = new DarkUI.Controls.DarkLabel();
 			this.panel_128 = new System.Windows.Forms.Panel();
 			this.panel_16 = new System.Windows.Forms.Panel();
 			this.panel_256 = new System.Windows.Forms.Panel();
@@ -77,6 +78,18 @@
 			this.label_02.Text = "Your .ico file should contain\r\nthese sizes:\r\n\r\n- 256x256 px\r\n- 48x48 px\r\n- 32x32 " +
     "px\r\n- 16x16 px";
 			// 
+			// label_Unavailable
+			// 
+			this.label_Unavailable.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_Unavailable.ForeColor = System.Drawing.Color.Gray;
+			this.label_Unavailable.Location = new System.Drawing.Point(0, 0);
+			this.label_Unavailable.Name = "label_Unavailable";
+			this.label_Unavailable.Size = new System.Drawing.Size(405, 268);
+			this.label_Unavailable.TabIndex = 4;
+			this.label_Unavailable.Text = "Sorry, but icon changing is not available for legacy projects.";
+			this.label_Unavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label_Unavailable.Visible = false;
+			// 
 			// panel_128
 			// 
 			this.panel_128.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
@@ -115,6 +128,7 @@
 			// 
 			this.panel_PreviewBackground.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.panel_PreviewBackground.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_PreviewBackground.Controls.Add(this.label_Unavailable);
 			this.panel_PreviewBackground.Controls.Add(this.panel_256);
 			this.panel_PreviewBackground.Controls.Add(this.panel_48);
 			this.panel_PreviewBackground.Controls.Add(this.panel_16);
@@ -187,6 +201,7 @@
 		private DarkUI.Controls.DarkButton button_Reset;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
+		private DarkUI.Controls.DarkLabel label_Unavailable;
 		private DarkUI.Controls.DarkRadioButton radioButton_Dark;
 		private DarkUI.Controls.DarkRadioButton radioButton_Light;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
