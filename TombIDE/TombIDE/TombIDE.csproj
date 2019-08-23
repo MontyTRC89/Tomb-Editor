@@ -142,7 +142,10 @@
     <None Include="Templates\Engines\TRNG.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\uklogo.pak">
+    <None Include="Templates\TOMB4\Defaults\uklogo.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\TOMB4\Shared.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -214,22 +217,16 @@
     <Content Include="Resources\import-52.png" />
     <Content Include="Resources\opened-folder-50.png" />
     <Content Include="Resources\plus-math-60.png" />
-    <Content Include="Templates\English.txt">
+    <Content Include="Templates\TOMB4\Defaults\FLEP.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\FLEP.ico">
+    <Content Include="Templates\TOMB4\Defaults\load.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\load.bmp">
+    <Content Include="Templates\TOMB4\Defaults\TR4.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Script.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\TR4.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\TRNG.ico">
+    <Content Include="Templates\TOMB4\Defaults\TRNG.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="tomb_ide.ico" />
