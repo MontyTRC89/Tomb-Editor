@@ -13,6 +13,8 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public SettingsStartupImage()
 		{
 			InitializeComponent();
@@ -25,21 +27,9 @@ namespace TombIDE.ProjectMaster
 			UpdatePreview();
 		}
 
-		private void UpdatePreview()
-		{
-			try
-			{
-				using (Image image = Image.FromFile(Path.Combine(_ide.Project.ProjectPath, "load.bmp")))
-				{
-					panel_Preview.BackgroundImage = ImageHandling.ResizeKeepAspect(image, panel_Preview.Width, panel_Preview.Height);
-					label_Blank.Visible = image.Width == 1 && image.Height == 1;
-				}
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+		#endregion Initialization
+
+		#region Events
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
@@ -61,9 +51,11 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					Bitmap bitmap = new Bitmap(1, 1);
-					bitmap.SetPixel(0, 0, Color.Black);
-					bitmap.Save(Path.Combine(_ide.Project.ProjectPath, "load.bmp"), ImageFormat.Bmp);
+					using (Bitmap bitmap = new Bitmap(1, 1))
+					{
+						bitmap.SetPixel(0, 0, Color.Black);
+						bitmap.Save(Path.Combine(_ide.Project.ProjectPath, "load.bmp"), ImageFormat.Bmp);
+					}
 
 					UpdatePreview();
 				}
@@ -92,6 +84,10 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
+		#endregion Events
+
+		#region Methods
+
 		private void ReplaceImage(string imagePath)
 		{
 			try
@@ -104,5 +100,23 @@ namespace TombIDE.ProjectMaster
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
+
+		private void UpdatePreview()
+		{
+			try
+			{
+				using (Image image = Image.FromFile(Path.Combine(_ide.Project.ProjectPath, "load.bmp")))
+				{
+					panel_Preview.BackgroundImage = ImageHandling.ResizeKeepAspect(image, panel_Preview.Width, panel_Preview.Height);
+					label_Blank.Visible = image.Width == 1 && image.Height == 1;
+				}
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		#endregion Methods
 	}
 }

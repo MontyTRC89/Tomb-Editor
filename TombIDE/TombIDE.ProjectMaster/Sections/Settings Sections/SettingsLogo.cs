@@ -12,6 +12,8 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public SettingsLogo()
 		{
 			InitializeComponent();
@@ -24,22 +26,9 @@ namespace TombIDE.ProjectMaster
 			UpdatePreview();
 		}
 
-		private void UpdatePreview()
-		{
-			try
-			{
-				string pakFilePath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
-				byte[] pakData = PakFile.GetDecompressedData(pakFilePath);
+		#endregion Initialization
 
-				panel_Preview.BackgroundImage = ImageHandling.GetImageFromRawData(pakData, 512, 256);
-
-				label_Blank.Visible = IsBlankImage(pakData);
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+		#region Events
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
@@ -56,19 +45,15 @@ namespace TombIDE.ProjectMaster
 							if (image.Width != 512 || image.Height != 256)
 								throw new ArgumentException("Wrong image size. The size of the logo has to be 512x256 px.");
 
-							string pakFilePath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
+							string pakFilePath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
+							byte[] rawImageData = null;
 
 							if (Path.GetExtension(dialog.FileName).ToLower() == ".bmp")
-							{
-								byte[] rawImageData = ImageHandling.GetRawDataFromBitmap((Bitmap)image);
-								PakFile.SavePakFile(pakFilePath, rawImageData);
-							}
+								rawImageData = ImageHandling.GetRawDataFromBitmap((Bitmap)image);
 							else if (Path.GetExtension(dialog.FileName).ToLower() == ".png")
-							{
-								byte[] rawImageData = ImageHandling.GetRawDataFromImage(image);
-								PakFile.SavePakFile(pakFilePath, rawImageData);
-							}
+								rawImageData = ImageHandling.GetRawDataFromImage(image);
 
+							PakFile.SavePakFile(pakFilePath, rawImageData);
 							UpdatePreview();
 						}
 					}
@@ -97,10 +82,10 @@ namespace TombIDE.ProjectMaster
 						graphics.FillRectangle(Brushes.Black, imageSize);
 					}
 
-					string pakFilePath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
+					string pakFilePath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
 					byte[] rawImageData = ImageHandling.GetRawDataFromBitmap(bitmap);
-					PakFile.SavePakFile(pakFilePath, rawImageData);
 
+					PakFile.SavePakFile(pakFilePath, rawImageData);
 					UpdatePreview();
 				}
 				catch (Exception ex)
@@ -126,7 +111,7 @@ namespace TombIDE.ProjectMaster
 					else if (_ide.Project.GameVersion == GameVersion.TR5 || _ide.Project.GameVersion == GameVersion.TR5Main)
 						sourcePakPath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "uklogo.pak");
 
-					string destPakPath = Path.Combine(_ide.Project.ProjectPath, "data", "uklogo.pak");
+					string destPakPath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
 
 					File.Copy(sourcePakPath, destPakPath, true);
 					UpdatePreview();
@@ -135,6 +120,27 @@ namespace TombIDE.ProjectMaster
 				{
 					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
+			}
+		}
+
+		#endregion Events
+
+		#region Methods
+
+		private void UpdatePreview()
+		{
+			try
+			{
+				string pakFilePath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
+				byte[] pakData = PakFile.GetDecompressedData(pakFilePath);
+
+				panel_Preview.BackgroundImage = ImageHandling.GetImageFromRawData(pakData, 512, 256);
+
+				label_Blank.Visible = IsBlankImage(pakData);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -148,5 +154,7 @@ namespace TombIDE.ProjectMaster
 
 			return true;
 		}
+
+		#endregion Methods
 	}
 }

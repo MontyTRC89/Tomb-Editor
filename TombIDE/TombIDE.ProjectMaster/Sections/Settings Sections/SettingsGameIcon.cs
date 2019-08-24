@@ -152,13 +152,9 @@ namespace TombIDE.ProjectMaster
 		{
 			ProcessStartInfo info = new ProcessStartInfo
 			{
-				FileName = @"C:\Windows\SysNative\ie4uinit.exe"
+				FileName = @"C:\Windows\SysNative\ie4uinit.exe",
+				Arguments = IsWindows10() ? "-show" : "-ClearIconCache"
 			};
-
-			if (IsWindows10())
-				info.Arguments = "-show";
-			else
-				info.Arguments = "-ClearIconCache";
 
 			Process.Start(info);
 		}
