@@ -346,12 +346,12 @@ namespace TombIDE.ScriptEditor
 
 		private void AdjustOldFormatting() // Because the compilers really don't like having a space before "="
 		{
-			string vgeScriptFileContent = File.ReadAllText(@"NGC\VGE\Script\Script.txt");
+			string vgeScriptFileContent = File.ReadAllText(SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script\Script.txt");
 
 			while (vgeScriptFileContent.Contains(" ="))
 				vgeScriptFileContent = vgeScriptFileContent.Replace(" =", "=");
 
-			File.WriteAllText(@"NGC\VGE\Script\Script.txt", vgeScriptFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script\Script.txt", vgeScriptFileContent, Encoding.GetEncoding(1252));
 		}
 
 		private void HandleTextChangedIndicator(TabPage tab = null, ScriptTextBox textBox = null)
@@ -724,27 +724,27 @@ namespace TombIDE.ScriptEditor
 
 			try
 			{
+				string vgeScriptPath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script";
+
 				// Delete the old /Script/ directory in the VGE if it exists
-				if (Directory.Exists(@"NGC\VGE\Script"))
-					Directory.Delete(@"NGC\VGE\Script", true);
+				if (Directory.Exists(vgeScriptPath))
+					Directory.Delete(vgeScriptPath, true);
 
 				// Recreate the directory
-				Directory.CreateDirectory(@"NGC\VGE\Script");
-
-				string programPath = SharedMethods.GetProgramDirectory();
+				Directory.CreateDirectory(vgeScriptPath);
 
 				// Create all of the subdirectories
 				foreach (string dirPath in Directory.GetDirectories(_ide.Project.ScriptPath, "*", SearchOption.AllDirectories))
-					Directory.CreateDirectory(dirPath.Replace(_ide.Project.ScriptPath, programPath + @"\NGC\VGE\Script"));
+					Directory.CreateDirectory(dirPath.Replace(_ide.Project.ScriptPath, vgeScriptPath));
 
 				// Copy all the files into the VGE /Script/ folder
 				foreach (string newPath in Directory.GetFiles(_ide.Project.ScriptPath, "*.*", SearchOption.AllDirectories))
-					File.Copy(newPath, newPath.Replace(_ide.Project.ScriptPath, programPath + @"\NGC\VGE\Script"));
+					File.Copy(newPath, newPath.Replace(_ide.Project.ScriptPath, vgeScriptPath));
 
 				AdjustOldFormatting();
 
 				// Run NG_Center.exe
-				var application = TestStack.White.Application.Launch(@"NGC\NG_Center.exe");
+				var application = TestStack.White.Application.Launch(SharedMethods.GetProgramDirectory() + @"\NGC\NG_Center.exe");
 
 				// Do some actions in NG Center
 				RunScriptedNGCenterEvents(application);
@@ -809,7 +809,7 @@ namespace TombIDE.ScriptEditor
 				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
 
 				// Read the logs
-				string logFilePath = @"NGC\VGE\Script\script_log.txt";
+				string logFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script\script_log.txt";
 				string logFileContent = File.ReadAllText(logFilePath);
 
 				// Replace the VGE paths in the log file with the current project ones
@@ -819,8 +819,8 @@ namespace TombIDE.ScriptEditor
 				application.Close(); // Done!
 
 				// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-				string compiledScriptFilePath = @"NGC\VGE\Script.dat";
-				string compiledEnglishFilePath = @"NGC\VGE\English.dat";
+				string compiledScriptFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script.dat";
+				string compiledEnglishFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\English.dat";
 
 				if (File.Exists(compiledScriptFilePath))
 					File.Copy(compiledScriptFilePath, Path.Combine(_ide.Project.ProjectPath, "Script.dat"), true);
