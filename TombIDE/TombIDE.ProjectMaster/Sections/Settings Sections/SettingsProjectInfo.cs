@@ -11,6 +11,8 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public SettingsProjectInfo()
 		{
 			InitializeComponent();
@@ -25,22 +27,9 @@ namespace TombIDE.ProjectMaster
 			UpdateProjectInfo();
 		}
 
-		private void UpdateProjectInfo()
-		{
-			textBox_ProjectName.Text = _ide.Project.Name;
-			textBox_ProjectPath.Text = _ide.Project.ProjectPath;
+		#endregion Initialization
 
-			if (checkBox_FullPaths.Checked)
-			{
-				textBox_ScriptPath.Text = _ide.Project.ScriptPath;
-				textBox_LevelsPath.Text = _ide.Project.LevelsPath;
-			}
-			else
-			{
-				textBox_ScriptPath.Text = _ide.Project.ScriptPath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
-				textBox_LevelsPath.Text = _ide.Project.LevelsPath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
-			}
-		}
+		#region Events
 
 		private void checkBox_FullPaths_CheckedChanged(object sender, EventArgs e)
 		{
@@ -69,7 +58,7 @@ namespace TombIDE.ProjectMaster
 				{
 					try
 					{
-						if (!IsScriptFolderValid(new DirectoryInfo(dialog.Folder)))
+						if (!File.Exists(Path.Combine(dialog.Folder, "script.txt")))
 							throw new ArgumentException("Selected /Script/ folder does not contain a Script.txt file.");
 
 						_ide.ChangeScriptFolder(dialog.Folder);
@@ -93,15 +82,27 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private bool IsScriptFolderValid(DirectoryInfo directory)
-		{
-			foreach (FileInfo file in directory.GetFiles("*.txt", SearchOption.TopDirectoryOnly))
-			{
-				if (file.Name.ToLower() == "script.txt")
-					return true;
-			}
+		#endregion Events
 
-			return false;
+		#region Methods
+
+		private void UpdateProjectInfo()
+		{
+			textBox_ProjectName.Text = _ide.Project.Name;
+			textBox_ProjectPath.Text = _ide.Project.ProjectPath;
+
+			if (checkBox_FullPaths.Checked)
+			{
+				textBox_ScriptPath.Text = _ide.Project.ScriptPath;
+				textBox_LevelsPath.Text = _ide.Project.LevelsPath;
+			}
+			else
+			{
+				textBox_ScriptPath.Text = _ide.Project.ScriptPath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
+				textBox_LevelsPath.Text = _ide.Project.LevelsPath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
+			}
 		}
+
+		#endregion Methods
 	}
 }

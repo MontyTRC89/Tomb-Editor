@@ -31,7 +31,7 @@
 			this.button_BuildGame.Name = "button_BuildGame";
 			this.button_BuildGame.Size = new System.Drawing.Size(313, 25);
 			this.button_BuildGame.TabIndex = 1;
-			this.button_BuildGame.Text = "Create a \"Ready To Play\" Game Build (Not Implemented)";
+			this.button_BuildGame.Text = "Create a \"Ready To Play\" game build (Not Implemented)";
 			// 
 			// button_DeleteLogs
 			// 
@@ -41,7 +41,7 @@
 			this.button_DeleteLogs.Name = "button_DeleteLogs";
 			this.button_DeleteLogs.Size = new System.Drawing.Size(313, 25);
 			this.button_DeleteLogs.TabIndex = 0;
-			this.button_DeleteLogs.Text = "Delete All Logs / Error Dumps from the Project Folder";
+			this.button_DeleteLogs.Text = "Delete all logs / error dumps from the project folder";
 			this.button_DeleteLogs.Click += new System.EventHandler(this.button_DeleteLogs_Click);
 			// 
 			// sectionPanel

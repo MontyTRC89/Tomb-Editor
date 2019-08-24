@@ -17,6 +17,7 @@
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.button_ChangeLevelsPath = new DarkUI.Controls.DarkButton();
 			this.button_ChangeScriptPath = new DarkUI.Controls.DarkButton();
 			this.button_OpenLevelsFolder = new DarkUI.Controls.DarkButton();
@@ -32,57 +33,61 @@
 			this.textBox_LevelsPath = new System.Windows.Forms.TextBox();
 			this.textBox_ProjectPath = new System.Windows.Forms.TextBox();
 			this.textBox_ScriptPath = new System.Windows.Forms.TextBox();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_ChangeLevelsPath
 			// 
-			this.button_ChangeLevelsPath.Location = new System.Drawing.Point(555, 206);
-			this.button_ChangeLevelsPath.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
+			this.button_ChangeLevelsPath.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
+			this.button_ChangeLevelsPath.Location = new System.Drawing.Point(573, 206);
 			this.button_ChangeLevelsPath.Name = "button_ChangeLevelsPath";
-			this.button_ChangeLevelsPath.Size = new System.Drawing.Size(76, 26);
+			this.button_ChangeLevelsPath.Size = new System.Drawing.Size(26, 26);
 			this.button_ChangeLevelsPath.TabIndex = 12;
-			this.button_ChangeLevelsPath.Text = "Change...";
+			this.toolTip.SetToolTip(this.button_ChangeLevelsPath, "Change...");
 			this.button_ChangeLevelsPath.Click += new System.EventHandler(this.button_ChangeLevelsPath_Click);
 			// 
 			// button_ChangeScriptPath
 			// 
-			this.button_ChangeScriptPath.Location = new System.Drawing.Point(555, 155);
-			this.button_ChangeScriptPath.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
+			this.button_ChangeScriptPath.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
+			this.button_ChangeScriptPath.Location = new System.Drawing.Point(573, 155);
 			this.button_ChangeScriptPath.Name = "button_ChangeScriptPath";
-			this.button_ChangeScriptPath.Size = new System.Drawing.Size(76, 26);
+			this.button_ChangeScriptPath.Size = new System.Drawing.Size(26, 26);
 			this.button_ChangeScriptPath.TabIndex = 8;
-			this.button_ChangeScriptPath.Text = "Change...";
+			this.toolTip.SetToolTip(this.button_ChangeScriptPath, "Change...");
 			this.button_ChangeScriptPath.Click += new System.EventHandler(this.button_ChangeScriptPath_Click);
 			// 
 			// button_OpenLevelsFolder
 			// 
 			this.button_OpenLevelsFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
-			this.button_OpenLevelsFolder.Location = new System.Drawing.Point(523, 206);
+			this.button_OpenLevelsFolder.Location = new System.Drawing.Point(605, 206);
+			this.button_OpenLevelsFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.button_OpenLevelsFolder.Name = "button_OpenLevelsFolder";
 			this.button_OpenLevelsFolder.Size = new System.Drawing.Size(26, 26);
 			this.button_OpenLevelsFolder.TabIndex = 11;
+			this.toolTip.SetToolTip(this.button_OpenLevelsFolder, "Open in Explorer");
 			this.button_OpenLevelsFolder.Click += new System.EventHandler(this.button_OpenLevelsFolder_Click);
 			// 
 			// button_OpenProjectFolder
 			// 
 			this.button_OpenProjectFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
-			this.button_OpenProjectFolder.Location = new System.Drawing.Point(523, 104);
+			this.button_OpenProjectFolder.Location = new System.Drawing.Point(605, 104);
 			this.button_OpenProjectFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.button_OpenProjectFolder.Name = "button_OpenProjectFolder";
-			this.button_OpenProjectFolder.Size = new System.Drawing.Size(108, 26);
+			this.button_OpenProjectFolder.Size = new System.Drawing.Size(26, 26);
 			this.button_OpenProjectFolder.TabIndex = 4;
-			this.button_OpenProjectFolder.Text = "Open Explorer";
-			this.button_OpenProjectFolder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.toolTip.SetToolTip(this.button_OpenProjectFolder, "Open in Explorer");
 			this.button_OpenProjectFolder.Click += new System.EventHandler(this.button_OpenProjectFolder_Click);
 			// 
 			// button_OpenScriptFolder
 			// 
 			this.button_OpenScriptFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
-			this.button_OpenScriptFolder.Location = new System.Drawing.Point(523, 155);
+			this.button_OpenScriptFolder.Location = new System.Drawing.Point(605, 155);
+			this.button_OpenScriptFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.button_OpenScriptFolder.Name = "button_OpenScriptFolder";
 			this.button_OpenScriptFolder.Size = new System.Drawing.Size(26, 26);
 			this.button_OpenScriptFolder.TabIndex = 7;
+			this.toolTip.SetToolTip(this.button_OpenScriptFolder, "Open in Explorer");
 			this.button_OpenScriptFolder.Click += new System.EventHandler(this.button_OpenScriptFolder_Click);
 			// 
 			// checkBox_FullPaths
@@ -90,9 +95,9 @@
 			this.checkBox_FullPaths.Location = new System.Drawing.Point(7, 241);
 			this.checkBox_FullPaths.Margin = new System.Windows.Forms.Padding(6, 6, 3, 6);
 			this.checkBox_FullPaths.Name = "checkBox_FullPaths";
-			this.checkBox_FullPaths.Size = new System.Drawing.Size(330, 18);
+			this.checkBox_FullPaths.Size = new System.Drawing.Size(250, 18);
 			this.checkBox_FullPaths.TabIndex = 13;
-			this.checkBox_FullPaths.Text = "View full paths of folders which are inside the Project location";
+			this.checkBox_FullPaths.Text = "Expand $(ProjectDirectory) keys into full paths";
 			this.checkBox_FullPaths.CheckedChanged += new System.EventHandler(this.checkBox_FullPaths_CheckedChanged);
 			// 
 			// label_01
@@ -159,7 +164,7 @@
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "Project Information";
+			this.sectionPanel.SectionHeader = "Project Information (Read Only)";
 			this.sectionPanel.Size = new System.Drawing.Size(640, 268);
 			this.sectionPanel.TabIndex = 0;
 			// 
@@ -186,7 +191,7 @@
 			this.textBox_LevelsPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.textBox_LevelsPath.Name = "textBox_LevelsPath";
 			this.textBox_LevelsPath.ReadOnly = true;
-			this.textBox_LevelsPath.Size = new System.Drawing.Size(510, 26);
+			this.textBox_LevelsPath.Size = new System.Drawing.Size(560, 26);
 			this.textBox_LevelsPath.TabIndex = 10;
 			// 
 			// textBox_ProjectPath
@@ -199,7 +204,7 @@
 			this.textBox_ProjectPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.textBox_ProjectPath.Name = "textBox_ProjectPath";
 			this.textBox_ProjectPath.ReadOnly = true;
-			this.textBox_ProjectPath.Size = new System.Drawing.Size(510, 26);
+			this.textBox_ProjectPath.Size = new System.Drawing.Size(592, 26);
 			this.textBox_ProjectPath.TabIndex = 3;
 			// 
 			// textBox_ScriptPath
@@ -212,7 +217,7 @@
 			this.textBox_ScriptPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.textBox_ScriptPath.Name = "textBox_ScriptPath";
 			this.textBox_ScriptPath.ReadOnly = true;
-			this.textBox_ScriptPath.Size = new System.Drawing.Size(510, 26);
+			this.textBox_ScriptPath.Size = new System.Drawing.Size(560, 26);
 			this.textBox_ScriptPath.TabIndex = 6;
 			// 
 			// SettingsProjectInfo
@@ -248,5 +253,6 @@
 		private System.Windows.Forms.TextBox textBox_ProjectName;
 		private System.Windows.Forms.TextBox textBox_ProjectPath;
 		private System.Windows.Forms.TextBox textBox_ScriptPath;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }
