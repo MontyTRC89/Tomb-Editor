@@ -21,6 +21,7 @@
 			this.button_BrowseProject = new DarkUI.Controls.DarkButton();
 			this.button_BrowseScript = new DarkUI.Controls.DarkButton();
 			this.button_Create = new DarkUI.Controls.DarkButton();
+			this.button_Help = new DarkUI.Controls.DarkButton();
 			this.comboBox_EngineType = new DarkUI.Controls.DarkComboBox();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_02 = new DarkUI.Controls.DarkLabel();
@@ -85,19 +86,29 @@
 			this.button_Create.Text = "Create Project";
 			this.button_Create.Click += new System.EventHandler(this.button_Create_Click);
 			// 
+			// button_Help
+			// 
+			this.button_Help.Location = new System.Drawing.Point(363, 54);
+			this.button_Help.Margin = new System.Windows.Forms.Padding(0, 6, 6, 23);
+			this.button_Help.Name = "button_Help";
+			this.button_Help.Size = new System.Drawing.Size(75, 22);
+			this.button_Help.TabIndex = 17;
+			this.button_Help.Text = "Need Help?";
+			this.button_Help.Click += new System.EventHandler(this.button_Help_Click);
+			// 
 			// comboBox_EngineType
 			// 
 			this.comboBox_EngineType.FormattingEnabled = true;
 			this.comboBox_EngineType.Items.AddRange(new object[] {
-            "TR4",
+            "- Select -",
+            "TR4 (Not tested)",
             "TRNG",
             "TRNG + FLEP",
-            "TR5 (Unavailable)",
             "TR5Main (Unavailable)"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(72, 54);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";
-			this.comboBox_EngineType.Size = new System.Drawing.Size(366, 21);
+			this.comboBox_EngineType.Size = new System.Drawing.Size(285, 21);
 			this.comboBox_EngineType.TabIndex = 3;
 			// 
 			// label_01
@@ -167,6 +178,7 @@
 			// panel_ProjectSettings
 			// 
 			this.panel_ProjectSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_ProjectSettings.Controls.Add(this.button_Help);
 			this.panel_ProjectSettings.Controls.Add(this.panel_ScriptRadioChoice);
 			this.panel_ProjectSettings.Controls.Add(this.panel_LevelsRadioChoice);
 			this.panel_ProjectSettings.Controls.Add(this.button_BrowseLevels);
@@ -290,6 +302,7 @@
 		private DarkUI.Controls.DarkButton button_BrowseProject;
 		private DarkUI.Controls.DarkButton button_BrowseScript;
 		private DarkUI.Controls.DarkButton button_Create;
+		private DarkUI.Controls.DarkButton button_Help;
 		private DarkUI.Controls.DarkComboBox comboBox_EngineType;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
