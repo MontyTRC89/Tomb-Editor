@@ -466,6 +466,8 @@ namespace TombIDE.ProjectMaster
 				_ide.Project.Levels.Add((ProjectLevel)node.Tag);
 
 			XmlHandling.SaveTRPROJ(_ide.Project);
+
+			label_Hint.Visible = treeView.Nodes.Count == 0;
 		}
 
 		#endregion Methods

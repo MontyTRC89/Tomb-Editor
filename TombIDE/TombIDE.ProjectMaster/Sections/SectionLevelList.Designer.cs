@@ -28,6 +28,7 @@
 			this.button_ViewFileNames = new System.Windows.Forms.ToolStripButton();
 			this.contextMenu = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_OpenLevel = new System.Windows.Forms.ToolStripMenuItem();
+			this.label_Hint = new DarkUI.Controls.DarkLabel();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
@@ -176,9 +177,23 @@
 			this.menuItem_OpenLevel.Text = "Open Level in TombEditor";
 			this.menuItem_OpenLevel.Click += new System.EventHandler(this.menuItem_OpenLevel_Click);
 			// 
+			// label_Hint
+			// 
+			this.label_Hint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.label_Hint.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_Hint.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Hint.ForeColor = System.Drawing.Color.Gray;
+			this.label_Hint.Location = new System.Drawing.Point(1, 55);
+			this.label_Hint.Name = "label_Hint";
+			this.label_Hint.Size = new System.Drawing.Size(316, 262);
+			this.label_Hint.TabIndex = 2;
+			this.label_Hint.Text = "Press the \"+\" button on the tool strip\r\nto create a new level.";
+			this.label_Hint.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// sectionPanel
 			// 
 			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.sectionPanel.Controls.Add(this.label_Hint);
 			this.sectionPanel.Controls.Add(this.treeView);
 			this.sectionPanel.Controls.Add(this.toolStrip);
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -271,6 +286,7 @@
 		#endregion
 
 		private DarkUI.Controls.DarkContextMenu contextMenu;
+		private DarkUI.Controls.DarkLabel label_Hint;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
 		private DarkUI.Controls.DarkToolStrip toolStrip;
 		private DarkUI.Controls.DarkTreeView treeView;
