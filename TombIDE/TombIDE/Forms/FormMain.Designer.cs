@@ -22,11 +22,13 @@
 			this.button_AddProgram = new System.Windows.Forms.Button();
 			this.button_LaunchGame = new System.Windows.Forms.Button();
 			this.button_Leave = new System.Windows.Forms.Button();
+			this.button_Special = new System.Windows.Forms.Button();
 			this.contextMenu_ProgramButton = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_DeleteButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.label_Separator_01 = new DarkUI.Controls.DarkLabel();
 			this.label_Separator_02 = new DarkUI.Controls.DarkLabel();
 			this.label_Separator_03 = new DarkUI.Controls.DarkLabel();
+			this.OwO = new DarkUI.Controls.DarkLabel();
 			this.panel_CoverLoading = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
 			this.tablessTabControl = new TombIDE.TablessTabControl();
@@ -35,7 +37,6 @@
 			this.tabPage_ScriptEditor = new System.Windows.Forms.TabPage();
 			this.scriptEditor = new TombIDE.ScriptEditor.ScriptEditor();
 			this.tabPage_Tools = new System.Windows.Forms.TabPage();
-			this.OwO = new DarkUI.Controls.DarkLabel();
 			this.UwU = new DarkUI.Controls.DarkLabel();
 			this.panel_Programs = new System.Windows.Forms.Panel();
 			this.panelButton_Tools = new System.Windows.Forms.Panel();
@@ -57,7 +58,7 @@
 			this.button_AddProgram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.button_AddProgram.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.button_AddProgram.Image = global::TombIDE.Properties.Resources.general_plus_math_16;
-			this.button_AddProgram.Location = new System.Drawing.Point(3, 282);
+			this.button_AddProgram.Location = new System.Drawing.Point(3, 330);
 			this.button_AddProgram.Name = "button_AddProgram";
 			this.button_AddProgram.Size = new System.Drawing.Size(40, 40);
 			this.button_AddProgram.TabIndex = 9;
@@ -69,7 +70,7 @@
 			this.button_LaunchGame.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.button_LaunchGame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.button_LaunchGame.Image = global::TombIDE.Properties.Resources.ide_play_30;
-			this.button_LaunchGame.Location = new System.Drawing.Point(2, 222);
+			this.button_LaunchGame.Location = new System.Drawing.Point(2, 270);
 			this.button_LaunchGame.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.button_LaunchGame.Name = "button_LaunchGame";
 			this.button_LaunchGame.Size = new System.Drawing.Size(42, 42);
@@ -89,6 +90,16 @@
 			this.button_Leave.Size = new System.Drawing.Size(42, 42);
 			this.button_Leave.TabIndex = 1;
 			this.toolTip.SetToolTip(this.button_Leave, "Exit Project");
+			// 
+			// button_Special
+			// 
+			this.button_Special.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_Special.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Special.Location = new System.Drawing.Point(2, 222);
+			this.button_Special.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.button_Special.Name = "button_Special";
+			this.button_Special.Size = new System.Drawing.Size(42, 42);
+			this.button_Special.TabIndex = 10;
 			// 
 			// contextMenu_ProgramButton
 			// 
@@ -133,11 +144,25 @@
 			// 
 			this.label_Separator_03.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label_Separator_03.ForeColor = System.Drawing.Color.Gray;
-			this.label_Separator_03.Location = new System.Drawing.Point(3, 272);
+			this.label_Separator_03.Location = new System.Drawing.Point(3, 320);
 			this.label_Separator_03.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.label_Separator_03.Name = "label_Separator_03";
 			this.label_Separator_03.Size = new System.Drawing.Size(40, 2);
 			this.label_Separator_03.TabIndex = 8;
+			// 
+			// OwO
+			// 
+			this.OwO.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.OwO.AutoSize = true;
+			this.OwO.Font = new System.Drawing.Font("Comic Sans MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.OwO.ForeColor = System.Drawing.Color.Gray;
+			this.OwO.Location = new System.Drawing.Point(924, 548);
+			this.OwO.Margin = new System.Windows.Forms.Padding(3, 0, 3, 6);
+			this.OwO.Name = "OwO";
+			this.OwO.Size = new System.Drawing.Size(66, 15);
+			this.OwO.TabIndex = 1;
+			this.OwO.Text = "- Nickelony";
+			this.OwO.TextAlign = System.Drawing.ContentAlignment.BottomRight;
 			// 
 			// panel_CoverLoading
 			// 
@@ -222,20 +247,6 @@
 			this.tabPage_Tools.TabIndex = 4;
 			this.tabPage_Tools.Text = "Tools";
 			// 
-			// OwO
-			// 
-			this.OwO.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OwO.AutoSize = true;
-			this.OwO.Font = new System.Drawing.Font("Comic Sans MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.OwO.ForeColor = System.Drawing.Color.Gray;
-			this.OwO.Location = new System.Drawing.Point(924, 548);
-			this.OwO.Margin = new System.Windows.Forms.Padding(3, 0, 3, 6);
-			this.OwO.Name = "OwO";
-			this.OwO.Size = new System.Drawing.Size(66, 15);
-			this.OwO.TabIndex = 1;
-			this.OwO.Text = "- Nickelony";
-			this.OwO.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-			// 
 			// UwU
 			// 
 			this.UwU.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -253,6 +264,7 @@
 			this.panel_Programs.AutoScroll = true;
 			this.panel_Programs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.panel_Programs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_Programs.Controls.Add(this.button_Special);
 			this.panel_Programs.Controls.Add(this.label_Separator_03);
 			this.panel_Programs.Controls.Add(this.button_LaunchGame);
 			this.panel_Programs.Controls.Add(this.label_Separator_02);
@@ -348,6 +360,7 @@
 		private System.Windows.Forms.Button button_AddProgram;
 		private System.Windows.Forms.Button button_LaunchGame;
 		private System.Windows.Forms.Button button_Leave;
+		private System.Windows.Forms.Button button_Special;
 		private System.Windows.Forms.Panel panel_CoverLoading;
 		private System.Windows.Forms.Panel panel_Main;
 		private System.Windows.Forms.Panel panel_Programs;
@@ -361,8 +374,8 @@
 		private System.Windows.Forms.ToolStripMenuItem menuItem_DeleteButton;
 		private System.Windows.Forms.ToolTip toolTip;
 		private TablessTabControl tablessTabControl;
-		private DarkUI.Controls.DarkLabel UwU;
 		private DarkUI.Controls.DarkLabel OwO;
+		private DarkUI.Controls.DarkLabel UwU;
 	}
 }
 
