@@ -1153,7 +1153,8 @@ namespace TombLib.LevelData.Compilers
                 Vector3 roomWorldPos = trRoom.OriginalRoom.WorldPos;
 
                 // Altough the usage pattern is superficially more suited for Set/Dictionary,
-                // a List is used here since it will only have a few entries at max and linear search most likely beats everything else at that.
+                // a List is used here since it will only have a few entries at max and linear search most 
+                // likely beats everything else at that.
                 List<Room> roomsSharedByVertex = new List<Room>();
                 var vertices = trRoom.Vertices;
                 for (int i = 0; i < vertices.Count; ++i)

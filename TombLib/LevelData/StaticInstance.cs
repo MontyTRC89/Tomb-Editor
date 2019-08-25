@@ -28,7 +28,6 @@ namespace TombLib.LevelData
         // can change. It would be unnecesary difficult to update all those references.
         public WadStaticId WadObjectId { get; set; }
 
-        public ushort Ocb { get; set; } = 0;
         public Vector3 Color { get; set; } = new Vector3(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
 
         public override ItemType ItemType => new ItemType(WadObjectId, Room?.Level?.Settings);

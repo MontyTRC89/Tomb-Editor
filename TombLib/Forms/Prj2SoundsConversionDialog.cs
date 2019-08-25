@@ -13,9 +13,9 @@ namespace TombLib.Forms
     public partial class Prj2SoundsConversionDialog : DarkForm
     {
         private readonly WadGameVersion _version;
-        private readonly List<Conversions.SoundInfoConversionRow> _conversionRows;
+        private readonly List<FileFormatConversions.SoundInfoConversionRow> _conversionRows;
 
-        public Prj2SoundsConversionDialog(WadGameVersion version, List<Conversions.SoundInfoConversionRow> conversionRows)
+        public Prj2SoundsConversionDialog(WadGameVersion version, List<FileFormatConversions.SoundInfoConversionRow> conversionRows)
         {
             _version = version;
             _conversionRows = conversionRows;
@@ -35,7 +35,7 @@ namespace TombLib.Forms
 
             foreach (var row in _conversionRows)
             {
-                dgvSoundInfos.Rows.Add(row.SoundInfo.Name, (row.NewId != -1 ? row.NewId.ToString() : ""), row.NewName, 
+                dgvSoundInfos.Rows.Add(row.OldName, (row.NewId != -1 ? row.NewId.ToString() : ""), row.NewName, 
                                        row.SaveToXml, row.ExportSamples);
                 if (row.NewId != -1)
                     dgvSoundInfos.Rows[dgvSoundInfos.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
@@ -190,6 +190,7 @@ namespace TombLib.Forms
             }
 
             dgvSoundInfos.InvalidateRow(e.RowIndex);
+            UpdateStatus();
         }
     }
 }

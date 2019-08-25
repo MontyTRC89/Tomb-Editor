@@ -18,20 +18,19 @@ namespace TombEditor.Forms
         private readonly IEnumerable<WadSoundInfo> _soundInfos;
         private readonly Editor _editor = Editor.Instance;
         private int _soundId = -1;
-        bool _loaded = false;
 
         public FormSoundSource(SoundSourceInstance soundSource, IEnumerable<WadSoundInfo> soundInfos)
         {
             _soundSource = soundSource;
             _soundInfos = soundInfos;
             _soundId = _soundSource.SoundId;
+            comboPlayMode.SelectedIndex = (int)soundSource.PlayMode;
 
             InitializeComponent();
 
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Name))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
             SelectSound(_soundSource.SoundId);
-            _loaded = true;
         }
 
         private void SelectSound(int id)
@@ -72,6 +71,8 @@ namespace TombEditor.Forms
         private void butOK_Click(object sender, EventArgs e)
         {
             _soundSource.SoundId = _soundId;
+            _soundSource.PlayMode = (SoundSourcePlayMode)comboPlayMode.SelectedIndex;
+
             DialogResult = DialogResult.OK;
             //WadSoundPlayer.StopSample();
             Close();

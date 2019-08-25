@@ -1048,7 +1048,7 @@ namespace TombEditor.Forms
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
                                                        "Select the base XML sounds file", 
                                                        LevelSettings.FileFormatsSoundsXmlFiles,
-                                                       VariableType.EditorDirectory,
+                                                       VariableType.LevelDirectory,
                                                        false);
             if (result != null)
             {
@@ -1070,8 +1070,15 @@ namespace TombEditor.Forms
             dgvSounds.Rows.Clear();
             foreach (var soundInfo in _levelSettings.GlobalSoundMap)
             {
+                if (tbSearch.Text != "" && !soundInfo.Name.ToUpper().Contains(tbSearch.Text.ToUpper()))
+                    continue;
+
                 bool compile = _levelSettings.SelectedSounds.Contains(soundInfo.Id);
                 dgvSounds.Rows.Add(soundInfo.Id, soundInfo.Name, "", compile);
+                if (compile)
+                    dgvSounds.Rows[dgvSounds.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
+                else
+                    dgvSounds.Rows[dgvSounds.Rows.Count - 1].DefaultCellStyle.BackColor = dgvSounds.BackColor;
             }
         }
 
@@ -1085,7 +1092,7 @@ namespace TombEditor.Forms
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
                                                      "Select the custom XML sounds file",
                                                      LevelSettings.FileFormatsSoundsXmlFiles,
-                                                     VariableType.EditorDirectory,
+                                                     VariableType.LevelDirectory,
                                                      false);
             if (result != null)
             {
@@ -1111,8 +1118,26 @@ namespace TombEditor.Forms
                         {
                             int id = int.Parse(row.Cells[0].Value.ToString());
                             if (id == sound.Id)
+                            {
                                 row.Cells[3].Value = true;
+                                row.DefaultCellStyle.BackColor = Color.DarkGreen;
+                            }
                         }
+        }
+
+        private void TbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            ReloadSounds();
+        }
+
+        private void DgvSounds_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            var row = dgvSounds.Rows[e.RowIndex];
+            bool selected = (bool)row.Cells[3].Value;
+            if (selected)
+                row.DefaultCellStyle.BackColor = Color.DarkGreen;
+            else
+                row.DefaultCellStyle.BackColor = dgvSounds.BackColor;
         }
     }
 }
