@@ -61,6 +61,7 @@
 			this.button_AddProgram.Name = "button_AddProgram";
 			this.button_AddProgram.Size = new System.Drawing.Size(40, 40);
 			this.button_AddProgram.TabIndex = 9;
+			this.toolTip.SetToolTip(this.button_AddProgram, "Add Program Shortcut");
 			this.button_AddProgram.Click += new System.EventHandler(this.button_AddProgram_Click);
 			// 
 			// button_LaunchGame
@@ -96,7 +97,7 @@
 			this.contextMenu_ProgramButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem_DeleteButton});
 			this.contextMenu_ProgramButton.Name = "contextMenu_ProgramButton";
-			this.contextMenu_ProgramButton.Size = new System.Drawing.Size(181, 48);
+			this.contextMenu_ProgramButton.Size = new System.Drawing.Size(156, 26);
 			// 
 			// menuItem_DeleteButton
 			// 
@@ -104,7 +105,7 @@
 			this.menuItem_DeleteButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_DeleteButton.Image = global::TombIDE.Properties.Resources.general_trash_16;
 			this.menuItem_DeleteButton.Name = "menuItem_DeleteButton";
-			this.menuItem_DeleteButton.Size = new System.Drawing.Size(180, 22);
+			this.menuItem_DeleteButton.Size = new System.Drawing.Size(155, 22);
 			this.menuItem_DeleteButton.Text = "Delete Shortcut";
 			this.menuItem_DeleteButton.Click += new System.EventHandler(this.menuItem_DeleteButton_Click);
 			// 
