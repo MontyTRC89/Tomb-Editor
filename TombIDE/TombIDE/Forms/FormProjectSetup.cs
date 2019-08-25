@@ -21,7 +21,13 @@ namespace TombIDE
 
 			InitializeComponent();
 
-			comboBox_EngineType.SelectedItem = "TRNG + FLEP"; // This should be the default selection
+			comboBox_EngineType.SelectedIndex = 0;
+		}
+
+		private void button_Help_Click(object sender, EventArgs e)
+		{
+			using (FormEngineHelp form = new FormEngineHelp(Cursor.Position))
+				form.ShowDialog(button_Help);
 		}
 
 		private void radio_Script_01_CheckedChanged(object sender, EventArgs e)
@@ -83,7 +89,7 @@ namespace TombIDE
 
 		private void button_Create_Click(object sender, EventArgs e)
 		{
-			if (comboBox_EngineType.SelectedItem.ToString().Contains("TR5")) // TEMPORARY
+			if (comboBox_EngineType.SelectedIndex == 4) // Temporary TR5Main disable
 			{
 				DialogResult = DialogResult.None;
 				return;
@@ -114,6 +120,9 @@ namespace TombIDE
 					if (project.Name.ToLower() == projectName.ToLower())
 						throw new ArgumentException("A project with the same name already exists on the list.");
 				}
+
+				if (comboBox_EngineType.SelectedIndex == 0)
+					throw new ArgumentException("You must specify the engine type of the project.");
 
 				string projectPath = textBox_ProjectPath.Text.Trim();
 
