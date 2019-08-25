@@ -1375,7 +1375,7 @@ namespace TombLib.LevelData.IO
                                 Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color,
-                                Ocb = unchecked((ushort)currentObj.Ocb)
+                                Ocb = unchecked((short)currentObj.Ocb)
                             };
                             level.Rooms[i].AddObject(level, instance);
                         }

@@ -10,12 +10,13 @@ using System.Windows.Forms;
 using System.IO;
 using TombLib.LevelData.IO;
 using TombLib.LevelData;
+using System.Text.RegularExpressions;
 
 namespace TombLib.Utils
 {
     // This class was created for all conversion methos that re-process Wad2 and Prj2 files due to breaking changes
     // Let's hope that we must use this class almost never
-    public class Conversions
+    public class FileFormatConversions
     {
         public class SoundInfoConversionRow
         {
@@ -180,54 +181,7 @@ namespace TombLib.Utils
                 if (level.Settings.SoundSystem == SoundSystem.Xml)
                     return true;
 
-                // Collect all sounds to remap
-                var conversionList = new List<SoundInfoConversionRow>();
-
-                // We start from sound id = 602 which is the TR1 sound area of TRNG extended soundmap.
-                // This area is reserved for TR1 enemies and so it *** should *** be used rarely
-                int lastSoundId = 602;
-
-                foreach (var room in level.Rooms)
-                {
-                    if (room != null)
-                        foreach (var obj in room.Objects)
-                        {
-                            if (obj is SoundSourceInstance)
-                            {
-                                SoundSourceInstance soundSource = obj as SoundSourceInstance;
-                                if (soundSource.WadReferencedSoundName != null && soundSource.WadReferencedSoundName != "")
-                                {
-                                    if (!conversionList.Select(f => f.OldName).Contains(soundSource.WadReferencedSoundName))
-                                    {
-                                        var row = new SoundInfoConversionRow(null, soundSource.WadReferencedSoundName);
-                                        row.NewName = "SOUND_" + lastSoundId;
-                                        row.NewId = lastSoundId++;
-                                        conversionList.Add(row);
-                                    }
-                                }
-                                else if (soundSource.EmbeddedSoundInfo != null)
-                                {
-                                    bool found = false;
-                                    foreach (var r in conversionList)
-                                        if (r.SoundInfo != null && r.SoundInfo == soundSource.EmbeddedSoundInfo)
-                                        {
-                                            found = true;
-                                            break;
-                                        }
-
-                                    if (found)
-                                        continue;
-
-                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo,
-                                                                         soundSource.EmbeddedSoundInfo.Name);
-                                    row.NewName = "SOUND_" + lastSoundId;
-                                    row.NewId = lastSoundId++;
-                                    conversionList.Add(row);
-                                }
-                            }
-                        }
-                }
-
+                // Infer the wad version from level version
                 WadGameVersion version = WadGameVersion.TR4_TRNG;
                 switch (level.Settings.GameVersion)
                 {
@@ -247,6 +201,71 @@ namespace TombLib.Utils
                     case GameVersion.TR5Main:
                         version = WadGameVersion.TR5Main;
                         break;
+                }
+
+                // Collect all sounds to remap
+                var conversionList = new List<SoundInfoConversionRow>();
+
+                // We start from sound id = 602 which is the TR1 sound area of TRNG extended soundmap.
+                // This area is reserved for TR1 enemies and so it *** should *** be used rarely
+                int lastSoundId = 602;
+
+                foreach (var room in level.Rooms)
+                {
+                    if (room != null)
+                        foreach (var obj in room.Objects)
+                        {
+                            if (obj is SoundSourceInstance)
+                            {
+                                SoundSourceInstance soundSource = obj as SoundSourceInstance;
+                                if (soundSource.WadReferencedSoundName != null && soundSource.WadReferencedSoundName != "")
+                                {
+                                    if (!conversionList.Select(f => f.OldName).Contains(soundSource.WadReferencedSoundName))
+                                    {
+                                        // First try to get sound name from TrCatalog
+                                        int newId = TrCatalog.TryGetSoundInfoIdByDescription(version, soundSource.WadReferencedSoundName);
+
+                                        var row = new SoundInfoConversionRow(null, soundSource.WadReferencedSoundName);
+                                        if (newId == -1)
+                                        {
+                                            // If sound was not found in catalog, then assign a generic Id and ask to the user
+                                            row.NewName = Regex.Replace(soundSource.WadReferencedSoundName, "[^A-Za-z0-9 _]", "").ToUpper();
+                                            row.NewId = lastSoundId++;
+                                        }
+                                        else
+                                        {
+                                            // Otherwise, we are lucky, and we can just assign the correct Id
+                                            row.NewName = TrCatalog.GetOriginalSoundName(version, (uint)newId);
+                                            row.NewId = newId;
+                                        }
+
+                                        conversionList.Add(row);
+                                    }
+                                }
+                                else if (soundSource.EmbeddedSoundInfo != null)
+                                {
+                                    bool found = false;
+                                    foreach (var r in conversionList)
+                                        if (r.SoundInfo != null && r.SoundInfo == soundSource.EmbeddedSoundInfo)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+
+                                    if (found)
+                                        continue;
+
+                                    // In this case we can't do anything, sound is not in catalog for sure and we must 
+                                    // ask to the user
+                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo,
+                                                                         soundSource.EmbeddedSoundInfo.Name);
+                                    row.NewName = Regex.Replace(soundSource.EmbeddedSoundInfo.Name, "[^A-Za-z0-9 _]", "").ToUpper(); 
+                                    row.NewId = lastSoundId++;
+
+                                    conversionList.Add(row);
+                                }
+                            }
+                        }
                 }
 
                 // Now we'll show a dialog with all conversion rows and the user will need to make some choices

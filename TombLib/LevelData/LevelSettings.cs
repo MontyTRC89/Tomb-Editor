@@ -118,13 +118,14 @@ namespace TombLib.LevelData
 
                 // Then collect sounds from all wads, using the most recent found
                 foreach (var wadRef in Wads)
-                    foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
-                    {
-                        if (!soundmap.ContainsKey(sound.Id))
-                            soundmap.Add(sound.Id, sound);
-                        else
-                            soundmap[sound.Id] = sound;
-                    }
+                    if (wadRef.Wad != null)
+                        foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
+                        {
+                            if (!soundmap.ContainsKey(sound.Id))
+                                soundmap.Add(sound.Id, sound);
+                            else
+                                soundmap[sound.Id] = sound;
+                        }
 
                 // Last collect all custom sounds
                 foreach (var sound in CustomSounds.SoundInfos)

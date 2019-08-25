@@ -3940,7 +3940,7 @@ namespace TombEditor
                         return;
 
                     // Check if some wads are missing
-                    foreach (var wadRef in newLevel.Settings.Wads)
+                    /*foreach (var wadRef in newLevel.Settings.Wads)
                         if (wadRef.Wad == null)
                         {
                             using (var formSettings = new FormLevelSettings(_editor))
@@ -3949,14 +3949,14 @@ namespace TombEditor
                                     return;
                                 break;
                             }
-                        }
+                        }*/
 
                     // SOUND_SYSTEM_XML: Check if the level needs to be converted to new Xml sound system
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
                         // Convert the level
-                        if (!Conversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName, 
-                                                                     Conversions.SoundsCatalogPath, false))
+                        if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName, 
+                                                                     FileFormatConversions.SoundsCatalogPath, false))
                         {
                             MessageBox.Show("There was an error while converting your project to the new " +
                                             "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

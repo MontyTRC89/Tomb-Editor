@@ -244,7 +244,7 @@
     <Compile Include="Script\ScriptCompilerNew.cs" />
     <Compile Include="Script\ScriptCompilerTR5Main.cs" />
     <Compile Include="Script\ScriptCompilerTRNG.cs" />
-    <Compile Include="Utils\Conversions.cs" />
+    <Compile Include="Utils\FileFormatConversions.cs" />
     <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />

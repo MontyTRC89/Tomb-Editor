@@ -39,7 +39,7 @@ namespace WadTool
                         return;
 
                     File.Copy(fileName, fileName + ".bak", true);
-                    if (!Conversions.ConvertWad2ToNewSoundFormat(fileName, fileName, "Sounds\\TR4\\Sounds.txt"))
+                    if (!FileFormatConversions.ConvertWad2ToNewSoundFormat(fileName, fileName, "Sounds\\TR4\\Sounds.txt"))
                     {
                         DarkMessageBox.Show(owner, "Converting the file failed!", "Loading failed", MessageBoxIcon.Error);
                         return;

@@ -13,9 +13,9 @@ namespace TombLib.Forms
     public partial class Wad2SoundsConversionDialog : DarkForm
     {
         private readonly WadGameVersion _version;
-        private readonly List<Conversions.SoundInfoConversionRow> _conversionRows;
+        private readonly List<FileFormatConversions.SoundInfoConversionRow> _conversionRows;
 
-        public Wad2SoundsConversionDialog(WadGameVersion version, List<Conversions.SoundInfoConversionRow> conversionRows)
+        public Wad2SoundsConversionDialog(WadGameVersion version, List<FileFormatConversions.SoundInfoConversionRow> conversionRows)
         {
             _version = version;
             _conversionRows = conversionRows;
@@ -188,6 +188,7 @@ namespace TombLib.Forms
             }
 
             dgvSoundInfos.InvalidateRow(e.RowIndex);
+            UpdateStatus();
         }
     }
 }

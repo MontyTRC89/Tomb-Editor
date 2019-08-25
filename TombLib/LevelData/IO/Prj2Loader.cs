@@ -822,7 +822,7 @@ namespace TombLib.LevelData.IO
                     instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
                     instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.Raw.ReadSingle(); // Unused 32 bit value
-                    instance.Ocb = chunkIO.Raw.ReadUInt16();
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
                     addObject(instance);
                 }
                 else if (id3 == Prj2Chunks.ObjectStatic2)
@@ -835,7 +835,7 @@ namespace TombLib.LevelData.IO
                     instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
                     instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.Raw.ReadSingle(); // Unused 32 bit value
-                    instance.Ocb = chunkIO.Raw.ReadUInt16(); chunkIO.ReadChunks((id4, chunkSize4) =>
+                    instance.Ocb = chunkIO.Raw.ReadInt16(); chunkIO.ReadChunks((id4, chunkSize4) =>
                     {
                         if (id4 == Prj2Chunks.ObjectItemLuaId)
                         {
@@ -926,6 +926,13 @@ namespace TombLib.LevelData.IO
                     else if (id3 == Prj2Chunks.ObjectSoundSource4)
                     {
                         instance.SoundId = chunkIO.Raw.ReadInt32();  
+                        chunkIO.Raw.ReadInt16(); // Unused
+                        chunkIO.Raw.ReadByte(); // Unused
+                    }
+                    else if (id3 == Prj2Chunks.ObjectSoundSourceFinal)
+                    {
+                        instance.SoundId = chunkIO.Raw.ReadInt32();
+                        instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }

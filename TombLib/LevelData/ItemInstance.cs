@@ -6,6 +6,7 @@ namespace TombLib.LevelData
     public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IRotateableY
     {
         public int LuaId { get; set; }
+        public short Ocb { get; set; } = 0;
 
         private float _rotation;
         /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
@@ -29,6 +30,7 @@ namespace TombLib.LevelData
                    ", Room = " + (Room?.ToString() ?? "NULL") +
                    ", X = " + SectorPosition.X +
                    ", Z = " + SectorPosition.Y +
+                   ", Ocb = " + Ocb + 
                    (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
