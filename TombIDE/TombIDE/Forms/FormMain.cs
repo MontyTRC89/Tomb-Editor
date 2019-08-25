@@ -262,13 +262,17 @@ namespace TombIDE
 
 		private void RestartApplication()
 		{
-			// Set the current project as RememberedProject to quickly go back into the project after restarting
-			_ide.Configuration.RememberedProject = _ide.Project.Name;
-
 			SaveSettings();
 
 			Application.Exit();
-			Process.Start(Assembly.GetExecutingAssembly().Location);
+
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Assembly.GetExecutingAssembly().Location,
+				Arguments = "\"" + _ide.Project.GetTRPROJFilePath() + "\""
+			};
+
+			Process.Start(startInfo);
 		}
 
 		#endregion Initialization

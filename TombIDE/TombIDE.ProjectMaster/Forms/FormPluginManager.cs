@@ -361,13 +361,18 @@ namespace TombIDE.ProjectMaster
 					string nextEntry = Path.Combine(nextFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(nextFolderPath).First()));
 
 					if ((File.GetAttributes(nextEntry) & FileAttributes.Directory) == FileAttributes.Directory)
+					{
 						nextFolderPath = nextEntry;
+						continue;
+					}
 					else if (!Path.GetFileName(nextEntry).ToLower().StartsWith("plugin_") || !Path.GetFileName(nextEntry).ToLower().EndsWith(".dll"))
 					{
 						Directory.Delete(pluginFolderPath, true);
 						throw new ArgumentException(string.Format("Selected {0} doesn't contain a valid plugin DLL file.",
 							extractedFromArchive ? "archive" : "folder"));
 					}
+
+					break;
 				}
 
 				if (!IsValidPluginFolder(nextFolderPath))
