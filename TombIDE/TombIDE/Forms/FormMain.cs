@@ -120,7 +120,7 @@ namespace TombIDE
 					timer_ScriptButtonBlinking.Start();
 				}
 			}
-			else if (obj is IDE.RequestedScriptEntryRenameEvent)
+			else if (obj is IDE.ScriptEditorContentChangedEvent)
 			{
 				// Indicate changes inside the Script Editor
 				timer_ScriptButtonBlinking.Interval = 1;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using TombLib.Projects;
 
@@ -270,6 +271,27 @@ namespace TombIDE.Shared
 			RaiseEvent(new RequestedScriptEntryRenameEvent { PreviousName = SelectedLevel.Name, CurrentName = newName });
 
 		#endregion RequestedScriptEntryRename
+
+		#region RequestedPluginLanguageEntryAddition
+
+		public class RequestedPluginLanguageEntryAdditionEvent : IProjectMasterEvent
+		{
+			public string PluginFileName { get; internal set; }
+		}
+
+		public void AddPluginToLanguageFile(Plugin plugin) =>
+			RaiseEvent(new RequestedPluginLanguageEntryAdditionEvent { PluginFileName = Path.GetFileNameWithoutExtension(plugin.InternalDllPath) });
+
+		#endregion RequestedPluginLanguageEntryAddition
+
+		#region ScriptEditorContentChanged
+
+		public class ScriptEditorContentChangedEvent : IProjectMasterEvent
+		{ }
+
+		public void IndicateScriptEditorChange() => RaiseEvent(new ScriptEditorContentChangedEvent());
+
+		#endregion ScriptEditorContentChanged
 
 		// Construction and destruction
 		public IDE(Configuration configuration, List<Project> availableProjects, List<Plugin> availablePlugins)
