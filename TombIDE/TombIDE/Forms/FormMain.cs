@@ -40,6 +40,34 @@ namespace TombIDE
 
 			// Cover the whole form with this panel to hide the graphical glitches happening while loading
 			panel_CoverLoading.BringToFront();
+
+			string flepExePath = Path.Combine(_ide.Project.ProjectPath, "flep.exe");
+
+			if (File.Exists(flepExePath))
+			{
+				button_Special.Image = Icon.ExtractAssociatedIcon(flepExePath).ToBitmap();
+				toolTip.SetToolTip(button_Special, "Launch FLEP");
+				button_Special.Click += Special_LaunchFLEP;
+			}
+			else
+			{
+				button_Special.Dispose();
+
+				button_LaunchGame.Location = new Point(button_LaunchGame.Location.X, button_LaunchGame.Location.Y - 46);
+				label_Separator_03.Location = new Point(label_Separator_03.Location.X, label_Separator_03.Location.Y - 46);
+				button_AddProgram.Location = new Point(button_AddProgram.Location.X, button_AddProgram.Location.Y - 46);
+			}
+		}
+
+		private void Special_LaunchFLEP(object sender, EventArgs e)
+		{
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Path.Combine(_ide.Project.ProjectPath, "flep.exe"),
+				WorkingDirectory = _ide.Project.ProjectPath
+			};
+
+			Process.Start(startInfo);
 		}
 
 		private void OnIDEEventRaised(IIDEEvent obj)
