@@ -1,6 +1,7 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -46,11 +47,24 @@ namespace TombIDE.ProjectMaster
 		{
 			using (FormPluginManager form = new FormPluginManager(_ide))
 			{
-				string[] cachedPluginFolders = Directory.GetDirectories(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"), "plugin_*");
+				string pluginsPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
+
+				string[] cachedPluginFolders = Directory.GetDirectories(pluginsPath, "plugin_*");
+
+				List<Plugin> cachedProjectPlugins = new List<Plugin>();
+				cachedProjectPlugins.AddRange(_ide.Project.InstalledPlugins);
 
 				form.ShowDialog(this);
 
-				foreach (string folder in Directory.GetDirectories(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"), "plugin_*"))
+				foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+				{
+					if (cachedProjectPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
+						continue;
+
+					_ide.AddPluginToLanguageFile(plugin);
+				}
+
+				foreach (string folder in Directory.GetDirectories(pluginsPath, "plugin_*"))
 				{
 					if (cachedPluginFolders.ToList().Exists(x => x.ToLower() == folder.ToLower()))
 						continue;

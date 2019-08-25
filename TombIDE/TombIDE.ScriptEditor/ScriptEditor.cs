@@ -76,10 +76,7 @@ namespace TombIDE.ScriptEditor
 				_ide.LevelScriptDefined = IsLevelScriptDefined(levelName);
 
 				if (!wasScriptFileAlreadyOpened)
-				{
-					OpenScriptFile();
 					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
-				}
 
 				tabControl_Editor.SelectTab(cachedTab);
 			}
@@ -93,10 +90,7 @@ namespace TombIDE.ScriptEditor
 				_ide.LevelLanguageStringDefined = IsLevelLanguageStringDefined(levelName);
 
 				if (!wasLanguageFileAlreadyOpened)
-				{
-					OpenLanguageFile("english");
 					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
-				}
 
 				tabControl_Editor.SelectTab(cachedTab);
 			}
@@ -109,6 +103,78 @@ namespace TombIDE.ScriptEditor
 				RenameRequestedLanguageString(oldName, newName);
 
 				OpenScriptFile(); // Because that's the most important file affected
+
+				_ide.IndicateScriptEditorChange();
+			}
+			else if (obj is IDE.RequestedPluginLanguageEntryAdditionEvent)
+			{
+				string pluginFileName = ((IDE.RequestedPluginLanguageEntryAdditionEvent)obj).PluginFileName;
+
+				TabPage cachedTab = tabControl_Editor.SelectedTab;
+				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
+
+				OpenLanguageFile("english");
+
+				bool wasFileChanged = _textBox.IsChanged;
+
+				for (int i = 0; i < _textBox.LinesCount; i++)
+				{
+					if (_textBox.GetLineText(i).ToLower().StartsWith("[extrang]"))
+					{
+						// Check if plugin string isn't already defined
+						for (int j = _textBox.LinesCount - 1; j >= i; j--)
+						{
+							if (Regex.IsMatch(_textBox.GetLineText(j), @"\A\d*:\s*?" + pluginFileName + @"(;.*)?"))
+								return;
+						}
+
+						// Add the string
+						for (int j = _textBox.LinesCount - 1; j >= i; j--)
+						{
+							if (Regex.IsMatch(_textBox.GetLineText(j), @"\A\d*:.*"))
+							{
+								_textBox.Selection = new Range(_textBox, _textBox.GetLineText(j).Length, j, _textBox.GetLineText(j).Length, j);
+								_textBox.SelectedText = Environment.NewLine;
+
+								int prevNumber = int.Parse(Regex.Replace(_textBox.GetLineText(j), @"\A(\d*):.*", "$1"));
+
+								_textBox.Selection = new Range(_textBox, 0, j + 1, 0, j + 1);
+								_textBox.SelectedText = prevNumber + 1 + ": " + pluginFileName;
+
+								_textBox.Navigate(j + 1);
+								break;
+							}
+							else if (j == i)
+							{
+								_textBox.Selection = new Range(_textBox, _textBox.GetLineText(j).Length, j, _textBox.GetLineText(j).Length, j);
+								_textBox.SelectedText = Environment.NewLine;
+
+								_textBox.Selection = new Range(_textBox, 0, j + 1, 0, j + 1);
+								_textBox.SelectedText = "0: " + pluginFileName;
+
+								_textBox.Navigate(j + 1);
+								break;
+							}
+						}
+
+						break;
+					}
+				}
+
+				_textBox.Invalidate();
+
+				if (wasFileChanged)
+					_ide.IndicateScriptEditorChange();
+				else
+				{
+					SaveFile(tabControl_Editor.SelectedTab, _textBox);
+
+					if (!wasLanguageFileAlreadyOpened)
+					{
+						tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
+						tabControl_Editor.SelectTab(cachedTab);
+					}
+				}
 			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
