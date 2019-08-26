@@ -22,6 +22,7 @@
 			this.button_AddProgram = new System.Windows.Forms.Button();
 			this.button_LaunchGame = new System.Windows.Forms.Button();
 			this.button_Leave = new System.Windows.Forms.Button();
+			this.button_OpenFolder = new System.Windows.Forms.Button();
 			this.button_Special = new System.Windows.Forms.Button();
 			this.contextMenu_ProgramButton = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_DeleteButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,10 +59,10 @@
 			this.button_AddProgram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.button_AddProgram.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.button_AddProgram.Image = global::TombIDE.Properties.Resources.general_plus_math_16;
-			this.button_AddProgram.Location = new System.Drawing.Point(3, 330);
+			this.button_AddProgram.Location = new System.Drawing.Point(3, 378);
 			this.button_AddProgram.Name = "button_AddProgram";
 			this.button_AddProgram.Size = new System.Drawing.Size(40, 40);
-			this.button_AddProgram.TabIndex = 9;
+			this.button_AddProgram.TabIndex = 10;
 			this.toolTip.SetToolTip(this.button_AddProgram, "Add Program Shortcut");
 			this.button_AddProgram.Click += new System.EventHandler(this.button_AddProgram_Click);
 			// 
@@ -70,11 +71,11 @@
 			this.button_LaunchGame.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.button_LaunchGame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.button_LaunchGame.Image = global::TombIDE.Properties.Resources.ide_play_30;
-			this.button_LaunchGame.Location = new System.Drawing.Point(2, 270);
+			this.button_LaunchGame.Location = new System.Drawing.Point(2, 318);
 			this.button_LaunchGame.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.button_LaunchGame.Name = "button_LaunchGame";
 			this.button_LaunchGame.Size = new System.Drawing.Size(42, 42);
-			this.button_LaunchGame.TabIndex = 7;
+			this.button_LaunchGame.TabIndex = 8;
 			this.toolTip.SetToolTip(this.button_LaunchGame, "Launch Game");
 			this.button_LaunchGame.Click += new System.EventHandler(this.button_LaunchGame_Click);
 			// 
@@ -91,6 +92,19 @@
 			this.button_Leave.TabIndex = 1;
 			this.toolTip.SetToolTip(this.button_Leave, "Exit Project");
 			// 
+			// button_OpenFolder
+			// 
+			this.button_OpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_OpenFolder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_OpenFolder.Image = global::TombIDE.Properties.Resources.ide_folder_30;
+			this.button_OpenFolder.Location = new System.Drawing.Point(2, 270);
+			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.button_OpenFolder.Name = "button_OpenFolder";
+			this.button_OpenFolder.Size = new System.Drawing.Size(42, 42);
+			this.button_OpenFolder.TabIndex = 7;
+			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Project Folder");
+			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
+			// 
 			// button_Special
 			// 
 			this.button_Special.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -99,7 +113,7 @@
 			this.button_Special.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.button_Special.Name = "button_Special";
 			this.button_Special.Size = new System.Drawing.Size(42, 42);
-			this.button_Special.TabIndex = 10;
+			this.button_Special.TabIndex = 11;
 			// 
 			// contextMenu_ProgramButton
 			// 
@@ -144,11 +158,11 @@
 			// 
 			this.label_Separator_03.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label_Separator_03.ForeColor = System.Drawing.Color.Gray;
-			this.label_Separator_03.Location = new System.Drawing.Point(3, 320);
+			this.label_Separator_03.Location = new System.Drawing.Point(3, 368);
 			this.label_Separator_03.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.label_Separator_03.Name = "label_Separator_03";
 			this.label_Separator_03.Size = new System.Drawing.Size(40, 2);
-			this.label_Separator_03.TabIndex = 8;
+			this.label_Separator_03.TabIndex = 9;
 			// 
 			// OwO
 			// 
@@ -264,6 +278,7 @@
 			this.panel_Programs.AutoScroll = true;
 			this.panel_Programs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.panel_Programs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_Programs.Controls.Add(this.button_OpenFolder);
 			this.panel_Programs.Controls.Add(this.button_Special);
 			this.panel_Programs.Controls.Add(this.label_Separator_03);
 			this.panel_Programs.Controls.Add(this.button_LaunchGame);
@@ -355,11 +370,14 @@
 		private DarkUI.Controls.DarkLabel label_Separator_01;
 		private DarkUI.Controls.DarkLabel label_Separator_02;
 		private DarkUI.Controls.DarkLabel label_Separator_03;
+		private DarkUI.Controls.DarkLabel OwO;
+		private DarkUI.Controls.DarkLabel UwU;
 		private ProjectMaster.ProjectMaster projectMaster;
 		private ScriptEditor.ScriptEditor scriptEditor;
 		private System.Windows.Forms.Button button_AddProgram;
 		private System.Windows.Forms.Button button_LaunchGame;
 		private System.Windows.Forms.Button button_Leave;
+		private System.Windows.Forms.Button button_OpenFolder;
 		private System.Windows.Forms.Button button_Special;
 		private System.Windows.Forms.Panel panel_CoverLoading;
 		private System.Windows.Forms.Panel panel_Main;
@@ -374,8 +392,6 @@
 		private System.Windows.Forms.ToolStripMenuItem menuItem_DeleteButton;
 		private System.Windows.Forms.ToolTip toolTip;
 		private TablessTabControl tablessTabControl;
-		private DarkUI.Controls.DarkLabel OwO;
-		private DarkUI.Controls.DarkLabel UwU;
 	}
 }
 
