@@ -34,6 +34,7 @@ namespace TombIDE.Shared
 
 		public string FontFamily { get; set; } = "Consolas";
 		public float FontSize { get; set; } = 12F;
+		public int UndoStackSize { get; set; } = 256;
 
 		public bool Autocomplete { get; set; } = true;
 		public bool AutoCloseBrackets { get; set; } = true;
