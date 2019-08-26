@@ -21,7 +21,8 @@ namespace TombEditor.Forms
             Rooms,
             AllObjects,
             ObjectsInSelectedRooms,
-            ItemTypes
+            ItemTypes,
+            Triggers
         }
 
         private const int _trueRateBitCount = 16;
@@ -119,7 +120,8 @@ namespace TombEditor.Forms
                 else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInSelectedRooms)
                     ResetCompletely();
                 else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
-                    scope == ScopeMode.ObjectsInSelectedRooms && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom))
+                    scope == ScopeMode.ObjectsInSelectedRooms && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom ||
+                    scope == ScopeMode.Triggers && ((IEditorObjectChangedEvent)obj).Object is TriggerInstance))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -431,6 +433,14 @@ namespace TombEditor.Forms
                     yield return new ItemType(obj.Id, _editor?.Level?.Settings);
                 foreach (WadMoveable obj in _editor.Level.Settings.WadGetAllMoveables().Values)
                     yield return new ItemType(obj.Id, _editor?.Level?.Settings);
+            }
+
+            // Triggers
+            if (scope == ScopeMode.Triggers)
+            {
+                foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
+                    foreach (ObjectInstance instance in room.AnyObjects.Where(o => o is TriggerInstance))
+                        yield return instance;
             }
         }
     }
