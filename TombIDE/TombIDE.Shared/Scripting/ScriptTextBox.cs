@@ -208,7 +208,8 @@ namespace TombIDE.Shared.Scripting
 		{
 			base.OnTextChanged(e);
 
-			DoSyntaxHighlighting(e);
+			try { DoSyntaxHighlighting(e); }
+			catch { }
 
 			if (!string.IsNullOrEmpty(FilePath)) // If the currently modified file is not "Untitled"
 			{
@@ -351,7 +352,8 @@ namespace TombIDE.Shared.Scripting
 			popupMenu.Font = new Font(popupMenu.Font.FontFamily, 8F);
 			popupMenu.Scale(new SizeF(2, (float)1.5));
 
-			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
+			try { popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems()); }
+			catch { }
 		}
 
 		private void DoSyntaxHighlighting(TextChangedEventArgs e, bool noLoop = false)
