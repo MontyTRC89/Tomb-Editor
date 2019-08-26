@@ -53,6 +53,7 @@ namespace TombIDE
 			{
 				button_Special.Dispose();
 
+				button_OpenFolder.Location = new Point(button_OpenFolder.Location.X, button_OpenFolder.Location.Y - 46);
 				button_LaunchGame.Location = new Point(button_LaunchGame.Location.X, button_LaunchGame.Location.Y - 46);
 				label_Separator_03.Location = new Point(label_Separator_03.Location.X, label_Separator_03.Location.Y - 46);
 				button_AddProgram.Location = new Point(button_AddProgram.Location.X, button_AddProgram.Location.Y - 46);
@@ -517,10 +518,13 @@ namespace TombIDE
 
 		#region Other events
 
-		// All 4 methods below trigger the IDE.SelectedIDETabChangedEvent
+		// All 3 methods below trigger IDE.SelectedIDETabChangedEvent
 		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => _ide.SelectIDETab("Project Master");
 		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => _ide.SelectIDETab("Script Editor");
 		private void panelButton_Tools_Click(object sender, EventArgs e) => _ide.SelectIDETab("Tools");
+
+		private void button_OpenFolder_Click(object sender, EventArgs e) =>
+			SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
 
 		private void button_LaunchGame_Click(object sender, EventArgs e)
 		{
