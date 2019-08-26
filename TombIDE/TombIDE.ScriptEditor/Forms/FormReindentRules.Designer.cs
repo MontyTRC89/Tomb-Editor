@@ -230,9 +230,10 @@ namespace TombIDE.ScriptEditor
 			this.textBox_Preview.ShowToolTips = false;
 			this.textBox_Preview.Size = new System.Drawing.Size(357, 121);
 			this.textBox_Preview.TabIndex = 0;
-			this.textBox_Preview.Text = "[Level]\r\nName=Coastal Ruins\r\nRain=ENABLED\r\nLayer1=128,128,128,-8\r\nMirror=69,$7400" +
+			this.textBox_Preview.Text = "[Level]\r\nName=Coastal Ruins\r\nRain=ENABLED\r\nLayer1=128,128,128,-8\r\nMirror=69,$2137" +
     "   ; Crossbow room\r\nLevel=DATA\\COASTAL,105";
 			this.textBox_Preview.TextAreaBorderColor = System.Drawing.Color.Transparent;
+			this.textBox_Preview.ToolTipDelay = 100;
 			this.textBox_Preview.Zoom = 100;
 			// 
 			// panel_Buttons
@@ -271,6 +272,7 @@ namespace TombIDE.ScriptEditor
 			this.FlatBorder = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "FormReindentRules";
+			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Reindent rules";
 			this.groupBox_AddSpaces.ResumeLayout(false);
