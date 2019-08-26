@@ -187,6 +187,11 @@ namespace TombIDE
 					RestartApplication();
 				}
 			}
+			else if (obj is IDE.RequestedApplicationRestartEvent)
+			{
+				XmlHandling.SaveTRPROJ(_ide.Project);
+				RestartApplication();
+			}
 		}
 
 		protected override void OnLoad(EventArgs e)

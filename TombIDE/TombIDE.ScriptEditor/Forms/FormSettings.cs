@@ -15,6 +15,7 @@ namespace TombIDE.ScriptEditor
 		public int RestartItemCount = 0;
 
 		private IDE _ide;
+		private bool _undoRestartItemAlreadyAdded = false;
 
 		public FormSettings(IDE ide)
 		{
@@ -27,6 +28,7 @@ namespace TombIDE.ScriptEditor
 
 			numeric_FontSize.Value = (int)_ide.Configuration.FontSize;
 			comboBox_FontFace.SelectedItem = _ide.Configuration.FontFamily;
+			numeric_UndoStackSize.Value = _ide.Configuration.UndoStackSize;
 
 			// General options
 			checkBox_Autocomplete.Checked = _ide.Configuration.Autocomplete;
@@ -50,6 +52,7 @@ namespace TombIDE.ScriptEditor
 		{
 			_ide.Configuration.FontSize = Convert.ToSingle(numeric_FontSize.Value);
 			_ide.Configuration.FontFamily = comboBox_FontFace.SelectedItem.ToString();
+			_ide.Configuration.UndoStackSize = (int)numeric_UndoStackSize.Value;
 
 			// General options
 			_ide.Configuration.Autocomplete = checkBox_Autocomplete.Checked;
@@ -169,7 +172,29 @@ namespace TombIDE.ScriptEditor
 			}
 		}
 
-		private void checkBox_Autocomplete_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(checkBox_Autocomplete.Checked, _ide.Configuration.Autocomplete);
+		private void checkBox_Autocomplete_CheckedChanged(object sender, EventArgs e) =>
+			CheckRestartRequirement(checkBox_Autocomplete.Checked, _ide.Configuration.Autocomplete);
+
+		private void numeric_UndoStackSize_ValueChanged(object sender, EventArgs e)
+		{
+			if (_undoRestartItemAlreadyAdded && numeric_UndoStackSize.Value == _ide.Configuration.UndoStackSize)
+			{
+				if (RestartItemCount != 0)
+					RestartItemCount--;
+
+				if (RestartItemCount == 0)
+					label_RestartRequired.Visible = false;
+
+				_undoRestartItemAlreadyAdded = false;
+			}
+			else if (!_undoRestartItemAlreadyAdded && numeric_UndoStackSize.Value != _ide.Configuration.UndoStackSize)
+			{
+				RestartItemCount++;
+				label_RestartRequired.Visible = true;
+
+				_undoRestartItemAlreadyAdded = true;
+			}
+		}
 
 		private void CheckRestartRequirement(object currentState, object prevSetting)
 		{

@@ -34,6 +34,8 @@
 			this.checkBox_WordWrap = new DarkUI.Controls.DarkCheckBox();
 			this.comboBox_FontFace = new DarkUI.Controls.DarkComboBox();
 			this.darkGroupBox_01 = new DarkUI.Controls.DarkGroupBox();
+			this.label_UndoStackSize = new DarkUI.Controls.DarkLabel();
+			this.numeric_UndoStackSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.darkGroupBox_02 = new DarkUI.Controls.DarkGroupBox();
 			this.label_OldCommandColor = new DarkUI.Controls.DarkLabel();
 			this.label_UnknownCommandColor = new DarkUI.Controls.DarkLabel();
@@ -56,6 +58,7 @@
 			this.panel_Buttons = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
 			this.darkGroupBox_01.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numeric_UndoStackSize)).BeginInit();
 			this.darkGroupBox_02.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numeric_FontSize)).BeginInit();
 			this.panel_Buttons.SuspendLayout();
@@ -185,7 +188,7 @@
 			// checkBox_AutoCloseBrackets
 			// 
 			this.checkBox_AutoCloseBrackets.AutoSize = true;
-			this.checkBox_AutoCloseBrackets.Location = new System.Drawing.Point(6, 134);
+			this.checkBox_AutoCloseBrackets.Location = new System.Drawing.Point(6, 179);
 			this.checkBox_AutoCloseBrackets.Name = "checkBox_AutoCloseBrackets";
 			this.checkBox_AutoCloseBrackets.Size = new System.Drawing.Size(122, 17);
 			this.checkBox_AutoCloseBrackets.TabIndex = 9;
@@ -195,7 +198,7 @@
 			// 
 			this.checkBox_Autocomplete.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.checkBox_Autocomplete.AutoSize = true;
-			this.checkBox_Autocomplete.Location = new System.Drawing.Point(6, 111);
+			this.checkBox_Autocomplete.Location = new System.Drawing.Point(6, 156);
 			this.checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
 			this.checkBox_Autocomplete.Name = "checkBox_Autocomplete";
 			this.checkBox_Autocomplete.Size = new System.Drawing.Size(127, 17);
@@ -216,7 +219,7 @@
 			// checkBox_WordWrap
 			// 
 			this.checkBox_WordWrap.AutoSize = true;
-			this.checkBox_WordWrap.Location = new System.Drawing.Point(6, 157);
+			this.checkBox_WordWrap.Location = new System.Drawing.Point(6, 202);
 			this.checkBox_WordWrap.Name = "checkBox_WordWrap";
 			this.checkBox_WordWrap.Size = new System.Drawing.Size(81, 17);
 			this.checkBox_WordWrap.TabIndex = 12;
@@ -235,6 +238,8 @@
 			this.darkGroupBox_01.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.darkGroupBox_01.Controls.Add(this.label_UndoStackSize);
+			this.darkGroupBox_01.Controls.Add(this.numeric_UndoStackSize);
 			this.darkGroupBox_01.Controls.Add(this.button_ReindentRules);
 			this.darkGroupBox_01.Controls.Add(this.checkBox_Autocomplete);
 			this.darkGroupBox_01.Controls.Add(this.checkBox_WordWrap);
@@ -251,6 +256,48 @@
 			this.darkGroupBox_01.Size = new System.Drawing.Size(456, 422);
 			this.darkGroupBox_01.TabIndex = 2;
 			this.darkGroupBox_01.TabStop = false;
+			// 
+			// label_UndoStackSize
+			// 
+			this.label_UndoStackSize.AutoSize = true;
+			this.label_UndoStackSize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_UndoStackSize.Location = new System.Drawing.Point(6, 104);
+			this.label_UndoStackSize.Margin = new System.Windows.Forms.Padding(3);
+			this.label_UndoStackSize.Name = "label_UndoStackSize";
+			this.label_UndoStackSize.Size = new System.Drawing.Size(90, 13);
+			this.label_UndoStackSize.TabIndex = 19;
+			this.label_UndoStackSize.Text = "Undo Stack Size:";
+			// 
+			// numeric_UndoStackSize
+			// 
+			this.numeric_UndoStackSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+			this.numeric_UndoStackSize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.numeric_UndoStackSize.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+			this.numeric_UndoStackSize.Location = new System.Drawing.Point(6, 123);
+			this.numeric_UndoStackSize.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+			this.numeric_UndoStackSize.Minimum = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+			this.numeric_UndoStackSize.MousewheelSingleIncrement = true;
+			this.numeric_UndoStackSize.Name = "numeric_UndoStackSize";
+			this.numeric_UndoStackSize.Size = new System.Drawing.Size(150, 20);
+			this.numeric_UndoStackSize.TabIndex = 18;
+			this.numeric_UndoStackSize.Value = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+			this.numeric_UndoStackSize.ValueChanged += new System.EventHandler(this.numeric_UndoStackSize_ValueChanged);
 			// 
 			// darkGroupBox_02
 			// 
@@ -497,6 +544,7 @@
 			this.Text = "Script Editor Settings";
 			this.darkGroupBox_01.ResumeLayout(false);
 			this.darkGroupBox_01.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numeric_UndoStackSize)).EndInit();
 			this.darkGroupBox_02.ResumeLayout(false);
 			this.darkGroupBox_02.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numeric_FontSize)).EndInit();
@@ -535,9 +583,11 @@
 		private DarkUI.Controls.DarkLabel label_ReferenceColor;
 		private DarkUI.Controls.DarkLabel label_RestartRequired;
 		private DarkUI.Controls.DarkLabel label_SectionColor;
+		private DarkUI.Controls.DarkLabel label_UndoStackSize;
 		private DarkUI.Controls.DarkLabel label_UnknownCommandColor;
 		private DarkUI.Controls.DarkLabel label_ValueColor;
 		private DarkUI.Controls.DarkNumericUpDown numeric_FontSize;
+		private DarkUI.Controls.DarkNumericUpDown numeric_UndoStackSize;
 		private System.Windows.Forms.ColorDialog dialog_CommentColor;
 		private System.Windows.Forms.ColorDialog dialog_NewCommandColor;
 		private System.Windows.Forms.ColorDialog dialog_OldCommandColor;

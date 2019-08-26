@@ -104,6 +104,15 @@ namespace TombIDE.Shared
 
 		#endregion ProgramButtonsChanged
 
+		#region RequestedApplicationRestart
+
+		public class RequestedApplicationRestartEvent : IProjectMasterEvent
+		{ }
+
+		public void RestartApplication() => RaiseEvent(new RequestedApplicationRestartEvent());
+
+		#endregion RequestedApplicationRestart
+
 		#region ProgramClosing
 
 		public class ProgramClosingEvent : IIDEEvent

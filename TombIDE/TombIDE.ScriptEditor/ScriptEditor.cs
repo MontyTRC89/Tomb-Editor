@@ -32,7 +32,6 @@ namespace TombIDE.ScriptEditor
 
 		public ScriptEditor()
 		{
-			CommandManager.MaxHistoryLength = 512; // TODO: Add this as a setting in FormSettings
 			KeyWords.SetupConstants();
 
 			InitializeComponent();
@@ -243,6 +242,7 @@ namespace TombIDE.ScriptEditor
 			}
 
 			// Editor settings
+			CommandManager.MaxHistoryLength = _ide.Configuration.UndoStackSize;
 			ToggleObjBrowser(_ide.Configuration.View_ShowObjBrowser);
 			ToggleFileList(_ide.Configuration.View_ShowFileList);
 			ToggleInfoBox(_ide.Configuration.View_ShowInfoBox);
@@ -1443,6 +1443,7 @@ namespace TombIDE.ScriptEditor
 			_ide.Configuration.Save();
 
 			// Cache critical settings
+			int undoStackSizeCache = _ide.Configuration.UndoStackSize;
 			bool autocompleteCache = _ide.Configuration.Autocomplete;
 
 			using (FormSettings form = new FormSettings(_ide))
@@ -1457,6 +1458,7 @@ namespace TombIDE.ScriptEditor
 						{
 							// Saving failed or the user clicked "Cancel"
 							// Therefore restore the previous critical settings
+							_ide.Configuration.UndoStackSize = undoStackSizeCache;
 							_ide.Configuration.Autocomplete = autocompleteCache;
 							_ide.Configuration.Save();
 
@@ -1464,7 +1466,7 @@ namespace TombIDE.ScriptEditor
 							return; // DO NOT CLOSE THE APP !!! (ﾉ°Д°)ﾉ︵﻿ ┻━┻
 						}
 
-						Application.Restart();
+						_ide.RestartApplication();
 					}
 				}
 			}
