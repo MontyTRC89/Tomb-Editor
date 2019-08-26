@@ -73,6 +73,8 @@ namespace TombIDE.ScriptEditor
 
 						dataGrid.DataSource = dataTable;
 						dataGrid.Columns["_RowString"].Visible = false;
+
+						SetFriendlyColumnHeaders();
 					}
 				}
 			}
@@ -105,6 +107,47 @@ namespace TombIDE.ScriptEditor
 			}
 
 			return dataTable;
+		}
+
+		private void SetFriendlyColumnHeaders()
+		{
+			foreach (DataGridViewColumn column in dataGrid.Columns)
+			{
+				switch (column.Name)
+				{
+					case "decimal":
+						dataGrid.Columns[column.Index].HeaderText = "Decimal Value";
+						break;
+
+					case "hex":
+						dataGrid.Columns[column.Index].HeaderText = "Hexadecimal Value";
+						break;
+
+					case "flag":
+						dataGrid.Columns[column.Index].HeaderText = "Flag";
+						break;
+
+					case "argument1":
+						dataGrid.Columns[column.Index].HeaderText = "Argument #1 (Range)";
+						break;
+
+					case "argument2":
+						dataGrid.Columns[column.Index].HeaderText = "Argument #2 (Range)";
+						break;
+
+					case "argument3":
+						dataGrid.Columns[column.Index].HeaderText = "Argument #3 (Range)";
+						break;
+
+					case "variable":
+						dataGrid.Columns[column.Index].HeaderText = "Variable";
+						break;
+
+					case "description":
+						dataGrid.Columns[column.Index].HeaderText = "Description";
+						break;
+				}
+			}
 		}
 
 		private void textBox_Search_GotFocus(object sender, EventArgs e)
