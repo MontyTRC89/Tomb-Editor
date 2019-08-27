@@ -22,10 +22,10 @@ namespace TombIDE.REGSVR
 			string PICFORMAT32 = Path.Combine(SharedMethods.GetSystemDirectory(), "PicFormat32.ocx");
 			string COMDLG32 = Path.Combine(SharedMethods.GetSystemDirectory(), "Comdlg32.ocx");
 
-			File.Copy(@"COM\Mscomctl.ocx", MSCOMCTL, true);
-			File.Copy(@"COM\Richtx32.ocx", RICHTX32, true);
-			File.Copy(@"COM\PicFormat32.ocx", PICFORMAT32, true);
-			File.Copy(@"COM\Comdlg32.ocx", COMDLG32, true);
+			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\Mscomctl.ocx"), MSCOMCTL, true);
+			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\Richtx32.ocx"), RICHTX32, true);
+			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\PicFormat32.ocx"), PICFORMAT32, true);
+			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\Comdlg32.ocx"), COMDLG32, true);
 
 			Registration.RegisterCom(MSCOMCTL);
 			Registration.RegisterCom(RICHTX32);
