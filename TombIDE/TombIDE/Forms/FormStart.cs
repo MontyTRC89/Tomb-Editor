@@ -28,69 +28,21 @@ namespace TombIDE
 			FillProjectList(); // _ide.AvailableProjects is taken from the TombIDEProjects.xml file
 		}
 
-		private void OnIDEEventRaised(IIDEEvent obj)
-		{
-			if (obj is IDE.ProjectAddedEvent)
-			{
-				// Add the project to the list
-				Project addedProject = ((IDE.ProjectAddedEvent)obj).AddedProject;
-				AddProjectToList(addedProject, true);
-
-				// Select the new project node
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					Project nodeProject = (Project)node.Tag;
-
-					if (nodeProject.Name == addedProject.Name)
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
-						break;
-					}
-				}
-			}
-			else if (obj is IDE.ActiveProjectRenamedEvent)
-			{
-				// Update the selected node
-				treeView.SelectedNodes[0].Text = _ide.Project.Name;
-				treeView.SelectedNodes[0].Tag = _ide.Project;
-
-				// Update the TombIDEProjects.xml file as well
-				RefreshAndReserializeProjects();
-			}
-		}
-
 		public void OpenTRPROJWithTombIDE(string path)
 		{
 			try
 			{
 				Project openedProject = XmlHandling.ReadTRPROJ(path);
 
-				// Check for name duplicates
-				foreach (Project project in _ide.AvailableProjects)
-				{
-					if (project.Name.ToLower() == openedProject.Name.ToLower() && project.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
-						throw new ArgumentException("A project with the same name already exists on the list.");
-				}
+				// Check if a project with the same name, but different paths exists
+				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == openedProject.Name.ToLower() && x.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower()))
+					throw new ArgumentException("A project with the same name already exists on the list.");
 
-				// Check if the opened project is valid
 				if (!openedProject.IsValidProject())
 					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
 
-				bool projectExistsOnList = false;
-
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					Project nodeProject = (Project)node.Tag;
-
-					if (nodeProject.Name == openedProject.Name)
-					{
-						projectExistsOnList = true;
-						break;
-					}
-				}
-
-				if (!projectExistsOnList)
+				// Check if the opened project already exists on the list, if not, then add it
+				if (!treeView.Nodes.Exists(x => ((Project)x.Tag).Name.ToLower() == openedProject.Name.ToLower()))
 					_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
 
 				_ide.Configuration.RememberedProject = openedProject.Name;
@@ -108,19 +60,15 @@ namespace TombIDE
 			// Automatically open remembered project (if there is one)
 			if (!string.IsNullOrWhiteSpace(_ide.Configuration.RememberedProject))
 			{
-				// Find the node where the project.Name is the same as the RememberedProject string
-				foreach (DarkTreeNode node in treeView.Nodes)
+				DarkTreeNode node = treeView.Nodes.Find(x => ((Project)x.Tag).Name.ToLower() == _ide.Configuration.RememberedProject.ToLower());
+
+				if (node != null)
 				{
-					Project nodeProject = (Project)node.Tag;
+					treeView.SelectNode(node);
+					CheckItemSelection();
 
-					if (nodeProject.Name == _ide.Configuration.RememberedProject)
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
-
-						OpenSelectedProject();
-						return;
-					}
+					OpenSelectedProject();
+					return;
 				}
 			}
 
@@ -196,6 +144,34 @@ namespace TombIDE
 
 		#region Events
 
+		private void OnIDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.ProjectAddedEvent)
+			{
+				// Add the project to the list
+				Project addedProject = ((IDE.ProjectAddedEvent)obj).AddedProject;
+				AddProjectToList(addedProject, true);
+
+				// Select the new project node
+				DarkTreeNode projectNode = treeView.Nodes.Find(x => ((Project)x.Tag).Name.ToLower() == addedProject.Name.ToLower());
+
+				if (projectNode != null)
+				{
+					treeView.SelectNode(projectNode);
+					CheckItemSelection();
+				}
+			}
+			else if (obj is IDE.ActiveProjectRenamedEvent)
+			{
+				// Update the selected node
+				treeView.SelectedNodes[0].Text = _ide.Project.Name;
+				treeView.SelectedNodes[0].Tag = _ide.Project;
+
+				// Update the TombIDEProjects.xml file as well
+				RefreshAndReserializeProjects();
+			}
+		}
+
 		private void button_Main_New_Click(object sender, EventArgs e) => ShowProjectSetupForm();
 		private void button_Main_Open_Click(object sender, EventArgs e) => OpenTRPROJ();
 		private void button_Main_Import_Click(object sender, EventArgs e) => ImportExe();
@@ -258,14 +234,9 @@ namespace TombIDE
 					{
 						Project openedProject = XmlHandling.ReadTRPROJ(dialog.FileName);
 
-						// Check for name duplicates
-						foreach (Project project in _ide.AvailableProjects)
-						{
-							if (project.Name.ToLower() == openedProject.Name.ToLower())
-								throw new ArgumentException("A project with the same name already exists on the list.");
-						}
+						if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == openedProject.Name.ToLower()))
+							throw new ArgumentException("A project with the same name already exists on the list.");
 
-						// Check if the opened project is valid
 						if (!openedProject.IsValidProject())
 							throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
 
@@ -291,13 +262,13 @@ namespace TombIDE
 					try
 					{
 						string exeFilePath = dialog.FileName;
-						string exeFileName = Path.GetFileName(exeFilePath).ToLower();
+						string exeName = Path.GetFileName(exeFilePath).ToLower();
 
 						// Check if the imported .exe file is a TR game that's actually supported
-						if (exeFileName != "tomb4.exe" && exeFileName != "pctomb5.exe" && exeFileName != "launch.exe")
+						if (exeName != "tomb4.exe" && exeName != "pctomb5.exe" && exeName != "launch.exe")
 							throw new ArgumentException("Invalid game .exe file.");
 
-						if (exeFileName == "launch.exe")
+						if (exeName == "launch.exe")
 						{
 							bool validExeFound = false;
 
@@ -307,6 +278,8 @@ namespace TombIDE
 								{
 									exeFilePath = file;
 									validExeFound = true;
+
+									break;
 								}
 							}
 
@@ -314,12 +287,11 @@ namespace TombIDE
 								throw new ArgumentException("Invalid game .exe file.");
 						}
 
-						// Check if a project that's using the same .exe file already exists on the list
-						foreach (Project project in _ide.AvailableProjects)
-						{
-							if (project.ProjectPath == Path.GetDirectoryName(exeFilePath))
-								throw new ArgumentException("Project already exists on the list.\nIt's called \"" + project.Name + "\"");
-						}
+						// Check if a project that's using the same .exe file exists on the list
+						Project project = _ide.AvailableProjects.Find(x => x.ProjectPath.ToLower() == Path.GetDirectoryName(exeFilePath).ToLower());
+
+						if (project != null)
+							throw new ArgumentException("Project already exists on the list.\nIt's called \"" + project.Name + "\"");
 
 						using (FormImportProject form = new FormImportProject(_ide, exeFilePath))
 							form.ShowDialog(this); // After the form is done, it will trigger IDE.ProjectAddedEvent
@@ -419,10 +391,7 @@ namespace TombIDE
 
 			// Set the active project if a node is selected
 			// Triggers IDE.ActiveProjectChangedEvent
-			if (treeView.SelectedNodes.Count > 0)
-				_ide.Project = (Project)treeView.SelectedNodes[0].Tag;
-			else
-				_ide.Project = null;
+			_ide.Project = treeView.SelectedNodes.Count > 0 ? (Project)treeView.SelectedNodes[0].Tag : null;
 		}
 
 		private void OpenSelectedProject()
@@ -457,7 +426,7 @@ namespace TombIDE
 					Application.Exit();
 					Process.Start(Assembly.GetExecutingAssembly().Location);
 
-					// Using Show(); instead would cause ObjectDisposed exceptions
+					// Using Show() instead would cause ObjectDisposed exceptions
 				}
 				else if (result == DialogResult.Cancel) // Cancel means the user closed the program
 					Application.Exit();

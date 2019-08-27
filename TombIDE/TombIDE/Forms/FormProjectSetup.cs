@@ -15,6 +15,8 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public FormProjectSetup(IDE ide)
 		{
 			_ide = ide;
@@ -23,6 +25,10 @@ namespace TombIDE
 
 			comboBox_EngineType.SelectedIndex = 0;
 		}
+
+		#endregion Initialization
+
+		#region Events
 
 		private void button_Help_Click(object sender, EventArgs e)
 		{
@@ -114,26 +120,15 @@ namespace TombIDE
 				if (radio_Levels_02.Checked && string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the custom /Levels/ folder path.");
 
-				// Check for name duplicates
-				foreach (Project project in _ide.AvailableProjects)
-				{
-					if (project.Name.ToLower() == projectName.ToLower())
-						throw new ArgumentException("A project with the same name already exists on the list.");
-				}
+				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == projectName.ToLower()))
+					throw new ArgumentException("A project with the same name already exists on the list.");
 
 				if (comboBox_EngineType.SelectedIndex == 0)
 					throw new ArgumentException("You must specify the engine type of the project.");
 
 				string projectPath = textBox_ProjectPath.Text.Trim();
-
 				string scriptPath = radio_Script_01.Checked ? Path.Combine(projectPath, "Script") : textBox_ScriptPath.Text.Trim();
 				string levelsPath = radio_Levels_01.Checked ? Path.Combine(projectPath, "Levels") : textBox_LevelsPath.Text.Trim();
-
-				// Check if the specified paths are not just random symbols
-				if (Uri.IsWellFormedUriString(projectPath, UriKind.RelativeOrAbsolute)
-					|| Uri.IsWellFormedUriString(scriptPath, UriKind.RelativeOrAbsolute)
-					|| Uri.IsWellFormedUriString(levelsPath, UriKind.RelativeOrAbsolute))
-					throw new ArgumentException("One or more specified paths are invalid or not formatted correclty.");
 
 				if (!Directory.Exists(projectPath))
 					Directory.CreateDirectory(projectPath);
@@ -175,6 +170,10 @@ namespace TombIDE
 			}
 		}
 
+		#endregion Events
+
+		#region Methods
+
 		private Project CreateNewProject(string projectName, string projectPath, string scriptPath, string levelsPath)
 		{
 			GameVersion gameVersion = 0;
@@ -212,27 +211,21 @@ namespace TombIDE
 		{
 			string engineBasePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\Engines");
 
-			switch (project.GameVersion)
+			switch (comboBox_EngineType.SelectedIndex)
 			{
-				case GameVersion.TR4:
+				case 1:
 					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
 					break;
 
-				case GameVersion.TRNG:
-				{
-					if (comboBox_EngineType.SelectedItem.ToString() == "TRNG + FLEP")
-						engineBasePath = Path.Combine(engineBasePath, "TRNG + FLEP.zip");
-					else
-						engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
-
-					break;
-				}
-
-				case GameVersion.TR5:
-					engineBasePath = Path.Combine(engineBasePath, "TR5.zip");
+				case 2:
+					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
 					break;
 
-				case GameVersion.TR5Main:
+				case 3:
+					engineBasePath = Path.Combine(engineBasePath, "TRNG + FLEP.zip");
+					break;
+
+				case 4:
 					engineBasePath = Path.Combine(engineBasePath, "TR5Main.zip");
 					break;
 			}
@@ -241,7 +234,7 @@ namespace TombIDE
 
 			if (project.GameVersion == GameVersion.TR4 || project.GameVersion == GameVersion.TRNG)
 				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Shared.zip");
-			else if (project.GameVersion == GameVersion.TR5 || project.GameVersion == GameVersion.TR5Main)
+			else if (project.GameVersion == GameVersion.TR5Main)
 				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Shared.zip");
 
 			// Un-Zip the engine base into the ProjectPath folder
@@ -275,7 +268,10 @@ namespace TombIDE
 
 			// Create the .trproj file
 			XmlHandling.SaveTRPROJ(project); // .trproj = .xml but .trproj can be opened with TombIDE
-			progressBar.Increment(1);
+
+			progressBar.Increment(1); // 100%
 		}
+
+		#endregion Methods
 	}
 }

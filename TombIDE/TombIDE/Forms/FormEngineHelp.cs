@@ -5,11 +5,11 @@ namespace TombIDE
 {
 	public partial class FormEngineHelp : DarkForm
 	{
-		public FormEngineHelp(Point position)
+		public FormEngineHelp(Point location)
 		{
 			InitializeComponent();
 
-			Location = position;
+			Location = location;
 		}
 	}
 }

@@ -12,6 +12,8 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public FormRenameProject(IDE ide)
 		{
 			_ide = ide;
@@ -26,6 +28,10 @@ namespace TombIDE
 			textBox_NewName.Text = _ide.Project.Name;
 			textBox_NewName.SelectAll();
 		}
+
+		#endregion Initialization
+
+		#region Events
 
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
@@ -86,9 +92,13 @@ namespace TombIDE
 			}
 		}
 
+		#endregion Events
+
+		#region Methods
+
 		private void HandleDirectoryRenaming(string newName)
 		{
-			// Allow renaming directories to the same name, but with different letters cases
+			// Allow renaming directories to the same name, but with different letter cases
 			// To do that, we must add a "_TEMP" suffix at the end of the directory name
 			// _ide.Project.Rename() will then handle the rest
 
@@ -112,5 +122,7 @@ namespace TombIDE
 				}
 			}
 		}
+
+		#endregion Methods
 	}
 }
