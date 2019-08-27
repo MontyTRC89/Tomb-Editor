@@ -150,8 +150,12 @@ namespace TombIDE
 		{
 			_ide.Configuration.PinnedProgramPaths.Clear();
 
-			foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
+			// Use for() instead of foreach() to also save the position of the button based on its name
+			for (int i = 0; i < panel_Programs.Controls.OfType<DarkButton>().Count(); i++)
+			{
+				DarkButton button = (DarkButton)panel_Programs.Controls.Find(i.ToString(), false).First();
 				_ide.Configuration.PinnedProgramPaths.Add(button.Tag.ToString());
+			}
 
 			_ide.Configuration.Save();
 			_ide.RaiseEvent(new IDE.ProgramButtonsChangedEvent());
