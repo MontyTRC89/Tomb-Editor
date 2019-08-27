@@ -12,8 +12,9 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId ObsoleteWadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId SkyTextureFilePath = ChunkId.FromString("TeSkyTextureFilePath"); // UTF-8 string
-        /**/public static readonly ChunkId BaseSoundsXmlFilePath = ChunkId.FromString("TeBaseSoundsXmlFilePath"); // UTF-8 string
-        /**/public static readonly ChunkId CustomSoundsXmlFilePath = ChunkId.FromString("TeCustomSoundsXmlFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId SoundsCatalogs = ChunkId.FromString("TeSoundsCatalogs"); // UTF-8 string
+        /****/public static readonly ChunkId SoundsCatalog = ChunkId.FromString("TeSoundsCatalog"); // UTF-8 string
+        /******/public static readonly ChunkId SoundsCatalogPath = ChunkId.FromString("TeSoundsCatalogPath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5ExtraSpritesFilePath = ChunkId.FromString("TeTr5ExtraSpritesFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");
         /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");

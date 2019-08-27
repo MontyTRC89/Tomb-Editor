@@ -227,6 +227,7 @@
     <Compile Include="LevelData\ObjectInstance.cs" />
     <Compile Include="LevelData\PortalInstance.cs" />
     <Compile Include="LevelData\ReferencedWad.cs" />
+    <Compile Include="LevelData\ReferenceSoundsCatalog.cs" />
     <Compile Include="LevelData\Room.cs" />
     <Compile Include="LevelData\RoomGeometry.cs" />
     <Compile Include="LevelData\ScriptID.cs" />

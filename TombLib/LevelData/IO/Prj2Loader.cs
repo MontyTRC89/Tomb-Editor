@@ -99,6 +99,7 @@ namespace TombLib.LevelData.IO
             LevelSettings settings = new LevelSettings { LevelFilePath = thisPath };
             var levelSettingsIds = new LevelSettingsIds();
             var WadsToLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
+            var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundsCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundsCatalog>());
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
 
@@ -125,16 +126,6 @@ namespace TombLib.LevelData.IO
                     settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
                     settings.SkyTextureFilePath = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.BaseSoundsXmlFilePath)
-                {
-                    settings.BaseSoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
-                    settings.BaseSounds = WadSounds.ReadFromXml(settings.MakeAbsolute(settings.BaseSoundsXmlFilePath));
-                }
-                else if (id == Prj2Chunks.CustomSoundsXmlFilePath)
-                {
-                    settings.CustomSoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
-                    settings.CustomSounds = WadSounds.ReadFromXml(settings.MakeAbsolute(settings.CustomSoundsXmlFilePath));
-                }
                 else if (id == Prj2Chunks.Tr5ExtraSpritesFilePath)
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.OldWadSoundPaths)
@@ -180,6 +171,38 @@ namespace TombLib.LevelData.IO
                     }
 
                     settings.OldWadSoundPaths = oldWadSoundPaths;
+                }
+                else if (id == Prj2Chunks.SoundsCatalogs)
+                {
+                    progressReporter?.ReportInfo("Reading sounds catalogs...");
+
+                    var toLoad = new Dictionary<ReferencedSoundsCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundsCatalog>());
+                    var list = new List<ReferencedSoundsCatalog>(); // Order matters
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.SoundsCatalog)
+                            return false;
+
+                        string path = "";
+                        ReferencedSoundsCatalog newSounds = new ReferencedSoundsCatalog();
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.SoundsCatalogPath)
+                                path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
+                                    else
+                                return false;
+                            return true;
+                        });
+
+                        // Add catalog
+                        list.Add(newSounds);
+                        toLoad.Add(newSounds, path);
+                        progressReporter?.ReportInfo("Sounds catalog successfully loaded: " + path);
+                        return true;
+                    });
+
+                    SoundsCatalogsToLoad = toLoad;
+                    settings.SoundsCatalogs = list;
                 }
                 else if (id == Prj2Chunks.GameDirectory)
                     settings.GameDirectory = chunkIO.ReadChunkString(chunkSize);
@@ -473,9 +496,6 @@ namespace TombLib.LevelData.IO
             embeddedSoundInfoWad = Wad2Loader.LoadFromStream(chunkIO.Raw.BaseStream);
             return true;
         }
-
-
-
         private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, Wad2 embeddedSoundInfoWad, IProgressReporter progressReporter = null)
         {
             if (idOuter != Prj2Chunks.Rooms)

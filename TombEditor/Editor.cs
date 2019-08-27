@@ -703,11 +703,10 @@ namespace TombEditor
             bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
             bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
             bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
+            bool soundsChanged = !newSettings.SoundsCatalogs.SequenceEqual(_level.Settings.SoundsCatalogs);
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
-            bool soundsXmlFilenameChanged = newSettings.MakeAbsolute(newSettings.BaseSoundsXmlFilePath) != _level.Settings.MakeAbsolute(_level.Settings.BaseSoundsXmlFilePath);
-            bool customSoundsXmlFilenameChanged = newSettings.MakeAbsolute(newSettings.CustomSoundsXmlFilePath) != _level.Settings.MakeAbsolute(_level.Settings.CustomSoundsXmlFilePath);
-
+           
             // Update the current settings
             _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));
 

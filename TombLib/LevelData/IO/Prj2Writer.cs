@@ -137,8 +137,6 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.BaseSoundsXmlFilePath, settings.BaseSoundsXmlFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.CustomSoundsXmlFilePath, settings.CustomSoundsXmlFilePath ?? "");
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
@@ -146,6 +144,16 @@ namespace TombLib.LevelData.IO
                         using (var chunkWad = chunkIO.WriteChunk(Prj2Chunks.Wad))
                         {
                             chunkIO.WriteChunkString(Prj2Chunks.WadPath, wad.Path ?? "");
+                            chunkIO.WriteChunkEnd();
+                        }
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkSounds = chunkIO.WriteChunk(Prj2Chunks.SoundsCatalogs, long.MaxValue))
+                {
+                    foreach (ReferencedSoundsCatalog soundRef in settings.SoundsCatalogs)
+                        using (var chunkSound = chunkIO.WriteChunk(Prj2Chunks.SoundsCatalog))
+                        {
+                            chunkIO.WriteChunkString(Prj2Chunks.SoundsCatalogPath, soundRef.Path ?? "");
                             chunkIO.WriteChunkEnd();
                         }
                     chunkIO.WriteChunkEnd();

@@ -1275,8 +1275,7 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
-                level.Settings.BaseSoundsXmlFilePath = soundsPath;
-                level.Settings.BaseSounds = sounds;
+                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, soundsPath));
 
                 // Read WAD path
                 {
