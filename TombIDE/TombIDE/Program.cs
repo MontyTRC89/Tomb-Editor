@@ -32,7 +32,7 @@ namespace TombIDE
 				{
 					if (args.Length > 0)
 					{
-						if (Path.GetExtension(args[0].ToLower()) == ".trproj")
+						if (Path.GetExtension(args[0]).ToLower() == ".trproj")
 						{
 							ide.Configuration.RememberedProject = string.Empty;
 							form.OpenTRPROJWithTombIDE(args[0]); // Changes ide.Configuration.RememberedProject to the opened project on success

@@ -38,8 +38,7 @@ namespace TombIDE
 			// Add the current project name to the window title
 			Text = "TombIDE - " + _ide.Project.Name;
 
-			// Cover the whole form with this panel to hide the graphical glitches happening while loading
-			panel_CoverLoading.BringToFront();
+			panel_CoverLoading.BringToFront(); // Cover the whole form with this panel to hide the graphical glitches happening while loading
 
 			// Check if flep.exe exists in the ProjectPath folder, if so, then create a "Launch FLEP" button for quick access
 			string flepExePath = Path.Combine(_ide.Project.ProjectPath, "flep.exe");
@@ -103,6 +102,7 @@ namespace TombIDE
 			if (_ide.ClosingCancelled)
 				e.Cancel = true;
 
+			XmlHandling.SaveTRPROJ(_ide.Project);
 			SaveSettings();
 
 			base.OnClosing(e);
@@ -150,11 +150,8 @@ namespace TombIDE
 		{
 			_ide.Configuration.PinnedProgramPaths.Clear();
 
-			for (int i = 0; i < panel_Programs.Controls.OfType<DarkButton>().Count(); i++)
-			{
-				DarkButton button = (DarkButton)panel_Programs.Controls.Find(i.ToString(), false).First();
+			foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
 				_ide.Configuration.PinnedProgramPaths.Add(button.Tag.ToString());
-			}
 
 			_ide.Configuration.Save();
 			_ide.RaiseEvent(new IDE.ProgramButtonsChangedEvent());
@@ -190,17 +187,17 @@ namespace TombIDE
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					// Check if the program shortcut already exists
-					foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
+					try
 					{
-						if (button.Tag.ToString().ToLower() == dialog.FileName.ToLower())
-						{
-							DarkMessageBox.Show(this, "Program shortcut already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-							return;
-						}
-					}
+						if (panel_Programs.Controls.OfType<DarkButton>().ToList().Exists(x => x.Tag.ToString().ToLower() == dialog.FileName.ToLower()))
+							throw new ArgumentException("Program shortcut already exists.");
 
-					AddProgramButton(dialog.FileName);
+						AddProgramButton(dialog.FileName);
+					}
+					catch (Exception ex)
+					{
+						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
@@ -251,7 +248,7 @@ namespace TombIDE
 
 		private void ProgramButton_Click(object sender, EventArgs e)
 		{
-			// Check if a button is being dragged
+			// Check if a button is being dragged, if not, then launch the clicked program
 			if (_draggedButton != null)
 			{
 				string programFilePath = ((Button)sender).Tag.ToString();
@@ -346,12 +343,8 @@ namespace TombIDE
 
 		private DarkButton GetHoveredButton()
 		{
-			int buttonsCount = panel_Programs.Controls.OfType<DarkButton>().Count();
-
-			for (int i = 0; i < buttonsCount; i++)
+			foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
 			{
-				DarkButton button = (DarkButton)panel_Programs.Controls.Find(i.ToString(), false).First();
-
 				int allScreenWidth = GetAllScreenWidth();
 				Rectangle rect = new Rectangle(-allScreenWidth, button.Location.Y, allScreenWidth * 4, button.Size.Height);
 				// "allScreenWidth * 4" because someone would eventually break it

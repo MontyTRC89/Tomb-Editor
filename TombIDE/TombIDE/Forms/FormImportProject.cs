@@ -39,13 +39,13 @@ namespace TombIDE
 			// Find the /Script/ directory
 			foreach (string directory in Directory.GetDirectories(Path.GetDirectoryName(exeFilePath)))
 			{
-				string directoryName = Path.GetFileName(directory).ToLower();
-
-				if (directoryName == "script")
+				if (Path.GetFileName(directory).ToLower() == "script")
 				{
 					// Check if a script.txt file exists in the /Script/ directory
 					if (File.Exists(Path.Combine(directory, "script.txt")))
 						textBox_ScriptPath.Text = directory;
+
+					break;
 				}
 			}
 		}
@@ -118,23 +118,14 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the /Levels/ folder path for the project.");
 
-				// Check for name duplicates
-				foreach (Project project in _ide.AvailableProjects)
-				{
-					if (project.Name.ToLower() == projectName.ToLower())
-						throw new ArgumentException("A project with the same name already exists on the list.");
-				}
+				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == projectName.ToLower()))
+					throw new ArgumentException("A project with the same name already exists on the list.");
 
 				GameVersion gameVersion = GetGameVersion(textBox_ExePath.Text);
 
 				string projectPath = Path.GetDirectoryName(textBox_ExePath.Text);
 				string scriptPath = textBox_ScriptPath.Text.Trim();
 				string levelsPath = textBox_LevelsPath.Text.Trim();
-
-				// Check if the specified paths are not just random symbols
-				if (Uri.IsWellFormedUriString(scriptPath, UriKind.RelativeOrAbsolute)
-					|| Uri.IsWellFormedUriString(levelsPath, UriKind.RelativeOrAbsolute))
-					throw new ArgumentException("One or more specified paths are invalid or not formatted correclty.");
 
 				// Check if a script.txt file exists in the specified /Script/ folder
 				if (!File.Exists(Path.Combine(scriptPath, "script.txt")))
@@ -160,7 +151,9 @@ namespace TombIDE
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
 				button_Import.Enabled = true;
+
 				DialogResult = DialogResult.None;
 			}
 		}
