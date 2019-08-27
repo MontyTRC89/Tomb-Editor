@@ -41,6 +41,7 @@ namespace TombIDE
 			// Cover the whole form with this panel to hide the graphical glitches happening while loading
 			panel_CoverLoading.BringToFront();
 
+			// Check if flep.exe exists in the ProjectPath folder, if so, then create a "Launch FLEP" button for quick access
 			string flepExePath = Path.Combine(_ide.Project.ProjectPath, "flep.exe");
 
 			if (File.Exists(flepExePath))
@@ -51,146 +52,13 @@ namespace TombIDE
 			}
 			else
 			{
+				// Dispose the "Special button" and move all controls, which were underneath the button, 46 units higher
 				button_Special.Dispose();
 
 				button_OpenFolder.Location = new Point(button_OpenFolder.Location.X, button_OpenFolder.Location.Y - 46);
 				button_LaunchGame.Location = new Point(button_LaunchGame.Location.X, button_LaunchGame.Location.Y - 46);
 				label_Separator_03.Location = new Point(label_Separator_03.Location.X, label_Separator_03.Location.Y - 46);
 				button_AddProgram.Location = new Point(button_AddProgram.Location.X, button_AddProgram.Location.Y - 46);
-			}
-		}
-
-		private void Special_LaunchFLEP(object sender, EventArgs e)
-		{
-			ProcessStartInfo startInfo = new ProcessStartInfo
-			{
-				FileName = Path.Combine(_ide.Project.ProjectPath, "flep.exe"),
-				WorkingDirectory = _ide.Project.ProjectPath
-			};
-
-			Process.Start(startInfo);
-		}
-
-		private void OnIDEEventRaised(IIDEEvent obj)
-		{
-			if (obj is IDE.SelectedIDETabChangedEvent)
-			{
-				string tabPageName = ((IDE.SelectedIDETabChangedEvent)obj).Current;
-
-				switch (tabPageName)
-				{
-					case "Project Master":
-					{
-						panelButton_ProjectMaster.BackColor = Color.FromArgb(135, 135, 135);
-						panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
-						panelButton_Tools.BackColor = Color.FromArgb(48, 48, 48);
-
-						tablessTabControl.SelectTab(0);
-						break;
-					}
-					case "Script Editor":
-					{
-						if (timer_ScriptButtonBlinking.Enabled)
-							timer_ScriptButtonBlinking.Stop(); // Stop the blinking
-
-						panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
-						panelButton_ScriptEditor.BackColor = Color.FromArgb(135, 135, 135);
-						panelButton_Tools.BackColor = Color.FromArgb(48, 48, 48);
-
-						tablessTabControl.SelectTab(1);
-						break;
-					}
-					case "Tools":
-					{
-						panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
-						panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
-						panelButton_Tools.BackColor = Color.FromArgb(135, 135, 135);
-
-						tablessTabControl.SelectTab(2);
-						break;
-					}
-				}
-			}
-			else if (obj is IDE.LevelAddedEvent)
-			{
-				// Check if any messages were sent for the Script Editor
-				if (((IDE.LevelAddedEvent)obj).ScriptMessages.Count > 0)
-				{
-					// Indicate changes inside the Script Editor
-					timer_ScriptButtonBlinking.Interval = 1;
-					timer_ScriptButtonBlinking.Start();
-				}
-			}
-			else if (obj is IDE.ScriptEditorContentChangedEvent)
-			{
-				// Indicate changes inside the Script Editor
-				timer_ScriptButtonBlinking.Interval = 1;
-				timer_ScriptButtonBlinking.Start();
-			}
-			else if (obj is IDE.ProjectScriptPathChangedEvent || obj is IDE.ProjectLevelsPathChangedEvent)
-			{
-				DialogResult result = DarkMessageBox.Show(this, "To apply the changes, you must restart TombIDE.\n" +
-					"Are you sure you want to do that?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-				if (result == DialogResult.Yes)
-				{
-					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
-
-					if (_ide.ClosingCancelled)
-					{
-						// User pressed "Cancel"
-
-						DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
-						   MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-						return;
-					}
-
-					if (obj is IDE.ProjectScriptPathChangedEvent)
-						_ide.Project.ScriptPath = ((IDE.ProjectScriptPathChangedEvent)obj).NewPath;
-					else if (obj is IDE.ProjectLevelsPathChangedEvent)
-					{
-						List<ProjectLevel> projectLevels = new List<ProjectLevel>();
-						projectLevels.AddRange(_ide.Project.Levels);
-
-						foreach (ProjectLevel projectLevel in projectLevels)
-						{
-							if (projectLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
-								_ide.Project.Levels.Remove(projectLevel);
-						}
-
-						_ide.Project.LevelsPath = ((IDE.ProjectLevelsPathChangedEvent)obj).NewPath;
-					}
-
-					XmlHandling.SaveTRPROJ(_ide.Project);
-					RestartApplication();
-				}
-				else if (result == DialogResult.No)
-					DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
-						   MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-			else if (obj is IDE.NewPluginsAddedEvent)
-			{
-				DialogResult result = DarkMessageBox.Show(this,
-					"It is highly recommended to restart TombIDE after adding new plugins,\n" +
-					"otherwise some script elements won't be available.\n" +
-					"Would you like to restart TombIDE now?", "Restart required", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-				if (result == DialogResult.Yes)
-				{
-					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
-
-					if (_ide.ClosingCancelled)
-						return; // User pressed "Cancel"
-
-					XmlHandling.SaveTRPROJ(_ide.Project);
-					RestartApplication();
-				}
-			}
-			else if (obj is IDE.RequestedApplicationRestartEvent)
-			{
-				XmlHandling.SaveTRPROJ(_ide.Project);
-				RestartApplication();
 			}
 		}
 
@@ -282,9 +150,7 @@ namespace TombIDE
 		{
 			_ide.Configuration.PinnedProgramPaths.Clear();
 
-			int buttonsCount = panel_Programs.Controls.OfType<DarkButton>().Count();
-
-			for (int i = 0; i < buttonsCount; i++)
+			for (int i = 0; i < panel_Programs.Controls.OfType<DarkButton>().Count(); i++)
 			{
 				DarkButton button = (DarkButton)panel_Programs.Controls.Find(i.ToString(), false).First();
 				_ide.Configuration.PinnedProgramPaths.Add(button.Tag.ToString());
@@ -296,10 +162,12 @@ namespace TombIDE
 
 		private void RestartApplication()
 		{
+			XmlHandling.SaveTRPROJ(_ide.Project);
 			SaveSettings();
 
 			Application.Exit();
 
+			// Restart with the current project selected
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
 				FileName = Assembly.GetExecutingAssembly().Location,
@@ -325,7 +193,7 @@ namespace TombIDE
 					// Check if the program shortcut already exists
 					foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
 					{
-						if (button.Tag.ToString() == dialog.FileName)
+						if (button.Tag.ToString().ToLower() == dialog.FileName.ToLower())
 						{
 							DarkMessageBox.Show(this, "Program shortcut already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 							return;
@@ -462,6 +330,7 @@ namespace TombIDE
 				return;
 
 			// Check if we can swap the button
+
 			DarkButton hoveredButton = GetHoveredButton();
 
 			if (hoveredButton == null)
@@ -522,6 +391,136 @@ namespace TombIDE
 		#endregion Program button Drag 'n' Drop
 
 		#region Other events
+
+		private void OnIDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.SelectedIDETabChangedEvent)
+			{
+				string tabPageName = ((IDE.SelectedIDETabChangedEvent)obj).Current;
+
+				switch (tabPageName)
+				{
+					case "Project Master":
+					{
+						panelButton_ProjectMaster.BackColor = Color.FromArgb(135, 135, 135);
+						panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
+						panelButton_Tools.BackColor = Color.FromArgb(48, 48, 48);
+
+						tablessTabControl.SelectTab(0);
+						break;
+					}
+					case "Script Editor":
+					{
+						if (timer_ScriptButtonBlinking.Enabled)
+							timer_ScriptButtonBlinking.Stop(); // Stop the blinking
+
+						panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
+						panelButton_ScriptEditor.BackColor = Color.FromArgb(135, 135, 135);
+						panelButton_Tools.BackColor = Color.FromArgb(48, 48, 48);
+
+						tablessTabControl.SelectTab(1);
+						break;
+					}
+					case "Tools":
+					{
+						panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
+						panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
+						panelButton_Tools.BackColor = Color.FromArgb(135, 135, 135);
+
+						tablessTabControl.SelectTab(2);
+						break;
+					}
+				}
+			}
+			else if (obj is IDE.LevelAddedEvent)
+			{
+				// Check if any messages were sent for the Script Editor
+				if (((IDE.LevelAddedEvent)obj).ScriptMessages.Count > 0)
+				{
+					// Indicate changes inside the Script Editor
+					timer_ScriptButtonBlinking.Interval = 1;
+					timer_ScriptButtonBlinking.Start();
+				}
+			}
+			else if (obj is IDE.ScriptEditorContentChangedEvent)
+			{
+				// Indicate changes inside the Script Editor
+				timer_ScriptButtonBlinking.Interval = 1;
+				timer_ScriptButtonBlinking.Start();
+			}
+			else if (obj is IDE.ProjectScriptPathChangedEvent || obj is IDE.ProjectLevelsPathChangedEvent)
+			{
+				DialogResult result = DarkMessageBox.Show(this, "To apply the changes, you must restart TombIDE.\n" +
+					"Are you sure you want to do that?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+				if (result == DialogResult.Yes)
+				{
+					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
+
+					if (_ide.ClosingCancelled)
+					{
+						// User pressed "Cancel"
+
+						DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
+						   MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+						return;
+					}
+
+					if (obj is IDE.ProjectScriptPathChangedEvent)
+						_ide.Project.ScriptPath = ((IDE.ProjectScriptPathChangedEvent)obj).NewPath;
+					else if (obj is IDE.ProjectLevelsPathChangedEvent)
+					{
+						List<ProjectLevel> projectLevels = new List<ProjectLevel>();
+						projectLevels.AddRange(_ide.Project.Levels);
+
+						// Remove all internal level entries from the project's Levels list (for safety)
+						foreach (ProjectLevel projectLevel in projectLevels)
+						{
+							if (projectLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+								_ide.Project.Levels.Remove(projectLevel);
+						}
+
+						_ide.Project.LevelsPath = ((IDE.ProjectLevelsPathChangedEvent)obj).NewPath;
+					}
+
+					RestartApplication();
+				}
+				else if (result == DialogResult.No)
+					DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
+						   MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			else if (obj is IDE.NewPluginsAddedEvent)
+			{
+				DialogResult result = DarkMessageBox.Show(this,
+					"It is highly recommended to restart TombIDE after adding new plugins,\n" +
+					"otherwise some script elements won't be available.\n" +
+					"Would you like to restart TombIDE now?", "Restart required", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+				if (result == DialogResult.Yes)
+				{
+					_ide.RaiseEvent(new IDE.ProgramClosingEvent()); // This will ask the Script Editor if everything is saved
+
+					if (_ide.ClosingCancelled)
+						return; // User pressed "Cancel"
+
+					RestartApplication();
+				}
+			}
+			else if (obj is IDE.RequestedApplicationRestartEvent)
+				RestartApplication();
+		}
+
+		private void Special_LaunchFLEP(object sender, EventArgs e)
+		{
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Path.Combine(_ide.Project.ProjectPath, "flep.exe"),
+				WorkingDirectory = _ide.Project.ProjectPath
+			};
+
+			Process.Start(startInfo);
+		}
 
 		// All 3 methods below trigger IDE.SelectedIDETabChangedEvent
 		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => _ide.SelectIDETab("Project Master");
