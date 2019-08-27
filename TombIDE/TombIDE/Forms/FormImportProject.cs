@@ -26,7 +26,7 @@ namespace TombIDE
 			textBox_ExePath.BackColor = Color.FromArgb(48, 48, 48); // Mark as uneditable
 			textBox_ExePath.Text = exeFilePath;
 
-			textBox_ProjectName.Text = Path.GetFileName(Path.GetDirectoryName(exeFilePath)); // Folder name of the specified .exe file
+			textBox_ProjectName.Text = Path.GetFileName(Path.GetDirectoryName(exeFilePath)); // Directory name of the specified .exe file
 
 			FillScriptPathTextBox(exeFilePath);
 			FillLevelsPathTextBox(exeFilePath);
@@ -36,16 +36,16 @@ namespace TombIDE
 
 		private void FillScriptPathTextBox(string exeFilePath)
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(Path.GetDirectoryName(exeFilePath));
-
-			// Find the /Script/ folder
-			foreach (DirectoryInfo directory in directoryInfo.GetDirectories())
+			// Find the /Script/ directory
+			foreach (string directory in Directory.GetDirectories(Path.GetDirectoryName(exeFilePath)))
 			{
-				if (directory.Name.ToLower() == "script")
+				string directoryName = Path.GetFileName(directory).ToLower();
+
+				if (directoryName == "script")
 				{
-					// Check if the /Script/ folder contains a script.txt file
-					if (IsScriptFolderValid(directory))
-						textBox_ScriptPath.Text = directory.FullName;
+					// Check if a script.txt file exists in the /Script/ directory
+					if (File.Exists(Path.Combine(directory, "script.txt")))
+						textBox_ScriptPath.Text = directory;
 				}
 			}
 		}
@@ -56,7 +56,7 @@ namespace TombIDE
 
 			textBox_LevelsPath.Text = suggestedLevelsPath;
 
-			// Check if the /Levels/ folder already exists for the project, if not, then highlight the textBox and add a toolTip for it
+			// Check if the /Levels/ directory already exists for the project, if not, then highlight the textBox and add a toolTip for it
 			// to indicate that the pre-set path is just a suggestion
 			if (!Directory.Exists(suggestedLevelsPath))
 			{
@@ -134,10 +134,10 @@ namespace TombIDE
 				// Check if the specified paths are not just random symbols
 				if (Uri.IsWellFormedUriString(scriptPath, UriKind.RelativeOrAbsolute)
 					|| Uri.IsWellFormedUriString(levelsPath, UriKind.RelativeOrAbsolute))
-					throw new ArgumentException("One of the specified paths is invalid or not formatted correclty.");
+					throw new ArgumentException("One or more specified paths are invalid or not formatted correclty.");
 
-				// Check if the specified /Script/ folder contains a script.txt file
-				if (!IsScriptFolderValid(new DirectoryInfo(scriptPath)))
+				// Check if a script.txt file exists in the specified /Script/ folder
+				if (!File.Exists(Path.Combine(scriptPath, "script.txt")))
 					throw new ArgumentException("Selected /Script/ folder does not contain a Script.txt file.");
 
 				if (!Directory.Exists(levelsPath))
@@ -184,28 +184,12 @@ namespace TombIDE
 					break;
 			}
 
-			DirectoryInfo directoryInfo = new DirectoryInfo(Path.GetDirectoryName(exeFilePath));
-
-			foreach (FileInfo file in directoryInfo.GetFiles("*.dll", SearchOption.TopDirectoryOnly))
-			{
-				if (file.Name.ToLower() == "tomb_nextgeneration.dll")
-					gameVersion = GameVersion.TRNG;
-			}
+			if (gameVersion == GameVersion.TR4 && File.Exists(Path.Combine(Path.GetDirectoryName(exeFilePath), "tomb_nextgeneration.dll")))
+				gameVersion = GameVersion.TRNG;
 
 			// TODO: Add TR5Main detection
 
 			return gameVersion;
-		}
-
-		private bool IsScriptFolderValid(DirectoryInfo directory)
-		{
-			foreach (FileInfo file in directory.GetFiles("*.txt", SearchOption.TopDirectoryOnly))
-			{
-				if (file.Name.ToLower() == "script.txt")
-					return true;
-			}
-
-			return false;
 		}
 
 		#endregion Methods

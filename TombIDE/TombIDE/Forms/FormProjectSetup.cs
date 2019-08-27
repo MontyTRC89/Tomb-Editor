@@ -27,7 +27,7 @@ namespace TombIDE
 		private void button_Help_Click(object sender, EventArgs e)
 		{
 			using (FormEngineHelp form = new FormEngineHelp(Cursor.Position))
-				form.ShowDialog(button_Help);
+				form.ShowDialog(this);
 		}
 
 		private void radio_Script_01_CheckedChanged(object sender, EventArgs e)
@@ -133,7 +133,7 @@ namespace TombIDE
 				if (Uri.IsWellFormedUriString(projectPath, UriKind.RelativeOrAbsolute)
 					|| Uri.IsWellFormedUriString(scriptPath, UriKind.RelativeOrAbsolute)
 					|| Uri.IsWellFormedUriString(levelsPath, UriKind.RelativeOrAbsolute))
-					throw new ArgumentException("One of the specified paths is invalid or not formatted correclty.");
+					throw new ArgumentException("One or more specified paths are invalid or not formatted correclty.");
 
 				if (!Directory.Exists(projectPath))
 					Directory.CreateDirectory(projectPath);
@@ -179,25 +179,21 @@ namespace TombIDE
 		{
 			GameVersion gameVersion = 0;
 
-			switch (comboBox_EngineType.SelectedItem)
+			switch (comboBox_EngineType.SelectedIndex)
 			{
-				case "TR4":
+				case 1:
 					gameVersion = GameVersion.TR4;
 					break;
 
-				case "TRNG":
+				case 2:
 					gameVersion = GameVersion.TRNG;
 					break;
 
-				case "TRNG + FLEP":
+				case 3:
 					gameVersion = GameVersion.TRNG;
 					break;
 
-				case "TR5":
-					gameVersion = GameVersion.TR5;
-					break;
-
-				case "TR5Main":
+				case 4:
 					gameVersion = GameVersion.TR5Main;
 					break;
 			}
