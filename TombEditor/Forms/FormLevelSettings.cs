@@ -80,6 +80,38 @@ namespace TombEditor.Forms
             }
         }
 
+        private class ReferencedSoundsCatalogWrapper
+        {
+            private readonly FormLevelSettings _parent;
+            public ReferencedSoundsCatalog Sounds;
+
+            public ReferencedSoundsCatalogWrapper(FormLevelSettings parent, ReferencedSoundsCatalog sounds)
+            {
+                _parent = parent;
+                Sounds = sounds;
+            }
+
+            public string Path
+            {
+                get { return Sounds.Path; }
+                set
+                {
+                    Sounds = new ReferencedSoundsCatalog(_parent._levelSettings, value);
+                    _parent.soundsCatalogsDataGridView.InvalidateRow(_parent._soundsCatalogsDataGridViewDataSource.IndexOf(this));
+                }
+            }
+
+            public string Message
+            {
+                get
+                {
+                    if (Sounds.LoadException == null)
+                        return "Successfully loaded";
+                    return Sounds.LoadException.Message + " (" + Sounds.LoadException.GetType().Name + ")";
+                }
+            }
+        }
+
         private class ReferencedWadWrapper
         {
             private readonly FormLevelSettings _parent;
@@ -208,6 +240,7 @@ namespace TombEditor.Forms
         private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
         private readonly PictureTooltip _pictureTooltip;
         private readonly BindingList<ReferencedWadWrapper> _objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
+        private readonly BindingList<ReferencedSoundsCatalogWrapper> _soundsCatalogsDataGridViewDataSource = new BindingList<ReferencedSoundsCatalogWrapper>();
         private readonly BindingList<ReferencedTextureWrapper> _textureFileDataGridViewDataSource = new BindingList<ReferencedTextureWrapper>();
         private readonly BindingList<OldWadSoundPath> _soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
@@ -268,6 +301,23 @@ namespace TombEditor.Forms
             objectFileDataGridViewControls.AllowUserMove = true;
             objectFileDataGridViewControls.AllowUserNew = true;
             objectFileDataGridViewControls.Enabled = true;
+
+            // Initialize souns catalogs file data grid view
+            foreach (var soundRef in _levelSettings.SoundsCatalogs)
+                _soundsCatalogsDataGridViewDataSource.Add(new ReferencedSoundsCatalogWrapper(this, soundRef)); // We don't need to clone because we don't modify the wad, we create new wads
+            _soundsCatalogsDataGridViewDataSource.ListChanged += delegate
+            {
+                _levelSettings.SoundsCatalogs.Clear();
+                _levelSettings.SoundsCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(o => o.Sounds));
+                ReloadSounds();
+            };
+            soundsCatalogsDataGridView.DataSource = _soundsCatalogsDataGridViewDataSource;
+            soundsCatalogsDataGridViewControls.DataGridView = soundsCatalogsDataGridView;
+            soundsCatalogsDataGridViewControls.CreateNewRow = soundsCatalogDataGridViewCreateNewRow;
+            soundsCatalogsDataGridViewControls.AllowUserDelete = true;
+            soundsCatalogsDataGridViewControls.AllowUserMove = true;
+            soundsCatalogsDataGridViewControls.AllowUserNew = true;
+            soundsCatalogsDataGridViewControls.Enabled = true;
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -346,14 +396,7 @@ namespace TombEditor.Forms
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
-            tbBaseSoundsXmlFilePath.Text = _levelSettings.BaseSoundsXmlFilePath;
-            tbCustomSoundsXmlFilePath.Text = _levelSettings.CustomSoundsXmlFilePath;
-            /*if (tbBaseSoundsXmlFilePath.Text != "")
-                _levelSettings.BaseSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
-            if (tbCustomSoundsXmlFilePath.Text != "")
-                            _levelSettings.CustomSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.CustomSoundsXmlFilePath));
-            */
-
+            
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathTxt.Enabled = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -391,7 +434,7 @@ namespace TombEditor.Forms
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
             gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) && !string.IsNullOrEmpty(Path.GetExtension(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
-
+ 
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
@@ -807,6 +850,24 @@ namespace TombEditor.Forms
             return results;
         }
 
+        private IEnumerable<ReferencedSoundsCatalogWrapper> soundsCatalogDataGridViewCreateNewRow()
+        {
+            List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select new soudns catalogs files", WadSounds.FormatExtensions, VariableType.LevelDirectory).ToList();
+
+            // Load catalogs concurrently
+            ReferencedSoundsCatalogWrapper[] results = new ReferencedSoundsCatalogWrapper[paths.Count];
+            var synchronizedDialog = new GraphicalDialogHandler(this);
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedSoundsCatalogWrapper(this, new ReferencedSoundsCatalog(_levelSettings, paths[i], synchronizedDialog)))))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
+            return results;
+        }
+
         private void objectFileDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= _objectFileDataGridViewDataSource.Count)
@@ -955,6 +1016,10 @@ namespace TombEditor.Forms
             foreach (var reference in _objectFileDataGridViewDataSource)
                 settings.Wads.Add(reference.Wad);
 
+            settings.SoundsCatalogs.Clear();
+            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
+                settings.SoundsCatalogs.Add(reference.Sounds);
+
             settings.Textures.Clear();
             foreach (var reference in _textureFileDataGridViewDataSource)
                 settings.Textures.Add(reference.Texture);
@@ -1043,28 +1108,6 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
-        private void ButSearchBaseXmlFilePath_Click(object sender, EventArgs e)
-        {
-            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
-                                                       "Select the base XML sounds file", 
-                                                       LevelSettings.FileFormatsSoundsXmlFiles,
-                                                       VariableType.LevelDirectory,
-                                                       false);
-            if (result != null)
-            {
-                _levelSettings.BaseSoundsXmlFilePath = result;
-                _levelSettings.BaseSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
-
-                foreach (var soundInfo in _levelSettings.BaseSounds.SoundInfos)
-                {
-                    if (soundInfo.Global && !_levelSettings.SelectedSounds.Contains(soundInfo.Id))
-                        _levelSettings.SelectedSounds.Add(soundInfo.Id);
-                }
-                ReloadSounds();
-                UpdateDialog();
-            }
-        }
-
         private void ReloadSounds()
         {
             dgvSounds.Rows.Clear();
@@ -1079,33 +1122,6 @@ namespace TombEditor.Forms
                     dgvSounds.Rows[dgvSounds.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
                 else
                     dgvSounds.Rows[dgvSounds.Rows.Count - 1].DefaultCellStyle.BackColor = dgvSounds.BackColor;
-            }
-        }
-
-        private void ButSearchCustomXmlFilePath_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ButSearchCustomSoundsXmlPath_Click(object sender, EventArgs e)
-        {
-            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
-                                                     "Select the custom XML sounds file",
-                                                     LevelSettings.FileFormatsSoundsXmlFiles,
-                                                     VariableType.LevelDirectory,
-                                                     false);
-            if (result != null)
-            {
-                _levelSettings.CustomSoundsXmlFilePath = result;
-                _levelSettings.CustomSounds = WadSounds.ReadFromXml(_levelSettings.MakeAbsolute(_levelSettings.BaseSoundsXmlFilePath));
-
-                foreach (var soundInfo in _levelSettings.CustomSounds.SoundInfos)
-                {
-                    if (soundInfo.Global && !_levelSettings.SelectedSounds.Contains(soundInfo.Id))
-                        _levelSettings.SelectedSounds.Add(soundInfo.Id);
-                }
-                ReloadSounds();
-                UpdateDialog();
             }
         }
 

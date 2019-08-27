@@ -30,6 +30,29 @@ namespace TombLib.LevelData
         SoundEngineVersion
     }
 
+    public class XmlSoundsCatalog : ICloneable
+    {
+        public string Path { get; set; }
+        public WadSounds Catalog { get; set; }
+
+        public XmlSoundsCatalog(string path)
+        {
+            Path = path;
+        }
+
+        public XmlSoundsCatalog Clone()
+        {
+            var newObj = new XmlSoundsCatalog(Path);
+            newObj.Catalog = Catalog;
+            return newObj;
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+    }
+
     public class OldWadSoundPath : ICloneable
     {
         public string Path { get; set; }
@@ -100,10 +123,6 @@ namespace TombLib.LevelData
 
         // New sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
-        public string BaseSoundsXmlFilePath { get; set; } = null;
-        public WadSounds BaseSounds { get; set; } = new WadSounds();
-        public string CustomSoundsXmlFilePath { get; set; } = null;
-        public WadSounds CustomSounds { get; set; } = new WadSounds();
         public List<int> SelectedSounds { get; set; } = new List<int>();
         public List<WadSoundInfo> GlobalSoundMap
         {
@@ -111,26 +130,17 @@ namespace TombLib.LevelData
             {
                 var soundmap = new SortedDictionary<int, WadSoundInfo>();
 
-                // First collect all sounds from base file
-                foreach (var sound in BaseSounds.SoundInfos)
-                    if (!soundmap.ContainsKey(sound.Id))
-                        soundmap.Add(sound.Id, sound);
-
-                // Then collect sounds from all wads, using the most recent found
-                foreach (var wadRef in Wads)
-                    if (wadRef.Wad != null)
-                        foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
-                        {
+                // Loop through all reference classes, collecting sounds
+                foreach (var soundsRef in SoundsCatalogs)
+                    if (soundsRef.LoadException == null)
+                        foreach (var sound in soundsRef.Sounds.SoundInfos)
                             if (!soundmap.ContainsKey(sound.Id))
-                                soundmap.Add(sound.Id, sound);
-                            else
-                                soundmap[sound.Id] = sound;
-                        }
-
-                // Last collect all custom sounds
-                foreach (var sound in CustomSounds.SoundInfos)
-                    if (!soundmap.ContainsKey(sound.Id))
-                        soundmap.Add(sound.Id, sound);
+                            {
+                                if (!soundmap.ContainsKey(sound.Id))
+                                    soundmap.Add(sound.Id, sound);
+                                else
+                                    soundmap[sound.Id] = sound;
+                            }
 
                 return soundmap.Values.ToList();
             }
@@ -160,6 +170,7 @@ namespace TombLib.LevelData
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
+        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
         public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
@@ -186,6 +197,7 @@ namespace TombLib.LevelData
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.Wads = Wads.ConvertAll(wad => wad.Clone());
             result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
+            result.SoundsCatalogs = SoundsCatalogs.ConvertAll(catalog => catalog.Clone());
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
