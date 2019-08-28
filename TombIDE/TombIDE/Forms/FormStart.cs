@@ -34,7 +34,7 @@ namespace TombIDE
 			{
 				Project openedProject = XmlHandling.ReadTRPROJ(path);
 
-				// Check if a project with the same name, but different paths exists
+				// Check if a project with the same name but different paths exists
 				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == openedProject.Name.ToLower() && x.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower()))
 					throw new ArgumentException("A project with the same name already exists on the list.");
 
