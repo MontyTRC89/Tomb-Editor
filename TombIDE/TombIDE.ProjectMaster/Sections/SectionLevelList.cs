@@ -31,60 +31,6 @@ namespace TombIDE.ProjectMaster
 			FillLevelList(); // With levels taken from the .trproj file (current _ide.Project)
 		}
 
-		private void OnIDEEventRaised(IIDEEvent obj)
-		{
-			if (obj is IDE.LevelAddedEvent)
-			{
-				// Add the level to the list
-				ProjectLevel addedLevel = ((IDE.LevelAddedEvent)obj).AddedLevel;
-				AddLevelToList(addedLevel, true);
-
-				// Select the new level node
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					ProjectLevel nodeLevel = (ProjectLevel)node.Tag;
-
-					if (nodeLevel.Name == addedLevel.Name)
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
-						break;
-					}
-				}
-			}
-			else if (obj is IDE.SelectedLevelSettingsChangedEvent)
-			{
-				// Update the text of the node (if the level name was changed ofc)
-				if (button_ViewFileNames.Checked)
-				{
-					if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
-						treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name + " (" + _ide.SelectedLevel.GetLatestPrj2File() + ")";
-					else
-						treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name + " (" + _ide.SelectedLevel.SpecificFile + ")";
-				}
-				else
-					treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name;
-
-				// Mark external levels
-				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
-					treeView.SelectedNodes[0].Text = _ide.Configuration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
-
-				// Update the node's Tag with the updated level
-				treeView.SelectedNodes[0].Tag = _ide.SelectedLevel;
-
-				// Send the new list (with the modified node) into the .trproj file
-				ReserializeTRPROJ();
-			}
-			else if (obj is IDE.PRJ2FileDeletedEvent)
-			{
-				// Clear the selection immediately, otherwise many exceptions will happen!
-				treeView.SelectedNodes.Clear();
-				CheckItemSelection();
-
-				RefreshLevelList();
-			}
-		}
-
 		private void FillLevelList()
 		{
 			treeView.Nodes.Clear();
@@ -132,6 +78,56 @@ namespace TombIDE.ProjectMaster
 		#endregion Initialization
 
 		#region Events
+
+		private void OnIDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.LevelAddedEvent)
+			{
+				// Add the level to the list
+				ProjectLevel addedLevel = ((IDE.LevelAddedEvent)obj).AddedLevel;
+				AddLevelToList(addedLevel, true);
+
+				// Select the new level node
+				DarkTreeNode levelNode = treeView.Nodes.Find(x => ((ProjectLevel)x.Tag).Name.ToLower() == addedLevel.Name.ToLower());
+
+				if (levelNode != null)
+				{
+					treeView.SelectNode(levelNode);
+					CheckItemSelection();
+				}
+			}
+			else if (obj is IDE.SelectedLevelSettingsChangedEvent)
+			{
+				// Update the text of the node (if the level name was changed ofc)
+				if (button_ViewFileNames.Checked)
+				{
+					if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
+						treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name + " (" + _ide.SelectedLevel.GetLatestPrj2File() + ")";
+					else
+						treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name + " (" + _ide.SelectedLevel.SpecificFile + ")";
+				}
+				else
+					treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name;
+
+				// Mark external levels
+				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+					treeView.SelectedNodes[0].Text = _ide.Configuration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
+
+				// Update the node's Tag with the updated level
+				treeView.SelectedNodes[0].Tag = _ide.SelectedLevel;
+
+				// Send the new list (with the modified node) into the .trproj file
+				ReserializeTRPROJ();
+			}
+			else if (obj is IDE.PRJ2FileDeletedEvent)
+			{
+				// Clear the selection immediately, otherwise many exceptions will happen!
+				treeView.SelectedNodes.Clear();
+				CheckItemSelection();
+
+				RefreshLevelList();
+			}
+		}
 
 		private void button_New_Click(object sender, EventArgs e) => ShowLevelSetupForm();
 		private void button_Import_Click(object sender, EventArgs e) => ImportLevel();
@@ -342,14 +338,12 @@ namespace TombIDE.ProjectMaster
 					// If a node was selected, reselect it after refreshing
 					if (!string.IsNullOrEmpty(cachedNodeText))
 					{
-						foreach (DarkTreeNode node in treeView.Nodes)
+						DarkTreeNode node = treeView.Nodes.Find(x => x.Text.ToLower() == cachedNodeText.ToLower());
+
+						if (node != null)
 						{
-							if (node.Text == cachedNodeText)
-							{
-								treeView.SelectNode(node);
-								treeView.ScrollTo(node.FullArea.Location);
-								break;
-							}
+							treeView.SelectNode(node);
+							treeView.ScrollTo(node.FullArea.Location);
 						}
 					}
 

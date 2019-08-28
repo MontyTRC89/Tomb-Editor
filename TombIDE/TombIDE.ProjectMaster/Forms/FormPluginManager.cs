@@ -30,6 +30,10 @@ namespace TombIDE.ProjectMaster
 			_ide.RefreshPluginLists();
 		}
 
+		#endregion Initialization
+
+		#region Events
+
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.PluginListsUpdatedEvent)
@@ -40,10 +44,6 @@ namespace TombIDE.ProjectMaster
 				ResetUIElements();
 			}
 		}
-
-		#endregion Initialization
-
-		#region Events
 
 		private void button_OpenArchive_Click(object sender, EventArgs e)
 		{
@@ -64,7 +64,7 @@ namespace TombIDE.ProjectMaster
 
 						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
 						{
-							if (Path.GetFileName(directory.ToLower()) == Path.GetFileNameWithoutExtension(filePath.ToLower()))
+							if (Path.GetFileName(directory).ToLower() == Path.GetFileNameWithoutExtension(filePath).ToLower())
 								throw new ArgumentException("Plugin already installed.");
 						}
 
@@ -85,14 +85,10 @@ namespace TombIDE.ProjectMaster
 
 							Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
 
-							// Check for name duplicates
-							foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+							if (_ide.AvailablePlugins.Exists(x => x.Name.ToLower() == plugin.Name.ToLower()))
 							{
-								if (availablePlugin.Name.ToLower() == plugin.Name.ToLower())
-								{
-									Directory.Delete(extractionPath, true);
-									throw new ArgumentException("A plugin with the same name already exists on the list.");
-								}
+								Directory.Delete(extractionPath, true);
+								throw new ArgumentException("A plugin with the same name already exists on the list.");
 							}
 
 							_ide.RefreshPluginLists();
@@ -147,14 +143,10 @@ namespace TombIDE.ProjectMaster
 
 						Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
 
-						// Check for name duplicates
-						foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+						if (_ide.AvailablePlugins.Exists(x => x.Name.ToLower() == plugin.Name.ToLower()))
 						{
-							if (availablePlugin.Name.ToLower() == plugin.Name.ToLower())
-							{
-								Directory.Delete(extractionPath, true);
-								throw new ArgumentException("A plugin with the same name already exists on the list.");
-							}
+							Directory.Delete(extractionPath, true);
+							throw new ArgumentException("A plugin with the same name already exists on the list.");
 						}
 
 						_ide.RefreshPluginLists();
@@ -391,7 +383,7 @@ namespace TombIDE.ProjectMaster
 				Directory.Delete(cachedFolderPath, true);
 			}
 
-			if (Directory.GetFiles(pluginFolderPath, "plugin*.dll").Length == 0)
+			if (Directory.GetFiles(pluginFolderPath, "plugin_*.dll").Length == 0)
 			{
 				Directory.Delete(pluginFolderPath, true);
 				throw new ArgumentException(string.Format("Couldn't find a valid plugin DLL file in the first directory of the {0}.",
