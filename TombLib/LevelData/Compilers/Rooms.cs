@@ -779,9 +779,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             if (lightCount > 20)
-            {
-                throw new ApplicationException("Room '" + room + "' has more than 20 dynamic lights (It has " + lightCount + "). This can cause crashes with the original engine!");
-            }
+                _progressReporter.ReportWarn("Room '" + room + "' has more than 20 dynamic lights (" + lightCount + "). This can cause crashes with the original engine!");
         }
 
         private void ConvertSectors(Room room, tr_room newRoom)
