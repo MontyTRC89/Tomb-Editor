@@ -70,18 +70,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="COM\Comdlg32.ocx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="COM\Mscomctl.ocx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="COM\PicFormat32.ocx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="COM\Richtx32.ocx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="COM\Comdlg32.ocx" />
+    <EmbeddedResource Include="COM\Mscomctl.ocx" />
+    <EmbeddedResource Include="COM\PicFormat32.ocx" />
+    <EmbeddedResource Include="COM\Richtx32.ocx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
