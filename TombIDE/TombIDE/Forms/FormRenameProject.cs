@@ -61,22 +61,19 @@ namespace TombIDE
 				}
 				else
 				{
-					// Check for name duplicates
-					foreach (Project project in XmlHandling.GetProjectsFromXml())
-					{
-						if (project.Name.ToLower() == newName.ToLower())
-						{
-							// Check if the currently processed Project is the current _ide.Project
-							if (project.ProjectPath.ToLower() == _ide.Project.ProjectPath.ToLower())
-							{
-								if (renameDirectory)
-									HandleDirectoryRenaming(newName);
+					// Check if a project with the same name already exists
+					Project project = XmlHandling.GetProjectsFromXml().Find(x => x.Name.ToLower() == newName.ToLower());
 
-								break;
-							}
-							else
-								throw new ArgumentException("A project with the same name already exists on the list.");
+					if (project != null)
+					{
+						// Check if the Project we found IS the current _ide.Project
+						if (project.ProjectPath.ToLower() == _ide.Project.ProjectPath.ToLower())
+						{
+							if (renameDirectory)
+								HandleDirectoryRenaming(newName);
 						}
+						else
+							throw new ArgumentException("A project with the same name already exists on the list.");
 					}
 
 					_ide.Project.Rename(newName, renameDirectory);
