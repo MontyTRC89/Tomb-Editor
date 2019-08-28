@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using TombIDE.Shared;
 
@@ -22,10 +23,17 @@ namespace TombIDE.REGSVR
 			string PICFORMAT32 = Path.Combine(SharedMethods.GetSystemDirectory(), "PicFormat32.ocx");
 			string COMDLG32 = Path.Combine(SharedMethods.GetSystemDirectory(), "Comdlg32.ocx");
 
-			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\Mscomctl.ocx"), MSCOMCTL, true);
-			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\Richtx32.ocx"), RICHTX32, true);
-			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\PicFormat32.ocx"), PICFORMAT32, true);
-			File.Copy(Path.Combine(SharedMethods.GetProgramDirectory(), @"COM\Comdlg32.ocx"), COMDLG32, true);
+			using (FileStream fileStream = File.Create(MSCOMCTL))
+				Assembly.GetExecutingAssembly().GetManifestResourceStream("TombIDE.REGSVR.COM.Mscomctl.ocx").CopyTo(fileStream);
+
+			using (FileStream fileStream = File.Create(RICHTX32))
+				Assembly.GetExecutingAssembly().GetManifestResourceStream("TombIDE.REGSVR.COM.Richtx32.ocx").CopyTo(fileStream);
+
+			using (FileStream fileStream = File.Create(PICFORMAT32))
+				Assembly.GetExecutingAssembly().GetManifestResourceStream("TombIDE.REGSVR.COM.PicFormat32.ocx").CopyTo(fileStream);
+
+			using (FileStream fileStream = File.Create(COMDLG32))
+				Assembly.GetExecutingAssembly().GetManifestResourceStream("TombIDE.REGSVR.COM.Comdlg32.ocx").CopyTo(fileStream);
 
 			Registration.RegisterCom(MSCOMCTL);
 			Registration.RegisterCom(RICHTX32);
