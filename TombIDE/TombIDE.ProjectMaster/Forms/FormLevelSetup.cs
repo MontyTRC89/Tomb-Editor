@@ -15,12 +15,18 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public FormLevelSetup(IDE ide)
 		{
 			_ide = ide;
 
 			InitializeComponent();
 		}
+
+		#endregion Initialization
+
+		#region Events
 
 		private void button_Create_Click(object sender, EventArgs e)
 		{
@@ -34,12 +40,8 @@ namespace TombIDE.ProjectMaster
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for your level.");
 
-				// Check for name duplicates
-				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
-				{
-					if (projectLevel.Name.ToLower() == levelName.ToLower())
-						throw new ArgumentException("A level with the same name already exists on the list.");
-				}
+				if (_ide.Project.Levels.Exists(x => x.Name.ToLower() == levelName.ToLower()))
+					throw new ArgumentException("A level with the same name already exists on the list.");
 
 				string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName);
 
@@ -85,7 +87,9 @@ namespace TombIDE.ProjectMaster
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
 				button_Create.Enabled = true;
+
 				DialogResult = DialogResult.None;
 			}
 		}
@@ -108,5 +112,7 @@ namespace TombIDE.ProjectMaster
 
 		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
 			SharedMethods.OpenFolderInExplorer(Path.Combine(_ide.Project.ProjectPath, "audio"));
+
+		#endregion Events
 	}
 }

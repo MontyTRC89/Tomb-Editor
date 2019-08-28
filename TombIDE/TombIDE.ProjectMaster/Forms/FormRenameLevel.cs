@@ -11,6 +11,8 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		#region Initialization
+
 		public FormRenameLevel(IDE ide)
 		{
 			_ide = ide;
@@ -63,6 +65,10 @@ namespace TombIDE.ProjectMaster
 			textBox_NewName.SelectAll();
 		}
 
+		#endregion Initialization
+
+		#region Events
+
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
 			try
@@ -88,22 +94,19 @@ namespace TombIDE.ProjectMaster
 				}
 				else
 				{
-					// Check for name duplicates
-					foreach (ProjectLevel projectLevel in _ide.Project.Levels)
-					{
-						if (projectLevel.Name.ToLower() == newName.ToLower())
-						{
-							// Check if the currently processed ProjectLevel is the current _ide.SelectedLevel
-							if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
-							{
-								if (renameDirectory)
-									HandleDirectoryRenaming();
+					// Check if a level with the same name already exists
+					ProjectLevel projectLevel = _ide.Project.Levels.Find(x => x.Name.ToLower() == newName.ToLower());
 
-								break;
-							}
-							else
-								throw new ArgumentException("A level with the same name already exists on the list.");
+					if (projectLevel != null)
+					{
+						// Check if the ProjectLevel we found IS the current _ide.SelectedLevel
+						if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
+						{
+							if (renameDirectory)
+								HandleDirectoryRenaming();
 						}
+						else
+							throw new ArgumentException("A level with the same name already exists on the list.");
 					}
 
 					if (renameScriptEntry)
@@ -180,6 +183,10 @@ namespace TombIDE.ProjectMaster
 			button_Apply.Enabled = !string.IsNullOrWhiteSpace(textBoxContent);
 		}
 
+		#endregion Events
+
+		#region Methods
+
 		private void HandleDirectoryRenaming()
 		{
 			// Allow renaming directories to the same name, but with different letters cases
@@ -189,5 +196,7 @@ namespace TombIDE.ProjectMaster
 			string tempPath = _ide.SelectedLevel.FolderPath + "_TEMP";
 			Directory.Move(_ide.SelectedLevel.FolderPath, tempPath);
 		}
+
+		#endregion Methods
 	}
 }

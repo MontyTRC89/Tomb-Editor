@@ -50,12 +50,8 @@ namespace TombIDE
 				if (radioButton_SelectedCopy.Checked && treeView.SelectedNodes.Count == 0)
 					throw new ArgumentException("You must select which .prj2 files you want to import.");
 
-				// Check for name duplicates
-				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
-				{
-					if (projectLevel.Name.ToLower() == levelName.ToLower())
-						throw new ArgumentException("A level with the same name already exists on the list.");
-				}
+				if (_ide.Project.Levels.Exists(x => x.Name.ToLower() == levelName.ToLower()))
+					throw new ArgumentException("A level with the same name already exists on the list.");
 
 				if (radioButton_SpecifiedCopy.Checked || radioButton_SelectedCopy.Checked)
 					ImportAndCopyFiles(levelName);
@@ -65,7 +61,9 @@ namespace TombIDE
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
 				button_Import.Enabled = true;
+
 				DialogResult = DialogResult.None;
 			}
 		}
@@ -93,7 +91,7 @@ namespace TombIDE
 			}
 			else if (radioButton_SelectedCopy.Checked)
 			{
-				// Check if the user-specified file was selected on the list, if not, then set the specificFile property to "$(LatestFile)"
+				// Check if the user-specified file was selected on the list, if not, then set the SpecificFile property to "$(LatestFile)"
 				bool specificFileSelected = false;
 
 				// Copy all selected files into the created levelFolderPath
@@ -154,6 +152,8 @@ namespace TombIDE
 					UpdateAllPrj2FilesInLevelDirectory(importedLevel);
 			}
 
+			/* Script generating */
+
 			if (checkBox_GenerateSection.Checked)
 			{
 				int ambientSoundID = (int)numeric_SoundID.Value;
@@ -169,17 +169,16 @@ namespace TombIDE
 
 		private void UpdateAllPrj2FilesInLevelDirectory(ProjectLevel importedLevel)
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(importedLevel.FolderPath);
-			FileInfo[] files = directoryInfo.GetFiles("*.prj2", SearchOption.TopDirectoryOnly);
+			string[] files = Directory.GetFiles(importedLevel.FolderPath, "*.prj2", SearchOption.TopDirectoryOnly);
 
 			progressBar.Visible = true;
 			progressBar.BringToFront();
 			progressBar.Maximum = files.Length;
 
-			foreach (FileInfo file in files)
+			foreach (string file in files)
 			{
-				if (!ProjectLevel.IsBackupFile(file.Name))
-					LevelHandling.UpdatePrj2GameSettings(file.FullName, importedLevel, _ide.Project);
+				if (!ProjectLevel.IsBackupFile(Path.GetFileName(file)))
+					LevelHandling.UpdatePrj2GameSettings(file, importedLevel, _ide.Project);
 
 				progressBar.Increment(1);
 			}
