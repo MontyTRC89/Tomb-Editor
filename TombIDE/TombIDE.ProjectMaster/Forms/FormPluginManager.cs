@@ -75,6 +75,7 @@ namespace TombIDE.ProjectMaster
 
 							string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileNameWithoutExtension(filePath));
 
+							// Extract all entries from the archive
 							foreach (IArchiveEntry entry in archive.Entries)
 							{
 								if (!entry.IsDirectory)
@@ -283,18 +284,8 @@ namespace TombIDE.ProjectMaster
 
 			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 			{
-				bool isPluginInstalled = false;
-
-				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
-				{
-					if (availablePlugin.InternalDllPath == installedPlugin.InternalDllPath)
-					{
-						isPluginInstalled = true;
-						break;
-					}
-				}
-
-				if (isPluginInstalled)
+				// Skip installed project plugins for this list, because we show them in treeView_Installed instead
+				if (_ide.Project.InstalledPlugins.Exists(x => x.InternalDllPath.ToLower() == availablePlugin.InternalDllPath.ToLower()))
 					continue;
 
 				DarkTreeNode node = new DarkTreeNode(availablePlugin.Name)
@@ -393,7 +384,7 @@ namespace TombIDE.ProjectMaster
 			// Check for DLL duplicates
 			foreach (Plugin plugin in _ide.AvailablePlugins)
 			{
-				string existingDLLFileName = Path.GetFileName(plugin.InternalDllPath.ToLower());
+				string existingDLLFileName = Path.GetFileName(plugin.InternalDllPath).ToLower();
 				string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First().ToLower());
 
 				if (existingDLLFileName == installedDLLFileName)
