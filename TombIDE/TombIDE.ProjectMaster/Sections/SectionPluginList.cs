@@ -33,15 +33,15 @@ namespace TombIDE.ProjectMaster
 			tabControl.HideTab(1); // The "Description" tab
 		}
 
+		#endregion Initialization
+
+		#region Events
+
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.PluginListsUpdatedEvent)
 				UpdateTreeView();
 		}
-
-		#endregion Initialization
-
-		#region Events
 
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
 		{
@@ -144,7 +144,7 @@ namespace TombIDE.ProjectMaster
 
 					foreach (string file in Directory.GetFiles(Path.GetDirectoryName(selectedPlugin.InternalDllPath)))
 					{
-						string extension = Path.GetExtension(file.ToLower());
+						string extension = Path.GetExtension(file).ToLower();
 
 						if (extension == ".jpg" || extension == ".png" || extension == ".bmp" || extension == ".gif")
 						{
