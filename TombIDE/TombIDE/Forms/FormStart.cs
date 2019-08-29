@@ -34,12 +34,12 @@ namespace TombIDE
 			{
 				Project openedProject = XmlHandling.ReadTRPROJ(path);
 
+				if (!openedProject.IsValidProject())
+					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
+
 				// Check if a project with the same name but different paths exists
 				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == openedProject.Name.ToLower() && x.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower()))
 					throw new ArgumentException("A project with the same name already exists on the list.");
-
-				if (!openedProject.IsValidProject())
-					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
 
 				// Check if the opened project already exists on the list, if not, then add it
 				if (!treeView.Nodes.Exists(x => ((Project)x.Tag).Name.ToLower() == openedProject.Name.ToLower()))
@@ -81,6 +81,14 @@ namespace TombIDE
 			base.OnClosed(e);
 		}
 
+		private void ApplySavedSettings()
+		{
+			Size = _ide.Configuration.Start_WindowSize;
+
+			if (_ide.Configuration.Start_OpenMaximized)
+				WindowState = FormWindowState.Maximized;
+		}
+
 		private void SaveSettings()
 		{
 			_ide.Configuration.Start_OpenMaximized = WindowState == FormWindowState.Maximized;
@@ -91,14 +99,6 @@ namespace TombIDE
 				_ide.Configuration.Start_WindowSize = RestoreBounds.Size;
 
 			_ide.Configuration.Save();
-		}
-
-		private void ApplySavedSettings()
-		{
-			Size = _ide.Configuration.Start_WindowSize;
-
-			if (_ide.Configuration.Start_OpenMaximized)
-				WindowState = FormWindowState.Maximized;
 		}
 
 		private void FillProjectList()
@@ -234,11 +234,11 @@ namespace TombIDE
 					{
 						Project openedProject = XmlHandling.ReadTRPROJ(dialog.FileName);
 
-						if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == openedProject.Name.ToLower()))
-							throw new ArgumentException("A project with the same name already exists on the list.");
-
 						if (!openedProject.IsValidProject())
 							throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
+
+						if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == openedProject.Name.ToLower()))
+							throw new ArgumentException("A project with the same name already exists on the list.");
 
 						_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
 					}
@@ -265,7 +265,7 @@ namespace TombIDE
 						string exeName = Path.GetFileName(exeFilePath).ToLower();
 
 						// Check if the imported .exe file is a TR game that's actually supported
-						if (exeName != "tomb4.exe" && exeName != "pctomb5.exe" && exeName != "launch.exe")
+						if (exeName != "tomb4.exe" && exeName != "launch.exe")
 							throw new ArgumentException("Invalid game .exe file.");
 
 						if (exeName == "launch.exe")
@@ -274,7 +274,7 @@ namespace TombIDE
 
 							foreach (string file in Directory.GetFiles(Path.GetDirectoryName(exeFilePath), "*.exe"))
 							{
-								if (Path.GetFileName(file).ToLower() == "tomb4.exe" || Path.GetFileName(file).ToLower() == "pctomb5.exe")
+								if (Path.GetFileName(file).ToLower() == "tomb4.exe")
 								{
 									exeFilePath = file;
 									validExeFound = true;
