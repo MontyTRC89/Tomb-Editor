@@ -103,7 +103,7 @@ namespace TombIDE
 			Directory.Move(_ide.Project.ProjectPath, tempPath);
 
 			// Adjust the ProjectLevel paths too
-			if (_ide.Project.LevelsPath.StartsWith(_ide.Project.ProjectPath))
+			if (_ide.Project.LevelsPath.StartsWith(_ide.Project.ProjectPath, StringComparison.OrdinalIgnoreCase))
 			{
 				string newProjectPath = Path.Combine(Path.GetDirectoryName(_ide.Project.ProjectPath), newName);
 
