@@ -334,7 +334,10 @@ namespace TombIDE.ProjectMaster
 
 		private void ValidatePluginFolder(string pluginFolderPath, bool extractedFromArchive = false)
 		{
-			if (Directory.GetFileSystemEntries(pluginFolderPath).Length == 1)
+			// Check if the plugin folder has only one FileSystem entry in the top directory
+			// and if the entry is not a valid plugin DLL file
+			if (Directory.GetFileSystemEntries(pluginFolderPath).Length == 1
+				&& Directory.GetFiles(pluginFolderPath, "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly).Length == 0)
 			{
 				string nextFolderPath = Path.Combine(pluginFolderPath, Path.GetFileName(Directory.GetFileSystemEntries(pluginFolderPath).First()));
 				string cachedFolderPath = nextFolderPath;
