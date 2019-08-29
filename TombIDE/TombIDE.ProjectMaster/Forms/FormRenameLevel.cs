@@ -20,7 +20,7 @@ namespace TombIDE.ProjectMaster
 			InitializeComponent();
 
 			// Disable renaming external level folders (level folders which are outside of the project's /Levels/ folder)
-			if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+			if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 			{
 				checkBox_RenameDirectory.Text = "Can't rename external level folders";
 				checkBox_RenameDirectory.Checked = false;
@@ -128,11 +128,11 @@ namespace TombIDE.ProjectMaster
 			string textBoxContent = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 			textBoxContent = LevelHandling.RemoveIllegalNameSymbols(textBoxContent);
 
-			// If the name hasn't changed but the level folder name is different
+			// If the name hasn't changed, but the level folder name is different
 			if (textBoxContent == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) != textBoxContent)
 			{
 				// If the level is not an external level
-				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 				{
 					checkBox_RenameDirectory.Enabled = true;
 					checkBox_RenameDirectory.Checked = true;
@@ -141,7 +141,7 @@ namespace TombIDE.ProjectMaster
 				checkBox_RenameScriptEntry.Checked = false;
 				checkBox_RenameScriptEntry.Enabled = false;
 			}
-			// If the name changed but the level folder name is the same
+			// If the name changed, but the level folder name is the same
 			else if (textBoxContent != _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) == textBoxContent)
 			{
 				checkBox_RenameDirectory.Checked = false;
@@ -166,7 +166,7 @@ namespace TombIDE.ProjectMaster
 			else // Basically every other scenario
 			{
 				// If the level is not an external level
-				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 				{
 					checkBox_RenameDirectory.Enabled = true;
 					checkBox_RenameDirectory.Checked = true;

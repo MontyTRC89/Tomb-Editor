@@ -132,8 +132,23 @@ namespace TombIDE
 				SpecificFile = specificFileName
 			};
 
-			/* .prj2 file settings updating */
+			UpdateLevelSettings(importedLevel);
 
+			if (checkBox_GenerateSection.Checked)
+			{
+				int ambientSoundID = (int)numeric_SoundID.Value;
+				bool horizon = checkBox_EnableHorizon.Checked;
+
+				List<string> scriptMessages = LevelHandling.GenerateSectionMessages(importedLevel, ambientSoundID, horizon);
+
+				_ide.AddLevelToProject(importedLevel, scriptMessages);
+			}
+			else
+				_ide.AddLevelToProject(importedLevel);
+		}
+
+		private void UpdateLevelSettings(ProjectLevel importedLevel)
+		{
 			if (radioButton_SpecifiedCopy.Checked)
 			{
 				string specifiedFilePath = textBox_Prj2Path.Tag.ToString();
@@ -151,20 +166,6 @@ namespace TombIDE
 				if (result == DialogResult.Yes)
 					UpdateAllPrj2FilesInLevelDirectory(importedLevel);
 			}
-
-			/* Script generating */
-
-			if (checkBox_GenerateSection.Checked)
-			{
-				int ambientSoundID = (int)numeric_SoundID.Value;
-				bool horizon = checkBox_EnableHorizon.Checked;
-
-				List<string> scriptMessages = LevelHandling.GenerateSectionMessages(importedLevel, ambientSoundID, horizon);
-
-				_ide.AddLevelToProject(importedLevel, scriptMessages);
-			}
-			else
-				_ide.AddLevelToProject(importedLevel);
 		}
 
 		private void UpdateAllPrj2FilesInLevelDirectory(ProjectLevel importedLevel)
