@@ -235,9 +235,9 @@ namespace TombIDE
 			string programName = FileVersionInfo.GetVersionInfo(filePath).ProductName;
 
 			// Handle batch files and programs without ProductNames
-			if (string.IsNullOrEmpty(programName) && Path.GetExtension(filePath).ToLower() == ".bat")
+			if (string.IsNullOrWhiteSpace(programName) && Path.GetExtension(filePath).ToLower() == ".bat")
 				programName = Path.GetFileNameWithoutExtension(filePath) + " (Batch File)";
-			else if (string.IsNullOrEmpty(programName))
+			else if (string.IsNullOrWhiteSpace(programName))
 				programName = Path.GetFileNameWithoutExtension(filePath);
 
 			toolTip.SetToolTip(button, programName);

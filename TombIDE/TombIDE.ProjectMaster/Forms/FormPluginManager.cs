@@ -53,53 +53,7 @@ namespace TombIDE.ProjectMaster
 				dialog.Filter = "All Supported Files|*.zip;*.rar;*.7z|ZIP Archives|*.zip|RAR Archives|*.rar|7-Zip Archives|*.7z";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
-				{
-					string filePath = dialog.FileName;
-					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
-
-					try
-					{
-						if (!Directory.Exists(pluginsFolderPath))
-							Directory.CreateDirectory(pluginsFolderPath);
-
-						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
-						{
-							if (Path.GetFileName(directory).ToLower() == Path.GetFileNameWithoutExtension(filePath).ToLower())
-								throw new ArgumentException("Plugin already installed.");
-						}
-
-						using (IArchive archive = ArchiveFactory.Open(filePath))
-						{
-							if (!IsValidPluginArchive(archive))
-								throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
-
-							string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileNameWithoutExtension(filePath));
-
-							// Extract all entries from the archive
-							foreach (IArchiveEntry entry in archive.Entries)
-							{
-								if (!entry.IsDirectory)
-									entry.WriteToDirectory(extractionPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
-							}
-
-							ValidatePluginFolder(extractionPath, true);
-
-							Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
-
-							if (_ide.AvailablePlugins.Exists(x => x.Name.ToLower() == plugin.Name.ToLower()))
-							{
-								Directory.Delete(extractionPath, true);
-								throw new ArgumentException("A plugin with the same name already exists on the list.");
-							}
-
-							_ide.RefreshPluginLists();
-						}
-					}
-					catch (Exception ex)
-					{
-						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-				}
+					InstallPluginIntoTombIDE(dialog.FileName);
 			}
 		}
 
@@ -110,53 +64,7 @@ namespace TombIDE.ProjectMaster
 				dialog.Title = "Select the folder of the plugin you want to install";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
-				{
-					string folderPath = dialog.Folder;
-					string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
-
-					try
-					{
-						if (!Directory.Exists(pluginsFolderPath))
-							Directory.CreateDirectory(pluginsFolderPath);
-
-						foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
-						{
-							if (Path.GetFileName(directory.ToLower()) == Path.GetFileName(folderPath.ToLower()))
-								throw new ArgumentException("Plugin already installed.");
-						}
-
-						if (!IsValidPluginFolder(folderPath))
-							throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
-
-						string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileName(folderPath));
-
-						Directory.CreateDirectory(extractionPath);
-
-						// Create all of the subdirectories
-						foreach (string dirPath in Directory.GetDirectories(folderPath, "*", System.IO.SearchOption.AllDirectories))
-							Directory.CreateDirectory(dirPath.Replace(folderPath, extractionPath));
-
-						// Copy all the files into the folder
-						foreach (string newPath in Directory.GetFiles(folderPath, "*.*", System.IO.SearchOption.AllDirectories))
-							File.Copy(newPath, newPath.Replace(folderPath, extractionPath));
-
-						ValidatePluginFolder(extractionPath, true);
-
-						Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
-
-						if (_ide.AvailablePlugins.Exists(x => x.Name.ToLower() == plugin.Name.ToLower()))
-						{
-							Directory.Delete(extractionPath, true);
-							throw new ArgumentException("A plugin with the same name already exists on the list.");
-						}
-
-						_ide.RefreshPluginLists();
-					}
-					catch (Exception ex)
-					{
-						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-				}
+					InstallPluginIntoTombIDE(dialog.Folder);
 			}
 		}
 
@@ -165,8 +73,8 @@ namespace TombIDE.ProjectMaster
 			Plugin affectedPlugin = (Plugin)treeView_Available.SelectedNodes[0].Tag;
 
 			DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to delete the \"" + affectedPlugin.Name + "\" plugin?\n" +
-					"This will send the plugin folder with all its files into the recycle bin.", "Are you sure?",
-					MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				"This will send the plugin folder with all its files into the recycle bin.", "Are you sure?",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (result == DialogResult.Yes)
 				FileSystem.DeleteDirectory(Path.GetDirectoryName(affectedPlugin.InternalDllPath), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
@@ -182,10 +90,12 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
+					// Copy the plugin DLL file into the current project folder
+
 					string dllFilePath = ((Plugin)node.Tag).InternalDllPath;
 					string destPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
 
-					File.Copy(dllFilePath, destPath, true);
+					File.Copy(dllFilePath, destPath);
 
 					// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
 				}
@@ -202,6 +112,8 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
+					// Remove the plugin DLL file from the current project folder
+
 					string dllFilePath = ((Plugin)node.Tag).InternalDllPath;
 
 					if (string.IsNullOrEmpty(dllFilePath))
@@ -330,6 +242,82 @@ namespace TombIDE.ProjectMaster
 			button_Uninstall.Enabled = false;
 
 			button_OpenInExplorer.Enabled = false;
+		}
+
+		private void InstallPluginIntoTombIDE(string path)
+		{
+			try
+			{
+				string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"); // Internal TombIDE folder
+
+				if (!Directory.Exists(pluginsFolderPath))
+					Directory.CreateDirectory(pluginsFolderPath);
+
+				// Check for plugin directory name duplicates
+				foreach (string directory in Directory.GetDirectories(pluginsFolderPath))
+				{
+					if (Path.GetFileName(directory).ToLower() == Path.GetFileNameWithoutExtension(path).ToLower())
+						throw new ArgumentException("Plugin already installed.");
+				}
+
+				string extractionPath = Path.Combine(pluginsFolderPath, Path.GetFileNameWithoutExtension(path));
+
+				// Check if the path is for a folder
+				if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+					InstallPluginFromFolder(path, extractionPath);
+				else
+					InstallPluginArchive(path, extractionPath);
+
+				Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
+
+				if (_ide.AvailablePlugins.Exists(x => x.Name.ToLower() == plugin.Name.ToLower()))
+				{
+					Directory.Delete(extractionPath, true);
+					throw new ArgumentException("A plugin with the same name already exists on the list.");
+				}
+
+				_ide.RefreshPluginLists();
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void InstallPluginFromFolder(string folderPath, string extractionPath)
+		{
+			if (!IsValidPluginFolder(folderPath))
+				throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
+
+			Directory.CreateDirectory(extractionPath);
+
+			// Create all of the subdirectories
+			foreach (string dirPath in Directory.GetDirectories(folderPath, "*", System.IO.SearchOption.AllDirectories))
+				Directory.CreateDirectory(dirPath.Replace(folderPath, extractionPath));
+
+			// Copy all the files into the folder
+			foreach (string newPath in Directory.GetFiles(folderPath, "*.*", System.IO.SearchOption.AllDirectories))
+				File.Copy(newPath, newPath.Replace(folderPath, extractionPath));
+
+			ValidatePluginFolder(extractionPath);
+		}
+
+		private void InstallPluginArchive(string filePath, string extractionPath)
+		{
+			using (IArchive archive = ArchiveFactory.Open(filePath))
+			{
+				if (!IsValidPluginArchive(archive))
+					throw new ArgumentException("Selected archive doesn't contain a valid plugin DLL file.");
+
+				// Extract all entries from the archive
+				foreach (IArchiveEntry entry in archive.Entries)
+				{
+					if (!entry.IsDirectory)
+						entry.WriteToDirectory(extractionPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+				}
+			}
+
+			ValidatePluginFolder(extractionPath, true);
 		}
 
 		private void ValidatePluginFolder(string pluginFolderPath, bool extractedFromArchive = false)
