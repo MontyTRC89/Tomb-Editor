@@ -50,13 +50,17 @@ namespace TombIDE.ProjectMaster
 			CheckPlugins();
 		}
 
+		#endregion Initialization
+
+		#region Events
+
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.RequestedPluginListRefreshEvent)
 				CheckPlugins();
 		}
 
-		#endregion Initialization
+		#endregion Events
 
 		#region Watchers
 
@@ -162,20 +166,18 @@ namespace TombIDE.ProjectMaster
 		/// </summary>
 		private void LookForUndefinedPlugins()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"));
-
-			foreach (DirectoryInfo directory in directoryInfo.GetDirectories())
+			foreach (string directory in Directory.GetDirectories(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins")))
 			{
-				if (!IsValidPluginFolder(directory.FullName))
+				if (!IsValidPluginFolder(directory))
 					continue;
 
-				if (IsPluginFolderAlreadyDefined(directory.FullName))
+				if (IsPluginFolderAlreadyDefined(directory))
 					continue;
 
-				if (IsDLLFileADuplicate(directory.FullName))
+				if (IsDLLFileADuplicate(directory))
 					continue;
 
-				Plugin plugin = Plugin.InstallPluginFolder(directory.FullName);
+				Plugin plugin = Plugin.InstallPluginFolder(directory);
 				_ide.AvailablePlugins.Add(plugin);
 			}
 		}
@@ -186,21 +188,14 @@ namespace TombIDE.ProjectMaster
 
 			foreach (string pluginFile in Directory.GetFiles(_ide.Project.ProjectPath, "plugin_*.dll", SearchOption.TopDirectoryOnly))
 			{
-				bool pluginFound = false;
+				// Check if the plugin is available in TombIDE
+				Plugin plugin = _ide.AvailablePlugins.Find(x => Path.GetFileName(x.InternalDllPath).ToLower() == Path.GetFileName(pluginFile).ToLower());
 
-				foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+				if (plugin != null)
+					projectPlugins.Add(plugin);
+				else // The plugin's DLL file is unknown for TombIDE
 				{
-					if (Path.GetFileName(availablePlugin.InternalDllPath.ToLower()) == Path.GetFileName(pluginFile.ToLower()))
-					{
-						projectPlugins.Add(availablePlugin);
-						pluginFound = true;
-						break;
-					}
-				}
-
-				if (!pluginFound)
-				{
-					Plugin plugin = new Plugin
+					plugin = new Plugin
 					{
 						Name = Path.GetFileName(pluginFile)
 					};
@@ -219,27 +214,13 @@ namespace TombIDE.ProjectMaster
 
 		private bool IsPluginFolderAlreadyDefined(string path)
 		{
-			foreach (Plugin plugin in _ide.AvailablePlugins)
-			{
-				if (Path.GetDirectoryName(plugin.InternalDllPath.ToLower()) == path.ToLower())
-					return true;
-			}
-
-			return false;
+			return _ide.AvailablePlugins.Exists(x => Path.GetDirectoryName(x.InternalDllPath).ToLower() == path.ToLower());
 		}
 
 		private bool IsDLLFileADuplicate(string pluginFolderPath)
 		{
-			foreach (Plugin plugin in _ide.AvailablePlugins)
-			{
-				string existingDLLFileName = Path.GetFileName(plugin.InternalDllPath.ToLower());
-				string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First().ToLower());
-
-				if (existingDLLFileName == installedDLLFileName)
-					return true;
-			}
-
-			return false;
+			string dllFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First());
+			return _ide.AvailablePlugins.Exists(x => Path.GetFileName(x.InternalDllPath).ToLower() == dllFileName.ToLower());
 		}
 
 		#endregion Plugin handling

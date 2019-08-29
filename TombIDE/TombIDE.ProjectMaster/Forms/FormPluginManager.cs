@@ -373,17 +373,14 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// Check for DLL duplicates
-			foreach (Plugin plugin in _ide.AvailablePlugins)
-			{
-				string existingDLLFileName = Path.GetFileName(plugin.InternalDllPath).ToLower();
-				string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First().ToLower());
+			string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First());
+			Plugin plugin = _ide.AvailablePlugins.Find(x => Path.GetFileName(x.InternalDllPath).ToLower() == installedDLLFileName.ToLower());
 
-				if (existingDLLFileName == installedDLLFileName)
-				{
-					Directory.Delete(pluginFolderPath, true);
-					throw new ArgumentException(string.Format("Selected {0} has the same DLL file as the\n" +
-						"\"{1}\" plugin.", extractedFromArchive ? "archive" : "folder", plugin.Name));
-				}
+			if (plugin != null)
+			{
+				Directory.Delete(pluginFolderPath, true);
+				throw new ArgumentException(string.Format("Selected {0} has the same DLL file as the\n" +
+					"\"{1}\" plugin.", extractedFromArchive ? "archive" : "folder", plugin.Name));
 			}
 		}
 

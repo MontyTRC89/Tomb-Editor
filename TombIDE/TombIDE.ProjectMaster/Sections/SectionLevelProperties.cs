@@ -37,6 +37,46 @@ namespace TombIDE.ProjectMaster
 			AddPinnedProgramsToContextMenu();
 		}
 
+		private void AddPinnedProgramsToContextMenu()
+		{
+			foreach (string programPath in _ide.Configuration.PinnedProgramPaths)
+			{
+				string exeFileName = Path.GetFileName(programPath).ToLower();
+
+				// Exclude these programs from the list
+				if (exeFileName == "tombeditor.exe" || exeFileName == "wadtool.exe" || exeFileName == "tombide.exe"
+					|| exeFileName == "ng_center.exe" || exeFileName == "tomb4.exe" || exeFileName == "pctomb5.exe")
+					continue;
+
+				// Exclude batch files
+				if (exeFileName.EndsWith(".bat"))
+					continue;
+
+				// Get the ProductName and the icon of the program
+				string programName = FileVersionInfo.GetVersionInfo(programPath).ProductName;
+				Image image = ImageHandling.ResizeImage(Icon.ExtractAssociatedIcon(programPath).ToBitmap(), 16, 16);
+
+				if (string.IsNullOrEmpty(programName))
+					programName = Path.GetFileNameWithoutExtension(programPath);
+
+				// Create the menu item
+				ToolStripMenuItem item = new ToolStripMenuItem
+				{
+					Image = image,
+					Text = "Open with " + programName,
+					Tag = programPath
+				};
+
+				// Bind the OnContextMenuProgramClicked event method to the item and add it to the list
+				item.Click += OnContextMenuProgramClicked;
+				contextMenu.Items.Add(item);
+			}
+		}
+
+		#endregion Initialization
+
+		#region Events
+
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.SelectedLevelChangedEvent)
@@ -77,46 +117,6 @@ namespace TombIDE.ProjectMaster
 				AddPinnedProgramsToContextMenu();
 			}
 		}
-
-		private void AddPinnedProgramsToContextMenu()
-		{
-			foreach (string programPath in _ide.Configuration.PinnedProgramPaths)
-			{
-				string exeFileName = Path.GetFileName(programPath).ToLower();
-
-				// Exclude these programs from the list
-				if (exeFileName == "tombeditor.exe" || exeFileName == "wadtool.exe" || exeFileName == "tombide.exe"
-					|| exeFileName == "ng_center.exe" || exeFileName == "tomb4.exe" || exeFileName == "pctomb5.exe")
-					continue;
-
-				// Exclude batch files
-				if (exeFileName.EndsWith(".bat"))
-					continue;
-
-				// Get the ProductName and the icon of the program
-				string programName = FileVersionInfo.GetVersionInfo(programPath).ProductName;
-				Image image = ImageHandling.ResizeImage(Icon.ExtractAssociatedIcon(programPath).ToBitmap(), 16, 16);
-
-				if (string.IsNullOrEmpty(programName))
-					programName = Path.GetFileNameWithoutExtension(programPath);
-
-				// Create the menu item
-				ToolStripMenuItem item = new ToolStripMenuItem
-				{
-					Image = image,
-					Text = "Open with " + programName,
-					Tag = programPath
-				};
-
-				// Bind the OnContextMenuProgramClicked event method to the item and add it to the list
-				item.Click += OnContextMenuProgramClicked;
-				contextMenu.Items.Add(item);
-			}
-		}
-
-		#endregion Initialization
-
-		#region Events
 
 		private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -206,7 +206,8 @@ namespace TombIDE.ProjectMaster
 			if (treeView_Resources.SelectedNodes.Count == 0)
 				return;
 
-			foreach (DarkTreeNode node in treeView_Resources.Nodes) // Check if the clicked node is not a default node
+			// Check if the clicked node is not a default node
+			foreach (DarkTreeNode node in treeView_Resources.Nodes)
 			{
 				if (treeView_Resources.SelectedNodes[0] == node)
 					return;
@@ -237,7 +238,8 @@ namespace TombIDE.ProjectMaster
 			if (treeView_Resources.SelectedNodes.Count == 0)
 				return;
 
-			foreach (DarkTreeNode node in treeView_Resources.Nodes) // Check if the clicked node is not a default node
+			// Check if the clicked node is not a default node
+			foreach (DarkTreeNode node in treeView_Resources.Nodes)
 			{
 				if (treeView_Resources.SelectedNodes[0] == node)
 					return;
@@ -346,19 +348,17 @@ namespace TombIDE.ProjectMaster
 		{
 			treeView_AllPrjFiles.Nodes.Clear();
 
-			DirectoryInfo directoryInfo = new DirectoryInfo(_ide.SelectedLevel.FolderPath);
-
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.prj2", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(_ide.SelectedLevel.FolderPath, "*.prj2", SearchOption.TopDirectoryOnly))
 			{
 				// Don't show backup files if checkBox_ShowAllFiles is unchecked
-				if (!checkBox_ShowAllFiles.Checked && ProjectLevel.IsBackupFile(fileInfo.Name))
+				if (!checkBox_ShowAllFiles.Checked && ProjectLevel.IsBackupFile(Path.GetFileName(file)))
 					continue;
 
 				// Create the .prj2 file node
 				DarkTreeNode node = new DarkTreeNode
 				{
-					Text = fileInfo.Name,
-					Tag = fileInfo.FullName
+					Text = Path.GetFileName(file),
+					Tag = file
 				};
 
 				// Add the node to the .prj2 file list
@@ -366,16 +366,11 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// Select the SpecificFile node (if the file exists on the list)
-			foreach (DarkTreeNode node in treeView_AllPrjFiles.Nodes)
-			{
-				if (node.Text == _ide.SelectedLevel.SpecificFile)
-				{
-					treeView_AllPrjFiles.SelectNode(node);
-					break;
-				}
-			}
+			DarkTreeNode treeNode = treeView_AllPrjFiles.Nodes.Find(x => x.Text.ToLower() == _ide.SelectedLevel.SpecificFile.ToLower());
 
-			if (treeView_AllPrjFiles.SelectedNodes.Count == 0)
+			if (treeNode != null)
+				treeView_AllPrjFiles.SelectNode(treeNode);
+			else
 				treeView_AllPrjFiles.SelectNode(treeView_AllPrjFiles.Nodes[0]); // Select the first node if no file was found
 
 			treeView_AllPrjFiles.Invalidate();
