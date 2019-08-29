@@ -32,11 +32,11 @@ namespace TombIDE.ProjectMaster
 				{
 					string fileName = Path.GetFileName(file);
 
-					if (fileName == "db_patches_crash.bin" ||
-						fileName == "DETECTED CRASH.txt" ||
-						fileName == "LastExtraction.lst" ||
-						(fileName.StartsWith("Last_Crash_") && (fileName.EndsWith(".txt") || fileName.EndsWith(".mem"))) ||
-						fileName.EndsWith("_warm_up_log.txt"))
+					if (fileName == "db_patches_crash.bin"
+						|| fileName == "DETECTED CRASH.txt"
+						|| fileName == "LastExtraction.lst"
+						|| (fileName.StartsWith("Last_Crash_") && (fileName.EndsWith(".txt") || fileName.EndsWith(".mem")))
+						|| fileName.EndsWith("_warm_up_log.txt"))
 					{
 						File.Delete(file);
 						wereFilesDeleted = true;
