@@ -44,7 +44,7 @@ namespace TombIDE.ProjectMaster
 			section_PluginList.Initialize(_ide);
 
 			// Collapse the "Plugins" section if the engine doesn't support plugins
-			if (_ide.Project.GameVersion == GameVersion.TR4 || _ide.Project.GameVersion == GameVersion.TR5)
+			if (_ide.Project.GameVersion == GameVersion.TR4)
 				splitContainer_Info.Panel2Collapsed = true;
 
 			CheckPlugins();

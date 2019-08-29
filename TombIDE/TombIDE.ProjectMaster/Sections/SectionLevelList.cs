@@ -65,7 +65,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// Mark external levels
-			if (!level.FolderPath.StartsWith(_ide.Project.LevelsPath))
+			if (!level.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 				node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
 
 			// Add the node to the list
@@ -110,7 +110,7 @@ namespace TombIDE.ProjectMaster
 					treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name;
 
 				// Mark external levels
-				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 					treeView.SelectedNodes[0].Text = _ide.Configuration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
 
 				// Update the node's Tag with the updated level
@@ -205,7 +205,7 @@ namespace TombIDE.ProjectMaster
 				{
 					try
 					{
-						if (dialog.FileName.StartsWith(_ide.Project.LevelsPath))
+						if (dialog.FileName.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 							throw new ArgumentException("You cannot import levels which are already inside the project's /Levels/ folder.");
 
 						if (ProjectLevel.IsBackupFile(Path.GetFileName(dialog.FileName)))
@@ -235,7 +235,7 @@ namespace TombIDE.ProjectMaster
 			// We can't allow deleting directories of external levels, so we must handle them differently
 
 			// Internal level paths always start with the project's LevelsPath
-			bool isInternalLevel = affectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath);
+			bool isInternalLevel = affectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase);
 			string message = string.Empty;
 
 			if (isInternalLevel)
@@ -366,7 +366,7 @@ namespace TombIDE.ProjectMaster
 						node.Text = nodeLevel.Name + " (" + nodeLevel.SpecificFile + ")";
 
 					// Mark external levels
-					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 						node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
 				}
 			}
@@ -378,7 +378,7 @@ namespace TombIDE.ProjectMaster
 					node.Text = nodeLevel.Name;
 
 					// Mark external levels
-					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 						node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
 				}
 			}
