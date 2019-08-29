@@ -108,6 +108,14 @@ namespace TombIDE
 			base.OnClosing(e);
 		}
 
+		private void ApplySavedSettings()
+		{
+			Size = _ide.Configuration.IDE_WindowSize;
+
+			if (_ide.Configuration.IDE_OpenMaximized)
+				WindowState = FormWindowState.Maximized;
+		}
+
 		private void SaveSettings()
 		{
 			_ide.Configuration.IDE_OpenMaximized = WindowState == FormWindowState.Maximized;
@@ -118,14 +126,6 @@ namespace TombIDE
 				_ide.Configuration.IDE_WindowSize = RestoreBounds.Size;
 
 			_ide.Configuration.Save();
-		}
-
-		private void ApplySavedSettings()
-		{
-			Size = _ide.Configuration.IDE_WindowSize;
-
-			if (_ide.Configuration.IDE_OpenMaximized)
-				WindowState = FormWindowState.Maximized;
 		}
 
 		private void AddPinnedPrograms()
@@ -150,7 +150,7 @@ namespace TombIDE
 		{
 			_ide.Configuration.PinnedProgramPaths.Clear();
 
-			// Use for() instead of foreach() to also save the position of the button based on its name
+			// Use for() instead of foreach() to also save the positions of the buttons based on their name numbers
 			for (int i = 0; i < panel_Programs.Controls.OfType<DarkButton>().Count(); i++)
 			{
 				DarkButton button = (DarkButton)panel_Programs.Controls.Find(i.ToString(), false).First();
@@ -313,7 +313,7 @@ namespace TombIDE
 				return;
 
 			panel_Programs.Capture = true; // While dragging the button, always capture the panel, even if the cursor is out of bounds
-			Cursor.Current = Cursors.SizeAll; // Indicate that the user is dragging a button
+			Cursor.Current = Cursors.SizeAll; // Visually indicate that the user is dragging a button
 		}
 
 		private void panel_Programs_MouseUp(object sender, MouseEventArgs e)
