@@ -474,7 +474,7 @@ namespace TombIDE
 						// Remove all internal level entries from the project's Levels list (for safety)
 						foreach (ProjectLevel projectLevel in projectLevels)
 						{
-							if (projectLevel.FolderPath.StartsWith(_ide.Project.LevelsPath))
+							if (projectLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
 								_ide.Project.Levels.Remove(projectLevel);
 						}
 
