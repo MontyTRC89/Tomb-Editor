@@ -207,11 +207,8 @@ namespace TombIDE.ProjectMaster
 				return;
 
 			// Check if the clicked node is not a default node
-			foreach (DarkTreeNode node in treeView_Resources.Nodes)
-			{
-				if (treeView_Resources.SelectedNodes[0] == node)
-					return;
-			}
+			if (treeView_Resources.Nodes.Contains(treeView_Resources.SelectedNodes[0]))
+				return;
 
 			try
 			{
@@ -239,11 +236,8 @@ namespace TombIDE.ProjectMaster
 				return;
 
 			// Check if the clicked node is not a default node
-			foreach (DarkTreeNode node in treeView_Resources.Nodes)
-			{
-				if (treeView_Resources.SelectedNodes[0] == node)
-					return;
-			}
+			if (treeView_Resources.Nodes.Contains(treeView_Resources.SelectedNodes[0]))
+				return;
 
 			contextMenu.Show(Cursor.Position);
 		}
@@ -434,7 +428,7 @@ namespace TombIDE.ProjectMaster
 				{
 					int foldersToGoBackCount = Regex.Matches(wad.Path, @"\\\.\.").Count;
 
-					string partialPath = settings.MakeAbsolute(wad.Path).Substring(2);
+					string partialPath = wad.Path.Replace("$(LevelDirectory)", string.Empty).Replace(@"\..", string.Empty);
 					string missingPart = level.Settings.LevelFilePath;
 
 					for (int i = 0; i <= foldersToGoBackCount; i++)

@@ -1,6 +1,6 @@
 ﻿namespace TombIDE.Shared.Scripting
 {
-	public class PluginMnemonic
+	public struct PluginMnemonic
 	{
 		public string Flag { get; set; }
 		public string Description { get; set; }
