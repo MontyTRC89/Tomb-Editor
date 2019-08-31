@@ -1253,16 +1253,17 @@ namespace TombLib.LevelData.IO
 
                 // XML_SOUND_SYSTEM: Read sounds catalog. We need it just for names, because we'll take 
                 // sound infos from SFX/SAM.
-                WadSounds sounds;
+                WadSounds sounds = null;
                 {
                     // If no sounds file was provided, just take the default one
                     if (soundsPath == "")
                         soundsPath = "Sounds\\TR4\\Sounds.xml";
-                    sounds = WadSounds.ReadFromFile(soundsPath);
+                    if (File.Exists(soundsPath))
+                        sounds = WadSounds.ReadFromFile(soundsPath);
+                    if (sounds != null)
+                        level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                                                          level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
                 }
-
-                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
-                                                                              level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
 
                 // Read WAD path
                 {
@@ -1290,9 +1291,16 @@ namespace TombLib.LevelData.IO
                         // and mark them automatically for compilation
                         foreach (var soundInfo in newWad.Wad.Sounds.SoundInfos)
                         {
-                            var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
-                            if (catalogInfo != null)
-                                soundInfo.Name = catalogInfo.Name;
+                            if (sounds != null)
+                            {
+                                var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
+                                if (catalogInfo != null)
+                                    soundInfo.Name = catalogInfo.Name;
+                                else
+                                    soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                            }
+                            else
+                                soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
                             level.Settings.SelectedSounds.Add(soundInfo.Id);
                         }
 
