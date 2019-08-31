@@ -666,6 +666,24 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareSoundsData()
         {
+            // HACK: TRNG for some reason remaps 2 boat sounds from slots 307/308 to slots 1053/1055.
+            // There is no other way of guessing it except looking if there is a boat object in any of wads.
+
+             if (_level.Settings.GameVersion == GameVersion.TRNG)
+            {
+                if (_level.Settings.Wads.Any(w => w.Wad.Moveables.Any(m => (m.Value.Id.TypeId == 465 || m.Value.Id.TypeId == 467))))
+                {
+                    _level.Settings.SelectedSounds.Add(1053);
+                    _level.Settings.SelectedSounds.Add(1055);
+
+                    var boatSound1 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 307);
+                    var boatSound2 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 308);
+
+                    if (boatSound1 != null) boatSound1.Id = 1053;
+                    if (boatSound2 != null) boatSound2.Id = 1055;
+                }
+            }
+
             // Step 1: create the real list of sounds to compile
             _finalSoundInfosList = new List<WadSoundInfo>();
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
