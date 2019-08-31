@@ -1,7 +1,0 @@
-Used with Parameters=PARAM_INPUT_BOX
-If you set this flag in RIB_Flags field, when the background image of input box has been draw, and first to read/draw the text typed by player, it will be drawn the text of trng variable "Big Text".
-When you set this flag, it's necessary type also, in ExtraParam field of Parameters=PARAM_INPUT_BOX script command, the id of some Parameters=PARAM_RECT script command. The data of PARAM_RECT it will be used to set the rectangle (in micro units) where to draw the "Big Text" string. It will be used also the "ForeColor" field (of PARAM_RECT script command), to set the color of the text, while, the "BackColor" field, it will be ignored.
-This is the description of RIB_PRINT_BIG_TEXT flag, anyway it should be important also explain why you should use this flag, rather to draw simply, on background image, further text.
-The idea, behind RIB_PRINT_BIG_TEXT flag, is to have a generic input box, for instance with a background image showing a computer screen, that you'll be able to use over and over, with different text and therefore, requiring different passwords or input commands, to perform some operations in the game.
-If you use this method, you should remember to perform the F409 trigger, to show the input box, within a TriggerGroup, where, first of F409 trigger, there will be a trigger to copy some text (from strings of .dat files) in "Big Text" variable.
-In this way you'll be able to customize everytime, in run-time, the texts to show, in this "pc/control panel" input box, in game.

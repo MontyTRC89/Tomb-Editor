@@ -1,1 +1,0 @@
-By default the organizer is disabled at start, and you have to call a flipeffect to enable it. If you want this organizer was enabled from start of level you have to add then FO_ENABLED flag.

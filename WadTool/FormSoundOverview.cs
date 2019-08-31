@@ -26,10 +26,9 @@ namespace WadTool
                 get { return NewSoundInfo.Name; }
                 set
                 {
-                    // XML_SOUND_SYSTEM
-                    /*WadSoundInfoMetaData metaData = NewSoundInfo.Data;
-                    metaData.Name = value;*/
-                    NewSoundInfo = new WadSoundInfo(-1);
+                    WadSoundInfoMetaData metaData = NewSoundInfo.Data;
+                    metaData.Name = value;
+                    NewSoundInfo = new WadSoundInfo(metaData);
                 }
             }
         };
@@ -53,22 +52,21 @@ namespace WadTool
                         {
                             string animCommandName = moveableName + " - " + animation.Name + " - frame " + animation.AnimCommands[i].Parameter1;
                             int iCapturedByLambda = i;
-                            // XML_SOUND_SYSTEM
                             SoundUses.Add(new SoundUse
                             {
                                 Name = animCommandName,
-                                Get = () => null, // animation.AnimCommands[iCapturedByLambda].SoundInfo,
+                                Get = () => animation.AnimCommands[iCapturedByLambda].SoundInfo,
                                 Set = soundInfo =>
                                 {
                                     WadAnimCommand animCommand = animation.AnimCommands[iCapturedByLambda];
-                                    //animCommand.SoundInfo = soundInfo;
+                                    animCommand.SoundInfo = soundInfo;
                                     animation.AnimCommands[iCapturedByLambda] = animCommand;
                                 }
                             });
                         }
                 }
             }
-            /*foreach (WadFixedSoundInfo fixedSoundInfo in wad.FixedSoundInfos.Values)
+            foreach (WadFixedSoundInfo fixedSoundInfo in wad.FixedSoundInfos.Values)
             {
                 SoundUses.Add(new SoundUse
                 {
@@ -86,7 +84,7 @@ namespace WadTool
                     Set = soundInfo => additionalSoundInfos.SoundInfo = soundInfo,
                     GrayedOut = true
                 });
-            }*/
+            }
 
             // Group sound info uses
             _soundInfos = SoundUses
@@ -139,9 +137,8 @@ namespace WadTool
             }
             else
             {
-                // XML_SOUND_SYSTEM
                 usedForDataGridView.DataSource = null;
-                //soundInfoEditor.SoundInfo = WadSoundInfo.Empty;
+                soundInfoEditor.SoundInfo = WadSoundInfo.Empty;
                 usedForDataGridView.Enabled = false;
                 soundInfoEditor.Enabled = false;
             }

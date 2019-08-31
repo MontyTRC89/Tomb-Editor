@@ -1,3 +1,0 @@
-Used in Animation command.
-Lara is underwater, please don't confuse this situation with PLACE_FLOATING.
-Lara is underwater only when she is under the water surface and she is not able to breathe.

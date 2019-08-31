@@ -1,4 +1,0 @@
-Used in Diary= command
-This layout is alike than PL_LEFT_IMAGE layout about the size and position of little image, but it this layout there is a single text frame, in bottom half of screen, while the top-right zone will be let empty.
-This "hole" in top-right corner could seem "ugly" but it depends by the image you set as background for diary.
-You could create a fixed image in the top-right corner of background image, to show a logo of your adventure, like it happend in Tomb Raider 2 and 3.

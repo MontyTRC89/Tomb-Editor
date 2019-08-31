@@ -1,3 +1,0 @@
-Used in Equipment command.
-If your equipment command is working on a weapon slot (weapon, not ammo), you can add to the Amount field the LOAD_AMMO_TYPE3 flag to set that the ammo is currently loaded with ammo type 3
-The weapons: crossbow and grenade gun, can use the ammo type3

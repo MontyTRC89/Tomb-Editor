@@ -1,3 +1,0 @@
-Used in Image= command.
-This effect is similar to IF_EFFECT_FROM_TOP effect but in this case the image will enter in the screen from right side of scren.
-See description of IF_EFFECT_FROM_TOP flag for most informations.

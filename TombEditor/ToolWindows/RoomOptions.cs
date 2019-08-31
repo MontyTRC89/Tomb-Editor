@@ -1,6 +1,5 @@
 ﻿using DarkUI.Docking;
 using System;
-using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Forms;
@@ -53,15 +52,6 @@ namespace TombEditor.ToolWindows
                         comboRoom.Items[i] = i + ": --- Empty room ---";
             }
 
-            // Update taglist
-            if (obj is Editor.LevelChangedEvent || obj is Editor.SelectedRoomChangedEvent)
-            {
-                tbRoomTags.AutocompleteWords.Clear();
-                foreach (var room in (_editor.Level.Rooms))
-                    if(room != null && room.ExistsInLevel)
-                        tbRoomTags.AutocompleteWords.AddRange(room.Tags.Except(tbRoomTags.AutocompleteWords));
-            }
-
             // Update the room property controls
             if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
@@ -103,15 +93,13 @@ namespace TombEditor.ToolWindows
                 cbHorizon.Checked = room.FlagHorizon;
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
-
-                if (!tbRoomTags.ReadOnly) // Only update tags field if we're not in the process of editing
+                if(room.Tags != null && room.Tags.Length > 0)
                 {
-                    if (room.Tags.Count > 0)
-                        tbRoomTags.Text = string.Join(" ", room.Tags);
-                    else
-                        tbRoomTags.Text = "";
+                    tbRoomTags.Text = string.Join(" ", room.Tags);
+                }else
+                {
+                    tbRoomTags.Text = "";
                 }
-
                 if (room.AlternateBaseRoom != null)
                 {
                     butLocked.Enabled = false;
@@ -285,15 +273,12 @@ namespace TombEditor.ToolWindows
 
         private void TbTags_TextChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom == null)
+            if(_editor.SelectedRoom == null)
+            {
                 return;
-
-            tbRoomTags.ReadOnly = true; // Prevent textbox from internally recalling this event
-
-            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
+            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(' ');
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
-
-            tbRoomTags.ReadOnly = false; // Re-enable editing
         }
     }
 }

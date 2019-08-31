@@ -1,3 +1,0 @@
-Used in DiagnosticType script command.
-Show infos about Fog Distance: start fog, end fog and color fog.
-Remark: to see these inos, other to set the DGX_FOG flag it's also necessary that in current [Level] section there is a FogRange= command.

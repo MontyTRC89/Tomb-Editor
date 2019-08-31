@@ -66,9 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="FormMain.cs" />
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
@@ -124,7 +122,6 @@
     <None Include="Resources\general_plus_math-16.png" />
     <None Include="Resources\general_Open-16.png" />
     <None Include="Resources\general_edit-16.png" />
-    <None Include="Resources\general_create_new-16.png" />
     <Content Include="SoundTool.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,2 +1,0 @@
-Used in according with ENV_ROOM condition in Animation or MultEnvCondition commands.
-Lara is a water room. Please note that lara is a water room when she is floating on the water, or when she is swimming underwater, but she is NOT in water when she is simply walking in low water.

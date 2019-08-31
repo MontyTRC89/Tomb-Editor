@@ -1,2 +1,0 @@
-Used in Customize=CUST_CAMERA
-This flag disables fully the combat camera mode anyway it doesn't affect the automatic aiming feature. The arms of lara will point the further enemy, too, but the camera mode will remain the Chase camera or other camera mode that, in same moment, was working.

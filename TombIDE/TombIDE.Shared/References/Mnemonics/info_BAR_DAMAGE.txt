@@ -1,3 +1,0 @@
-Used in Customize=CUST_BAR command
-Customize the bar showed in damage rooms.
-Pease, note that damage bar color could be changed also in Damage= script command. Trng will use color of Damage command in the case you type IGNORE in Color1 field of bar in CUST_BAR command.

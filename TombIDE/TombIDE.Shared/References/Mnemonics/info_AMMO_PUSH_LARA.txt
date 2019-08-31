@@ -1,1 +1,0 @@
-When lara shots the back stroke will move lara backwards. You could use this flag with heavy ammo like grenade. You have to type in Extra field the distance of movement. The distance units are 1024 = one sector, 256 = one click.

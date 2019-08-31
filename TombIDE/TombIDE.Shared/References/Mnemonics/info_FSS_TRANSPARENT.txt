@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_SHOW_SPRITE script command.
-If you wish having a semi-transparent image you can add the FSS_TRANSPARENT flag.
-Remember that only with transparent sprite you can use the add color feature.

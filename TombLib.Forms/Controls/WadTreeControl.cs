@@ -75,12 +75,12 @@ namespace TombLib.Controls
                     }
                     {
                         var mainNode = AddOrReuseChild(nodes, "Fixed sound infos");
-                        UpdateList(mainNode, _wad.FixedSoundInfosObsolete.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
+                        UpdateList(mainNode, _wad.FixedSoundInfos.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
                     }
-                    if (_wad.AdditionalSoundInfosObsolete.Count > 0)
+                    if (_wad.AdditionalSoundInfos.Count > 0)
                     {
                         var mainNode = AddOrReuseChild(nodes, "Additional sound infos (legacy imported and not used by any object)");
-                        UpdateList(mainNode, _wad.AdditionalSoundInfosObsolete.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
+                        UpdateList(mainNode, _wad.AdditionalSoundInfos.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
                     }
                     else
                         nodes.RemoveAll((node) => node.Text.Contains("Additional sound infos"));

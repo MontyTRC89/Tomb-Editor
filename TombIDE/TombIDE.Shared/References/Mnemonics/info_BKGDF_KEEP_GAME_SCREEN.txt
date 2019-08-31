@@ -1,4 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-If you don't wish use a custom image for background but simply using the current game screen, i.e. the last image in game, you can add this flag.
-When you use BKGDF_KEEP_GAME_SCREEN flag, you can omit the image number in image field.
-Note: this setting works fine only where there is a good game image first of its phase, as it happens for inventory, but it's not advisable for title, and neither enabled for binocular or lasersight types.

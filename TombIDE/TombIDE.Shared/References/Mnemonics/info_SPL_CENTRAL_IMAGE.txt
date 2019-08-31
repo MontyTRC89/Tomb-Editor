@@ -1,3 +1,0 @@
-Used in SavegamePanel= script command.
-In this layout the image is at center of top half of screen. The image will be a bit wider than other layout formats, so this layout gives more scene to image and works fine in wide screen mode.
-The savegame list will be showed in bottom half of screen.

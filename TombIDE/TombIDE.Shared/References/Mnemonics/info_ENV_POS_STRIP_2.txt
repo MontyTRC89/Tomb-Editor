@@ -1,1 +1,0 @@
-Like above, but in this case Lara is the middle strip of three stripes of current sector. See description of ENV_POS_STRIP_1 for more infos.

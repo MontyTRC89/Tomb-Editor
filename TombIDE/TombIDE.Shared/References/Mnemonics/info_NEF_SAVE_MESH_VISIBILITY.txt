@@ -1,2 +1,0 @@
-used for enemy command
-If you use the action trigger to get invisible some mesh of a moveable, you sould create an Enemy command for the slot of that enemy, adding the NEF_SAVE_MESH_VISIBILITY flag, to force the game engine to save and restore from savegame the visibility status for each mesh of that moveable.

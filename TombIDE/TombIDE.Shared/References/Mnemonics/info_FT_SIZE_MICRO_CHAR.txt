@@ -1,1 +1,0 @@
-Differently by other ft_size contants this setting ignore all shape and preset size of current font and force alwyas the character of same size: squared and very little, the same font size used to show digits in Keypad switch

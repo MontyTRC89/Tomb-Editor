@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_ACTOR_SPEECH command
-Move the head at left for wished degrees and frame durate.
-See the description of SPC_LOOK_RIGHT command to know the syntax of the formula.

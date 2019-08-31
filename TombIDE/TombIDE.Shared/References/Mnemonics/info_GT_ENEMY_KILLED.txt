@@ -1,5 +1,0 @@
-You can specific in Parameter field the index of moveable to monitor. When the given moveable will be killed the global trigger will be started.
-Remarks:
-* You read the index of moveable when, in NGLE program, you perform a single mouse click on that object, the index will be showed in a yellow box.
-* Theorically you can get a trigger activation when a creature dies also with local (common) trigger Switch. If you trigger enemy with a switch trigger and then add to this trigger some common trigge to enable doors, enemies ect, when the creature will die the trigger will be activated. Anyway the problem to use this method is that you have to cover a big surface with above triggers, because it's necessary the creature when he dies, he was on sectors with switch trigger. Differently using global trigger GT_ENEMY_KILLED the trigger will be activated indifferently by corrent position of enemy.
-* For this global trigger is strongly suggested to use flag FGT_SINGLE_SHOT, otherwise it, when the condition becomes true,  will performed 30 times for second, forever.

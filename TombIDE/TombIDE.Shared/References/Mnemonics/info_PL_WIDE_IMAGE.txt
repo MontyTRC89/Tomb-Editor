@@ -1,4 +1,0 @@
-Used in Diary= command.
-This layout is very similar than above PL_CENTRAL_IMAGE layout, but in this case the image will be fit to cover the 90% of screen.
-If you use this layout you should create the image to be wide but not very heigh, otherwise it could cover the whole tomb raider screen.
-The usage of this layout could be useful to show two little image in each page, the trick is simply to create a unique image where there are two pictures one at left and the other at right.

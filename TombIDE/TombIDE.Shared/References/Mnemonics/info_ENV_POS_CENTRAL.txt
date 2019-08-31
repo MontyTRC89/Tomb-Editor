@@ -1,5 +1,0 @@
-Please don't confuse this flag with previous
-ENV_POS_IN_THE_MIDDLE.
-The ENV_POS_CENTRAL works fine togheter with some
-ENV_POS_STRIP.. field, to set a central position in specific strip you chose.
-While the ENV_POS_IN_THE_MIDDLE cann't used with ENV_POS_STRIP because that flag already set exactly the position in sector (at center).

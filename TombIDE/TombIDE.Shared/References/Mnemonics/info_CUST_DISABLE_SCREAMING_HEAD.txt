@@ -1,7 +1,0 @@
-The CUST_DISABLE_SCREAMING_HEAD disable the change of normal Lara head (from Lara Skin slot) with screaming head when she is shooting (from Lara Scream slot).
-
-Syntax: Customize=CUST_DISABLE_SCREAMING_HEAD
-
-The reason to disable the change of heads could be when you perform a standard swap mesh for lara but the screaming head remain untouched. In this circustance when player will shoot the new lara Head will be replaced with the old screaming head of Lara ruining the new mesh coerence.
-Differently if you set this CUST value, Lara will have always a single head avoiding above problem after a swap mesh operation.
-Remark: another way to solve the problem is to use an advanced Swap mesh, replacing also the mesh in Lara Scream slot, using a swap mesh where is present also "Shooting Head".

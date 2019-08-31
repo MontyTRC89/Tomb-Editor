@@ -1,3 +1,0 @@
-Used with Customize=CUST_SFX command
-This is the sound that will be played when an item has been pushed away from the bike and it hits the wall or another object.
-The default value is 72 GENERIC_HEAVY_THUD

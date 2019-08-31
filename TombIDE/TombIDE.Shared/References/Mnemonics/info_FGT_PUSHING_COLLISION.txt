@@ -1,9 +1,0 @@
-This flag works only when used with global triggers: GT_COLLIDE_ITEM or GT_COLLIDE_SLOT
-The engine computes three type of collision:
-- Bound Box Collision: this collision is very easy to compute but not very precise. The engine compares two collision box of current frame for both moveables and gives positive esite if the two boxes are overlapped in some 3d space position.
-This is the default collision used for global triggers GT_COLLIDE_ITEM or GT_COLLIDE_SLOT.
-
-- Pushing item collision: This collision works like Bound Box Collision but in this case it's necessary also that an object pushes other object to give a positive esite. Theorically this collision could be considered more precise of common Bound Box Collision.
-If you add the FGT_MOVING_COLLISION flag the global trigger will use own this type of "pushing"  collision.
-
-- Mesh on Mesh collision: this is the more complex and precise computes for collisions: each mesh of first moveable will be compared (using sphere mesh) with each mesh of second moveable to detect a collision. It performed only in very seldom circustances, for example for collision of lara with some traps, like blades and swords.

@@ -1,6 +1,0 @@
-Used by Animation script command.
-With this flag you can perform different animation in random way.
-You have to type in Extra field the number of random animations.
-For example if you want perform one of following animations: 512, 513 or 514, when all condition in animation command are true, you'll have to type in AnimIndex field the first animation 512, while in Extra field you type 3 to inform there is a block of three random animations, starting from animation 512.
-When all conditions will be true it will be performed the animation 512 or 513 or 514.
-The target of this feature is to create a simulation of random events also in animations of lara. For example if you want create a falling animation you can create different kinds of falling to choose in random way.

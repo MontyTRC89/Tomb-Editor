@@ -1,3 +1,0 @@
-Used in StandBy command.
-When you add this flag the stand-by will not be enabled while lara is in combat mode, i.e. when she extracted the weapons.
-A reason to use this flag is to give to player a chance to disable the stand-by when he doesn't like it. In this way, in fact, just keep lara the the weapons in the hands to disable the stand-by.

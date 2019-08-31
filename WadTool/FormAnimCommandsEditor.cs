@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -14,7 +13,7 @@ namespace WadTool
         private readonly WadToolClass _tool;
         public IEnumerable<WadAnimCommand> AnimCommands => treeCommands.Nodes.Select(node => node.Tag).OfType<WadAnimCommand>();
         private bool _currentlyDoingCommandSelection = false;
-        private List<int> _sounds;
+        private List<WadSoundInfo> _sounds;
 
         private WadAnimCommand _selectedCommand => treeCommands.SelectedNodes.FirstOrDefault()?.Tag as WadAnimCommand;
 
@@ -88,6 +87,7 @@ namespace WadTool
 
                         comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbPlaySoundFrame.Value = cmd.Parameter1;
+                        soundInfoEditor.SoundInfo = cmd.SoundInfo;
                         switch (cmd.Parameter2 & 0xC000)
                         {
                             default:
@@ -172,6 +172,13 @@ namespace WadTool
             WadAnimCommandType newType = (WadAnimCommandType)(comboCommandType.SelectedIndex + 1);
             _selectedCommand.Type = newType;
 
+            // Add a new sound info if needed
+            if (_selectedCommand.Type == WadAnimCommandType.PlaySound)
+            {
+                if (_selectedCommand.SoundInfo == null)
+                    _selectedCommand.SoundInfo = new WadSoundInfo();
+            }
+
             treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
             SelectCommand(_selectedCommand, false);
         }
@@ -249,15 +256,23 @@ namespace WadTool
             treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
         }
 
+        private void soundInfoEditor_SoundInfoChanged(object sender, EventArgs e)
+        {
+            if (_selectedCommand == null)
+                return;
+            _selectedCommand.SoundInfo = soundInfoEditor.SoundInfo;
+            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+        }
+
         private void ReloadSounds()
         {
-            _sounds = new List<int>();
+            _sounds = new List<WadSoundInfo>();
             comboSound.Items.Clear();
             comboSound.Items.Add("(Select a sound info)");
-            foreach (var sound in TrCatalog.GetAllSounds(_tool.DestinationWad.SuggestedGameVersion))
+            foreach (var sound in _tool.DestinationWad.SoundInfosUnique)
             {
-                _sounds.Add((int)sound.Key);
-                comboSound.Items.Add(sound.Key.ToString().PadLeft(4, '0') + ": " + sound.Value);
+                _sounds.Add(sound);
+                comboSound.Items.Add(sound.Name);
             }
             comboSound.SelectedIndex = 0;
         }

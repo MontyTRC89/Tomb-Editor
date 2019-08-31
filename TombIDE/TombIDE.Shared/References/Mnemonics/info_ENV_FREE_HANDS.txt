@@ -1,3 +1,0 @@
-Animation will be started only while Lara has no object in her hands.
-If she's taking, weapons, crowbar or she is hanging on wall (climb or monkey) the animation will be NOT performed
-Note: this flag ignores the flare, since when lara has in her hand only the flare the game engine considers lara with free hands.

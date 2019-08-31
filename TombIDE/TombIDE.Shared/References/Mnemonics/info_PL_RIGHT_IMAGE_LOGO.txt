@@ -1,5 +1,0 @@
-Used in Diary= command.
-This layout is similar than PL_RIGHT_IMAGE layout, but in this case there is a single text frame in bottom half size of tomb screen, while the frame at top-left of screen will be let empty.
-Like for PL_LEFT_IMAGE_LOGO, you could use this layout to host in this "empty" top-left frame your logo for your adventure, drawing this image directly in background image for diary.
-
-Remark: when you select a PL_LEFT_IMAGE_LOGO or PL_RIGHT_IMAGE_LOGO layout, wheter a page has no little image to show, the whole top-half of tomb screen will be let empty to avoid to type over the logo zone.

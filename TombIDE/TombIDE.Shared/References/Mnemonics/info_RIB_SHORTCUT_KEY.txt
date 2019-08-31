@@ -1,5 +1,0 @@
-Used with Parameters=PARAM_INPUT_BOX
-Adding this flag, the input box will quit, like it has been set the ENTER command, immediately after first valid key chosen by user.
-It should be reccomended, for instance, to handle a menu with a list of commands labeled with a number (1. 2. 3.) or letters (A. B. C. D.)
-
-Note: this flag doesn't affect any other behaviour of input box, so if you wish that the caret will be hidden or the inserted text not drawn on screen, you'll have to add other flags, like RIB_HIDE_CARET and RIB_HIDE_TEXT.

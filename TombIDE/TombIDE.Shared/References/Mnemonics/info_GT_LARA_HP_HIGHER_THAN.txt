@@ -1,1 +1,0 @@
-This global trigger will be enabled when life value for lara is higher than value you type in Parameter field. The valid range for lara vitality is between 0 - 999
