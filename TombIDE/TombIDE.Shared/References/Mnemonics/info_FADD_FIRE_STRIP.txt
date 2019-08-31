@@ -1,0 +1,3 @@
+Used in AddEffect command.
+This flag may be used togheter with ADD_FLAME type.
+By default the ADD_FLAME type shows a little fire in common way, while if you use the FADD_FIRE_STRIP flag it will be created an horizontal strip of fire like if the flames were shooted from a dragon (from front) or from a air-jet (from back, using also the FADD_ROTATE_180 flag).

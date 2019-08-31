@@ -1,0 +1,1 @@
+when enemy has no more vitatly it will explode

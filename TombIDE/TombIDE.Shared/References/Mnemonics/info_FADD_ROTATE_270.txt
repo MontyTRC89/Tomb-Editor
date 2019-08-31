@@ -1,0 +1,1 @@
+It works like FADD_ROTATE_90 flag but using a rotation of 270 degree. See description of FADD_ROTATE_90 flag for more infos.

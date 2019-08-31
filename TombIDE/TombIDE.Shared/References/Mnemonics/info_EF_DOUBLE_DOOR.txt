@@ -1,0 +1,30 @@
+Used in Elevator command.
+Please don't confuse this flag with flags like EF_SINGLE_DOOR or EF_MULTI_DOORS.
+While those flags say the number of doors to use, if a single door to move up/down with elevator, or multiple door, one for each floor, the double door specify the TYPE of a single (or multi) door, and then this door could be a single_door or a multi-door.
+The double door is a door composed by two (separated) doors.
+For this reason the double door is able to cover two sectors of width, like the width of elevator.
+The reason to use this flag is to have two different door opening in same moment when the elevator reach a floor, to be able to cover whole width of elevator.
+This flag has been added own to get above target and it requires some attemption to work correctly.
+If you set the EF_DOUBLE_DOOR flag, it's necessary that the secondary door had always a ngle index higher by 1 than main door.
+
+I explain better:
+
+For "main" door we intend the door that has the index you type in Elevator= command.
+While the "secondary" door is the other door (paired to main door) to open/close in same moment of main door.
+This secondary door has to have an index exaclty +1 of main door.
+For example if your main door at first floor (in a multi-door elevator) has index = 23, the secondary door should have an index  = 24 (+1 of main door).
+If this rule will be violated the double door will not work in game.
+
+If you have problems to get two consecutives indices you could use this simple trick:
+Place a door in some free zone of your room, this zone is not in front of elevator, it will be only a "store" temporary zone.
+
+Continue to place doors in this zone, checking the index assigned from ngle for each new door.
+When you get two doors with consecutive indices, delete these two doors, and now place the two doors in correct position in front of elevator. In this moment you can place also other double doors for other floors of elevator (if you are using multi-door elevator).
+When you completed the placement of the double doors you can come back to temporary zone and delete all no useful doors you placed to realize this trick.
+
+Remark: if you are using like "single-door" an animating door (just place like door any animating with correct collisions) the behavior of this animating door will be different in according with usage or less of the EF_DOUBLE_DOOR flag.
+If the EF_DOUBLE_DOOR flag is missing the animating door will be moved (sliding) in internal direction, i.e. the door will be opened moving the door over other panel of elevator.
+Differently, when you use EF_DOUBLE_DOOR flag, the two door will be opened with external movement: the left door will be moved furtherly to left,  while the right door will be moved at its right.
+Also for animating doors you have to use the rule of consecutives indices: the secondary door should have the index of main door + 1.
+In the case of animating double doors it's also important that the two doors should have same orienting (facing).
+Another rule about animating doors is that the door you have to set as main door (the index you type in Elevator command), it should be always the door at left of elevator, looking the elevator from door side. This last rule it's not important when you use real doors.

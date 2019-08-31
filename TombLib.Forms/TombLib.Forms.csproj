@@ -42,8 +42,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
-      <HintPath>..\packages\FCTB.2.16.24\lib\FastColoredTextBox.dll</HintPath>
+    <Reference Include="FastColoredTextBox, Version=2.16.26.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\FastColoredTextBox.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -103,6 +104,9 @@
     <Compile Include="Controls\AnimationTrackBar.Designer.cs">
       <DependentUpon>AnimationTrackBar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DarkAutocompleteTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkDataGridViewControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -129,6 +133,12 @@
     </Compile>
     <Compile Include="Controls\SoundInfoEditor.Designer.cs">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SoundInfoEditorOld.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SoundInfoEditorOld.Designer.cs">
+      <DependentUpon>SoundInfoEditorOld.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TaskbarProgress.cs" />
     <Compile Include="Controls\TriggerParameterControl.cs">
@@ -202,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SoundInfoEditorOld.resx">
+      <DependentUpon>SoundInfoEditorOld.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>

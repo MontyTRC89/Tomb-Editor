@@ -10,6 +10,12 @@
         TR5Main = 18
     }
 
+    public enum SoundSystem : long
+    {
+        Dynamic = 0,
+        Xml = 1
+    }
+
     public enum WadAnimCommandType : short
     {
         SetPosition = 1,

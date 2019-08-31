@@ -1,0 +1,3 @@
+Used in ImportFile command.
+This type is used from some script commands to have an external binary setting file, when the required settings for that command are too much to be hosted by the usual command arguments.
+Note: The FTYPE_SETTINGS type requires always as ImportType the IMPORT_MEMORY setting.

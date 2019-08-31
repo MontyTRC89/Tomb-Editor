@@ -1,0 +1,4 @@
+Used in DiagnosticType script command.
+Show the current FPS (frame per second).
+Note: it will be showed a couple of value: the first is the async frame rate while the second (in round parenthesis) is the sync frame rate.
+Usually these two fps variales will have (about) the same value but if you use the Turbo script command with the TRB_ASYNC_FRAMES setting, the async frame might be higher than sync frame since the turbo command will try to compensate the lost of syncronous frame increasing the speed of new frame to recovery the previous losing.

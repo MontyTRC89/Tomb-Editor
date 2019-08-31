@@ -1,0 +1,5 @@
+Used into Customize=CUST_BACKGROUND command
+This flag works only paired to BKGDF_KEEP_GAME_SCREEN flag.
+With BKGDF_SEMI_TRANSPARENT flag you can force a custom image (with ImageId set in ImageId field of Customize=CUST_BACKGROUND command) over the current game scene, choosing the transparency level of your custom image.
+You have to type in Parameter field the opacity level of your custom image with a value, where 0 = fully transparent and 255 = fully opaque.
+Reasonable values will be in the range: 100 / 150.

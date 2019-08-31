@@ -65,9 +65,7 @@ namespace TombLib.LevelData.Compilers
         private readonly List<tr_item> _items = new List<tr_item>();
         private readonly List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
-        private Util.SoundManager _soundManager;
         private Util.TexInfoManager _textureInfoManager;
-        //private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -91,17 +89,13 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            //_objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
-            _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
-
+        
             // Prepare level data in parallel to the sounds
-            //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4();
             BuildRooms();
 
-            // New texture packer
+            // Compile textures
             ReportProgress(30, "Packing textures");
 
             _textureInfoManager.SortAnimatedTextures();
@@ -124,7 +118,6 @@ namespace TombLib.LevelData.Compilers
 
             // Combine the data collected
             PrepareTextures();
-            _soundManager.PrepareSoundsData(_progressReporter);
 
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
@@ -186,7 +179,7 @@ namespace TombLib.LevelData.Compilers
                 if (instance.IsEmpty)
                     continue;
 
-                WadSoundInfo soundInfo = instance.GetSoundInfo(_level);
+                WadSoundInfo soundInfo = _level.Settings.WadTryGetSoundInfo(instance.SoundId);
                 if (soundInfo == null)
                 {
                     _progressReporter.ReportWarn("Sound (" + instance.SoundNameToDisplay + ") for sound source in room '" + instance.Room + "' at '" + instance.Position + "' is missing.");
@@ -199,7 +192,7 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    SoundID = _soundManager.AllocateSoundInfo(soundInfo),
+                    SoundID = (ushort)instance.SoundId,
                     Flags = instance.Room?.AlternateBaseRoom != null ? (ushort)0x40 : (instance.Room?.AlternateRoom != null ? (ushort)0x80 : (ushort)0xC0)
                 });
             }
@@ -223,9 +216,6 @@ namespace TombLib.LevelData.Compilers
                         _cameraTable.Add(obj, cameraSinkID++);
                     foreach (var obj in room.Objects.OfType<FlybyCameraInstance>())
                         _flybyTable.Add(obj, flybyID++);
-                }
-                foreach (var room in _level.Rooms.Where(room => room != null))
-                {
                     foreach (var obj in room.Objects.OfType<SinkInstance>())
                         _sinkTable.Add(obj, cameraSinkID++);
                 }

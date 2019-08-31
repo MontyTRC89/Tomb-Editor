@@ -1,0 +1,7 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+This command will play the custom animation for given moveable whom index you added to the command.
+Example:
+
+SPC_ANIMATION+15
+
+It will perform the animation 15

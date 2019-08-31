@@ -1,0 +1,4 @@
+This global trigger check for level of damage and it will be checked only when lara is in a damage room.
+You have to type the value to comparise in Paramater field.
+In spite of type of progress bar chosen for damage room (increasing or decreasing bar) this condition will check the value of damage in same way: when lara is just entered in damage room the value of damage bar is 1000, while when she remains in damage room for some time the damage level will be littler upto 0, when lara will be damaged really or burned.
+Pratically with low values the situation for lara is worse.

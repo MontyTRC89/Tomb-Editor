@@ -1,0 +1,5 @@
+Used in Settings= command.
+This setting forces trng engine to accept upto 32767 tail infos in the tr4 files.
+Also using this setting the limit for ngle remains the old limit of 1024 tail infos, therefore the only reason to use this setting is when you use the program meta2tr to replace the room meshes directly in tr4 file.
+Since meta2tr increases the number of tail infos you can use this setting to support the new extra tail infos.
+Differently when you use the tr4 creadted by ng_tom2pc without changing, this setting is futile and probably also dangerous since it could create some trouble with animated range textures.

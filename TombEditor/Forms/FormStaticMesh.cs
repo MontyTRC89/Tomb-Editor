@@ -8,7 +8,7 @@ namespace TombEditor.Forms
     public partial class FormStaticMesh : DarkForm
     {
         private readonly StaticInstance _staticMesh;
-        private ushort newOCB;
+        private short newOCB;
         private bool locked;
 
         public FormStaticMesh(StaticInstance staticMesh)
@@ -158,8 +158,8 @@ namespace TombEditor.Forms
 
         private bool ParseOCB()
         {
-            ushort ocb;
-            if (!ushort.TryParse(tbOCB.Text, out ocb))
+            short ocb;
+            if (!short.TryParse(tbOCB.Text, out ocb))
             {
                 DarkMessageBox.Show(this, "The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;

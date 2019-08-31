@@ -1,0 +1,2 @@
+This flag enable for your animation the gravity compute.
+When lara is flying or falling the engine store a flag to remember to apply to lara the gravity rules. In some cirucstances you could need to enable the gravity for your animation using this flag.

@@ -1,0 +1,3 @@
+Used in Customize=CUST_RAIN command.
+In default code the elaboration of sprinklers (when the rain drop touches the ground) was a bit leak. If the room had an irregular floor (not flat at same height) many sprinlers were not visible because they were generated under ground.
+If you want correct this bug you can add the FR_CORRECT_SPRINKLERS flag.

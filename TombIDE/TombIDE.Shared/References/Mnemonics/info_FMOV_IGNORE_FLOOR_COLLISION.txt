@@ -1,0 +1,6 @@
+Used in Parameters=PARAM_MOVE_ITEM script command
+When the movement affects a new direction or speed or gravity mode (new management from 1.2.2.7 version), by default the engine will forbid to the item to "sink" in the floor.
+This means that when you set a UP/DOWN direction or a gravity mode that move downward the item, when it will reaches the floor it will be stopped.
+
+Also with horizontal movement, if the item reaches a point of floor that is higher of its position, the engine will move upward the item to stand over the floor.
+Anyway if you wish that the item was able to sink in the floor you can add the FMOV_IGNORE_FLOOR_COLLISION flag and the engine will not perform any control about floor collision.

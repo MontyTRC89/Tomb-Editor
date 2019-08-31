@@ -1,0 +1,3 @@
+Used in GlobalTrigger= command.
+This trigger will be enabled when the KeyPad with index typed in Parameter field will be showed.
+You could use this global trigger to show a text in the precise moment when the big editable keypad will be showed, to describe to player what is its target.

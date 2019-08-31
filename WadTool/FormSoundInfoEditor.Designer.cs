@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditorOld();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
@@ -85,7 +85,7 @@
 
         #endregion
 
-        private TombLib.Controls.SoundInfoEditor soundInfoEditor;
+        private TombLib.Controls.SoundInfoEditorOld soundInfoEditor;
         private DarkUI.Controls.DarkButton btCancel;
         private DarkUI.Controls.DarkButton btOk;
     }

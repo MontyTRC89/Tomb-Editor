@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -27,14 +28,14 @@ namespace TombLib.Wad.TrLevels
             logger.Info("Texture conversion complete.");
 
             // Convert sounds
-            WadSoundInfo[] soundInfos = ConvertTrLevelSounds(wad, oldLevel);
+            ConvertTrLevelSounds(wad, oldLevel);
             logger.Info("Sound conversion complete.");
 
             // Then convert moveables and static meshes
             // Meshes will be converted inside each model
             for (int i = 0; i < oldLevel.Moveables.Count; i++)
             {
-                WadMoveable moveable = ConvertTrLevelMoveableToWadMoveable(wad, oldLevel, i, objectTextures, soundInfos);
+                WadMoveable moveable = ConvertTrLevelMoveableToWadMoveable(wad, oldLevel, i, objectTextures);
                 wad.Moveables.Add(moveable.Id, moveable);
             }
             logger.Info("Moveable conversion complete.");
@@ -50,24 +51,10 @@ namespace TombLib.Wad.TrLevels
             ConvertTrLevelSprites(wad, oldLevel);
             logger.Info("Sprite conversion complete.");
 
-            // Add additional dynamic sounds
-            AddAdditionalDynamicSounds(wad, oldLevel, soundInfos);
-
             return wad;
         }
 
         private static readonly Vector2[] _zero = new Vector2[4] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
-
-        private static void AddAdditionalDynamicSounds(Wad2 wad, TrLevel oldLevel, WadSoundInfo[] infos)
-        {
-            var newSoundInfos = wad.SoundInfosUnique.ToList();
-            for (uint i = 0; i < infos.Length; ++i)
-                if (infos[i] != null && !newSoundInfos.Contains(infos[i]))
-                {
-                    var id = new WadAdditionalSoundInfoId(TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, i));
-                    wad.AdditionalSoundInfos.Add(id, new WadAdditionalSoundInfo(id) { SoundInfo = infos[i] });
-                }
-        }
 
         private static TextureArea[] ConvertTrLevelTexturesToWadTexture(TrLevel oldLevel)
         {
@@ -89,20 +76,23 @@ namespace TombLib.Wad.TrLevels
                 // Calculate UV coordinates...
                 Vector2[] coords = new Vector2[isTriangle ? 3 : 4];
                 if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                { // In old TR games there are no new flags
+                {
+                    // In old TR games there are no new flags
                     // Perhaps there is a better way that will support subpixel addressing
                     // but according to the fileformat documentation
                     // it should work on original TR games https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_object_textures
+
                     for (int j = 0; j < coords.Length; ++j)
                         coords[j] = new Vector2(
                             ((oldTexture.Vertices[j].X & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].X >> 8),
                             ((oldTexture.Vertices[j].Y & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].Y >> 8));
                 }
                 else
-                { // In new TR games we can to use new flags
-                    Vector2[] coordAddArray = LevelData.Compilers.Util.ObjectTextureManager.GetTexCoordModificationFromNewFlags(oldTexture.NewFlags, isTriangle);
+                {   
+                    // In new TR games we can use new flags
+
                     for (int j = 0; j < coords.Length; ++j)
-                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + coordAddArray[j];
+                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + (isTriangle ? TextureExtensions.CompensationTris : TextureExtensions.CompensationQuads)[(oldTexture.NewFlags & 0x7), j];
                 }
 
                 // Find the corners of the texture
@@ -300,17 +290,21 @@ namespace TombLib.Wad.TrLevels
             }
         }
 
-        private static WadSoundInfo[] ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
+        private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
         {
             // Convert samples...
             var samples = new WadSample[oldLevel.Samples.Count];
             Parallel.For(0, oldLevel.Samples.Count, delegate (int i)
             {
-                samples[i] = new WadSample(WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TrVersion.TR4));
+                samples[i] = new WadSample(Path.GetFileNameWithoutExtension(wad.FileName) +
+                                           "_Sample_" +
+                                           i.ToString().PadLeft(4, '0') +
+                                           ".wav",
+                                           WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TrVersion.TR4));
             });
 
             // Convert sound details
-            var soundInfos = new WadSoundInfo[oldLevel.SoundMap.Count];
+            wad.Sounds.SoundInfos = new List<WadSoundInfo>();
             for (int i = 0; i < oldLevel.SoundMap.Count; i++)
             {
                 // Check if sound was used
@@ -320,11 +314,12 @@ namespace TombLib.Wad.TrLevels
                 tr_sound_details oldInfo = oldLevel.SoundDetails[oldLevel.SoundMap[i]];
 
                 // Fill the new sound info
-                var newInfo = new WadSoundInfoMetaData(TrCatalog.GetOriginalSoundName(TrLevel.GetWadGameVersion(oldLevel.Version), (uint)i));
-                newInfo.Volume = oldInfo.Volume / 255.0f;
+                var newInfo = new WadSoundInfo(i);
+                newInfo.Name = TrCatalog.GetOriginalSoundName(TrLevel.GetWadGameVersion(oldLevel.Version), (uint)i);
+                newInfo.Volume = (int)Math.Round(oldInfo.Volume / 100.0f * 255.0f);
                 newInfo.RangeInSectors = oldInfo.Range;
-                newInfo.ChanceByte = (byte)Math.Min((ushort)255, oldInfo.Chance);
-                newInfo.PitchFactorByte = oldInfo.Pitch;
+                newInfo.Chance = (int)Math.Round(oldInfo.Chance / 100.0f * 255.0f);
+                newInfo.PitchFactor = (int)Math.Round((oldInfo.Pitch > 127 ? oldInfo.Pitch - 256 : oldInfo.Pitch) * 100.0f / 128.0f);
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0); // TODO: loop meaning changed between TR versions
                 newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.DisablePanning = ((oldInfo.Characteristics & 0x1000) != 0);
@@ -345,26 +340,15 @@ namespace TombLib.Wad.TrLevels
                         logger.Warn("Sample index out of range.");
                         continue;
                     }
-                    newInfo.Samples.Add(samples[sampleIndex]);
+                    newInfo.EmbeddedSamples.Add(samples[sampleIndex]);
                 }
 
-                soundInfos[i] = new WadSoundInfo(newInfo);
+                wad.Sounds.SoundInfos.Add(newInfo);
             }
-
-            // Fix some sounds
-            for (int i = 0; i < soundInfos.Length; i++)
-                if (soundInfos[i] != null)
-                    if (TrCatalog.IsSoundFixedByDefault(TrLevel.GetWadGameVersion(oldLevel.Version), (uint)i))
-                    {
-                        var id = new WadFixedSoundInfoId((uint)i);
-                        wad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfos[i] });
-                    }
-
-            return soundInfos;
         }
 
         public static WadMoveable ConvertTrLevelMoveableToWadMoveable(Wad2 wad, TrLevel oldLevel, int moveableIndex,
-                                                                 TextureArea[] objectTextures, WadSoundInfo[] soundInfos)
+                                                                      TextureArea[] objectTextures)
         {
             Console.WriteLine("Converting Moveable " + moveableIndex);
 
@@ -501,15 +485,6 @@ namespace TombLib.Wad.TrLevels
                                 command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
-
-                                int soundInfoIndex = command.Parameter2 & 0x3fff;
-                                command.Parameter2 &= unchecked((short)0xC000);
-                                if (soundInfoIndex >= soundInfos.Length || soundInfos[soundInfoIndex] == null)
-                                {
-                                    logger.Warn("Anim command uses " + soundInfoIndex + " which is unavailable.");
-                                    continue;
-                                }
-                                command.SoundInfo = soundInfos[soundInfoIndex];
                                 break;
 
                             case 6:

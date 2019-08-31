@@ -1,0 +1,9 @@
+Used in Animation= command.
+This is a very original condition. Pratically it verifies from how much time are missing keyboard commands.
+You have to type in DistanceForEnv the number of tickframes (one second= 30 tickframes) required to enable this condition.
+For example if you want have true this condition when the player doesn't perform game commands from 3 seconds, you have to type in DistanceForEnv field the value 90 (because 3 * 30 = 90)
+This condition could be used to start nice animation in stand-by mode, i.e. when the player is not playing activly (no keyboard signals) you can show an animation where lara scratches one's head, or she turns her face to look player saying: "Are you sleeping?"
+If you mean use this nice animation in standby you should remember to set in this animation a state id different by standard state-ids, for example you can use the state id STATE_CONTROLLED, to avoid that some new game command cause a bad change between current (custom animation) and new standard animation.
+When you use the state id neutral no new animation will be performed until lara comes back to some standard state id.
+So you could create an animation with state id = STATE_CONTROLLED and as next animation the defaul animation of still stand-up.
+You'll have to create a custom animation where lara starts from stand-up position, it performs the nice move, and then comes back to stand-up animation, with the next animation having the standard stand-up animation.

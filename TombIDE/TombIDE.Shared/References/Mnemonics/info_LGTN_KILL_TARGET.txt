@@ -1,0 +1,2 @@
+Used with Parameters=PARAM_LIGHTNING script command
+If the target postion is set with a moveable index, you can kill him/her, adding this flag.

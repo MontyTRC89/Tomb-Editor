@@ -1,0 +1,1 @@
+Set the behavior of damage bar when lara goes off by damage room to reach a safe room. If you omit this flag the damage bar will disappear instantanly, while using the flag DMG_SLOW_DISAPPEARING the damage bar will invert its direction of fulling/emptying and it will disappear only when it reach the full state (like at start of enter-in in damage room)
