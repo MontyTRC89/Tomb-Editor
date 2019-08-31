@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+When the user change the selected savegame in a customized savegame panel.

@@ -1,0 +1,86 @@
+You can customize many properties of Game Camera with this customize setting.
+
+Syntax: Customize=CUST_CAMERA, Flags (FCAM_...), DistanceChaseCam, VOrientChaseCam, HOrientChaseCam, DistanceCombatCam, VOrientCombatCam, DistanceLookCam, HeightLookCam, SpeedCamera
+
+Remark: you can customize different automatic camera modes with this customize: the "chase" camera, that is the camera that always follows lara, the "combat" camera, that works like the "chase" camera but it will be engaded when lara extracts the weapons, and the "look" camera that is when the player enables lara looks byself choosing the direction. The combat has some settings a bit different respect than "chase" camera.
+
+Flags (FCAM_...) field
+----------------------
+You can type in this field one or more FCAM_ flags to change some behavior of Camera.
+See the list of FCAM_ values in  MNEMONIC CONSTANTS list of Reference panel of NG_Center program.
+Remark: you can type IGNORE in this field if you don't wish set any flag.
+
+DistanceChaseCam field
+----------------------
+This value works for "chase" camera or "follow me" we could say.
+This field is the distance (behind lara) where is the camera.
+The default value is  1536 ($600), where 1024 ($400) is one game sector.
+If you reduce this value the camera will be closest to lara and all level (and lara) will seem more near. If you increase this value the distance from lara will be larger and lara will appear littler.
+
+Remark: if you type a negative value in this field, the camera will be in front of lara instead of at her back.
+It's interesting note as the HOrientChaseCam field with $8000 value and the DistanceChaseCam with a negative value get the same target but only using only one of them in same time. In fact, if you set $8000 as HOrient see description below) and also a negative Distance you'll get newly the usual camera following lara from back.
+
+You can type IGNORE in this field if you don't wish change this value
+
+VOrientChaseCam field
+--------------------
+This field works for "chase" camera, and it is the vertical difference of orientation (facing) of camera respect to lara.
+To understand what it "vertical orientation" try to look the tutorial for animation and testposition commands. In that help file there is an image showing own the Vertical Orientation.
+The default value is -1820 and, since it is a difference (like degrees difference respect to a line parallel to floor) this means the cam is a bit higher than lara.
+If we choose +1820 the camera should be a bit lower than lara.
+If we type -16384 the camera should exactly overt the top of lara (90 degrees respect to line parallel to floor passing for lara)
+If we type +16384 the camera should below lara with 90 degrees angle, but this setting could work only when lara is monkey or she is falling down.
+If we type 0 (zero) the camera will be exactly with same Y origin of lara, because the camera and lara should be on same line parallel to floor.
+
+Remark: some settings in this field could be ignored when the value is so much big ( in absolute value) to cause to show lara upside down. For example the value -32767 should get a camera looking lara in the face but with lara appears upside down. In the reality, using this value (-32767) you'll get the same result typing -16384 and this happens because the game engine uses a cut-off function to forbid to show lara upside down. For above reason the valid range for this field is from -16384 to +16384
+
+You can type IGNORE in this field if you don't want change it.
+
+HOrientChaseCam field
+---------------------
+This field is a bit complicated to explain.
+It works like HOrientDifference of TestPosition command.
+The orientantion is also named "facing" i.e. where an object is looking.
+This value changes the facing of Source camera. The values used could be: 0 (default, the cam looks lara from back), $4000 (the cam looks lara from her left), $c000 (the cam looks lara from her right), $8000 (the cam looks lara in front).
+
+You can type IGNORE to let the default value.
+
+DistanceCombatCam field
+-----------------------
+This field set the distance when lara is in modality combat camera.
+The description about the concept of "cam distance" is the same you can read for above field about DistanceChaseCam field.
+
+Default value was $600
+
+VOrientCombatCam field
+---------------------
+This field works like the VOrientChaseCam field.
+The default value is -2730
+
+See description of VOrientChaseCam field to understand how it works.
+
+Remark: There is no "HOrientCombatCam" field for Combat camera because in "combat camera" mode the horient will be always set by engine in according with position of selected enemy and lara, for this reason no good result could be get forcing the HOrient in combat camera mode.
+
+DistanceLookCam field
+---------------------
+This field works like other "Distance ..." fields but with an opposite sign.
+For example, the defult value for DistanceLookCam is -1024 and it means that the camera is exactly one sector behind lara.
+If you used +1204 the look camera will be forward than lara and lara should be not showed in game screen.
+
+HeightLookCam field
+-------------------
+This field don't work like VOrient field in this case you type an Y displacment from lara's neck
+
+The default value is +16, and it means that the Y position of camera it's a bit lower the center of the lara's neck.
+
+Remark: I discourage to change this value, using little values you cann't notice the difference while using big values the results are not good.
+
+SpeedCamera field
+-----------------
+The speed of camera set the time required to move camera from current (any) position to ideal position set by above field.
+If you set a high speed the camera will move fastly to reach ideal position but the disadvantage could be an jerkily movement.
+With low speed the camera will have a moving but it could remain back to lara when she move fastly.
+
+You can type IGNORE in this field to let the default value.
+
+Remark: I discourage to modify this value because the default setting is an ideal value and, more, the speedcamera changes in many circustances everytime the engine requires to pass from a camera mode to another.

@@ -58,7 +58,7 @@ namespace TombLib.LevelData
         public bool Locked { get; set; }
         public ImportedGeometryMesh ExternalRoomMesh { get; set; }
 
-        public string[] Tags { get; set; } = new string[] { "" };
+        public List<string> Tags { get; set; } = new List<string>();
 
         public Level Level { get; set; }
 

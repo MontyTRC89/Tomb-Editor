@@ -1,0 +1,2 @@
+This flag force the emitting to work only for single frame. There will be a single emitting and then the effect will be disabled.
+I think only blood can work with this flag.

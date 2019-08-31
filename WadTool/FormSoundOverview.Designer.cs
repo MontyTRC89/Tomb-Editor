@@ -36,7 +36,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.soundSettingsGroupBox = new DarkUI.Controls.DarkGroupBox();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditorOld();
             this.panel2 = new System.Windows.Forms.Panel();
             this.usedForDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundUseNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -296,7 +296,7 @@
         private DarkUI.Controls.DarkButton btOk;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkGroupBox soundSettingsGroupBox;
-        private TombLib.Controls.SoundInfoEditor soundInfoEditor;
+        private TombLib.Controls.SoundInfoEditorOld soundInfoEditor;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnSoundInfoName;
         private System.Windows.Forms.DataGridViewTextBoxColumn soundUseNameColumn;
         private System.Windows.Forms.SplitContainer splitContainer2;

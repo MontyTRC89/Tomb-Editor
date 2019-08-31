@@ -1,0 +1,6 @@
+Used in Diary= command.
+In this layout the further image will be showed in top-right corner, while the text will be formatted in two frames:
+
+first frame is at top-left corner
+while the second frame will fit the bottom half of tomb raider screen.
+Remark: The further title will be showed at top of top-right frame before showing common text.

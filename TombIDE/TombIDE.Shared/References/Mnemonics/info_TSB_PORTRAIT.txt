@@ -1,0 +1,3 @@
+Used in StandBy command.
+In this standby type, the camera reamins in front of lara.
+In this mode you could use a short distance value to look the beauty Lara in the eyes.

@@ -1,0 +1,25 @@
+Used with Customize command.
+Syntax: Customize= CUST_TITLE_FMV, FmvNumber, TestMultiPlay
+
+FmvNumber field
+----------------
+Type the number of fmv to play. This is the same number in the filename of the fmv. For example if you wish play the file fmv5.wmv movie, you type 5.
+
+TestMultiPlay field
+-------------------
+This field may be 0 (false) or 1 (true).
+If you type 0, the fmv will be showed only the first time the player launched the tomb4 engine.
+If you type 1, the fmv will be played everytime the controll will pass newly at title phase. I.e., at start of the game, and when Lara dies or the player exits from the game to go back to the titles.
+
+Example:
+If you wish having a FMV at boot-strap of the game, i.e. before beginning the title level, you have to place in [title] section following commands:
+
+FMV=	8, 1
+Customize=CUST_TITLE_FMV, 8, 0
+
+In above example the fmv to show at the boot is the fmv8, you enable the escape for this fmv and you wish that was playes only once, at start of the game.
+
+Remember to place the fmv file in the subfolder of trle named "FMVs" and to set in script.txt in the [PCExtensions] section the extensione used from your fmvs.
+For example if your movie is named "fmv8.wmv" you should type the row:
+
+FMV=	.wmv

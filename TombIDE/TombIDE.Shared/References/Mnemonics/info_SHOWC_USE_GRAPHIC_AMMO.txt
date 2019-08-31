@@ -1,0 +1,32 @@
+Used in Cutomize=CUST_SHOW_AMMO_COUNTER command.
+This setting remove the literal name of ammo and replace it with a single graphic character.
+Using the TRNG font you can draw little images in some character of trng font set.
+With the SHOWC_USE_GRAPHIC_AMMO the engine will print on screen one single character for each kind of ammo.
+You can recognize the used graphic char for each ammo by following list:
+
+Name_in_font_Editor     Ammo_Type
+------------------------------------------------
+127: [GRAPHIC]          Pistol Ammo
+129: [GRAPHIC]          Revolver Ammo
+138: S                  Uzi Ammo
+140: OE                 Shotgun Normal Ammo
+141: [GRAPHIC]          Shotgun Wideshot Ammo
+142: Z                  Grenadegun Normal Ammo
+143: [GRAPHIC]          Grenadegun Super Ammo
+144: [GRAPHIC]          Grenadegun Flash Ammo
+154: s                  Crossbow Normal Ammo
+156: oe                 Crossbow Poison Ammo
+157: [GRAPHIC]          Crossbow Explosive Ammo
+------------------------------------------------
+
+Remark: to add your icons in your NG font character set, you should perform following operations:
+
+1) Go in [Tools] panel of NG_Center
+2) Click on [NG Font Editor] button
+3) In the NG Font Editor window click on [Choose Wad] button
+4) Now select a wad where you have the NG font object.
+5) Now select in combo box (belove the [START IMPORTING] button) some character, taking care to choose the correct number read from above list.
+6) Now click on [Import BMP] button closed to little single character image, and select the bmp file where you stored the image for that char/ammo.
+7) Select in the [Type] list the voice "Graphic" and now click the button [Recompute]
+8) Repeat points 5, 6 and 7 until you assigned all images for all ammo.
+9) At end click on [Exit and Save wad] button.

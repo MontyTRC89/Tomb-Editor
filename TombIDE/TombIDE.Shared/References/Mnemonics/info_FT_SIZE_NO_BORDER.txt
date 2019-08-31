@@ -1,0 +1,1 @@
+Unused. It worked with old print text method for special nationalizated characters but now it has no effect.

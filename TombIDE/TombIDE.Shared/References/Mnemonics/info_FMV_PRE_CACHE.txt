@@ -1,0 +1,5 @@
+Used in Customize=CUST_FMV_CUTSCENE command.
+This flag try to fast the start of first fmv played in current game session.
+It used like a PRELOAD flag for images, but in this case the fmv will be NOT loaded in memory (because the fmvs could be too big), but simply it will be inserted in Windows cache.
+Pratically it happens this situation: when a file (like a fmv file) has to be loaded from a folder where the user had not yet done any access, Windowd spends a bit of time to scan whole folder and locate the file. Differently, when a first access had been already done, windows load more fastly that file.
+So, to insert the TRLE\FMVs folder in windows cache you can use this flag, and trng will perform a first access to FMVs folder while the current level (where there are fmvs) is being to load.

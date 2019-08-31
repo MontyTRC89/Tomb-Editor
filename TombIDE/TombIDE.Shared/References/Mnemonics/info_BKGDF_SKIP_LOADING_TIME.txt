@@ -1,0 +1,5 @@
+Used into Customize=CUST_BACKGROUND command
+This flag works only togheter with BKGDF_MINIMAL_LOADING_TIME flag.
+If you use BKGDF_MINIMAL_LOADING_TIME flag, the background for loading level will be kept on screen until the time you set, in spite the effective loading of level could be already completed.
+If you wish that the player was able to skip in advance the background and go to next level, you can add the BKGDF_SKIP_LOADING_TIME flag and player will be able to skip the background with escape, space or action (ctrl, really) key.
+Note: in background image, when you use this flag, you should add a text to inform player about this chance, pasting in the image a text like "Escape to skip" or other with wished command.

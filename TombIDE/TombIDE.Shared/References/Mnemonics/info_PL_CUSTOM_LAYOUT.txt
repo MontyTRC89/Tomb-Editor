@@ -1,0 +1,19 @@
+Used in Diary= command.
+If you are not satisfacted by other preset layouts you can create your own layout using this flag.
+When you set PL_CUSTOM_LAYOUT (omitting all other PL_  layouts) trng engines will expect to find directly in the text to show the infos about layout to use.
+In the <FORMAT
+ section of text you can place these three tag formatters:
+
+#FRAME_IMG#=XPos,YPos,SizeX,SizeY
+#FRAME_T1#=XPos,YPos,SizeX,SizeY
+#FRAME_T2#=XPos,YPos,SizeX,SizeY
+
+and trng engine will use these frames to show the text and the further image.
+
+All values are in micro units. You can use the utility [Get Screen Frames] in Tools panel of NG_Center program to get the correct values to type (XPos,YPos,SizeX,SizeY)
+
+You can set a different layout for each page. When trng shows a page where there is no custom layout.
+If you wish set a PL_ layout in Diary command, and also a format tag in some page, that page will be showed using the format tag, while other following pages with no format tag will be showed newly in PL_ layout you set in Diary command.
+
+To know all tags you can use <FORMAT
+ section of text, see the description of Diary= command in New Script commands section of Reference panel of NG_Center.

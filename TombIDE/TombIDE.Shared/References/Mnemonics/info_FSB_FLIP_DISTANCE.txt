@@ -1,0 +1,3 @@
+Used in StandBy command.
+This flag incluences matrix and portrait modes, changes in sweet way the distance.
+The distance will be increased and decreased with a floating range from (Distance - 50%) to (Distance + 50%)

@@ -1,0 +1,3 @@
+Adding FO_LOOP flag, the list of (time + PerformGroup) will be performed in endless way. After that the last  Performgroup has been performed, the organizer will restart from first performgroup.
+Using this flag you can perform some performgroup each "number of seconds"
+Remember you can use some flipeffects to start or stop an organizer, this feature is useful own when you want perform in loop mode an organizer only for a specific section of game or in some time interval.

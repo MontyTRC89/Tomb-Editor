@@ -503,6 +503,18 @@ namespace TombEditor
             {
                 trigger.TargetType = TriggerTargetType.Object;
                 trigger.Target = @object;
+
+                if (_editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
+                {
+                    string objectName = @object.ToString().ToLower();
+                    bool isHole = (objectName.Contains("key") || objectName.Contains("puzzle"))
+                        && objectName.Contains("hole");
+                    bool isSwitch = objectName.Contains("switch");
+                    if (isHole)
+                        trigger.TriggerType = TriggerType.Key;
+                    else if (isSwitch)
+                        trigger.TriggerType = TriggerType.Switch;
+                }
             }
             else if (@object is FlybyCameraInstance)
             {
@@ -724,7 +736,7 @@ namespace TombEditor
             }
             else if (instance is SoundSourceInstance)
             {
-                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Settings.WadGetAllSoundInfos()))
+                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Settings.GlobalSoundMap))
                     if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -2985,6 +2997,32 @@ namespace TombEditor
             return true;
         }
 
+        public static void ApplyAmbientLightToSelectedRooms(IWin32Window owner)
+        {
+            IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                foreach (Room room in SelectedRooms)
+                {
+                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                    room.BuildGeometry();
+                    _editor.RoomPropertiesChange(room);
+                }
+            }, _editor.Configuration.UI_ColorScheme))
+            {
+                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
+                    foreach (Room room in SelectedRooms)
+                        room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+            }
+
+            foreach (Room room in SelectedRooms)
+            {
+                room.BuildGeometry();
+                _editor.RoomPropertiesChange(room);
+            }
+
+        }
+
         public static void ApplyCurrentAmbientLightToAllRooms()
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
@@ -3210,6 +3248,8 @@ namespace TombEditor
 
             // Load objects (*.wad files) concurrently
             ReferencedWad[] results = new ReferencedWad[paths.Count];
+            ReferencedSoundsCatalog[] soundsResults = new ReferencedSoundsCatalog[paths.Count];
+            
             GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
             using (var loadingTask = Task.Run(() =>
                 Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler))))
@@ -3237,9 +3277,38 @@ namespace TombEditor
                             return new ReferencedWad[0];
                     }
 
+            synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i =>
+                {
+                    string currentPath = paths[i].ToLower();
+                    string extension = Path.GetExtension(currentPath);
+                    if (extension == ".wad")
+                    {
+                        string sfxPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".sfx";
+                        if (File.Exists(sfxPath))
+                        {
+                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, sfxPath, synchronizedDialogHandler);
+                        }
+                    }
+                    else if (extension == ".wad2")
+                    {
+                        string xmlPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".xml";
+                        if (File.Exists(xmlPath))
+                        {
+                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, xmlPath, synchronizedDialogHandler);
+                        }
+                    }
+                })))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
 
             // Update level
             _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
+            _editor.Level.Settings.SoundsCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
             _editor.LoadedWadsChange();
             return results.Where(result => result != null);
         }
@@ -3939,6 +4008,37 @@ namespace TombEditor
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
 
+                    // Check if some wads are missing
+                    /*foreach (var wadRef in newLevel.Settings.Wads)
+                        if (wadRef.Wad == null)
+                        {
+                            using (var formSettings = new FormLevelSettings(_editor))
+                            {
+                                if (formSettings.ShowDialog() != DialogResult.OK)
+                                    return;
+                                break;
+                            }
+                        }*/
+
+                    // SOUND_SYSTEM_XML: Check if the level needs to be converted to new Xml sound system
+                    if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
+                    {
+                        // Convert the level
+                        if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName, 
+                                                                     FileFormatConversions.SoundsCatalogPath, false))
+                        {
+                            MessageBox.Show("There was an error while converting your project to the new " +
+                                            "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            newLevel = null;
+                            return;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Your level was converted to the new Xml sound system. Please save it.",
+                                            "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
@@ -3985,19 +4085,23 @@ namespace TombEditor
             if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
-            if (string.IsNullOrEmpty(fileName))
-                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, null, false);
-            if (string.IsNullOrEmpty(fileName))
-                return;
-
-            Level newLevel = null;
-            using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
-                newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrection)))
+            using (var formImport = new FormImportPrj())
             {
-                if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                if (formImport.ShowDialog() != DialogResult.OK)
                     return;
-                _editor.Level = newLevel;
-                newLevel = null;
+
+                Level newLevel = null;
+                using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
+                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath, progressReporter, 
+                    _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, 
+                    _editor.Configuration.Editor_UseHalfPixelCorrection)))
+                {
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return;
+
+                    _editor.Level = newLevel;
+                    newLevel = null;
+                }
             }
         }
 
@@ -4231,30 +4335,37 @@ namespace TombEditor
                 _editor.SelectRooms(rooms);
         }
 
-        public static void SetAmbientLightForSelectedRooms(IWin32Window owner)
+        public static void SetStaticMeshesColorToRoomAmbientLight()
         {
             IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
-            using (var colorDialog = new RealtimeColorDialog(c =>
+            foreach (Room room in SelectedRooms)
             {
-                foreach(Room room  in SelectedRooms)
+                IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
+                foreach (StaticInstance staticMesh in staticMeshes)
                 {
-                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
-                    room.BuildGeometry();
-                    _editor.RoomPropertiesChange(room);
+                    staticMesh.Color = room.AmbientLight;
+                    _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
                 }
-                
-            }, _editor.Configuration.UI_ColorScheme))
-            {
-
-                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
-                    foreach (Room room in SelectedRooms)
-                        room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
-
             }
-            foreach(Room room in SelectedRooms)
+        }
+
+        public static void SetStaticMeshesColor(IWin32Window owner)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
             {
-                room.BuildGeometry();
-                _editor.RoomPropertiesChange(room);
+                if(colorDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+                    foreach (Room room in SelectedRooms)
+                    {
+                        IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
+                        foreach (StaticInstance staticMesh in staticMeshes)
+                        {
+                            staticMesh.Color = colorDialog.Color.ToFloat3Color();
+                            _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
+                        }
+                    }
+                }
             }
             
         }

@@ -1,0 +1,5 @@
+Used in AnimationSlot command
+This condition detect if in front of current moveable it's missing the gray boxes used in NGLE to stop the moving of enemies.
+In the DistanceForEnv field you set distance to check in front of enemy.
+Note:
+The _NO_BOX_ conditions should be used with AnimationSlot command on some enemy. The usage with Lara is theorically possible but not very useful.

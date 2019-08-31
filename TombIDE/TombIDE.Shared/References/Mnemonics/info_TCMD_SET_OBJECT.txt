@@ -1,0 +1,14 @@
+Used in TriggerGroup= command.
+This constant should be used as second value of three values, where the first was TGROUP_COMMAND.
+It changes the following (real) trigger of current TriggerGroup, replacing the Object value with that taken from trng variable set in next value (third value of current command trigger).
+
+Range: 0/4095 or 0/-4095 (see below note)
+Scope: Used with Condition and Action triggers. It is the "(Object to trigger (#))" parameter.
+
+Note: if the value is a moveable index, remember that there are two kinds of indices about moveables:
+1) The index in tr4 file, used in run-time.
+2) The NGLE index, that is the index you see in NGLE room editor.
+You can set one or other kind but it's necessary you use the negative sign (-) to declare a tr4 moveable index when you used a tomb4 index. In this case the range becomes -1/-4096
+While, if the value in source variable is positive, it should be a ngle a tomb (tr4) moveable index or another kind of paramater, different than moveable indices.
+About this complication it's necessary reminding that the exported trigger used always ngle indices for moveables, for this reason if you have, in some trng variable, an internal tr4 index, you'll have to change its sign before passing it to some exported trigger with TCMD_SET_OBJECT command.
+All above speech is futile if,  the object value to change, it's not really the index of some moveable but some other type of parameter.

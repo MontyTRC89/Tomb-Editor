@@ -1,0 +1,87 @@
+Used in TriggerGroup= command.
+This value will be used in second (of three) values.
+First value had to be the TGROUP_COMMAND constant.
+The  TCMD_GOTO constant forces a jump to other trigger in same triggergroup command.
+The third value will be the index of trigger (group of three values) to perform.
+
+Example:
+
+TriggerGroup=	1, $5000, 118, $2A,              ;0 index
+			   TGROUP_COMMAND, TCMD_GOTO, 3  ;1 index, jmp to trigger "$2000, 406, $1"
+			   $5000, 137, $0129,            ;2 index
+			   $2000, 406, $1                ;3 index
+
+Using GOTO you can getting easier some triggergroups  when you manage complicated sequence of IF ELSE conditional groups.
+For instance, now we see, in natural language, a sequence of conditons and commands in this triggergroup:
+
+TriggerGroup=Id, ACondition ; 0
+  			 	TriggerA1  ; 1
+			 	TriggerA2  ; 2
+			 ELSE BCondition ; 3
+				TriggerB1  ; 4
+				TriggerB2  ; 5
+			TriggerC1  ; 6
+			TriggerC2  ; 7
+			TriggerC3  ; 8
+
+Above is an, only simbolic, description of a triggergroup. Where you read "Condition" there will be three value for some exported conditional trigger, while where you read some "Trigger..", there are three values for some exported trigger.
+Now, we suppose to wish perform TriggerA1/2 when ACondition is true and TriggerB1/2 when BCondition is true, like it appears in above triggergroup. But, let's say, we wish perform the C1/2/3 triggers, in all cases, after TriggerA1/A2 and after (how already it happens)  TriggerB1/2.
+In last release of trng, it was possible in only one way: duplicating the TriggerC1/2/3 in this way:
+
+TriggerGroup=Id, ACondition ; 0
+			 	TriggerA1  ; 1
+			 	TriggerA2  ; 2
+				TriggerC1  ; 3
+				TriggerC2  ; 4
+				TriggerC3  ; 5
+			 ELSE BCondition ; 6
+				TriggerB1  ; 7
+				TriggerB2  ; 8
+				TriggerC1  ; 9
+				TriggerC2  ; 10
+				TriggerC3  ; 11
+
+It happened because, after a condition, it will be performed ONLY the triggers after that condition, and first of next ELSE statement.
+When the execution entered in "ACondition is true" the execution stopped at next found ELSE.
+Now, using GOTO command we can passing over this limit, in this way:
+
+TriggerGroup=Id, ACondition ; 0
+			 	TriggerA1  ; 1
+			 	TriggerA2  ; 2
+			 	COMMAND GOTO  7 ;3
+			 ELSE BCondition ; 4
+				TriggerB1  ; 5
+				TriggerB2  ; 6
+			TriggerC1  ; 7
+			TriggerC2  ; 8
+			TriggerC3  ; 9
+In above way, when the ACondition is true, it will be executed the TriggerA1/2 and then (the goto) also the TriggerC1/2/3, avoiding to have to duplicate them.
+
+From above example we discover that the GOTO command will be used very often first of an ELSE statement, to go on to execute other triggers below, in the triggergroup.
+Anyway there is another new approach that we can having with GOTO command.
+
+In past trng versions, the execution of triggers, inside a given TriggerGroup, was only from top (first row) to bottom (last row) with further skipping of some trigger in according with result of some conditions.
+Now, using GOTO you can perform newly a previous trigger, generating a "loop"
+When you use this chance you should take care to avoid endless loops, otherwise the game will freeze.
+There are two situations where you can use loops (whereby "goto" commands) with no trouble:
+
+1) When you use a variable (trng variable) to keep track of number of cycles (amount of times) that you performed same triggers. In this method you'll have to insert in the cycle a condition to verify if it is the moment to quit the loop.
+This method is very used to manage the arrays (vectors). In spite there is no yet many stuff about array management in NG_Center or triggers, these new skills could be added in future.
+We see a little (meaningless) example:
+
+TriggerGroup= Id,  Set A1=0	; 0
+			   TriggerAlfa	; 1
+			   TriggerBeta  ; 2
+			   TriggerDelta ; 3
+			   A1=A1+1		; 4
+			   If A1 less or even than 4     ; 5
+				   COMMAND GOTO 1   ; 6
+			   ELSE TriggerGamma    ; 7
+				   TriggerOmega    ; 8
+Above is a loop, where the group of triggers (Alfa, beta and delta) will be executed four times and, at end of this cycle, it will be perfomed the Triggers Gamma and Omega.
+If you follow the execution and keep in mind the value of A1, modified by "A1=A1+1" and then checked by "IF AI less or even than 4" condition, you should understand because Alfa,beta and delta triggers will be performed 4 times.
+
+Note: please, don't try to use a loop to move items on screen, or to wait a condition different than trng variables or memory zones you change in the loop, otherwise the game will freeze. The right way to perform continuosly a triggergroup is to use, from a trigger in the level, an activation Perform Always. Trying to get same result with a cycle based on GOTO command will fail, because the game requires to draw meshes, read input command from keyboard and other stuff, to work fine, it cann't be stopped, in an endless cycle, inside a triggergroup.
+
+2) When you want "recycle" some serie of triggers you typed above in a huge triggergroup.
+This situation is alike to that already showed to skip ELSE statement, only difference is that you could use goto also to come back, to some previous trigger block, if you wish.

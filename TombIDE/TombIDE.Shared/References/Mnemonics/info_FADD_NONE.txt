@@ -1,0 +1,1 @@
+If you don't want use any FADD_ constant you can use FADD_NONE constant in FADD field.

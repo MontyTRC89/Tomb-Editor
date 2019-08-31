@@ -1,0 +1,19 @@
+Used with Parameters=PARAM_WTEXT script command
+
+This flag generates a flying/zoom effect, where the text at begin is very little, and it will be magnified fastly, until to reach the bigger size you set.
+The final position of the text will be given by the rectangle (left, top, right, bottom fields) you set in PARAM_WTEXT parameters script command.
+
+If you wish have a text at center of the screen that it will fit the whole screen and end of the flying you can set 0,0,1000,1000 as values for rectangle.
+
+Notes:
+
+* The time (tick frames, 30th of seconds) you set in TimeDurate field of PARAM_WTEXT command, will be used to set the time that the text will remain on the screen after it reached the final bigger size. If you type IGNORE or 0 in TimeDurate the text will remain forever and you'll have to use the F364 trigger to remove the text.
+The lower time you can set in TimeDurate field for this effect is 2 (1/15th of second), while if you set 1 the effect will fail.
+
+* It's advisable using always the WFF_CENTER_ALIGN flag in the WindowsFont command, for this effect type.
+
+* This effect works better with single row texts, i.e. text where there is no new line character. If you use new line characters in the text, this effect will work in a different way: the text will be not vertically centered at begin of its flying but it will appear in top side of screen, like it was coming from the sky.
+
+* You cann't use same PARAM_WTEXT command for two (or more) flying effects (also if they are using different texts) in same moment.
+
+Note: the Size you type in the WindowsFont command linked with current PARAM_WTEXT command, will be used as ending (and bigger) size, while the beginning size is set by default to be so little to look like a little far row.

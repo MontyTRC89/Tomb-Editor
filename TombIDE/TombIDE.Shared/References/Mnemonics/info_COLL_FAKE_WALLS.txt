@@ -1,0 +1,6 @@
+Used with Customize=CUST_SET_STILL_COLLISION command.
+This flag enable the still collision on some moveables used in game to simulate walls, ceiling or floor:
+
+SMASHABLE_BIKE_WALL, SMASHABLE_BIKE_FLOOR, FALLING_CEILING, FALLING_BLOCK, FALLING_BLOCK2, BURNING_FLOOR, ONEBLOCK_PLATFORM, TWOBLOCK_PLATFORM, RAISING_BLOCK1, RAISING_BLOCK1, EXPANDING_PLATFORM, BRIDGE_FLAT, BRIDGE_TILT1, BRIDGE_TILT2 and all PUSHABLE OBJECTS.
+
+Remark: about some moveable used as "floor" or "ceiling", the still collision will be applied only in horizontal movement, for example when lara splats her face vs the edge of a bridge.

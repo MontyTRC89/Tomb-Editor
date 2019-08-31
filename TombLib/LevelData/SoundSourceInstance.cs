@@ -3,8 +3,20 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
+    public enum SoundSourcePlayMode
+    {
+        Always = 0,
+        OnlyInBaseRoom = 1,
+        OnlyInAlternateRoom = 2
+    }
+
     public class SoundSourceInstance : PositionAndScriptBasedObjectInstance
     {
+        public int SoundId { get; set; } = -1;
+        public SoundSourcePlayMode PlayMode { get; set; } = SoundSourcePlayMode.Always;
+
+        // XML_SOUND_SYSTEM: legacy stuff present only for loading. Probably we'll force user to to a one-way migration on 
+        // load time so we need just properties
         private string _wadReferencedSoundName = null;
         public string WadReferencedSoundName
         {
@@ -27,25 +39,27 @@ namespace TombLib.LevelData
             }
         }
 
-        public bool IsEmpty => EmbeddedSoundInfo == null && string.IsNullOrEmpty(WadReferencedSoundName);
+        public bool IsEmpty => SoundId == -1;
 
         public WadSoundInfo GetSoundInfo(Level level)
         {
-            if (EmbeddedSoundInfo != null)
-                return EmbeddedSoundInfo;
-            return level.Settings.WadTryGetSoundInfo(WadReferencedSoundName);
+            if (SoundId != -1)
+                return level.Settings.WadTryGetSoundInfo(SoundId);
+            else
+                return null;
         }
 
         public string SoundNameToDisplay
         {
             get
             {
-                if (IsEmpty)
+                if (IsEmpty || Room == null || Room.Level == null)
                     return "Empty";
-                else if (EmbeddedSoundInfo != null)
-                    return "Embedded sound";
+                var info = GetSoundInfo(Room.Level);
+                if (info == null)
+                    return "Empty";
                 else
-                    return "Wad sound: '" + WadReferencedSoundName + "'";
+                    return info.Name;
             }
         }
 
