@@ -175,7 +175,7 @@ namespace TombLib.Utils
             try
             {
                 // Load sounds catalog
-                WadSounds sounds = WadSounds.ReadFromFile(soundsCatalog);
+                //WadSounds sounds = WadSounds.ReadFromFile(soundsCatalog);
 
                 // Check for sound system
                 if (level.Settings.SoundSystem == SoundSystem.Xml)
@@ -269,11 +269,12 @@ namespace TombLib.Utils
                 }
 
                 // Now we'll show a dialog with all conversion rows and the user will need to make some choices
-                using (var form = new Prj2SoundsConversionDialog(version, conversionList))
-                {
-                    if (form.ShowDialog() == DialogResult.Cancel)
-                        return false;
-                }
+                if (conversionList.Count != 0)
+                    using (var form = new Prj2SoundsConversionDialog(version, conversionList))
+                    {
+                        if (form.ShowDialog() == DialogResult.Cancel)
+                            return false;
+                    }
 
                 // Assign new Id and name
                 foreach (var row in conversionList)
@@ -351,7 +352,7 @@ namespace TombLib.Utils
                     }
 
                 // Sort sound infos
-                sounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
+                newSounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
 
                 // Make a backup copy
                 if (save && src == dest)
@@ -374,17 +375,49 @@ namespace TombLib.Utils
                 WadSounds.SaveToXml(xmlFileName, newSounds);
 
                 // Assign Xml to level settings
-                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
-                    level.Settings.MakeRelative(soundsCatalog, VariableType.LevelDirectory)));
+                //level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                //    level.Settings.MakeRelative(soundsCatalog, VariableType.LevelDirectory)));
                 level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
                     level.Settings.MakeRelative(xmlFileName, VariableType.LevelDirectory)));
                 level.Settings.SoundSystem = SoundSystem.Xml;
+
+                // Try to get Xml and SFX files
+                foreach (var wadRef in level.Settings.Wads)
+                    if (wadRef != null && wadRef.LoadException == null)
+                    {
+                        string wadPath = level.Settings.MakeAbsolute(wadRef.Path);
+                        string extension = Path.GetExtension(wadPath).ToLower();
+
+                        if (extension == ".wad")
+                        {
+                            string sfxPath = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx";
+                            if (File.Exists(sfxPath))
+                            {
+                                var sounds = WadSounds.ReadFromFile(sfxPath);
+                                if (sounds != null)
+                                    level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                                        level.Settings.MakeRelative(sfxPath, VariableType.LevelDirectory)));
+                            }
+
+                        }
+                        else if (extension == ".wad2")
+                        {
+                            string xmlPath = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".xml";
+                            if (File.Exists(xmlPath))
+                            {
+                                var sounds = WadSounds.ReadFromFile(xmlPath);
+                                if (sounds != null)
+                                    level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                                        level.Settings.MakeRelative(xmlPath, VariableType.LevelDirectory)));
+                            }
+                        }
+                    }
 
                 // Assign sounds if possible
                 foreach (var soundRef in level.Settings.SoundsCatalogs)
                     if (soundRef.LoadException == null)
                         foreach (var sound in soundRef.Sounds.SoundInfos)
-                            if (sound.Global && !level.Settings.SelectedSounds.Contains(sound.Id))
+                            if (!level.Settings.SelectedSounds.Contains(sound.Id))
                                 level.Settings.SelectedSounds.Add(sound.Id);
 
                 // Save Prj2 with Xml sounds
