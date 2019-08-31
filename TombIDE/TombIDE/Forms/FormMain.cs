@@ -492,11 +492,11 @@ namespace TombIDE
 					DarkMessageBox.Show(this, "Operation cancelled.\nNo paths have been affected.", "Operation cancelled",
 						   MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
-			else if (obj is IDE.NewPluginsAddedEvent)
+			else if (obj is IDE.NewPluginsInstalledEvent)
 			{
 				DialogResult result = DarkMessageBox.Show(this,
-					"It is highly recommended to restart TombIDE after adding new plugins,\n" +
-					"otherwise some script elements won't be available.\n" +
+					"It is highly recommended to restart TombIDE after installing new plugins,\n" +
+					"otherwise some script elements might not be available.\n" +
 					"Would you like to restart TombIDE now?", "Restart required", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
