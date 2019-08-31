@@ -24,9 +24,10 @@ namespace TombEditor.Forms
             _soundSource = soundSource;
             _soundInfos = soundInfos;
             _soundId = _soundSource.SoundId;
-            comboPlayMode.SelectedIndex = (int)soundSource.PlayMode;
-
+            
             InitializeComponent();
+
+            comboPlayMode.SelectedIndex = (int)soundSource.PlayMode;
 
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Name))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
