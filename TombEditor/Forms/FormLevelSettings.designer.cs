@@ -1328,7 +1328,7 @@
             this.tabSamples.Padding = new System.Windows.Forms.Padding(3);
             this.tabSamples.Size = new System.Drawing.Size(563, 494);
             this.tabSamples.TabIndex = 2;
-            this.tabSamples.Text = "Sound Samples Paths";
+            this.tabSamples.Text = "Sound Sample Paths";
             // 
             // soundDataGridViewControls
             // 
