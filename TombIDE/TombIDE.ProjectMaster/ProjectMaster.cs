@@ -96,6 +96,8 @@ namespace TombIDE.ProjectMaster
 
 			_ide.Project.InstalledPlugins.Sort(delegate (Plugin p1, Plugin p2) { return p1.Name.CompareTo(p2.Name); });
 
+			HandleScriptReferenceFiles();
+
 			XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
 			XmlHandling.SaveTRPROJ(_ide.Project);
 
@@ -104,60 +106,19 @@ namespace TombIDE.ProjectMaster
 
 		/// <summary>
 		/// Removes invalid plugins from the AvailablePlugins list.
-		/// <para>Also handles .script reference files.</para>
 		/// </summary>
 		private void UpdateInternalPluginList()
 		{
 			List<Plugin> validPlugins = new List<Plugin>();
-			List<Plugin> invalidPlugins = new List<Plugin>();
 
 			foreach (Plugin plugin in _ide.AvailablePlugins)
 			{
 				if (File.Exists(plugin.InternalDllPath))
 					validPlugins.Add(plugin);
-				else
-					invalidPlugins.Add(plugin);
 			}
-
-			DeleteReferenceFilesOfInvalidPlugins(invalidPlugins);
 
 			_ide.AvailablePlugins.Clear();
 			_ide.AvailablePlugins.AddRange(validPlugins);
-
-			CopyMissingReferenceFiles();
-		}
-
-		/// <summary>
-		/// Copies missing .script files into the /NGC/ folder.
-		/// </summary>
-		private void CopyMissingReferenceFiles()
-		{
-			foreach (Plugin plugin in _ide.AvailablePlugins)
-			{
-				string scriptFilePath = Path.Combine(
-					Path.GetDirectoryName(plugin.InternalDllPath), Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".script");
-
-				if (File.Exists(scriptFilePath))
-				{
-					string destPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC", Path.GetFileName(scriptFilePath));
-					File.Copy(scriptFilePath, destPath, true);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Deletes .script files of invalid plugins from the /NGC/ folder.
-		/// </summary>
-		private void DeleteReferenceFilesOfInvalidPlugins(List<Plugin> invalidPlugins)
-		{
-			foreach (Plugin plugin in invalidPlugins)
-			{
-				string internalScriptFilePath = Path.Combine(
-					SharedMethods.GetProgramDirectory(), "NGC", Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".script");
-
-				if (File.Exists(internalScriptFilePath))
-					File.Delete(internalScriptFilePath);
-			}
 		}
 
 		/// <summary>
@@ -212,6 +173,30 @@ namespace TombIDE.ProjectMaster
 			}
 
 			_ide.Project.InstalledPlugins = projectPlugins;
+		}
+
+		private void HandleScriptReferenceFiles()
+		{
+			string[] referenceFiles = Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), "NGC"), "plugin_*.script", SearchOption.TopDirectoryOnly);
+
+			// Delete all .script files from the internal /NGC/ folder
+			foreach (string file in referenceFiles)
+				File.Delete(file);
+
+			// Only copy .script files of plugins which are actually used in the current project
+			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+			{
+				if (string.IsNullOrWhiteSpace(plugin.InternalDllPath))
+					continue;
+
+				string scriptFilePath = Path.Combine(Path.GetDirectoryName(plugin.InternalDllPath), Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".script");
+
+				if (File.Exists(scriptFilePath))
+				{
+					string destPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC", Path.GetFileName(scriptFilePath));
+					File.Copy(scriptFilePath, destPath, true);
+				}
+			}
 		}
 
 		private bool IsValidPluginFolder(string path)
