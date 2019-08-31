@@ -180,6 +180,7 @@
 			// label_Hint
 			// 
 			this.label_Hint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.label_Hint.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.label_Hint.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_Hint.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Hint.ForeColor = System.Drawing.Color.Gray;
@@ -187,8 +188,9 @@
 			this.label_Hint.Name = "label_Hint";
 			this.label_Hint.Size = new System.Drawing.Size(316, 262);
 			this.label_Hint.TabIndex = 2;
-			this.label_Hint.Text = "Press the \"+\" button on the tool strip\r\nto create a new level.";
+			this.label_Hint.Text = "Click here to create a new level.\r\n\r\nYou can also click the ➕ button instead.";
 			this.label_Hint.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label_Hint.Click += new System.EventHandler(this.label_Hint_Click);
 			// 
 			// sectionPanel
 			// 

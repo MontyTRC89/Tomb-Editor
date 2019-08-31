@@ -129,6 +129,8 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
+		private void label_Hint_Click(object sender, EventArgs e) => ShowLevelSetupForm();
+
 		private void button_New_Click(object sender, EventArgs e) => ShowLevelSetupForm();
 		private void button_Import_Click(object sender, EventArgs e) => ImportLevel();
 		private void button_Rename_Click(object sender, EventArgs e) => ShowRenameLevelForm();
