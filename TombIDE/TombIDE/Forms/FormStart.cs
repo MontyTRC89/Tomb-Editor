@@ -38,25 +38,30 @@ namespace TombIDE
 					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
 
 				// Check if a project with the same name but different paths already exists on the list
-				foreach (Project project in _ide.AvailableProjects)
-				{
-					if (project.Name.ToLower() == openedProject.Name.ToLower() && project.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
-						throw new ArgumentException("A project with the same name but different paths already exists on the list.");
-				}
-
-				// Check if the opened project already exists on the list, if not, then add it
-				bool projectExistsOnList = false;
-
 				foreach (DarkTreeNode node in treeView.Nodes)
 				{
-					if (((Project)node.Tag).Name.ToLower() == openedProject.Name.ToLower())
+					Project project = (Project)node.Tag;
+
+					if (project.Name.ToLower() == openedProject.Name.ToLower() && project.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
 					{
-						projectExistsOnList = true;
-						break;
+						DialogResult result = DarkMessageBox.Show(this,
+							"A project with the same name but different paths already exists on the list.\n" +
+							"Would you like to replace the project on the list with the currently opened one?",
+							"Project name duplicate found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+						if (result == DialogResult.Yes)
+						{
+							treeView.Nodes.Remove(node);
+							RefreshAndReserializeProjects();
+
+							break;
+						}
+						else
+							return;
 					}
 				}
 
-				if (!projectExistsOnList)
+				if (!IsProjectOnList(openedProject))
 					_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
 
 				_ide.Configuration.RememberedProject = openedProject.Name;
@@ -232,6 +237,10 @@ namespace TombIDE
 			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
 				CheckItemSelection();
 		}
+
+		#endregion Events
+
+		#region Event methods
 
 		private void ShowProjectSetupForm()
 		{
@@ -456,9 +465,9 @@ namespace TombIDE
 			}
 		}
 
-		#endregion Events
+		#endregion Event methods
 
-		#region Methods
+		#region Other methods
 
 		private void RefreshAndReserializeProjects()
 		{
@@ -484,6 +493,17 @@ namespace TombIDE
 			}
 		}
 
-		#endregion Methods
+		private bool IsProjectOnList(Project project)
+		{
+			foreach (DarkTreeNode node in treeView.Nodes)
+			{
+				if (((Project)node.Tag).Name.ToLower() == project.Name.ToLower())
+					return true;
+			}
+
+			return false;
+		}
+
+		#endregion Other methods
 	}
 }

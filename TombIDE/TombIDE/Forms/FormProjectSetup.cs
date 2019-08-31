@@ -158,7 +158,8 @@ namespace TombIDE
 				// Install the game files into the specified projectPath folder
 				InstallEngine(createdProject);
 
-				DarkMessageBox.Show(this, "Project installation finished successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				DarkMessageBox.Show(this, "Project installation finished successfully.", "Success",
+					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 				// Trigger IDE.ProjectAddedEvent
 				_ide.AddProjectToList(createdProject);
