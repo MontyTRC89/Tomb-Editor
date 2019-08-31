@@ -37,7 +37,7 @@ namespace TombIDE
 				if (!openedProject.IsValidProject())
 					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
 
-				// Check if a project with the same name but different paths exists on the list
+				// Check if a project with the same name but different paths already exists on the list
 				foreach (Project project in _ide.AvailableProjects)
 				{
 					if (project.Name.ToLower() == openedProject.Name.ToLower() && project.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())

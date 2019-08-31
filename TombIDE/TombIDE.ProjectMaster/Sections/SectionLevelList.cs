@@ -88,12 +88,15 @@ namespace TombIDE.ProjectMaster
 				AddLevelToList(addedLevel, true);
 
 				// Select the new level node
-				DarkTreeNode levelNode = treeView.Nodes.Find(x => ((ProjectLevel)x.Tag).Name.ToLower() == addedLevel.Name.ToLower());
-
-				if (levelNode != null)
+				foreach (DarkTreeNode node in treeView.Nodes)
 				{
-					treeView.SelectNode(levelNode);
-					CheckItemSelection();
+					if (((ProjectLevel)node.Tag).Name.ToLower() == addedLevel.Name.ToLower()) ;
+					{
+						treeView.SelectNode(node);
+						CheckItemSelection();
+
+						break;
+					}
 				}
 			}
 			else if (obj is IDE.SelectedLevelSettingsChangedEvent)
@@ -340,12 +343,15 @@ namespace TombIDE.ProjectMaster
 					// If a node was selected, reselect it after refreshing
 					if (!string.IsNullOrEmpty(cachedNodeText))
 					{
-						DarkTreeNode node = treeView.Nodes.Find(x => x.Text.ToLower() == cachedNodeText.ToLower());
-
-						if (node != null)
+						foreach (DarkTreeNode node in treeView.Nodes)
 						{
-							treeView.SelectNode(node);
-							treeView.ScrollTo(node.FullArea.Location);
+							if (node.Text.ToLower() == cachedNodeText.ToLower())
+							{
+								treeView.SelectNode(node);
+								treeView.ScrollTo(node.FullArea.Location);
+
+								break;
+							}
 						}
 					}
 

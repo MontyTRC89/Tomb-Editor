@@ -367,11 +367,20 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// Select the SpecificFile node (if the file exists on the list)
-			DarkTreeNode treeNode = treeView_AllPrjFiles.Nodes.Find(x => x.Text.ToLower() == _ide.SelectedLevel.SpecificFile.ToLower());
+			bool nodeFound = false;
 
-			if (treeNode != null)
-				treeView_AllPrjFiles.SelectNode(treeNode);
-			else
+			foreach (DarkTreeNode node in treeView_AllPrjFiles.Nodes)
+			{
+				if (node.Text.ToLower() == _ide.SelectedLevel.SpecificFile.ToLower())
+				{
+					treeView_AllPrjFiles.SelectNode(node);
+					nodeFound = true;
+
+					break;
+				}
+			}
+
+			if (!nodeFound)
 				treeView_AllPrjFiles.SelectNode(treeView_AllPrjFiles.Nodes[0]); // Select the first node if no file was found
 
 			treeView_AllPrjFiles.Invalidate();

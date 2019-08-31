@@ -197,7 +197,18 @@ namespace TombIDE.ProjectMaster
 			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 			{
 				// Skip installed project plugins for this list, because we show them in treeView_Installed instead
-				if (_ide.Project.InstalledPlugins.Exists(x => x.InternalDllPath.ToLower() == availablePlugin.InternalDllPath.ToLower()))
+				bool isInstalledPlugin = false;
+
+				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
+				{
+					if (installedPlugin.InternalDllPath.ToLower() == availablePlugin.InternalDllPath.ToLower())
+					{
+						isInstalledPlugin = true;
+						break;
+					}
+				}
+
+				if (isInstalledPlugin)
 					continue;
 
 				DarkTreeNode node = new DarkTreeNode(availablePlugin.Name)
@@ -215,11 +226,11 @@ namespace TombIDE.ProjectMaster
 		{
 			treeView_Installed.Nodes.Clear();
 
-			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+			foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
 			{
-				DarkTreeNode node = new DarkTreeNode(plugin.Name)
+				DarkTreeNode node = new DarkTreeNode(installedPlugin.Name)
 				{
-					Tag = plugin
+					Tag = installedPlugin
 				};
 
 				treeView_Installed.Nodes.Add(node);
@@ -270,10 +281,14 @@ namespace TombIDE.ProjectMaster
 
 				Plugin plugin = Plugin.InstallPluginFolder(extractionPath);
 
-				if (_ide.AvailablePlugins.Exists(x => x.Name.ToLower() == plugin.Name.ToLower()))
+				// Check for name duplicates
+				foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 				{
-					Directory.Delete(extractionPath, true);
-					throw new ArgumentException("A plugin with the same name already exists on the list.");
+					if (availablePlugin.Name.ToLower() == plugin.Name.ToLower())
+					{
+						Directory.Delete(extractionPath, true);
+						throw new ArgumentException("A plugin with the same name already exists on the list.");
+					}
 				}
 
 				_ide.RefreshPluginLists();
@@ -374,13 +389,15 @@ namespace TombIDE.ProjectMaster
 
 			// Check for DLL duplicates
 			string installedDLLFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First());
-			Plugin plugin = _ide.AvailablePlugins.Find(x => Path.GetFileName(x.InternalDllPath).ToLower() == installedDLLFileName.ToLower());
 
-			if (plugin != null)
+			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 			{
-				Directory.Delete(pluginFolderPath, true);
-				throw new ArgumentException(string.Format("Selected {0} has the same DLL file as the\n" +
-					"\"{1}\" plugin.", extractedFromArchive ? "archive" : "folder", plugin.Name));
+				if (Path.GetFileName(availablePlugin.InternalDllPath).ToLower() == installedDLLFileName.ToLower())
+				{
+					Directory.Delete(pluginFolderPath, true);
+					throw new ArgumentException(string.Format("Selected {0} has the same DLL file as the\n" +
+						"\"{1}\" plugin.", extractedFromArchive ? "archive" : "folder", availablePlugin.Name));
+				}
 			}
 		}
 

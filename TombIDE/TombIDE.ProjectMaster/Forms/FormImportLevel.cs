@@ -50,8 +50,12 @@ namespace TombIDE
 				if (radioButton_SelectedCopy.Checked && treeView.SelectedNodes.Count == 0)
 					throw new ArgumentException("You must select which .prj2 files you want to import.");
 
-				if (_ide.Project.Levels.Exists(x => x.Name.ToLower() == levelName.ToLower()))
-					throw new ArgumentException("A level with the same name already exists on the list.");
+				// Check for name duplicates
+				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
+				{
+					if (projectLevel.Name.ToLower() == levelName.ToLower())
+						throw new ArgumentException("A level with the same name already exists on the list.");
+				}
 
 				if (radioButton_SpecifiedCopy.Checked || radioButton_SelectedCopy.Checked)
 					ImportAndCopyFiles(levelName);
