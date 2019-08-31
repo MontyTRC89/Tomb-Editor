@@ -120,8 +120,12 @@ namespace TombIDE
 				if (radio_Levels_02.Checked && string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the custom /Levels/ folder path.");
 
-				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == projectName.ToLower()))
-					throw new ArgumentException("A project with the same name already exists on the list.");
+				// Check for name duplicates
+				foreach (Project project in _ide.AvailableProjects)
+				{
+					if (project.Name.ToLower() == projectName.ToLower())
+						throw new ArgumentException("A project with the same name already exists on the list.");
+				}
 
 				if (comboBox_EngineType.SelectedIndex == 0)
 					throw new ArgumentException("You must specify the engine type of the project.");
@@ -237,7 +241,7 @@ namespace TombIDE
 			else if (project.GameVersion == GameVersion.TR5Main)
 				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Shared.zip");
 
-			// Un-Zip the engine base into the ProjectPath folder
+			// Extract the engine base into the ProjectPath folder
 			using (ZipArchive engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))
 			{
 				using (ZipArchive sharedArchive = new ZipArchive(File.OpenRead(sharedArchivePath)))
