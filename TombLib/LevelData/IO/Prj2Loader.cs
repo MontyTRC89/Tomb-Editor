@@ -20,6 +20,7 @@ namespace TombLib.LevelData.IO
         {
             public bool IgnoreWads = false;
             public bool IgnoreTextures = false;
+            public bool IgnoreSoundsCatalogs = false;
         }
 
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter) => LoadFromPrj2(filename, progressReporter, new Settings());
@@ -485,6 +486,12 @@ namespace TombLib.LevelData.IO
             if (!loadingSettings.IgnoreWads)
                 Parallel.ForEach(WadsToLoad, wad =>
                     wad.Key.SetPath(settings, wad.Value));
+
+            // Load sound catalogs
+            progressReporter?.ReportInfo("Loading sounds catalogs into level");
+            if (!loadingSettings.IgnoreSoundsCatalogs)
+                Parallel.ForEach(SoundsCatalogsToLoad, catalog =>
+                    catalog.Key.SetPath(settings, catalog.Value));
 
             // Load level textures
             progressReporter?.ReportInfo("Loading textures into level");

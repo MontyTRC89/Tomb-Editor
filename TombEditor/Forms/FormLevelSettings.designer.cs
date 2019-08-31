@@ -22,13 +22,6 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -101,15 +94,18 @@
             this.skyTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
+            this.butSearchSounds = new DarkUI.Controls.DarkButton();
+            this.butDeselectAllSounds = new DarkUI.Controls.DarkButton();
+            this.butSelectAllSounds = new DarkUI.Controls.DarkButton();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogsSoundCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
@@ -151,11 +147,16 @@
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel11.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabGame.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -190,6 +191,8 @@
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -246,77 +249,6 @@
             this.darkSectionPanel2.SectionHeader = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(573, 522);
             this.darkSectionPanel2.TabIndex = 2;
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 522);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 520);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel11
-            // 
-            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel11.Controls.Add(this.butApply);
-            this.panel11.Controls.Add(this.butOk);
-            this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(522, 531);
-            this.panel11.Name = "panel11";
-            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel11.Size = new System.Drawing.Size(260, 28);
-            this.panel11.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(3, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(89, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "OK";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(175, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
             // 
             // tabbedContainer
             // 
@@ -1129,11 +1061,13 @@
             // tabSoundsCatalogs
             // 
             this.tabSoundsCatalogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabSoundsCatalogs.Controls.Add(this.butSearchSounds);
+            this.tabSoundsCatalogs.Controls.Add(this.butDeselectAllSounds);
+            this.tabSoundsCatalogs.Controls.Add(this.butSelectAllSounds);
             this.tabSoundsCatalogs.Controls.Add(this.darkLabel21);
             this.tabSoundsCatalogs.Controls.Add(this.labelSoundsCatalogsStatistics);
             this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridView);
             this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridViewControls);
-            this.tabSoundsCatalogs.Controls.Add(this.darkLabel20);
             this.tabSoundsCatalogs.Controls.Add(this.tbSearch);
             this.tabSoundsCatalogs.Controls.Add(this.darkLabel50);
             this.tabSoundsCatalogs.Controls.Add(this.selectedSoundsDataGridView);
@@ -1142,7 +1076,38 @@
             this.tabSoundsCatalogs.Padding = new System.Windows.Forms.Padding(3);
             this.tabSoundsCatalogs.Size = new System.Drawing.Size(563, 494);
             this.tabSoundsCatalogs.TabIndex = 8;
-            this.tabSoundsCatalogs.Text = "Sounds";
+            this.tabSoundsCatalogs.Text = "Sound Infos";
+            // 
+            // butSearchSounds
+            // 
+            this.butSearchSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearchSounds.Image = global::TombEditor.Properties.Resources.general_filter_16;
+            this.butSearchSounds.Location = new System.Drawing.Point(370, 242);
+            this.butSearchSounds.Name = "butSearchSounds";
+            this.butSearchSounds.Selectable = false;
+            this.butSearchSounds.Size = new System.Drawing.Size(24, 22);
+            this.butSearchSounds.TabIndex = 109;
+            this.butSearchSounds.Click += new System.EventHandler(this.butSearchSounds_Click);
+            // 
+            // butDeselectAllSounds
+            // 
+            this.butDeselectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeselectAllSounds.Location = new System.Drawing.Point(483, 242);
+            this.butDeselectAllSounds.Name = "butDeselectAllSounds";
+            this.butDeselectAllSounds.Size = new System.Drawing.Size(77, 22);
+            this.butDeselectAllSounds.TabIndex = 108;
+            this.butDeselectAllSounds.Text = "Deselect all";
+            this.butDeselectAllSounds.Click += new System.EventHandler(this.butDeselectAllSounds_Click);
+            // 
+            // butSelectAllSounds
+            // 
+            this.butSelectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectAllSounds.Location = new System.Drawing.Point(400, 242);
+            this.butSelectAllSounds.Name = "butSelectAllSounds";
+            this.butSelectAllSounds.Size = new System.Drawing.Size(77, 22);
+            this.butSelectAllSounds.TabIndex = 107;
+            this.butSelectAllSounds.Text = "Select all";
+            this.butSelectAllSounds.Click += new System.EventHandler(this.butSelectAllSounds_Click);
             // 
             // darkLabel21
             // 
@@ -1178,6 +1143,7 @@
             this.SoundsCatalogPathColumn,
             this.SoundsCatalogSearchColumn,
             this.SoundsCatalogsAssignColumn,
+            this.SoundsCatalogsSoundCountColumn,
             this.SoundsCatalogMessageColumn});
             this.soundsCatalogsDataGridView.Location = new System.Drawing.Point(6, 32);
             this.soundsCatalogsDataGridView.Name = "soundsCatalogsDataGridView";
@@ -1214,6 +1180,16 @@
             this.SoundsCatalogsAssignColumn.Text = "Assign";
             this.SoundsCatalogsAssignColumn.Width = 60;
             // 
+            // SoundsCatalogsSoundCountColumn
+            // 
+            this.SoundsCatalogsSoundCountColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogsSoundCountColumn.DataPropertyName = "SoundsCount";
+            this.SoundsCatalogsSoundCountColumn.FillWeight = 20F;
+            this.SoundsCatalogsSoundCountColumn.HeaderText = "Num. sounds";
+            this.SoundsCatalogsSoundCountColumn.Name = "SoundsCatalogsSoundCountColumn";
+            this.SoundsCatalogsSoundCountColumn.ReadOnly = true;
+            this.SoundsCatalogsSoundCountColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
             // SoundsCatalogMessageColumn
             // 
             this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -1238,32 +1214,21 @@
             this.soundsCatalogsDataGridViewControls.Size = new System.Drawing.Size(24, 204);
             this.soundsCatalogsDataGridViewControls.TabIndex = 103;
             // 
-            // darkLabel20
-            // 
-            this.darkLabel20.AutoSize = true;
-            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel20.Location = new System.Drawing.Point(369, 247);
-            this.darkLabel20.Name = "darkLabel20";
-            this.darkLabel20.Size = new System.Drawing.Size(44, 13);
-            this.darkLabel20.TabIndex = 101;
-            this.darkLabel20.Text = "Search:";
-            // 
             // tbSearch
             // 
             this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearch.Location = new System.Drawing.Point(420, 242);
+            this.tbSearch.Location = new System.Drawing.Point(254, 242);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(140, 22);
             this.tbSearch.TabIndex = 100;
-            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearch_KeyDown);
             // 
             // darkLabel50
             // 
             this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel50.Location = new System.Drawing.Point(3, 247);
             this.darkLabel50.Name = "darkLabel50";
-            this.darkLabel50.Size = new System.Drawing.Size(184, 19);
+            this.darkLabel50.Size = new System.Drawing.Size(228, 19);
             this.darkLabel50.TabIndex = 97;
             this.darkLabel50.Text = "Sounds to save in compiled level:";
             // 
@@ -1289,7 +1254,7 @@
             this.selectedSoundsDataGridView.RowHeadersWidth = 41;
             this.selectedSoundsDataGridView.Size = new System.Drawing.Size(554, 199);
             this.selectedSoundsDataGridView.TabIndex = 96;
-            this.selectedSoundsDataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSounds_CellValidated);
+            this.selectedSoundsDataGridView.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_RowValidated);
             // 
             // colSoundsEnabled
             // 
@@ -1694,6 +1659,77 @@
             this.darkLabel12.TabIndex = 101;
             this.darkLabel12.Text = "Texture tile padding:";
             // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 522);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 520);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel11
+            // 
+            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel11.Controls.Add(this.butApply);
+            this.panel11.Controls.Add(this.butOk);
+            this.panel11.Controls.Add(this.butCancel);
+            this.panel11.Location = new System.Drawing.Point(522, 531);
+            this.panel11.Name = "panel11";
+            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel11.Size = new System.Drawing.Size(260, 28);
+            this.panel11.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(3, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(89, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "OK";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(175, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
+            // 
+            // colorDialog
+            // 
+            this.colorDialog.AnyColor = true;
+            this.colorDialog.FullOpen = true;
+            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
@@ -1714,8 +1750,6 @@
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabGame.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
@@ -1765,6 +1799,8 @@
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1880,14 +1916,9 @@
         private System.Windows.Forms.TabPage tabSoundsCatalogs;
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkDataGridView selectedSoundsDataGridView;
-        private DarkUI.Controls.DarkLabel darkLabel20;
         private DarkUI.Controls.DarkTextBox tbSearch;
         private TombLib.Controls.DarkDataGridViewControls soundsCatalogsDataGridViewControls;
         private DarkUI.Controls.DarkDataGridView soundsCatalogsDataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogPathColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogSearchColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
         private DarkUI.Controls.DarkLabel labelSoundsCatalogsStatistics;
         private DarkUI.Controls.DarkLabel darkLabel17;
         private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
@@ -1904,5 +1935,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsName;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogPathColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogSearchColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogsSoundCountColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
+        private DarkUI.Controls.DarkButton butDeselectAllSounds;
+        private DarkUI.Controls.DarkButton butSelectAllSounds;
+        private DarkUI.Controls.DarkButton butSearchSounds;
     }
 }
