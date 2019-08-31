@@ -188,6 +188,11 @@ There is no space loss by referencing more textures here.</value>
   <metadata name="SelectedSoundsCatalogColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="darkLabel18.Text" xml:space="preserve">
+    <value>WARNING: TR4 and below have a vertex limit of around 3000. Make sure you don't use too many merged static meshes in a single room!
+TRNG scripts, flipeffects and OCB values won't work anymore for merged static meshes!
+</value>
+  </data>
   <metadata name="soundDataGridViewColumnPath.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -209,6 +214,6 @@ Each required sound file will reqested from the this list in top to bottom order
     <value>407, 20</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>28</value>
+    <value>107</value>
   </metadata>
 </root>

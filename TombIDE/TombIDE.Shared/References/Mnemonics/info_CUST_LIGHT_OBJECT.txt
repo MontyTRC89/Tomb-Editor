@@ -1,0 +1,31 @@
+Used in Customize command.
+Syntax: Customize=CUST_LIGHT_OBJECT 34, SlotLight, Red, Green, Blue, Intensity, Time
+With this customize you can modifiy colors and light intensity of light objects:
+AMBER_LIGHT
+WHITE_LIGHT
+BLINKING_LIGHT
+You can change the main color of these objects, their light intensity and in some circustance the blinking time or other timing parameter.
+
+SlotLight field
+---------------
+In this field you can type the slot name or number of light object to customize.
+Currently the only light objects allowed are: AMBER_LIGHT, WHITE_LIGHT, BLINKING_LIGHT
+
+Red, Green, Blue fields
+-----------------------
+Type in these three fields the intensity of red, green and blue.
+Each color intensity works in the range 0 - 255, where 255 is higest intensity and 0 is null.
+
+Intensity field
+---------------
+This field set the brightness and widness of the light.
+If you type IGNORE in this field it will be used the default value 18.
+
+Time field
+----------
+All lights have some blinking and this field permits to change the time of blinking.
+These are default values of Time for the different light objects:
+
+AMBER_LIGHT = -2048
+WHITE_LIGHT = 160
+BLINKING_LIGHT = 30

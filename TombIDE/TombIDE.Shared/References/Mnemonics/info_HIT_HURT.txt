@@ -1,0 +1,3 @@
+Used with CUST_BIKE_VS_ENEMIES customization.
+The enemy hits from the bike will be injured. The grade of damage will depend by the speed of the bike at the moment of the impact.
+Note: this flag doesn't work with immortal creatures.

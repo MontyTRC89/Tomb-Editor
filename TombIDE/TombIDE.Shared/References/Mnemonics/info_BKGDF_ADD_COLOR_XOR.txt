@@ -1,0 +1,10 @@
+Used into Customize=CUST_BACKGROUND command
+This flag perform a XOR (exclusive OR) operation between the game scene colors and the color whom you set the ColorRGB ID in Parameter field.
+This flag creates a result similar to a abstract artwork, where all colors will be exchanged in chaotic way.
+Anyway, since each original color will be always replaced always with the same (new) color, the scene will remain understandable but with weird colors.
+With this flag it's better using numbers with many bits, like 255, 127, 63, 31, 15
+If you wish invert only a color tone you can let to 0  other tones and in this way these will be no changed.
+For example to change only red tones of original game scene you can use as color:
+ColorRGB= ID, 255, 0, 0
+
+Note: This flag works only togheter with BKGDT_INVENTORY type + BKGDF_KEEP_GAME_SCREEN flag since it performs a change on original game scene.

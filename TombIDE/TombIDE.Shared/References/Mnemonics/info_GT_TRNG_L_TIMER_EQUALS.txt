@@ -1,0 +1,3 @@
+Used in GlobalTrigger= command.
+Enabled when the Local trng timer has same value set in Parameter field.
+Read the description of GT_TRNG_G_TIMER_EQUALS global trigger for more infos.

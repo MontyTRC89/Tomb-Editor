@@ -1,0 +1,1 @@
+Text of main menu unselected, New Game/ Load Game/ Options / Exit

@@ -1,0 +1,61 @@
+It allows to customize all default tomb4 bars (like air bar, hp bar,loading bar ect) setting position, size, colors and animation mode.
+
+Syntax: Customize=CUST_BAR, BarType (BAR_...), FlagsBar (FBAR_...), XOrigin, YOrigin, XSize, YSize, IdColor1, IdColor2, Extra
+
+BarType (BAR_...) field
+-----------------------
+In this field you type a BAR_ constant to specify what is the bar you are customizing.
+See the BAR_ values in MNEMONIC CONSTANTS of Reference panel of NG_Center.
+
+FlagsBar (FBAR_...) field
+-------------------------
+You can add two or more FBAR_ flags to specify some animation mode (the variation of color in dynamic bars)
+If you don't wish to use any flag type IGNORE
+
+XOrigin, YOrigin, XSize, YSize fields
+-------------------------------------
+These four fields permit to change the position and size of current bar on the screen.
+Remember that you are not forced to modify really these fields, if you want preserve the original position and size of the bar just you type four IGNORE values in these fields.
+
+All values you type in these fields are in pixel and they are computed to work with game screen of 640x480.
+This method is necessary since you cann't know what it is will the effective game screen size while the game will be played (the player could change the settings in tomb4 setup).
+So you compute the position and size using as reference when the game is working at 640x480 pixels, then, when the game will change its size, the trng engine will adapte in proportional way the coordinates you set.
+
+Following are the default values:
+
+TypeBar   OrgX   OrgY  SizeX  SizeY
+-------------------------------------
+HealthBar   8      8    150    12
+DashBar   481      8    150    12
+AirBar    481     26    150    12
+LoadBar    20    444    600    15
+-------------------------------------
+
+Remark: there is some rounding in change between full screen and windowed mode, usually with gaps of 1 or 2 pixels.
+
+IdColor1 field
+--------------
+In this field you have to type a Id to identify a ColorRGB= script command with rgb color to use as main color for bar.
+For example if you want have a pure red you can type:
+ColorRGB=3, 255,0,0
+The ID is 3, so you'll type the value 3 in IdColor1 field to set the red as main color (the main color is the color of full bar).
+
+WARNING: about the ColorRGB command you reference with IdColor it's necessary it was typed FIRST of Customize=CUST_BAR command otherwise when TRNG engine is parsing the CUST_BAR command the ColorRGB (if you type it down) will result as missing and it will be used a black color.
+
+The default colors for main color are:
+BarType   Red  Green Blue
+--------------------------
+HealthBar 255  0     0
+DashBar   0    255   0
+AirBar    0    0     255
+--------------------------
+
+IdColor2 field
+--------------
+This field work like IdColor1 (See above description) but to set the background color of bar
+Default value in tomb4 for this color is black (0,0,0)
+
+Extra field
+-----------
+This field may accept different values in according with further FBAR_ flags.
+Read the description of FBAR_ constants to discover the usage of Extra field

@@ -1,0 +1,11 @@
+Used in StandBy command.
+The panorma type works like a matrix type but where the distance, the vertical angle, and the speed of rotation will continue to change in random way.
+With Panorama you can create big ranges for distance while with Matrix type the max difference between min and max limits are only +/- 50% of given distance.
+
+In Panorma type some settings on StandBy command will be interpreted in particular way:
+
+The further settings for FSB_FLIP_DISTANCE, FSB_FLIP_SPEED and FSB_FLIP_V_ANGLE flags will be ignored, since Panorama type flip always the distance and vertical angle.
+The value in "Distance" field will be used like Max Distance, while the min distance will be always 400 (very closed to lara).
+
+The value in "VAngle" field will be used like Max Vertical Angle allowed. Remember that negative numbers in VAngle mean "the camera is upper and look the lara that she is under it".
+When you set a big max distance you should avoid to allow big positive values for vangle because the risk is that the camera tried to go underground. The only exception is when lara is on the top of a pyramid, where around to her the ground is lower than her position.

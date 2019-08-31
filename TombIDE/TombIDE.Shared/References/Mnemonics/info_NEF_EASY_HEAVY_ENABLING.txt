@@ -1,0 +1,4 @@
+Used in Enemy command.
+This flag gives to current enemy type the ability to enable any heavy triggers immediatly.
+By default only some moveable enable heavy triggers and it's necessary place an AI_ object in target sector where there is the heavy trigger to enable.
+Differently, with NEF_EASY_HEAVY_ENABLING flag the enemey will enable all heavy triggers where it moves over.

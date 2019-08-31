@@ -503,6 +503,18 @@ namespace TombEditor
             {
                 trigger.TargetType = TriggerTargetType.Object;
                 trigger.Target = @object;
+
+                if (_editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
+                {
+                    string objectName = @object.ToString().ToLower();
+                    bool isHole = (objectName.Contains("key") || objectName.Contains("puzzle"))
+                        && objectName.Contains("hole");
+                    bool isSwitch = objectName.Contains("switch");
+                    if (isHole)
+                        trigger.TriggerType = TriggerType.Key;
+                    else if (isSwitch)
+                        trigger.TriggerType = TriggerType.Switch;
+                }
             }
             else if (@object is FlybyCameraInstance)
             {
@@ -2985,6 +2997,32 @@ namespace TombEditor
             return true;
         }
 
+        public static void ApplyAmbientLightToSelectedRooms(IWin32Window owner)
+        {
+            IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                foreach (Room room in SelectedRooms)
+                {
+                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                    room.BuildGeometry();
+                    _editor.RoomPropertiesChange(room);
+                }
+            }, _editor.Configuration.UI_ColorScheme))
+            {
+                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
+                    foreach (Room room in SelectedRooms)
+                        room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+            }
+
+            foreach (Room room in SelectedRooms)
+            {
+                room.BuildGeometry();
+                _editor.RoomPropertiesChange(room);
+            }
+
+        }
+
         public static void ApplyCurrentAmbientLightToAllRooms()
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
@@ -4297,30 +4335,37 @@ namespace TombEditor
                 _editor.SelectRooms(rooms);
         }
 
-        public static void SetAmbientLightForSelectedRooms(IWin32Window owner)
+        public static void SetStaticMeshesColorToRoomAmbientLight()
         {
             IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
-            using (var colorDialog = new RealtimeColorDialog(c =>
+            foreach (Room room in SelectedRooms)
             {
-                foreach(Room room  in SelectedRooms)
+                IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
+                foreach (StaticInstance staticMesh in staticMeshes)
                 {
-                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
-                    room.BuildGeometry();
-                    _editor.RoomPropertiesChange(room);
+                    staticMesh.Color = room.AmbientLight;
+                    _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
                 }
-                
-            }, _editor.Configuration.UI_ColorScheme))
-            {
-
-                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
-                    foreach (Room room in SelectedRooms)
-                        room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
-
             }
-            foreach(Room room in SelectedRooms)
+        }
+
+        public static void SetStaticMeshesColor(IWin32Window owner)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
             {
-                room.BuildGeometry();
-                _editor.RoomPropertiesChange(room);
+                if(colorDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+                    foreach (Room room in SelectedRooms)
+                    {
+                        IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
+                        foreach (StaticInstance staticMesh in staticMeshes)
+                        {
+                            staticMesh.Color = colorDialog.Color.ToFloat3Color();
+                            _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
+                        }
+                    }
+                }
             }
             
         }

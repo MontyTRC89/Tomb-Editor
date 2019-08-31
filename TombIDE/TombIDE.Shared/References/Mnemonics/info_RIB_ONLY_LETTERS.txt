@@ -1,0 +1,2 @@
+Used with Parameters=PARAM_INPUT_BOX command
+Ignores digits (0123456789). With this flag the further digits typed  by user will be ignored.

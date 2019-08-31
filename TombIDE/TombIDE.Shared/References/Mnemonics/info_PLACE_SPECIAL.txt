@@ -1,0 +1,3 @@
+Used in Animation command.
+I'm not sure about this status of lara. Surely it will be used when lara in on some vehicle or when she is in DOZY mode.
+Probably this status means: lara is performing hardcoded animations where the physic rules about gravity or water floats will be ignored.

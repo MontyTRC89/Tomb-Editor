@@ -1,0 +1,6 @@
+Used into Customize=CUST_BACKGROUND command
+This flag add a dark shadow to original game scene, giving the idea of a transparent effect like a plate glass over the game scene.
+In Paramater field you have to set the level of darkness with a number between 3 and 255 where,  where 3 is almost no darness and 255 is full black. So you'll use intermediate values.
+Reasonable settings are in the range between 50 / 200
+
+Note: This flag works only togheter with BKGDT_INVENTORY type + BKGDF_KEEP_GAME_SCREEN flag since it performs a change on original game scene.

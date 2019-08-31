@@ -1,0 +1,4 @@
+Used in GlobalTrigger= command.
+This global trigger should be used only in [Title] section.
+With GT_TITLE_SCREEN you can discover what kind of screen is showing in title phase: if main titles, new game, load game, or options.
+You have to type in Parameter field a TSCR_ value for wished screen type.

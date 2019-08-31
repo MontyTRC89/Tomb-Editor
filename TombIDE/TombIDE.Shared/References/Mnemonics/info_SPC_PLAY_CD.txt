@@ -1,0 +1,7 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+This command will play the audio with the supplied number.
+Example:
+
+SPC_PLAY_CD+112
+
+it will play 112.wav file from AUDIO folder on private channel in single playing mode.

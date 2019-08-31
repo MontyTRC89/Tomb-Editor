@@ -1,0 +1,3 @@
+Used into Customize=CUST_BACKGROUND command
+Replace the old binocular mask with the image supplied in the Image command linked with the CUST_BACKGROUND script command.
+Since the image has to be in full screen (other settings will be ignored) you have to use transparent settings for the image.

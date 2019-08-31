@@ -457,7 +457,22 @@ namespace TombLib.LevelData.IO
                     });
                     settings.AnimatedTextureSets = animatedTextureSets;
                 }
-                else
+                else if(id == Prj2Chunks.AutoMergeStaticMeshes)
+                {
+                    chunkIO.ReadChunks((id2, size) => {
+                        if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
+                        {
+                            int value = chunkIO.ReadChunkInt(size);
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry((uint)value, true, settings));
+                            return true;
+                        }
+                        else if (id2 == Prj2Chunks.InterpretVertexDataForMerge) {
+                            settings.InterpretStaticMeshVertexDataForMerge = chunkIO.ReadChunkBool(size);
+                            return true;
+                        }
+                        else return false;
+                    });
+                }else
                     return false;
                 return true;
             });
@@ -527,10 +542,8 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomPosition)
                         room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
                     else if (id2 == Prj2Chunks.RoomTags)
-                    {
-                        room.Tags = System.Text.Encoding.UTF8.GetString(chunkIO.ReadChunkArrayOfBytes(chunkSize2)).Split(' ');
-                    }
-                        
+                        room.Tags = System.Text.Encoding.UTF8.GetString(chunkIO.ReadChunkArrayOfBytes(chunkSize2)).Split(' ').ToList();
+
 
                     // Read sectors
                     else if (id2 == Prj2Chunks.RoomSectors)
