@@ -66,17 +66,23 @@ namespace TombIDE.ProjectMaster
 				// Create a simple .prj2 file with pre-set project settings (game paths etc.)
 				Level level = Level.CreateSimpleLevel();
 
+				string prj2FilePath = Path.Combine(addedProjectLevel.FolderPath, addedProjectLevel.Name) + ".prj2";
+				string exeFilePath = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
+
 				string dataFileName = addedProjectLevel.Name.Replace(' ', '_') + _ide.Project.GetLevelFileExtension();
+				string dataFilePath = Path.Combine(_ide.Project.ProjectPath, "data", dataFileName);
+
 				string projectSamplesPath = Path.Combine(_ide.Project.ProjectPath, @"sounds\Samples");
 
-				level.Settings.GameDirectory = _ide.Project.ProjectPath;
-				level.Settings.GameExecutableFilePath = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
-				level.Settings.GameLevelFilePath = Path.Combine(_ide.Project.ProjectPath, "data", dataFileName);
+				level.Settings.LevelFilePath = prj2FilePath;
+
+				level.Settings.GameDirectory = level.Settings.MakeRelative(_ide.Project.ProjectPath, VariableType.LevelDirectory);
+				level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
+				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 				level.Settings.GameVersion = _ide.Project.GameVersion;
 
 				level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, projectSamplesPath));
 
-				string prj2FilePath = Path.Combine(addedProjectLevel.FolderPath, addedProjectLevel.Name) + ".prj2";
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
 				if (checkBox_GenerateSection.Checked)

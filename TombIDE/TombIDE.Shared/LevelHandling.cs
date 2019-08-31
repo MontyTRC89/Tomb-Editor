@@ -25,12 +25,18 @@ namespace TombIDE.Shared
 		{
 			Level level = Prj2Loader.LoadFromPrj2(prj2FilePath, null);
 
+			string exeFilePath = Path.Combine(destProject.ProjectPath, destProject.GetExeFileName());
+
 			string dataFileName = destLevel.Name.Replace(' ', '_') + destProject.GetLevelFileExtension();
+			string dataFilePath = Path.Combine(destProject.ProjectPath, "data", dataFileName);
+
 			string projectSamplesPath = Path.Combine(destProject.ProjectPath, @"sounds\Samples");
 
-			level.Settings.GameDirectory = destProject.ProjectPath;
-			level.Settings.GameExecutableFilePath = Path.Combine(destProject.ProjectPath, destProject.GetExeFileName());
-			level.Settings.GameLevelFilePath = Path.Combine(destProject.ProjectPath, "data", dataFileName);
+			level.Settings.LevelFilePath = prj2FilePath;
+
+			level.Settings.GameDirectory = level.Settings.MakeRelative(destProject.ProjectPath, VariableType.LevelDirectory);
+			level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
+			level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 			level.Settings.GameVersion = destProject.GameVersion;
 
 			level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, projectSamplesPath));
