@@ -23,7 +23,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblGameEnableQuickStartFeature2 = new DarkUI.Controls.DarkLabel();
             this.lblGameEnableQuickStartFeature1 = new DarkUI.Controls.DarkLabel();
@@ -42,7 +42,7 @@
             this.panel7 = new System.Windows.Forms.Panel();
             this.comboGameVersion = new DarkUI.Controls.DarkComboBox();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.tabTextures = new System.Windows.Forms.TabPage();
             this.textureFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.textureFileDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
@@ -54,7 +54,7 @@
             this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabObjects = new System.Windows.Forms.TabPage();
             this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.objectFileDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -62,7 +62,7 @@
             this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
             this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -72,28 +72,28 @@
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabSamples = new System.Windows.Forms.TabPage();
             this.soundDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tabImportedGeometry = new System.Windows.Forms.TabPage();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
-            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.tabStaticMeshes = new System.Windows.Forms.TabPage();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.cbInterpretStaticMeshVertexDataForMerge = new DarkUI.Controls.DarkCheckBox();
             this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabSkyAndFont = new System.Windows.Forms.TabPage();
             this.panelTr5Sprites = new System.Windows.Forms.Panel();
             this.tr5SpritesTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
             this.tr5SpritesTextureFilePathBut = new DarkUI.Controls.DarkButton();
@@ -115,12 +115,12 @@
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.skyTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.tabPaths = new System.Windows.Forms.TabPage();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.tabMisc = new System.Windows.Forms.TabPage();
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
             this.lblTr5Weather = new DarkUI.Controls.DarkLabel();
@@ -154,33 +154,33 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
-            this.tabPage5.SuspendLayout();
+            this.tabGame.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel7.SuspendLayout();
-            this.tabPage8.SuspendLayout();
+            this.tabTextures.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).BeginInit();
-            this.tabPage1.SuspendLayout();
+            this.tabObjects.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).BeginInit();
-            this.tabPage9.SuspendLayout();
+            this.tabSoundsCatalogs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).BeginInit();
-            this.tabPage3.SuspendLayout();
+            this.tabSamples.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
-            this.tabPage4.SuspendLayout();
-            this.tabPage9.SuspendLayout();
+            this.tabImportedGeometry.SuspendLayout();
+            this.tabStaticMeshes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).BeginInit();
-            this.tabPage2.SuspendLayout();
+            this.tabSkyAndFont.SuspendLayout();
             this.panelTr5Sprites.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).BeginInit();
             this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).BeginInit();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).BeginInit();
-            this.tabPage6.SuspendLayout();
+            this.tabPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
-            this.tabPage7.SuspendLayout();
+            this.tabMisc.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
             this.panelTr5LaraType.SuspendLayout();
             this.panel10.SuspendLayout();
@@ -248,16 +248,16 @@
             // 
             // tabbedContainer
             // 
-            this.tabbedContainer.Controls.Add(this.tabPage5);
-            this.tabbedContainer.Controls.Add(this.tabPage8);
-            this.tabbedContainer.Controls.Add(this.tabPage1);
-            this.tabbedContainer.Controls.Add(this.tabPage9);
-            this.tabbedContainer.Controls.Add(this.tabPage3);
-            this.tabbedContainer.Controls.Add(this.tabPage4);
-            this.tabbedContainer.Controls.Add(this.tabPage9);
-            this.tabbedContainer.Controls.Add(this.tabPage2);
-            this.tabbedContainer.Controls.Add(this.tabPage6);
-            this.tabbedContainer.Controls.Add(this.tabPage7);
+            this.tabbedContainer.Controls.Add(this.tabGame);
+            this.tabbedContainer.Controls.Add(this.tabTextures);
+            this.tabbedContainer.Controls.Add(this.tabObjects);
+            this.tabbedContainer.Controls.Add(this.tabSoundsCatalogs);
+            this.tabbedContainer.Controls.Add(this.tabSamples);
+            this.tabbedContainer.Controls.Add(this.tabImportedGeometry);
+            this.tabbedContainer.Controls.Add(this.tabStaticMeshes);
+            this.tabbedContainer.Controls.Add(this.tabSkyAndFont);
+            this.tabbedContainer.Controls.Add(this.tabPaths);
+            this.tabbedContainer.Controls.Add(this.tabMisc);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
@@ -266,19 +266,19 @@
             this.tabbedContainer.Size = new System.Drawing.Size(571, 519);
             this.tabbedContainer.TabIndex = 2;
             // 
-            // tabPage5
+            // tabGame
             // 
-            this.tabPage5.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage5.Controls.Add(this.panel3);
-            this.tabPage5.Controls.Add(this.panel1);
-            this.tabPage5.Controls.Add(this.panel2);
-            this.tabPage5.Controls.Add(this.panel7);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(563, 493);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Game";
+            this.tabGame.BackColor = System.Drawing.Color.Transparent;
+            this.tabGame.Controls.Add(this.panel3);
+            this.tabGame.Controls.Add(this.panel1);
+            this.tabGame.Controls.Add(this.panel2);
+            this.tabGame.Controls.Add(this.panel7);
+            this.tabGame.Location = new System.Drawing.Point(4, 22);
+            this.tabGame.Name = "tabGame";
+            this.tabGame.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGame.Size = new System.Drawing.Size(563, 493);
+            this.tabGame.TabIndex = 4;
+            this.tabGame.Text = "Game";
             // 
             // panel3
             // 
@@ -465,18 +465,18 @@
             this.darkLabel14.TabIndex = 1;
             this.darkLabel14.Text = "Game version to target:";
             // 
-            // tabPage8
+            // tabTextures
             // 
-            this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage8.Controls.Add(this.textureFileDataGridViewControls);
-            this.tabPage8.Controls.Add(this.textureFileDataGridView);
-            this.tabPage8.Controls.Add(this.darkLabel4);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(563, 493);
-            this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "Texture Files";
+            this.tabTextures.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabTextures.Controls.Add(this.textureFileDataGridViewControls);
+            this.tabTextures.Controls.Add(this.textureFileDataGridView);
+            this.tabTextures.Controls.Add(this.darkLabel4);
+            this.tabTextures.Location = new System.Drawing.Point(4, 22);
+            this.tabTextures.Name = "tabTextures";
+            this.tabTextures.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTextures.Size = new System.Drawing.Size(563, 493);
+            this.tabTextures.TabIndex = 7;
+            this.tabTextures.Text = "Texture Files";
             // 
             // textureFileDataGridViewControls
             // 
@@ -599,18 +599,18 @@
             this.darkLabel4.TabIndex = 5;
             this.darkLabel4.Text = resources.GetString("darkLabel4.Text");
             // 
-            // tabPage1
+            // tabObjects
             // 
-            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage1.Controls.Add(this.objectFileDataGridViewControls);
-            this.tabPage1.Controls.Add(this.objectFileDataGridView);
-            this.tabPage1.Controls.Add(this.darkLabel5);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(563, 493);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Object Files";
+            this.tabObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabObjects.Controls.Add(this.objectFileDataGridViewControls);
+            this.tabObjects.Controls.Add(this.objectFileDataGridView);
+            this.tabObjects.Controls.Add(this.darkLabel5);
+            this.tabObjects.Location = new System.Drawing.Point(4, 22);
+            this.tabObjects.Name = "tabObjects";
+            this.tabObjects.Padding = new System.Windows.Forms.Padding(3);
+            this.tabObjects.Size = new System.Drawing.Size(563, 493);
+            this.tabObjects.TabIndex = 0;
+            this.tabObjects.Text = "Object Files";
             // 
             // objectFileDataGridViewControls
             // 
@@ -692,22 +692,22 @@
             this.darkLabel5.Text = "List of object resources (eg *.wad2, *.wad).\r\nObjects inside the files mentioned " +
     "earlier in the list take priority over later files.";
             // 
-            // tabPage9
+            // tabSoundsCatalogs
             // 
-            this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage9.Controls.Add(this.labelSoundsCatalogsStatistics);
-            this.tabPage9.Controls.Add(this.soundsCatalogsDataGridView);
-            this.tabPage9.Controls.Add(this.soundsCatalogsDataGridViewControls);
-            this.tabPage9.Controls.Add(this.darkLabel20);
-            this.tabPage9.Controls.Add(this.tbSearch);
-            this.tabPage9.Controls.Add(this.darkLabel18);
-            this.tabPage9.Controls.Add(this.selectedSoundsDataGridView);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(563, 493);
-            this.tabPage9.TabIndex = 8;
-            this.tabPage9.Text = "Sounds catalogs";
+            this.tabSoundsCatalogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabSoundsCatalogs.Controls.Add(this.labelSoundsCatalogsStatistics);
+            this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridView);
+            this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridViewControls);
+            this.tabSoundsCatalogs.Controls.Add(this.darkLabel20);
+            this.tabSoundsCatalogs.Controls.Add(this.tbSearch);
+            this.tabSoundsCatalogs.Controls.Add(this.darkLabel50);
+            this.tabSoundsCatalogs.Controls.Add(this.selectedSoundsDataGridView);
+            this.tabSoundsCatalogs.Location = new System.Drawing.Point(4, 22);
+            this.tabSoundsCatalogs.Name = "tabSoundsCatalogs";
+            this.tabSoundsCatalogs.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSoundsCatalogs.Size = new System.Drawing.Size(563, 493);
+            this.tabSoundsCatalogs.TabIndex = 8;
+            this.tabSoundsCatalogs.Text = "Sounds catalogs";
             // 
             // labelSoundsCatalogsStatistics
             // 
@@ -810,14 +810,14 @@
             this.tbSearch.TabIndex = 100;
             this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearch_KeyDown);
             // 
-            // darkLabel18
+            // darkLabel50
             // 
-            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(3, 218);
-            this.darkLabel18.Name = "darkLabel18";
-            this.darkLabel18.Size = new System.Drawing.Size(358, 19);
-            this.darkLabel18.TabIndex = 97;
-            this.darkLabel18.Text = "Sounds to save in compiled level:";
+            this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel50.Location = new System.Drawing.Point(3, 218);
+            this.darkLabel50.Name = "darkLabel50";
+            this.darkLabel50.Size = new System.Drawing.Size(358, 19);
+            this.darkLabel50.TabIndex = 97;
+            this.darkLabel50.Text = "Sounds to save in compiled level:";
             // 
             // selectedSoundsDataGridView
             // 
@@ -869,18 +869,18 @@
             this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
             this.SelectedSoundsCatalogColumn.Width = 200;
             // 
-            // tabPage3
+            // tabSamples
             // 
-            this.tabPage3.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage3.Controls.Add(this.soundDataGridViewControls);
-            this.tabPage3.Controls.Add(this.soundDataGridView);
-            this.tabPage3.Controls.Add(this.darkLabel10);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(563, 493);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Samples paths";
+            this.tabSamples.BackColor = System.Drawing.Color.Transparent;
+            this.tabSamples.Controls.Add(this.soundDataGridViewControls);
+            this.tabSamples.Controls.Add(this.soundDataGridView);
+            this.tabSamples.Controls.Add(this.darkLabel10);
+            this.tabSamples.Location = new System.Drawing.Point(4, 22);
+            this.tabSamples.Name = "tabSamples";
+            this.tabSamples.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSamples.Size = new System.Drawing.Size(563, 493);
+            this.tabSamples.TabIndex = 2;
+            this.tabSamples.Text = "Samples paths";
             // 
             // soundDataGridViewControls
             // 
@@ -891,10 +891,10 @@
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundDataGridViewControls.Enabled = false;
-            this.soundDataGridViewControls.Location = new System.Drawing.Point(533, 72);
+            this.soundDataGridViewControls.Location = new System.Drawing.Point(535, 72);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 363);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 357);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
@@ -940,17 +940,17 @@
             this.darkLabel10.TabIndex = 1;
             this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
             // 
-            // tabPage4
+            // tabImportedGeometry
             // 
-            this.tabPage4.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage4.Controls.Add(this.importedGeometryManager);
-            this.tabPage4.Controls.Add(this.darkLabel11);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(563, 493);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Imported Geometry";
+            this.tabImportedGeometry.BackColor = System.Drawing.Color.Transparent;
+            this.tabImportedGeometry.Controls.Add(this.importedGeometryManager);
+            this.tabImportedGeometry.Controls.Add(this.darkLabel11);
+            this.tabImportedGeometry.Location = new System.Drawing.Point(4, 22);
+            this.tabImportedGeometry.Name = "tabImportedGeometry";
+            this.tabImportedGeometry.Padding = new System.Windows.Forms.Padding(3);
+            this.tabImportedGeometry.Size = new System.Drawing.Size(563, 493);
+            this.tabImportedGeometry.TabIndex = 3;
+            this.tabImportedGeometry.Text = "Imported Geometry";
             // 
             // importedGeometryManager
             // 
@@ -974,19 +974,19 @@
             this.darkLabel11.TabIndex = 1;
             this.darkLabel11.Text = "All imported geometries associated with this project:";
             // 
-            // tabPage9
+            // tabStaticMeshes
             // 
-            this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage9.Controls.Add(this.darkLabel19);
-            this.tabPage9.Controls.Add(this.cbInterpretStaticMeshVertexDataForMerge);
-            this.tabPage9.Controls.Add(this.staticMeshMergeDataGridView);
-            this.tabPage9.Controls.Add(this.darkLabel18);
-            this.tabPage9.Controls.Add(this.darkLabel17);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Size = new System.Drawing.Size(563, 434);
-            this.tabPage9.TabIndex = 8;
-            this.tabPage9.Text = "Static Meshes";
+            this.tabStaticMeshes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabStaticMeshes.Controls.Add(this.darkLabel19);
+            this.tabStaticMeshes.Controls.Add(this.cbInterpretStaticMeshVertexDataForMerge);
+            this.tabStaticMeshes.Controls.Add(this.staticMeshMergeDataGridView);
+            this.tabStaticMeshes.Controls.Add(this.darkLabel18);
+            this.tabStaticMeshes.Controls.Add(this.darkLabel17);
+            this.tabStaticMeshes.Location = new System.Drawing.Point(4, 22);
+            this.tabStaticMeshes.Name = "tabStaticMeshes";
+            this.tabStaticMeshes.Size = new System.Drawing.Size(563, 493);
+            this.tabStaticMeshes.TabIndex = 8;
+            this.tabStaticMeshes.Text = "Static Meshes";
             // 
             // darkLabel19
             // 
@@ -1048,18 +1048,18 @@
             this.darkLabel17.TabIndex = 0;
             this.darkLabel17.Text = "Static meshes which should be automatically merged with room geometry:";
             // 
-            // tabPage2
+            // tabSkyAndFont
             // 
-            this.tabPage2.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage2.Controls.Add(this.panelTr5Sprites);
-            this.tabPage2.Controls.Add(this.panel8);
-            this.tabPage2.Controls.Add(this.panel9);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(563, 493);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Sky & Font";
+            this.tabSkyAndFont.BackColor = System.Drawing.Color.Transparent;
+            this.tabSkyAndFont.Controls.Add(this.panelTr5Sprites);
+            this.tabSkyAndFont.Controls.Add(this.panel8);
+            this.tabSkyAndFont.Controls.Add(this.panel9);
+            this.tabSkyAndFont.Location = new System.Drawing.Point(4, 22);
+            this.tabSkyAndFont.Name = "tabSkyAndFont";
+            this.tabSkyAndFont.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSkyAndFont.Size = new System.Drawing.Size(563, 493);
+            this.tabSkyAndFont.TabIndex = 1;
+            this.tabSkyAndFont.Text = "Sky & Font";
             // 
             // panelTr5Sprites
             // 
@@ -1292,88 +1292,17 @@
             this.skyTextureFilePathTxt.TabIndex = 2;
             this.skyTextureFilePathTxt.TextChanged += new System.EventHandler(this.skyTextureFilePathTxt_TextChanged);
             // 
-            // tabPage3
+            // tabPaths
             // 
-            this.tabPage3.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage3.Controls.Add(this.soundDataGridViewControls);
-            this.tabPage3.Controls.Add(this.soundDataGridView);
-            this.tabPage3.Controls.Add(this.darkLabel10);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(563, 434);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "*.wad Sound Paths";
-            // 
-            // soundDataGridViewControls
-            // 
-            this.soundDataGridViewControls.AllowUserDelete = false;
-            this.soundDataGridViewControls.AllowUserMove = false;
-            this.soundDataGridViewControls.AllowUserNew = false;
-            this.soundDataGridViewControls.AlwaysInsertAtZero = false;
-            this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundDataGridViewControls.Enabled = false;
-            this.soundDataGridViewControls.Location = new System.Drawing.Point(535, 72);
-            this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
-            this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 357);
-            this.soundDataGridViewControls.TabIndex = 3;
-            // 
-            // soundDataGridView
-            // 
-            this.soundDataGridView.AllowUserToAddRows = false;
-            this.soundDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundDataGridView.AutoGenerateColumns = false;
-            this.soundDataGridView.ColumnHeadersHeight = 17;
-            this.soundDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.soundDataGridViewColumnPath,
-            this.soundDataGridViewColumnSearch});
-            this.soundDataGridView.Location = new System.Drawing.Point(6, 72);
-            this.soundDataGridView.Name = "soundDataGridView";
-            this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(523, 357);
-            this.soundDataGridView.TabIndex = 2;
-            this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
-            this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
-            // 
-            // soundDataGridViewColumnPath
-            // 
-            this.soundDataGridViewColumnPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.soundDataGridViewColumnPath.DataPropertyName = "Path";
-            this.soundDataGridViewColumnPath.HeaderText = "Path";
-            this.soundDataGridViewColumnPath.Name = "soundDataGridViewColumnPath";
-            this.soundDataGridViewColumnPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // soundDataGridViewColumnSearch
-            // 
-            this.soundDataGridViewColumnSearch.HeaderText = "";
-            this.soundDataGridViewColumnSearch.Name = "soundDataGridViewColumnSearch";
-            this.soundDataGridViewColumnSearch.Text = "Search";
-            // 
-            // darkLabel10
-            // 
-            this.darkLabel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(557, 66);
-            this.darkLabel10.TabIndex = 1;
-            this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage6.Controls.Add(this.darkLabel1);
-            this.tabPage6.Controls.Add(this.pathVariablesDataGridView);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(563, 493);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Path Placeholders";
+            this.tabPaths.BackColor = System.Drawing.Color.Transparent;
+            this.tabPaths.Controls.Add(this.darkLabel1);
+            this.tabPaths.Controls.Add(this.pathVariablesDataGridView);
+            this.tabPaths.Location = new System.Drawing.Point(4, 22);
+            this.tabPaths.Name = "tabPaths";
+            this.tabPaths.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPaths.Size = new System.Drawing.Size(563, 493);
+            this.tabPaths.TabIndex = 5;
+            this.tabPaths.Text = "Path Placeholders";
             // 
             // darkLabel1
             // 
@@ -1422,20 +1351,20 @@
             this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
             this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
-            // tabPage7
+            // tabMisc
             // 
-            this.tabPage7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage7.Controls.Add(this.panelTr5Weather);
-            this.tabPage7.Controls.Add(this.panelTr5LaraType);
-            this.tabPage7.Controls.Add(this.panel10);
-            this.tabPage7.Controls.Add(this.panel6);
-            this.tabPage7.Controls.Add(this.panel12);
-            this.tabPage7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(563, 493);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Misc";
+            this.tabMisc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabMisc.Controls.Add(this.panelTr5Weather);
+            this.tabMisc.Controls.Add(this.panelTr5LaraType);
+            this.tabMisc.Controls.Add(this.panel10);
+            this.tabMisc.Controls.Add(this.panel6);
+            this.tabMisc.Controls.Add(this.panel12);
+            this.tabMisc.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.tabMisc.Location = new System.Drawing.Point(4, 22);
+            this.tabMisc.Name = "tabMisc";
+            this.tabMisc.Size = new System.Drawing.Size(563, 493);
+            this.tabMisc.TabIndex = 6;
+            this.tabMisc.Text = "Misc";
             // 
             // panelTr5Weather
             // 
@@ -1759,7 +1688,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
-            this.tabPage5.ResumeLayout(false);
+            this.tabGame.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -1767,21 +1696,21 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel7.ResumeLayout(false);
-            this.tabPage8.ResumeLayout(false);
+            this.tabTextures.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).EndInit();
-            this.tabPage1.ResumeLayout(false);
+            this.tabObjects.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).EndInit();
-            this.tabPage9.ResumeLayout(false);
-            this.tabPage9.PerformLayout();
+            this.tabSoundsCatalogs.ResumeLayout(false);
+            this.tabSoundsCatalogs.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).EndInit();
-            this.tabPage3.ResumeLayout(false);
+            this.tabSamples.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage9.ResumeLayout(false);
-            this.tabPage9.PerformLayout();
+            this.tabImportedGeometry.ResumeLayout(false);
+            this.tabStaticMeshes.ResumeLayout(false);
+            this.tabStaticMeshes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).EndInit();
-            this.tabPage2.ResumeLayout(false);
+            this.tabSkyAndFont.ResumeLayout(false);
             this.panelTr5Sprites.ResumeLayout(false);
             this.panelTr5Sprites.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).EndInit();
@@ -1791,9 +1720,9 @@
             this.panel9.ResumeLayout(false);
             this.panel9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).EndInit();
-            this.tabPage6.ResumeLayout(false);
+            this.tabPaths.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
-            this.tabPage7.ResumeLayout(false);
+            this.tabMisc.ResumeLayout(false);
             this.panelTr5Weather.ResumeLayout(false);
             this.panelTr5LaraType.ResumeLayout(false);
             this.panel10.ResumeLayout(false);
@@ -1853,12 +1782,12 @@
         private DarkUI.Controls.DarkLabel darkLabel11;
         private Controls.ImportedGeometryManager importedGeometryManager;
         private Controls.DarkTabbedContainer tabbedContainer;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.TabPage tabObjects;
+        private System.Windows.Forms.TabPage tabSkyAndFont;
+        private System.Windows.Forms.TabPage tabSamples;
+        private System.Windows.Forms.TabPage tabImportedGeometry;
+        private System.Windows.Forms.TabPage tabGame;
+        private System.Windows.Forms.TabPage tabPaths;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel11;
         private DarkUI.Controls.DarkButton butApply;
@@ -1872,7 +1801,7 @@
         private System.Windows.Forms.Panel panel1;
         private DarkUI.Controls.DarkComboBox comboGameVersion;
         private DarkUI.Controls.DarkLabel darkLabel14;
-        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TabPage tabMisc;
         private System.Windows.Forms.Panel panel12;
         private DarkUI.Controls.DarkLabel darkLabel16;
         private System.Windows.Forms.Panel panelRoomAmbientLight;
@@ -1886,7 +1815,7 @@
         private DarkUI.Controls.DarkTextBox tr5SpritesTextureFilePathTxt;
         private TombLib.Controls.DarkDataGridViewControls objectFileDataGridViewControls;
         private DarkUI.Controls.DarkDataGridView objectFileDataGridView;
-        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabTextures;
         private System.Windows.Forms.Panel panelTr5Weather;
         private DarkUI.Controls.DarkComboBox comboTr5Weather;
         private DarkUI.Controls.DarkLabel lblTr5Weather;
@@ -1921,7 +1850,8 @@
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkCheckBox cbAgressiveTexturePacking;
         private DarkUI.Controls.DarkCheckBox cbAgressiveFloordataPacking;
-        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.TabPage tabStaticMeshes;
+        private System.Windows.Forms.TabPage tabSoundsCatalogs;
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkDataGridView selectedSoundsDataGridView;
         private DarkUI.Controls.DarkLabel darkLabel20;
@@ -1939,7 +1869,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
         private DarkUI.Controls.DarkLabel darkLabel17;
         private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
-        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkLabel darkLabel50;
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkCheckBox cbInterpretStaticMeshVertexDataForMerge;
     }
