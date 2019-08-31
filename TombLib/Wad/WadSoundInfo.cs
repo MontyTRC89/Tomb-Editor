@@ -35,7 +35,7 @@ namespace TombLib.Wad
         [XmlIgnore]
         public bool AddToLevel { get; set; }
         [XmlIgnore]
-        public string Xml { get; set; }
+        public string SoundCatalog { get; set; }
 
         // Only for XML serialization!
         public WadSoundInfo() { }
@@ -53,6 +53,7 @@ namespace TombLib.Wad
             RandomizeVolume = false;
             LoopBehaviour = WadSoundLoopBehaviour.None;
             EmbeddedSamples = new List<WadSample>();
+            SoundCatalog = "";
         }
 
         public WadSoundInfo(WadSoundInfo s)
@@ -68,6 +69,7 @@ namespace TombLib.Wad
             RandomizeVolume = s.RandomizeVolume;
             LoopBehaviour = s.LoopBehaviour;
             EmbeddedSamples = new List<WadSample>();
+            SoundCatalog = s.SoundCatalog;
             foreach (var sample in s.EmbeddedSamples)
                 EmbeddedSamples.Add(new WadSample(sample.SamplePath));
         }

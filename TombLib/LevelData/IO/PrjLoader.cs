@@ -1258,24 +1258,11 @@ namespace TombLib.LevelData.IO
                     // If no sounds file was provided, just take the default one
                     if (soundsPath == "")
                         soundsPath = "Sounds\\TR4\\Sounds.xml";
-
-                    // If provided sounds file is in TXT format, let's convert it to XML
-                    if (Path.GetExtension(soundsPath).ToLower() == "txt")
-                    {
-                        sounds = WadSounds.ReadFromTxt(soundsPath);
-                    }
-                    else if (Path.GetExtension(soundsPath).ToLower() == "xml")
-                    {
-                        sounds = WadSounds.ReadFromXml(soundsPath);
-                    }
-                    else
-                    {
-                        soundsPath = "Sounds\\TR4\\Sounds.xml";
-                        sounds = WadSounds.ReadFromXml(soundsPath);
-                    }
+                    sounds = WadSounds.ReadFromFile(soundsPath);
                 }
 
-                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, soundsPath));
+                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                                                                              level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
 
                 // Read WAD path
                 {
@@ -1286,11 +1273,18 @@ namespace TombLib.LevelData.IO
                         string wadPath = PathC.TryFindFile(
                             level.Settings.GetVariable(VariableType.LevelDirectory),
                             Path.ChangeExtension(wadName.Trim('\0', ' '), "wad"), 3, 2);
-                        wadPath = level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory);
-                        ReferencedWad newWad = new ReferencedWad(level.Settings, wadPath, progressReporter);
+                        ReferencedWad newWad = new ReferencedWad(level.Settings, level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory), progressReporter);
                         level.Settings.Wads.Add(newWad);
                         if (newWad.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
+
+                        // XML_SOUND_SYSTEM: SFX is a valid catalog source so let's add it (SAM is implicity loaded)
+                        string sfxName = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx";
+                        if (File.Exists(sfxName))
+                        {
+                            sfxName = level.Settings.MakeRelative(sfxName, VariableType.LevelDirectory);
+                            level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, sfxName));
+                        }
 
                         // XML_SOUND_SYSTEM: we actually have a valid WAD loaded, let's change names using the catalog
                         // and mark them automatically for compilation

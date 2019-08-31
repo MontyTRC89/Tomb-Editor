@@ -47,7 +47,7 @@ namespace TombLib.Utils
                 WadSounds sounds = WadSounds.ReadFromFile(soundsCatalog);
 
                 // Load Wad2
-                Wad2 wad = Wad2Loader.LoadFromFile(src);
+                Wad2 wad = Wad2Loader.LoadFromFile(src, false);
 
                 // Check if the Wad2 needs to be converted
                 if (wad.SoundSystem != SoundSystem.Dynamic)

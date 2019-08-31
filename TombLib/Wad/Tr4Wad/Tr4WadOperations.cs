@@ -23,37 +23,17 @@ namespace TombLib.Wad.Tr4Wad
             var wad = new Wad2();
             wad.SuggestedGameVersion = WadGameVersion.TR4_TRNG;
 
-            // Try to find all samples
-            var samples = new List<SamplePathInfo>();
-            for (var i = 0; i < oldWad.Sounds.Count; i++)
-                samples.Add(new SamplePathInfo { Name = oldWad.Sounds[i] });
-            /*Func<bool> FindTr4Samples = () =>
-            {
-                bool everythingOk = true;
-                for (var i = 0; i < oldWad.Sounds.Count; i++)
-                    if (!samples[i].Found)
-                    {
-                        samples[i].FullPath = WadSample.LookupSound(samples[i].Name, true, oldWad.BasePath, soundPaths);
-                        everythingOk = everythingOk && !string.IsNullOrEmpty(samples[i].FullPath);
-                    }
-                return everythingOk;
-            };
-            if (!FindTr4Samples())
-            {
-                var soundPathInformation = new DialogDescriptonMissingSounds { WadBasePath = oldWad.BasePath,
-                    WadBaseFileName = oldWad.BaseName, Samples = samples, SoundPaths = soundPaths }; // Reuse "SoundPaths" list directly, to update sound list in this file too.
-                soundPathInformation.FindTr4Samples = FindTr4Samples;
-                progressReporter?.RaiseDialog(soundPathInformation);
-                samples = soundPathInformation.Samples;
-            }*/
-
             // Convert all textures
             Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);
             logger.Info("Textures read.");
 
             // Convert sounds
-            WadSoundInfo[] soundInfos = ConvertTr4Sounds(wad, oldWad, samples);
-            logger.Info("Sounds read.");
+            var sfxPath = Path.GetDirectoryName(oldWad.FileName) + "\\" + Path.GetFileNameWithoutExtension(oldWad.FileName) + ".sfx";
+            if (File.Exists(sfxPath))
+            {
+                wad.Sounds = WadSounds.ReadFromFile(sfxPath);
+                logger.Info("Sounds read.");
+            }
 
             // Convert moveables
             for (int i = 0; i < oldWad.Moveables.Count; i++)
@@ -236,65 +216,6 @@ namespace TombLib.Wad.Tr4Wad
 
                 wad.SpriteSequences.Add(newSequence.Id, newSequence);
             }
-        }
-
-        internal static WadSoundInfo[] ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<SamplePathInfo> samplePathInfos)
-        {
-            // Load samples
-            /*var loadedSamples = new Dictionary<int, WadSample>();
-            Parallel.For(0, oldWad.Sounds.Count, i =>
-            {
-                WadSample currentSample = WadSample.NullSample;
-                try
-                {
-                    if (samplePathInfos[i].Found)
-                        // XML_SOUND_SYSTEM: for now we just load references to samples
-                        currentSample = new WadSample(samplePathInfos[i].FullPath);
-                }
-                catch (Exception exc)
-                {
-                    logger.Warn(exc, "Unable to read file '" + samplePathInfos[i].FullPath + "'");
-                }
-
-                lock (loadedSamples)
-                    loadedSamples.Add(i, currentSample);
-            });*/
-
-            // Load sound infos
-            int soundMapSize = oldWad.Version == 130 ? 2048 : 370;
-            WadSoundInfo[] soundInfos = new WadSoundInfo[soundMapSize];
-            for (int i = 0; i < soundMapSize; i++)
-            {
-                // Check if sound is defined at all
-                if (oldWad.SoundMap[i] == -1 || oldWad.SoundMap[i] >= oldWad.SoundInfo.Count)
-                    continue;
-
-                // Fill the new sound info
-                var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
-                var newInfo = new WadSoundInfo(i);
-                newInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)i);
-                newInfo.Volume = (int)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
-                newInfo.RangeInSectors = oldInfo.Range;
-                newInfo.Chance = (int)Math.Round(oldInfo.Chance * 100.0f / 255.0f);
-                newInfo.PitchFactor = (int)Math.Round((oldInfo.Pitch > 127 ? oldInfo.Pitch - 256 : oldInfo.Pitch) * 100.0f / 128.0f);
-                newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
-                newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);
-                newInfo.DisablePanning = ((oldInfo.Characteristics & 0x1000) != 0);
-                newInfo.LoopBehaviour = (WadSoundLoopBehaviour)(oldInfo.Characteristics & 0x03);
-
-                // Read all samples linked to this sound info (for example footstep has 4 samples)
-                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
-                for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
-                {
-                    newInfo.EmbeddedSamples.Add(new WadSample(oldWad.Sounds[j]));
-                }
-                soundInfos[i] = newInfo;
-            }
-
-            // Assign loaded sounds to Wad2
-            wad.Sounds = new WadSounds(soundInfos);
-
-            return soundInfos;
         }
 
         internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,

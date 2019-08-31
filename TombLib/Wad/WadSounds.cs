@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
+using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.Wad
 {
@@ -38,10 +40,12 @@ namespace TombLib.Wad
                 return ReadFromXml(filename);
             else if (extension == ".txt")
                 return ReadFromTxt(filename);
+            else if (extension == ".sfx")
+                return ReadFromSfx(filename);
             throw new ArgumentException("Invalid file format");
         }
 
-        public static WadSounds ReadFromXml(string filename)
+        private static WadSounds ReadFromXml(string filename)
         {
             var sounds = new WadSounds();
 
@@ -52,7 +56,7 @@ namespace TombLib.Wad
             }
 
             foreach (var soundInfo in sounds.SoundInfos)
-                soundInfo.Xml = filename;
+                soundInfo.SoundCatalog = filename;
 
             return sounds;
         }
@@ -76,7 +80,95 @@ namespace TombLib.Wad
             return null;
         }
 
-        public static WadSounds ReadFromTxt(string filename)
+        private static WadSounds ReadFromSfx(string filename)
+        {
+            var samples = new List<string>();
+
+            // Read version
+            int version = 129;
+            using (var readerVersion = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                version = readerVersion.ReadInt32();
+
+            // Read samples
+            var samPath = Path.GetDirectoryName(filename) + "\\" + Path.GetFileNameWithoutExtension(filename) + ".sam";
+            using (var readerSounds = new StreamReader(new FileStream(samPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                while (!readerSounds.EndOfStream)
+                    samples.Add(readerSounds.ReadLine());
+
+            // Read sounds
+            int soundMapSize = 0;
+            short[] soundMap; 
+            var wadSoundInfos = new List<wad_sound_info>();
+            var soundInfos = new List<WadSoundInfo>();
+
+            var sfxPath = Path.GetDirectoryName(filename) + "\\" + Path.GetFileNameWithoutExtension(filename) + ".sfx";
+            using (var readerSfx = new BinaryReaderEx(new FileStream(sfxPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                // Try to guess the WAD version
+                readerSfx.BaseStream.Seek(740, SeekOrigin.Begin);
+                short first = readerSfx.ReadInt16();
+                short second = readerSfx.ReadInt16();
+                version = ((first == -1 || second == (first + 1)) ? 130 : 129);
+                readerSfx.BaseStream.Seek(0, SeekOrigin.Begin);
+
+                soundMapSize = (version == 130 ? 2048 : 370);
+                soundMap = new short[soundMapSize];
+                for (var i = 0; i < soundMapSize; i++)
+                {
+                    soundMap[i] = readerSfx.ReadInt16();
+                }
+
+                var numSounds = readerSfx.ReadUInt32();
+
+                for (var i = 0; i < numSounds; i++)
+                {
+                    var info = new wad_sound_info();
+                    info.Sample = readerSfx.ReadUInt16();
+                    info.Volume = readerSfx.ReadByte();
+                    info.Range = readerSfx.ReadByte();
+                    info.Chance = readerSfx.ReadByte();
+                    info.Pitch = readerSfx.ReadByte();
+                    info.Characteristics = readerSfx.ReadUInt16();
+                    wadSoundInfos.Add(info);
+                }
+            }
+
+            // Convert old data to new format
+            for (int i = 0; i < soundMapSize; i++)
+            {
+                // Check if sound is defined at all
+                if (soundMap[i] == -1 || soundMap[i] >= wadSoundInfos.Count)
+                    continue;
+
+                // Fill the new sound info
+                var oldInfo = wadSoundInfos[soundMap[i]];
+                var newInfo = new WadSoundInfo(i);
+                newInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)i);
+                newInfo.Volume = (int)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
+                newInfo.RangeInSectors = oldInfo.Range;
+                newInfo.Chance = (int)Math.Round(oldInfo.Chance * 100.0f / 255.0f);
+                newInfo.PitchFactor = (int)Math.Round((oldInfo.Pitch > 127 ? oldInfo.Pitch - 256 : oldInfo.Pitch) * 100.0f / 128.0f);
+                newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
+                newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);
+                newInfo.DisablePanning = ((oldInfo.Characteristics & 0x1000) != 0);
+                newInfo.LoopBehaviour = (WadSoundLoopBehaviour)(oldInfo.Characteristics & 0x03);
+                newInfo.SoundCatalog = sfxPath;
+
+                // Read all samples linked to this sound info (for example footstep has 4 samples)
+                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
+                for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
+                {
+                    newInfo.EmbeddedSamples.Add(new WadSample(samples[j]));
+                }
+                soundInfos.Add(newInfo);
+            }
+
+            var sounds = new WadSounds(soundInfos);
+
+            return sounds;
+        }
+
+        private static WadSounds ReadFromTxt(string filename)
         {
             var sounds = new WadSounds();
 
@@ -93,6 +185,7 @@ namespace TombLib.Wad
 
                             var sound = new WadSoundInfo(soundId);
                             sound.RangeInSectors = 10;
+                            sound.SoundCatalog = filename;
 
                             int endOfSoundName = s.IndexOf(':');
                             if (endOfSoundName == -1)

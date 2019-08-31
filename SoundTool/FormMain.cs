@@ -91,13 +91,7 @@ namespace SoundTool
             WadSounds sounds;
 
             // Read the sounds archive in XML or TXT format
-            string extension = Path.GetExtension(filename).ToLower();
-            if (extension == ".xml")
-                sounds = WadSounds.ReadFromXml(filename);
-            else if (extension == ".txt")
-                sounds = WadSounds.ReadFromTxt(filename);
-            else
-                return;
+            sounds = WadSounds.ReadFromFile(filename);
 
             dgvSoundInfos.Rows.Clear();
 
