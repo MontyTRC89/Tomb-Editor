@@ -1,0 +1,11 @@
+Used in Demo script command.
+Used in [Title] section.
+If you wish that the player was able to launch himself the demos, choosing between different demos, you can add the DEMF_PLAY_ON_KEY flag.
+In this situation you should also type a textinfo string to explain to the player what keys he can press.
+
+Note: The keys are always digits, from 1 to 0, where 0 is for 10.
+If you created demos in three levels of your adventure, you can use as textinfo string one like this:
+"Hit "1","2", or "3" to show demos."
+The number of the key is not for the position of Demo Id in arraydemo fields, and neither directly the Demo ID, but it is the level number whom a demo will be played.
+If you had more than one demo for that (chosen) level, the choice will depends by the further DEMF_RANDOM or DEMF_PLAY_LEVEL_SEQUENCE flags.
+As general rule, trng will avoid to show twice a demo already shown and it will give the precedence to demos not yet played.

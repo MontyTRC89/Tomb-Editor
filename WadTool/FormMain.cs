@@ -74,8 +74,8 @@ namespace WadTool
                     labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
                                            "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
                                            "Sprites sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
-                                           "Fixed sounds: " + _tool.DestinationWad.FixedSoundInfos.Count + " | " +
-                                           "Additional sounds: " + _tool.DestinationWad.AdditionalSoundInfos.Count + " | " +
+                                           "Fixed sounds: " + _tool.DestinationWad.FixedSoundInfosObsolete.Count + " | " +
+                                           "Additional sounds: " + _tool.DestinationWad.AdditionalSoundInfosObsolete.Count + " | " +
                                            "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count;
                 }
                 else

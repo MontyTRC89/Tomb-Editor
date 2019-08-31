@@ -1,0 +1,3 @@
+Used in according with ENV_ROOM condition in Animation or MultEnvCondition commands.
+Lara is in a room with water light reflex (the [R] button in 2d plane).
+Usually the reflex rooms are those over the water room.

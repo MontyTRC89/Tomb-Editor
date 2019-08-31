@@ -1,0 +1,4 @@
+Used in Demo script command.
+Used in [Level] section, (cutscene mode)
+If you use a Demo command in a [Level] section, you can add the DEMF_PERFORM_AT_START flag to force trng to play the demo at begin of the level, like a intro cutscene.
+Note: if also the DEMF_PLAY_LEVEL_SEQUENCE flag is present, all demos cutscenes will be played in a sequence with no chance for player to interact with the game until last demo has been played.

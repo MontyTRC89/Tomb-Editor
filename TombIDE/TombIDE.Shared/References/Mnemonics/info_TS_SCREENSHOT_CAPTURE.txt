@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+The sound when you hit F3 key to capture the game screen image.

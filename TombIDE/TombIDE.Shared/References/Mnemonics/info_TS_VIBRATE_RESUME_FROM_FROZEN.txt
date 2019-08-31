@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+This is the short sound, repeated many times, when an enemy, previously frozen, is beeing to resume.

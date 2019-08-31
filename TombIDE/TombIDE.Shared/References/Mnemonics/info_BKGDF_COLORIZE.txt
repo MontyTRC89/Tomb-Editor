@@ -1,0 +1,4 @@
+Used into Customize=CUST_BACKGROUND command
+This flag works only with BKGDT_BINOCULAR and BKGDT_LASER_SIGHT types.
+You can add a color to the screen when lara is looking with the binoculars or lasersight.
+When you use this flag, you have to type in Parameter field, the ID of a ColorRGB= command with the wished color to use.

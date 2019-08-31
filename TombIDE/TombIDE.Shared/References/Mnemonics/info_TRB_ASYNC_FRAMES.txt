@@ -1,0 +1,3 @@
+Used in Turbo command.
+From 1.2.2.7 version, this setting works in a different way respect the past.
+Now when the game loses some frame, the turbo command perform two or more frames in a shorter time to recover the previously lost frame. The result in this situation is that lara will cover same distance in same time as in full frame rate  but the movements will be not always fluide. In spite this solution is not perfect in some situation is better than the big slowdown you can see when the engine is not able to support the standard 30 frames per second.

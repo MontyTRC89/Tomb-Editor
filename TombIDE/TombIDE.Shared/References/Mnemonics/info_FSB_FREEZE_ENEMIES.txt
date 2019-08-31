@@ -1,0 +1,3 @@
+Used in StandBy command.
+To avoid that lara was attacked during the stand-by mode you can use the FSB_FREEZE_ENEMIES flag to stop the activity of all enemies.
+The baddy will become frozen until the standby is on.

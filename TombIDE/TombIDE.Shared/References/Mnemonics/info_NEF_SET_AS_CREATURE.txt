@@ -1,0 +1,1 @@
+experimental: used to give to a common moveable some features of creatures

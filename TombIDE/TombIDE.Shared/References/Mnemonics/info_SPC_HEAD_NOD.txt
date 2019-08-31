@@ -1,0 +1,7 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+This command works like SPC_HEAD_SHAKE command but in this case the head movement will be up/down insteady by left/right.
+Moving up/down the head means "yes", "ok", "it's true", "I agree" ect.
+Note: really the movement will be not with same angle upstairs and downstairs, since the nod is more with downstairs moving.
+Trng will simulate this behavior using the angle supplied for down but only the half of that angle for upper movement.
+
+About syntax of arguments see the description of SPC_HEAD_SHAKE command.

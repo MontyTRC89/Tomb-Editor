@@ -1,0 +1,3 @@
+Used by Customize=CUST_CD_SINGLE_PLAYBACK.
+This is the default behavior. If you don't set any CUST_CD_SINGLE_PLAYBACK customize in your script.dat the TRNG engine will work using the CDM_RESTORE_FROM_MIDDLE.
+With this setting the sound will be saved remembering its current position and it will be restore playing it from that precise position.

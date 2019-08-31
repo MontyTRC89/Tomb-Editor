@@ -1,0 +1,37 @@
+Used in WindowsFont= command
+If you wish print text with eastern fonts, probably you'll have to add this flag to inform trng that your text is encoded with multibytes format.
+When you chose the WFF_UTF8 flag, trng engine will manage the text you wish print, as it was an UTF8 text, and this means that tnrg will convert in (at fly) in unicode before printing it.
+For this reason when you add the WFF_UTF8 flag, it's futile add (or less) the WFF_UNICODE flag, since this operation will be performed by trng itself.
+About the choice between UTF8 and UNICODE, you should try to see if NG_Center with the correct charset is able to support your language.
+To set a charset for NG_Center, different than default ANSI/western charset, you should use the translation file.
+If you have not a translation file for ng_Center, you can create a fake translation file in this way:
+
+1) Open block notes, and type this text with your LanguageName and CharsetNumber:
+
+[START_CONFIGURATION]
+Version=LanguageName
+Charset=CharSetNumber
+PropFont=Arial
+FixedFont=Courier
+[END]
+
+note: In above text, you have to replace the "[" character with the "less than" character, and the "]" character, with the "greater than" character. I cann't use them in this text for a problem of internal format of this help file.
+
+2) Now save this text in NG_Center folder, giving the name "my_scripter_constants.txt"
+
+3) Now, close NG_Center, and launch it newly.
+
+4) Now in Settings panel you should see your language (you typed in Version= command).
+If it's not selected, select it now
+
+5) Now ng_center will support the charset you typed (CharSetNumber) and the wished font.
+You have to try if you are able to type text in [Strings] section, in your language, and if this texts, after saving, quit program and launch newly program, they stand yet there.
+
+In the case your language is not yet supported by NG_Center you'll have to use binary strings.
+A binary string is sequence of hex values with the codes used to print a text.
+Read the description of WFF_UNICODE flag, to understand how to get a binary string from your original text.
+
+About the choice between UTF8 and UNICODE (it should be UTF16) it depends by your language.
+Languages like chinese, corean and japanese work with UNICODE, while other middle-east languages, like russian, turkish or greek, could work with UTF8.
+Anyway there are also simplified versions of chinese and japanese that may be supported by UTF8.
+Probably you'll have to do some experiment to discover the best settings for your language.

@@ -1,0 +1,12 @@
+Used in GlobalTrigger= command.
+This global trigger will be true when the supplied item has no trng action enabled on it.
+You should type the index of the item to check, in the "Parameter" field of GlobalTrigger command.
+The trng actions are procedures used to turn, move and get other time consuming effects on moveables.
+Many Action triggers you find Set Trigger Type window, begin a progressive action on that moveable.
+This global trigger could be useful to discover the exact moment when an item completed its movement, for example to play a sound effect, or syncronize another action starting when the first action has been completed.
+
+Remark: since this global trigger verify if the item has no action enabled on it, you should use for this global trigger the following flags:
+
+the FGT_DISABLED flag, to avoid it was immediatly engaged at begin of the level, since in that moment surely the item has no action in progress. So you should start with the global trigger disabled, thanks to FGT_DISABLED flag, and then you should enable the global trigger only after some action trigger has been started on it.
+
+the FGT_SINGLE_SHOT or FGT_SINGLE_SHOT_RESUMED flags, because otherwise the triggergroup linked with this global trigger will be ontinuosly and forever performed after the last progressive action has been completed on the item.

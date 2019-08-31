@@ -1,0 +1,4 @@
+Used in Customize=CUST_FMV_CUTSCENE command.
+By default, trng stops the cd track before starting the FMV, and restart the same cd in same position when the FMV has been completed.
+In some cirucstance you could wish to avoid to restart the cd track at end of fmv , this could happens  for example when you mean change the cd track at end of fmv or load another level.
+In above situation the cd track just restarted should be immediatly newly stopped to be changed with new track. Since this operation is a bit boring to listen you can use the FMV_NO_AUDIO_RESTART flag to let the silence at end of fmv, so you can start new different cd track with some trigger in more sweet way.

@@ -1,0 +1,3 @@
+Used in WindowsFont= command.
+The text will be aligned on left margin of text frame.
+Remark: this is also the default value and it will be used also if you type IGNORE in WindowFontFlags field

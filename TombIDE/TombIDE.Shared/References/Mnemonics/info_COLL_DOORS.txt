@@ -1,0 +1,3 @@
+Used with Customize=CUST_SET_STILL_COLLISION command.
+It enables the still collision when Lara touches a door.
+Remark: this doesn't work with underwater doors or trap-doors.

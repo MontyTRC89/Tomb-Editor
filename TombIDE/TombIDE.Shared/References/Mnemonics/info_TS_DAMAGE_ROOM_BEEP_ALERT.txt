@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+When in a damage room the time (bar) is almost terminated the beep sound for blinking bar of ending time.

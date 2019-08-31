@@ -1,0 +1,5 @@
+You can use this flag to invert the global trigger condition. For example if you want have a global trigger engaged when lara is NOT poisoned you can type a GlobalTrigger command script like:
+
+GlobalTrigger=1, FGT_NOT_TRUE, GT_LARA_POISONED, 0, ....
+
+Remark: this flag doesn't affect the further Condition Trigger Group. Anyway in trigger group you can find a similar flag to invert the single condition triggers.

@@ -1,0 +1,2 @@
+Used with CUST_BIKE_VS_ENEMIES customization.
+The enemy touched by the bike will be killed

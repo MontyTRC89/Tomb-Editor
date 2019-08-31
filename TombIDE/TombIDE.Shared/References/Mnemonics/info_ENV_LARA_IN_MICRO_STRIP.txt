@@ -1,0 +1,12 @@
+Used in Animation command
+This environment condition works in similar way than ENV_POS_STRIP_1/2/3 flags, but (IMPORTANT) remember that it is a condition and not an ENV_POS flag so you cann't add the ENV_LARA_IN_MICRO_STRIP value to another ENV_ condition. Differently you should place this ENV_LARA_IN_MICRO_STRIP condition in a MultEnvCondition script command and, furhterly you could add to this condition some ENV_POS_ flag like the (always required with this condition) ENV_POS_HORTOGONAL flag.
+The ENV_LARA_IN_MICRO_STRIP allows, respect to the ENV_POS_STRIP_1/2/3 flags, a best fine precision, since with the ENV_POS_STRIP_1/2/3 flags you can choose only between three "fat" strips, while with the ENV_LARA_IN_MICRO_STRIP you can choose any specific range within the sector where it should be Lara to get true this condition.
+When you use the ENV_LARA_IN_MICRO_STRIP condition you have to type in DistanceForEnv field the range (min-max) in micro-strips units, where lara should be enclosed.
+The value to type in DistanceForEnv is given by following formula:
+
+Max*256 + Min
+
+Where Min and max have values in the range 0 / 31
+Pratically you should imaginate a sector divided by 32 strips, in the direction where lara is looking, and you can choose in what range of 32th strips it should be Lara to get true the condition.
+For example if you wish have Lara very closed to outside border (pherpas to get the condition when lara is touching a wall in closed next sector) you could choose the range 0 - 2, in this way the condition it will be true wheter Lara is in 0,1 or 2 micro strip.
+Remember that the first strip (value= 0) is always that closed to border where lara is looking, while the last strip (value = 31) is that closed to border at the back of Lara.

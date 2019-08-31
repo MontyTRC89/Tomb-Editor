@@ -1,0 +1,25 @@
+This condition works in very similar way of ENV_SUPPORT_IN_FRONT_WALL condition, but in this case, other to check for a support in front wall, the engine will check also the height of this hole in the wall, allowing to set the min height and the max height limits of this hole.
+
+The {distance env} field for ENV_WALL_HOLE_IN_FRONT is like that for ENV_SUPPORT_IN_FRONT_WALL condition, but there is a value in more to set the height of the hole in the wall:
+The values you have to set are:
+The min height acceptable (4 click in below example)
+The max height acceptable (7 click in below example)
+The minimum space present over the support to place lara hands (example 1 click)
+The max space present over the suppot (height of hole) (example 2 clicks)
+
+The formula is:  MinHeight + MaxHeight*16 + MinSpace * 256 + MaxSpace * 4096
+In decimal this value is misterious: 4 + 7 * 16 + 1*256 + 2 * 4096 = 8564
+Anyway if you type in in hexadecimal format is more easy understand the position of each sub-field: 8564 decimal = $2174  in hexadecimal.
+I.e. in hexadecimal the digits are (using literal A, B, C, and D as references):
+
+$DCBA
+
+where:
+'A' is click of minimum height required
+'B' is click of minimum height acceptable
+'C' is number of click of min space over the support
+'D' is number of click of max space over the support
+
+About hexadecimal notions remember the numbers, using a single digit, have following sequence:
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A (10 decimal), B (11 decimal), C (12 decimal), D (13 decimal), E (14 decimal) and F (15 decimal)
+In this way you can set number of click between 0 and 15 click for each sub-field of Distance for env.
