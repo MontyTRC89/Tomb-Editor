@@ -122,7 +122,7 @@ namespace TombIDE.ProjectMaster
 		}
 
 		/// <summary>
-		/// Looks for potential plugin folders inside TombIDE's internal /Plugins/ folder.
+		/// Looks for potential plugin folders inside TombIDE's internal /TRNG Plugins/ folder.
 		/// <para>If a plugin folder is valid, it's added to the AvailablePlugins list.</para>
 		/// </summary>
 		private void LookForUndefinedPlugins()
@@ -161,15 +161,15 @@ namespace TombIDE.ProjectMaster
 					}
 				}
 
-				if (isPluginAvailable) // The plugin's DLL file is known for TombIDE
-					continue;
-
-				Plugin plugin = new Plugin
+				if (!isPluginAvailable) // The plugin's DLL file is unknown for TombIDE
 				{
-					Name = Path.GetFileName(pluginFile)
-				};
+					Plugin plugin = new Plugin
+					{
+						Name = Path.GetFileName(pluginFile)
+					};
 
-				projectPlugins.Add(plugin);
+					projectPlugins.Add(plugin);
+				}
 			}
 
 			_ide.Project.InstalledPlugins = projectPlugins;
@@ -177,7 +177,8 @@ namespace TombIDE.ProjectMaster
 
 		private void HandleScriptReferenceFiles()
 		{
-			string[] referenceFiles = Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), "NGC"), "plugin_*.script", SearchOption.TopDirectoryOnly);
+			string ngcFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC");
+			string[] referenceFiles = Directory.GetFiles(ngcFolderPath, "plugin_*.script", SearchOption.TopDirectoryOnly);
 
 			// Delete all .script files from the internal /NGC/ folder
 			foreach (string file in referenceFiles)
@@ -186,7 +187,7 @@ namespace TombIDE.ProjectMaster
 			// Only copy .script files of plugins which are actually used in the current project
 			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
 			{
-				if (string.IsNullOrWhiteSpace(plugin.InternalDllPath))
+				if (string.IsNullOrEmpty(plugin.InternalDllPath))
 					continue;
 
 				string scriptFilePath = Path.Combine(Path.GetDirectoryName(plugin.InternalDllPath), Path.GetFileNameWithoutExtension(plugin.InternalDllPath) + ".script");

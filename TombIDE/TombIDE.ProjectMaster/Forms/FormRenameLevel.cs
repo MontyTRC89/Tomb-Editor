@@ -99,7 +99,7 @@ namespace TombIDE.ProjectMaster
 					{
 						if (projectLevel.Name.ToLower() == newName.ToLower())
 						{
-							// Check if the ProjectLevel we found IS the current _ide.SelectedLevel
+							// Check if the level we found IS the current _ide.SelectedLevel
 							if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
 							{
 								if (renameDirectory)
@@ -192,7 +192,7 @@ namespace TombIDE.ProjectMaster
 
 		private void HandleDirectoryRenaming()
 		{
-			// Allow renaming directories to the same name, but with different letters cases
+			// Allow renaming directories to the same name, but with different letter cases
 			// To do that, we must add a "_TEMP" suffix at the end of the directory name
 			// _ide.SelectedLevel.Rename() will then handle the rest
 

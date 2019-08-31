@@ -72,7 +72,8 @@ namespace TombIDE.ProjectMaster
 		{
 			Plugin affectedPlugin = (Plugin)treeView_Available.SelectedNodes[0].Tag;
 
-			DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to delete the \"" + affectedPlugin.Name + "\" plugin?\n" +
+			DialogResult result = DarkMessageBox.Show(this,
+				"Are you sure you want to delete the \"" + affectedPlugin.Name + "\" plugin?\n" +
 				"This will send the plugin folder with all its files into the recycle bin.", "Are you sure?",
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -118,7 +119,8 @@ namespace TombIDE.ProjectMaster
 
 					if (string.IsNullOrEmpty(dllFilePath))
 					{
-						DialogResult result = DarkMessageBox.Show(this, "The \"" + ((Plugin)node.Tag).Name + "\" plugin is not installed in TombIDE.\n" +
+						DialogResult result = DarkMessageBox.Show(this,
+							"The \"" + ((Plugin)node.Tag).Name + "\" plugin is not installed in TombIDE.\n" +
 							"Would you like to move the DLL file into the recycle bin instead?", "Are you sure?",
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -142,7 +144,8 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private void button_Download_Click(object sender, EventArgs e) => Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
+		private void button_Download_Click(object sender, EventArgs e) =>
+			Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)
 		{
@@ -197,18 +200,7 @@ namespace TombIDE.ProjectMaster
 			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 			{
 				// Skip installed project plugins for this list, because we show them in treeView_Installed instead
-				bool isInstalledPlugin = false;
-
-				foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
-				{
-					if (installedPlugin.InternalDllPath.ToLower() == availablePlugin.InternalDllPath.ToLower())
-					{
-						isInstalledPlugin = true;
-						break;
-					}
-				}
-
-				if (isInstalledPlugin)
+				if (IsPluginInstalledInProject(availablePlugin))
 					continue;
 
 				DarkTreeNode node = new DarkTreeNode(availablePlugin.Name)
@@ -399,6 +391,17 @@ namespace TombIDE.ProjectMaster
 						"\"{1}\" plugin.", extractedFromArchive ? "archive" : "folder", availablePlugin.Name));
 				}
 			}
+		}
+
+		private bool IsPluginInstalledInProject(Plugin plugin)
+		{
+			foreach (Plugin installedPlugin in _ide.Project.InstalledPlugins)
+			{
+				if (installedPlugin.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower())
+					return true;
+			}
+
+			return false;
 		}
 
 		private bool IsValidPluginArchive(IArchive archive)

@@ -216,12 +216,12 @@ namespace TombIDE.Shared
 
 		#endregion PRJ2FileDeleted
 
-		#region NewPluginsAdded
+		#region NewPluginsInstalled
 
-		public class NewPluginsAddedEvent : IProjectMasterEvent
+		public class NewPluginsInstalledEvent : IProjectMasterEvent
 		{ }
 
-		#endregion NewPluginsAdded
+		#endregion NewPluginsInstalled
 
 		#region PluginListsUpdated
 

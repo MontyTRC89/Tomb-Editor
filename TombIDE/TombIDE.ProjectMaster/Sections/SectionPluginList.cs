@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -15,6 +14,11 @@ namespace TombIDE.ProjectMaster
 	public partial class SectionPluginList : UserControl
 	{
 		private IDE _ide;
+
+		/// <summary>
+		/// A list made up of plugins which were already installed in the current project on launch.
+		/// </summary>
+		private readonly List<Plugin> initialPlugins = new List<Plugin>();
 
 		#region Initialization
 
@@ -31,6 +35,8 @@ namespace TombIDE.ProjectMaster
 			UpdateTreeView();
 
 			tabControl.HideTab(1); // The "Description" tab
+
+			initialPlugins.AddRange(_ide.Project.InstalledPlugins);
 		}
 
 		#endregion Initialization
@@ -47,31 +53,21 @@ namespace TombIDE.ProjectMaster
 		{
 			using (FormPluginManager form = new FormPluginManager(_ide))
 			{
-				string pluginsPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
-
-				string[] cachedPluginFolders = Directory.GetDirectories(pluginsPath, "plugin_*");
-
-				List<Plugin> cachedProjectPlugins = new List<Plugin>();
-				cachedProjectPlugins.AddRange(_ide.Project.InstalledPlugins);
-
 				form.ShowDialog(this);
+
+				bool newPluginsInstalled = false;
 
 				foreach (Plugin plugin in _ide.Project.InstalledPlugins)
 				{
-					if (cachedProjectPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
+					if (initialPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
 						continue;
 
 					_ide.AddPluginToLanguageFile(plugin);
+					newPluginsInstalled = true;
 				}
 
-				foreach (string folder in Directory.GetDirectories(pluginsPath, "plugin_*"))
-				{
-					if (cachedPluginFolders.ToList().Exists(x => x.ToLower() == folder.ToLower()))
-						continue;
-
-					_ide.RaiseEvent(new IDE.NewPluginsAddedEvent());
-					break;
-				}
+				if (newPluginsInstalled)
+					_ide.RaiseEvent(new IDE.NewPluginsInstalledEvent());
 			}
 		}
 
