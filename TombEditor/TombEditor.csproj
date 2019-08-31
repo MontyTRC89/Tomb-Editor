@@ -561,6 +561,7 @@
     <None Include="Resources\icons_toolbox\toolbox_GridPaint2x2-16.png" />
     <None Include="Resources\icons_toolbox\toolbox_GridPaint3x3-16.png" />
     <None Include="Resources\icons_toolbox\toolbox_GridPaint4x4-16.png" />
+    <None Include="Resources\icons_general\general_filter-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">
