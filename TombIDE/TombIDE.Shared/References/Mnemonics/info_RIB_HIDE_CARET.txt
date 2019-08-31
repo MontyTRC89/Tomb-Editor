@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_INPUT_BOX
-Omit to draw a underscore character "_" to simulate the cursor.
-By default a cursor will be drawn always at right of last typed character.

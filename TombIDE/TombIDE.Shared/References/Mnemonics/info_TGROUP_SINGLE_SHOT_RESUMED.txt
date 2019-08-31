@@ -1,3 +1,0 @@
-Used in TriggerGroup command
-This flag works alike the TGROUP_SINGLE_SHOT flag (see its description) but in this case it's not necessary use the flipeffect 345 to enable it newly.
-In fact, a triggergroup with the TGROUP_SINGLE_SHOT_RESUMED in (first) flags word, will be enabled newly not just the current triggergroup stops to be performed. This means that the "single shot" atttribute will work only in contiguos triggered sectors, but not just lara goes out from this trigger zone, the trigger will be newly ready for further performings.

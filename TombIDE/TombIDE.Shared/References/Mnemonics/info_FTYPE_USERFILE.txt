@@ -1,5 +1,0 @@
-Used in ImportFile command.
-You should use FTYPE_USERFILE type for each file non recognized by TRNG, or simply for each file that will be not used directly by game engine.
-For example if you want give to final player of your level some .html files like introduction to your adventure, or .txt files, or image to be used only from player and not from tomb4.exe, then you should use the type FTYPE_USERFILE.
-When TRNG engine find an imported file of FTYPE_USERFILE, it will ignore it, and the only operation it will perform on it, it will be to export it saving in correct folder of trle.
-Remark: for this reason it's not logical to use the import mode IMPORT_MEMORY for FTYPE_USERFILE files because the player will be not able to see them.

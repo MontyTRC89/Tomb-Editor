@@ -1,9 +1,0 @@
-Used with Customize=CUST_SET_STILL_COLLISION command.
-Since the still collision method tries to simulate same behavior of wall collision, also in still collision, in some circustances, lara will be turned to orient her in correct dirction.
-
-The decision about when stopping lara and when moving and turning her will be taken in according with current angle of Lara's direction with the item surface.
-For example if lara hits the item with an angle of 90 degrees, lara will be surely always stopped.
-
-Differently, when the angle is acute, for example only 30 degrees, lara will be NOT stopped but she will continue her race and the engine will turn her to follow the shape of the item.
-The angle limit for these two behaviors is about of 45 degrees.
-In default mode with 45 degress lara will be turned and not stopped, anyway if you wish you can stop lara also with 45 degrees adding the COLL_STOP_ON_45_DEGREES flag.

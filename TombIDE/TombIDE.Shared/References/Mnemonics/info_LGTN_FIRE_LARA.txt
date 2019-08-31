@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_LIGHTNING script command
-If the target position is set using lara index, you can burn her adding this flag.
-Note: the fire will kill her in few seconds if you set also the LGTN_KILL_TARGET flag while, whether it's missing, Lara will be damaged but she we'll have the chance to survive diving herself in the water.

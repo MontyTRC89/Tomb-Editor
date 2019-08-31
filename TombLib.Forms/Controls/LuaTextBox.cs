@@ -14,6 +14,7 @@ namespace TombLib.Controls
 {
     public partial class LuaTextBox : UserControl
     {
+        private static TextStyle whitespaceColor = new TextStyle(new SolidBrush(Color.Gray), null, FontStyle.Regular);
         private static TextStyle commentColor = new TextStyle(new SolidBrush(Color.Green), null, FontStyle.Regular);
         private static TextStyle regularColor = new TextStyle(null, null, FontStyle.Regular);
         private static TextStyle operatorsColor = new TextStyle(new SolidBrush(Color.Orange), null, FontStyle.Bold);
@@ -53,6 +54,7 @@ namespace TombLib.Controls
                     commentColor, regularColor);
 
             // Apply styles (THE ORDER IS IMPORTANT!)
+            e.ChangedRange.SetStyle(whitespaceColor, "·");
             e.ChangedRange.SetStyle(commentColor, @"--.*$", RegexOptions.Multiline);
             e.ChangedRange.SetStyle(regularColor, @"[\[\],]");
             e.ChangedRange.SetStyle(operatorsColor, @"(" + string.Join("|", operators) + @")");

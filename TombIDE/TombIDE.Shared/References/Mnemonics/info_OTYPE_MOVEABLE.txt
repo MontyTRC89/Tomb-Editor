@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_LIGHTNING script command.
-You add this value to a moveables index to inform that it is a moveable item.

@@ -137,7 +137,6 @@ namespace TombEditor
 
         // User interface options
 
-        public bool UI_AutoFillTriggerTypesForSwitchAndKey { get; set; } = false;
         public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool UI_ProbeAttributesThroughPortals { get; set; } = true;
         public bool UI_SetAttributesAtOnce { get; set; } = true;
@@ -172,6 +171,7 @@ namespace TombEditor
         public Point Window_FormTrigger_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
         public bool Window_FormTrigger_Maximized { get; set; } = false;
+
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
@@ -219,7 +219,7 @@ namespace TombEditor
                             Contents = new List<string> { "RoomOptions" },
                             VisibleContent = "RoomOptions",
                             Order = 1,
-                            Size = new Size(284,220)
+                            Size = new Size(284,193)
                         },
                         new DockGroupState
                         {

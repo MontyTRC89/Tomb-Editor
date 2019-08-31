@@ -1,2 +1,0 @@
-Used in StandBy command.
-The matrix effect create a camera turning around to Lara.

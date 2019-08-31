@@ -1,2 +1,0 @@
-Used with Customize=CUST_SET_STILL_COLLISION command.
-Since the still collision tries to emulate the normal collision of Lara with the walls, when Lara touches an item with correct height the "splat" animation will be performed, like it happens also with the walls. Anyway, if you wish disable the splat and having only an immediate frozen of Lara you can add the COLL_NO_SPLAT flag.

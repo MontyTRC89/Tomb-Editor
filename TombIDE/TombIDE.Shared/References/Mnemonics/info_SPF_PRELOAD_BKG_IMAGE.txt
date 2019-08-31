@@ -1,5 +1,0 @@
-Used in SavegamePanel= script command.
-By default, trng will load and show the background image of savegame panel when the player requires the save/load panel.
-Since the operation to load from disk could require a short time in game could be a delay. To avoid this dealy you can add the SPF_PRELOAD_BKG_IMAGE flag and trng will load in memory the background image in advance, when the level was loading, and preserves it in memory to show fastly when it will be necessary.
-
-Remark: the only reason to omit this flag is when you have a lot of preloaded images in same level, or when you detect a bug about preloaded background image. In very seldom cirucstances the preloaded image of saveame panel could appear damaged. This problem disappears exiting and entering newly in game but it's probably this problem happens own when there is a preloaded image and it occurs some circustance that damages the memory where the image has been stored.

@@ -1,1 +1,0 @@
-Detector will work only if lara picked up it, or she has it from start of level in inventory

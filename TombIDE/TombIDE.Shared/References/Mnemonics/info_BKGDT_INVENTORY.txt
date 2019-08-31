@@ -1,2 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-Used to set the image for inventory screen and all intermediate screen in game: like pause menu, options screen, statistic screen, load game and save game screens.

@@ -9,6 +9,7 @@ namespace TombLib.LevelData
         // can change. It would be unnecesary difficult to update all those references.
         public WadMoveableId WadObjectId { get; set; }
 
+        public short Ocb { get; set; } = 0;
         public bool Invisible { get; set; } = false;
         public bool ClearBody { get; set; } = false;
         public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.

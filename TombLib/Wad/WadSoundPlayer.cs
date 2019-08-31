@@ -19,28 +19,28 @@ namespace TombLib.Wad
 
         public static void PlaySoundInfo(WadSoundInfo soundInfo)
         {
-            if (soundInfo.EmbeddedSamples.Count == 0)
+            if (soundInfo.Data.Samples.Count == 0)
                 return;
 
             // Figure out the precise play parameters
             int sampleIndex;
-            int loopCount = soundInfo.LoopBehaviour == WadSoundLoopBehaviour.Looped ? 3 : 1;
+            int loopCount = soundInfo.Data.LoopBehaviour == WadSoundLoopBehaviour.Looped ? 3 : 1;
             float pan = 0.0f;
-            float volume = soundInfo.Volume;
-            float pitch = soundInfo.PitchFactor;
+            float volume = soundInfo.Data.Volume;
+            float pitch = soundInfo.Data.PitchFactor;
             lock (_rng)
             {
-                if (_rng.NextDouble() > soundInfo.Chance)
+                if (_rng.NextDouble() > soundInfo.Data.Chance)
                     return;
-                sampleIndex = _rng.Next(0, soundInfo.EmbeddedSamples.Count - 1);
-                if (!soundInfo.DisablePanning)
+                sampleIndex = _rng.Next(0, soundInfo.Data.Samples.Count - 1);
+                if (!soundInfo.Data.DisablePanning)
                     pan = (float)((_rng.NextDouble() - 0.5f) * 1.6);
-                if (soundInfo.RandomizePitch)
+                if (soundInfo.Data.RandomizePitch)
                     pitch += (float)(_rng.NextDouble() * (6000.0 / 65536.0));
-                if (soundInfo.RandomizeVolume)
+                if (soundInfo.Data.RandomizeVolume)
                     volume -= (float)_rng.NextDouble() * 0.125f;
             }
-            PlaySample(soundInfo.EmbeddedSamples[sampleIndex], volume, pitch, pan, loopCount);
+            PlaySample(soundInfo.Data.Samples[sampleIndex], volume, pitch, pan, loopCount);
         }
 
         public static void PlaySample(WadSample sample, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)

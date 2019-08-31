@@ -1,2 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-If you are cutomizing the BKGDT_LOADING_LEVEL screen, you use this flag to hide the loading bar.

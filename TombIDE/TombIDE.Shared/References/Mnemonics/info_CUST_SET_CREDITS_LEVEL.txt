@@ -1,6 +1,0 @@
-The credit level should be the last level of your adventure.
-In The Last Revelation the number was 39.
-The target to reach is to have scrolling text with credits at end of your level.
-You should also substitute the credit texts with your custom texts.
-You find this text in [PSXString] of any language text file. The first text is "Programmers" (index =246)and the credit list continues until the end of [PSXString] section.
-Syntax: Customize=CUST_SET_CREDITS_LEVEL, NumberOfEndLevel

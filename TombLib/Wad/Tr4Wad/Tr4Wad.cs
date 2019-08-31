@@ -193,13 +193,11 @@ namespace TombLib.Wad.Tr4Wad
         internal List<string> Sounds { get; set; } = new List<string>();
         internal string BaseName { get; set; }
         internal string BasePath { get; set; }
-        internal string FileName { get; set; }
 
         public void LoadWad(string fileName)
         {
             BaseName = Path.GetFileNameWithoutExtension(fileName);
             BasePath = Path.GetDirectoryName(fileName);
-            FileName = fileName;
 
             logger.Info("Reading wad file: " + fileName);
 
@@ -465,8 +463,7 @@ namespace TombLib.Wad.Tr4Wad
             }
 
             // Read sounds
-            // XML_SOUND_SYSTEM: to remove?
-            /*logger.Info("Reading sound (sfx/sam) files associated with wad.");
+            logger.Info("Reading sound (sfx/sam) files associated with wad.");
             int soundMapSize = Version == 130 ? 2048 : 370;
             using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
@@ -493,7 +490,7 @@ namespace TombLib.Wad.Tr4Wad
                     info.Characteristics = readerSfx.ReadUInt16();
                     SoundInfo.Add(info);
                 }
-            }*/
+            }
 
             // Read sprites
             logger.Info("Reading sprites (swd file) associated with wad.");

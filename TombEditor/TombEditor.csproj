@@ -143,12 +143,6 @@
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormImportPrj.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormImportPrj.Designer.cs">
-      <DependentUpon>FormImportPrj.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -428,9 +422,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormImportPrj.resx">
-      <DependentUpon>FormImportPrj.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
       <DependentUpon>FormKeyboardLayout.cs</DependentUpon>

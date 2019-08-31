@@ -1,2 +1,0 @@
-Used in Enemy= command.
-When you type an Enemy script command to customize some wraith slot type, you can this flag to enable the burning of Lara when wraith touches some times Lara.

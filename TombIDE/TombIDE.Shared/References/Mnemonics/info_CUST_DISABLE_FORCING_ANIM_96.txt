@@ -1,7 +1,0 @@
-Used by Customize= command
-
-Syntax: Customize=CUST_DISABLE_FORCING_ANIM_96
-
-By default, when lara is moving left or right in hang mode and reach a corner the engine force the animation 96.
-This behavior is good of course, but if you are writting new hanging animation that forcing of animation 96 could create troubles to your new hanging management.
-Using this cust value the engine will not force anim 96, allowing to use custom animation to round the corner

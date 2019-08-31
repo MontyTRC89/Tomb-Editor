@@ -1,3 +1,0 @@
-Used in Switch script command.
-By default the Switch command perform the first TriggerGroup of the list, when the PlaceFolderVariabile has value "1", it performs the second when variable = 2, ect.
-Differently, if you wish the first value was "0" (to perform first triggergroup of the list) you can use this flag.

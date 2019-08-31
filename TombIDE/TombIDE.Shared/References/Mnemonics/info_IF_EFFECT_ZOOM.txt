@@ -1,6 +1,0 @@
-Used in Image= command.
-With this effect the image will showed with a zoom effect.
-At start the image will be drawn at 1/10 of its size, then in EffectTime frames it will be mangnified until to reach the size and position you chose with XPos, YPos, SizeX and SizeY fields.
-In EffectTime field you should set the number of frames (1/32 of second) required for zoom effect. If you set a low EffectTime the zoom will be very fast, while if the EffectTime is high the effect will be slow.
-
-Remark: this effect could slow down the game when you apply it to pop up images.

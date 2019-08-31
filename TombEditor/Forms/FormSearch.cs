@@ -21,8 +21,7 @@ namespace TombEditor.Forms
             Rooms,
             AllObjects,
             ObjectsInSelectedRooms,
-            ItemTypes,
-            Triggers
+            ItemTypes
         }
 
         private const int _trueRateBitCount = 16;
@@ -120,8 +119,7 @@ namespace TombEditor.Forms
                 else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInSelectedRooms)
                     ResetCompletely();
                 else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
-                    scope == ScopeMode.ObjectsInSelectedRooms && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom ||
-                    scope == ScopeMode.Triggers && ((IEditorObjectChangedEvent)obj).Object is TriggerInstance))
+                    scope == ScopeMode.ObjectsInSelectedRooms && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -299,23 +297,13 @@ namespace TombEditor.Forms
             if (objectList.Columns[e.ColumnIndex].Name == objectListColumnName.Name)
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
-                if(entry.Value is Room)
-                {
-                    var room = (entry.Value as Room);
-                    e.Value = room.Name;
-                    if (room.Tags.Count > 0) e.Value += (" / " + string.Join(" ", room.Tags) + " /");
-                }
-                else
-                {
-                    e.Value = entry.Value.ToString();
-                }
-                
+                e.Value = entry.Value.ToString();
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnRoom.Name)
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
                 Room room = GetRoom(entry.Value);
-                e.Value = room == null ? "<Unknown>" : _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room.Name;
+                e.Value = room == null ? "<Unknown>" : _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room;
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnType.Name)
             {
@@ -433,14 +421,6 @@ namespace TombEditor.Forms
                     yield return new ItemType(obj.Id, _editor?.Level?.Settings);
                 foreach (WadMoveable obj in _editor.Level.Settings.WadGetAllMoveables().Values)
                     yield return new ItemType(obj.Id, _editor?.Level?.Settings);
-            }
-
-            // Triggers
-            if (scope == ScopeMode.Triggers)
-            {
-                foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
-                    foreach (ObjectInstance instance in room.AnyObjects.Where(o => o is TriggerInstance))
-                        yield return instance;
             }
         }
     }

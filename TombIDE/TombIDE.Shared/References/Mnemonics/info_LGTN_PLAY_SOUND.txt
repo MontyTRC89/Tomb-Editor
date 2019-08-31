@@ -1,2 +1,0 @@
-Used in PARAM_LIGHTNING script command
-Enable the playing of sfx sound typed in SoundEffect field.

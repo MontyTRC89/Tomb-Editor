@@ -92,9 +92,7 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, string soundsPath, 
-                                        IProgressReporter progressReporter, 
-                                        bool remapFlybyBitmask = true, bool adjustUV = false)
+        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true, bool adjustUV = false)
         {
             var level = new Level();
 
@@ -580,7 +578,7 @@ namespace TombLib.LevelData.IO
                                 var sound = new SoundSourceInstance()
                                 {
                                     ScriptId = unchecked((ushort)objectsThings2[j]),
-                                    SoundId = objSlot,
+                                    WadReferencedSoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
                                     Position = position
                                 };
                                 room.AddObject(level, sound);
@@ -1251,19 +1249,6 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
-                // XML_SOUND_SYSTEM: Read sounds catalog. We need it just for names, because we'll take 
-                // sound infos from SFX/SAM.
-                WadSounds sounds;
-                {
-                    // If no sounds file was provided, just take the default one
-                    if (soundsPath == "")
-                        soundsPath = "Sounds\\TR4\\Sounds.xml";
-                    sounds = WadSounds.ReadFromFile(soundsPath);
-                }
-
-                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
-                                                                              level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
-
                 // Read WAD path
                 {
                     var stringBuffer = GetPrjString(reader);
@@ -1273,28 +1258,11 @@ namespace TombLib.LevelData.IO
                         string wadPath = PathC.TryFindFile(
                             level.Settings.GetVariable(VariableType.LevelDirectory),
                             Path.ChangeExtension(wadName.Trim('\0', ' '), "wad"), 3, 2);
-                        ReferencedWad newWad = new ReferencedWad(level.Settings, level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory), progressReporter);
+                        wadPath = level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory);
+                        ReferencedWad newWad = new ReferencedWad(level.Settings, wadPath, progressReporter);
                         level.Settings.Wads.Add(newWad);
                         if (newWad.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
-
-                        // XML_SOUND_SYSTEM: SFX is a valid catalog source so let's add it (SAM is implicity loaded)
-                        string sfxName = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx";
-                        if (File.Exists(sfxName))
-                        {
-                            sfxName = level.Settings.MakeRelative(sfxName, VariableType.LevelDirectory);
-                            level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, sfxName));
-                        }
-
-                        // XML_SOUND_SYSTEM: we actually have a valid WAD loaded, let's change names using the catalog
-                        // and mark them automatically for compilation
-                        foreach (var soundInfo in newWad.Wad.Sounds.SoundInfos)
-                        {
-                            var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
-                            if (catalogInfo != null)
-                                soundInfo.Name = catalogInfo.Name;
-                            level.Settings.SelectedSounds.Add(soundInfo.Id);
-                        }
 
                         progressReporter.ReportProgress(60, "Loaded WAD '" + wadPath + "'");
 
@@ -1368,7 +1336,7 @@ namespace TombLib.LevelData.IO
                                 Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color,
-                                Ocb = unchecked((short)currentObj.Ocb)
+                                Ocb = unchecked((ushort)currentObj.Ocb)
                             };
                             level.Rooms[i].AddObject(level, instance);
                         }

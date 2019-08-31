@@ -1,3 +1,0 @@
-Used in DiagnosticType script command.
-This flag enables the viewing of current world far view distance applied in game.
-Remark: this info requires also to have in current level a Turbo script command using adaptive far view, otherwise it will be no showed.

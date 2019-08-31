@@ -1,9 +1,0 @@
-Used in Customize=CUST_PARALLEL_BARS.
-By default lara is not able to move herself when she hanged to bar. She can only to turn.
-Differently, adding the PB_LARA_CAN_SLIDE value in CUST_PARALLEL_BARS, lara will be able to slide to left or to right.
-
-Remarks:
-
-* You can place two or more closed PARALLEL_BARS items in NGLE to create a very long bar and Lara will be able to move long all this path.
-
-* The power of jump will be affected by last parallel bar item touched by lara before letting the bar to perform the jump. This speech is useful about the ocb value set in parallel bar item. If you create a very long bar, using different parallel_bar, you could set different OCB values in these items, and lara will jump with different powerness in according with the ocb value stored in single parallel bar used for last.

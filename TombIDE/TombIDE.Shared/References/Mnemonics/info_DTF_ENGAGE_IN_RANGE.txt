@@ -1,3 +1,0 @@
-the detector will be automatically showed when lara is closed to some target, within the given range (see following fields)
-With engage_in_range you can set for example 50 meters and the detector will be showed when lara is to 50 meter or less from nearest target.
-When lara will be more far the detector will be hidden.
