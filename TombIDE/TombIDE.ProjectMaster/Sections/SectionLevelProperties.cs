@@ -86,7 +86,6 @@ namespace TombIDE.ProjectMaster
 				{
 					tabControl.Enabled = true;
 
-					// This will speed up some things
 					if (tabControl.SelectedIndex == 0)
 						UpdateSettings();
 					else if (tabControl.SelectedIndex == 1)
@@ -277,8 +276,13 @@ namespace TombIDE.ProjectMaster
 			treeView_Resources.SelectedNodes.Clear();
 			treeView_Resources.Nodes.Clear();
 
+			label_Loading.Visible = true;
+			treeView_Resources.Invalidate();
+
 			if (_ide.SelectedLevel == null)
 				return;
+
+			AddDefaultResourceNodes();
 
 			string prj2Path = string.Empty;
 
@@ -287,15 +291,18 @@ namespace TombIDE.ProjectMaster
 			else
 				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
 
-			Level level = Prj2Loader.LoadFromPrj2(prj2Path, null);
-			LevelSettings settings = new LevelSettings();
+			Prj2Loader.LoadedObjects levelObjects = new Prj2Loader.LoadedObjects();
 
-			AddDefaultResourceNodes(level);
+			using (FileStream stream = new FileStream(prj2Path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				levelObjects = Prj2Loader.LoadFromPrj2OnlyObjects(prj2Path, stream);
 
-			AddTextureFileNodes(level, settings);
-			AddWadFileNodes(level, settings);
-			AddGeometryFileNodes(level, settings);
+			LevelSettings settings = levelObjects.Settings;
 
+			AddTextureFileNodes(settings);
+			AddWadFileNodes(settings);
+			AddGeometryFileNodes(settings);
+
+			label_Loading.Visible = false;
 			treeView_Resources.Invalidate();
 		}
 
@@ -370,7 +377,7 @@ namespace TombIDE.ProjectMaster
 			treeView_AllPrjFiles.Invalidate();
 		}
 
-		private void AddDefaultResourceNodes(Level level)
+		private void AddDefaultResourceNodes()
 		{
 			DarkTreeNode texturesNode = new DarkTreeNode
 			{
@@ -395,11 +402,12 @@ namespace TombIDE.ProjectMaster
 			treeView_Resources.Nodes.Add(geometryNode);
 		}
 
-		private void AddTextureFileNodes(Level level, LevelSettings settings)
+		private void AddTextureFileNodes(LevelSettings settings)
 		{
-			foreach (LevelTexture texture in level.Settings.Textures)
+			for (int i = 0; i < settings.Textures.Count; i++)
 			{
-				string textureFilePath = settings.MakeAbsolute(texture.Image.FileName);
+				LevelTexture texture = settings.Textures[i];
+				string textureFilePath = GetFullFilePath(texture.Path, settings);
 
 				if (!File.Exists(textureFilePath))
 					continue;
@@ -415,32 +423,12 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private void AddWadFileNodes(Level level, LevelSettings settings)
+		private void AddWadFileNodes(LevelSettings settings)
 		{
-			foreach (ReferencedWad wad in level.Settings.Wads)
+			for (int i = 0; i < settings.Wads.Count; i++)
 			{
-				string wadFilePath = string.Empty;
-
-				// FIX THIS IN TombLib PLEASE !!!
-				//
-
-				if (wad.Path.Contains("$(LevelDirectory)"))
-				{
-					int foldersToGoBackCount = Regex.Matches(wad.Path, @"\\\.\.").Count;
-
-					string partialPath = wad.Path.Replace("$(LevelDirectory)", string.Empty).Replace(@"\..", string.Empty);
-					string missingPart = level.Settings.LevelFilePath;
-
-					for (int i = 0; i <= foldersToGoBackCount; i++)
-						missingPart = Path.GetDirectoryName(missingPart);
-
-					wadFilePath = missingPart + partialPath;
-				}
-				else
-					wadFilePath = settings.MakeAbsolute(wad.Path);
-
-				//
-				// THIS IS AN AWFUL SOLUTION !!!
+				ReferencedWad wad = settings.Wads[i];
+				string wadFilePath = GetFullFilePath(wad.Path, settings);
 
 				if (!File.Exists(wadFilePath))
 					continue;
@@ -456,11 +444,12 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private void AddGeometryFileNodes(Level level, LevelSettings settings)
+		private void AddGeometryFileNodes(LevelSettings settings)
 		{
-			foreach (ImportedGeometry geometry in level.Settings.ImportedGeometries)
+			for (int i = 0; i < settings.ImportedGeometries.Count; i++)
 			{
-				string geometryFilePath = settings.MakeAbsolute(geometry.Info.Path);
+				ImportedGeometry geometry = settings.ImportedGeometries[i];
+				string geometryFilePath = GetFullFilePath(geometry.Info.Path, settings);
 
 				if (!File.Exists(geometryFilePath))
 					continue;
@@ -474,6 +463,28 @@ namespace TombIDE.ProjectMaster
 				treeView_Resources.Nodes[2].Nodes.Add(node);
 				treeView_Resources.Nodes[2].Expanded = true;
 			}
+		}
+
+		private string GetFullFilePath(string filePath, LevelSettings settings)
+		{
+			string fullPath = string.Empty;
+
+			if (filePath.Contains("$(LevelDirectory)"))
+			{
+				int foldersToGoBackCount = Regex.Matches(filePath, @"\\\.\.").Count;
+
+				string partialPath = filePath.Replace("$(LevelDirectory)", string.Empty).Replace(@"\..", string.Empty);
+				string missingPart = settings.LevelFilePath;
+
+				for (int i = 0; i <= foldersToGoBackCount; i++)
+					missingPart = Path.GetDirectoryName(missingPart);
+
+				fullPath = missingPart + partialPath;
+			}
+			else
+				fullPath = filePath;
+
+			return fullPath;
 		}
 
 		#endregion Methods
