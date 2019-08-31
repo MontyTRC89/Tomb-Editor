@@ -368,8 +368,8 @@ namespace TombIDE
 		{
 			int allScreenWidth = 0;
 
-			foreach (Screen scr in Screen.AllScreens)
-				allScreenWidth += scr.Bounds.Width;
+			foreach (Screen screen in Screen.AllScreens)
+				allScreenWidth += screen.Bounds.Width;
 
 			return allScreenWidth;
 		}

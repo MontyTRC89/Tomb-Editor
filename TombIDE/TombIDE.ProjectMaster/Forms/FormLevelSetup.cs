@@ -40,8 +40,12 @@ namespace TombIDE.ProjectMaster
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for your level.");
 
-				if (_ide.Project.Levels.Exists(x => x.Name.ToLower() == levelName.ToLower()))
-					throw new ArgumentException("A level with the same name already exists on the list.");
+				// Check for name duplicates
+				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
+				{
+					if (projectLevel.Name.ToLower() == levelName.ToLower())
+						throw new ArgumentException("A level with the same name already exists on the list.");
+				}
 
 				string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName);
 

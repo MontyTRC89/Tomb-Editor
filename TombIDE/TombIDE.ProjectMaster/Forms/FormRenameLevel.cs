@@ -94,19 +94,22 @@ namespace TombIDE.ProjectMaster
 				}
 				else
 				{
-					// Check if a level with the same name already exists
-					ProjectLevel projectLevel = _ide.Project.Levels.Find(x => x.Name.ToLower() == newName.ToLower());
-
-					if (projectLevel != null)
+					// Check if a level with the same name already exists on the list
+					foreach (ProjectLevel projectLevel in _ide.Project.Levels)
 					{
-						// Check if the ProjectLevel we found IS the current _ide.SelectedLevel
-						if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
+						if (projectLevel.Name.ToLower() == newName.ToLower())
 						{
-							if (renameDirectory)
-								HandleDirectoryRenaming();
+							// Check if the ProjectLevel we found IS the current _ide.SelectedLevel
+							if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
+							{
+								if (renameDirectory)
+									HandleDirectoryRenaming();
+
+								break;
+							}
+							else
+								throw new ArgumentException("A level with the same name already exists on the list.");
 						}
-						else
-							throw new ArgumentException("A level with the same name already exists on the list.");
 					}
 
 					if (renameScriptEntry)

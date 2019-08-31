@@ -189,19 +189,26 @@ namespace TombIDE.ProjectMaster
 			foreach (string pluginFile in Directory.GetFiles(_ide.Project.ProjectPath, "plugin_*.dll", SearchOption.TopDirectoryOnly))
 			{
 				// Check if the plugin is available in TombIDE
-				Plugin plugin = _ide.AvailablePlugins.Find(x => Path.GetFileName(x.InternalDllPath).ToLower() == Path.GetFileName(pluginFile).ToLower());
+				bool isPluginAvailable = false;
 
-				if (plugin != null)
-					projectPlugins.Add(plugin);
-				else // The plugin's DLL file is unknown for TombIDE
+				foreach (Plugin availablePlugin in _ide.AvailablePlugins)
 				{
-					plugin = new Plugin
+					if (Path.GetFileName(availablePlugin.InternalDllPath).ToLower() == Path.GetFileName(pluginFile).ToLower())
 					{
-						Name = Path.GetFileName(pluginFile)
-					};
-
-					projectPlugins.Add(plugin);
+						projectPlugins.Add(availablePlugin);
+						isPluginAvailable = true;
+					}
 				}
+
+				if (isPluginAvailable) // The plugin's DLL file is known for TombIDE
+					continue;
+
+				Plugin plugin = new Plugin
+				{
+					Name = Path.GetFileName(pluginFile)
+				};
+
+				projectPlugins.Add(plugin);
 			}
 
 			_ide.Project.InstalledPlugins = projectPlugins;
@@ -214,13 +221,26 @@ namespace TombIDE.ProjectMaster
 
 		private bool IsPluginFolderAlreadyDefined(string path)
 		{
-			return _ide.AvailablePlugins.Exists(x => Path.GetDirectoryName(x.InternalDllPath).ToLower() == path.ToLower());
+			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+			{
+				if (Path.GetDirectoryName(availablePlugin.InternalDllPath).ToLower() == path.ToLower())
+					return true;
+			}
+
+			return false;
 		}
 
 		private bool IsDLLFileADuplicate(string pluginFolderPath)
 		{
 			string dllFileName = Path.GetFileName(Directory.GetFiles(pluginFolderPath, "plugin_*.dll").First());
-			return _ide.AvailablePlugins.Exists(x => Path.GetFileName(x.InternalDllPath).ToLower() == dllFileName.ToLower());
+
+			foreach (Plugin availablePlugin in _ide.AvailablePlugins)
+			{
+				if (Path.GetFileName(availablePlugin.InternalDllPath).ToLower() == dllFileName.ToLower())
+					return true;
+			}
+
+			return false;
 		}
 
 		#endregion Plugin handling

@@ -150,6 +150,7 @@ namespace TombIDE.ProjectMaster
 						{
 							panel_Logo.BackgroundImage = Image.FromFile(file);
 							logoFound = true;
+
 							break;
 						}
 					}
