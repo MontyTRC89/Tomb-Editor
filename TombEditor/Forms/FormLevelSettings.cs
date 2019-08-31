@@ -303,7 +303,6 @@ namespace TombEditor.Forms
             {
                 _levelSettings.Wads.Clear();
                 _levelSettings.Wads.AddRange(_objectFileDataGridViewDataSource.Select(o => o.Wad));
-                ReloadSounds();
             };
             objectFileDataGridView.DataSource = _objectFileDataGridViewDataSource;
             objectFileDataGridViewControls.DataGridView = objectFileDataGridView;
@@ -320,7 +319,7 @@ namespace TombEditor.Forms
             {
                 _levelSettings.SoundsCatalogs.Clear();
                 _levelSettings.SoundsCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(o => o.Sounds));
-                ReloadSounds();
+                PopulateSoundInfoListAndResetFilter();
             };
             soundsCatalogsDataGridView.DataSource = _soundsCatalogsDataGridViewDataSource;
             soundsCatalogsDataGridViewControls.DataGridView = soundsCatalogsDataGridView;
@@ -395,9 +394,9 @@ namespace TombEditor.Forms
                 _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,_levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
+
             // Initialize controls
             UpdateDialog();
-            ReloadSounds();
         }
 
         protected override void Dispose(bool disposing)
@@ -1194,38 +1193,106 @@ namespace TombEditor.Forms
             _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
             UpdateDialog();
         }
-        
-        private void ReloadSounds()
+
+        private void cbInterpretStaticMeshVertexDataForMerge_CheckedChanged(object sender, EventArgs e)
         {
-            selectedSoundsDataGridView.Rows.Clear();
-            foreach (var soundInfo in _levelSettings.GlobalSoundMap)
-            {
-                if (tbSearch.Text != "" && !soundInfo.Name.ToUpper().Contains(tbSearch.Text.ToUpper()))
-                    continue;
-
-                bool compile = _levelSettings.SelectedSounds.Contains(soundInfo.Id);
-
-                selectedSoundsDataGridView.Rows.Add(compile, soundInfo.Id, soundInfo.Name, soundInfo.SoundCatalog);
-                if (compile)
-                    selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
-                else
-                    selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1].DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
-            }
-
-            labelSoundsCatalogsStatistics.Text = "Total sounds: " + selectedSoundsDataGridView.Rows.Count + " | Selected sounds: " + _levelSettings.SelectedSounds.Count;
+            _levelSettings.InterpretStaticMeshVertexDataForMerge = cbInterpretStaticMeshVertexDataForMerge.Checked;
+            UpdateDialog();
         }
 
-        private void butSelectAllSounds_Click(object sender, EventArgs e)
+        // Re-populates list of sounds, taking filtering into consideration.
+        private void PopulateSoundInfoList(string filter = null)
+        {
+            selectedSoundsDataGridView.Rows.Clear();
+
+            foreach (var soundInfo in _levelSettings.GlobalSoundMap)
+            {
+                if (!string.IsNullOrEmpty(filter) && soundInfo.Name.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) < 0)
+                    continue;
+
+                selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id, soundInfo.Name, soundInfo.SoundCatalog);
+                selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1]);
+            }
+
+            UpdateSoundStatistics();
+        }
+
+        // Same as above, plus visually reset filter textbox.
+        private void PopulateSoundInfoListAndResetFilter()
+        {
+            tbFilterSounds.Text = string.Empty;
+            PopulateSoundInfoList();
+        }
+
+        // Select all sounds from desired sound info list.
+        private void AssignAllSounds(WadSounds sounds)
+        {
+            ToggleSelectionForAllSounds(false);
+
+            foreach (var sound in sounds.SoundInfos)
+                if (!_levelSettings.SelectedSounds.Contains(sound.Id))
+                    _levelSettings.SelectedSounds.Add(sound.Id);
+
+            PopulateSoundInfoListAndResetFilter();
+        }
+
+        // Selects or deselects all sounds in UI.
+        private void ToggleSelectionForAllSounds(bool toggleValue)
         {
             foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
             {
-                row.Cells[0].Value = true;
-                HighlightRow(row);
+                row.Cells[0].Value = toggleValue;
+                selectedSoundsDataGridView_HighlightRow(row);
             }
-            SaveSelectedSounds();
+
+            UpdateSelectedSounds();
         }
 
-        private void SoundsCatalogsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        // Updates list of selected sounds according to UI.
+        private void UpdateSelectedSounds()
+        {
+            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
+            {
+                int  currentIndex    = (int)row.Cells[1].Value;
+                bool currentSelected = (bool)row.Cells[0].Value;
+
+                if (_levelSettings.SelectedSounds.Contains(currentIndex) && !currentSelected)
+                    _levelSettings.SelectedSounds.Remove(currentIndex);
+                else if (!_levelSettings.SelectedSounds.Contains(currentIndex) && currentSelected)
+                    _levelSettings.SelectedSounds.Add(currentIndex);
+            }
+        }
+
+        // Updates statistics in the bottom of the page.
+        private void UpdateSoundStatistics()
+        {
+            labelSoundsCatalogsStatistics.Text = "Total sounds: " + _levelSettings.GlobalSoundMap.Count + 
+                                                 " | Selected sounds: " + _levelSettings.SelectedSounds.Count;
+        }
+
+        private void selectedSoundsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) => selectedSoundsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        private void selectedSoundsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            if (selectedSoundsDataGridView.Columns[e.ColumnIndex].Name == colSoundsEnabled.Name)
+            {
+                selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[e.RowIndex]);
+                UpdateSelectedSounds();
+                UpdateSoundStatistics();
+            }
+        }
+
+        private void selectedSoundsDataGridView_HighlightRow(DataGridViewRow row)
+        {
+            bool selected = (bool)row.Cells[0].Value;
+            if (selected)
+                row.DefaultCellStyle.BackColor = Color.DarkGreen;
+            else
+                row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
+        }
+
+        private void soundsCatalogsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
                 return;
@@ -1251,15 +1318,7 @@ namespace TombEditor.Forms
             }
         }
 
-        private void AssignAllSounds(WadSounds sounds)
-        {
-            foreach (var sound in sounds.SoundInfos)
-                if (!_levelSettings.SelectedSounds.Contains(sound.Id))
-                    _levelSettings.SelectedSounds.Add(sound.Id);
-            ReloadSounds();
-        }
-
-        private void SoundsCatalogsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void soundsCatalogsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
                 return;
@@ -1272,83 +1331,18 @@ namespace TombEditor.Forms
                 if (result != null)
                 {
                     _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
-                    ReloadSounds();
+                    PopulateSoundInfoListAndResetFilter();
                 }
             }
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)
-            {
                 AssignAllSounds(soundsCatalog.Sounds);
-                ReloadSounds();
-            }
         }
 
-        private void SoundsCatalogsDataGridView_Load(object sender, EventArgs e)
-        {
+        private void soundsCatalogsDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => PopulateSoundInfoListAndResetFilter();
+        private void soundsCatalogsDataGridView_Sorted(object sender, EventArgs e) => PopulateSoundInfoListAndResetFilter();
 
-        }
-
-        private void SoundsCatalogsDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            ReloadSounds();
-        }
-
-        private void SoundsCatalogsDataGridView_Sorted(object sender, EventArgs e)
-        {
-            ReloadSounds();
-        }
-        
-        private void CbInterpretStaticMeshVertexDataForMerge_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.InterpretStaticMeshVertexDataForMerge = cbInterpretStaticMeshVertexDataForMerge.Checked;
-            UpdateDialog();
-        }
-
-        private void SaveSelectedSounds()
-        {
-            _levelSettings.SelectedSounds.Clear();
-            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
-                if ((bool)row.Cells[0].Value)
-                    _levelSettings.SelectedSounds.Add((int)row.Cells[1].Value);
-        }
-
-        private void butSearchSounds_Click(object sender, EventArgs e)
-        {
-            ReloadSounds();
-        }
-
-        private void butDeselectAllSounds_Click(object sender, EventArgs e)
-        {
-            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
-            {
-                row.Cells[0].Value = false;
-                HighlightRow(row);
-            }
-            SaveSelectedSounds();
-        }
-
-        private void selectedSoundsDataGridView_RowValidated(object sender, DataGridViewCellEventArgs e)
-        {
-            HighlightRow(selectedSoundsDataGridView.Rows[e.RowIndex]);
-            SaveSelectedSounds();
-        }
-
-        private void HighlightRow(DataGridViewRow row)
-        {
-            bool selected = (bool)row.Cells[0].Value;
-            if (selected)
-                row.DefaultCellStyle.BackColor = Color.DarkGreen;
-            else
-                row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
-        }
-
-        private void TbSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
-
-        private void DgvSounds_CellValidated(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
+        private void butFilterSounds_Click(object sender, EventArgs e) => PopulateSoundInfoList(tbFilterSounds.Text);
+        private void butSelectAllSounds_Click(object sender, EventArgs e) => ToggleSelectionForAllSounds(true);
+        private void butDeselectAllSounds_Click(object sender, EventArgs e) => ToggleSelectionForAllSounds(false);
     }
 }
