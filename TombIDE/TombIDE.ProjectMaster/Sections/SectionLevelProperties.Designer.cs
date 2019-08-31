@@ -17,6 +17,7 @@
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.checkBox_ShowAllFiles = new DarkUI.Controls.DarkCheckBox();
 			this.contextMenu = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_Open = new System.Windows.Forms.ToolStripMenuItem();
@@ -31,6 +32,7 @@
 			this.treeView_AllPrjFiles = new DarkUI.Controls.DarkTreeView();
 			this.tabPage_Resources = new System.Windows.Forms.TabPage();
 			this.treeView_Resources = new DarkUI.Controls.DarkTreeView();
+			this.timer_ResourceRefreshDelay = new System.Windows.Forms.Timer(this.components);
 			this.contextMenu.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.tabControl.SuspendLayout();
@@ -222,6 +224,11 @@
 			this.treeView_Resources.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeView_Resources_MouseClick);
 			this.treeView_Resources.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeView_Resources_MouseDoubleClick);
 			// 
+			// timer_ResourceRefreshDelay
+			// 
+			this.timer_ResourceRefreshDelay.Interval = 1;
+			this.timer_ResourceRefreshDelay.Tick += new System.EventHandler(this.timer_ResourceRefreshDelay_Tick);
+			// 
 			// SectionLevelProperties
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -252,6 +259,7 @@
 		private System.Windows.Forms.CustomTabControl tabControl;
 		private System.Windows.Forms.TabPage tabPage_LevelSettings;
 		private System.Windows.Forms.TabPage tabPage_Resources;
+		private System.Windows.Forms.Timer timer_ResourceRefreshDelay;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Open;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_OpenFolder;
 		private System.Windows.Forms.ToolStripSeparator separator_01;

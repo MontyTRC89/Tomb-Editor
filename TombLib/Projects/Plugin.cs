@@ -8,7 +8,7 @@ namespace TombLib.Projects
 	public class Plugin
 	{
 		public string Name { get; set; }
-		public string InternalDllPath { get; set; }
+		public string InternalDllPath { get; set; } = string.Empty;
 
 		public static Plugin InstallPluginFolder(string pluginFolderPath)
 		{

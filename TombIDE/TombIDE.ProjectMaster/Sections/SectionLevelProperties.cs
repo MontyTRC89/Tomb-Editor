@@ -89,7 +89,7 @@ namespace TombIDE.ProjectMaster
 					if (tabControl.SelectedIndex == 0)
 						UpdateSettings();
 					else if (tabControl.SelectedIndex == 1)
-						UpdateResourceList();
+						InitializeResourceListRefresh();
 				}
 				else
 				{
@@ -122,7 +122,7 @@ namespace TombIDE.ProjectMaster
 			if (tabControl.SelectedIndex == 0)
 				UpdateSettings();
 			else if (tabControl.SelectedIndex == 1)
-				UpdateResourceList();
+				InitializeResourceListRefresh();
 		}
 
 		private void radioButton_LatestFile_CheckedChanged(object sender, EventArgs e)
@@ -181,6 +181,12 @@ namespace TombIDE.ProjectMaster
 			// If the user unchecked the checkBox and the SpecificFile was a backup file
 			if (!checkBox_ShowAllFiles.Checked && ProjectLevel.IsBackupFile(_ide.SelectedLevel.SpecificFile))
 				treeView_AllPrjFiles.SelectNode(treeView_AllPrjFiles.Nodes[0]); // Select something else since the item is no longer on the list
+		}
+
+		private void timer_ResourceRefreshDelay_Tick(object sender, EventArgs e)
+		{
+			timer_ResourceRefreshDelay.Stop();
+			UpdateResourceList();
 		}
 
 		private void treeView_Resources_MouseClick(object sender, MouseEventArgs e)
@@ -271,17 +277,25 @@ namespace TombIDE.ProjectMaster
 				EnableAndFillPrj2FileList();
 		}
 
-		private void UpdateResourceList()
+		private void InitializeResourceListRefresh()
 		{
+			tabControl.Invalidate();
+
 			treeView_Resources.SelectedNodes.Clear();
 			treeView_Resources.Nodes.Clear();
 
-			label_Loading.Visible = true;
 			treeView_Resources.Invalidate();
 
 			if (_ide.SelectedLevel == null)
 				return;
 
+			label_Loading.Visible = true;
+
+			timer_ResourceRefreshDelay.Start();
+		}
+
+		private void UpdateResourceList()
+		{
 			AddDefaultResourceNodes();
 
 			string prj2Path = string.Empty;
