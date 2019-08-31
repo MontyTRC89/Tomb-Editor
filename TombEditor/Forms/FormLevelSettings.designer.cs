@@ -1087,7 +1087,7 @@
             this.butSearchSounds.Selectable = false;
             this.butSearchSounds.Size = new System.Drawing.Size(24, 22);
             this.butSearchSounds.TabIndex = 109;
-            this.butSearchSounds.Click += new System.EventHandler(this.butSearchSounds_Click);
+            this.butSearchSounds.Click += new System.EventHandler(this.butFilterSounds_Click);
             // 
             // butDeselectAllSounds
             // 
@@ -1221,7 +1221,6 @@
             this.tbFilterSounds.Name = "tbFilterSounds";
             this.tbFilterSounds.Size = new System.Drawing.Size(140, 22);
             this.tbFilterSounds.TabIndex = 100;
-            this.tbFilterSounds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbFilterSounds_KeyDown);
             // 
             // darkLabel50
             // 
@@ -1254,7 +1253,9 @@
             this.selectedSoundsDataGridView.RowHeadersWidth = 41;
             this.selectedSoundsDataGridView.Size = new System.Drawing.Size(554, 199);
             this.selectedSoundsDataGridView.TabIndex = 96;
-            this.selectedSoundsDataGridView.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_RowValidated);
+            this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
+            this.selectedSoundsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellContentClick);
+            this.selectedSoundsDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellContentClick);
             // 
             // colSoundsEnabled
             // 
