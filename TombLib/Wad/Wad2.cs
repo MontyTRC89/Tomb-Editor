@@ -103,10 +103,11 @@ namespace TombLib.Wad
             return new WadStaticId();
         }
 
-        public static Wad2 ImportFromFile(string fileName, IEnumerable<string> oldWadSoundPaths, IDialogHandler progressReporter) // Last two parameters can be null.
+        public static Wad2 ImportFromFile(string fileName, bool withSounds, IEnumerable<string> oldWadSoundPaths, 
+                                          IDialogHandler progressReporter) // Last two parameters can be null.
         {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
-                return Wad2Loader.LoadFromFile(fileName);
+                return Wad2Loader.LoadFromFile(fileName, withSounds);
             else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase) ||
                 fileName.EndsWith(".was", StringComparison.InvariantCultureIgnoreCase) ||
                 fileName.EndsWith(".sam", StringComparison.InvariantCultureIgnoreCase) ||

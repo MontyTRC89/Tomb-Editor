@@ -27,7 +27,7 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
+                newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
                 if (newWad.SoundSystem == SoundSystem.Dynamic)
                 {
@@ -45,7 +45,7 @@ namespace WadTool
                         return;
                     }
 
-                    newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
+                    newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
                         .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
                 }
             }
@@ -712,7 +712,7 @@ namespace WadTool
         {
             try
             {
-                var wad = Wad2Loader.LoadFromFile(fileName);
+                var wad = Wad2Loader.LoadFromFile(fileName, false);
                 if (wad == null || wad.Moveables.Count == 0 || wad.Moveables.ElementAt(0).Value.Animations.Count == 0) return null;
 
                 return wad.Moveables.ElementAt(0).Value.Animations[0];

@@ -3210,6 +3210,8 @@ namespace TombEditor
 
             // Load objects (*.wad files) concurrently
             ReferencedWad[] results = new ReferencedWad[paths.Count];
+            ReferencedSoundsCatalog[] soundsResults = new ReferencedSoundsCatalog[paths.Count];
+            
             GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
             using (var loadingTask = Task.Run(() =>
                 Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler))))
@@ -3237,9 +3239,38 @@ namespace TombEditor
                             return new ReferencedWad[0];
                     }
 
+            synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i =>
+                {
+                    string currentPath = paths[i].ToLower();
+                    string extension = Path.GetExtension(currentPath);
+                    if (extension == ".wad")
+                    {
+                        string sfxPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".sfx";
+                        if (File.Exists(sfxPath))
+                        {
+                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, sfxPath, synchronizedDialogHandler);
+                        }
+                    }
+                    else if (extension == ".wad2")
+                    {
+                        string xmlPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".xml";
+                        if (File.Exists(xmlPath))
+                        {
+                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, xmlPath, synchronizedDialogHandler);
+                        }
+                    }
+                })))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
 
             // Update level
             _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
+            _editor.Level.Settings.SoundsCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
             _editor.LoadedWadsChange();
             return results.Where(result => result != null);
         }

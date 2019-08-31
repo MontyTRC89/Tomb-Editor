@@ -847,6 +847,44 @@ namespace TombEditor.Forms
                     Thread.Sleep(1);
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
+
+            synchronizedDialog = new GraphicalDialogHandler(this);
+            ReferencedSoundsCatalog[] soundsResults = new ReferencedSoundsCatalog[paths.Count];
+            using (var loadingTask = Task.Run(() =>
+                Parallel.For(0, paths.Count, i =>
+                {
+                    string currentPath = paths[i].ToLower();
+                    string extension = Path.GetExtension(currentPath);
+                    if (extension == ".wad")
+                    {
+                        string sfxPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".sfx";
+                        if (File.Exists(sfxPath))
+                        {
+                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, sfxPath, synchronizedDialog);
+                        }
+                    }
+                    else if (extension == ".wad2")
+                    {
+                        string xmlPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".xml";
+                        if (File.Exists(xmlPath))
+                        {
+                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, xmlPath, synchronizedDialog);
+                        }
+                    }
+                })))
+                while (!loadingTask.IsCompleted)
+                {
+                    Thread.Sleep(1);
+                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
+                }
+
+            foreach (var soundRef in soundsResults)
+                if (soundRef != null)
+                {
+                    _soundsCatalogsDataGridViewDataSource.Add(new ReferencedSoundsCatalogWrapper(this, soundRef));
+                    AssignAllSounds(soundRef.Sounds);
+                }
+
             return results;
         }
 
@@ -865,6 +903,11 @@ namespace TombEditor.Forms
                     Thread.Sleep(1);
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
+
+            /*foreach (var wrapper in results)
+                if (wrapper != null)
+                    AssignAllSounds(wrapper.Sounds.Sounds);*/
+
             return results;
         }
 
@@ -1110,19 +1153,22 @@ namespace TombEditor.Forms
 
         private void ReloadSounds()
         {
-            dgvSounds.Rows.Clear();
+            selectedSoundsDataGridView.Rows.Clear();
             foreach (var soundInfo in _levelSettings.GlobalSoundMap)
             {
                 if (tbSearch.Text != "" && !soundInfo.Name.ToUpper().Contains(tbSearch.Text.ToUpper()))
                     continue;
 
                 bool compile = _levelSettings.SelectedSounds.Contains(soundInfo.Id);
-                dgvSounds.Rows.Add(soundInfo.Id, soundInfo.Name, "", compile);
+
+                selectedSoundsDataGridView.Rows.Add(compile, soundInfo.Id, soundInfo.Name, soundInfo.SoundCatalog);
                 if (compile)
-                    dgvSounds.Rows[dgvSounds.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
+                    selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
                 else
-                    dgvSounds.Rows[dgvSounds.Rows.Count - 1].DefaultCellStyle.BackColor = dgvSounds.BackColor;
+                    selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1].DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
             }
+
+            labelSoundsCatalogsStatistics.Text = "Total sounds: " + selectedSoundsDataGridView.Rows.Count + " | Selected sounds: " + _levelSettings.SelectedSounds.Count;
         }
 
         private void ButSelectAllSoundsFromWads_Click(object sender, EventArgs e)
@@ -1130,7 +1176,7 @@ namespace TombEditor.Forms
             foreach (var wadRef in _levelSettings.Wads)
                 if (wadRef.Wad != null)
                     foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
-                        foreach (DataGridViewRow row in dgvSounds.Rows)
+                        foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
                         {
                             int id = int.Parse(row.Cells[0].Value.ToString());
                             if (id == sound.Id)
@@ -1148,12 +1194,84 @@ namespace TombEditor.Forms
 
         private void DgvSounds_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            var row = dgvSounds.Rows[e.RowIndex];
-            bool selected = (bool)row.Cells[3].Value;
+            var row = selectedSoundsDataGridView.Rows[e.RowIndex];
+            bool selected = (bool)row.Cells[0].Value;
             if (selected)
                 row.DefaultCellStyle.BackColor = Color.DarkGreen;
             else
-                row.DefaultCellStyle.BackColor = dgvSounds.BackColor;
+                row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
+        }
+
+        private void SoundsCatalogsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
+                return;
+            ReferencedSoundsCatalog sounds = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
+
+            if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogMessageColumn.Name)
+            {
+                if (sounds.LoadException == null)
+                {
+                    e.CellStyle.BackColor = _columnMessageCorrectColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageCorrectColor, 0.4);
+                }
+                else
+                {
+                    e.CellStyle.BackColor = _columnMessageWrongColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageWrongColor, 0.4);
+                }
+            }
+            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogPathColumn.Name)
+            {
+                string absolutePath = _levelSettings.MakeAbsolute(sounds.Path);
+                soundsCatalogsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
+            }
+        }
+
+        private void AssignAllSounds(WadSounds sounds)
+        {
+            foreach (var sound in sounds.SoundInfos)
+                if (!_levelSettings.SelectedSounds.Contains(sound.Id))
+                    _levelSettings.SelectedSounds.Add(sound.Id);
+            ReloadSounds();
+        }
+
+        private void SoundsCatalogsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
+                return;
+            ReferencedSoundsCatalog soundsCatalog = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
+
+            if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
+            {
+                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path,
+                    "Select a new sounds catalog file", WadSounds.FormatExtensions, VariableType.LevelDirectory, false);
+                if (result != null)
+                {
+                    _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
+                    ReloadSounds();
+                }
+            }
+            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)
+            {
+                AssignAllSounds(soundsCatalog.Sounds);
+                ReloadSounds();
+            }
+        }
+
+        private void SoundsCatalogsDataGridView_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SoundsCatalogsDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            ReloadSounds();
+        }
+
+        private void SoundsCatalogsDataGridView_Sorted(object sender, EventArgs e)
+        {
+            ReloadSounds();
         }
     }
 }

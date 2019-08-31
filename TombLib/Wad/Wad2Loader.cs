@@ -17,7 +17,7 @@ namespace TombLib.Wad
     {
         private static bool _legacySounds = false;
 
-        public static Wad2 LoadFromFile(string fileName)
+        public static Wad2 LoadFromFile(string fileName, bool withSounds)
         {
             Wad2 result;
             using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -25,10 +25,13 @@ namespace TombLib.Wad
             result.FileName = fileName;
 
             // Load additional XML file if it exists
-            var xmlFile = Path.ChangeExtension(fileName, "xml");
-            if (File.Exists(xmlFile))
+            if (withSounds)
             {
-                result.Sounds = WadSounds.ReadFromXml(xmlFile);
+                var xmlFile = Path.ChangeExtension(fileName, "xml");
+                if (File.Exists(xmlFile))
+                {
+                    result.Sounds = WadSounds.ReadFromFile(xmlFile);
+                }
             }
 
             return result;
