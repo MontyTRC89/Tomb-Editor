@@ -1,0 +1,5 @@
+Used in SavegamePanel= script command.
+By default in central position of first row trng will draw the title of panel savegame: “Load Game” or “Save Game”.
+If you want omit this text you can use this flag.
+The only reason to omit the title of panel is when you want type some title directly in the background image.
+Anyway remember that in this way you cann’t handle the difference between “Load” and “Save” game.

@@ -1,0 +1,4 @@
+The current flag FAN_SET_FREE_HANDS perform a specific action to inform game engine that the hands of Lara are free and, since, she will be able to hang, climb and pick up objects or weapons.
+Remark: this operation to free hands will be performed ONLY if your special animation will be really started.
+
+You should use this flag only when you special animation starts from a position where lara had busy hands (she was climbing, or hanged) but, your animation move her from wall and to do jump her. In this situation you have to inform engine now she has free hands, otherwise lara will be not able to graps a climb wall after the jump.

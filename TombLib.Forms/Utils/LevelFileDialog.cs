@@ -37,6 +37,18 @@ namespace TombLib.Utils
             }
         }
 
+        public static string BrowseFile(IWin32Window owner, string title, IEnumerable<FileFormat> fileFormats, bool save)
+        {
+            using (FileDialog dialog = save ? (FileDialog)new SaveFileDialog() : new OpenFileDialog())
+            {
+                dialog.Filter = fileFormats.GetFilter();
+                dialog.Title = title;
+                if (dialog.ShowDialog(owner) != DialogResult.OK)
+                    return null;
+                return dialog.FileName;
+            }
+        }
+
         // Returns an empty collection if no folder is chosen.
         // "currentPath" should be a directory path containing placeholders (or null).
         public static IEnumerable<string> BrowseFiles(IWin32Window owner, LevelSettings levelSettings, string currentPath, string title, IEnumerable<FileFormat> fileFormats, VariableType? baseDirType)

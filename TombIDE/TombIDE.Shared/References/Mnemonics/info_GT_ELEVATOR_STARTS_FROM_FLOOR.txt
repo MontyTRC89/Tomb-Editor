@@ -1,0 +1,4 @@
+Used in GlobalTrigger= command.
+This condition verify when the given elevator has just let the given floor.
+You have to type the elevator index and floor number in Parameter field.
+About the mode to compact these two numbers in a single number, read the description of GT_ELEVATOR_STOPS_AT_FLOOR global trigger

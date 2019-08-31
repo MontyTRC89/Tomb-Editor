@@ -1,0 +1,1 @@
+Perform an infinite rotation. When you use this flag the Angle rotation value will be ignored since the item will round continuosly.

@@ -1,0 +1,9 @@
+This setting permits to disable the text about game time in savegame list screen.
+
+Syntax: Customize=CUST_NO_TIME_IN_SAVELIST, ENABLED/DISABLED
+
+If you want remove the time game info type:
+Customize=CUST_NO_TIME_IN_SAVELIST, ENABLED
+
+This option is useful only when you set a font text very big (in width size), in fact, when the font is too big the level name could result overlapped to time infos with a very nasty effect.
+If you remove the time info you'll be able to use more wider characters

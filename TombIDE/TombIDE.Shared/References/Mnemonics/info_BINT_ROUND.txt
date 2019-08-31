@@ -1,0 +1,2 @@
+Used into Customize=CUST_BINOCULARS command
+Currently this type works only in LightnessRectAndFlags field to force the light switch to have a circle shape.

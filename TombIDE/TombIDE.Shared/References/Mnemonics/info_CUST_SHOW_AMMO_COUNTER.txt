@@ -1,0 +1,16 @@
+You can use this cust value if you want enable the showing of number of current ammo yet available.
+
+Syntax: Customize=CUST_SHOW_AMMO_COUNTER, Color, FormatFlags (FT_...) , BlinkTime, SizeCharacter (SC_...), ShowCounterFlags (SHOWC_...)
+
+If you place a customize command with CUST_SHOW_AMMO_COUNTER, you'll have in game a text on screen showing in real-time the current number of ammo for current weapon.
+Remark: the ammo counter will be showed only when lara extracted some weapon.
+
+Color, FormatFlags (FT_...) , BlinkTime, SizeCharacter (SC_...) fields
+----------------------------------------------------------------------
+All above fields have the same usage and target of fields in TextFormat= script command. So you should read the description of above field in section NEW SCRIPT COMMANDS of Reference panel of NG Center program.
+The fields are used to set color, size and position of text about ammo informations.
+
+ShowCounterFlags (SHOWC_...) field
+----------------------------------
+In this field you can set some SHOWC_... constant flags to furhterly customize the showing of ammo counter.
+See description of SHOWC_... constants in Reference panel.

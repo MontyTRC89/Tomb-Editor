@@ -1,0 +1,1 @@
+Add blood (vlady) to current object.

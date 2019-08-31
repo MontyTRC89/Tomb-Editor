@@ -1,0 +1,2 @@
+Used in Paramaters=PARAM_SET_CAMERA
+This flag disable the Look camera until the PARAM_SET_CAMERA is working.

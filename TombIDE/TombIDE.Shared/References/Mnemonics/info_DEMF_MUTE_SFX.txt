@@ -1,0 +1,5 @@
+Used in Demo script command.
+This flag silent the sound effects but it lets the background music, from Audio folder.
+This solution is good when you wish give to the demos a more understated layout, avoiding the shoot or jump sounds but letting the chance to have a soft background music (audio track). In this situation it's interesting playing a different audio track in demo mode to entertain the player/viewer.
+
+Note: to silent the sound effects trng engine will change (temporarily) the sfx sound volume, setting it to zero. Oddly also with this null volume, the strongest sfx sounds could be listened in light way.

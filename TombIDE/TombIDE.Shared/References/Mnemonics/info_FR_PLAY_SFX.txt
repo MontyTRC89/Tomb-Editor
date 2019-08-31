@@ -1,0 +1,6 @@
+Used in Customize=CUST_RAIN command.
+You can enable the playing of a sound effect when the drops hit the floor.
+You should type the number of sound effect to play in Extra field of Customize=CUST_RAIN command.
+Remarks:
+- By default there is no sound for rain.
+- It's advisable using a sound sample set to work in loop mode.

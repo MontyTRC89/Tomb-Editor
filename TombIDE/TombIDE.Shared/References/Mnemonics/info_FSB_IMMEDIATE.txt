@@ -1,0 +1,3 @@
+Used in StandBy command.
+Usually the camera will start from current standard position and it will move slowly to reach the position required from the settings of StandBy command.
+If you wish the camera starts immediatly in new required position you can use the FSB_IMMEDIATE flag,and the camera will be moved immediatly in the new position.

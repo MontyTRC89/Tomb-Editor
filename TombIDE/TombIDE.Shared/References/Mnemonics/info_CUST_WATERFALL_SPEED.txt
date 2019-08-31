@@ -1,0 +1,7 @@
+Used with Customize= command.
+Syntax: Customize=CUST_WATERFALL_SPEED, PixelScroll
+
+With this customize you can change the speed of waterfall textures.
+The default value is -7, if you set higher absolute values, like -12, the speed will be increased.
+If you use a positive sign the direction of scrolling will be inverted (from down to upstairs).
+The max values are -63 / +63 but in the reality the meaningful max values are -31 / +31

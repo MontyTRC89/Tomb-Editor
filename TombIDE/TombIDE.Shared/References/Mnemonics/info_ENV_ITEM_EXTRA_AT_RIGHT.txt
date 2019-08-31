@@ -1,0 +1,1 @@
+This condition work like ENV_ITEM_EXTRA_IN_FRONT but it analyses for an item at right of lara. You have to insert the slot of wished item in Extra field and the  distance in DistanceForEnv.

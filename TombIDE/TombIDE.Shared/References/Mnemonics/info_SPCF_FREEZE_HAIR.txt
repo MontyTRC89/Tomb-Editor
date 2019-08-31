@@ -1,0 +1,5 @@
+Used with Parameters=PARAM_ACTOR_SPEECH command
+There is a bug that I've not yet been able to fix. When there is the swapmesh of lara's head the hair of lara have a jump. In spite I tried to remap ponytail vertices with rigth numbers this problem is yet present.
+To reduce this problem you can add the SPCF_FREEZE_HAIR flag and the ponytail will be kept down.
+This solution is not so fine, of course but we suppose that when you do speech lara then you look head on her and so the ponytail will be not visible.
+Differently, omitting this flag the jump of ponytail is so strong that is could be visible also looking the face of lara.

@@ -1,0 +1,5 @@
+Used into Customize=CUST_BACKGROUND command
+NOT YET WORKING. DO NOT USE!
+Used to change the title flycamera with a fixed image.
+This setting will affect also all other sub-screen that the user can reach from title: new game, load game and options.
+Note: the setting doesn't stop the flycamera but the image will cover it. If you wish you can having an image with some transparent zones from those zones it will be showed the below fly camera.
