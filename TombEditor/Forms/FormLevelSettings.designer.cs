@@ -22,6 +22,13 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -62,28 +69,6 @@
             this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
-            this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
-            this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.tbSearch = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel50 = new DarkUI.Controls.DarkLabel();
-            this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabSamples = new System.Windows.Forms.TabPage();
-            this.soundDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
             this.tabImportedGeometry = new System.Windows.Forms.TabPage();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
@@ -115,6 +100,29 @@
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.skyTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
+            this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
+            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
+            this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
+            this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
+            this.tbSearch = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel50 = new DarkUI.Controls.DarkLabel();
+            this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabSamples = new System.Windows.Forms.TabPage();
+            this.soundDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
             this.tabPaths = new System.Windows.Forms.TabPage();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
@@ -143,16 +151,11 @@
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabGame.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -163,11 +166,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).BeginInit();
             this.tabObjects.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).BeginInit();
-            this.tabSoundsCatalogs.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).BeginInit();
-            this.tabSamples.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
             this.tabImportedGeometry.SuspendLayout();
             this.tabStaticMeshes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).BeginInit();
@@ -178,6 +176,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).BeginInit();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).BeginInit();
+            this.tabSoundsCatalogs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).BeginInit();
+            this.tabSamples.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
             this.tabPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.tabMisc.SuspendLayout();
@@ -187,8 +190,6 @@
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -198,14 +199,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -232,7 +233,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 561);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 562);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // darkSectionPanel2
@@ -243,19 +244,90 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(209, 3);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(573, 521);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(573, 522);
             this.darkSectionPanel2.TabIndex = 2;
+            // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 522);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 520);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel11
+            // 
+            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel11.Controls.Add(this.butApply);
+            this.panel11.Controls.Add(this.butOk);
+            this.panel11.Controls.Add(this.butCancel);
+            this.panel11.Location = new System.Drawing.Point(522, 531);
+            this.panel11.Name = "panel11";
+            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel11.Size = new System.Drawing.Size(260, 28);
+            this.panel11.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(3, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(89, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "OK";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(175, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
+            // 
+            // colorDialog
+            // 
+            this.colorDialog.AnyColor = true;
+            this.colorDialog.FullOpen = true;
             // 
             // tabbedContainer
             // 
             this.tabbedContainer.Controls.Add(this.tabGame);
             this.tabbedContainer.Controls.Add(this.tabTextures);
             this.tabbedContainer.Controls.Add(this.tabObjects);
-            this.tabbedContainer.Controls.Add(this.tabSoundsCatalogs);
-            this.tabbedContainer.Controls.Add(this.tabSamples);
             this.tabbedContainer.Controls.Add(this.tabImportedGeometry);
             this.tabbedContainer.Controls.Add(this.tabStaticMeshes);
             this.tabbedContainer.Controls.Add(this.tabSkyAndFont);
+            this.tabbedContainer.Controls.Add(this.tabSoundsCatalogs);
+            this.tabbedContainer.Controls.Add(this.tabSamples);
             this.tabbedContainer.Controls.Add(this.tabPaths);
             this.tabbedContainer.Controls.Add(this.tabMisc);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -263,7 +335,7 @@
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
             this.tabbedContainer.Name = "tabbedContainer";
             this.tabbedContainer.SelectedIndex = 0;
-            this.tabbedContainer.Size = new System.Drawing.Size(571, 519);
+            this.tabbedContainer.Size = new System.Drawing.Size(571, 520);
             this.tabbedContainer.TabIndex = 2;
             // 
             // tabGame
@@ -276,7 +348,7 @@
             this.tabGame.Location = new System.Drawing.Point(4, 22);
             this.tabGame.Name = "tabGame";
             this.tabGame.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGame.Size = new System.Drawing.Size(563, 493);
+            this.tabGame.Size = new System.Drawing.Size(563, 494);
             this.tabGame.TabIndex = 4;
             this.tabGame.Text = "Game";
             // 
@@ -291,7 +363,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(3, 153);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(557, 337);
+            this.panel3.Size = new System.Drawing.Size(557, 338);
             this.panel3.TabIndex = 3;
             // 
             // lblGameEnableQuickStartFeature2
@@ -474,7 +546,7 @@
             this.tabTextures.Location = new System.Drawing.Point(4, 22);
             this.tabTextures.Name = "tabTextures";
             this.tabTextures.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTextures.Size = new System.Drawing.Size(563, 493);
+            this.tabTextures.Size = new System.Drawing.Size(563, 494);
             this.tabTextures.TabIndex = 7;
             this.tabTextures.Text = "Texture Files";
             // 
@@ -487,10 +559,10 @@
             this.textureFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textureFileDataGridViewControls.Enabled = false;
-            this.textureFileDataGridViewControls.Location = new System.Drawing.Point(535, 51);
+            this.textureFileDataGridViewControls.Location = new System.Drawing.Point(535, 32);
             this.textureFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.textureFileDataGridViewControls.Name = "textureFileDataGridViewControls";
-            this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 378);
+            this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 456);
             this.textureFileDataGridViewControls.TabIndex = 7;
             // 
             // textureFileDataGridView
@@ -512,11 +584,11 @@
             this.textureFileDataGridViewSizeColumn,
             this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn,
             this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn});
-            this.textureFileDataGridView.Location = new System.Drawing.Point(6, 51);
+            this.textureFileDataGridView.Location = new System.Drawing.Point(6, 32);
             this.textureFileDataGridView.Name = "textureFileDataGridView";
             this.textureFileDataGridView.RowHeadersWidth = 41;
             this.textureFileDataGridView.RowTemplate.Height = 40;
-            this.textureFileDataGridView.Size = new System.Drawing.Size(523, 378);
+            this.textureFileDataGridView.Size = new System.Drawing.Size(523, 456);
             this.textureFileDataGridView.TabIndex = 6;
             this.textureFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.textureFileDataGridView_CellContentClick);
             this.textureFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.textureFileDataGridView_CellFormatting);
@@ -592,12 +664,15 @@
             // 
             // darkLabel4
             // 
+            this.darkLabel4.AutoSize = true;
+            this.darkLabel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(3, 3);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(520, 45);
+            this.darkLabel4.Size = new System.Drawing.Size(411, 26);
             this.darkLabel4.TabIndex = 5;
-            this.darkLabel4.Text = resources.GetString("darkLabel4.Text");
+            this.darkLabel4.Text = "List of texture resources (eg *.png, *.tga, *.bmp).\r\nOnly the areas used in the t" +
+    "extures will be compiled into the playable level file.";
             // 
             // tabObjects
             // 
@@ -608,7 +683,7 @@
             this.tabObjects.Location = new System.Drawing.Point(4, 22);
             this.tabObjects.Name = "tabObjects";
             this.tabObjects.Padding = new System.Windows.Forms.Padding(3);
-            this.tabObjects.Size = new System.Drawing.Size(563, 493);
+            this.tabObjects.Size = new System.Drawing.Size(563, 494);
             this.tabObjects.TabIndex = 0;
             this.tabObjects.Text = "Object Files";
             // 
@@ -621,10 +696,10 @@
             this.objectFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.objectFileDataGridViewControls.Enabled = false;
-            this.objectFileDataGridViewControls.Location = new System.Drawing.Point(535, 36);
+            this.objectFileDataGridViewControls.Location = new System.Drawing.Point(535, 32);
             this.objectFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.objectFileDataGridViewControls.Name = "objectFileDataGridViewControls";
-            this.objectFileDataGridViewControls.Size = new System.Drawing.Size(24, 393);
+            this.objectFileDataGridViewControls.Size = new System.Drawing.Size(24, 456);
             this.objectFileDataGridViewControls.TabIndex = 5;
             // 
             // objectFileDataGridView
@@ -640,10 +715,10 @@
             this.objectFileDataGridViewSearchColumn,
             this.objectFileDataGridViewShowColumn,
             this.objectFileDataGridViewMessageColumn});
-            this.objectFileDataGridView.Location = new System.Drawing.Point(6, 36);
+            this.objectFileDataGridView.Location = new System.Drawing.Point(6, 32);
             this.objectFileDataGridView.Name = "objectFileDataGridView";
             this.objectFileDataGridView.RowHeadersWidth = 41;
-            this.objectFileDataGridView.Size = new System.Drawing.Size(523, 393);
+            this.objectFileDataGridView.Size = new System.Drawing.Size(523, 456);
             this.objectFileDataGridView.TabIndex = 4;
             this.objectFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.objectFileDataGridView_CellContentClick);
             this.objectFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectFileDataGridView_CellFormatting);
@@ -684,261 +759,15 @@
             // 
             // darkLabel5
             // 
+            this.darkLabel5.AutoSize = true;
+            this.darkLabel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(3, 3);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(520, 43);
+            this.darkLabel5.Size = new System.Drawing.Size(412, 26);
             this.darkLabel5.TabIndex = 1;
             this.darkLabel5.Text = "List of object resources (eg *.wad2, *.wad).\r\nObjects inside the files mentioned " +
     "earlier in the list take priority over later files.";
-            // 
-            // tabSoundsCatalogs
-            // 
-            this.tabSoundsCatalogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabSoundsCatalogs.Controls.Add(this.labelSoundsCatalogsStatistics);
-            this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridView);
-            this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridViewControls);
-            this.tabSoundsCatalogs.Controls.Add(this.darkLabel20);
-            this.tabSoundsCatalogs.Controls.Add(this.tbSearch);
-            this.tabSoundsCatalogs.Controls.Add(this.darkLabel50);
-            this.tabSoundsCatalogs.Controls.Add(this.selectedSoundsDataGridView);
-            this.tabSoundsCatalogs.Location = new System.Drawing.Point(4, 22);
-            this.tabSoundsCatalogs.Name = "tabSoundsCatalogs";
-            this.tabSoundsCatalogs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSoundsCatalogs.Size = new System.Drawing.Size(563, 493);
-            this.tabSoundsCatalogs.TabIndex = 8;
-            this.tabSoundsCatalogs.Text = "Sounds catalogs";
-            // 
-            // labelSoundsCatalogsStatistics
-            // 
-            this.labelSoundsCatalogsStatistics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelSoundsCatalogsStatistics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelSoundsCatalogsStatistics.Location = new System.Drawing.Point(3, 471);
-            this.labelSoundsCatalogsStatistics.Name = "labelSoundsCatalogsStatistics";
-            this.labelSoundsCatalogsStatistics.Size = new System.Drawing.Size(358, 19);
-            this.labelSoundsCatalogsStatistics.TabIndex = 105;
-            this.labelSoundsCatalogsStatistics.Text = "               ";
-            // 
-            // soundsCatalogsDataGridView
-            // 
-            this.soundsCatalogsDataGridView.AllowUserToAddRows = false;
-            this.soundsCatalogsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundsCatalogsDataGridView.AutoGenerateColumns = false;
-            this.soundsCatalogsDataGridView.ColumnHeadersHeight = 17;
-            this.soundsCatalogsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.SoundsCatalogPathColumn,
-            this.SoundsCatalogSearchColumn,
-            this.SoundsCatalogsAssignColumn,
-            this.SoundsCatalogMessageColumn});
-            this.soundsCatalogsDataGridView.Location = new System.Drawing.Point(3, 3);
-            this.soundsCatalogsDataGridView.Name = "soundsCatalogsDataGridView";
-            this.soundsCatalogsDataGridView.RowHeadersWidth = 41;
-            this.soundsCatalogsDataGridView.Size = new System.Drawing.Size(524, 204);
-            this.soundsCatalogsDataGridView.TabIndex = 104;
-            this.soundsCatalogsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SoundsCatalogsDataGridView_CellContentClick);
-            this.soundsCatalogsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.SoundsCatalogsDataGridView_CellFormatting);
-            this.soundsCatalogsDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.SoundsCatalogsDataGridView_RowsRemoved);
-            this.soundsCatalogsDataGridView.Sorted += new System.EventHandler(this.SoundsCatalogsDataGridView_Sorted);
-            this.soundsCatalogsDataGridView.Load += new System.EventHandler(this.SoundsCatalogsDataGridView_Load);
-            // 
-            // SoundsCatalogPathColumn
-            // 
-            this.SoundsCatalogPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogPathColumn.DataPropertyName = "Path";
-            this.SoundsCatalogPathColumn.FillWeight = 60F;
-            this.SoundsCatalogPathColumn.HeaderText = "Path";
-            this.SoundsCatalogPathColumn.Name = "SoundsCatalogPathColumn";
-            // 
-            // SoundsCatalogSearchColumn
-            // 
-            this.SoundsCatalogSearchColumn.HeaderText = "";
-            this.SoundsCatalogSearchColumn.Name = "SoundsCatalogSearchColumn";
-            this.SoundsCatalogSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogSearchColumn.Text = "Search";
-            this.SoundsCatalogSearchColumn.Width = 60;
-            // 
-            // SoundsCatalogsAssignColumn
-            // 
-            this.SoundsCatalogsAssignColumn.HeaderText = "";
-            this.SoundsCatalogsAssignColumn.Name = "SoundsCatalogsAssignColumn";
-            this.SoundsCatalogsAssignColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogsAssignColumn.Text = "Assign";
-            this.SoundsCatalogsAssignColumn.Width = 60;
-            // 
-            // SoundsCatalogMessageColumn
-            // 
-            this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogMessageColumn.DataPropertyName = "Message";
-            this.SoundsCatalogMessageColumn.FillWeight = 40F;
-            this.SoundsCatalogMessageColumn.HeaderText = "Message";
-            this.SoundsCatalogMessageColumn.Name = "SoundsCatalogMessageColumn";
-            this.SoundsCatalogMessageColumn.ReadOnly = true;
-            this.SoundsCatalogMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // soundsCatalogsDataGridViewControls
-            // 
-            this.soundsCatalogsDataGridViewControls.AllowUserDelete = false;
-            this.soundsCatalogsDataGridViewControls.AllowUserMove = false;
-            this.soundsCatalogsDataGridViewControls.AllowUserNew = false;
-            this.soundsCatalogsDataGridViewControls.AlwaysInsertAtZero = false;
-            this.soundsCatalogsDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundsCatalogsDataGridViewControls.Enabled = false;
-            this.soundsCatalogsDataGridViewControls.Location = new System.Drawing.Point(533, 3);
-            this.soundsCatalogsDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
-            this.soundsCatalogsDataGridViewControls.Name = "soundsCatalogsDataGridViewControls";
-            this.soundsCatalogsDataGridViewControls.Size = new System.Drawing.Size(24, 204);
-            this.soundsCatalogsDataGridViewControls.TabIndex = 103;
-            // 
-            // darkLabel20
-            // 
-            this.darkLabel20.AutoSize = true;
-            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel20.Location = new System.Drawing.Point(367, 218);
-            this.darkLabel20.Name = "darkLabel20";
-            this.darkLabel20.Size = new System.Drawing.Size(44, 13);
-            this.darkLabel20.TabIndex = 101;
-            this.darkLabel20.Text = "Search:";
-            // 
-            // tbSearch
-            // 
-            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearch.Location = new System.Drawing.Point(418, 213);
-            this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(140, 22);
-            this.tbSearch.TabIndex = 100;
-            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearch_KeyDown);
-            // 
-            // darkLabel50
-            // 
-            this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel50.Location = new System.Drawing.Point(3, 218);
-            this.darkLabel50.Name = "darkLabel50";
-            this.darkLabel50.Size = new System.Drawing.Size(358, 19);
-            this.darkLabel50.TabIndex = 97;
-            this.darkLabel50.Text = "Sounds to save in compiled level:";
-            // 
-            // selectedSoundsDataGridView
-            // 
-            this.selectedSoundsDataGridView.AllowUserToAddRows = false;
-            this.selectedSoundsDataGridView.AllowUserToDeleteRows = false;
-            this.selectedSoundsDataGridView.AllowUserToDragDropRows = false;
-            this.selectedSoundsDataGridView.AllowUserToOrderColumns = true;
-            this.selectedSoundsDataGridView.AllowUserToPasteCells = false;
-            this.selectedSoundsDataGridView.AllowUserToResizeRows = true;
-            this.selectedSoundsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectedSoundsDataGridView.ColumnHeadersHeight = 17;
-            this.selectedSoundsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colSoundsEnabled,
-            this.colSoundsId,
-            this.colSoundsName,
-            this.SelectedSoundsCatalogColumn});
-            this.selectedSoundsDataGridView.Location = new System.Drawing.Point(3, 241);
-            this.selectedSoundsDataGridView.Name = "selectedSoundsDataGridView";
-            this.selectedSoundsDataGridView.RowHeadersWidth = 41;
-            this.selectedSoundsDataGridView.Size = new System.Drawing.Size(555, 229);
-            this.selectedSoundsDataGridView.TabIndex = 96;
-            this.selectedSoundsDataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSounds_CellValidated);
-            // 
-            // colSoundsEnabled
-            // 
-            this.colSoundsEnabled.HeaderText = "Compile";
-            this.colSoundsEnabled.Name = "colSoundsEnabled";
-            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.colSoundsEnabled.Width = 60;
-            // 
-            // colSoundsId
-            // 
-            this.colSoundsId.HeaderText = "ID";
-            this.colSoundsId.Name = "colSoundsId";
-            this.colSoundsId.Width = 40;
-            // 
-            // colSoundsName
-            // 
-            this.colSoundsName.HeaderText = "Name";
-            this.colSoundsName.Name = "colSoundsName";
-            this.colSoundsName.Width = 200;
-            // 
-            // SelectedSoundsCatalogColumn
-            // 
-            this.SelectedSoundsCatalogColumn.HeaderText = "From catalog";
-            this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
-            this.SelectedSoundsCatalogColumn.Width = 200;
-            // 
-            // tabSamples
-            // 
-            this.tabSamples.BackColor = System.Drawing.Color.Transparent;
-            this.tabSamples.Controls.Add(this.soundDataGridViewControls);
-            this.tabSamples.Controls.Add(this.soundDataGridView);
-            this.tabSamples.Controls.Add(this.darkLabel10);
-            this.tabSamples.Location = new System.Drawing.Point(4, 22);
-            this.tabSamples.Name = "tabSamples";
-            this.tabSamples.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSamples.Size = new System.Drawing.Size(563, 493);
-            this.tabSamples.TabIndex = 2;
-            this.tabSamples.Text = "Samples paths";
-            // 
-            // soundDataGridViewControls
-            // 
-            this.soundDataGridViewControls.AllowUserDelete = false;
-            this.soundDataGridViewControls.AllowUserMove = false;
-            this.soundDataGridViewControls.AllowUserNew = false;
-            this.soundDataGridViewControls.AlwaysInsertAtZero = false;
-            this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundDataGridViewControls.Enabled = false;
-            this.soundDataGridViewControls.Location = new System.Drawing.Point(535, 72);
-            this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
-            this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 357);
-            this.soundDataGridViewControls.TabIndex = 3;
-            // 
-            // soundDataGridView
-            // 
-            this.soundDataGridView.AllowUserToAddRows = false;
-            this.soundDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundDataGridView.AutoGenerateColumns = false;
-            this.soundDataGridView.ColumnHeadersHeight = 17;
-            this.soundDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.soundDataGridViewColumnPath,
-            this.soundDataGridViewColumnSearch});
-            this.soundDataGridView.Location = new System.Drawing.Point(3, 72);
-            this.soundDataGridView.Name = "soundDataGridView";
-            this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(524, 363);
-            this.soundDataGridView.TabIndex = 2;
-            this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
-            this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
-            // 
-            // soundDataGridViewColumnPath
-            // 
-            this.soundDataGridViewColumnPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.soundDataGridViewColumnPath.DataPropertyName = "Path";
-            this.soundDataGridViewColumnPath.HeaderText = "Path";
-            this.soundDataGridViewColumnPath.Name = "soundDataGridViewColumnPath";
-            this.soundDataGridViewColumnPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // soundDataGridViewColumnSearch
-            // 
-            this.soundDataGridViewColumnSearch.HeaderText = "";
-            this.soundDataGridViewColumnSearch.Name = "soundDataGridViewColumnSearch";
-            this.soundDataGridViewColumnSearch.Text = "Search";
-            // 
-            // darkLabel10
-            // 
-            this.darkLabel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(557, 66);
-            this.darkLabel10.TabIndex = 1;
-            this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
             // 
             // tabImportedGeometry
             // 
@@ -948,7 +777,7 @@
             this.tabImportedGeometry.Location = new System.Drawing.Point(4, 22);
             this.tabImportedGeometry.Name = "tabImportedGeometry";
             this.tabImportedGeometry.Padding = new System.Windows.Forms.Padding(3);
-            this.tabImportedGeometry.Size = new System.Drawing.Size(563, 493);
+            this.tabImportedGeometry.Size = new System.Drawing.Size(563, 494);
             this.tabImportedGeometry.TabIndex = 3;
             this.tabImportedGeometry.Text = "Imported Geometry";
             // 
@@ -958,19 +787,20 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.importedGeometryManager.LevelSettings = null;
-            this.importedGeometryManager.Location = new System.Drawing.Point(6, 23);
+            this.importedGeometryManager.Location = new System.Drawing.Point(6, 19);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(556, 406);
+            this.importedGeometryManager.Size = new System.Drawing.Size(556, 469);
             this.importedGeometryManager.TabIndex = 2;
             // 
             // darkLabel11
             // 
+            this.darkLabel11.AutoSize = true;
             this.darkLabel11.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel11.Location = new System.Drawing.Point(3, 3);
             this.darkLabel11.Name = "darkLabel11";
-            this.darkLabel11.Size = new System.Drawing.Size(557, 24);
+            this.darkLabel11.Size = new System.Drawing.Size(277, 13);
             this.darkLabel11.TabIndex = 1;
             this.darkLabel11.Text = "All imported geometries associated with this project:";
             // 
@@ -984,24 +814,27 @@
             this.tabStaticMeshes.Controls.Add(this.darkLabel17);
             this.tabStaticMeshes.Location = new System.Drawing.Point(4, 22);
             this.tabStaticMeshes.Name = "tabStaticMeshes";
-            this.tabStaticMeshes.Size = new System.Drawing.Size(563, 493);
+            this.tabStaticMeshes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabStaticMeshes.Size = new System.Drawing.Size(563, 494);
             this.tabStaticMeshes.TabIndex = 8;
             this.tabStaticMeshes.Text = "Static Meshes";
             // 
             // darkLabel19
             // 
+            this.darkLabel19.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel19.Location = new System.Drawing.Point(227, 321);
+            this.darkLabel19.Location = new System.Drawing.Point(3, 412);
             this.darkLabel19.Name = "darkLabel19";
-            this.darkLabel19.Size = new System.Drawing.Size(327, 68);
+            this.darkLabel19.Size = new System.Drawing.Size(557, 34);
             this.darkLabel19.TabIndex = 4;
             this.darkLabel19.Text = "When checked, vertex lighting from static meshes are interpreted as follows:\r\n0 =" +
-    " No Effect\r\n1-14 = Glow\r\n15-31 = Movement/Glow";
+    " No Effect, 1-14 = Glow, 15-31 = Movement/Glow.";
             // 
             // cbInterpretStaticMeshVertexDataForMerge
             // 
+            this.cbInterpretStaticMeshVertexDataForMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbInterpretStaticMeshVertexDataForMerge.AutoSize = true;
-            this.cbInterpretStaticMeshVertexDataForMerge.Location = new System.Drawing.Point(7, 321);
+            this.cbInterpretStaticMeshVertexDataForMerge.Location = new System.Drawing.Point(6, 392);
             this.cbInterpretStaticMeshVertexDataForMerge.Name = "cbInterpretStaticMeshVertexDataForMerge";
             this.cbInterpretStaticMeshVertexDataForMerge.Size = new System.Drawing.Size(214, 17);
             this.cbInterpretStaticMeshVertexDataForMerge.TabIndex = 3;
@@ -1016,31 +849,32 @@
             this.staticMeshMergeDataGridView.AllowUserToDragDropRows = false;
             this.staticMeshMergeDataGridView.AllowUserToPasteCells = false;
             this.staticMeshMergeDataGridView.AllowUserToResizeColumns = false;
-            this.staticMeshMergeDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.staticMeshMergeDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.staticMeshMergeDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.staticMeshMergeDataGridView.ColumnHeadersHeight = 4;
-            this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(6, 23);
+            this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(6, 19);
             this.staticMeshMergeDataGridView.MultiSelect = false;
             this.staticMeshMergeDataGridView.Name = "staticMeshMergeDataGridView";
             this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
-            this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(551, 292);
+            this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(551, 367);
             this.staticMeshMergeDataGridView.TabIndex = 2;
             // 
             // darkLabel18
             // 
-            this.darkLabel18.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel18.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(3, 389);
+            this.darkLabel18.Location = new System.Drawing.Point(3, 446);
             this.darkLabel18.Name = "darkLabel18";
-            this.darkLabel18.Size = new System.Drawing.Size(554, 45);
+            this.darkLabel18.Size = new System.Drawing.Size(557, 45);
             this.darkLabel18.TabIndex = 1;
             this.darkLabel18.Text = resources.GetString("darkLabel18.Text");
             // 
             // darkLabel17
             // 
             this.darkLabel17.AutoSize = true;
+            this.darkLabel17.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel17.Location = new System.Drawing.Point(3, 3);
             this.darkLabel17.Name = "darkLabel17";
@@ -1057,7 +891,7 @@
             this.tabSkyAndFont.Location = new System.Drawing.Point(4, 22);
             this.tabSkyAndFont.Name = "tabSkyAndFont";
             this.tabSkyAndFont.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSkyAndFont.Size = new System.Drawing.Size(563, 493);
+            this.tabSkyAndFont.Size = new System.Drawing.Size(563, 494);
             this.tabSkyAndFont.TabIndex = 1;
             this.tabSkyAndFont.Text = "Sky & Font";
             // 
@@ -1292,6 +1126,270 @@
             this.skyTextureFilePathTxt.TabIndex = 2;
             this.skyTextureFilePathTxt.TextChanged += new System.EventHandler(this.skyTextureFilePathTxt_TextChanged);
             // 
+            // tabSoundsCatalogs
+            // 
+            this.tabSoundsCatalogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabSoundsCatalogs.Controls.Add(this.darkLabel21);
+            this.tabSoundsCatalogs.Controls.Add(this.labelSoundsCatalogsStatistics);
+            this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridView);
+            this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridViewControls);
+            this.tabSoundsCatalogs.Controls.Add(this.darkLabel20);
+            this.tabSoundsCatalogs.Controls.Add(this.tbSearch);
+            this.tabSoundsCatalogs.Controls.Add(this.darkLabel50);
+            this.tabSoundsCatalogs.Controls.Add(this.selectedSoundsDataGridView);
+            this.tabSoundsCatalogs.Location = new System.Drawing.Point(4, 22);
+            this.tabSoundsCatalogs.Name = "tabSoundsCatalogs";
+            this.tabSoundsCatalogs.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSoundsCatalogs.Size = new System.Drawing.Size(563, 494);
+            this.tabSoundsCatalogs.TabIndex = 8;
+            this.tabSoundsCatalogs.Text = "Sounds";
+            // 
+            // darkLabel21
+            // 
+            this.darkLabel21.AutoSize = true;
+            this.darkLabel21.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel21.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel21.Name = "darkLabel21";
+            this.darkLabel21.Size = new System.Drawing.Size(462, 26);
+            this.darkLabel21.TabIndex = 106;
+            this.darkLabel21.Text = "Sound catalogs (eg *.xml, sounds.txt, *.sfx/*.sam) from which sound infos will be" +
+    " loaded.\r\nIf any sound info ID is duplicated in any of catalog, last one will be" +
+    " used.";
+            // 
+            // labelSoundsCatalogsStatistics
+            // 
+            this.labelSoundsCatalogsStatistics.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.labelSoundsCatalogsStatistics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelSoundsCatalogsStatistics.Location = new System.Drawing.Point(3, 472);
+            this.labelSoundsCatalogsStatistics.Name = "labelSoundsCatalogsStatistics";
+            this.labelSoundsCatalogsStatistics.Size = new System.Drawing.Size(557, 19);
+            this.labelSoundsCatalogsStatistics.TabIndex = 105;
+            this.labelSoundsCatalogsStatistics.Text = "               ";
+            // 
+            // soundsCatalogsDataGridView
+            // 
+            this.soundsCatalogsDataGridView.AllowUserToAddRows = false;
+            this.soundsCatalogsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundsCatalogsDataGridView.AutoGenerateColumns = false;
+            this.soundsCatalogsDataGridView.ColumnHeadersHeight = 17;
+            this.soundsCatalogsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.SoundsCatalogPathColumn,
+            this.SoundsCatalogSearchColumn,
+            this.SoundsCatalogsAssignColumn,
+            this.SoundsCatalogMessageColumn});
+            this.soundsCatalogsDataGridView.Location = new System.Drawing.Point(6, 32);
+            this.soundsCatalogsDataGridView.Name = "soundsCatalogsDataGridView";
+            this.soundsCatalogsDataGridView.RowHeadersWidth = 41;
+            this.soundsCatalogsDataGridView.Size = new System.Drawing.Size(524, 204);
+            this.soundsCatalogsDataGridView.TabIndex = 104;
+            this.soundsCatalogsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SoundsCatalogsDataGridView_CellContentClick);
+            this.soundsCatalogsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.SoundsCatalogsDataGridView_CellFormatting);
+            this.soundsCatalogsDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.SoundsCatalogsDataGridView_RowsRemoved);
+            this.soundsCatalogsDataGridView.Sorted += new System.EventHandler(this.SoundsCatalogsDataGridView_Sorted);
+            this.soundsCatalogsDataGridView.Load += new System.EventHandler(this.SoundsCatalogsDataGridView_Load);
+            // 
+            // SoundsCatalogPathColumn
+            // 
+            this.SoundsCatalogPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogPathColumn.DataPropertyName = "Path";
+            this.SoundsCatalogPathColumn.FillWeight = 60F;
+            this.SoundsCatalogPathColumn.HeaderText = "Path";
+            this.SoundsCatalogPathColumn.Name = "SoundsCatalogPathColumn";
+            // 
+            // SoundsCatalogSearchColumn
+            // 
+            this.SoundsCatalogSearchColumn.HeaderText = "";
+            this.SoundsCatalogSearchColumn.Name = "SoundsCatalogSearchColumn";
+            this.SoundsCatalogSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogSearchColumn.Text = "Search";
+            this.SoundsCatalogSearchColumn.Width = 60;
+            // 
+            // SoundsCatalogsAssignColumn
+            // 
+            this.SoundsCatalogsAssignColumn.HeaderText = "";
+            this.SoundsCatalogsAssignColumn.Name = "SoundsCatalogsAssignColumn";
+            this.SoundsCatalogsAssignColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogsAssignColumn.Text = "Assign";
+            this.SoundsCatalogsAssignColumn.Width = 60;
+            // 
+            // SoundsCatalogMessageColumn
+            // 
+            this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogMessageColumn.DataPropertyName = "Message";
+            this.SoundsCatalogMessageColumn.FillWeight = 40F;
+            this.SoundsCatalogMessageColumn.HeaderText = "Message";
+            this.SoundsCatalogMessageColumn.Name = "SoundsCatalogMessageColumn";
+            this.SoundsCatalogMessageColumn.ReadOnly = true;
+            this.SoundsCatalogMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // soundsCatalogsDataGridViewControls
+            // 
+            this.soundsCatalogsDataGridViewControls.AllowUserDelete = false;
+            this.soundsCatalogsDataGridViewControls.AllowUserMove = false;
+            this.soundsCatalogsDataGridViewControls.AllowUserNew = false;
+            this.soundsCatalogsDataGridViewControls.AlwaysInsertAtZero = false;
+            this.soundsCatalogsDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundsCatalogsDataGridViewControls.Enabled = false;
+            this.soundsCatalogsDataGridViewControls.Location = new System.Drawing.Point(536, 32);
+            this.soundsCatalogsDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
+            this.soundsCatalogsDataGridViewControls.Name = "soundsCatalogsDataGridViewControls";
+            this.soundsCatalogsDataGridViewControls.Size = new System.Drawing.Size(24, 204);
+            this.soundsCatalogsDataGridViewControls.TabIndex = 103;
+            // 
+            // darkLabel20
+            // 
+            this.darkLabel20.AutoSize = true;
+            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel20.Location = new System.Drawing.Point(369, 247);
+            this.darkLabel20.Name = "darkLabel20";
+            this.darkLabel20.Size = new System.Drawing.Size(44, 13);
+            this.darkLabel20.TabIndex = 101;
+            this.darkLabel20.Text = "Search:";
+            // 
+            // tbSearch
+            // 
+            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearch.Location = new System.Drawing.Point(420, 242);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(140, 22);
+            this.tbSearch.TabIndex = 100;
+            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearch_KeyDown);
+            // 
+            // darkLabel50
+            // 
+            this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel50.Location = new System.Drawing.Point(3, 247);
+            this.darkLabel50.Name = "darkLabel50";
+            this.darkLabel50.Size = new System.Drawing.Size(184, 19);
+            this.darkLabel50.TabIndex = 97;
+            this.darkLabel50.Text = "Sounds to save in compiled level:";
+            // 
+            // selectedSoundsDataGridView
+            // 
+            this.selectedSoundsDataGridView.AllowUserToAddRows = false;
+            this.selectedSoundsDataGridView.AllowUserToDeleteRows = false;
+            this.selectedSoundsDataGridView.AllowUserToDragDropRows = false;
+            this.selectedSoundsDataGridView.AllowUserToOrderColumns = true;
+            this.selectedSoundsDataGridView.AllowUserToPasteCells = false;
+            this.selectedSoundsDataGridView.AllowUserToResizeRows = true;
+            this.selectedSoundsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectedSoundsDataGridView.ColumnHeadersHeight = 17;
+            this.selectedSoundsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colSoundsEnabled,
+            this.colSoundsId,
+            this.colSoundsName,
+            this.SelectedSoundsCatalogColumn});
+            this.selectedSoundsDataGridView.Location = new System.Drawing.Point(6, 270);
+            this.selectedSoundsDataGridView.Name = "selectedSoundsDataGridView";
+            this.selectedSoundsDataGridView.RowHeadersWidth = 41;
+            this.selectedSoundsDataGridView.Size = new System.Drawing.Size(554, 199);
+            this.selectedSoundsDataGridView.TabIndex = 96;
+            this.selectedSoundsDataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSounds_CellValidated);
+            // 
+            // colSoundsEnabled
+            // 
+            this.colSoundsEnabled.HeaderText = "Compile";
+            this.colSoundsEnabled.Name = "colSoundsEnabled";
+            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colSoundsEnabled.Width = 60;
+            // 
+            // colSoundsId
+            // 
+            this.colSoundsId.HeaderText = "ID";
+            this.colSoundsId.Name = "colSoundsId";
+            this.colSoundsId.Width = 40;
+            // 
+            // colSoundsName
+            // 
+            this.colSoundsName.HeaderText = "Name";
+            this.colSoundsName.Name = "colSoundsName";
+            this.colSoundsName.Width = 200;
+            // 
+            // SelectedSoundsCatalogColumn
+            // 
+            this.SelectedSoundsCatalogColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SelectedSoundsCatalogColumn.HeaderText = "From catalog";
+            this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
+            // 
+            // tabSamples
+            // 
+            this.tabSamples.BackColor = System.Drawing.Color.Transparent;
+            this.tabSamples.Controls.Add(this.soundDataGridViewControls);
+            this.tabSamples.Controls.Add(this.soundDataGridView);
+            this.tabSamples.Controls.Add(this.darkLabel10);
+            this.tabSamples.Location = new System.Drawing.Point(4, 22);
+            this.tabSamples.Name = "tabSamples";
+            this.tabSamples.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSamples.Size = new System.Drawing.Size(563, 494);
+            this.tabSamples.TabIndex = 2;
+            this.tabSamples.Text = "Sound Sample Paths";
+            // 
+            // soundDataGridViewControls
+            // 
+            this.soundDataGridViewControls.AllowUserDelete = false;
+            this.soundDataGridViewControls.AllowUserMove = false;
+            this.soundDataGridViewControls.AllowUserNew = false;
+            this.soundDataGridViewControls.AlwaysInsertAtZero = false;
+            this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundDataGridViewControls.Enabled = false;
+            this.soundDataGridViewControls.Location = new System.Drawing.Point(535, 32);
+            this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
+            this.soundDataGridViewControls.Name = "soundDataGridViewControls";
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 456);
+            this.soundDataGridViewControls.TabIndex = 3;
+            // 
+            // soundDataGridView
+            // 
+            this.soundDataGridView.AllowUserToAddRows = false;
+            this.soundDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundDataGridView.AutoGenerateColumns = false;
+            this.soundDataGridView.ColumnHeadersHeight = 17;
+            this.soundDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.soundDataGridViewColumnPath,
+            this.soundDataGridViewColumnSearch});
+            this.soundDataGridView.Location = new System.Drawing.Point(6, 32);
+            this.soundDataGridView.Name = "soundDataGridView";
+            this.soundDataGridView.RowHeadersWidth = 41;
+            this.soundDataGridView.Size = new System.Drawing.Size(523, 456);
+            this.soundDataGridView.TabIndex = 2;
+            this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
+            this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
+            // 
+            // soundDataGridViewColumnPath
+            // 
+            this.soundDataGridViewColumnPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.soundDataGridViewColumnPath.DataPropertyName = "Path";
+            this.soundDataGridViewColumnPath.HeaderText = "Path";
+            this.soundDataGridViewColumnPath.Name = "soundDataGridViewColumnPath";
+            this.soundDataGridViewColumnPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // soundDataGridViewColumnSearch
+            // 
+            this.soundDataGridViewColumnSearch.HeaderText = "";
+            this.soundDataGridViewColumnSearch.Name = "soundDataGridViewColumnSearch";
+            this.soundDataGridViewColumnSearch.Text = "Search";
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.AutoSize = true;
+            this.darkLabel10.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(555, 26);
+            this.darkLabel10.TabIndex = 1;
+            this.darkLabel10.Text = "Locations from which sound samples will be loaded.\r\nEach required sample will be " +
+    "searched in folders in top to bottom order. If not found, sound is not played.";
+            // 
             // tabPaths
             // 
             this.tabPaths.BackColor = System.Drawing.Color.Transparent;
@@ -1300,7 +1398,7 @@
             this.tabPaths.Location = new System.Drawing.Point(4, 22);
             this.tabPaths.Name = "tabPaths";
             this.tabPaths.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPaths.Size = new System.Drawing.Size(563, 493);
+            this.tabPaths.Size = new System.Drawing.Size(563, 494);
             this.tabPaths.TabIndex = 5;
             this.tabPaths.Text = "Path Placeholders";
             // 
@@ -1330,7 +1428,7 @@
             this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
             this.pathVariablesDataGridView.RowHeadersWidth = 41;
             this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.pathVariablesDataGridView.Size = new System.Drawing.Size(551, 406);
+            this.pathVariablesDataGridView.Size = new System.Drawing.Size(551, 465);
             this.pathVariablesDataGridView.TabIndex = 2;
             this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
             // 
@@ -1362,7 +1460,7 @@
             this.tabMisc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabMisc.Location = new System.Drawing.Point(4, 22);
             this.tabMisc.Name = "tabMisc";
-            this.tabMisc.Size = new System.Drawing.Size(563, 493);
+            this.tabMisc.Size = new System.Drawing.Size(563, 494);
             this.tabMisc.TabIndex = 6;
             this.tabMisc.Text = "Misc";
             // 
@@ -1596,84 +1694,13 @@
             this.darkLabel12.TabIndex = 101;
             this.darkLabel12.Text = "Texture tile padding:";
             // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 521);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 519);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel11
-            // 
-            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel11.Controls.Add(this.butApply);
-            this.panel11.Controls.Add(this.butOk);
-            this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(522, 530);
-            this.panel11.Name = "panel11";
-            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel11.Size = new System.Drawing.Size(260, 28);
-            this.panel11.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(3, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(89, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "OK";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(175, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
-            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(784, 562);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
@@ -1687,6 +1714,8 @@
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabGame.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
@@ -1697,16 +1726,13 @@
             this.panel2.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.tabTextures.ResumeLayout(false);
+            this.tabTextures.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).EndInit();
             this.tabObjects.ResumeLayout(false);
+            this.tabObjects.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).EndInit();
-            this.tabSoundsCatalogs.ResumeLayout(false);
-            this.tabSoundsCatalogs.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).EndInit();
-            this.tabSamples.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
             this.tabImportedGeometry.ResumeLayout(false);
+            this.tabImportedGeometry.PerformLayout();
             this.tabStaticMeshes.ResumeLayout(false);
             this.tabStaticMeshes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).EndInit();
@@ -1720,6 +1746,13 @@
             this.panel9.ResumeLayout(false);
             this.panel9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).EndInit();
+            this.tabSoundsCatalogs.ResumeLayout(false);
+            this.tabSoundsCatalogs.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).EndInit();
+            this.tabSamples.ResumeLayout(false);
+            this.tabSamples.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
             this.tabPaths.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.tabMisc.ResumeLayout(false);
@@ -1732,8 +1765,6 @@
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1766,15 +1797,10 @@
         private DarkUI.Controls.DarkTextBox skyTextureFilePathTxt;
         private System.Windows.Forms.PictureBox fontTextureFilePathPicPreview;
         private System.Windows.Forms.PictureBox skyTextureFilePathPicPreview;
-        private DarkUI.Controls.DarkLabel darkLabel10;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkContextMenu pathVariablesDataGridViewContextMenu;
         private System.Windows.Forms.ToolStripMenuItem pathVariablesDataGridViewContextMenuCopy;
         private System.Windows.Forms.ToolTip pathToolTip;
-        private TombLib.Controls.DarkDataGridViewControls soundDataGridViewControls;
-        private DarkUI.Controls.DarkDataGridView soundDataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
         private DarkUI.Controls.DarkDataGridView pathVariablesDataGridView;
         private DarkUI.Controls.DarkCheckBox GameEnableQuickStartFeatureCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
@@ -1863,14 +1889,20 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
         private DarkUI.Controls.DarkLabel labelSoundsCatalogsStatistics;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn colSoundsEnabled;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
         private DarkUI.Controls.DarkLabel darkLabel17;
         private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
         private DarkUI.Controls.DarkLabel darkLabel50;
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkCheckBox cbInterpretStaticMeshVertexDataForMerge;
+        private DarkUI.Controls.DarkLabel darkLabel21;
+        private TombLib.Controls.DarkDataGridViewControls soundDataGridViewControls;
+        private DarkUI.Controls.DarkDataGridView soundDataGridView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
+        private DarkUI.Controls.DarkLabel darkLabel10;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colSoundsEnabled;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
     }
 }

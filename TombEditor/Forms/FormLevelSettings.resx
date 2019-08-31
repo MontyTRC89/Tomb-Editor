@@ -147,11 +147,6 @@
   <metadata name="textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="darkLabel4.Text" xml:space="preserve">
-    <value>List of texture resources (eg *.png, *.tga, *.bmp).
-Only the areas used in the textures will be compiled into the playable level file (eg *.tr4).
-There is no space loss by referencing more textures here.</value>
-  </data>
   <metadata name="objectFileDataGridViewPathColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -164,6 +159,11 @@ There is no space loss by referencing more textures here.</value>
   <metadata name="objectFileDataGridViewMessageColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="darkLabel18.Text" xml:space="preserve">
+    <value>WARNING: TR4 and below have a vertex limit of around 3000. Make sure you don't use too many merged static meshes in a single room!
+TRNG scripts, flipeffects and OCB values won't work anymore for merged static meshes!
+</value>
+  </data>
   <metadata name="SoundsCatalogPathColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -194,16 +194,6 @@ There is no space loss by referencing more textures here.</value>
   <metadata name="soundDataGridViewColumnSearch.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="darkLabel10.Text" xml:space="preserve">
-    <value>Sound locations from which sounds needed by an old style *.wad file will be loaded.
-
-Each required sound file will reqested from the this list in top to bottom order. If it isn't available in any of those places, the sound is not played.</value>
-  </data>
-  <data name="darkLabel18.Text" xml:space="preserve">
-    <value>WARNING: TR4 and below have a vertex limit of around 3000. Make sure you don't use too many merged static meshes in a single room!
-TRNG scripts, flipeffects and OCB values won't work anymore for merged static meshes!
-</value>
-  </data>
   <metadata name="pathVariablesDataGridViewNameColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -214,6 +204,6 @@ TRNG scripts, flipeffects and OCB values won't work anymore for merged static me
     <value>407, 20</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>107</value>
+    <value>25</value>
   </metadata>
 </root>
