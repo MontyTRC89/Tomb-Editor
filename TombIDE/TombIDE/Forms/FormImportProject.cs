@@ -41,7 +41,7 @@ namespace TombIDE
 			{
 				if (Path.GetFileName(directory).ToLower() == "script")
 				{
-					// Check if a script.txt file exists in the /Script/ directory
+					// Check if a script.txt file exists in the /Script/ directory, if not, then leave the textBox empty
 					if (File.Exists(Path.Combine(directory, "script.txt")))
 						textBox_ScriptPath.Text = directory;
 
@@ -52,14 +52,28 @@ namespace TombIDE
 
 		private void FillLevelsPathTextBox(string exeFilePath)
 		{
-			string suggestedLevelsPath = Path.Combine(Path.GetDirectoryName(exeFilePath), "Levels");
+			string levelsPath = string.Empty;
+			string mapsPath = string.Empty; // Legacy
 
-			textBox_LevelsPath.Text = suggestedLevelsPath;
-
-			// Check if the /Levels/ directory already exists for the project, if not, then highlight the textBox and add a toolTip for it
-			// to indicate that the pre-set path is just a suggestion
-			if (!Directory.Exists(suggestedLevelsPath))
+			foreach (string directory in Directory.GetDirectories(Path.GetDirectoryName(exeFilePath)))
 			{
+				if (Path.GetFileName(directory).ToLower() == "levels")
+					levelsPath = directory;
+				else if (Path.GetFileName(directory).ToLower() == "maps")
+					mapsPath = directory;
+			}
+
+			if (Directory.Exists(levelsPath) && !Directory.Exists(mapsPath))
+				textBox_LevelsPath.Text = levelsPath;
+			else if (!Directory.Exists(levelsPath) && Directory.Exists(mapsPath))
+				textBox_LevelsPath.Text = mapsPath;
+			else if (Directory.Exists(levelsPath) && Directory.Exists(mapsPath))
+				textBox_LevelsPath.Text = levelsPath; // Prefer the new solution
+			else // Both directories don't exist
+			{
+				textBox_LevelsPath.Text = Path.Combine(Path.GetDirectoryName(exeFilePath), "Levels");
+
+				// Highlight the textBox and add a toolTip for it to indicate that the pre-set path is just a suggestion
 				textBox_LevelsPath.BackColor = Color.FromArgb(48, 96, 64);
 				toolTip.SetToolTip(textBox_LevelsPath, "Suggested path");
 			}

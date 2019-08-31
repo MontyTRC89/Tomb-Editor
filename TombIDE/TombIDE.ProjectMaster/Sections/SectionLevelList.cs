@@ -90,7 +90,7 @@ namespace TombIDE.ProjectMaster
 				// Select the new level node
 				foreach (DarkTreeNode node in treeView.Nodes)
 				{
-					if (((ProjectLevel)node.Tag).Name.ToLower() == addedLevel.Name.ToLower()) ;
+					if (((ProjectLevel)node.Tag).Name.ToLower() == addedLevel.Name.ToLower())
 					{
 						treeView.SelectNode(node);
 						CheckItemSelection();

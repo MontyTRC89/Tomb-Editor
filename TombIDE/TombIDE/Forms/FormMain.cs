@@ -16,7 +16,8 @@ namespace TombIDE
 {
 	/* Important notes */
 	// All program buttons are instances of the DarkButton class.
-	// Other buttons on the left tool strip (such as Project Master, Script Editor etc.) are simple panels.
+	// Tab buttons on the left tool strip (such as "Project Master", "Script Editor" etc.) are simple panels.
+	// Other buttons (such as "Launch Game") are System.Windows.Forms buttons.
 	// Program button names are just numbers from 0 to *darkbuttons.Count*.
 	// The name number depends on the position of the button.
 	// Swapping 2 buttons will affect their names.
@@ -239,7 +240,7 @@ namespace TombIDE
 			string programName = FileVersionInfo.GetVersionInfo(filePath).ProductName;
 
 			// Handle batch files and programs without ProductNames
-			if (string.IsNullOrWhiteSpace(programName) && Path.GetExtension(filePath).ToLower() == ".bat")
+			if (Path.GetExtension(filePath).ToLower() == ".bat")
 				programName = Path.GetFileNameWithoutExtension(filePath) + " (Batch File)";
 			else if (string.IsNullOrWhiteSpace(programName))
 				programName = Path.GetFileNameWithoutExtension(filePath);
@@ -540,8 +541,7 @@ namespace TombIDE
 				if (!File.Exists(scriptDatFilePath))
 				{
 					// A friendly reminder
-					DarkMessageBox.Show(this,
-						"Before launching the game, you must compile\n" +
+					DarkMessageBox.Show(this, "Before launching the game, you must compile\n" +
 						"your first script using the Script Editor.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 					_ide.SelectIDETab("Script Editor");
