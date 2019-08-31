@@ -193,8 +193,12 @@ namespace TombIDE
 				{
 					try
 					{
-						if (panel_Programs.Controls.OfType<DarkButton>().ToList().Exists(x => x.Tag.ToString().ToLower() == dialog.FileName.ToLower()))
-							throw new ArgumentException("Program shortcut already exists.");
+						// Check for duplicates
+						foreach (DarkButton button in panel_Programs.Controls.OfType<DarkButton>())
+						{
+							if (button.Tag.ToString().ToLower() == dialog.FileName.ToLower())
+								throw new ArgumentException("Program shortcut already exists.");
+						}
 
 						AddProgramButton(dialog.FileName);
 					}

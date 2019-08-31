@@ -118,8 +118,12 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the /Levels/ folder path for the project.");
 
-				if (_ide.AvailableProjects.Exists(x => x.Name.ToLower() == projectName.ToLower()))
-					throw new ArgumentException("A project with the same name already exists on the list.");
+				// Check for name duplicates
+				foreach (Project project in _ide.AvailableProjects)
+				{
+					if (project.Name.ToLower() == projectName.ToLower())
+						throw new ArgumentException("A project with the same name already exists on the list.");
+				}
 
 				GameVersion gameVersion = GetGameVersion(textBox_ExePath.Text);
 
