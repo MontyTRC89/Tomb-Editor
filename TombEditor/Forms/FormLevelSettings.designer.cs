@@ -106,7 +106,7 @@
             this.SoundsCatalogsSoundCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.tbSearch = new DarkUI.Controls.DarkTextBox();
+            this.tbFilterSounds = new DarkUI.Controls.DarkTextBox();
             this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -772,7 +772,7 @@
             this.cbInterpretStaticMeshVertexDataForMerge.TabIndex = 3;
             this.cbInterpretStaticMeshVertexDataForMerge.Tag = "InterpretStaticMeshVertexDataForMerge";
             this.cbInterpretStaticMeshVertexDataForMerge.Text = "Interpret old vertex lighting as effect";
-            this.cbInterpretStaticMeshVertexDataForMerge.CheckedChanged += new System.EventHandler(this.CbInterpretStaticMeshVertexDataForMerge_CheckedChanged);
+            this.cbInterpretStaticMeshVertexDataForMerge.CheckedChanged += new System.EventHandler(this.cbInterpretStaticMeshVertexDataForMerge_CheckedChanged);
             // 
             // staticMeshMergeDataGridView
             // 
@@ -1068,7 +1068,7 @@
             this.tabSoundsCatalogs.Controls.Add(this.labelSoundsCatalogsStatistics);
             this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridView);
             this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridViewControls);
-            this.tabSoundsCatalogs.Controls.Add(this.tbSearch);
+            this.tabSoundsCatalogs.Controls.Add(this.tbFilterSounds);
             this.tabSoundsCatalogs.Controls.Add(this.darkLabel50);
             this.tabSoundsCatalogs.Controls.Add(this.selectedSoundsDataGridView);
             this.tabSoundsCatalogs.Location = new System.Drawing.Point(4, 22);
@@ -1150,11 +1150,10 @@
             this.soundsCatalogsDataGridView.RowHeadersWidth = 41;
             this.soundsCatalogsDataGridView.Size = new System.Drawing.Size(524, 204);
             this.soundsCatalogsDataGridView.TabIndex = 104;
-            this.soundsCatalogsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SoundsCatalogsDataGridView_CellContentClick);
-            this.soundsCatalogsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.SoundsCatalogsDataGridView_CellFormatting);
-            this.soundsCatalogsDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.SoundsCatalogsDataGridView_RowsRemoved);
-            this.soundsCatalogsDataGridView.Sorted += new System.EventHandler(this.SoundsCatalogsDataGridView_Sorted);
-            this.soundsCatalogsDataGridView.Load += new System.EventHandler(this.SoundsCatalogsDataGridView_Load);
+            this.soundsCatalogsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundsCatalogsDataGridView_CellContentClick);
+            this.soundsCatalogsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundsCatalogsDataGridView_CellFormatting);
+            this.soundsCatalogsDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.soundsCatalogsDataGridView_RowsRemoved);
+            this.soundsCatalogsDataGridView.Sorted += new System.EventHandler(this.soundsCatalogsDataGridView_Sorted);
             // 
             // SoundsCatalogPathColumn
             // 
@@ -1214,14 +1213,15 @@
             this.soundsCatalogsDataGridViewControls.Size = new System.Drawing.Size(24, 204);
             this.soundsCatalogsDataGridViewControls.TabIndex = 103;
             // 
-            // tbSearch
+            // tbFilterSounds
             // 
-            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbFilterSounds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearch.Location = new System.Drawing.Point(254, 242);
-            this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(140, 22);
-            this.tbSearch.TabIndex = 100;
+            this.tbFilterSounds.Location = new System.Drawing.Point(254, 242);
+            this.tbFilterSounds.Name = "tbFilterSounds";
+            this.tbFilterSounds.Size = new System.Drawing.Size(140, 22);
+            this.tbFilterSounds.TabIndex = 100;
+            this.tbFilterSounds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbFilterSounds_KeyDown);
             // 
             // darkLabel50
             // 
@@ -1916,7 +1916,7 @@
         private System.Windows.Forms.TabPage tabSoundsCatalogs;
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkDataGridView selectedSoundsDataGridView;
-        private DarkUI.Controls.DarkTextBox tbSearch;
+        private DarkUI.Controls.DarkTextBox tbFilterSounds;
         private TombLib.Controls.DarkDataGridViewControls soundsCatalogsDataGridViewControls;
         private DarkUI.Controls.DarkDataGridView soundsCatalogsDataGridView;
         private DarkUI.Controls.DarkLabel labelSoundsCatalogsStatistics;
