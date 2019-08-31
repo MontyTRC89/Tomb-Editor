@@ -1,0 +1,3 @@
+used in Paramaters=PARAM_MOVE_ITEM script command
+This flag will move down the item when it's above the floor.
+The vertical speed will be about that a big man falling in the empty.

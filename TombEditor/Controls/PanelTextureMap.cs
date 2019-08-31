@@ -106,9 +106,6 @@ namespace TombEditor.Controls
             Vector2 max = Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), Vector2.Max(area.TexCoord2, area.TexCoord3));
 
             ViewPosition = (min + max) * 0.5f;
-            float requiredScaleX = (ClientSize.Width - _scrollSizeTotal) / (max.X - min.X);
-            float requiredScaleY = (ClientSize.Height - _scrollSizeTotal) / (max.Y - min.Y);
-            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * _editor.Configuration.TextureMap_TextureAreaToViewRelativeSize;
 
             LimitPosition();
         }

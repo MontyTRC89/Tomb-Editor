@@ -87,6 +87,12 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.darkLabel19 = new DarkUI.Controls.DarkLabel();
+            this.cbInterpretStaticMeshVertexDataForMerge = new DarkUI.Controls.DarkCheckBox();
+            this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelTr5Sprites = new System.Windows.Forms.Panel();
             this.tr5SpritesTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
@@ -163,6 +169,8 @@
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
             this.tabPage4.SuspendLayout();
+            this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.panelTr5Sprites.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).BeginInit();
@@ -246,6 +254,7 @@
             this.tabbedContainer.Controls.Add(this.tabPage9);
             this.tabbedContainer.Controls.Add(this.tabPage3);
             this.tabbedContainer.Controls.Add(this.tabPage4);
+            this.tabbedContainer.Controls.Add(this.tabPage9);
             this.tabbedContainer.Controls.Add(this.tabPage2);
             this.tabbedContainer.Controls.Add(this.tabPage6);
             this.tabbedContainer.Controls.Add(this.tabPage7);
@@ -481,7 +490,7 @@
             this.textureFileDataGridViewControls.Location = new System.Drawing.Point(535, 51);
             this.textureFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.textureFileDataGridViewControls.Name = "textureFileDataGridViewControls";
-            this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 384);
+            this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 378);
             this.textureFileDataGridViewControls.TabIndex = 7;
             // 
             // textureFileDataGridView
@@ -507,7 +516,7 @@
             this.textureFileDataGridView.Name = "textureFileDataGridView";
             this.textureFileDataGridView.RowHeadersWidth = 41;
             this.textureFileDataGridView.RowTemplate.Height = 40;
-            this.textureFileDataGridView.Size = new System.Drawing.Size(523, 384);
+            this.textureFileDataGridView.Size = new System.Drawing.Size(523, 378);
             this.textureFileDataGridView.TabIndex = 6;
             this.textureFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.textureFileDataGridView_CellContentClick);
             this.textureFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.textureFileDataGridView_CellFormatting);
@@ -615,7 +624,7 @@
             this.objectFileDataGridViewControls.Location = new System.Drawing.Point(535, 36);
             this.objectFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.objectFileDataGridViewControls.Name = "objectFileDataGridViewControls";
-            this.objectFileDataGridViewControls.Size = new System.Drawing.Size(24, 399);
+            this.objectFileDataGridViewControls.Size = new System.Drawing.Size(24, 393);
             this.objectFileDataGridViewControls.TabIndex = 5;
             // 
             // objectFileDataGridView
@@ -634,7 +643,7 @@
             this.objectFileDataGridView.Location = new System.Drawing.Point(6, 36);
             this.objectFileDataGridView.Name = "objectFileDataGridView";
             this.objectFileDataGridView.RowHeadersWidth = 41;
-            this.objectFileDataGridView.Size = new System.Drawing.Size(523, 399);
+            this.objectFileDataGridView.Size = new System.Drawing.Size(523, 393);
             this.objectFileDataGridView.TabIndex = 4;
             this.objectFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.objectFileDataGridView_CellContentClick);
             this.objectFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectFileDataGridView_CellFormatting);
@@ -952,7 +961,7 @@
             this.importedGeometryManager.Location = new System.Drawing.Point(6, 23);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(556, 412);
+            this.importedGeometryManager.Size = new System.Drawing.Size(556, 406);
             this.importedGeometryManager.TabIndex = 2;
             // 
             // darkLabel11
@@ -964,6 +973,80 @@
             this.darkLabel11.Size = new System.Drawing.Size(557, 24);
             this.darkLabel11.TabIndex = 1;
             this.darkLabel11.Text = "All imported geometries associated with this project:";
+            // 
+            // tabPage9
+            // 
+            this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage9.Controls.Add(this.darkLabel19);
+            this.tabPage9.Controls.Add(this.cbInterpretStaticMeshVertexDataForMerge);
+            this.tabPage9.Controls.Add(this.staticMeshMergeDataGridView);
+            this.tabPage9.Controls.Add(this.darkLabel18);
+            this.tabPage9.Controls.Add(this.darkLabel17);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Size = new System.Drawing.Size(563, 434);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Static Meshes";
+            // 
+            // darkLabel19
+            // 
+            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel19.Location = new System.Drawing.Point(227, 321);
+            this.darkLabel19.Name = "darkLabel19";
+            this.darkLabel19.Size = new System.Drawing.Size(327, 68);
+            this.darkLabel19.TabIndex = 4;
+            this.darkLabel19.Text = "When checked, vertex lighting from static meshes are interpreted as follows:\r\n0 =" +
+    " No Effect\r\n1-14 = Glow\r\n15-31 = Movement/Glow";
+            // 
+            // cbInterpretStaticMeshVertexDataForMerge
+            // 
+            this.cbInterpretStaticMeshVertexDataForMerge.AutoSize = true;
+            this.cbInterpretStaticMeshVertexDataForMerge.Location = new System.Drawing.Point(7, 321);
+            this.cbInterpretStaticMeshVertexDataForMerge.Name = "cbInterpretStaticMeshVertexDataForMerge";
+            this.cbInterpretStaticMeshVertexDataForMerge.Size = new System.Drawing.Size(214, 17);
+            this.cbInterpretStaticMeshVertexDataForMerge.TabIndex = 3;
+            this.cbInterpretStaticMeshVertexDataForMerge.Tag = "InterpretStaticMeshVertexDataForMerge";
+            this.cbInterpretStaticMeshVertexDataForMerge.Text = "Interpret old vertex lighting as effect";
+            this.cbInterpretStaticMeshVertexDataForMerge.CheckedChanged += new System.EventHandler(this.CbInterpretStaticMeshVertexDataForMerge_CheckedChanged);
+            // 
+            // staticMeshMergeDataGridView
+            // 
+            this.staticMeshMergeDataGridView.AllowUserToAddRows = false;
+            this.staticMeshMergeDataGridView.AllowUserToDeleteRows = false;
+            this.staticMeshMergeDataGridView.AllowUserToDragDropRows = false;
+            this.staticMeshMergeDataGridView.AllowUserToPasteCells = false;
+            this.staticMeshMergeDataGridView.AllowUserToResizeColumns = false;
+            this.staticMeshMergeDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.staticMeshMergeDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.staticMeshMergeDataGridView.ColumnHeadersHeight = 4;
+            this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(6, 23);
+            this.staticMeshMergeDataGridView.MultiSelect = false;
+            this.staticMeshMergeDataGridView.Name = "staticMeshMergeDataGridView";
+            this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
+            this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(551, 292);
+            this.staticMeshMergeDataGridView.TabIndex = 2;
+            // 
+            // darkLabel18
+            // 
+            this.darkLabel18.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel18.Location = new System.Drawing.Point(3, 389);
+            this.darkLabel18.Name = "darkLabel18";
+            this.darkLabel18.Size = new System.Drawing.Size(554, 45);
+            this.darkLabel18.TabIndex = 1;
+            this.darkLabel18.Text = resources.GetString("darkLabel18.Text");
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.AutoSize = true;
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(388, 13);
+            this.darkLabel17.TabIndex = 0;
+            this.darkLabel17.Text = "Static meshes which should be automatically merged with room geometry:";
             // 
             // tabPage2
             // 
@@ -1209,6 +1292,77 @@
             this.skyTextureFilePathTxt.TabIndex = 2;
             this.skyTextureFilePathTxt.TextChanged += new System.EventHandler(this.skyTextureFilePathTxt_TextChanged);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage3.Controls.Add(this.soundDataGridViewControls);
+            this.tabPage3.Controls.Add(this.soundDataGridView);
+            this.tabPage3.Controls.Add(this.darkLabel10);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(563, 434);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "*.wad Sound Paths";
+            // 
+            // soundDataGridViewControls
+            // 
+            this.soundDataGridViewControls.AllowUserDelete = false;
+            this.soundDataGridViewControls.AllowUserMove = false;
+            this.soundDataGridViewControls.AllowUserNew = false;
+            this.soundDataGridViewControls.AlwaysInsertAtZero = false;
+            this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundDataGridViewControls.Enabled = false;
+            this.soundDataGridViewControls.Location = new System.Drawing.Point(535, 72);
+            this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
+            this.soundDataGridViewControls.Name = "soundDataGridViewControls";
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 357);
+            this.soundDataGridViewControls.TabIndex = 3;
+            // 
+            // soundDataGridView
+            // 
+            this.soundDataGridView.AllowUserToAddRows = false;
+            this.soundDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundDataGridView.AutoGenerateColumns = false;
+            this.soundDataGridView.ColumnHeadersHeight = 17;
+            this.soundDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.soundDataGridViewColumnPath,
+            this.soundDataGridViewColumnSearch});
+            this.soundDataGridView.Location = new System.Drawing.Point(6, 72);
+            this.soundDataGridView.Name = "soundDataGridView";
+            this.soundDataGridView.RowHeadersWidth = 41;
+            this.soundDataGridView.Size = new System.Drawing.Size(523, 357);
+            this.soundDataGridView.TabIndex = 2;
+            this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
+            this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
+            // 
+            // soundDataGridViewColumnPath
+            // 
+            this.soundDataGridViewColumnPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.soundDataGridViewColumnPath.DataPropertyName = "Path";
+            this.soundDataGridViewColumnPath.HeaderText = "Path";
+            this.soundDataGridViewColumnPath.Name = "soundDataGridViewColumnPath";
+            this.soundDataGridViewColumnPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // soundDataGridViewColumnSearch
+            // 
+            this.soundDataGridViewColumnSearch.HeaderText = "";
+            this.soundDataGridViewColumnSearch.Name = "soundDataGridViewColumnSearch";
+            this.soundDataGridViewColumnSearch.Text = "Search";
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(557, 66);
+            this.darkLabel10.TabIndex = 1;
+            this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
+            // 
             // tabPage6
             // 
             this.tabPage6.BackColor = System.Drawing.Color.Transparent;
@@ -1243,11 +1397,11 @@
             this.pathVariablesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.pathVariablesDataGridViewNameColumn,
             this.pathVariablesDataGridViewValueColumn});
-            this.pathVariablesDataGridView.Location = new System.Drawing.Point(3, 22);
+            this.pathVariablesDataGridView.Location = new System.Drawing.Point(6, 23);
             this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
             this.pathVariablesDataGridView.RowHeadersWidth = 41;
             this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.pathVariablesDataGridView.Size = new System.Drawing.Size(554, 413);
+            this.pathVariablesDataGridView.Size = new System.Drawing.Size(551, 406);
             this.pathVariablesDataGridView.TabIndex = 2;
             this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
             // 
@@ -1624,6 +1778,9 @@
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
             this.tabPage4.ResumeLayout(false);
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.staticMeshMergeDataGridView)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.panelTr5Sprites.ResumeLayout(false);
             this.panelTr5Sprites.PerformLayout();
@@ -1780,5 +1937,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsName;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
+        private DarkUI.Controls.DarkLabel darkLabel17;
+        private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
+        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkLabel darkLabel19;
+        private DarkUI.Controls.DarkCheckBox cbInterpretStaticMeshVertexDataForMerge;
     }
 }

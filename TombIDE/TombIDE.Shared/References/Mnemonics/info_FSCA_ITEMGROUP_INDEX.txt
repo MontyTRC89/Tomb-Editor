@@ -1,0 +1,12 @@
+Used with Parameters=PARAM_SCALE_ITEM
+Adding this flag you can perform your scaling effect on a item group instead by a single item.
+When you use the FSCA_ITEMGROUP_INDEX flag, the ItemIndex field of the PARAM_SCALE_ITEM command, it will be used like a ID for a GroupItem present in same [level] section.
+For example if you have these two script commands in your [Level] section:
+
+ItemGroup= 5, -143,-144,-154,-155 ;remember that you have to type negative indices for static items
+
+Parameters=PARAM_SCALE_ITEM, 1, 5, FSCA_ITEMGROUP_INDEX+FSCA_IMMEDIATE, IGNORE, 85, IGNORE
+
+When you perform the trigger to engage above Parameters command, all four items with indices: 143, 144, 154 and 155, will be immeditlay resized to the 80 % of their original size.
+
+The usage of FSCA_ITEMGROUP_INDEX flag is advisable when you are creating a forest with many trees and you wish have a group of trees with 80% of size, other to the original 100% and others with 120 % for example.

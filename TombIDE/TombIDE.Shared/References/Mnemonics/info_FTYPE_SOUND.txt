@@ -1,0 +1,3 @@
+Used in ImportFile command.
+You should use FTYPE_SOUND value for all sound files with extensions .wav, .mp3, .ogg, .aiff, .mp2, .mp1 (i.e. all sound files supported from new sound engine implemented in TRNG) that you mean to use in game with the specific flipeffect trigger "Play imported sound with <&
+Id ....".

@@ -1,0 +1,2 @@
+Verify if the distance between lara and floor under her is greather  or equal than set in DistanceForEnv field
+Remar: if you want the opposite condition, i.e if distance from floor is less or equal than DistanceForField, just you add to ENV_DISTANCE_FLOOR the special flag ENV_NON_TRUE. This method work for all other condition where you want inverte the condition.

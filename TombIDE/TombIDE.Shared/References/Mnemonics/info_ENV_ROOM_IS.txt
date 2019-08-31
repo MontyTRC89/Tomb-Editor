@@ -1,0 +1,9 @@
+Used in Animation= command.
+This condition check if current room  (where lara is) is the same of number typed in DistanceForEnv field.
+Using this condition you can create a custom animation that it will work only in some room of the level.
+If you need to check for more than one room, you should insert the ENV_ROOM condition list in a MultEnvCondition command.
+
+Remark:
+In DistanceForEnv you can type the room number you wish check, but you can also write some special constants to verify the type of room, indifferently by its number.
+You can type one of ROOM_... constant to test if lara is in that moment in that wished room type.
+See description of ROOM_... constants for more infos.

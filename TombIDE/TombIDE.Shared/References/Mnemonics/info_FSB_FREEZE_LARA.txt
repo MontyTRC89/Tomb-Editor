@@ -1,0 +1,4 @@
+Used in StandBy command.
+With this setting the game input will be stopped during the stand-by mode.
+Since in this way the player will have no chance to move lara and therefore to exit from stand-by mode, this setting should be used only with a stand-by started with the flipeffect trigger "Perform <&
+StandBy mode for (E)seconds"

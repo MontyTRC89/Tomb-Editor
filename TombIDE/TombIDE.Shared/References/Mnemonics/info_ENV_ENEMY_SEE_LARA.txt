@@ -1,0 +1,7 @@
+Used in AnimationSlot command
+It checks if current enemy is able to see lara.
+In the DistanceForEnv field you type the angle of view of the enemy.
+You type the view angle in degrees, where 180 means the enemy is able to control an emicycle in front of him. If you type 360 this means that the facing (orienting of enemy) will be not used to verify the chance to see lara but only the presence of obstacles (walls, items) in the line between enemy and lara.
+A reasonable value for human view angle is about 160 degrees.
+Remark: the angle view works for horizontal view, about the vertical view will be used the prefixed value of 90 degrees. This means that if lara is very higher or lower than enmey he will be not able to see her.
+Another prefixed limitation is about the distance. The enemy will be never able to see lara when she is far 10 sectors or over.

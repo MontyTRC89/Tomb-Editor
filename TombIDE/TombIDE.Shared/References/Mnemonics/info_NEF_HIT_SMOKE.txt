@@ -1,0 +1,1 @@
+show smoke when it has been hit

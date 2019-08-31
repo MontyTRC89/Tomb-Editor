@@ -1,0 +1,3 @@
+Used into Customize=CUST_BINOCULARS command
+To show infos about compass in the binocular view, you have to add this BINF_COMPASS flag.
+Then you'll have to set in CompassRectAndFlags field a BINT_... value to choose the kind of compass view. You can choose only between BINT_STRIP value (to use an image with graduate strip about cardinal scale) or BINT_NUMERIC value to show degrees of cardinal points in numeric format.

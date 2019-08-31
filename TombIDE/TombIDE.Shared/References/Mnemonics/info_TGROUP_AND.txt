@@ -1,0 +1,19 @@
+Set as operator for current condition the AND operator.
+Note: The TGROUP_AND is currently unused from 1.2.2.7 dll version. To have an AND operator just avoiding to use TGROUP_OR and TGROUP_NOT.
+
+This operator will be keeped also for following condition trigger if no other TGROUP_ flag for boolean operators will be used.
+The AND operation is the default operation, this means that, if you don't use any TGROUP flags to set operators in TriggerGroup, all condition will be linked with AND operators.
+
+Example of list of conditions + boolena operators:
+
+  Condition1
+  TGROUP_OR + Condition2
+  TGROUP_AND + Condition3
+  TGROUP_NOT + Condition4
+
+Above list of condition triggers could be read in this way:
+
+if (Condition1 OR Condition2) is TRUE  AND
+	Condition3 is true  AND
+	Condition4 is NOT true
+	then ... perform following (non-conditional) trigger sequence

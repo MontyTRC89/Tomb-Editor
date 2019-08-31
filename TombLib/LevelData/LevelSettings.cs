@@ -30,26 +30,51 @@ namespace TombLib.LevelData
         SoundEngineVersion
     }
 
-    public class XmlSoundsCatalog : ICloneable
+    public class AutoStaticMeshMergeEntry : ICloneable
     {
-        public string Path { get; set; }
-        public WadSounds Catalog { get; set; }
-
-        public XmlSoundsCatalog(string path)
+        public string StaticMesh
         {
-            Path = path;
+            get { return parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.WadGameVersion); }
         }
 
-        public XmlSoundsCatalog Clone()
+        private LevelSettings parent;
+        public uint meshId;
+        public bool Merge { get; set; }
+
+        public AutoStaticMeshMergeEntry(uint staticMesh,bool merge,LevelSettings parent)
         {
-            var newObj = new XmlSoundsCatalog(Path);
-            newObj.Catalog = Catalog;
-            return newObj;
+            this.meshId = staticMesh;
+            this.parent = parent;
+            this.Merge = merge;
+        }
+
+        public AutoStaticMeshMergeEntry Clone()
+        {
+            return (AutoStaticMeshMergeEntry)MemberwiseClone();
         }
 
         object ICloneable.Clone()
         {
             return Clone();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj is AutoStaticMeshMergeEntry)
+            {
+                AutoStaticMeshMergeEntry other = (AutoStaticMeshMergeEntry)obj;
+                if(other.meshId == meshId)
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)meshId;
         }
     }
 
@@ -179,7 +204,8 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
         public List<ImportedGeometry> ImportedRooms { get; set; } = new List<ImportedGeometry>();
-
+        public bool InterpretStaticMeshVertexDataForMerge { get; set; } = false;
+        public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         // Compiler options
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
@@ -198,6 +224,7 @@ namespace TombLib.LevelData
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
+            result.AutoStaticMeshMerges = AutoStaticMeshMerges.ConvertAll(entry => entry.Clone());
             return result;
         }
 
@@ -534,6 +561,11 @@ namespace TombLib.LevelData
                 if (soundInfo.Id == id)
                     return soundInfo;
             return null;
+        }
+
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) 
+        {
+            return (AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any());
         }
     }
 }

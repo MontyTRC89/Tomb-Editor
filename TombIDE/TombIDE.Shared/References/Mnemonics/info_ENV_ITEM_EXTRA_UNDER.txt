@@ -1,0 +1,1 @@
+Similar to ENV_ITEM_EXTRA_OVER but in this case the object should under lara. If you set the DistanceForEnv field to 0 the object should be near to feet of lara.

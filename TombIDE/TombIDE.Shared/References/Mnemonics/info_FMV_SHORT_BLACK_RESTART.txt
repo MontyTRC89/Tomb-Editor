@@ -1,0 +1,7 @@
+Used in Customize=CUST_FMV_CUTSCENE command.
+With this flag when the fmv has been completed the screen will be blacks for two frame (less than 1/10 of second).
+In some circustance it's useful have this black screen to avoid that player can see the game image was on screen first of fmv playback.
+This situation could be a problem when you want modify the game situation immediatly after the FMV.
+Using the FMV_SHORT_BLACK_RESTART in according with a global trigger GT_FMV_COMPLETED, you can perform some trigger to change game situation after the movie, avoiding that player can see the old game screen.
+
+Remark: in spite of GT_FMV_COMPLETED global trigger, if you omit a black restart the old screen game could be visible for 1/30 of second. Therefore everytime you wish modify the game screen after a FMV it's necessary add a BLACK RESTART flag, short or long.

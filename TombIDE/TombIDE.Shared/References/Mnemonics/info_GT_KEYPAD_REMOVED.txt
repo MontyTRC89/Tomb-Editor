@@ -1,0 +1,4 @@
+Used in GlobalTrigger= command.
+This global trigger is the opposite than GT_KEYPAD_SHOWED flag.
+When the (big) editable keypad will be removed this global trigger will be enabled.
+You can use this global trigger to remove the further text show with the other global trigger GT_KEYPAD_SHOWED.
