@@ -161,8 +161,6 @@ namespace TombLib.LevelData
                         foreach (var sound in soundsRef.Sounds.SoundInfos)
                             if (!soundmap.ContainsKey(sound.Id))
                                 soundmap.Add(sound.Id, sound);
-                            else
-                                soundmap[sound.Id] = sound;
 
                 return soundmap.Values.ToList();
             }
