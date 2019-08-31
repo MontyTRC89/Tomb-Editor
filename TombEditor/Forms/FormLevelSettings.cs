@@ -1100,6 +1100,7 @@ namespace TombEditor.Forms
                 if (entry.Merge)
                     settings.AutoStaticMeshMerges.Add(entry);
             }
+
             _editor.UpdateLevelSettings(settings);
             Close();
         }
@@ -1233,6 +1234,7 @@ namespace TombEditor.Forms
                 row.DefaultCellStyle.BackColor = Color.DarkGreen;
             else
                 row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
+            SaveSelectedSounds();
         }
 
         private void SoundsCatalogsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -1311,6 +1313,14 @@ namespace TombEditor.Forms
         {
             _levelSettings.InterpretStaticMeshVertexDataForMerge = cbInterpretStaticMeshVertexDataForMerge.Checked;
             UpdateDialog();
+        }
+
+        private void SaveSelectedSounds()
+        {
+            _levelSettings.SelectedSounds.Clear();
+            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
+                if ((bool)row.Cells[0].Value)
+                    _levelSettings.SelectedSounds.Add((int)row.Cells[1].Value);
         }
     }
 }
