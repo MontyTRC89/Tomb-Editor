@@ -1205,35 +1205,13 @@ namespace TombEditor.Forms
             labelSoundsCatalogsStatistics.Text = "Total sounds: " + selectedSoundsDataGridView.Rows.Count + " | Selected sounds: " + _levelSettings.SelectedSounds.Count;
         }
 
-        private void ButSelectAllSoundsFromWads_Click(object sender, EventArgs e)
+        private void butSelectAllSounds_Click(object sender, EventArgs e)
         {
-            foreach (var wadRef in _levelSettings.Wads)
-                if (wadRef.Wad != null)
-                    foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
-                        foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
-                        {
-                            int id = int.Parse(row.Cells[0].Value.ToString());
-                            if (id == sound.Id)
-                            {
-                                row.Cells[3].Value = true;
-                                row.DefaultCellStyle.BackColor = Color.DarkGreen;
-                            }
-                        }
-        }
-
-        private void TbSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            ReloadSounds();
-        }
-
-        private void DgvSounds_CellValidated(object sender, DataGridViewCellEventArgs e)
-        {
-            var row = selectedSoundsDataGridView.Rows[e.RowIndex];
-            bool selected = (bool)row.Cells[0].Value;
-            if (selected)
-                row.DefaultCellStyle.BackColor = Color.DarkGreen;
-            else
-                row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
+            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
+            {
+                row.Cells[0].Value = true;
+                HighlightRow(row);
+            }
             SaveSelectedSounds();
         }
 
@@ -1321,6 +1299,46 @@ namespace TombEditor.Forms
             foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
                 if ((bool)row.Cells[0].Value)
                     _levelSettings.SelectedSounds.Add((int)row.Cells[1].Value);
+        }
+
+        private void butSearchSounds_Click(object sender, EventArgs e)
+        {
+            ReloadSounds();
+        }
+
+        private void butDeselectAllSounds_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
+            {
+                row.Cells[0].Value = false;
+                HighlightRow(row);
+            }
+            SaveSelectedSounds();
+        }
+
+        private void selectedSoundsDataGridView_RowValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            HighlightRow(selectedSoundsDataGridView.Rows[e.RowIndex]);
+            SaveSelectedSounds();
+        }
+
+        private void HighlightRow(DataGridViewRow row)
+        {
+            bool selected = (bool)row.Cells[0].Value;
+            if (selected)
+                row.DefaultCellStyle.BackColor = Color.DarkGreen;
+            else
+                row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
+        }
+
+        private void TbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void DgvSounds_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
