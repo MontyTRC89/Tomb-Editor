@@ -22,6 +22,7 @@
 			this.menuItem_Open = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_OpenFolder = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
+			this.label_Loading = new DarkUI.Controls.DarkLabel();
 			this.radioButton_LatestFile = new DarkUI.Controls.DarkRadioButton();
 			this.radioButton_SpecificFile = new DarkUI.Controls.DarkRadioButton();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
@@ -57,7 +58,7 @@
             this.menuItem_OpenFolder,
             this.separator_01});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(198, 55);
+			this.contextMenu.Size = new System.Drawing.Size(199, 55);
 			// 
 			// menuItem_Open
 			// 
@@ -65,7 +66,7 @@
 			this.menuItem_Open.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.menuItem_Open.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Open.Name = "menuItem_Open";
-			this.menuItem_Open.Size = new System.Drawing.Size(197, 22);
+			this.menuItem_Open.Size = new System.Drawing.Size(198, 22);
 			this.menuItem_Open.Text = "Open";
 			this.menuItem_Open.Click += new System.EventHandler(this.menuItem_Open_Click);
 			// 
@@ -75,7 +76,7 @@
 			this.menuItem_OpenFolder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_OpenFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.menuItem_OpenFolder.Name = "menuItem_OpenFolder";
-			this.menuItem_OpenFolder.Size = new System.Drawing.Size(197, 22);
+			this.menuItem_OpenFolder.Size = new System.Drawing.Size(198, 22);
 			this.menuItem_OpenFolder.Text = "Open Folder in Explorer";
 			this.menuItem_OpenFolder.Click += new System.EventHandler(this.menuItem_OpenFolder_Click);
 			// 
@@ -85,7 +86,20 @@
 			this.separator_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.separator_01.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.separator_01.Name = "separator_01";
-			this.separator_01.Size = new System.Drawing.Size(194, 6);
+			this.separator_01.Size = new System.Drawing.Size(195, 6);
+			// 
+			// label_Loading
+			// 
+			this.label_Loading.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.label_Loading.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_Loading.ForeColor = System.Drawing.Color.Gray;
+			this.label_Loading.Location = new System.Drawing.Point(0, 0);
+			this.label_Loading.Name = "label_Loading";
+			this.label_Loading.Size = new System.Drawing.Size(308, 265);
+			this.label_Loading.TabIndex = 1;
+			this.label_Loading.Text = "Loading resources. Please wait...";
+			this.label_Loading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label_Loading.Visible = false;
 			// 
 			// radioButton_LatestFile
 			// 
@@ -185,6 +199,7 @@
 			// tabPage_Resources
 			// 
 			this.tabPage_Resources.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_Resources.Controls.Add(this.label_Loading);
 			this.tabPage_Resources.Controls.Add(this.treeView_Resources);
 			this.tabPage_Resources.Location = new System.Drawing.Point(4, 23);
 			this.tabPage_Resources.Name = "tabPage_Resources";
@@ -227,6 +242,7 @@
 
 		private DarkUI.Controls.DarkCheckBox checkBox_ShowAllFiles;
 		private DarkUI.Controls.DarkContextMenu contextMenu;
+		private DarkUI.Controls.DarkLabel label_Loading;
 		private DarkUI.Controls.DarkRadioButton radioButton_LatestFile;
 		private DarkUI.Controls.DarkRadioButton radioButton_SpecificFile;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
