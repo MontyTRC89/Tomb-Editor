@@ -1,2 +1,0 @@
-This global trigger permit to verify the distance between Lara and a specific static object, when the distance is less than that set in Paramater field the trigger will be engaged.
-In the Parameter field you have to type the result of a formula including static index and the distance. See the descritpion of this formula in the GT_DISTANCE_FROM_ITEM mnemonic constant.

@@ -1,1 +1,0 @@
-This env condition allows to perform a TriggerGroup where you stored some exported condition triggers. In DistanceForEnv you type the IdTriggerGroup to check, if the final condition of TriggerGroup is true it will be true also the Env condition for your Animation command.

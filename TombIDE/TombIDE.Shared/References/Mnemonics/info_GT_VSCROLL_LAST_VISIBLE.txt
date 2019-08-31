@@ -1,7 +1,0 @@
-This global trigger will be true when last row of vertical scroll text is fully visible on screen.
-Differently from GT_VSCROLL_COMPLETE, with GT_VSCROLL_LAST_VISIBLE the condition is true when vertical scroll is not yet completed but the last row of text entered in visible area of screen.
-In Parameter field you have to type the index of NG string used for scrolling operation you want check.
-You can use this global trigger to create a chain of different scrolling operations with different size and color of character.
-For example you can create a text with a singe row using very big characters.
-You'll use this single row as a big title of following scrolling text with littler size of text.
-In above situation you can use a GT_VSCROLL_LAST_VISIBLE global trigger linked to title scrolling, to show the remaining text (other scrolling text) when the title is visible on screen. The final effect will be to watch a single long text using different size or color of character but in the reality it will be two different scrolling texts working in same moment.

@@ -1,3 +1,0 @@
-Lara is in first (more forward) strip of three ideal strips of current sector, respect where she is looking.
-You can use this flag if you want that lara is near to switch or door or other items attached to wall with lara immediatly in front of them.
-Remark: you can always add to current ENV condition one or more ENV_POS_ flags to specify the position of lara respect current sector

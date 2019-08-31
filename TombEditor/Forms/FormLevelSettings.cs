@@ -16,7 +16,6 @@ using DarkUI.Controls;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -77,38 +76,6 @@ namespace TombEditor.Forms
 
                 // Draw border
                 e.Graphics.DrawRectangle(Pens.Black, e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
-            }
-        }
-
-        private class ReferencedSoundsCatalogWrapper
-        {
-            private readonly FormLevelSettings _parent;
-            public ReferencedSoundsCatalog Sounds;
-
-            public ReferencedSoundsCatalogWrapper(FormLevelSettings parent, ReferencedSoundsCatalog sounds)
-            {
-                _parent = parent;
-                Sounds = sounds;
-            }
-
-            public string Path
-            {
-                get { return Sounds.Path; }
-                set
-                {
-                    Sounds = new ReferencedSoundsCatalog(_parent._levelSettings, value);
-                    _parent.soundsCatalogsDataGridView.InvalidateRow(_parent._soundsCatalogsDataGridViewDataSource.IndexOf(this));
-                }
-            }
-
-            public string Message
-            {
-                get
-                {
-                    if (Sounds.LoadException == null)
-                        return "Successfully loaded";
-                    return Sounds.LoadException.Message + " (" + Sounds.LoadException.GetType().Name + ")";
-                }
             }
         }
 
@@ -240,10 +207,8 @@ namespace TombEditor.Forms
         private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
         private readonly PictureTooltip _pictureTooltip;
         private readonly BindingList<ReferencedWadWrapper> _objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
-        private readonly BindingList<ReferencedSoundsCatalogWrapper> _soundsCatalogsDataGridViewDataSource = new BindingList<ReferencedSoundsCatalogWrapper>();
         private readonly BindingList<ReferencedTextureWrapper> _textureFileDataGridViewDataSource = new BindingList<ReferencedTextureWrapper>();
         private readonly BindingList<OldWadSoundPath> _soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
-        private readonly BindingList<AutoStaticMeshMergeEntry> _staticMeshMergeGridViewDataSource = new BindingList<AutoStaticMeshMergeEntry>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
         private FormPreviewWad _previewWad = null;
         private FormPreviewTexture _previewTexture = null;
@@ -293,7 +258,6 @@ namespace TombEditor.Forms
             {
                 _levelSettings.Wads.Clear();
                 _levelSettings.Wads.AddRange(_objectFileDataGridViewDataSource.Select(o => o.Wad));
-                ReloadSounds();
             };
             objectFileDataGridView.DataSource = _objectFileDataGridViewDataSource;
             objectFileDataGridViewControls.DataGridView = objectFileDataGridView;
@@ -302,23 +266,6 @@ namespace TombEditor.Forms
             objectFileDataGridViewControls.AllowUserMove = true;
             objectFileDataGridViewControls.AllowUserNew = true;
             objectFileDataGridViewControls.Enabled = true;
-
-            // Initialize souns catalogs file data grid view
-            foreach (var soundRef in _levelSettings.SoundsCatalogs)
-                _soundsCatalogsDataGridViewDataSource.Add(new ReferencedSoundsCatalogWrapper(this, soundRef)); // We don't need to clone because we don't modify the wad, we create new wads
-            _soundsCatalogsDataGridViewDataSource.ListChanged += delegate
-            {
-                _levelSettings.SoundsCatalogs.Clear();
-                _levelSettings.SoundsCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(o => o.Sounds));
-                ReloadSounds();
-            };
-            soundsCatalogsDataGridView.DataSource = _soundsCatalogsDataGridViewDataSource;
-            soundsCatalogsDataGridViewControls.DataGridView = soundsCatalogsDataGridView;
-            soundsCatalogsDataGridViewControls.CreateNewRow = soundsCatalogDataGridViewCreateNewRow;
-            soundsCatalogsDataGridViewControls.AllowUserDelete = true;
-            soundsCatalogsDataGridViewControls.AllowUserMove = true;
-            soundsCatalogsDataGridViewControls.AllowUserNew = true;
-            soundsCatalogsDataGridViewControls.Enabled = true;
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -369,25 +316,8 @@ namespace TombEditor.Forms
             // Initialize options list
             tabbedContainer.LinkedListView = optionsList;
 
-            // Initialize Static Mesh merge list
-            foreach (var staticMesh in _levelSettings.WadGetAllStatics())
-            {
-                bool added = false;
-                foreach (var entry in _levelSettings.AutoStaticMeshMerges)
-                {
-                    if(entry.meshId.Equals( staticMesh.Value.Id.TypeId))
-                    {
-                        _staticMeshMergeGridViewDataSource.Add(entry);
-                        added = true;
-                    }
-                }
-                if(!added)
-                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,_levelSettings));
-            }
-            staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
             // Initialize controls
             UpdateDialog();
-            ReloadSounds();
         }
 
         protected override void Dispose(bool disposing)
@@ -413,7 +343,7 @@ namespace TombEditor.Forms
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
-            
+
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathTxt.Enabled = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -451,7 +381,7 @@ namespace TombEditor.Forms
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
             gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) && !string.IsNullOrEmpty(Path.GetExtension(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
- 
+
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
@@ -459,17 +389,14 @@ namespace TombEditor.Forms
 
             // Load previews
             string fontPath = _levelSettings.MakeAbsolute(_levelSettings.FontTextureFilePath) ?? "<default>";
-            fontTextureFilePathPicPreviewCurrentPath = pathToolTip.GetToolTip(fontTextureFilePathTxt);
-
+            pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath);
             if (fontTextureFilePathPicPreviewCurrentPath != fontPath)
             {
-                pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath);
                 fontTextureFilePathPicPreviewCurrentPath = fontPath;
-
                 try
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
-                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture(fontPath == "<default>" ? null : fontPath).ToBitmap();
+                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture().ToBitmap();
                     fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
@@ -485,17 +412,14 @@ namespace TombEditor.Forms
             }
 
             string skyPath = _levelSettings.MakeAbsolute(_levelSettings.SkyTextureFilePath) ?? "<default>";
-            skyTextureFilePathPicPreviewCurrentPath = pathToolTip.GetToolTip(skyTextureFilePathTxt);
-
+            pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath);
             if (skyTextureFilePathPicPreviewCurrentPath != skyPath)
             {
-                pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath);
                 skyTextureFilePathPicPreviewCurrentPath = skyPath;
-
                 try
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
-                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture(skyPath == "<default>" ? null : skyPath).ToBitmap();
+                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture().ToBitmap();
                     skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
@@ -511,17 +435,14 @@ namespace TombEditor.Forms
             }
 
             string tr5SpritesPath = _levelSettings.MakeAbsolute(_levelSettings.Tr5ExtraSpritesFilePath) ?? "<default>";
-            tr5ExtraSpritesFilePathPicPreviewCurrentPath = pathToolTip.GetToolTip(tr5SpritesTextureFilePathTxt);
-
+            pathToolTip.SetToolTip(tr5SpritesTextureFilePathTxt, tr5SpritesPath);
             if (tr5ExtraSpritesFilePathPicPreviewCurrentPath != tr5SpritesPath)
             {
-                pathToolTip.SetToolTip(tr5SpritesTextureFilePathTxt, tr5SpritesPath);
                 tr5ExtraSpritesFilePathPicPreviewCurrentPath = tr5SpritesPath;
-
                 try
                 {
                     tr5SpritesTextureFilePathPicPreview.Image?.Dispose();
-                    tr5SpritesTextureFilePathPicPreview.Image = _levelSettings.LoadTr5ExtraSprites(tr5SpritesPath == "<default>" ? null : tr5SpritesPath).ToBitmap();
+                    tr5SpritesTextureFilePathPicPreview.Image = _levelSettings.LoadTr5ExtraSprites().ToBitmap();
                     tr5SpritesTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     tr5SpritesTextureFilePathPicPreview.Tag = null;
                     tr5SpritesTextureFilePathTxt.BackColor = _correctColor;
@@ -563,8 +484,6 @@ namespace TombEditor.Forms
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
-
-            cbInterpretStaticMeshVertexDataForMerge.Checked = _levelSettings.InterpretStaticMeshVertexDataForMerge;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -875,67 +794,6 @@ namespace TombEditor.Forms
                     Thread.Sleep(1);
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
-
-            synchronizedDialog = new GraphicalDialogHandler(this);
-            ReferencedSoundsCatalog[] soundsResults = new ReferencedSoundsCatalog[paths.Count];
-            using (var loadingTask = Task.Run(() =>
-                Parallel.For(0, paths.Count, i =>
-                {
-                    string currentPath = paths[i].ToLower();
-                    string extension = Path.GetExtension(currentPath);
-                    if (extension == ".wad")
-                    {
-                        string sfxPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".sfx";
-                        if (File.Exists(sfxPath))
-                        {
-                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, sfxPath, synchronizedDialog);
-                        }
-                    }
-                    else if (extension == ".wad2")
-                    {
-                        string xmlPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".xml";
-                        if (File.Exists(xmlPath))
-                        {
-                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, xmlPath, synchronizedDialog);
-                        }
-                    }
-                })))
-                while (!loadingTask.IsCompleted)
-                {
-                    Thread.Sleep(1);
-                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
-                }
-
-            foreach (var soundRef in soundsResults)
-                if (soundRef != null)
-                {
-                    _soundsCatalogsDataGridViewDataSource.Add(new ReferencedSoundsCatalogWrapper(this, soundRef));
-                    AssignAllSounds(soundRef.Sounds);
-                }
-
-            return results;
-        }
-
-        private IEnumerable<ReferencedSoundsCatalogWrapper> soundsCatalogDataGridViewCreateNewRow()
-        {
-            List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select new soudns catalogs files", WadSounds.FormatExtensions, VariableType.LevelDirectory).ToList();
-
-            // Load catalogs concurrently
-            ReferencedSoundsCatalogWrapper[] results = new ReferencedSoundsCatalogWrapper[paths.Count];
-            var synchronizedDialog = new GraphicalDialogHandler(this);
-            using (var loadingTask = Task.Run(() =>
-                Parallel.For(0, paths.Count, i => results[i] = new ReferencedSoundsCatalogWrapper(this, new ReferencedSoundsCatalog(_levelSettings, paths[i], synchronizedDialog)))))
-                while (!loadingTask.IsCompleted)
-                {
-                    Thread.Sleep(1);
-                    Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
-                }
-
-            /*foreach (var wrapper in results)
-                if (wrapper != null)
-                    AssignAllSounds(wrapper.Sounds.Sounds);*/
-
             return results;
         }
 
@@ -1087,19 +945,10 @@ namespace TombEditor.Forms
             foreach (var reference in _objectFileDataGridViewDataSource)
                 settings.Wads.Add(reference.Wad);
 
-            settings.SoundsCatalogs.Clear();
-            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
-                settings.SoundsCatalogs.Add(reference.Sounds);
-
             settings.Textures.Clear();
             foreach (var reference in _textureFileDataGridViewDataSource)
                 settings.Textures.Add(reference.Texture);
-            settings.AutoStaticMeshMerges.Clear();
-            foreach (var entry in _staticMeshMergeGridViewDataSource)
-            {
-                if (entry.Merge)
-                    settings.AutoStaticMeshMerges.Add(entry);
-            }
+
             _editor.UpdateLevelSettings(settings);
             Close();
         }
@@ -1181,135 +1030,6 @@ namespace TombEditor.Forms
         private void cbAgressiveFloordataPacking_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
-            UpdateDialog();
-        }
-        
-        private void ReloadSounds()
-        {
-            selectedSoundsDataGridView.Rows.Clear();
-            foreach (var soundInfo in _levelSettings.GlobalSoundMap)
-            {
-                if (tbSearch.Text != "" && !soundInfo.Name.ToUpper().Contains(tbSearch.Text.ToUpper()))
-                    continue;
-
-                bool compile = _levelSettings.SelectedSounds.Contains(soundInfo.Id);
-
-                selectedSoundsDataGridView.Rows.Add(compile, soundInfo.Id, soundInfo.Name, soundInfo.SoundCatalog);
-                if (compile)
-                    selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1].DefaultCellStyle.BackColor = Color.DarkGreen;
-                else
-                    selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1].DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
-            }
-
-            labelSoundsCatalogsStatistics.Text = "Total sounds: " + selectedSoundsDataGridView.Rows.Count + " | Selected sounds: " + _levelSettings.SelectedSounds.Count;
-        }
-
-        private void ButSelectAllSoundsFromWads_Click(object sender, EventArgs e)
-        {
-            foreach (var wadRef in _levelSettings.Wads)
-                if (wadRef.Wad != null)
-                    foreach (var sound in wadRef.Wad.Sounds.SoundInfos)
-                        foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
-                        {
-                            int id = int.Parse(row.Cells[0].Value.ToString());
-                            if (id == sound.Id)
-                            {
-                                row.Cells[3].Value = true;
-                                row.DefaultCellStyle.BackColor = Color.DarkGreen;
-                            }
-                        }
-        }
-
-        private void TbSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            ReloadSounds();
-        }
-
-        private void DgvSounds_CellValidated(object sender, DataGridViewCellEventArgs e)
-        {
-            var row = selectedSoundsDataGridView.Rows[e.RowIndex];
-            bool selected = (bool)row.Cells[0].Value;
-            if (selected)
-                row.DefaultCellStyle.BackColor = Color.DarkGreen;
-            else
-                row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
-        }
-
-        private void SoundsCatalogsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
-                return;
-            ReferencedSoundsCatalog sounds = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
-
-            if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogMessageColumn.Name)
-            {
-                if (sounds.LoadException == null)
-                {
-                    e.CellStyle.BackColor = _columnMessageCorrectColor;
-                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageCorrectColor, 0.4);
-                }
-                else
-                {
-                    e.CellStyle.BackColor = _columnMessageWrongColor;
-                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageWrongColor, 0.4);
-                }
-            }
-            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogPathColumn.Name)
-            {
-                string absolutePath = _levelSettings.MakeAbsolute(sounds.Path);
-                soundsCatalogsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
-            }
-        }
-
-        private void AssignAllSounds(WadSounds sounds)
-        {
-            foreach (var sound in sounds.SoundInfos)
-                if (!_levelSettings.SelectedSounds.Contains(sound.Id))
-                    _levelSettings.SelectedSounds.Add(sound.Id);
-            ReloadSounds();
-        }
-
-        private void SoundsCatalogsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
-                return;
-            ReferencedSoundsCatalog soundsCatalog = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
-
-            if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
-            {
-                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new sounds catalog file", WadSounds.FormatExtensions, VariableType.LevelDirectory, false);
-                if (result != null)
-                {
-                    _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
-                    ReloadSounds();
-                }
-            }
-            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)
-            {
-                AssignAllSounds(soundsCatalog.Sounds);
-                ReloadSounds();
-            }
-        }
-
-        private void SoundsCatalogsDataGridView_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void SoundsCatalogsDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            ReloadSounds();
-        }
-
-        private void SoundsCatalogsDataGridView_Sorted(object sender, EventArgs e)
-        {
-            ReloadSounds();
-        }
-        
-        private void CbInterpretStaticMeshVertexDataForMerge_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.InterpretStaticMeshVertexDataForMerge = cbInterpretStaticMeshVertexDataForMerge.Checked;
             UpdateDialog();
         }
     }

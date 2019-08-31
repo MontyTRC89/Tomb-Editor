@@ -1,7 +1,0 @@
-Used with Parameters=PARAM_ACTOR_SPEECH command
-Force the next state id to the value given as argument.
-Example:
-
-SPC_NEXT_STATEID+4
-
-Set as next state id for current actor the value 4.

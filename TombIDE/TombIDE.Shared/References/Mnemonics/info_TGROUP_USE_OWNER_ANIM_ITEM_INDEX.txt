@@ -1,3 +1,0 @@
-Set as moveable index to use in following (and current) triggers the index of moveable own the anim command just performed.
-This flag could be used only when current TriggerGroup command has been started by an animcommand. In this situation, if you use this flag the index of moveable to use it will be the index of moveable owns the animation that contains the anim command started current TriggerGroup.
-See also description of TGROUP_USE_FOUND_ITEM_INDEX flag to have more informations about the mechanism of changing of moveable index

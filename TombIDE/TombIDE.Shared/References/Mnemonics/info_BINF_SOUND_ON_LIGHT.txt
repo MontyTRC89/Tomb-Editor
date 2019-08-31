@@ -1,3 +1,0 @@
-Used into Customize=CUST_BINOCULARS command
-When you used the BINF_LIGHT_SWITCH flag to show a switch for light mode, you can add also the BINF_SOUND_ON_LIGHT flag to enable a sfx sound when the player hit (first time) the light mode.
-By default will be used the SFX 369 (LARA_CLICK_SWITCH)  but you can change this value using the Customize=CUST_SFX with the TS_BINOCULAR_LIGHT constant.

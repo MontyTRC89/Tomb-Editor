@@ -74,6 +74,17 @@ namespace TombLib.Wad
         public override string ToString() => Id.ToString();
         IWadObjectId IWadObject.Id => Id;
 
+        public IEnumerable<WadSoundInfo> Sounds
+        {
+            get
+            {
+                foreach (var animation in Animations)
+                    foreach (var command in animation.AnimCommands)
+                        if (command.Type == WadAnimCommandType.PlaySound)
+                            yield return command.SoundInfo;
+            }
+        }
+
         public WadMoveable Clone()
         {
             var mov = new WadMoveable(Id);

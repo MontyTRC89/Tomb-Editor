@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_SHOW_SPRITE script command.
-This flag works only togheter with the FSS_SHOW_SPRITE_GRID flag.
-When you wish show same sprite many times, placed in a grid, you have to use both flags FSS_SHOW_SPRITE_GRID + FSS_CLONE_SPRITE.

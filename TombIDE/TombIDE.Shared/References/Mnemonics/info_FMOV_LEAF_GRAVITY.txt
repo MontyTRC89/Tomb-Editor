@@ -1,4 +1,0 @@
-used in Paramaters=PARAM_MOVE_ITEM script command
-When the item is far from the floor, it will move down very slowly with no accelerations, like a light leaf moving slowly down.
-Note: the only collision checked is for floor, not for other items or walls or ceiling.
-Note: you can change the preset vertical speed typing a percentage of variation in Speed field. See the description of FMOV_FROG_JUMP_GRAVITY to know how compute the formula to type in that field.

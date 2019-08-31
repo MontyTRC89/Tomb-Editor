@@ -1,2 +1,0 @@
-Used in Customize=CUST_FLARE command.
-Add a little flame to flare.

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TombLib.LevelData;
-using TombLib.Wad;
 
 namespace TombLib.NG
 {
@@ -239,9 +238,9 @@ namespace TombLib.NG
         {
             Func<int, TriggerParameterUshort> formatSounds = i =>
             {
-                WadSoundInfo info = level?.Settings?.WadTryGetSoundInfo(i);
-                if (info != null)
-                    return new TriggerParameterUshort((ushort)i, i + ": " + info.Name);
+                Wad.WadFixedSoundInfo fixedSoundInfo = level?.Settings?.WadTryGetFixedSoundInfo(new Wad.WadFixedSoundInfoId((ushort)i));
+                if (fixedSoundInfo != null)
+                    return new TriggerParameterUshort((ushort)i, i + ": " + fixedSoundInfo.SoundInfo.Name);
                 else
                     return new TriggerParameterUshort((ushort)i, i + ": --- Not present ---");
             };

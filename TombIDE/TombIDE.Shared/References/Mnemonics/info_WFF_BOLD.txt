@@ -1,3 +1,0 @@
-Used in WindowsFont= command.
-A bold character has a big "heavy" layout, pratically the depth of drawn is bigger than normal or light character.
-If the background, where the text will be showed, is not solid tint, it's better use a bold or ultra_bold character otherwire in some combination of text color - background color the border could be not well visible.

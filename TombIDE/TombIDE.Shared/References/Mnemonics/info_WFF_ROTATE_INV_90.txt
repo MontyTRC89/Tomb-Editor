@@ -1,4 +1,0 @@
-Used in WindowsFont= command
-The text will turned by 90 degress in inverted clockwise mode.
-
-Using this flag there are some limitation and technical requirements. See the description of WFF_ROTATE_90 flag for more infos

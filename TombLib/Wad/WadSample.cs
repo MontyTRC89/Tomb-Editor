@@ -10,53 +10,27 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using NAudio.Wave.SampleProviders;
-using System.Xml.Serialization;
 
 namespace TombLib.Wad
 {
     public class WadSample : IEquatable<WadSample>
     {
-        // Samples are loaded only at compile phase, in all other cases we just need paths, with the only exception of 
-        // TR1-2-3-4-5 files that have samples embedded in levels or in MAIN.SFX, in this case we have them in memory 
-        // and we can provide the ability to save them on disk.
-        [XmlIgnore]
-        public bool IsLoaded => Data != null && Data.Length > 0;
-
-        // Properties for correct encoding of samples.
-        [XmlIgnore]
         public const uint GameSupportedSampleRate = 22050;
-        [XmlIgnore]
         private const int SampleRateOffset = 24;
-        [XmlIgnore]
         private const int SampleBytesPerSecondOffset = 28;
-       
-        // RAW sample data, with hash
-        [XmlIgnore]
-        public byte[] Data { get; }
-        [XmlIgnore]
-        public Hash Hash { get; }
-
-        // Path of this sample. This must be absolute path and this is the only field that must be serialized to XML.
-        public string SamplePath { get; set; }
-
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        // Only for XML serialization!
-        public WadSample() { }
+        /// <summary>This *always* *must* be Wave PCM mono data.</summary>
+        public byte[] Data { get; }
+        public Hash Hash { get; }
 
-        public WadSample(string path)
-        {
-            SamplePath = path;
-        }
-
-        public WadSample(string path, byte[] data)
+        public WadSample(byte[] data)
         {
             if (CheckSampleDataForFormat(data) < 0)
                 throw new NotSupportedException("Sample data is of an unsupported format.");
             Data = data;
             Hash = Hash.FromByteArray(Data);
-            SamplePath = path;
         }
 
         public static int CheckSampleDataForFormat(byte[] data)
@@ -116,7 +90,6 @@ namespace TombLib.Wad
             }
         }
 
-        [XmlIgnore]
         public TimeSpan Duration
         {
             get
@@ -127,7 +100,6 @@ namespace TombLib.Wad
             }
         }
 
-        [XmlIgnore]
         public uint SampleRate => BitConverter.ToUInt32(Data, SampleRateOffset);
 
         public struct ResampleInfo
@@ -136,7 +108,7 @@ namespace TombLib.Wad
             public uint SampleRate;
         }
         public WadSample ChangeSampleRate(uint targetSampleRate, bool resample = true) =>
-            new WadSample(SamplePath, ConvertSampleFormat(Data, resample, targetSampleRate));
+            new WadSample(ConvertSampleFormat(Data, resample, targetSampleRate));
         public static byte[] ConvertSampleFormat(byte[] data, bool resample = true, uint sampleRate = GameSupportedSampleRate) =>
             ConvertSampleFormat(data, r => new ResampleInfo { Resample = resample, SampleRate = sampleRate });
         public static byte[] ConvertSampleFormat(byte[] data, Func<uint, ResampleInfo> negotiateSampleRate)
@@ -401,7 +373,7 @@ namespace TombLib.Wad
             throw new FileNotFoundException("Sound not found", soundName);
         }
 
-        public static readonly WadSample NullSample = new WadSample("", new byte[] {
+        public static readonly WadSample NullSample = new WadSample(new byte[] {
             0x52, 0x49, 0x46, 0x46, 0x28, 0x00, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45,
             0x66, 0x6D, 0x74, 0x20, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00,
             0x22, 0x56, 0x00, 0x00, 0x44, 0xAC, 0x00, 0x00, 0x02, 0x00, 0x10, 0x00,
@@ -421,7 +393,7 @@ namespace TombLib.Wad
                 {
                     byte[] result = new byte[checked((int)fileStream.Length)];
                     fileStream.Read(result, 0, result.GetLength(0));
-                    return new WadSample(path, result);
+                    return new WadSample(result);
                 }
             }
             catch (Exception exc)

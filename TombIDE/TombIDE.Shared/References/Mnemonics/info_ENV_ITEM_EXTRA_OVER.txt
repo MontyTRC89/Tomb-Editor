@@ -1,1 +1,0 @@
-Similar to ENV_ITEM_EXTRA_IN_FRONT but in this case the object should be over lara, on same sector. In DistanceForEnv you type the height over lara (See description of ENV_ITEM_EXTRA_IN_FRONT for more infos).

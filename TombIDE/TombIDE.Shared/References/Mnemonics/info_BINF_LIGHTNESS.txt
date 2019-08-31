@@ -1,5 +1,0 @@
-Used into Customize=CUST_BINOCULARS command
-If you wish add infos about lightness intensity you add this flag.
-The lightness intensity will be computed only on a little, centered in the middle of the screeen, rectangle.
-If you show the lightness infos in numeric format, it will be used the ISO/DIN scale (0 / 39).
-Differently, using a bar, the full bar will be the max light while the full dark will be an empty bar.

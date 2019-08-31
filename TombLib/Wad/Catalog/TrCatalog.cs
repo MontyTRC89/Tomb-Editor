@@ -22,7 +22,6 @@ namespace TombLib.Wad.Catalog
         private struct ItemSound
         {
             public string Name { get; set; }
-            public string Description { get; set; }
             public bool FixedByDefault { get; set; }
         }
 
@@ -89,20 +88,11 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version, out game))
-                return "UNKNOWN_SOUND_" + id;
+                return "Unknown #" + id;
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
-                return "UNKNOWN_SOUND_" + id;
+                return "Unknown #" + id;
             return game.Sounds[id].Name;
-        }
-
-        public static int TryGetSoundInfoIdByDescription(WadGameVersion version, string name)
-        {
-            var sounds = Games[version].Sounds;
-            foreach (var pair in sounds)
-                if (pair.Value.Description == name)
-                    return (int)pair.Key;
-            return -1;
         }
 
         public static string GetSpriteSequenceName(WadGameVersion version, uint id)
@@ -252,9 +242,8 @@ namespace TombLib.Wad.Catalog
 
                         uint id = uint.Parse(soundNode.Attributes["id"].Value);
                         string name = soundNode.Attributes["name"]?.Value ?? "";
-                        string description = soundNode.Attributes["description"]?.Value ?? "";
                         bool fixedByDefault = bool.Parse(soundNode.Attributes["fixed_by_default"]?.Value ?? "false");
-                        game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault, Description = description });
+                        game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault });
                     }
 
                 // Parse sprite sequences

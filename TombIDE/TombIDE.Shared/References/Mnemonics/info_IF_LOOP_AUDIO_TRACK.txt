@@ -1,2 +1,0 @@
-Used in Image= command.
-If you enable a background audio track for your image, using the IF_PLAY_AUDIO_TRACK flag, you can choose to perform that audio track in loop (infinite) way, adding the IF_LOOP_AUDIO_TRACK flag.

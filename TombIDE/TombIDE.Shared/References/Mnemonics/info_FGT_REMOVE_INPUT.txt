@@ -1,6 +1,0 @@
-Used in GlobalTrigger command.
-This flag works only with GT_GAME_KEY1_COMMAND, GT_GAME_KEY2_COMMAND or GT_KEYBOARD_CODE global triggers.
-If you add in Flags field the FGT_REMOVE_INPUT flag, when the condition is true, the just received game/keyboard command will be removed and game engine will be not able to detect it.
-In this way you can filter or redirect some game command.
-The filtering is when you discover when a given game command has been received and you add (with your triggergroup of globaltrigger) some further actions in according with that command.
-The redirection is when you want remove fully the effect of that game command and you want replace them with other your effects.

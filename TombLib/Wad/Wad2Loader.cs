@@ -6,7 +6,6 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -15,25 +14,12 @@ namespace TombLib.Wad
 {
     public static class Wad2Loader
     {
-        private static bool _legacySounds = false;
-
-        public static Wad2 LoadFromFile(string fileName, bool withSounds)
+        public static Wad2 LoadFromFile(string fileName)
         {
             Wad2 result;
             using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 result = LoadFromStream(fileStream);
             result.FileName = fileName;
-
-            // Load additional XML file if it exists
-            if (withSounds)
-            {
-                var xmlFile = Path.ChangeExtension(fileName, "xml");
-                if (File.Exists(xmlFile))
-                {
-                    result.Sounds = WadSounds.ReadFromFile(xmlFile);
-                }
-            }
-
             return result;
         }
 
@@ -73,12 +59,7 @@ namespace TombLib.Wad
                     wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
                     return true;
                 }
-                else if (id == Wad2Chunks.SoundSystem)
-                {
-                    wad.SoundSystem = (SoundSystem)chunkIO.ReadChunkLong(chunkSize);
-                    return true;
-                }
-                else if (LoadTextures(chunkIO, id, wad, ref textures))
+                if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
                 else if (LoadSamples(chunkIO, id, wad, ref samples, obsolete))
                     return true;
@@ -104,12 +85,8 @@ namespace TombLib.Wad
                     if (TrCatalog.IsSoundFixedByDefault(WadGameVersion.TR4_TRNG, checked((uint)soundInfo.Key)))
                     {
                         var Id = new WadFixedSoundInfoId(checked((uint)soundInfo.Key));
-                        wad.FixedSoundInfosObsolete.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfo.Value });
+                        wad.FixedSoundInfos.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfo.Value });
                     }
-
-            // XML_SOUND_SYSTEM: Used for conversion of Wad2 to new sound system
-            wad.AllLoadesSoundInfos = soundInfos;
-
             return wad;
         }
 
@@ -166,7 +143,6 @@ namespace TombLib.Wad
 
                 string FilenameObsolete = null;
                 byte[] data = null;
-                _legacySounds = true;
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
@@ -187,7 +163,7 @@ namespace TombLib.Wad
                     data = File.ReadAllBytes(fullPath);
                 }
 
-                samples.Add(obsoleteIndex++, new WadSample("", WadSample.ConvertSampleFormat(data,
+                samples.Add(obsoleteIndex++, new WadSample(WadSample.ConvertSampleFormat(data,
                     sampleRate => obsolete ?
                         new WadSample.ResampleInfo { Resample = false, SampleRate = WadSample.GameSupportedSampleRate } :
                         new WadSample.ResampleInfo { Resample = true, SampleRate = sampleRate })));
@@ -199,28 +175,22 @@ namespace TombLib.Wad
         }
 
         private static bool LoadSoundInfo(ChunkReader chunkIO, Wad2 wad, Dictionary<long, WadSample> samples,
-                                          out WadSoundInfo soundInfo, out long index)
+                                          out WadSoundInfoMetaData soundInfo, out long index)
         {
-            var tempSoundInfo = new WadSoundInfo(0);
+            var tempSoundInfo = new WadSoundInfoMetaData("Unnamed");
             long tempIndex = 0;
-            float volume = 0;
-            float chance = 0;
-            float pitch = 0;
-            float range = 0;
-
             chunkIO.ReadChunks((id2, chunkSize2) =>
             {
-                // XML_SOUND_SYSTEM
                 if (id2 == Wad2Chunks.SoundInfoIndex)
                     tempIndex = chunkIO.ReadChunkLong(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoVolume)
-                    volume = chunkIO.ReadChunkFloat(chunkSize2);
+                    tempSoundInfo.Volume = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoRange)
-                    range = chunkIO.ReadChunkFloat(chunkSize2);
+                    tempSoundInfo.RangeInSectors = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoPitch)
-                    pitch = chunkIO.ReadChunkFloat(chunkSize2);
+                    tempSoundInfo.PitchFactor = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoChance)
-                    chance = chunkIO.ReadChunkFloat(chunkSize2);
+                    tempSoundInfo.Chance = chunkIO.ReadChunkFloat(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoDisablePanning)
                     tempSoundInfo.DisablePanning = chunkIO.ReadChunkBool(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoRandomizePitch)
@@ -232,21 +202,11 @@ namespace TombLib.Wad
                 else if (id2 == Wad2Chunks.SoundInfoName || id2 == Wad2Chunks.SoundInfoNameObsolete)
                     tempSoundInfo.Name = chunkIO.ReadChunkString(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoSampleIndex)
-                    tempSoundInfo.EmbeddedSamples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]); // Legacy
+                    tempSoundInfo.Samples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]);
                 else
                     return false;
-                _legacySounds = true;
                 return true;
             });
-
-            // Convert from floats to ints
-            tempSoundInfo.Volume = (int)Math.Round(volume * 100.0f);
-            tempSoundInfo.RangeInSectors = (int)range;
-            tempSoundInfo.Chance = (int)Math.Round(chance * 100.0f);
-            tempSoundInfo.PitchFactor = (int)Math.Round((pitch - 1.0f) * 100.0f);
-
-            // Try to get the old ID
-            tempSoundInfo.Id = TrCatalog.TryGetSoundInfoIdByDescription(wad.SuggestedGameVersion, tempSoundInfo.Name);
 
             if (string.IsNullOrWhiteSpace(tempSoundInfo.Name))
                 tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, unchecked((uint)tempIndex));
@@ -268,12 +228,11 @@ namespace TombLib.Wad
                 if (id != Wad2Chunks.SoundInfo)
                     return false;
 
-                WadSoundInfo soundInfo;
+                WadSoundInfoMetaData soundInfo;
                 long index;
                 LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
-                soundInfos.Add(index, soundInfo);
+                soundInfos.Add(index, new WadSoundInfo(soundInfo));
 
-                _legacySounds = true;
                 return true;
             });
 
@@ -308,11 +267,10 @@ namespace TombLib.Wad
 
                 var Id = new WadFixedSoundInfoId(checked((uint)soundId));
                 fixedSoundInfos.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
-                _legacySounds = true;
                 return true;
             });
 
-            wad.FixedSoundInfosObsolete = fixedSoundInfos;
+            wad.FixedSoundInfos = fixedSoundInfos;
             return true;
         }
 
@@ -325,13 +283,12 @@ namespace TombLib.Wad
                     if (id != Wad2Chunks.SoundInfo)
                         return false;
 
-                    WadSoundInfo soundInfo;
+                    WadSoundInfoMetaData soundInfoMetaData;
                     long index;
-                    LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
-                    var wId = new WadAdditionalSoundInfoId("Unnamed " + soundInfo.Name);
-                    wad.AdditionalSoundInfosObsolete.Add(wId, new WadAdditionalSoundInfo(wId) { SoundInfo = soundInfo });
+                    LoadSoundInfo(chunkIO, wad, samples, out soundInfoMetaData, out index);
+                    var wId = new WadAdditionalSoundInfoId("Unnamed " + soundInfoMetaData.Name);
+                    wad.AdditionalSoundInfos.Add(wId, new WadAdditionalSoundInfo(wId) { SoundInfo = new WadSoundInfo(soundInfoMetaData) });
 
-                    _legacySounds = true;
                     return true;
                 });
                 return true;
@@ -358,11 +315,10 @@ namespace TombLib.Wad
 
                     var Id = new WadAdditionalSoundInfoId(soundName);
                     additionalSoundInfos.Add(Id, new WadAdditionalSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
-                    _legacySounds = true;
                     return true;
                 });
 
-                wad.AdditionalSoundInfosObsolete = additionalSoundInfos;
+                wad.AdditionalSoundInfos = additionalSoundInfos;
                 return true;
             }
             return false;
@@ -796,7 +752,7 @@ namespace TombLib.Wad
                                     {
                                         var info = chunkIO.ReadChunkInt(chunkSize4);
                                         if (info != -1)
-                                            command.SoundInfoObsolete = soundInfos[info];
+                                            command.SoundInfo = soundInfos[info];
                                         return true;
                                     }
                                     else

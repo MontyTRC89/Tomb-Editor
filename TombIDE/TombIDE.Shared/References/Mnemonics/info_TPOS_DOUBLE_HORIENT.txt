@@ -1,7 +1,0 @@
-Used in TestPosition command
-If you want that the correct position to detect could be in front of object (with given H Orient) but also in the opposite side, you can set this flag.
-When in TestPosition there is the TPOS_DOUBLE_HORIENT flag, the testposition condition will be true also if lara is in opposite side for what you set the ranges of testposition.
-For example using an item like a gate, you can use TPOS_DOUBLE_HORIENT to permit to lara to be in correct position for both side of the gate.
-
-Remark: this flag works fine only if the item has its pivot in same position of visible mesh.
-Unfortunately, in many circustances the pivot (origin x,y,z of object) is not at center of its mesh but in a corner of sector where it will be placed.

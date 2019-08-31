@@ -1,3 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-This flag works in according with the BKGDT_LASER_SIGHT type.
-If you wish remove that little red point, a sprite, you can add this flag.

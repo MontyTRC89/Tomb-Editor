@@ -32,14 +32,14 @@ namespace TombLib.Wad
     public class WadAdditionalSoundInfo : IWadObject
     {
         private WadAdditionalSoundInfoId _id;
-        private WadSoundInfo _soundInfo = new WadSoundInfo(0);
+        private WadSoundInfo _soundInfo = WadSoundInfo.Empty;
 
         public WadAdditionalSoundInfoId Id
         {
             get { return _id; }
             private set
             {
-                _soundInfo.Name = value.Name;
+                _soundInfo = _soundInfo.ChangeName(value.Name);
                 _id = value;
             }
         }
@@ -47,7 +47,7 @@ namespace TombLib.Wad
         public WadSoundInfo SoundInfo
         {
             get { return _soundInfo; }
-            set { _soundInfo.Name = value.Name; }
+            set { _soundInfo = value.ChangeName(_id.Name); }
         }
 
         public WadAdditionalSoundInfo(WadAdditionalSoundInfoId id)

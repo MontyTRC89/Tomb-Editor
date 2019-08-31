@@ -1,3 +1,0 @@
-Used in Parameters=PARAM_MOVE_ITEM script command
-This direction will be the same where the leading actor is looking. This maybe useful when the leading actor throw this item in front of him.
-Note: remember you can set an enemy as leading actor with the Action 87.

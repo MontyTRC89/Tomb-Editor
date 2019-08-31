@@ -1,1 +1,0 @@
-This settings is the same to omit to insert Snow= command. The futher rooms labeled as "Snow" room in ngle will be ignored, i.e. no snow effect will be showed.

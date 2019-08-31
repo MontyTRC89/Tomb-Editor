@@ -1,6 +1,0 @@
-Used in TestPosition command
-Adding this value in Flags of TestPosition you change the mean of "Slot Moveable" field.
-When you use TPOS_TEST_ITEM_INDEX flag, trng engine will consider the value in "Slot Moveable" field like an index of item to check.
-You find the index in NGLE program, clicking on wished item, you'll see the index in yellow frame.
-The advantage to use an index is to can test a moveable also if it is extern a lara room, while in other case (checking for slot) the testposition detects only items in same room where lara is.
-By other hand, the disavantage to use this flag is that, in this way, you cann't detect all object in general way but you have to specify only one item index.

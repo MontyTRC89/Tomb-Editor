@@ -27,27 +27,8 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
+                newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
-                if (newWad.SoundSystem == SoundSystem.Dynamic)
-                {
-                    if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
-                                            "to the new Xml sound system. A backup copy will be created under the same directory. " +
-                                            "Do you want to continue?",
-                                            "Convert Wad2", MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Question) != DialogResult.Yes)
-                        return;
-
-                    File.Copy(fileName, fileName + ".bak", true);
-                    if (!FileFormatConversions.ConvertWad2ToNewSoundFormat(fileName, fileName, "Sounds\\TR4\\Sounds.txt"))
-                    {
-                        DarkMessageBox.Show(owner, "Converting the file failed!", "Loading failed", MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
-                        .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
-                }
             }
             catch (OperationCanceledException)
             {
@@ -138,7 +119,6 @@ namespace WadTool
             // Save the wad2
             try
             {
-                // XML_SOUND_SYSTEM
                 Wad2Writer.SaveToFile(wadToSave, outPath);
             }
             catch (Exception exc)
@@ -614,8 +594,7 @@ namespace WadTool
 
         public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)
         {
-            // XML_SOUND_SYSTEM
-            /*try
+            try
             {
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -654,14 +633,12 @@ namespace WadTool
             {
                 logger.Warn(exc, "'ExportAnimationToXml' failed.");
                 return false;
-            }*/
-
-            return true;
+            }
         }
 
         public static bool ExportAnimation(WadMoveable moveable, WadAnimation animation, string fileName)
         {
-            /*try
+            try
             {
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -683,9 +660,7 @@ namespace WadTool
             {
                 logger.Warn(exc, "'ExportAnimation' failed.");
                 return false;
-            }*/
-
-            return true;
+            }
         }
 
         public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
@@ -698,6 +673,23 @@ namespace WadTool
                 object obj = deserializer.Deserialize(reader);
                 WadAnimation animation = (WadAnimation)obj;
                 reader.Close();
+
+                // Try to link sounds
+                foreach (var cmd in animation.AnimCommands)
+                {
+                    if (cmd.Type == WadAnimCommandType.PlaySound)
+                    {
+                        // Try to get a sound with the same name
+                        foreach (var soundInfo in wad.SoundInfosUnique)
+                            if (soundInfo.Name == cmd.XmlSerializer_SoundInfoName)
+                            {
+                                cmd.SoundInfo = soundInfo;
+                                break;
+                            }
+                        if (cmd.SoundInfo == null)
+                            cmd.SoundInfo = wad.SoundInfosUnique.First();
+                    }
+                }
 
                 return animation;
             }
@@ -712,7 +704,7 @@ namespace WadTool
         {
             try
             {
-                var wad = Wad2Loader.LoadFromFile(fileName, false);
+                var wad = Wad2Loader.LoadFromFile(fileName);
                 if (wad == null || wad.Moveables.Count == 0 || wad.Moveables.ElementAt(0).Value.Animations.Count == 0) return null;
 
                 return wad.Moveables.ElementAt(0).Value.Animations[0];

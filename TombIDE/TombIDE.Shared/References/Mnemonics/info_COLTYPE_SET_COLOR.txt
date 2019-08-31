@@ -1,1 +1,0 @@
-Used in Parameters=PARAM_COLOR_ITEM. Using this coltype you change simply the color of item using the first color pointed by Index1ColorRGB field.

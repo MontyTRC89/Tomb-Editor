@@ -1,1 +1,0 @@
-Save informations about current moveable in savegame

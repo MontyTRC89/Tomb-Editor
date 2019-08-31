@@ -1,2 +1,0 @@
-The fadd_rotate flags are used only in particular circustances, when you use an effect type that use the orientation (horizontal) of object to compute the direction of emitting.
-In this case you can alterate the orienting of emit adding one of above flags. For example if you want the mist strip will be oriented in side instead of in front of object facing, you can use FADD_ROTATE_90 flag.

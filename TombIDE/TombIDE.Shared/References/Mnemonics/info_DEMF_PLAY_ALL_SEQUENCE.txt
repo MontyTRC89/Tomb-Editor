@@ -1,5 +1,0 @@
-Used in Demo script command.
-Used in [Title] section.
-This flag force to perform all demos whom indices are in DemoArray field of Demo= command.
-In this case it's no important the level number of single demos, all they will be played when first demo has been triggered.
-Since everytime a demo can work only in the level where it had been recorded, it's better in this case, type in the array demo indices contiguous for same level to reduce the number of loading new level phases.

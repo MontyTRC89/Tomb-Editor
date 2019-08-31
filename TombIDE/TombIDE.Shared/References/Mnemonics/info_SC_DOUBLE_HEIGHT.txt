@@ -1,1 +1,0 @@
-Set double height for characters, untouched the width
