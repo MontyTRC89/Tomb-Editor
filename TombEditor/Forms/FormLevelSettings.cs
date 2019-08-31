@@ -110,6 +110,16 @@ namespace TombEditor.Forms
                     return Sounds.LoadException.Message + " (" + Sounds.LoadException.GetType().Name + ")";
                 }
             }
+
+            public int SoundsCount
+            {
+                get
+                {
+                    if (Sounds.LoadException == null)
+                        return Sounds.Sounds.SoundInfos.Count;
+                    return 0;
+                }
+            }
         }
 
         private class ReferencedWadWrapper
