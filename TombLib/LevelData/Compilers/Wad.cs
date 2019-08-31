@@ -676,8 +676,8 @@ namespace TombLib.LevelData.Compilers
                     _level.Settings.SelectedSounds.Add(1053);
                     _level.Settings.SelectedSounds.Add(1055);
 
-                    var boatSound1 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 307);
-                    var boatSound2 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 308);
+                    var boatSound1 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 308);
+                    var boatSound2 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 307);
 
                     if (boatSound1 != null) boatSound1.Id = 1053;
                     if (boatSound2 != null) boatSound2.Id = 1055;
