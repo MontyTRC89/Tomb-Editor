@@ -74,8 +74,6 @@ namespace WadTool
                     labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
                                            "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
                                            "Sprites sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
-                                           "Fixed sounds: " + _tool.DestinationWad.FixedSoundInfosObsolete.Count + " | " +
-                                           "Additional sounds: " + _tool.DestinationWad.AdditionalSoundInfosObsolete.Count + " | " +
                                            "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count;
                 }
                 else
@@ -104,7 +102,6 @@ namespace WadTool
                     butEditSkeleton.Visible = false;
                     butEditStaticModel.Visible = false;
                     butEditSpriteSequence.Visible = false;
-                    butEditSound.Visible = false;
                 }
                 else
                 {
@@ -130,8 +127,6 @@ namespace WadTool
                     butEditSkeleton.Visible = (mainSelection.Value.Id is WadMoveableId);
                     butEditStaticModel.Visible = (mainSelection.Value.Id is WadStaticId);
                     butEditSpriteSequence.Visible = (mainSelection.Value.Id is WadSpriteSequenceId);
-                    butEditSound.Visible = (mainSelection.Value.Id is WadFixedSoundInfo ||
-                                            mainSelection.Value.Id is WadAdditionalSoundInfoId);
 
                     panel3D.Invalidate();
                 }
@@ -294,11 +289,6 @@ namespace WadTool
             WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
         }
 
-        private void newFixedSoundInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WadActions.CreateObject(_tool, this, new WadFixedSoundInfo(new WadFixedSoundInfoId()));
-        }
-
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
@@ -352,21 +342,6 @@ namespace WadTool
 
         }
 
-        private void butRenameSound_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void destinationSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WadActions.ShowSoundOverview(_tool, this, WadArea.Destination);
-        }
-
-        private void sourceSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WadActions.ShowSoundOverview(_tool, this, WadArea.Source);
-        }
-
         private void butEditSkeleton_Click(object sender, EventArgs e)
         {
             WadActions.EditSkeletion(_tool, this);
@@ -393,11 +368,6 @@ namespace WadTool
         }
 
         private void butEditSpriteSequence_Click(object sender, EventArgs e)
-        {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
-        }
-
-        private void butEditSound_Click(object sender, EventArgs e)
         {
             WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }

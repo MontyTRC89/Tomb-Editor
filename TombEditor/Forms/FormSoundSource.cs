@@ -24,13 +24,14 @@ namespace TombEditor.Forms
             _soundSource = soundSource;
             _soundInfos = soundInfos;
             _soundId = _soundSource.SoundId;
-            
+
             InitializeComponent();
 
             comboPlayMode.SelectedIndex = (int)soundSource.PlayMode;
 
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Id))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
+
             SelectSound(_soundSource.SoundId);
         }
 
@@ -98,10 +99,45 @@ namespace TombEditor.Forms
             }
         }
 
-        private void LstSounds_Click(object sender, EventArgs e)
+        private void TryToFindSound()
+        {
+            if (string.IsNullOrEmpty(tbSearch.Text))
+                return;
+
+            int selectedIndex = lstSounds.SelectedIndices.Count > 0 && lstSounds.SelectedIndices[0] < lstSounds.Items.Count - 1 ? lstSounds.SelectedIndices[0] + 1 : 0;
+            int currentIndex = -2;
+
+            for (int i = selectedIndex; i < lstSounds.Items.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(lstSounds.Items[i].Text) && lstSounds.Items[i].Text.IndexOf(tbSearch.Text, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                {
+                    lstSounds.SelectItem(i);
+                    lstSounds.EnsureVisible();
+                    SelectSound(((WadSoundInfo)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag).Id);
+                    return;
+                }
+
+                if (i == lstSounds.Items.Count - 1 && currentIndex == -2)
+                {
+                    currentIndex = -1;
+                    i = -1;
+                }
+            }
+        }
+
+        private void tbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+                TryToFindSound();
+        }
+
+        private void lstSounds_Click(object sender, EventArgs e)
         {
             if (lstSounds.SelectedIndices.Count == 1)
                 SelectSound(((WadSoundInfo)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag).Id);
         }
+
+        private void lstSounds_DoubleClick(object sender, EventArgs e) => butOK_Click(sender, e);
+        private void butSearch_Click(object sender, EventArgs e) => TryToFindSound();
     }
 }

@@ -73,10 +73,6 @@ namespace TombLib.Controls
                         var mainNode = AddOrReuseChild(nodes, "Sprite sequences");
                         UpdateList(mainNode, _wad.SpriteSequences.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
                     }
-                    {
-                        var mainNode = AddOrReuseChild(nodes, "Fixed sound infos");
-                        UpdateList(mainNode, _wad.FixedSoundInfosObsolete.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
-                    }
                     if (_wad.AdditionalSoundInfosObsolete.Count > 0)
                     {
                         var mainNode = AddOrReuseChild(nodes, "Additional sound infos (legacy imported and not used by any object)");

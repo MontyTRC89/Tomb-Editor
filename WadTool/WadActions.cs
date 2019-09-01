@@ -436,28 +436,6 @@ namespace WadTool
                         return;
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
-            else if (wadObject is WadFixedSoundInfo)
-            {
-                WadFixedSoundInfo fixedSoundInfo = (WadFixedSoundInfo)wadObject;
-                using (var form = new FormSoundInfoEditor(true) { SoundInfo = fixedSoundInfo.SoundInfo })
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    fixedSoundInfo.SoundInfo = form.SoundInfo;
-                }
-                tool.WadChanged(tool.MainSelection.Value.WadArea);
-            }
-            else if (wadObject is WadAdditionalSoundInfo)
-            {
-                WadAdditionalSoundInfo additionalSoundInfo = (WadAdditionalSoundInfo)wadObject;
-                using (var form = new FormSoundInfoEditor(false) { SoundInfo = additionalSoundInfo.SoundInfo })
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    additionalSoundInfo.SoundInfo = form.SoundInfo;
-                }
-                tool.WadChanged(tool.MainSelection.Value.WadArea);
-            }
         }
 
         public static void DeleteObjects(WadToolClass tool, IWin32Window owner, WadArea wadArea, List<IWadObjectId> ObjectIdsToDelete)
@@ -595,21 +573,6 @@ namespace WadTool
             });
 
             return mesh;
-        }
-
-        public static void ShowSoundOverview(WadToolClass tool, IWin32Window owner, WadArea wadArea)
-        {
-            Wad2 wad = tool.GetWad(wadArea);
-            if (wad == null)
-            {
-                DarkMessageBox.Show(owner, "You must have a " + wadArea.ToString().ToLower() + " wad loaded.", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            using (FormSoundOverview form = new FormSoundOverview(wad))
-                if (form.ShowDialog(owner) != DialogResult.OK)
-                    return;
-            tool.WadChanged(wadArea);
         }
 
         public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)

@@ -71,7 +71,7 @@ namespace TombLib.Wad
             EmbeddedSamples = new List<WadSample>();
             SoundCatalog = s.SoundCatalog;
             foreach (var sample in s.EmbeddedSamples)
-                EmbeddedSamples.Add(new WadSample(sample.SamplePath));
+                EmbeddedSamples.Add(new WadSample(sample.FileName));
         }
 
         [XmlIgnore]

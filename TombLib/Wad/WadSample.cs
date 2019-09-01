@@ -37,26 +37,25 @@ namespace TombLib.Wad
         public Hash Hash { get; }
 
         // Path of this sample. This must be absolute path and this is the only field that must be serialized to XML.
-        public string SamplePath { get; set; }
-
+        public string FileName { get; set; }
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         // Only for XML serialization!
         public WadSample() { }
 
-        public WadSample(string path)
+        public WadSample(string filename)
         {
-            SamplePath = path;
+            FileName = filename;
         }
 
-        public WadSample(string path, byte[] data)
+        public WadSample(string filename, byte[] data)
         {
             if (CheckSampleDataForFormat(data) < 0)
                 throw new NotSupportedException("Sample data is of an unsupported format.");
             Data = data;
             Hash = Hash.FromByteArray(Data);
-            SamplePath = path;
+            FileName = filename;
         }
 
         public static int CheckSampleDataForFormat(byte[] data)
@@ -136,7 +135,7 @@ namespace TombLib.Wad
             public uint SampleRate;
         }
         public WadSample ChangeSampleRate(uint targetSampleRate, bool resample = true) =>
-            new WadSample(SamplePath, ConvertSampleFormat(Data, resample, targetSampleRate));
+            new WadSample(FileName, ConvertSampleFormat(Data, resample, targetSampleRate));
         public static byte[] ConvertSampleFormat(byte[] data, bool resample = true, uint sampleRate = GameSupportedSampleRate) =>
             ConvertSampleFormat(data, r => new ResampleInfo { Resample = resample, SampleRate = sampleRate });
         public static byte[] ConvertSampleFormat(byte[] data, Func<uint, ResampleInfo> negotiateSampleRate)

@@ -153,7 +153,7 @@ namespace TombLib.Controls
                     cbGlobal.Checked = value.Global;
                     dgvSamples.Rows.Clear();
                     foreach (var sample in value.EmbeddedSamples)
-                        dgvSamples.Rows.Add(sample.SamplePath);
+                        dgvSamples.Rows.Add(sample.FileName);
                 }
                 finally
                 {
