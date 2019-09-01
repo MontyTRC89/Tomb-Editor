@@ -398,6 +398,8 @@ namespace TombIDE.ScriptEditor
 
 		private void BuildScript()
 		{
+			SaveAll();
+
 			switch (_ide.Project.GameVersion)
 			{
 				case GameVersion.TR4:
