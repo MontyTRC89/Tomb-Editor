@@ -155,8 +155,10 @@ namespace TombIDE
 		{
 			if (radioButton_SpecifiedCopy.Checked)
 			{
-				string specifiedFilePath = textBox_Prj2Path.Tag.ToString();
-				LevelHandling.UpdatePrj2GameSettings(specifiedFilePath, importedLevel, _ide.Project);
+				string specifiedFileName = Path.GetFileName(textBox_Prj2Path.Tag.ToString());
+				string internalFilePath = Path.Combine(importedLevel.FolderPath, specifiedFileName);
+
+				LevelHandling.UpdatePrj2GameSettings(internalFilePath, importedLevel, _ide.Project);
 			}
 			else if (radioButton_SelectedCopy.Checked)
 			{
