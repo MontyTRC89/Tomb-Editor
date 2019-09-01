@@ -152,18 +152,28 @@ namespace TombIDE.ProjectMaster
 			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap());
 
 			// Windows doesn't seem to have a name for 128x128 px icons, therefore we must resize the Jumbo one
-			Bitmap resized_256 = (Bitmap)ImageHandling.ResizeImage(ico_256, 128, 128);
-			Bitmap ico_128 = ImageHandling.CropBitmapWhitespace(resized_256);
+			Bitmap ico_128 = (Bitmap)ImageHandling.ResizeImage(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap(), 128, 128); ;
 
 			Bitmap ico_48 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.ExtraLarge, false).ToBitmap());
-			Bitmap ico_16 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.Small, false).ToBitmap());
+			Bitmap ico_16 = IconExtractor.GetIconFrom(tempFilePath, IconSize.Small, false).ToBitmap();
 
-			panel_256.BackgroundImage = ico_256;
+			if (ico_256.Width == ico_48.Width && ico_256.Height == ico_48.Height)
+			{
+				panel_256.BorderStyle = BorderStyle.FixedSingle;
+				panel_128.BorderStyle = BorderStyle.FixedSingle;
 
-			panel_128.BackgroundImage = (ico_256.Width > 128 && ico_256.Height > 128) ? ico_128 : ico_256;
-
-			panel_48.BackgroundImage = ico_48;
-			panel_16.BackgroundImage = ico_16;
+				panel_256.BackgroundImage = ico_48;
+				panel_128.BackgroundImage = ico_48;
+				panel_48.BackgroundImage = ico_48;
+				panel_16.BackgroundImage = ico_16;
+			}
+			else
+			{
+				panel_256.BackgroundImage = ico_256;
+				panel_128.BackgroundImage = ico_128;
+				panel_48.BackgroundImage = ico_48;
+				panel_16.BackgroundImage = ico_16;
+			}
 
 			// Now delete the temporary .exe file
 			File.Delete(tempFilePath);
