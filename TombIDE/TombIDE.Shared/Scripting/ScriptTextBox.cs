@@ -238,6 +238,14 @@ namespace TombIDE.Shared.Scripting
 				Selection.Start = PointToPlace(e.Location); // Move the caret to the right-clicked position
 		}
 
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			if (!ClientRectangle.Contains(PointToClient(Cursor.Position)) && Capture)
+				Capture = false;
+		}
+
 		#endregion Override methods
 
 		#region ToolTips
@@ -267,6 +275,8 @@ namespace TombIDE.Shared.Scripting
 				{
 					e.ToolTipTitle = "[" + e.HoveredWord + "]";
 					e.ToolTipText = entry.Value.ToString();
+
+					Capture = true;
 					return;
 				}
 			}
@@ -289,6 +299,8 @@ namespace TombIDE.Shared.Scripting
 					{
 						e.ToolTipTitle = e.HoveredWord;
 						e.ToolTipText = entry.Value.ToString();
+
+						Capture = true;
 						return;
 					}
 				}

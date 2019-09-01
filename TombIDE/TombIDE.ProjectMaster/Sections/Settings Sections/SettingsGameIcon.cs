@@ -29,15 +29,28 @@ namespace TombIDE.ProjectMaster
 			radioButton_Dark.Checked = !_ide.Configuration.LightModePreviewEnabled;
 			radioButton_Light.Checked = _ide.Configuration.LightModePreviewEnabled;
 
-			if (File.Exists(Path.Combine(_ide.Project.ProjectPath, "launch.exe")))
-				UpdateIcons();
-			else
-			{
-				label_Unavailable.Visible = true;
+			string tempExeFilePath = Path.Combine(Path.GetTempPath(), "tomb_temp.exe");
 
-				button_Change.Enabled = false;
-				button_Reset.Enabled = false;
+			using (File.Create(tempExeFilePath))
+			{
+				Bitmap defaultExeIcon = IconExtractor.GetIconFrom(tempExeFilePath, IconSize.Large, false).ToBitmap();
+				Bitmap gameExeIcon = IconExtractor.GetIconFrom(Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName()), IconSize.Large, false).ToBitmap();
+
+				byte[] defaultExeStream = ImageHandling.GetBitmapStream(defaultExeIcon);
+				byte[] gameExeStream = ImageHandling.GetBitmapStream(gameExeIcon);
+
+				if (gameExeStream.SequenceEqual(defaultExeStream) && File.Exists(Path.Combine(_ide.Project.ProjectPath, "launch.exe")))
+					UpdateIcons();
+				else
+				{
+					label_Unavailable.Visible = true;
+
+					button_Change.Enabled = false;
+					button_Reset.Enabled = false;
+				}
 			}
+
+			File.Delete(tempExeFilePath);
 		}
 
 		#endregion Initialization
@@ -136,13 +149,21 @@ namespace TombIDE.ProjectMaster
 			string tempFilePath = launchFilePath + "." + randomString + ".exe";
 			File.Copy(launchFilePath, tempFilePath);
 
-			panel_256.BackgroundImage = IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap();
+			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap());
 
 			// Windows doesn't seem to have a name for 128x128 px icons, therefore we must resize the Jumbo one
-			panel_128.BackgroundImage = ImageHandling.ResizeImage(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap(), 128, 128);
+			Bitmap resized_256 = (Bitmap)ImageHandling.ResizeImage(ico_256, 128, 128);
+			Bitmap ico_128 = ImageHandling.CropBitmapWhitespace(resized_256);
 
-			panel_48.BackgroundImage = IconExtractor.GetIconFrom(tempFilePath, IconSize.ExtraLarge, false).ToBitmap();
-			panel_16.BackgroundImage = IconExtractor.GetIconFrom(tempFilePath, IconSize.Small, false).ToBitmap();
+			Bitmap ico_48 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.ExtraLarge, false).ToBitmap());
+			Bitmap ico_16 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.Small, false).ToBitmap());
+
+			panel_256.BackgroundImage = ico_256;
+
+			panel_128.BackgroundImage = (ico_256.Width > 128 && ico_256.Height > 128) ? ico_128 : ico_256;
+
+			panel_48.BackgroundImage = ico_48;
+			panel_16.BackgroundImage = ico_16;
 
 			// Now delete the temporary .exe file
 			File.Delete(tempFilePath);

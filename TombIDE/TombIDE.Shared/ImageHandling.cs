@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace TombIDE.Shared
 {
@@ -115,6 +116,54 @@ namespace TombIDE.Shared
 			}
 
 			return bitmap;
+		}
+
+		public static byte[] GetBitmapStream(Bitmap bitmap)
+		{
+			using (MemoryStream stream = new MemoryStream())
+			{
+				bitmap.Save(stream, ImageFormat.Bmp);
+				return stream.ToArray();
+			}
+		}
+
+		public static Bitmap CropBitmapWhitespace(Bitmap bitmap)
+		{
+			// Find the min/max non-white/transparent pixels
+			Point min = new Point(int.MaxValue, int.MaxValue);
+			Point max = new Point(int.MinValue, int.MinValue);
+
+			for (int x = 0; x < bitmap.Width; ++x)
+			{
+				for (int y = 0; y < bitmap.Height; ++y)
+				{
+					Color pixelColor = bitmap.GetPixel(x, y);
+
+					if (pixelColor.A > 0)
+					{
+						if (x < min.X)
+							min.X = x;
+
+						if (y < min.Y)
+							min.Y = y;
+
+						if (x > max.X)
+							max.X = x;
+
+						if (y > max.Y)
+							max.Y = y;
+					}
+				}
+			}
+
+			// Create a new bitmap from the crop rectangle
+			Rectangle cropRectangle = new Rectangle(min.X, min.Y, max.X - min.X + 1, max.Y - min.Y + 1);
+			Bitmap newBitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
+
+			using (Graphics graphics = Graphics.FromImage(newBitmap))
+				graphics.DrawImage(bitmap, 0, 0, cropRectangle, GraphicsUnit.Pixel);
+
+			return newBitmap;
 		}
 	}
 }
