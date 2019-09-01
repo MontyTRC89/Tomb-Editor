@@ -58,7 +58,6 @@
             this.butDeleteEffect = new DarkUI.Controls.DarkButton();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-            this.darkTreeView1 = new DarkUI.Controls.DarkTreeView();
             this.panelPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosY)).BeginInit();
@@ -80,7 +79,7 @@
             // btCancel
             // 
             this.btCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btCancel.Location = new System.Drawing.Point(348, 549);
+            this.btCancel.Location = new System.Drawing.Point(276, 325);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(113, 26);
             this.btCancel.TabIndex = 50;
@@ -90,7 +89,7 @@
             // btOk
             // 
             this.btOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btOk.Location = new System.Drawing.Point(467, 549);
+            this.btOk.Location = new System.Drawing.Point(395, 325);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(113, 26);
             this.btOk.TabIndex = 51;
@@ -105,7 +104,7 @@
             this.treeCommands.Location = new System.Drawing.Point(6, 3);
             this.treeCommands.MaxDragChange = 20;
             this.treeCommands.Name = "treeCommands";
-            this.treeCommands.Size = new System.Drawing.Size(455, 505);
+            this.treeCommands.Size = new System.Drawing.Size(384, 281);
             this.treeCommands.TabIndex = 52;
             this.treeCommands.SelectedNodesChanged += new System.EventHandler(this.treeCommands_SelectedNodesChanged);
             // 
@@ -124,7 +123,7 @@
             "Flipeffect"});
             this.comboCommandType.Location = new System.Drawing.Point(53, 4);
             this.comboCommandType.Name = "comboCommandType";
-            this.comboCommandType.Size = new System.Drawing.Size(405, 23);
+            this.comboCommandType.Size = new System.Drawing.Size(334, 23);
             this.comboCommandType.TabIndex = 53;
             this.comboCommandType.SelectedIndexChanged += new System.EventHandler(this.comboCommandType_SelectedIndexChanged);
             // 
@@ -140,7 +139,7 @@
             this.panelPosition.Controls.Add(this.tbPosX);
             this.panelPosition.Location = new System.Drawing.Point(3, 33);
             this.panelPosition.Name = "panelPosition";
-            this.panelPosition.Size = new System.Drawing.Size(455, 31);
+            this.panelPosition.Size = new System.Drawing.Size(384, 31);
             this.panelPosition.TabIndex = 54;
             this.panelPosition.Visible = false;
             // 
@@ -148,7 +147,7 @@
             // 
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(219, 6);
+            this.darkLabel3.Location = new System.Drawing.Point(244, 9);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(16, 13);
             this.darkLabel3.TabIndex = 5;
@@ -163,7 +162,7 @@
             0,
             0,
             65536});
-            this.tbPosZ.Location = new System.Drawing.Point(241, 4);
+            this.tbPosZ.Location = new System.Drawing.Point(266, 7);
             this.tbPosZ.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -184,7 +183,7 @@
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(110, 6);
+            this.darkLabel2.Location = new System.Drawing.Point(135, 9);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(15, 13);
             this.darkLabel2.TabIndex = 3;
@@ -199,7 +198,7 @@
             0,
             0,
             65536});
-            this.tbPosY.Location = new System.Drawing.Point(131, 4);
+            this.tbPosY.Location = new System.Drawing.Point(156, 7);
             this.tbPosY.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -220,7 +219,7 @@
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 6);
+            this.darkLabel1.Location = new System.Drawing.Point(28, 9);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(16, 13);
             this.darkLabel1.TabIndex = 1;
@@ -235,7 +234,7 @@
             0,
             0,
             65536});
-            this.tbPosX.Location = new System.Drawing.Point(25, 3);
+            this.tbPosX.Location = new System.Drawing.Point(50, 6);
             this.tbPosX.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -262,7 +261,7 @@
             this.panelJumpDistance.Controls.Add(this.tbHorizontal);
             this.panelJumpDistance.Location = new System.Drawing.Point(3, 70);
             this.panelJumpDistance.Name = "panelJumpDistance";
-            this.panelJumpDistance.Size = new System.Drawing.Size(455, 29);
+            this.panelJumpDistance.Size = new System.Drawing.Size(384, 29);
             this.panelJumpDistance.TabIndex = 55;
             this.panelJumpDistance.Visible = false;
             // 
@@ -348,7 +347,7 @@
             this.panelEffect.Controls.Add(this.tbFlipEffectFrame);
             this.panelEffect.Location = new System.Drawing.Point(3, 105);
             this.panelEffect.Name = "panelEffect";
-            this.panelEffect.Size = new System.Drawing.Size(455, 29);
+            this.panelEffect.Size = new System.Drawing.Size(384, 29);
             this.panelEffect.TabIndex = 56;
             this.panelEffect.Visible = false;
             // 
@@ -435,7 +434,7 @@
             this.panelSound.Controls.Add(this.tbPlaySoundFrame);
             this.panelSound.Location = new System.Drawing.Point(3, 140);
             this.panelSound.Name = "panelSound";
-            this.panelSound.Size = new System.Drawing.Size(455, 400);
+            this.panelSound.Size = new System.Drawing.Size(384, 176);
             this.panelSound.TabIndex = 57;
             this.panelSound.Visible = false;
             // 
@@ -444,14 +443,11 @@
             this.comboSound.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboSound.FormattingEnabled = true;
-            this.comboSound.Items.AddRange(new object[] {
-            "Always",
-            "Only when dry",
-            "Only in the water"});
-            this.comboSound.Location = new System.Drawing.Point(260, 2);
+            this.comboSound.Location = new System.Drawing.Point(191, 2);
             this.comboSound.Name = "comboSound";
-            this.comboSound.Size = new System.Drawing.Size(188, 23);
+            this.comboSound.Size = new System.Drawing.Size(183, 23);
             this.comboSound.TabIndex = 100;
+            this.comboSound.SelectedIndexChanged += new System.EventHandler(this.ComboSound_SelectedIndexChanged);
             // 
             // darkLabel9
             // 
@@ -465,16 +461,14 @@
             // 
             // comboPlaySoundConditions
             // 
-            this.comboPlaySoundConditions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboPlaySoundConditions.FormattingEnabled = true;
             this.comboPlaySoundConditions.Items.AddRange(new object[] {
             "Always",
             "Only when dry",
             "Only in the water"});
-            this.comboPlaySoundConditions.Location = new System.Drawing.Point(131, 2);
+            this.comboPlaySoundConditions.Location = new System.Drawing.Point(129, 2);
             this.comboPlaySoundConditions.Name = "comboPlaySoundConditions";
-            this.comboPlaySoundConditions.Size = new System.Drawing.Size(123, 23);
+            this.comboPlaySoundConditions.Size = new System.Drawing.Size(52, 23);
             this.comboPlaySoundConditions.TabIndex = 53;
             this.comboPlaySoundConditions.SelectedIndexChanged += new System.EventHandler(this.comboPlaySoundConditions_SelectedIndexChanged);
             // 
@@ -508,7 +502,7 @@
             // 
             this.butAddEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddEffect.Image = global::WadTool.Properties.Resources.plus_math_16;
-            this.butAddEffect.Location = new System.Drawing.Point(292, 514);
+            this.butAddEffect.Location = new System.Drawing.Point(221, 290);
             this.butAddEffect.Name = "butAddEffect";
             this.butAddEffect.Size = new System.Drawing.Size(83, 23);
             this.butAddEffect.TabIndex = 95;
@@ -520,7 +514,7 @@
             // 
             this.butDeleteEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteEffect.Image = global::WadTool.Properties.Resources.trash_161;
-            this.butDeleteEffect.Location = new System.Drawing.Point(381, 514);
+            this.butDeleteEffect.Location = new System.Drawing.Point(310, 290);
             this.butDeleteEffect.Name = "butDeleteEffect";
             this.butDeleteEffect.Size = new System.Drawing.Size(80, 23);
             this.butDeleteEffect.TabIndex = 94;
@@ -534,7 +528,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer.Location = new System.Drawing.Point(-2, 0);
-            this.splitContainer.MinimumSize = new System.Drawing.Size(866, 543);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -551,8 +544,8 @@
             this.splitContainer.Panel2.Controls.Add(this.panelEffect);
             this.splitContainer.Panel2.Controls.Add(this.panelJumpDistance);
             this.splitContainer.Panel2.Controls.Add(this.panelPosition);
-            this.splitContainer.Size = new System.Drawing.Size(929, 543);
-            this.splitContainer.SplitterDistance = 464;
+            this.splitContainer.Size = new System.Drawing.Size(787, 319);
+            this.splitContainer.SplitterDistance = 393;
             this.splitContainer.TabIndex = 98;
             // 
             // darkLabel8
@@ -565,27 +558,17 @@
             this.darkLabel8.TabIndex = 1;
             this.darkLabel8.Text = "Type:";
             // 
-            // darkTreeView1
-            // 
-            this.darkTreeView1.Location = new System.Drawing.Point(446, 548);
-            this.darkTreeView1.MaxDragChange = 20;
-            this.darkTreeView1.Name = "darkTreeView1";
-            this.darkTreeView1.Size = new System.Drawing.Size(8, 8);
-            this.darkTreeView1.TabIndex = 99;
-            this.darkTreeView1.Text = "darkTreeView1";
-            // 
             // FormAnimCommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(929, 585);
-            this.Controls.Add(this.darkTreeView1);
+            this.ClientSize = new System.Drawing.Size(784, 361);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(937, 612);
+            this.MinimumSize = new System.Drawing.Size(800, 400);
             this.Name = "FormAnimCommandsEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -646,7 +629,6 @@
         private System.Windows.Forms.SplitContainer splitContainer;
         private DarkUI.Controls.DarkLabel darkLabel8;
         private DarkUI.Controls.DarkComboBox comboPlaySoundConditions;
-        private DarkUI.Controls.DarkTreeView darkTreeView1;
         private DarkUI.Controls.DarkComboBox comboSound;
     }
 }
