@@ -28,24 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormImportPrj));
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.tbPrjPath = new DarkUI.Controls.DarkTextBox();
-            this.butBrowsePrj = new DarkUI.Controls.DarkButton();
             this.butBrowseTxt = new DarkUI.Controls.DarkButton();
             this.tbTxtPath = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
+            this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            this.cbRespectMousepatch = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.cbUseHalfPixelCorrection = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.darkGroupBox1.SuspendLayout();
+            this.darkGroupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(420, 203);
+            this.butCancel.Location = new System.Drawing.Point(378, 237);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -56,7 +58,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(334, 203);
+            this.butOk.Location = new System.Drawing.Point(292, 237);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -64,46 +66,15 @@
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(13, 13);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(78, 13);
-            this.darkLabel1.TabIndex = 3;
-            this.darkLabel1.Text = "PRJ to import:";
-            // 
-            // tbPrjPath
-            // 
-            this.tbPrjPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbPrjPath.Location = new System.Drawing.Point(111, 11);
-            this.tbPrjPath.Name = "tbPrjPath";
-            this.tbPrjPath.Size = new System.Drawing.Size(303, 22);
-            this.tbPrjPath.TabIndex = 4;
-            // 
-            // butBrowsePrj
-            // 
-            this.butBrowsePrj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butBrowsePrj.Image = global::TombEditor.Properties.Resources.general_Open_16;
-            this.butBrowsePrj.Location = new System.Drawing.Point(421, 11);
-            this.butBrowsePrj.Name = "butBrowsePrj";
-            this.butBrowsePrj.Size = new System.Drawing.Size(79, 23);
-            this.butBrowsePrj.TabIndex = 5;
-            this.butBrowsePrj.Text = "Browse";
-            this.butBrowsePrj.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butBrowsePrj.Click += new System.EventHandler(this.ButBrowsePrj_Click);
-            // 
             // butBrowseTxt
             // 
             this.butBrowseTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butBrowseTxt.Image = global::TombEditor.Properties.Resources.general_Open_16;
-            this.butBrowseTxt.Location = new System.Drawing.Point(421, 40);
+            this.butBrowseTxt.Location = new System.Drawing.Point(367, 21);
             this.butBrowseTxt.Name = "butBrowseTxt";
             this.butBrowseTxt.Size = new System.Drawing.Size(79, 23);
             this.butBrowseTxt.TabIndex = 8;
-            this.butBrowseTxt.Text = "Browse";
+            this.butBrowseTxt.Text = "Browse...";
             this.butBrowseTxt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butBrowseTxt.Click += new System.EventHandler(this.ButBrowseTxt_Click);
             // 
@@ -111,41 +82,85 @@
             // 
             this.tbTxtPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTxtPath.Location = new System.Drawing.Point(111, 40);
+            this.tbTxtPath.Location = new System.Drawing.Point(6, 21);
             this.tbTxtPath.Name = "tbTxtPath";
-            this.tbTxtPath.Size = new System.Drawing.Size(303, 22);
+            this.tbTxtPath.Size = new System.Drawing.Size(355, 22);
             this.tbTxtPath.TabIndex = 7;
             // 
-            // darkLabel2
+            // darkGroupBox1
             // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(13, 42);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(90, 13);
-            this.darkLabel2.TabIndex = 6;
-            this.darkLabel2.Text = "Sounds catalog:";
+            this.darkGroupBox1.Controls.Add(this.darkLabel3);
+            this.darkGroupBox1.Controls.Add(this.tbTxtPath);
+            this.darkGroupBox1.Controls.Add(this.butBrowseTxt);
+            this.darkGroupBox1.Location = new System.Drawing.Point(6, 148);
+            this.darkGroupBox1.Name = "darkGroupBox1";
+            this.darkGroupBox1.Size = new System.Drawing.Size(452, 81);
+            this.darkGroupBox1.TabIndex = 11;
+            this.darkGroupBox1.TabStop = false;
+            this.darkGroupBox1.Text = "Base sound catalog (optional)";
             // 
             // darkLabel3
             // 
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(111, 69);
+            this.darkLabel3.Location = new System.Drawing.Point(6, 47);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(389, 58);
-            this.darkLabel3.TabIndex = 9;
-            this.darkLabel3.Text = resources.GetString("darkLabel3.Text");
+            this.darkLabel3.Size = new System.Drawing.Size(440, 31);
+            this.darkLabel3.TabIndex = 10;
+            this.darkLabel3.Text = "Specifiy sound catalog (sounds.txt or xml file). If not specified, legacy SFX/SAM" +
+    " files provided with specified WAD will be used.";
             // 
-            // darkLabel4
+            // darkGroupBox2
             // 
-            this.darkLabel4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(111, 143);
-            this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(389, 49);
-            this.darkLabel4.TabIndex = 10;
-            this.darkLabel4.Text = "Warning: if you have selected to load a custom Sounds.txt file, it will be conver" +
-    "ted to our new XML file format and the file will be placed in the same path of T" +
-    "XT file.";
+            this.darkGroupBox2.Controls.Add(this.darkLabel1);
+            this.darkGroupBox2.Controls.Add(this.cbUseHalfPixelCorrection);
+            this.darkGroupBox2.Controls.Add(this.darkLabel2);
+            this.darkGroupBox2.Controls.Add(this.cbRespectMousepatch);
+            this.darkGroupBox2.Location = new System.Drawing.Point(6, 8);
+            this.darkGroupBox2.Name = "darkGroupBox2";
+            this.darkGroupBox2.Size = new System.Drawing.Size(452, 134);
+            this.darkGroupBox2.TabIndex = 12;
+            this.darkGroupBox2.TabStop = false;
+            this.darkGroupBox2.Text = "Import settings";
+            // 
+            // cbRespectMousepatch
+            // 
+            this.cbRespectMousepatch.AutoSize = true;
+            this.cbRespectMousepatch.Location = new System.Drawing.Point(6, 21);
+            this.cbRespectMousepatch.Name = "cbRespectMousepatch";
+            this.cbRespectMousepatch.Size = new System.Drawing.Size(265, 17);
+            this.cbRespectMousepatch.TabIndex = 5;
+            this.cbRespectMousepatch.Tag = "";
+            this.cbRespectMousepatch.Text = "Respect T4Larson\'s mousepatch flyby handling";
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(6, 41);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(440, 33);
+            this.darkLabel2.TabIndex = 11;
+            this.darkLabel2.Text = "If you\'ve used a patch which increased maximum amount of flyby sequences in winro" +
+    "omedit, use this option, otherwise flyby indices will be corrupted.";
+            // 
+            // cbUseHalfPixelCorrection
+            // 
+            this.cbUseHalfPixelCorrection.AutoSize = true;
+            this.cbUseHalfPixelCorrection.Location = new System.Drawing.Point(6, 79);
+            this.cbUseHalfPixelCorrection.Name = "cbUseHalfPixelCorrection";
+            this.cbUseHalfPixelCorrection.Size = new System.Drawing.Size(169, 17);
+            this.cbUseHalfPixelCorrection.TabIndex = 12;
+            this.cbUseHalfPixelCorrection.Tag = "";
+            this.cbUseHalfPixelCorrection.Text = "Use half-pixel UV correction";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(6, 98);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(440, 33);
+            this.darkLabel1.TabIndex = 13;
+            this.darkLabel1.Text = "Legacy texture cropping to prevent border bleeding. Use only if you are about to " +
+    "turn off advanced texture padding in Level settings.";
             // 
             // FormImportPrj
             // 
@@ -153,15 +168,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(508, 234);
-            this.Controls.Add(this.darkLabel4);
-            this.Controls.Add(this.darkLabel3);
-            this.Controls.Add(this.butBrowseTxt);
-            this.Controls.Add(this.tbTxtPath);
-            this.Controls.Add(this.darkLabel2);
-            this.Controls.Add(this.butBrowsePrj);
-            this.Controls.Add(this.tbPrjPath);
-            this.Controls.Add(this.darkLabel1);
+            this.ClientSize = new System.Drawing.Size(464, 267);
+            this.Controls.Add(this.darkGroupBox2);
+            this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -173,21 +182,25 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Import PRJ";
+            this.darkGroupBox1.ResumeLayout(false);
+            this.darkGroupBox1.PerformLayout();
+            this.darkGroupBox2.ResumeLayout(false);
+            this.darkGroupBox2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkButton butOk;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkTextBox tbPrjPath;
-        private DarkUI.Controls.DarkButton butBrowsePrj;
         private DarkUI.Controls.DarkButton butBrowseTxt;
         private DarkUI.Controls.DarkTextBox tbTxtPath;
-        private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkLabel darkLabel3;
-        private DarkUI.Controls.DarkLabel darkLabel4;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
+        private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkCheckBox cbRespectMousepatch;
+        private DarkUI.Controls.DarkCheckBox cbUseHalfPixelCorrection;
+        private DarkUI.Controls.DarkLabel darkLabel1;
     }
 }

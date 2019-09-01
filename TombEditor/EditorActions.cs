@@ -4085,16 +4085,25 @@ namespace TombEditor
             if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
-            using (var formImport = new FormImportPrj())
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = LevelFileDialog.BrowseFile(owner, "Select PRJ to import",
+                                                      LevelSettings.FileFormatsLevelPrj,
+                                                      false);
+                if (string.IsNullOrEmpty(fileName))
+                    return;
+            }
+
+            using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrection))
             {
                 if (formImport.ShowDialog() != DialogResult.OK)
                     return;
 
                 Level newLevel = null;
                 using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
-                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath, progressReporter, 
-                    _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, 
-                    _editor.Configuration.Editor_UseHalfPixelCorrection)))
+                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath, progressReporter,
+                    formImport.RespectMousepatchOnFlybyHandling,
+                    formImport.UseHalfPixelCorrection)))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;

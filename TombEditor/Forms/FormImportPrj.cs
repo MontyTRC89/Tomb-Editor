@@ -3,29 +3,39 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using System.IO;
 
 namespace TombEditor.Forms
 {
     public partial class FormImportPrj : DarkForm
     {
         public string PrjPath { get; set; }
-        public string SoundsPath { get; set; }
 
-        public FormImportPrj()
+        public string SoundsPath { get; set; }
+        public bool RespectMousepatchOnFlybyHandling { get; set; }
+        public bool UseHalfPixelCorrection { get; set; }
+
+        public FormImportPrj(string prjPath, bool respectMousepatch, bool useHalfPixelCorrection)
         {
             InitializeComponent();
-        }
-        private void butOk_Click(object sender, EventArgs e)
-        {
-            if (tbPrjPath.Text.Trim() == "")
+
+            if (string.IsNullOrEmpty(prjPath))
             {
-                DarkMessageBox.Show(this, "You must select a PRJ file to import", "Error", 
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                DialogResult = DialogResult.Cancel;
+                Close();
             }
 
-            PrjPath = tbPrjPath.Text;
+            Text = "Import PRJ (" + Path.GetFileNameWithoutExtension(prjPath) + ")";
+            PrjPath = prjPath;
+            cbRespectMousepatch.Checked = respectMousepatch;
+            cbUseHalfPixelCorrection.Checked = useHalfPixelCorrection;
+        }
+
+        private void butOk_Click(object sender, EventArgs e)
+        {
             SoundsPath = tbTxtPath.Text;
+            RespectMousepatchOnFlybyHandling = cbRespectMousepatch.Checked;
+            UseHalfPixelCorrection = cbUseHalfPixelCorrection.Checked;
 
             DialogResult = DialogResult.OK;
             Close();
@@ -35,15 +45,6 @@ namespace TombEditor.Forms
         {
             DialogResult = DialogResult.Cancel;
             Close();
-        }
-
-        private void ButBrowsePrj_Click(object sender, EventArgs e)
-        {
-            string result = LevelFileDialog.BrowseFile(this, "Select PRJ to import",
-                                                      LevelSettings.FileFormatsLevelPrj,
-                                                      false);
-            if (result != null)
-                tbPrjPath.Text = result;
         }
 
         private void ButBrowseTxt_Click(object sender, EventArgs e)
