@@ -191,7 +191,7 @@ namespace TombLib.Controls
 
         private void butPlayPreview_Click(object sender, EventArgs e)
         {
-            WadSoundPlayer.PlaySoundInfo(SoundInfo);
+            //WadSoundPlayer.PlaySoundInfo(SoundInfo);
         }
 
         private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -201,7 +201,7 @@ namespace TombLib.Controls
             if (dataGridView.Columns[e.ColumnIndex].Name == PlayButtonColumn.Name)
             {
                 WadSample sample = ((IReadOnlyList<WadSample>)dataGridView.DataSource)[e.RowIndex];
-                WadSoundPlayer.PlaySample(sample);
+                //WadSoundPlayer.PlaySample(sample);
             }
         }
 

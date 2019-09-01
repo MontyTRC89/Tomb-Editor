@@ -8,6 +8,7 @@ using System.Media;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.Wad
@@ -17,8 +18,11 @@ namespace TombLib.Wad
         private static Random _rng = new Random();
         private static WasapiOut _channel = null;
 
-        public static void PlaySoundInfo(WadSoundInfo soundInfo)
+        public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo)
         {
+            if (_channel != null && _channel.PlaybackState == PlaybackState.Playing)
+                return;
+
             if (soundInfo.EmbeddedSamples.Count == 0)
                 return;
 
@@ -27,7 +31,7 @@ namespace TombLib.Wad
             int loopCount = soundInfo.LoopBehaviour == WadSoundLoopBehaviour.Looped ? 3 : 1;
             float pan = 0.0f;
             float volume = soundInfo.Volume;
-            float pitch = soundInfo.PitchFactor;
+            float pitch = 1 + soundInfo.PitchFactor / 255.0f;
             lock (_rng)
             {
                 if (_rng.NextDouble() > soundInfo.Chance)
@@ -40,10 +44,10 @@ namespace TombLib.Wad
                 if (soundInfo.RandomizeVolume)
                     volume -= (float)_rng.NextDouble() * 0.125f;
             }
-            PlaySample(soundInfo.EmbeddedSamples[sampleIndex], volume, pitch, pan, loopCount);
+            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], volume, pitch, pan, loopCount);
         }
 
-        public static void PlaySample(WadSample sample, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
+        public static void PlaySample(Level level, WadSample sample, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
         {
             if (volume <= 0.0f || loopCount <= 0)
                 return;
@@ -54,8 +58,7 @@ namespace TombLib.Wad
             try
             {
                 // Load data
-                var memoryStream = disposables.AddAndReturn(new MemoryStream(sample.Data, false));
-                var waveStream = disposables.AddAndReturn(new WaveFileReader(memoryStream));
+                var waveStream = disposables.AddAndReturn(new WaveFileReader(WadSounds.TryGetSamplePath(level, sample.SamplePath)));
 
                 // Apply looping
                 ISampleProvider sampleStream;
@@ -114,6 +117,15 @@ namespace TombLib.Wad
                 _channel.Dispose();
                 _channel = null;
             }
+        }
+
+        public static string FindSample(List<string> possiblePaths, string sampleFileName)
+        {
+            foreach (var path in possiblePaths)
+                if (File.Exists(path + sampleFileName))
+                    return path;
+
+            return null;
         }
 
         public static ImageC DrawWaveformForSample(WadSample sampleData, VectorInt2 imageSize, double startPositionInSeconds, double secondsPerPixel, ColorC graphColor)

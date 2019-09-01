@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using TombLib.IO;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
@@ -77,6 +78,24 @@ namespace TombLib.Wad
             foreach (var soundInfo in SoundInfos)
                 if (soundInfo.Id == id)
                     return soundInfo;
+            return null;
+        }
+
+        public static string TryGetSamplePath(Level level, string name)
+        {
+            // Search the sample in all registered paths, in descending order
+            for (int p = 0; p < level.Settings.OldWadSoundPaths.Count; p++)
+            {
+                string newPath = level.Settings.MakeAbsolute(level.Settings.OldWadSoundPaths[p].Path);
+                if (newPath == null)
+                    continue;
+
+                newPath = Path.Combine(newPath, name);
+
+                if (File.Exists(newPath))
+                    return newPath;
+            }
+
             return null;
         }
 
