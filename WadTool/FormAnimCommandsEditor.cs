@@ -88,6 +88,7 @@ namespace WadTool
 
                         comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbPlaySoundFrame.Value = cmd.Parameter1;
+                        comboSound.SelectedIndex = (cmd.Parameter2 & 0x3FFF) + 1;
                         switch (cmd.Parameter2 & 0xC000)
                         {
                             default:
