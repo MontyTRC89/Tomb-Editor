@@ -73,13 +73,7 @@ namespace TombLib.Controls
                         var mainNode = AddOrReuseChild(nodes, "Sprite sequences");
                         UpdateList(mainNode, _wad.SpriteSequences.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
                     }
-                    if (_wad.AdditionalSoundInfosObsolete.Count > 0)
-                    {
-                        var mainNode = AddOrReuseChild(nodes, "Additional sound infos (legacy imported and not used by any object)");
-                        UpdateList(mainNode, _wad.AdditionalSoundInfosObsolete.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
-                    }
-                    else
-                        nodes.RemoveAll((node) => node.Text.Contains("Additional sound infos"));
+
                     tree.Nodes.AddRange(nodes);
                 });
         }
@@ -114,7 +108,6 @@ namespace TombLib.Controls
             oldNode.Nodes.Clear();
             oldNode.Nodes.AddRange(newChildNodes);
         }
-
 
         private void KeepSelection(Action update)
         {
