@@ -117,7 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="darkLabel3.Text" xml:space="preserve">
-    <value>You can select an optional Sounds.txt or Sounds.xml file if you have created a specific one for this project. Otherwise, Tomb Editor will use a standard TRLE Sounds.txt file. This file is needed only for sound names, because all sound informations and samples will be taken from SFX/SAM.</value>
-  </data>
 </root>

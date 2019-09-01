@@ -1914,7 +1914,7 @@ namespace TombLib.LevelData.IO
             }
 
             if (adjustUV)
-                progressReporter.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, turn off 'Half-pixel UV correction' in editor options and re-import project.");
+                progressReporter.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, re-import project and turn off 'Half-pixel UV correction' in import settings.");
 
             // Update level geometry
             progressReporter.ReportProgress(95, "Building rooms");
