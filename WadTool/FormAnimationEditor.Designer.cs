@@ -18,6 +18,7 @@ namespace WadTool
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAnimationEditor));
             this.topMenu = new DarkUI.Controls.DarkMenuStrip();
             this.fileeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,9 +108,9 @@ namespace WadTool
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackFrames = new System.Windows.Forms.TrackBar();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.butSaveAllChanges = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.labelAnims = new System.Windows.Forms.ToolStripLabel();
             this.butTbAddAnimation = new System.Windows.Forms.ToolStripButton();
             this.butTbDeleteAnimation = new System.Windows.Forms.ToolStripButton();
             this.butTbCutAnimation = new System.Windows.Forms.ToolStripButton();
@@ -130,7 +131,7 @@ namespace WadTool
             this.comboSkeleton = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.comboRooms = new System.Windows.Forms.ToolStripComboBox();
-            this.timerPlayAnimation = new System.Windows.Forms.Timer();
+            this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
             this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogPrj2 = new System.Windows.Forms.OpenFileDialog();
@@ -1150,9 +1151,9 @@ namespace WadTool
             this.topBar.Dock = System.Windows.Forms.DockStyle.None;
             this.topBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
+            this.butSaveAllChanges,
             this.toolStripSeparator1,
-            this.toolStripLabel1,
+            this.labelAnims,
             this.butTbAddAnimation,
             this.butTbDeleteAnimation,
             this.butTbCutAnimation,
@@ -1180,17 +1181,18 @@ namespace WadTool
             this.topBar.TabIndex = 6;
             this.topBar.Text = "darkToolStrip1";
             // 
-            // toolStripButton1
+            // butSaveAllChanges
             // 
-            this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripButton1.Image = global::WadTool.Properties.Resources.save_16;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 25);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.ToolTipText = "Save changes";
+            this.butSaveAllChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butSaveAllChanges.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butSaveAllChanges.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butSaveAllChanges.Image = global::WadTool.Properties.Resources.save_16;
+            this.butSaveAllChanges.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butSaveAllChanges.Name = "butSaveAllChanges";
+            this.butSaveAllChanges.Size = new System.Drawing.Size(23, 25);
+            this.butSaveAllChanges.Text = "toolStripButton1";
+            this.butSaveAllChanges.ToolTipText = "Save changes";
+            this.butSaveAllChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
             // 
             // toolStripSeparator1
             // 
@@ -1200,13 +1202,13 @@ namespace WadTool
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
-            // toolStripLabel1
+            // labelAnims
             // 
-            this.toolStripLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(44, 25);
-            this.toolStripLabel1.Text = "Anims:";
+            this.labelAnims.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelAnims.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelAnims.Name = "labelAnims";
+            this.labelAnims.Size = new System.Drawing.Size(44, 25);
+            this.labelAnims.Text = "Anims:";
             // 
             // butTbAddAnimation
             // 
@@ -1574,9 +1576,9 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem calculateBoundingBoxForAllFramesToolStripMenuItem;
         private DarkUI.Controls.DarkToolStrip topBar;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton butSaveAllChanges;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripLabel labelAnims;
         private System.Windows.Forms.ToolStripButton butTbAddAnimation;
         private System.Windows.Forms.ToolStripButton butTbDeleteAnimation;
         private System.Windows.Forms.ToolStripButton butTbCopyAnimation;

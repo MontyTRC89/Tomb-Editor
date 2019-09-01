@@ -1414,5 +1414,10 @@ namespace WadTool
                     return;
             }
         }
+
+        private void butSaveChanges_Click(object sender, EventArgs e)
+        {
+            saveChangesToolStripMenuItem_Click(null, null);
+        }
     }
 }

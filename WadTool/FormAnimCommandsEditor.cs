@@ -88,7 +88,8 @@ namespace WadTool
 
                         comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbPlaySoundFrame.Value = cmd.Parameter1;
-                        comboSound.SelectedIndex = (cmd.Parameter2 & 0x3FFF) + 1;
+                        comboSound.SelectedIndex = _sounds.IndexOf(cmd.Parameter2 & 0x3FFF);
+
                         switch (cmd.Parameter2 & 0xC000)
                         {
                             default:
@@ -254,13 +255,21 @@ namespace WadTool
         {
             _sounds = new List<int>();
             comboSound.Items.Clear();
-            comboSound.Items.Add("(Select a sound info)");
             foreach (var sound in TrCatalog.GetAllSounds(_tool.DestinationWad.SuggestedGameVersion))
             {
                 _sounds.Add((int)sound.Key);
                 comboSound.Items.Add(sound.Key.ToString().PadLeft(4, '0') + ": " + sound.Value);
             }
             comboSound.SelectedIndex = 0;
+        }
+
+        private void ComboSound_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_selectedCommand == null)
+                return;
+            _selectedCommand.Parameter2 &= unchecked((short)~0x3FFF);
+            _selectedCommand.Parameter2 |= (short)(_sounds[comboSound.SelectedIndex]);
+            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
         }
     }
 }
