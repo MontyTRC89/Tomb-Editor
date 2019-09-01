@@ -34,8 +34,6 @@
             this.comboPlayMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
-            this.label1 = new DarkUI.Controls.DarkLabel();
-            this.tbSound = new DarkUI.Controls.DarkTextBox();
             this.lstSounds = new DarkUI.Controls.DarkListView();
             this.optionPlaySoundFromWadGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -69,8 +67,6 @@
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.comboPlayMode);
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.darkLabel2);
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.butPlaySound);
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.label1);
-            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.tbSound);
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.lstSounds);
             this.optionPlaySoundFromWadGroupBox.Location = new System.Drawing.Point(12, 12);
             this.optionPlaySoundFromWadGroupBox.Name = "optionPlaySoundFromWadGroupBox";
@@ -81,14 +77,16 @@
             // 
             // comboPlayMode
             // 
+            this.comboPlayMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboPlayMode.FormattingEnabled = true;
             this.comboPlayMode.Items.AddRange(new object[] {
             "Always",
             "Only in base room",
             "Only in alternate room"});
-            this.comboPlayMode.Location = new System.Drawing.Point(89, 460);
+            this.comboPlayMode.Location = new System.Drawing.Point(77, 486);
             this.comboPlayMode.Name = "comboPlayMode";
-            this.comboPlayMode.Size = new System.Drawing.Size(267, 23);
+            this.comboPlayMode.Size = new System.Drawing.Size(277, 23);
             this.comboPlayMode.TabIndex = 64;
             // 
             // darkLabel2
@@ -96,7 +94,7 @@
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(9, 463);
+            this.darkLabel2.Location = new System.Drawing.Point(9, 489);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(62, 13);
             this.darkLabel2.TabIndex = 63;
@@ -106,34 +104,13 @@
             // 
             this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlaySound.Image = global::TombEditor.Properties.Resources.actions_play_16;
-            this.butPlaySound.Location = new System.Drawing.Point(362, 489);
+            this.butPlaySound.Location = new System.Drawing.Point(360, 486);
             this.butPlaySound.Name = "butPlaySound";
-            this.butPlaySound.Size = new System.Drawing.Size(92, 22);
+            this.butPlaySound.Size = new System.Drawing.Size(92, 23);
             this.butPlaySound.TabIndex = 62;
             this.butPlaySound.Text = "Play sound";
             this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butPlaySound.Visible = false;
             this.butPlaySound.Click += new System.EventHandler(this.butPlay_Click);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(8, 492);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
-            this.label1.TabIndex = 54;
-            this.label1.Text = "Sound name:";
-            // 
-            // tbSound
-            // 
-            this.tbSound.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSound.Location = new System.Drawing.Point(89, 489);
-            this.tbSound.Name = "tbSound";
-            this.tbSound.Size = new System.Drawing.Size(267, 22);
-            this.tbSound.TabIndex = 55;
             // 
             // lstSounds
             // 
@@ -142,10 +119,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstSounds.Location = new System.Drawing.Point(8, 21);
             this.lstSounds.Name = "lstSounds";
-            this.lstSounds.Size = new System.Drawing.Size(444, 431);
+            this.lstSounds.Size = new System.Drawing.Size(444, 459);
             this.lstSounds.TabIndex = 61;
             this.lstSounds.Text = "darkListView1";
-            this.lstSounds.SelectedIndicesChanged += new System.EventHandler(this.lstSounds_SelectedIndicesChanged);
             this.lstSounds.Click += new System.EventHandler(this.LstSounds_Click);
             // 
             // FormSoundSource
@@ -178,8 +154,6 @@
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkGroupBox optionPlaySoundFromWadGroupBox;
         private DarkUI.Controls.DarkButton butPlaySound;
-        private DarkUI.Controls.DarkLabel label1;
-        private DarkUI.Controls.DarkTextBox tbSound;
         private DarkUI.Controls.DarkListView lstSounds;
         private DarkUI.Controls.DarkComboBox comboPlayMode;
         private DarkUI.Controls.DarkLabel darkLabel2;

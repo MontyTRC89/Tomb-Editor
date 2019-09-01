@@ -747,26 +747,10 @@ namespace TombLib.LevelData.Compilers
                 WadSample currentSample = WadSample.NullSample;
                 try
                 {
-                    string samplePath = samples[i].SamplePath;
-                    bool found = false;
-
-                    // Search the sample in all registered paths, in descending order
-                    for (int p = 0; p < _level.Settings.OldWadSoundPaths.Count; p++)
-                    {
-                        string newPath = _level.Settings.MakeAbsolute(_level.Settings.OldWadSoundPaths[p].Path);
-                        if (newPath == null)
-                            continue;
-                        newPath = Path.Combine(newPath, samplePath);
-                        if (File.Exists(newPath))
-                        {
-                            samplePath = newPath;
-                            found = true;
-                            break;
-                        }
-                    }
+                    string samplePath = WadSounds.TryGetSamplePath(_level, samples[i].SamplePath);
 
                     // If sample was found, then load it...
-                    if (found)
+                    if (!string.IsNullOrEmpty(samplePath))
                     {
                         using (var stream = new FileStream(samplePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                         {
