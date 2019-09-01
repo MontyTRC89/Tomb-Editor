@@ -15,6 +15,7 @@ namespace TombLib.LevelData.Compilers
         private static readonly bool _writeDbgWadTxt = false;
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
+        private List<int> _finalSelectedSoundsList;
         private List<WadSoundInfo> _finalSoundInfosList;
         private List<WadSample> _finalSamplesList;
         private int _soundMapSize = 0;
@@ -666,29 +667,47 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareSoundsData()
         {
-            // HACK: TRNG for some reason remaps 2 boat sounds from slots 307/308 to slots 1053/1055.
-            // There is no other way of guessing it except looking if there is a boat object in any of wads.
-
-             if (_level.Settings.GameVersion == GameVersion.TRNG)
-            {
-                if (_level.Settings.Wads.Any(w => w.Wad.Moveables.Any(m => (m.Value.Id.TypeId == 465 || m.Value.Id.TypeId == 467))))
-                {
-                    _level.Settings.SelectedSounds.Add(1053);
-                    _level.Settings.SelectedSounds.Add(1055);
-
-                    var boatSound1 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 308);
-                    var boatSound2 = _level.Settings.GlobalSoundMap.FirstOrDefault(snd => snd.Id == 307);
-
-                    if (boatSound1 != null) boatSound1.Id = 1053;
-                    if (boatSound2 != null) boatSound2.Id = 1055;
-                }
-            }
-
             // Step 1: create the real list of sounds to compile
             _finalSoundInfosList = new List<WadSoundInfo>();
+            _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
+
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
-                if (_level.Settings.SelectedSounds.Contains(soundInfo.Id))
+                if (_finalSelectedSoundsList.Contains(soundInfo.Id))
                     _finalSoundInfosList.Add(soundInfo);
+
+            // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
+            // There is no other way of guessing it except looking if there is a specific object in any of wads.
+
+            if (_level.Settings.GameVersion == GameVersion.TRNG)
+            {
+                Action<int, int, int> AddRemappedNGSound = delegate (int moveableTypeToCheck, int originalId, int remappedId)
+                {
+                    if (_level.Settings.Wads.Any(w => w.Wad.Moveables.Any(m => (m.Value.Id.TypeId == moveableTypeToCheck))))
+                    {
+                        if (!_finalSelectedSoundsList.Contains(remappedId) && _finalSelectedSoundsList.Contains(originalId))
+                        {
+                            _progressReporter.ReportWarn("TRNG object with ID " + moveableTypeToCheck + " was found which uses missing hardcoded sound ID " + remappedId + " in embedded soundmap. Trying to remap sound ID from legacy ID (" + originalId + ").");
+                            _finalSelectedSoundsList.Add(remappedId);
+
+                            var oldSound = _finalSoundInfosList.FirstOrDefault(snd => snd.Id == originalId);
+                            if (oldSound != null)
+                            {
+                                var newSound = new WadSoundInfo(oldSound);
+                                newSound.Id = remappedId;
+                                _finalSoundInfosList.Add(newSound);
+                            }
+                        }
+                    }
+                };
+
+                // Motorboat
+                AddRemappedNGSound(465, 308, 1053);
+                AddRemappedNGSound(465, 307, 1055);
+
+                // Rubber boat
+                AddRemappedNGSound(467, 308, 1423);
+                AddRemappedNGSound(467, 307, 1425);
+            }
 
             // Step 2: create the sound map
             switch (_level.Settings.GameVersion)
@@ -791,7 +810,7 @@ namespace TombLib.LevelData.Compilers
 
                     int numSounds = 0;
                     for (int i = 0; i < _level.Settings.GlobalSoundMap.Count; i++)
-                        if (_level.Settings.SelectedSounds.Contains(_level.Settings.GlobalSoundMap[i].Id))
+                        if (_finalSelectedSoundsList.Contains(_level.Settings.GlobalSoundMap[i].Id))
                             numSounds++;
 
                     // Write sound details
