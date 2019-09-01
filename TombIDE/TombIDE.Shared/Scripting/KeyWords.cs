@@ -272,12 +272,13 @@ namespace TombIDE.Shared.Scripting
 								decimalString = line.Split(':')[1].Trim();
 
 							try
-                            {
-                                short decimalValue = new short();
-                                if (!short.TryParse(decimalString, out decimalValue))
-                                    decimalValue = Convert.ToInt16(decimalString.Replace("$", string.Empty), 16);
+							{
+								short decimalValue = 0;
 
-                                PluginMnemonic mnemonic = new PluginMnemonic
+								if (!short.TryParse(decimalString, out decimalValue))
+									decimalValue = Convert.ToInt16(decimalString.Replace("$", string.Empty), 16);
+
+								PluginMnemonic mnemonic = new PluginMnemonic
 								{
 									Flag = line.Split(':')[0].Trim(),
 									Description = description,

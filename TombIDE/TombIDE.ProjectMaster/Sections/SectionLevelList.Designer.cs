@@ -188,7 +188,8 @@
 			this.label_Hint.Name = "label_Hint";
 			this.label_Hint.Size = new System.Drawing.Size(316, 262);
 			this.label_Hint.TabIndex = 2;
-			this.label_Hint.Text = "Click here to create a new level.\r\n\r\nYou may also click the ➕ button instead.";
+			this.label_Hint.Text = "Click here to create a new level.\r\n\r\nYou may also click the \' + \' button instead." +
+    "";
 			this.label_Hint.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.label_Hint.Click += new System.EventHandler(this.label_Hint_Click);
 			// 

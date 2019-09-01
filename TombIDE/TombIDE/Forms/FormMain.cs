@@ -141,6 +141,7 @@ namespace TombIDE
 				// Add the default buttons
 				AddProgramButton(Path.Combine(SharedMethods.GetProgramDirectory(), "TombEditor.exe"), false);
 				AddProgramButton(Path.Combine(SharedMethods.GetProgramDirectory(), "WadTool.exe"), false);
+				AddProgramButton(Path.Combine(SharedMethods.GetProgramDirectory(), "SoundTool.exe"), false);
 			}
 
 			// Update the list with only valid programs
