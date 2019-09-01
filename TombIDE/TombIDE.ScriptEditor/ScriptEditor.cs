@@ -919,7 +919,7 @@ namespace TombIDE.ScriptEditor
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					FileName = "TombIDE Library Registration.exe"
+					FileName = Path.Combine(SharedMethods.GetSystemDirectory(), "TombIDE Library Registration.exe")
 				};
 
 				try
