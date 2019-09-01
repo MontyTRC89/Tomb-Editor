@@ -169,6 +169,9 @@ namespace TombIDE.ProjectMaster
 			}
 			else
 			{
+				panel_256.BorderStyle = BorderStyle.None;
+				panel_128.BorderStyle = BorderStyle.None;
+
 				panel_256.BackgroundImage = ico_256;
 				panel_128.BackgroundImage = ico_128;
 				panel_48.BackgroundImage = ico_48;
