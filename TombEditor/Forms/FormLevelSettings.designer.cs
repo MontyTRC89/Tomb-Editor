@@ -1253,9 +1253,9 @@
             this.selectedSoundsDataGridView.RowHeadersWidth = 41;
             this.selectedSoundsDataGridView.Size = new System.Drawing.Size(554, 199);
             this.selectedSoundsDataGridView.TabIndex = 96;
-            this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
             this.selectedSoundsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellContentClick);
             this.selectedSoundsDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellContentClick);
+            this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
             // 
             // colSoundsEnabled
             // 
@@ -1733,7 +1733,6 @@
             // 
             // FormLevelSettings
             // 
-            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;

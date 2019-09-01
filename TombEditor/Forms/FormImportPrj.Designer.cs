@@ -35,10 +35,10 @@
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
-            this.cbRespectMousepatch = new DarkUI.Controls.DarkCheckBox();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.cbUseHalfPixelCorrection = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.cbUseHalfPixelCorrection = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.cbRespectMousepatch = new DarkUI.Controls.DarkCheckBox();
             this.darkGroupBox1.SuspendLayout();
             this.darkGroupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +72,7 @@
             this.butBrowseTxt.Image = global::TombEditor.Properties.Resources.general_Open_16;
             this.butBrowseTxt.Location = new System.Drawing.Point(367, 21);
             this.butBrowseTxt.Name = "butBrowseTxt";
-            this.butBrowseTxt.Size = new System.Drawing.Size(79, 23);
+            this.butBrowseTxt.Size = new System.Drawing.Size(79, 22);
             this.butBrowseTxt.TabIndex = 8;
             this.butBrowseTxt.Text = "Browse...";
             this.butBrowseTxt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -122,25 +122,15 @@
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "Import settings";
             // 
-            // cbRespectMousepatch
+            // darkLabel1
             // 
-            this.cbRespectMousepatch.AutoSize = true;
-            this.cbRespectMousepatch.Location = new System.Drawing.Point(6, 21);
-            this.cbRespectMousepatch.Name = "cbRespectMousepatch";
-            this.cbRespectMousepatch.Size = new System.Drawing.Size(265, 17);
-            this.cbRespectMousepatch.TabIndex = 5;
-            this.cbRespectMousepatch.Tag = "";
-            this.cbRespectMousepatch.Text = "Respect T4Larson\'s mousepatch flyby handling";
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(6, 41);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(440, 33);
-            this.darkLabel2.TabIndex = 11;
-            this.darkLabel2.Text = "If you\'ve used a patch which increased maximum amount of flyby sequences in winro" +
-    "omedit, use this option, otherwise flyby indices will be corrupted.";
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(6, 98);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(440, 33);
+            this.darkLabel1.TabIndex = 13;
+            this.darkLabel1.Text = "Legacy texture cropping to prevent border bleeding. Use only if you are about to " +
+    "turn off advanced texture padding in Level settings.";
             // 
             // cbUseHalfPixelCorrection
             // 
@@ -152,15 +142,25 @@
             this.cbUseHalfPixelCorrection.Tag = "";
             this.cbUseHalfPixelCorrection.Text = "Use half-pixel UV correction";
             // 
-            // darkLabel1
+            // darkLabel2
             // 
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(6, 98);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(440, 33);
-            this.darkLabel1.TabIndex = 13;
-            this.darkLabel1.Text = "Legacy texture cropping to prevent border bleeding. Use only if you are about to " +
-    "turn off advanced texture padding in Level settings.";
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(6, 41);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(440, 33);
+            this.darkLabel2.TabIndex = 11;
+            this.darkLabel2.Text = "If you\'ve used a patch which increased maximum amount of flyby sequences in winro" +
+    "omedit, use this option, otherwise flyby indices will be corrupted.";
+            // 
+            // cbRespectMousepatch
+            // 
+            this.cbRespectMousepatch.AutoSize = true;
+            this.cbRespectMousepatch.Location = new System.Drawing.Point(6, 21);
+            this.cbRespectMousepatch.Name = "cbRespectMousepatch";
+            this.cbRespectMousepatch.Size = new System.Drawing.Size(265, 17);
+            this.cbRespectMousepatch.TabIndex = 5;
+            this.cbRespectMousepatch.Tag = "";
+            this.cbRespectMousepatch.Text = "Respect T4Larson\'s mousepatch flyby handling";
             // 
             // FormImportPrj
             // 

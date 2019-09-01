@@ -946,7 +946,11 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectSoundSource4 || id3 == Prj2Chunks.ObjectSoundSource3 || id3 == Prj2Chunks.ObjectSoundSource2 || id3 == Prj2Chunks.ObjectSoundSource)
+                else if (id3 == Prj2Chunks.ObjectSoundSource  ||
+                         id3 == Prj2Chunks.ObjectSoundSource2 ||
+                         id3 == Prj2Chunks.ObjectSoundSource3 ||
+                         id3 == Prj2Chunks.ObjectSoundSource4 ||
+                         id3 == Prj2Chunks.ObjectSoundSourceFinal)
                 {
                     var instance = new SoundSourceInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();

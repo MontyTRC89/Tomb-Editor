@@ -31,6 +31,8 @@
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.optionPlaySoundFromWadGroupBox = new DarkUI.Controls.DarkGroupBox();
+            this.butSearch = new DarkUI.Controls.DarkButton();
+            this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.comboPlayMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
@@ -64,6 +66,8 @@
             this.optionPlaySoundFromWadGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.butSearch);
+            this.optionPlaySoundFromWadGroupBox.Controls.Add(this.tbSearch);
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.comboPlayMode);
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.darkLabel2);
             this.optionPlaySoundFromWadGroupBox.Controls.Add(this.butPlaySound);
@@ -74,6 +78,28 @@
             this.optionPlaySoundFromWadGroupBox.TabIndex = 66;
             this.optionPlaySoundFromWadGroupBox.TabStop = false;
             this.optionPlaySoundFromWadGroupBox.Text = "Sound to play";
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(428, 21);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 109;
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
+            // tbSearch
+            // 
+            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbSearch.Location = new System.Drawing.Point(8, 21);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(421, 23);
+            this.tbSearch.TabIndex = 108;
+            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
             // 
             // comboPlayMode
             // 
@@ -117,16 +143,16 @@
             this.lstSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstSounds.Location = new System.Drawing.Point(8, 21);
+            this.lstSounds.Location = new System.Drawing.Point(8, 50);
             this.lstSounds.Name = "lstSounds";
-            this.lstSounds.Size = new System.Drawing.Size(444, 459);
+            this.lstSounds.Size = new System.Drawing.Size(444, 430);
             this.lstSounds.TabIndex = 61;
             this.lstSounds.Text = "darkListView1";
-            this.lstSounds.Click += new System.EventHandler(this.LstSounds_Click);
+            this.lstSounds.Click += new System.EventHandler(this.lstSounds_Click);
+            this.lstSounds.DoubleClick += new System.EventHandler(this.lstSounds_DoubleClick);
             // 
             // FormSoundSource
             // 
-            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
@@ -157,5 +183,7 @@
         private DarkUI.Controls.DarkListView lstSounds;
         private DarkUI.Controls.DarkComboBox comboPlayMode;
         private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkButton butSearch;
+        private DarkUI.Controls.DarkTextBox tbSearch;
     }
 }

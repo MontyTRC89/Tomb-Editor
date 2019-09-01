@@ -747,7 +747,7 @@ namespace TombLib.LevelData.Compilers
                 WadSample currentSample = WadSample.NullSample;
                 try
                 {
-                    string samplePath = WadSounds.TryGetSamplePath(_level, samples[i].SamplePath);
+                    string samplePath = WadSounds.TryGetSamplePath(_level, samples[i].FileName);
 
                     // If sample was found, then load it...
                     if (!string.IsNullOrEmpty(samplePath))
