@@ -15,6 +15,7 @@ namespace TombLib.LevelData.Compilers
         private static readonly bool _writeDbgWadTxt = false;
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
+        private List<int> _finalSelectedSoundsList;
         private List<WadSoundInfo> _finalSoundInfosList;
         private List<WadSample> _finalSamplesList;
         private int _soundMapSize = 0;
@@ -668,8 +669,10 @@ namespace TombLib.LevelData.Compilers
         {
             // Step 1: create the real list of sounds to compile
             _finalSoundInfosList = new List<WadSoundInfo>();
+            _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
+
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
-                if (_level.Settings.SelectedSounds.Contains(soundInfo.Id))
+                if (_finalSelectedSoundsList.Contains(soundInfo.Id))
                     _finalSoundInfosList.Add(soundInfo);
 
             // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
@@ -681,9 +684,10 @@ namespace TombLib.LevelData.Compilers
                 {
                     if (_level.Settings.Wads.Any(w => w.Wad.Moveables.Any(m => (m.Value.Id.TypeId == moveableTypeToCheck))))
                     {
-                        if (!_level.Settings.SelectedSounds.Contains(remappedId) && _level.Settings.SelectedSounds.Contains(originalId))
+                        if (!_finalSelectedSoundsList.Contains(remappedId) && _finalSelectedSoundsList.Contains(originalId))
                         {
-                            _level.Settings.SelectedSounds.Add(remappedId);
+                            _progressReporter.ReportWarn("TRNG object with ID " + moveableTypeToCheck + " was found which uses missing hardcoded sound ID " + remappedId + " in embedded soundmap. Trying to remap sound ID from legacy ID (" + originalId + ").");
+                            _finalSelectedSoundsList.Add(remappedId);
 
                             var oldSound = _finalSoundInfosList.FirstOrDefault(snd => snd.Id == originalId);
                             if (oldSound != null)
@@ -806,7 +810,7 @@ namespace TombLib.LevelData.Compilers
 
                     int numSounds = 0;
                     for (int i = 0; i < _level.Settings.GlobalSoundMap.Count; i++)
-                        if (_level.Settings.SelectedSounds.Contains(_level.Settings.GlobalSoundMap[i].Id))
+                        if (_finalSelectedSoundsList.Contains(_level.Settings.GlobalSoundMap[i].Id))
                             numSounds++;
 
                     // Write sound details
