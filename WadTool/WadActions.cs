@@ -400,6 +400,12 @@ namespace WadTool
 
             // Update the situation
             tool.DestinationWadChanged();
+
+            // Indicate that object is copied
+            if(objectIdsToMove.Count == 1)
+                tool.SendMessage("Object successfully copied.", PopupType.Info);
+            else
+                tool.SendMessage("Objects successfully copied.", PopupType.Info);
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
