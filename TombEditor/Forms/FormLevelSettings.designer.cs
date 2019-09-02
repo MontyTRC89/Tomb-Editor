@@ -22,7 +22,7 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
+            this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblGameEnableQuickStartFeature2 = new DarkUI.Controls.DarkLabel();
@@ -1843,7 +1843,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private Controls.ImportedGeometryManager importedGeometryManager;
-        private Controls.DarkTabbedContainer tabbedContainer;
+        private TombLib.Controls.DarkTabbedContainer tabbedContainer;
         private System.Windows.Forms.TabPage tabObjects;
         private System.Windows.Forms.TabPage tabSkyAndFont;
         private System.Windows.Forms.TabPage tabSamples;

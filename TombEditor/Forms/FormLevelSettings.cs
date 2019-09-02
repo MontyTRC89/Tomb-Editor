@@ -376,7 +376,7 @@ namespace TombEditor.Forms
             comboLaraType.Items.AddRange(Enum.GetValues(typeof(Tr5LaraType)).Cast<object>().ToArray());
 
             // Initialize options list
-            tabbedContainer.LinkedListView = optionsList;
+            tabbedContainer.LinkedControl = optionsList;
 
             // Initialize Static Mesh merge list
             foreach (var staticMesh in _levelSettings.WadGetAllStatics())

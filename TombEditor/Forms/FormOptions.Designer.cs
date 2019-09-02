@@ -30,7 +30,7 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
+            this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabSubPanel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -3149,7 +3149,7 @@
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel4;
         private DarkUI.Controls.DarkButton butPageDefaults;
-        private Controls.DarkTabbedContainer tabbedContainer;
+        private TombLib.Controls.DarkTabbedContainer tabbedContainer;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Panel tabSubPanel2;
         private System.Windows.Forms.Panel panel1;

@@ -113,6 +113,9 @@
     <Compile Include="Controls\DarkDataGridViewControls.designer.cs">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DarkTabbedContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\LuaTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
