@@ -16,6 +16,8 @@ namespace TombLib.Controls
         private DarkComboBox suggestedGameVersionComboBox;
         private DarkLabel darkLabel1;
 
+        public event EventHandler ClickOnEmpty;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Wad2 Wad
         {
@@ -28,6 +30,11 @@ namespace TombLib.Controls
         public WadTreeView()
         {
             InitializeComponent();
+
+            SetStyle(ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.ResizeRedraw |
+                     ControlStyles.UserPaint, true);
+
             tree.SelectedNodes.CollectionChanged += (s, e) => { if (!_changing) SelectedWadObjectIdsChanged?.Invoke(this, EventArgs.Empty); };
 
             // Populate game version
@@ -41,11 +48,15 @@ namespace TombLib.Controls
 
         public void UpdateContent()
         {
-            tree.Enabled = Wad != null;
-            suggestedGameVersionComboBox.Enabled = Wad != null;
+            bool wadLoaded = Wad != null;
+            tree.Visible = wadLoaded;
+            tree.Enabled = wadLoaded;
+            suggestedGameVersionComboBox.Visible = wadLoaded;
+            suggestedGameVersionComboBox.Enabled = wadLoaded;
+            darkLabel1.Visible = wadLoaded;
 
             // Update game version control
-            if (Wad != null)
+            if (wadLoaded)
             {
                 if (!Wad.SuggestedGameVersion.Equals(suggestedGameVersionComboBox.SelectedItem))
                     suggestedGameVersionComboBox.SelectedItem = Wad.SuggestedGameVersion;
@@ -259,6 +270,7 @@ namespace TombLib.Controls
             this.Controls.Add(this.suggestedGameVersionComboBox);
             this.Controls.Add(this.tree);
             this.Name = "WadTreeView";
+            this.Click += new System.EventHandler(this.WadTreeView_Click);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -274,6 +286,30 @@ namespace TombLib.Controls
         private void tree_MouseDown(object sender, MouseEventArgs e)
         {
             OnMouseDown(e);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            e.Graphics.IntersectClip(new RectangleF(new PointF(), ClientSize));
+
+            // Draw notify message if no wad is loaded
+            if (_wad == null)
+            {
+                // Draw background
+                using (var b = new SolidBrush(BackColor))
+                    e.Graphics.FillRectangle(b, ClientRectangle);
+
+                string notifyMessage = "Click here to load a new wad file.";
+
+                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            }
+        }
+
+        private void WadTreeView_Click(object sender, EventArgs e)
+        {
+            if (_wad == null && ClickOnEmpty != null) ClickOnEmpty(this, e);
         }
     }
 }

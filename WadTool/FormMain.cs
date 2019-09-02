@@ -52,8 +52,8 @@ namespace WadTool
             if (obj is InitEvent)
             {
                 // At startup initialise a new Wad2
-                _tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
-                _tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
+                //_tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
+                //_tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
             }
             if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
             {
@@ -395,6 +395,16 @@ namespace WadTool
         private void toolStripMenuItemMoveablesDelete_Click(object sender, EventArgs e)
         {
             butDeleteObject_Click(null, null);
+        }
+
+        private void treeDestWad_ClickOnEmpty(object sender, EventArgs e)
+        {
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
+        }
+
+        private void treeSourceWad_ClickOnEmpty(object sender, EventArgs e)
+        {
+            WadActions.LoadWadOpenFileDialog(_tool, this, false);
         }
     }
 }
