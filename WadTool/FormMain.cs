@@ -19,6 +19,8 @@ namespace WadTool
         private readonly WadToolClass _tool;
         private bool _playAnimation;
 
+        private readonly PopUpInfo popup = new PopUpInfo();
+
         public FormMain(WadToolClass tool)
         {
             InitializeComponent();
@@ -55,10 +57,33 @@ namespace WadTool
                 //_tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
                 //_tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
             }
+
+            if (obj is WadToolClass.MessageEvent)
+            {
+                var msg = (WadToolClass.MessageEvent)obj;
+
+                switch (msg.Type)
+                {
+                    case PopupType.None:
+                        popup.ShowSimple(panel3D, msg.Message);
+                        break;
+                    case PopupType.Info:
+                        popup.ShowInfo(panel3D, msg.Message);
+                        break;
+                    case PopupType.Warning:
+                        popup.ShowWarning(panel3D, msg.Message);
+                        break;
+                    case PopupType.Error:
+                        popup.ShowError(panel3D, msg.Message);
+                        break;
+                }
+            }
+
             if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
             {
                 
             }
+
             if (obj is WadToolClass.DestinationWadChangedEvent || obj is InitEvent)
             {
                 treeDestWad.Wad = _tool.DestinationWad;
@@ -81,6 +106,7 @@ namespace WadTool
                     labelStatistics.Text = "";
                 }
             }
+
             if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
                 treeSourceWad.Wad = _tool.SourceWad;
