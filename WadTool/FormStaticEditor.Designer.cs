@@ -897,7 +897,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "s";
+            this.Text = "Static editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormStaticEditor_FormClosing);
             this.Load += new System.EventHandler(this.FormStaticEditor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).EndInit();
