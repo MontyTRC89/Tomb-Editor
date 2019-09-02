@@ -540,6 +540,7 @@
             this.treeSourceWad.Padding = new System.Windows.Forms.Padding(3);
             this.treeSourceWad.Size = new System.Drawing.Size(322, 633);
             this.treeSourceWad.TabIndex = 8;
+            this.treeSourceWad.ClickOnEmpty += new System.EventHandler(this.treeSourceWad_ClickOnEmpty);
             this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
             this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
             this.treeSourceWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeSourceWad_KeyDown);
@@ -599,6 +600,7 @@
             this.treeDestWad.Padding = new System.Windows.Forms.Padding(3);
             this.treeDestWad.Size = new System.Drawing.Size(321, 633);
             this.treeDestWad.TabIndex = 7;
+            this.treeDestWad.ClickOnEmpty += new System.EventHandler(this.treeDestWad_ClickOnEmpty);
             this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
             this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
             this.treeDestWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeDestWad_KeyDown);
