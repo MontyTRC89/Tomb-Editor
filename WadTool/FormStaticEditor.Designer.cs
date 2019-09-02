@@ -112,7 +112,7 @@
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 612);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 610);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(1068, 24);
@@ -402,7 +402,7 @@
             // butSaveChanges
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSaveChanges.Location = new System.Drawing.Point(896, 585);
+            this.butSaveChanges.Location = new System.Drawing.Point(896, 583);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(80, 23);
             this.butSaveChanges.TabIndex = 46;
@@ -601,7 +601,7 @@
             // butImportMeshFromFile
             // 
             this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 585);
+            this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 583);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
             this.butImportMeshFromFile.Size = new System.Drawing.Size(81, 23);
             this.butImportMeshFromFile.TabIndex = 98;
@@ -700,7 +700,7 @@
             this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRendering.Location = new System.Drawing.Point(1, 1);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(797, 601);
+            this.panelRendering.Size = new System.Drawing.Size(797, 599);
             this.panelRendering.TabIndex = 109;
             // 
             // darkGroupBox4
@@ -716,9 +716,9 @@
             this.darkGroupBox4.Controls.Add(this.darkLabel17);
             this.darkGroupBox4.Controls.Add(this.darkLabel16);
             this.darkGroupBox4.Controls.Add(this.numRadius);
-            this.darkGroupBox4.Location = new System.Drawing.Point(5, 362);
+            this.darkGroupBox4.Location = new System.Drawing.Point(5, 361);
             this.darkGroupBox4.Name = "darkGroupBox4";
-            this.darkGroupBox4.Size = new System.Drawing.Size(242, 155);
+            this.darkGroupBox4.Size = new System.Drawing.Size(242, 154);
             this.darkGroupBox4.TabIndex = 111;
             this.darkGroupBox4.TabStop = false;
             // 
@@ -739,7 +739,7 @@
             this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMaxZ);
             this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMinX);
             this.darkGroupBox3.Controls.Add(this.butCalculateCollisionBox);
-            this.darkGroupBox3.Location = new System.Drawing.Point(5, 232);
+            this.darkGroupBox3.Location = new System.Drawing.Point(5, 231);
             this.darkGroupBox3.Name = "darkGroupBox3";
             this.darkGroupBox3.Size = new System.Drawing.Size(242, 126);
             this.darkGroupBox3.TabIndex = 110;
@@ -772,7 +772,7 @@
             this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMinY);
             this.darkGroupBox1.Controls.Add(this.darkLabel3);
             this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMinX);
-            this.darkGroupBox1.Location = new System.Drawing.Point(5, 102);
+            this.darkGroupBox1.Location = new System.Drawing.Point(5, 101);
             this.darkGroupBox1.Name = "darkGroupBox1";
             this.darkGroupBox1.Size = new System.Drawing.Size(242, 126);
             this.darkGroupBox1.TabIndex = 109;
@@ -802,7 +802,7 @@
             this.darkGroupBox2.Controls.Add(this.butResetScale);
             this.darkGroupBox2.Location = new System.Drawing.Point(5, 4);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(242, 94);
+            this.darkGroupBox2.Size = new System.Drawing.Size(242, 93);
             this.darkGroupBox2.TabIndex = 0;
             this.darkGroupBox2.TabStop = false;
             // 
@@ -826,10 +826,10 @@
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox1);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox3);
             this.darkSectionPanel1.Location = new System.Drawing.Point(810, 5);
-            this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(252, 574);
+            this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(252, 573);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 574);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 573);
             this.darkSectionPanel1.TabIndex = 110;
             // 
             // darkGroupBox5
@@ -839,7 +839,7 @@
             this.darkGroupBox5.Controls.Add(this.cbDrawGrid);
             this.darkGroupBox5.Controls.Add(this.cbDrawGizmo);
             this.darkGroupBox5.Controls.Add(this.cbDrawLights);
-            this.darkGroupBox5.Location = new System.Drawing.Point(5, 521);
+            this.darkGroupBox5.Location = new System.Drawing.Point(5, 520);
             this.darkGroupBox5.Name = "darkGroupBox5";
             this.darkGroupBox5.Size = new System.Drawing.Size(242, 48);
             this.darkGroupBox5.TabIndex = 112;
@@ -859,7 +859,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(981, 585);
+            this.butCancel.Location = new System.Drawing.Point(981, 583);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(81, 23);
             this.butCancel.TabIndex = 111;
@@ -876,14 +876,14 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(5, 5);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(799, 603);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(799, 601);
             this.darkSectionPanel2.TabIndex = 112;
             // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1068, 636);
+            this.ClientSize = new System.Drawing.Size(1068, 634);
             this.Controls.Add(this.darkSectionPanel2);
             this.Controls.Add(this.butImportMeshFromFile);
             this.Controls.Add(this.butCancel);
@@ -892,7 +892,7 @@
             this.Controls.Add(this.butSaveChanges);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1084, 674);
+            this.MinimumSize = new System.Drawing.Size(1084, 672);
             this.Name = "FormStaticEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

@@ -50,6 +50,7 @@ namespace WadTool
             UpdateCollisionBoxUI();
             UpdatePositionUI();
             UpdateLightsList();
+            UpdateLightUI();
 
             numAmbient.Value = (decimal)_workingStatic.AmbientLight;
 
@@ -518,26 +519,26 @@ namespace WadTool
             {
                 _workingStatic.LightingType = WadMeshLightingType.Normals;
                 _workingStatic.Lights.Clear();
-                UpdateLightsList();
-                UpdateLightUI();
                 butAddLight.Enabled = false;
                 butDeleteLight.Enabled = false;
                 numIntensity.Enabled = false;
                 numRadius.Enabled = false;
                 numAmbient.Enabled = false;
                 lstLights.Enabled = false;
+                UpdateLightsList();
+                UpdateLightUI();
                 panelRendering.Invalidate();
             }
             else
             {
                 _workingStatic.LightingType = WadMeshLightingType.PrecalculatedGrayShades;
-                UpdateLightUI();
                 butAddLight.Enabled = true;
                 butDeleteLight.Enabled = true;
                 numIntensity.Enabled = true;
                 numRadius.Enabled = true;
                 numAmbient.Enabled = true;
                 lstLights.Enabled = true;
+                UpdateLightUI();
                 panelRendering.Invalidate();
             }
         }
