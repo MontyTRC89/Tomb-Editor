@@ -28,45 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.trackBar = new System.Windows.Forms.TrackBar();
             this.panelCommands = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
+            this.picSlider = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picSlider)).BeginInit();
             this.SuspendLayout();
-            // 
-            // trackBar
-            // 
-            this.trackBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.trackBar.Location = new System.Drawing.Point(0, 0);
-            this.trackBar.Name = "trackBar";
-            this.trackBar.Size = new System.Drawing.Size(391, 45);
-            this.trackBar.TabIndex = 0;
             // 
             // panelCommands
             // 
+            this.panelCommands.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.panelCommands.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelCommands.Location = new System.Drawing.Point(0, 45);
+            this.panelCommands.Location = new System.Drawing.Point(0, 25);
             this.panelCommands.Name = "panelCommands";
-            this.panelCommands.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.panelCommands.Size = new System.Drawing.Size(391, 52);
+            this.panelCommands.Size = new System.Drawing.Size(391, 72);
             this.panelCommands.TabIndex = 1;
+            // 
+            // picSlider
+            // 
+            this.picSlider.BackColor = System.Drawing.Color.Black;
+            this.picSlider.Dock = System.Windows.Forms.DockStyle.Top;
+            this.picSlider.Location = new System.Drawing.Point(0, 0);
+            this.picSlider.Name = "picSlider";
+            this.picSlider.Size = new System.Drawing.Size(391, 25);
+            this.picSlider.TabIndex = 1;
+            this.picSlider.TabStop = false;
             // 
             // AnimationTrackBar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelCommands);
-            this.Controls.Add(this.trackBar);
+            this.Controls.Add(this.picSlider);
             this.Name = "AnimationTrackBar";
             this.Size = new System.Drawing.Size(391, 97);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picSlider)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TrackBar trackBar;
         private System.Windows.Forms.Panel panelCommands;
+        private System.Windows.Forms.PictureBox picSlider;
     }
 }
