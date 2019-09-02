@@ -261,15 +261,19 @@ namespace TombIDE
 			// Check if a button is being dragged, if not, then launch the clicked program
 			if (_draggedButton != null)
 			{
-				string programFilePath = ((Button)sender).Tag.ToString();
-
-				ProcessStartInfo startInfo = new ProcessStartInfo
+				try
 				{
-					FileName = programFilePath,
-					WorkingDirectory = Path.GetDirectoryName(programFilePath)
-				};
+					string programFilePath = ((Button)sender).Tag.ToString();
 
-				Process.Start(startInfo);
+					ProcessStartInfo startInfo = new ProcessStartInfo
+					{
+						FileName = programFilePath,
+						WorkingDirectory = Path.GetDirectoryName(programFilePath)
+					};
+
+					Process.Start(startInfo);
+				}
+				catch { }
 			}
 		}
 
