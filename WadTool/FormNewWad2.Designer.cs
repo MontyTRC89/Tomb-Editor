@@ -49,24 +49,24 @@
             this.comboGameVersion.FormattingEnabled = true;
             this.comboGameVersion.Location = new System.Drawing.Point(98, 10);
             this.comboGameVersion.Name = "comboGameVersion";
-            this.comboGameVersion.Size = new System.Drawing.Size(205, 23);
+            this.comboGameVersion.Size = new System.Drawing.Size(176, 23);
             this.comboGameVersion.TabIndex = 1;
             // 
             // butCreate
             // 
             this.butCreate.Location = new System.Drawing.Point(98, 39);
             this.butCreate.Name = "butCreate";
-            this.butCreate.Size = new System.Drawing.Size(96, 23);
+            this.butCreate.Size = new System.Drawing.Size(87, 23);
             this.butCreate.TabIndex = 2;
-            this.butCreate.Text = "Create Wad2";
+            this.butCreate.Text = "OK";
             this.butCreate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCreate.Click += new System.EventHandler(this.butCreate_Click);
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(207, 39);
+            this.butCancel.Location = new System.Drawing.Point(191, 39);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(96, 23);
+            this.butCancel.Size = new System.Drawing.Size(83, 23);
             this.butCancel.TabIndex = 3;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -76,13 +76,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(309, 76);
+            this.ClientSize = new System.Drawing.Size(282, 71);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butCreate);
             this.Controls.Add(this.comboGameVersion);
             this.Controls.Add(this.darkLabel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FormNewWad2";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
