@@ -210,7 +210,7 @@ namespace WadTool
 
         private void numIntensity_ValueChanged(object sender, EventArgs e)
         {
-            if (!_doChangesInLighting)
+            if (!_doChangesInLighting || panelRendering.SelectedLight == null)
                 return;
 
             panelRendering.SelectedLight.Intensity = (float)numIntensity.Value;
@@ -219,7 +219,7 @@ namespace WadTool
 
         private void numInnerRange_ValueChanged(object sender, EventArgs e)
         {
-            if (!_doChangesInLighting)
+            if (!_doChangesInLighting || panelRendering.SelectedLight == null)
                 return;
 
             panelRendering.SelectedLight.Radius = (float)numRadius.Value;
@@ -577,6 +577,27 @@ namespace WadTool
             tbPositionX.Text = panelRendering.StaticPosition.X.ToString();
             tbPositionY.Text = panelRendering.StaticPosition.Y.ToString();
             tbPositionZ.Text = panelRendering.StaticPosition.Z.ToString();
+        }
+
+        private void butCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void butClearCollisionBox_Click(object sender, EventArgs e)
+        {
+
+            _workingStatic.CollisionBox = new BoundingBox();
+            UpdateCollisionBoxUI();
+            panelRendering.Invalidate();
+        }
+
+        private void butClearVisibilityBox_Click(object sender, EventArgs e)
+        {
+            _workingStatic.VisibilityBox = new BoundingBox();
+            UpdateVisibilityBoxUI();
+            panelRendering.Invalidate();
         }
     }
 }
