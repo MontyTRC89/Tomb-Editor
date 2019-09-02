@@ -445,7 +445,7 @@
             this.butAddLight.Image = global::WadTool.Properties.Resources.plus_math_16;
             this.butAddLight.Location = new System.Drawing.Point(182, 7);
             this.butAddLight.Name = "butAddLight";
-            this.butAddLight.Size = new System.Drawing.Size(24, 24);
+            this.butAddLight.Size = new System.Drawing.Size(24, 23);
             this.butAddLight.TabIndex = 85;
             this.butAddLight.Click += new System.EventHandler(this.butAddLight_Click);
             // 
@@ -454,7 +454,7 @@
             this.butDeleteLight.Image = global::WadTool.Properties.Resources.trash_16;
             this.butDeleteLight.Location = new System.Drawing.Point(212, 7);
             this.butDeleteLight.Name = "butDeleteLight";
-            this.butDeleteLight.Size = new System.Drawing.Size(24, 24);
+            this.butDeleteLight.Size = new System.Drawing.Size(24, 23);
             this.butDeleteLight.TabIndex = 86;
             this.butDeleteLight.Click += new System.EventHandler(this.butDeleteLight_Click);
             // 
@@ -474,7 +474,7 @@
             0,
             0,
             0});
-            this.numRadius.Location = new System.Drawing.Point(163, 69);
+            this.numRadius.Location = new System.Drawing.Point(163, 64);
             this.numRadius.Maximum = new decimal(new int[] {
             256,
             0,
@@ -503,7 +503,7 @@
             0,
             0,
             131072});
-            this.numIntensity.Location = new System.Drawing.Point(163, 41);
+            this.numIntensity.Location = new System.Drawing.Point(163, 36);
             this.numIntensity.Maximum = new decimal(new int[] {
             128,
             0,
@@ -525,7 +525,7 @@
             // 
             this.darkLabel15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(99, 38);
+            this.darkLabel15.Location = new System.Drawing.Point(99, 33);
             this.darkLabel15.Name = "darkLabel15";
             this.darkLabel15.Size = new System.Drawing.Size(59, 22);
             this.darkLabel15.TabIndex = 93;
@@ -536,7 +536,7 @@
             // 
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(99, 66);
+            this.darkLabel16.Location = new System.Drawing.Point(99, 61);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(51, 22);
             this.darkLabel16.TabIndex = 92;
@@ -552,7 +552,7 @@
             0,
             0,
             0});
-            this.numAmbient.Location = new System.Drawing.Point(163, 97);
+            this.numAmbient.Location = new System.Drawing.Point(163, 92);
             this.numAmbient.Maximum = new decimal(new int[] {
             255,
             0,
@@ -569,7 +569,7 @@
             // 
             this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(99, 94);
+            this.darkLabel17.Location = new System.Drawing.Point(99, 89);
             this.darkLabel17.Name = "darkLabel17";
             this.darkLabel17.Size = new System.Drawing.Size(63, 22);
             this.darkLabel17.TabIndex = 95;
@@ -590,7 +590,7 @@
             // 
             // lstLights
             // 
-            this.lstLights.Location = new System.Drawing.Point(6, 41);
+            this.lstLights.Location = new System.Drawing.Point(6, 36);
             this.lstLights.MaxDragChange = 20;
             this.lstLights.Name = "lstLights";
             this.lstLights.Size = new System.Drawing.Size(87, 107);
@@ -621,9 +621,9 @@
             // 
             // butRecalcNormals
             // 
-            this.butRecalcNormals.Location = new System.Drawing.Point(102, 125);
+            this.butRecalcNormals.Location = new System.Drawing.Point(99, 120);
             this.butRecalcNormals.Name = "butRecalcNormals";
-            this.butRecalcNormals.Size = new System.Drawing.Size(134, 23);
+            this.butRecalcNormals.Size = new System.Drawing.Size(137, 23);
             this.butRecalcNormals.TabIndex = 101;
             this.butRecalcNormals.Text = "Recalculate normals";
             this.butRecalcNormals.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -718,7 +718,7 @@
             this.darkGroupBox4.Controls.Add(this.numRadius);
             this.darkGroupBox4.Location = new System.Drawing.Point(5, 361);
             this.darkGroupBox4.Name = "darkGroupBox4";
-            this.darkGroupBox4.Size = new System.Drawing.Size(242, 154);
+            this.darkGroupBox4.Size = new System.Drawing.Size(242, 150);
             this.darkGroupBox4.TabIndex = 111;
             this.darkGroupBox4.TabStop = false;
             // 
@@ -826,10 +826,10 @@
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox1);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox3);
             this.darkSectionPanel1.Location = new System.Drawing.Point(810, 5);
-            this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(252, 573);
+            this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(252, 569);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 573);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 569);
             this.darkSectionPanel1.TabIndex = 110;
             // 
             // darkGroupBox5
@@ -839,7 +839,7 @@
             this.darkGroupBox5.Controls.Add(this.cbDrawGrid);
             this.darkGroupBox5.Controls.Add(this.cbDrawGizmo);
             this.darkGroupBox5.Controls.Add(this.cbDrawLights);
-            this.darkGroupBox5.Location = new System.Drawing.Point(5, 520);
+            this.darkGroupBox5.Location = new System.Drawing.Point(5, 515);
             this.darkGroupBox5.Name = "darkGroupBox5";
             this.darkGroupBox5.Size = new System.Drawing.Size(242, 48);
             this.darkGroupBox5.TabIndex = 112;
