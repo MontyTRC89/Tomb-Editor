@@ -41,7 +41,7 @@ namespace WadTool
                     File.Copy(fileName, fileName + ".bak", true);
                     if (!FileFormatConversions.ConvertWad2ToNewSoundFormat(fileName, fileName, "Sounds\\TR4\\Sounds.txt"))
                     {
-                        DarkMessageBox.Show(owner, "Converting the file failed!", "Loading failed", MessageBoxIcon.Error);
+                        tool.SendMessage("Converting the file failed!", PopupType.Error);
                         return;
                     }
 
@@ -56,7 +56,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 logger.Info(exc, "Unable to load " + (destination ? "destination" : "source") + " file from '" + fileName + "'.");
-                DarkMessageBox.Show(owner, "Loading the file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
+                tool.SendMessage("Loading the file failed! \n" + exc.Message, PopupType.Error);
                 return;
             }
 
@@ -101,7 +101,7 @@ namespace WadTool
         {
             if (wadToSave == null)
             {
-                DarkMessageBox.Show(owner, "You don't have a valid opened Wad", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You have no wad opened. Nothing to save.", PopupType.Warning);
                 return;
             }
 
@@ -144,7 +144,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 logger.Warn(exc, "Unable to save to '" + outPath + "'");
-                DarkMessageBox.Show(owner, "Unable to save to '" + outPath + "'.   " + exc, "Unable to save.");
+                tool.SendMessage("Unable to save to '" + outPath + "'.   " + exc, PopupType.Error);
             }
         }
 
@@ -165,7 +165,7 @@ namespace WadTool
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
             if (wad == null || wadObject == null)
             {
-                DarkMessageBox.Show(owner, "You must have an object selected", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have an object selected", PopupType.Error);
                 return;
             }
 
@@ -178,7 +178,7 @@ namespace WadTool
                     return;
                 if (wad.Contains(form.NewId))
                 {
-                    DarkMessageBox.Show(owner, "The slot " + form.NewId.ToString(wad.SuggestedGameVersion) + " is already occupied.", "Error", MessageBoxIcon.Error);
+                    tool.SendMessage("The slot " + form.NewId.ToString(wad.SuggestedGameVersion) + " is already occupied.", PopupType.Error);
                     return;
                 }
                 wad.AssignNewId(wadObject.Id, form.NewId);
@@ -272,7 +272,7 @@ namespace WadTool
         {
             if (tool.DestinationWad == null)
             {
-                DarkMessageBox.Show(owner, "You must have a wad opened", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have a wad opened", PopupType.Error);
                 return;
             }
 
@@ -303,9 +303,9 @@ namespace WadTool
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                     if (mesh == null)
                     {
-                        DarkMessageBox.Show(owner, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        tool.SendMessage("Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured", PopupType.Error);
                         return;
                     }
                     @static.Mesh = mesh;
@@ -324,7 +324,7 @@ namespace WadTool
 
             if (destinationWad == null || sourceWad == null || objectIdsToMove.Count == 0)
             {
-                DarkMessageBox.Show(owner, "You must have two wad loaded and at least one source object selected.", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have two wads loaded and at least one source object selected.", PopupType.Error);
                 return;
             }
 
@@ -400,15 +400,25 @@ namespace WadTool
 
             // Update the situation
             tool.DestinationWadChanged();
+
+            // Indicate that object is copied
+            if(objectIdsToMove.Count == 1)
+                tool.SendMessage("Object successfully copied.", PopupType.Info);
+            else
+                tool.SendMessage("Objects successfully copied.", PopupType.Info);
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
         {
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
-            if (wad == null || wadObject == null)
+
+            if (wadObject == null)
+                return;
+
+            if (wad == null)
             {
-                DarkMessageBox.Show(owner, "You must have a wad loaded and an object selected", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have a wad loaded and an object selected.", PopupType.Error);
                 return;
             }
 
@@ -457,7 +467,7 @@ namespace WadTool
             Wad2 destinationWad = tool.DestinationWad;
             if (destinationWad == null)
             {
-                DarkMessageBox.Show(owner, "You must have a destination wad open.", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have a destination wad opened.", PopupType.Error);
                 return;
             }
 
@@ -467,7 +477,7 @@ namespace WadTool
                     return;
                 if (destinationWad.Contains(form.NewId))
                 {
-                    DarkMessageBox.Show(owner, "The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", "Error", MessageBoxIcon.Error);
+                    tool.SendMessage("The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", PopupType.Error);
                     return;
                 }
 

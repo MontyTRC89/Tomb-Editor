@@ -18,6 +18,8 @@ namespace TombLib.Controls
 
         public event EventHandler ClickOnEmpty;
 
+        public bool ItemSelected => tree.SelectedNodes.Count > 0 && tree.SelectedNodes[0].Nodes.Count == 0;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Wad2 Wad
         {

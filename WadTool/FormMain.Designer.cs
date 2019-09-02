@@ -58,18 +58,19 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.treeSourceWad = new TombLib.Controls.WadTreeView();
-            this.butAddObject = new DarkUI.Controls.DarkButton();
-            this.butAddObjectToDifferentSlot = new DarkUI.Controls.DarkButton();
+            this.darkToolStrip4 = new DarkUI.Controls.DarkToolStrip();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.treeDestWad = new TombLib.Controls.WadTreeView();
-            this.butEditItem = new DarkUI.Controls.DarkButton();
-            this.butDeleteObject = new DarkUI.Controls.DarkButton();
-            this.butChangeSlot = new DarkUI.Controls.DarkButton();
+            this.darkToolStrip3 = new DarkUI.Controls.DarkToolStrip();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.panel3 = new System.Windows.Forms.Panel();
             this.darkSectionPanel3 = new DarkUI.Controls.DarkSectionPanel();
             this.panel3D = new WadTool.Controls.PanelRenderingMainPreview();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.darkToolStrip2 = new DarkUI.Controls.DarkToolStrip();
             this.butEditAnimations = new System.Windows.Forms.ToolStripButton();
             this.butEditSkeleton = new System.Windows.Forms.ToolStripButton();
@@ -92,11 +93,12 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
+            this.darkToolStrip4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
+            this.darkToolStrip3.SuspendLayout();
             this.panel3.SuspendLayout();
             this.darkSectionPanel3.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             this.darkToolStrip2.SuspendLayout();
             this.contextMenuMoveableItem.SuspendLayout();
             this.cmStatics.SuspendLayout();
@@ -513,8 +515,7 @@
             // panel2
             // 
             this.panel2.Controls.Add(this.darkSectionPanel2);
-            this.panel2.Controls.Add(this.butAddObject);
-            this.panel2.Controls.Add(this.butAddObjectToDifferentSlot);
+            this.panel2.Controls.Add(this.darkToolStrip4);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(920, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(0);
@@ -529,7 +530,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = "Source WAD or level";
-            this.darkSectionPanel2.Size = new System.Drawing.Size(324, 659);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(324, 631);
             this.darkSectionPanel2.TabIndex = 12;
             // 
             // treeSourceWad
@@ -538,43 +539,58 @@
             this.treeSourceWad.Location = new System.Drawing.Point(1, 25);
             this.treeSourceWad.Name = "treeSourceWad";
             this.treeSourceWad.Padding = new System.Windows.Forms.Padding(3);
-            this.treeSourceWad.Size = new System.Drawing.Size(322, 633);
+            this.treeSourceWad.Size = new System.Drawing.Size(322, 605);
             this.treeSourceWad.TabIndex = 8;
             this.treeSourceWad.ClickOnEmpty += new System.EventHandler(this.treeSourceWad_ClickOnEmpty);
             this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
             this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
             this.treeSourceWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeSourceWad_KeyDown);
             // 
-            // butAddObject
+            // darkToolStrip4
             // 
-            this.butAddObject.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddObject.Image = global::WadTool.Properties.Resources.angle_left_16;
-            this.butAddObject.Location = new System.Drawing.Point(59, 633);
-            this.butAddObject.Name = "butAddObject";
-            this.butAddObject.Size = new System.Drawing.Size(90, 23);
-            this.butAddObject.TabIndex = 10;
-            this.butAddObject.Text = "Add object";
-            this.butAddObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddObject.Click += new System.EventHandler(this.butAddObject_Click);
+            this.darkToolStrip4.AutoSize = false;
+            this.darkToolStrip4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkToolStrip4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.darkToolStrip4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkToolStrip4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkToolStrip4.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.darkToolStrip4.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton4,
+            this.toolStripButton5});
+            this.darkToolStrip4.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.darkToolStrip4.Location = new System.Drawing.Point(0, 631);
+            this.darkToolStrip4.Name = "darkToolStrip4";
+            this.darkToolStrip4.Padding = new System.Windows.Forms.Padding(4, 1, 1, 0);
+            this.darkToolStrip4.Size = new System.Drawing.Size(324, 28);
+            this.darkToolStrip4.TabIndex = 28;
+            this.darkToolStrip4.Text = "darkToolStrip4";
             // 
-            // butAddObjectToDifferentSlot
+            // toolStripButton4
             // 
-            this.butAddObjectToDifferentSlot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddObjectToDifferentSlot.Image = global::WadTool.Properties.Resources.angle_left_16;
-            this.butAddObjectToDifferentSlot.Location = new System.Drawing.Point(155, 633);
-            this.butAddObjectToDifferentSlot.Name = "butAddObjectToDifferentSlot";
-            this.butAddObjectToDifferentSlot.Size = new System.Drawing.Size(167, 23);
-            this.butAddObjectToDifferentSlot.TabIndex = 11;
-            this.butAddObjectToDifferentSlot.Text = "Add object to different slot";
-            this.butAddObjectToDifferentSlot.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddObjectToDifferentSlot.Click += new System.EventHandler(this.butAddObjectToDifferentSlot_Click);
+            this.toolStripButton4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripButton4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton4.Image = global::WadTool.Properties.Resources.angle_left_16;
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(85, 24);
+            this.toolStripButton4.Text = "Add object";
+            this.toolStripButton4.Click += new System.EventHandler(this.butAddObject_Click);
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripButton5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton5.Image = global::WadTool.Properties.Resources.angle_left_16;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(169, 24);
+            this.toolStripButton5.Text = "Add object to different slot";
+            this.toolStripButton5.Click += new System.EventHandler(this.butAddObjectToDifferentSlot_Click);
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.darkSectionPanel1);
-            this.panel1.Controls.Add(this.butEditItem);
-            this.panel1.Controls.Add(this.butDeleteObject);
-            this.panel1.Controls.Add(this.butChangeSlot);
+            this.panel1.Controls.Add(this.darkToolStrip3);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
@@ -589,7 +605,7 @@
             this.darkSectionPanel1.Location = new System.Drawing.Point(0, 0);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Destination WAD2";
-            this.darkSectionPanel1.Size = new System.Drawing.Size(323, 659);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(323, 631);
             this.darkSectionPanel1.TabIndex = 23;
             // 
             // treeDestWad
@@ -598,53 +614,70 @@
             this.treeDestWad.Location = new System.Drawing.Point(1, 25);
             this.treeDestWad.Name = "treeDestWad";
             this.treeDestWad.Padding = new System.Windows.Forms.Padding(3);
-            this.treeDestWad.Size = new System.Drawing.Size(321, 633);
+            this.treeDestWad.Size = new System.Drawing.Size(321, 605);
             this.treeDestWad.TabIndex = 7;
             this.treeDestWad.ClickOnEmpty += new System.EventHandler(this.treeDestWad_ClickOnEmpty);
             this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
             this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
             this.treeDestWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeDestWad_KeyDown);
             // 
-            // butEditItem
+            // darkToolStrip3
             // 
-            this.butEditItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butEditItem.Image = global::WadTool.Properties.Resources.edit_16;
-            this.butEditItem.Location = new System.Drawing.Point(5, 633);
-            this.butEditItem.Name = "butEditItem";
-            this.butEditItem.Size = new System.Drawing.Size(72, 23);
-            this.butEditItem.TabIndex = 22;
-            this.butEditItem.Text = "Edit";
-            this.butEditItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butEditItem.Click += new System.EventHandler(this.butEditItem_Click);
+            this.darkToolStrip3.AutoSize = false;
+            this.darkToolStrip3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkToolStrip3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.darkToolStrip3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkToolStrip3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkToolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.darkToolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3});
+            this.darkToolStrip3.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.darkToolStrip3.Location = new System.Drawing.Point(0, 631);
+            this.darkToolStrip3.Name = "darkToolStrip3";
+            this.darkToolStrip3.Padding = new System.Windows.Forms.Padding(4, 1, 1, 0);
+            this.darkToolStrip3.Size = new System.Drawing.Size(323, 28);
+            this.darkToolStrip3.TabIndex = 28;
+            this.darkToolStrip3.Text = "darkToolStrip3";
             // 
-            // butDeleteObject
+            // toolStripButton1
             // 
-            this.butDeleteObject.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butDeleteObject.Image = global::WadTool.Properties.Resources.trash_161;
-            this.butDeleteObject.Location = new System.Drawing.Point(182, 633);
-            this.butDeleteObject.Name = "butDeleteObject";
-            this.butDeleteObject.Size = new System.Drawing.Size(114, 23);
-            this.butDeleteObject.TabIndex = 12;
-            this.butDeleteObject.Text = "Delete";
-            this.butDeleteObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteObject.Click += new System.EventHandler(this.butDeleteObject_Click);
+            this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton1.Image = global::WadTool.Properties.Resources.edit_16;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(74, 24);
+            this.toolStripButton1.Text = "Edit item";
+            this.toolStripButton1.Click += new System.EventHandler(this.butEditItem_Click);
             // 
-            // butChangeSlot
+            // toolStripButton2
             // 
-            this.butChangeSlot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butChangeSlot.Image = global::WadTool.Properties.Resources.copy_16;
-            this.butChangeSlot.Location = new System.Drawing.Point(83, 633);
-            this.butChangeSlot.Name = "butChangeSlot";
-            this.butChangeSlot.Size = new System.Drawing.Size(93, 23);
-            this.butChangeSlot.TabIndex = 19;
-            this.butChangeSlot.Text = "Change slot";
-            this.butChangeSlot.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butChangeSlot.Click += new System.EventHandler(this.butChangeSlot_Click);
+            this.toolStripButton2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripButton2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton2.Image = global::WadTool.Properties.Resources.copy_16;
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(90, 24);
+            this.toolStripButton2.Text = "Change slot";
+            this.toolStripButton2.Click += new System.EventHandler(this.butChangeSlot_Click);
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripButton3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton3.Image = global::WadTool.Properties.Resources.trash_16;
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(60, 24);
+            this.toolStripButton3.Text = "Delete";
+            this.toolStripButton3.Click += new System.EventHandler(this.butDeleteObject_Click);
             // 
             // panel3
             // 
             this.panel3.Controls.Add(this.darkSectionPanel3);
-            this.panel3.Controls.Add(this.flowLayoutPanel3);
+            this.panel3.Controls.Add(this.darkToolStrip2);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(323, 0);
             this.panel3.Margin = new System.Windows.Forms.Padding(0);
@@ -664,24 +697,13 @@
             // 
             // panel3D
             // 
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Location = new System.Drawing.Point(3, 3);
+            this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3D.Location = new System.Drawing.Point(1, 1);
             this.panel3D.Name = "panel3D";
             this.panel3D.Padding = new System.Windows.Forms.Padding(3);
-            this.panel3D.Size = new System.Drawing.Size(591, 625);
+            this.panel3D.Size = new System.Drawing.Size(595, 629);
             this.panel3D.TabIndex = 9;
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Controls.Add(this.darkToolStrip2);
-            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 631);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(597, 28);
-            this.flowLayoutPanel3.TabIndex = 21;
             // 
             // darkToolStrip2
             // 
@@ -697,10 +719,10 @@
             this.butEditStaticModel,
             this.butEditSpriteSequence});
             this.darkToolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.darkToolStrip2.Location = new System.Drawing.Point(0, 0);
+            this.darkToolStrip2.Location = new System.Drawing.Point(0, 631);
             this.darkToolStrip2.Name = "darkToolStrip2";
-            this.darkToolStrip2.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip2.Size = new System.Drawing.Size(489, 25);
+            this.darkToolStrip2.Padding = new System.Windows.Forms.Padding(4, 1, 1, 0);
+            this.darkToolStrip2.Size = new System.Drawing.Size(597, 28);
             this.darkToolStrip2.TabIndex = 27;
             this.darkToolStrip2.Text = "darkToolStrip2";
             // 
@@ -711,7 +733,7 @@
             this.butEditAnimations.Image = global::WadTool.Properties.Resources.animations_16;
             this.butEditAnimations.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butEditAnimations.Name = "butEditAnimations";
-            this.butEditAnimations.Size = new System.Drawing.Size(109, 22);
+            this.butEditAnimations.Size = new System.Drawing.Size(109, 24);
             this.butEditAnimations.Text = "Edit animations";
             this.butEditAnimations.Click += new System.EventHandler(this.butEditAnimations_Click);
             // 
@@ -722,7 +744,7 @@
             this.butEditSkeleton.Image = global::WadTool.Properties.Resources.skeleton_16;
             this.butEditSkeleton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butEditSkeleton.Name = "butEditSkeleton";
-            this.butEditSkeleton.Size = new System.Drawing.Size(94, 22);
+            this.butEditSkeleton.Size = new System.Drawing.Size(94, 24);
             this.butEditSkeleton.Text = "Edit skeleton";
             this.butEditSkeleton.Click += new System.EventHandler(this.butEditSkeleton_Click);
             // 
@@ -733,7 +755,7 @@
             this.butEditStaticModel.Image = global::WadTool.Properties.Resources.edit_16;
             this.butEditStaticModel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butEditStaticModel.Name = "butEditStaticModel";
-            this.butEditStaticModel.Size = new System.Drawing.Size(115, 22);
+            this.butEditStaticModel.Size = new System.Drawing.Size(115, 24);
             this.butEditStaticModel.Text = "Edit static model";
             this.butEditStaticModel.Click += new System.EventHandler(this.butEditStaticModel_Click);
             // 
@@ -744,7 +766,7 @@
             this.butEditSpriteSequence.Image = global::WadTool.Properties.Resources.movie_projector_16;
             this.butEditSpriteSequence.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butEditSpriteSequence.Name = "butEditSpriteSequence";
-            this.butEditSpriteSequence.Size = new System.Drawing.Size(132, 22);
+            this.butEditSpriteSequence.Size = new System.Drawing.Size(132, 24);
             this.butEditSpriteSequence.Text = "Edit sprite sequence";
             this.butEditSpriteSequence.Click += new System.EventHandler(this.butEditSpriteSequence_Click);
             // 
@@ -885,11 +907,14 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
+            this.darkToolStrip4.ResumeLayout(false);
+            this.darkToolStrip4.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.darkSectionPanel1.ResumeLayout(false);
+            this.darkToolStrip3.ResumeLayout(false);
+            this.darkToolStrip3.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.darkSectionPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.ResumeLayout(false);
             this.darkToolStrip2.ResumeLayout(false);
             this.darkToolStrip2.PerformLayout();
             this.contextMenuMoveableItem.ResumeLayout(false);
@@ -918,9 +943,6 @@
         private System.Windows.Forms.ToolStripButton butSave;
         private System.Windows.Forms.ToolStripMenuItem saveWad2AsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butSaveAs;
-        private DarkUI.Controls.DarkButton butAddObject;
-        private DarkUI.Controls.DarkButton butAddObjectToDifferentSlot;
-        private DarkUI.Controls.DarkButton butDeleteObject;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction0ToolStripMenuItem;
@@ -938,8 +960,6 @@
         private System.Windows.Forms.ToolStripMenuItem debugAction9ToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butNewWad2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private DarkUI.Controls.DarkButton butChangeSlot;
-        private DarkUI.Controls.DarkButton butEditItem;
         private System.Windows.Forms.ToolStripMenuItem newWad2ToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
@@ -952,7 +972,6 @@
         private DarkUI.Controls.DarkContextMenu contextMenuMoveableItem;
         private System.Windows.Forms.ToolStripMenuItem editSkeletonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editAnimationsToolStripMenuItem;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.ToolStripStatusLabel labelStatistics;
         private DarkUI.Controls.DarkContextMenu cmStatics;
         private System.Windows.Forms.ToolStripMenuItem changeSlorToolStripMenuItem;
@@ -970,6 +989,13 @@
         private System.Windows.Forms.ToolStripButton butEditStaticModel;
         private System.Windows.Forms.ToolStripButton butEditSpriteSequence;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel3;
+        private DarkUI.Controls.DarkToolStrip darkToolStrip3;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private DarkUI.Controls.DarkToolStrip darkToolStrip4;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
     }
 }
 

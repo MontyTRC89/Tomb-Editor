@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -184,6 +185,17 @@ namespace WadTool
         public void AnimationEditorMeshSelected(AnimatedModel model, ObjectMesh mesh)
         {
             RaiseEvent(new AnimationEditorMeshSelectedEvent(model, mesh));
+        }
+
+        // Send message
+        public class MessageEvent : IEditorEvent
+        {
+            public string Message { get; internal set; }
+            public PopupType Type { get; internal set; }
+        }
+        public void SendMessage(string message = "", PopupType type = PopupType.None)
+        {
+            RaiseEvent(new MessageEvent { Message = message, Type = type });
         }
 
         // Construction and destruction

@@ -50,6 +50,7 @@ namespace WadTool
             UpdateCollisionBoxUI();
             UpdatePositionUI();
             UpdateLightsList();
+            UpdateLightUI();
 
             numAmbient.Value = (decimal)_workingStatic.AmbientLight;
 
@@ -210,7 +211,7 @@ namespace WadTool
 
         private void numIntensity_ValueChanged(object sender, EventArgs e)
         {
-            if (!_doChangesInLighting)
+            if (!_doChangesInLighting || panelRendering.SelectedLight == null)
                 return;
 
             panelRendering.SelectedLight.Intensity = (float)numIntensity.Value;
@@ -219,7 +220,7 @@ namespace WadTool
 
         private void numInnerRange_ValueChanged(object sender, EventArgs e)
         {
-            if (!_doChangesInLighting)
+            if (!_doChangesInLighting || panelRendering.SelectedLight == null)
                 return;
 
             panelRendering.SelectedLight.Radius = (float)numRadius.Value;
@@ -518,26 +519,26 @@ namespace WadTool
             {
                 _workingStatic.LightingType = WadMeshLightingType.Normals;
                 _workingStatic.Lights.Clear();
-                UpdateLightsList();
-                UpdateLightUI();
                 butAddLight.Enabled = false;
                 butDeleteLight.Enabled = false;
                 numIntensity.Enabled = false;
                 numRadius.Enabled = false;
                 numAmbient.Enabled = false;
                 lstLights.Enabled = false;
+                UpdateLightsList();
+                UpdateLightUI();
                 panelRendering.Invalidate();
             }
             else
             {
                 _workingStatic.LightingType = WadMeshLightingType.PrecalculatedGrayShades;
-                UpdateLightUI();
                 butAddLight.Enabled = true;
                 butDeleteLight.Enabled = true;
                 numIntensity.Enabled = true;
                 numRadius.Enabled = true;
                 numAmbient.Enabled = true;
                 lstLights.Enabled = true;
+                UpdateLightUI();
                 panelRendering.Invalidate();
             }
         }
@@ -577,6 +578,27 @@ namespace WadTool
             tbPositionX.Text = panelRendering.StaticPosition.X.ToString();
             tbPositionY.Text = panelRendering.StaticPosition.Y.ToString();
             tbPositionZ.Text = panelRendering.StaticPosition.Z.ToString();
+        }
+
+        private void butCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void butClearCollisionBox_Click(object sender, EventArgs e)
+        {
+
+            _workingStatic.CollisionBox = new BoundingBox();
+            UpdateCollisionBoxUI();
+            panelRendering.Invalidate();
+        }
+
+        private void butClearVisibilityBox_Click(object sender, EventArgs e)
+        {
+            _workingStatic.VisibilityBox = new BoundingBox();
+            UpdateVisibilityBoxUI();
+            panelRendering.Invalidate();
         }
     }
 }
