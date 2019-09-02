@@ -40,7 +40,7 @@ namespace TombEditor.Forms
 
         private void InitializeDialog()
         {
-            tabbedContainer.LinkedListView = optionsList;
+            tabbedContainer.LinkedControl = optionsList;
 
 			// Filter out non-TrueType fonts by catching an exception on font creation
             foreach (var font in FontFamily.Families)

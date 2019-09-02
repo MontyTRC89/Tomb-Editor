@@ -230,9 +230,6 @@
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DarkTabbedContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
     <Compile Include="Forms\FormCamera.cs">
