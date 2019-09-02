@@ -587,16 +587,10 @@ namespace WadTool
 
         public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)
         {
-            // XML_SOUND_SYSTEM
-            /*try
+            try
             {
                 if (File.Exists(fileName))
                     File.Delete(fileName);
-
-                // Save sound names
-                foreach (var cmd in animation.AnimCommands)
-                    if (cmd.Type == WadAnimCommandType.PlaySound)
-                        cmd.XmlSerializer_SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
 
                 // Serialize the animation to XML
                 var xmlSerializer = new XmlSerializer(typeof(WadAnimation));
@@ -627,38 +621,7 @@ namespace WadTool
             {
                 logger.Warn(exc, "'ExportAnimationToXml' failed.");
                 return false;
-            }*/
-
-            return true;
-        }
-
-        public static bool ExportAnimation(WadMoveable moveable, WadAnimation animation, string fileName)
-        {
-            /*try
-            {
-                if (File.Exists(fileName))
-                    File.Delete(fileName);
-
-                // Create a new fake Wad2
-                var wad = new Wad2();
-
-                // Add a new fake moveable with animations
-                var newMoveable = new WadMoveable(moveable.Id);
-                newMoveable.Animations.Add(animation);
-                wad.Add(newMoveable.Id, newMoveable);
-
-                // Save the fake wad
-                Wad2Writer.SaveToFile(wad, fileName);
-
-                return true;
             }
-            catch (Exception exc)
-            {
-                logger.Warn(exc, "'ExportAnimation' failed.");
-                return false;
-            }*/
-
-            return true;
         }
 
         public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
@@ -677,22 +640,6 @@ namespace WadTool
             catch (Exception exc)
             {
                 logger.Warn(exc, "'ImportAnimationFromXml' failed.");
-                return null;
-            }
-        }
-
-        public static WadAnimation ImportAnimation(string fileName)
-        {
-            try
-            {
-                var wad = Wad2Loader.LoadFromFile(fileName, false);
-                if (wad == null || wad.Moveables.Count == 0 || wad.Moveables.ElementAt(0).Value.Animations.Count == 0) return null;
-
-                return wad.Moveables.ElementAt(0).Value.Animations[0];
-            }
-            catch (Exception exc)
-            {
-                logger.Warn(exc, "'ImportAnimation' failed.");
                 return null;
             }
         }
