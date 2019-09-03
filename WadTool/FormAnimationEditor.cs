@@ -224,7 +224,7 @@ namespace WadTool
             {
                 trackFrames.Minimum = 0;
                 trackFrames.Maximum = _selectedNode.DirectXAnimation.KeyFrames.Count - 1;
-                statusFrame.Text = "Frame: " + (trackFrames.Value + 1) + "/" + _selectedNode.DirectXAnimation.KeyFrames.Count;
+                statusFrame.Text = "Frame: " + ((trackFrames.Value * _selectedNode.WadAnimation.FrameRate) + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + "   Keyframe: " + (trackFrames.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
             }
         }
 

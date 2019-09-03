@@ -165,10 +165,10 @@ namespace TombLib.Controls
                         picSlider.ClientSize.Height / _stateChangeMarkerThicknessDivider - picSlider.Padding.Bottom - 2));
                 }
 
-            // Draw needle.
+            // Draw cursor
             e.Graphics.FillRectangle(_cursorBrush, new RectangleF(x + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
-            // Draw frame-specific animcommands, numericals and dividers.
+            // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
@@ -202,24 +202,44 @@ namespace TombLib.Controls
                             e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, picSlider.Height / 3);  // Draw ordinary frame
                     }
 
-                    // Align first and last numerical entries so they are not concealed by control border
-                    StringAlignment align = StringAlignment.Center;
-                    int shift = 0;
-                    if (i == 0)
-                    {
-                        shift -= picSlider.Padding.Left;
-                        align = StringAlignment.Near;
-                    }
-                    else if (i >= realFrameCount - 1)
-                    {
-                        shift += picSlider.Padding.Left;
-                        align = StringAlignment.Far;
-                    }
+                    // Measure maximum label size
+                    SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
+                                                          new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
+                                                          TextFormatFlags.WordBreak);
+                    bool drawCurrentLabel = true;
 
-                    // Draw frame number
+                    // Draw labels
                     if ((passes == 0 && !isKeyFrame) || (passes != 0 && isKeyFrame))
-                        e.Graphics.DrawString(i.ToString(), Font, (isKeyFrame ? Brushes.White : Brushes.DimGray), currX + shift, picSlider.Height,
-                        new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
+                    {
+                        // Determine if labels are overlapping and decide on drawing
+                        if (frameStep < maxLabelSize.Width)
+                        {
+                            int period = (int)Math.Round(maxLabelSize.Width / frameStep, MidpointRounding.AwayFromZero);
+                            if (i % period != 0)
+                                drawCurrentLabel = false;
+                        }
+
+                        if (drawCurrentLabel)
+                        {
+                            // Align first and last numerical entries so they are not concealed by control border
+                            StringAlignment align = StringAlignment.Center;
+                            int shift = 0;
+                            if (i == 0)
+                            {
+                                shift -= picSlider.Padding.Left;
+                                align = StringAlignment.Near;
+                            }
+                            else if (i >= realFrameCount - 1)
+                            {
+                                shift += picSlider.Padding.Left;
+                                align = StringAlignment.Far;
+                            }
+
+                            // Finally draw it after all these tests
+                            e.Graphics.DrawString(i.ToString(), Font, (isKeyFrame ? Brushes.White : Brushes.DimGray), currX + shift, picSlider.Height,
+                            new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
+                        }
+                    }
             }
 
             // Draw horizontal guide
