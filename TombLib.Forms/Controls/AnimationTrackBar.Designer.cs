@@ -45,6 +45,7 @@
             this.picSlider.TabStop = false;
             this.picSlider.SizeChanged += new System.EventHandler(this.picSlider_SizeChanged);
             this.picSlider.Paint += new System.Windows.Forms.PaintEventHandler(this.picSlider_Paint);
+            this.picSlider.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseDoubleClick);
             this.picSlider.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseDown);
             this.picSlider.MouseMove += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseMove);
             this.picSlider.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseUp);

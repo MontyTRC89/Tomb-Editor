@@ -54,6 +54,9 @@ namespace WadTool
             _timerPlayAnimation = new Timer() { Interval = 30 };
             _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
 
+            // Add custom event handler for direct editing of animcommands
+            trackFrames.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(trackFrames_AnimCommandDoubleClick);
+
             // Initialize the panel
             var skin = _moveableId;
             if (_moveableId.TypeId == 0)
@@ -593,6 +596,26 @@ namespace WadTool
             }
         }
 
+        private void EditAnimCommand(WadAnimCommand cmd = null)
+        {
+            if (_selectedNode != null)
+            {
+                using (var form = new FormAnimCommandsEditor(_tool, _selectedNode.WadAnimation.AnimCommands, cmd))
+                {
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                        return;
+
+                    // Add the new state changes
+                    _selectedNode.WadAnimation.AnimCommands.Clear();
+                    _selectedNode.WadAnimation.AnimCommands.AddRange(form.AnimCommands);
+
+                    _saved = false;
+                }
+
+                trackFrames.Refresh();
+            }
+        }
+
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
             panelRendering.DrawGrid = !panelRendering.DrawGrid;
@@ -895,17 +918,6 @@ namespace WadTool
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!_saved)
-            {
-                var result = DarkMessageBox.Show(this, "Do you have unsaved changes. Do you want to save changes to animations?",
-                                                 "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                    SaveChanges();
-                else if (result == DialogResult.Cancel)
-                    return;
-            }
-
-            DialogResult = DialogResult.OK;
             Close();
         }
 
@@ -1195,22 +1207,7 @@ namespace WadTool
 
         private void butEditAnimCommands_Click(object sender, EventArgs e)
         {
-            if (_selectedNode != null)
-            {
-                using (var form = new FormAnimCommandsEditor(_tool, _selectedNode.WadAnimation.AnimCommands))
-                {
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-
-                    // Add the new state changes
-                    _selectedNode.WadAnimation.AnimCommands.Clear();
-                    _selectedNode.WadAnimation.AnimCommands.AddRange(form.AnimCommands);
-
-                    _saved = false;
-                }
-
-                trackFrames.Refresh();
-            }
+            EditAnimCommand();
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1333,6 +1330,14 @@ namespace WadTool
             }
         }
 
+        private void PlayAnimation()
+        {
+            _timerPlayAnimation.Enabled = !_timerPlayAnimation.Enabled;
+
+            if (_timerPlayAnimation.Enabled)
+                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
+        }
+
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_selectedNode != null)
@@ -1382,8 +1387,19 @@ namespace WadTool
                     DialogResult = DialogResult.OK;
                 }
                 else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
                     return;
+                }
+                else
+                    DialogResult = DialogResult.Cancel;
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Space) PlayAnimation();
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void butSaveChanges_Click(object sender, EventArgs e)
@@ -1405,10 +1421,12 @@ namespace WadTool
 
         private void butPlayAnimation_Click(object sender, EventArgs e)
         {
-            _timerPlayAnimation.Enabled = !_timerPlayAnimation.Enabled;
+            PlayAnimation();
+        }
 
-            if (_timerPlayAnimation.Enabled)
-                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
+        private void trackFrames_AnimCommandDoubleClick(object sender, WadAnimCommand ac)
+        {
+            EditAnimCommand(ac);
         }
     }
 }

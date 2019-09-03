@@ -21,6 +21,15 @@ namespace TombLib.Controls
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
+        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
+        private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
+        private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
+
+        private int XtoMinMax(int x, int max, bool interpolate = true) => (int)Math.Round((double)(Minimum + (max - Minimum) * x) / (double)(picSlider.ClientSize.Width - picSlider.Padding.Horizontal), interpolate ? MidpointRounding.ToEven : MidpointRounding.AwayFromZero);
+        private int XtoRealFrameNumber(int x) => XtoMinMax(x, realFrameCount - 1, false);
+        private int XtoValue(int x) => XtoMinMax(x, Maximum, false);
+        private int ValueToX(int value) => Maximum - Minimum == 0 ? 0 : (picSlider.ClientSize.Width - picSlider.Padding.Horizontal) * (value - Minimum) / (int)(Maximum - Minimum);
+
         private int _minimum;
         public int Minimum
         {
@@ -32,7 +41,6 @@ namespace TombLib.Controls
 
                 _minimum = value;
                 picSlider.Invalidate();
-                Refresh();
             }
         }
 
@@ -47,7 +55,6 @@ namespace TombLib.Controls
 
                 _maximum = value;
                 picSlider.Invalidate();
-                Refresh();
             }
         }
 
@@ -65,7 +72,6 @@ namespace TombLib.Controls
 
                 ValueChanged?.Invoke(this, new EventArgs());
                 picSlider.Invalidate();
-                Refresh();
             }
         }
 
@@ -75,6 +81,7 @@ namespace TombLib.Controls
             set { picSlider.BackColor = value; picSlider.Invalidate(); }
         }
 
+        public event EventHandler<WadAnimCommand> AnimCommandDoubleClick; // Happens when user double-clicks on frame with frame-based animcommands
         public event EventHandler ValueChanged;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -91,9 +98,29 @@ namespace TombLib.Controls
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
         }
 
-        private void picSlider_MouseEnter(object sender, EventArgs e)
+        private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
+        private void picSlider_MouseUp(object sender, MouseEventArgs e) => mouseDown = false;
+        private void picSlider_MouseEnter(object sender, EventArgs e) => picSlider.Focus();
+
+        private void picSlider_MouseDown(object sender, MouseEventArgs e)
         {
-            picSlider.Focus();
+            mouseDown = true;
+            Value = XtoValue(e.X);
+        }
+
+        private void picSlider_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int targetFrame = XtoRealFrameNumber(e.X);
+
+            foreach (WadAnimCommand ac in Animation.WadAnimation.AnimCommands)
+                if ((ac.Type == WadAnimCommandType.FlipEffect || ac.Type == WadAnimCommandType.PlaySound) && ac.Parameter1 == targetFrame)
+                {
+                    AnimCommandDoubleClick?.Invoke(this, ac);
+                    return;
+                }
+
+            WadAnimCommand newCommand = new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)targetFrame };
+            AnimCommandDoubleClick?.Invoke(this, newCommand);
         }
 
         private void picSlider_MouseWheel(object sender, MouseEventArgs e)
@@ -104,56 +131,18 @@ namespace TombLib.Controls
                 if (Value > Minimum) Value--; else Value = Maximum;
         }
 
-        private void picSlider_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseDown = true;
-            Value = XtoValue(e.X);
-        }
-
         private void picSlider_MouseMove(object sender, MouseEventArgs e)
         {
             if (!mouseDown) return;
             Value = XtoValue(e.X);
         }
 
-        private void picSlider_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseDown = false;
-        }
-
-        private int XtoValue(int x, bool interpolate = true)
-        {
-            return (int)Math.Round((double)(Minimum + (Maximum - Minimum) * x) / (double)(picSlider.ClientSize.Width - 1), MidpointRounding.ToEven);
-        }
-
-        private int ValueToX(int value)
-        {
-            if (Maximum - Minimum == 0)
-                return 0; // Prevent division by zero
-
-            return (picSlider.ClientSize.Width - picSlider.Padding.Left - picSlider.Padding.Right) * (value - Minimum) / (int)(Maximum - Minimum);
-        }
-
         private void picSlider_Paint(object sender, PaintEventArgs e)
         {
-            if (Animation == null)
-                return;
+            if (Animation == null) return;
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            // Calculate the needle's X coordinate.
-            var x = ValueToX(Value);
-
-            int addShift = -_cursorWidth / 2;
-            if (Value == 0)
-                addShift += _cursorWidth / 2;
-            else if (Value == Maximum)
-                addShift += -_cursorWidth / 2;
-
-            int realFrameCount = Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
-            int marginWidth = picSlider.ClientSize.Width - picSlider.Padding.Left - picSlider.Padding.Right - 1;
-            float frameStep = realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
-
+            
             // Draw state change ranges
             foreach (var sch in Animation.WadAnimation.StateChanges)
                 foreach (var disp in sch.Dispatches)
@@ -165,8 +154,13 @@ namespace TombLib.Controls
                         picSlider.ClientSize.Height / _stateChangeMarkerThicknessDivider - picSlider.Padding.Bottom - 2));
                 }
 
-            // Draw cursor
-            e.Graphics.FillRectangle(_cursorBrush, new RectangleF(x + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
+            // Shift the cursor at start/stop positions to prevent clipping
+            int addShift = -_cursorWidth / 2;
+            if (Value == 0) addShift += _cursorWidth / 2;
+            else if (Value == Maximum) addShift += -_cursorWidth / 2;
+
+            // Draw cursors
+            e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
             // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
@@ -204,19 +198,19 @@ namespace TombLib.Controls
 
                     // Measure maximum label size
                     SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
-                                                          new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
-                                                          TextFormatFlags.WordBreak);
-                    bool drawCurrentLabel = true;
+                                                                  new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
+                                                                  TextFormatFlags.WordBreak);
 
                     // Draw labels
+                    bool drawCurrentLabel = true;
+
                     if ((passes == 0 && !isKeyFrame) || (passes != 0 && isKeyFrame))
                     {
                         // Determine if labels are overlapping and decide on drawing
-                        if (frameStep < maxLabelSize.Width)
+                        if (frameStep < maxLabelSize.Width * 1.25)
                         {
-                            int period = (int)Math.Round(maxLabelSize.Width / frameStep, MidpointRounding.AwayFromZero);
-                            if (i % period != 0)
-                                drawCurrentLabel = false;
+                            int period = (int)Math.Round(maxLabelSize.Width * 1.25 / frameStep, MidpointRounding.AwayFromZero);
+                            if (i % period != 0) drawCurrentLabel = false;
                         }
 
                         if (drawCurrentLabel)
@@ -237,18 +231,13 @@ namespace TombLib.Controls
 
                             // Finally draw it after all these tests
                             e.Graphics.DrawString(i.ToString(), Font, (isKeyFrame ? Brushes.White : Brushes.DimGray), currX + shift, picSlider.Height,
-                            new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
+                                                  new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
                         }
                     }
             }
 
             // Draw horizontal guide
             e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top);
-        }
-
-        private void picSlider_SizeChanged(object sender, EventArgs e)
-        {
-            picSlider.Invalidate();
         }
     }
 }
