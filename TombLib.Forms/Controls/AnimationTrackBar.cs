@@ -239,8 +239,9 @@ namespace TombLib.Controls
                 e.Graphics.DrawRectangle(_selectionPen, rect);
             }
 
-            // Draw cursors
-            e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
+            // Draw cursor (only for real animations, not for single-frame ones)
+            if (realFrameCount > 1)
+                e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
             // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
@@ -317,8 +318,9 @@ namespace TombLib.Controls
                     }
             }
 
-            // Draw horizontal guide
-            e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top);
+            // Draw horizontal guide (only for real anims, for single-frame anims we wouldn't wanna show that
+            if(realFrameCount > 1)
+                e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top);
         }
     }
 }
