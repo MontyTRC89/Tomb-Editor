@@ -773,6 +773,7 @@ namespace WadTool
             this.butPlayAnimation.TabIndex = 113;
             this.butPlayAnimation.Text = "Play";
             this.butPlayAnimation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butPlayAnimation.Click += new System.EventHandler(this.butPlayAnimation_Click);
             // 
             // darkLabel2
             // 
@@ -1118,7 +1119,7 @@ namespace WadTool
             this.treeAnimations.Size = new System.Drawing.Size(233, 265);
             this.treeAnimations.TabIndex = 0;
             this.treeAnimations.Text = "darkTreeView1";
-            this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
+            this.treeAnimations.SelectedNodesChanged += new System.EventHandler(this.treeAnimations_SelectedNodesChanged);
             // 
             // panel1
             // 
@@ -1493,7 +1494,6 @@ namespace WadTool
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animation editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormAnimationEditor_FormClosing);
-            this.Load += new System.EventHandler(this.FormAnimationEditor_Load);
             this.topMenu.ResumeLayout(false);
             this.topMenu.PerformLayout();
             this.darkStatusStrip1.ResumeLayout(false);

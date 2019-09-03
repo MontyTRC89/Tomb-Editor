@@ -29,6 +29,9 @@ namespace WadTool
         private bool _saved = true;
         private Level _level;
 
+        // Player
+        private Timer _timerPlayAnimation;
+
         // Clipboard
         private KeyFrame _clipboardKeyFrame = null;
         private AnimationNode _clipboardNode = null;
@@ -46,6 +49,10 @@ namespace WadTool
             _deviceManager = deviceManager;
 
             panelRendering.Configuration = _tool.Configuration;
+
+            // Initialize playback timer
+            _timerPlayAnimation = new Timer() { Interval = 30 };
+            _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
 
             // Initialize the panel
             var skin = _moveableId;
@@ -139,14 +146,6 @@ namespace WadTool
         private void addNewToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void treeAnimations_Click(object sender, EventArgs e)
-        {
-            if (treeAnimations.SelectedNodes.Count == 0)
-                return;
-            var node = (AnimationNode)treeAnimations.SelectedNodes[0].Tag;
-            SelectAnimation(node);
         }
 
         private void SelectAnimation(AnimationNode node)
@@ -1107,42 +1106,13 @@ namespace WadTool
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
-            /*if (_playAnimation)
-            {
-                // Get selected moveable
-                var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-                var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-                var moveable = wad.Moveables[moveableId];
-                if (moveable == null || moveable.Animations.Count == 0)
-                {
-                    _playAnimation = false;
-                    return;
-                }
+            if (_selectedNode.WadAnimation.KeyFrames.Count <= 0) return;
 
-                // Get selected animation
-                if (treeAnimations.SelectedNodes.Count == 0)
-                    return;
-                var node = treeAnimations.SelectedNodes[0];
-                var animationIndex = (int)node.Tag;
-                if (animationIndex >= moveable.Animations.Count)
-                {
-                    _playAnimation = false;
-                    return;
-                }
-                var animation = moveable.Animations[animationIndex];
-
-                // Update animation
-                if (panel3D.KeyFrameIndex >= animation.RealNumberOfFrames)
-                    panel3D.KeyFrameIndex = 0;
-                else
-                    panelRendering.KeyFrameIndex++;
-                panel3D.Draw();
-            }*/
-        }
-
-        private void StopAnimation()
-        {
-
+            // Update animation
+            if (trackFrames.Value == trackFrames.Maximum)
+                trackFrames.Value = 0;
+            else
+                trackFrames.Value++;
         }
 
         private void tbStartVelocity_Validated(object sender, EventArgs e)
@@ -1339,10 +1309,6 @@ namespace WadTool
             ReloadAnimations();
         }
 
-        private void FormAnimationEditor_Load(object sender, EventArgs e)
-        {
-
-        }
         private void DeleteKeyframeBoundingBox(int index)
         {
             if (_selectedNode != null)
@@ -1419,6 +1385,26 @@ namespace WadTool
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
             saveChangesToolStripMenuItem_Click(null, null);
+        }
+
+        private void treeAnimations_SelectedNodesChanged(object sender, EventArgs e)
+        {
+            if (treeAnimations.SelectedNodes.Count == 0)
+                return;
+
+            var node = (AnimationNode)treeAnimations.SelectedNodes[0].Tag;
+            SelectAnimation(node);
+
+            if (_timerPlayAnimation.Enabled)
+                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
+        }
+
+        private void butPlayAnimation_Click(object sender, EventArgs e)
+        {
+            _timerPlayAnimation.Enabled = !_timerPlayAnimation.Enabled;
+
+            if (_timerPlayAnimation.Enabled)
+                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
         }
     }
 }
