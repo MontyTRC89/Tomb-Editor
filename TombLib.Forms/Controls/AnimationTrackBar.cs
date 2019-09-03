@@ -13,12 +13,12 @@ namespace TombLib.Controls
         private static readonly Pen _frameBorderPen = new Pen(Color.FromArgb(140, 140, 140), 1);
         private static readonly Pen _keyFrameBorderPen = new Pen(Color.FromArgb(180, 160, 160), 2);
         private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(180, 240, 140, 50));
-        private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 100, 200));
-        private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 30, 50, 250));
-        private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 40, 20));
+        private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
+        private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 80, 80, 250));
+        private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 80, 20));
 
         private static readonly int _cursorWidth = 6;
-        private static readonly int _animCommandMarkerRadius = 13;
+        private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
         private int _minimum;
@@ -180,7 +180,7 @@ namespace TombLib.Controls
                         // Draw animcommands
                         foreach (var ac in Animation.WadAnimation.AnimCommands)
                         {
-                            Rectangle currRect = new Rectangle(currX - 6, picSlider.Padding.Top - _animCommandMarkerRadius / 2, _animCommandMarkerRadius, _animCommandMarkerRadius);
+                            Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, picSlider.Padding.Top - _animCommandMarkerRadius / 2, _animCommandMarkerRadius, _animCommandMarkerRadius);
 
                             switch (ac.Type)
                             {
