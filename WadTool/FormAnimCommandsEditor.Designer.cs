@@ -119,6 +119,7 @@
             // 
             this.comboCommandType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboCommandType.Enabled = false;
             this.comboCommandType.FormattingEnabled = true;
             this.comboCommandType.Items.AddRange(new object[] {
             "Set position",
@@ -236,6 +237,7 @@
             this.commandControls.SelectedIndex = 0;
             this.commandControls.Size = new System.Drawing.Size(357, 99);
             this.commandControls.TabIndex = 0;
+            this.commandControls.Visible = false;
             // 
             // tabSetPosition
             // 

@@ -34,6 +34,19 @@ namespace WadTool
             if (_currentlyDoingCommandSelection)
                 return;
 
+            if (cmd == null)
+            {
+                comboCommandType.Enabled = false;
+                commandControls.Visible = false;
+                treeCommands.Focus();   // @Fixme: HACK!
+                return;
+            }
+            else
+            {
+                comboCommandType.Enabled = true;
+                commandControls.Visible = true;
+            }
+
             try
             {
                 _currentlyDoingCommandSelection = true;
@@ -248,6 +261,9 @@ namespace WadTool
 
         private void MoveCommand(bool down)
         {
+            if (treeCommands.Nodes.Count <= 1)
+                return;
+
             var node = treeCommands.SelectedNodes.First();
             int index = treeCommands.Nodes.IndexOf(node);
 
