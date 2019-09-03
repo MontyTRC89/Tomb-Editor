@@ -102,6 +102,7 @@ namespace TombLib.Controls
 
         private void picSlider_MouseDown(object sender, MouseEventArgs e)
         {
+            mouseDown = true;
             Value = XtoValue(e.X);
         }
         private void picSlider_MouseMove(object sender, MouseEventArgs e)
