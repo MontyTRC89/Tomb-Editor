@@ -37,7 +37,7 @@ namespace TombLib.Controls
             set
             {
                 if (_minimum == value) return;
-                if (value >= _maximum) return;
+                if (value >= _maximum || value < 0) return;
 
                 _minimum = value;
                 picSlider.Invalidate();
@@ -51,7 +51,7 @@ namespace TombLib.Controls
             set
             {
                 if (_maximum == value) return;
-                if (value < _minimum) return;
+                if (value < _minimum || value < 0) return;
 
                 _maximum = value;
                 picSlider.Invalidate();
@@ -98,6 +98,12 @@ namespace TombLib.Controls
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
         }
 
+        protected override void OnInvalidated(InvalidateEventArgs e)
+        {
+            picSlider.Invalidate();
+            base.OnInvalidated(e);
+        }
+
         private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
         private void picSlider_MouseUp(object sender, MouseEventArgs e) => mouseDown = false;
         private void picSlider_MouseEnter(object sender, EventArgs e) => picSlider.Focus();
@@ -113,7 +119,7 @@ namespace TombLib.Controls
             int targetFrame = XtoRealFrameNumber(e.X);
 
             foreach (WadAnimCommand ac in Animation.WadAnimation.AnimCommands)
-                if ((ac.Type == WadAnimCommandType.FlipEffect || ac.Type == WadAnimCommandType.PlaySound) && ac.Parameter1 == targetFrame)
+                if (ac.FrameBased && ac.Parameter1 == targetFrame)
                 {
                     AnimCommandDoubleClick?.Invoke(this, ac);
                     return;
@@ -139,7 +145,19 @@ namespace TombLib.Controls
 
         private void picSlider_Paint(object sender, PaintEventArgs e)
         {
-            if (Animation == null) return;
+
+            e.Graphics.Clear(BackColor);
+
+            string errorMessage = null;
+            if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
+            else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
+
+            if(!string.IsNullOrEmpty(errorMessage))
+            {
+                e.Graphics.DrawString(errorMessage, Font, Brushes.DarkGray, ClientRectangle,
+                                      new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                return;
+            }
 
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             
@@ -173,24 +191,22 @@ namespace TombLib.Controls
 
                     if (passes == 0)
                     {
+                        int count = 0;
+
                         // Draw animcommands
                         foreach (var ac in Animation.WadAnimation.AnimCommands)
                         {
-                            Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, picSlider.Padding.Top - _animCommandMarkerRadius / 2, _animCommandMarkerRadius, _animCommandMarkerRadius);
+                            Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, picSlider.Padding.Top - _animCommandMarkerRadius / 2 + (_animCommandMarkerRadius / 3 * count), _animCommandMarkerRadius, _animCommandMarkerRadius);
                             float startAngle = !first ? (!last ? 0   : 90 ) : 0;
                             float endAngle   = !first ? (!last ? 180 : 90 ) : 90;
 
-                            switch (ac.Type)
-                            {
-                                case WadAnimCommandType.PlaySound:
-                                    if (ac.Parameter1 == i)
-                                        e.Graphics.FillPie(_animCommandSoundBrush, currRect, startAngle, endAngle);
-                                    break;
-                                case WadAnimCommandType.FlipEffect:
-                                    if (ac.Parameter1 == i)
-                                        e.Graphics.FillPie(_animCommandFlipeffectBrush, currRect, startAngle, endAngle);
-                                    break;
-                            }
+                            if (ac.FrameBased && ac.Parameter1 == i)
+                                using (SolidBrush currBrush = (SolidBrush)(ac.Type == WadAnimCommandType.PlaySound ? _animCommandSoundBrush : _animCommandFlipeffectBrush).Clone())
+                                {
+                                    currBrush.Color = Color.FromArgb((int)((float)currBrush.Color.A / (1.0f + ((float)count / 3.0f))), currBrush.Color);
+                                    e.Graphics.FillPie(currBrush, currRect, startAngle, endAngle);
+                                    count++;
+                                }
                         }
 
                         // Draw dividers

@@ -10,6 +10,8 @@ namespace TombLib.Wad
         public short Parameter2 { get; set; }
         public short Parameter3 { get; set; }
 
+        public bool FrameBased => Type >= WadAnimCommandType.PlaySound;
+
         // Only for old Wad2 importing
         public WadSoundInfo SoundInfoObsolete { get; set; }
 
