@@ -30,7 +30,6 @@
         {
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
-            this.treeCommands = new DarkUI.Controls.DarkTreeView();
             this.comboCommandType = new DarkUI.Controls.DarkComboBox();
             this.butAddEffect = new DarkUI.Controls.DarkButton();
             this.butDeleteEffect = new DarkUI.Controls.DarkButton();
@@ -40,6 +39,7 @@
             this.butCommandUp = new DarkUI.Controls.DarkButton();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.lstCommands = new DarkUI.Controls.DarkListView();
             this.commandControls = new TombLib.Controls.DarkTabbedContainer();
             this.tabSetPosition = new System.Windows.Forms.TabPage();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -86,6 +86,7 @@
             // btCancel
             // 
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btCancel.Location = new System.Drawing.Point(296, 292);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(80, 23);
@@ -102,18 +103,6 @@
             this.btOk.TabIndex = 51;
             this.btOk.Text = "OK";
             this.btOk.Click += new System.EventHandler(this.btOk_Click);
-            // 
-            // treeCommands
-            // 
-            this.treeCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeCommands.Location = new System.Drawing.Point(6, 6);
-            this.treeCommands.MaxDragChange = 20;
-            this.treeCommands.Name = "treeCommands";
-            this.treeCommands.Size = new System.Drawing.Size(329, 122);
-            this.treeCommands.TabIndex = 52;
-            this.treeCommands.SelectedNodesChanged += new System.EventHandler(this.treeCommands_SelectedNodesChanged);
             // 
             // comboCommandType
             // 
@@ -169,10 +158,10 @@
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkGroupBox1.Controls.Add(this.lstCommands);
             this.darkGroupBox1.Controls.Add(this.butCommandDown);
             this.darkGroupBox1.Controls.Add(this.butCommandUp);
             this.darkGroupBox1.Controls.Add(this.butAddEffect);
-            this.darkGroupBox1.Controls.Add(this.treeCommands);
             this.darkGroupBox1.Controls.Add(this.butDeleteEffect);
             this.darkGroupBox1.Location = new System.Drawing.Point(5, 5);
             this.darkGroupBox1.Name = "darkGroupBox1";
@@ -224,6 +213,18 @@
             this.darkSectionPanel1.SectionHeader = null;
             this.darkSectionPanel1.Size = new System.Drawing.Size(359, 101);
             this.darkSectionPanel1.TabIndex = 54;
+            // 
+            // lstCommands
+            // 
+            this.lstCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstCommands.Location = new System.Drawing.Point(6, 7);
+            this.lstCommands.Name = "lstCommands";
+            this.lstCommands.Size = new System.Drawing.Size(329, 121);
+            this.lstCommands.TabIndex = 98;
+            this.lstCommands.Text = "darkListView1";
+            this.lstCommands.SelectedIndicesChanged += new System.EventHandler(this.lstCommands_SelectedIndicesChanged);
             // 
             // commandControls
             // 
@@ -579,7 +580,7 @@
             this.comboSound.Name = "comboSound";
             this.comboSound.Size = new System.Drawing.Size(290, 23);
             this.comboSound.TabIndex = 100;
-            this.comboSound.SelectedIndexChanged += new System.EventHandler(this.ComboSound_SelectedIndexChanged);
+            this.comboSound.SelectedIndexChanged += new System.EventHandler(this.comboSound_SelectedIndexChanged);
             // 
             // tbPlaySoundFrame
             // 
@@ -634,8 +635,10 @@
             // 
             // FormAnimCommandsEditor
             // 
+            this.AcceptButton = this.btOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(381, 320);
             this.Controls.Add(this.darkGroupBox2);
             this.Controls.Add(this.darkGroupBox1);
@@ -650,6 +653,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Anim commands editor";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAnimCommandsEditor_KeyDown);
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox2.ResumeLayout(false);
             this.darkGroupBox2.PerformLayout();
@@ -678,7 +682,6 @@
         #endregion
         private DarkUI.Controls.DarkButton btCancel;
         private DarkUI.Controls.DarkButton btOk;
-        private DarkUI.Controls.DarkTreeView treeCommands;
         private DarkUI.Controls.DarkComboBox comboCommandType;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkNumericUpDown tbPosZ;
@@ -713,5 +716,6 @@
         private DarkUI.Controls.DarkLabel darkLabel4;
         private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkLabel darkLabel11;
+        private DarkUI.Controls.DarkListView lstCommands;
     }
 }
