@@ -216,6 +216,9 @@ namespace TombLib.LevelData.Compilers
                         _cameraTable.Add(obj, cameraSinkID++);
                     foreach (var obj in room.Objects.OfType<FlybyCameraInstance>())
                         _flybyTable.Add(obj, flybyID++);
+                }
+                foreach (var room in _level.Rooms.Where(room => room != null))
+                {
                     foreach (var obj in room.Objects.OfType<SinkInstance>())
                         _sinkTable.Add(obj, cameraSinkID++);
                 }
