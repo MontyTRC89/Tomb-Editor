@@ -1101,6 +1101,8 @@ namespace WadTool
 
                     _saved = false;
                 }
+
+                trackFrames.Refresh();
             }
         }
 
@@ -1206,6 +1208,8 @@ namespace WadTool
 
                     _saved = false;
                 }
+
+                trackFrames.Refresh();
             }
         }
 
