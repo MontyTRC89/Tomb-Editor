@@ -118,6 +118,7 @@ namespace TombLib.Controls
         {
             int targetFrame = XtoRealFrameNumber(e.X);
 
+            // Try to find animcommand under cursor
             foreach (WadAnimCommand ac in Animation.WadAnimation.AnimCommands)
                 if (ac.FrameBased && ac.Parameter1 == targetFrame)
                 {
@@ -125,6 +126,7 @@ namespace TombLib.Controls
                     return;
                 }
 
+            // No animcommand found, try to create new one
             WadAnimCommand newCommand = new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)targetFrame };
             AnimCommandDoubleClick?.Invoke(this, newCommand);
         }
@@ -140,16 +142,23 @@ namespace TombLib.Controls
         private void picSlider_MouseMove(object sender, MouseEventArgs e)
         {
             if (!mouseDown) return;
+
+            // Warp cursor
+            if (e.X <= 0)
+                Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
+            else if (e.X >= Width - 1)
+                Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
+
             Value = XtoValue(e.X);
         }
 
         private void picSlider_Paint(object sender, PaintEventArgs e)
         {
-
             e.Graphics.Clear(BackColor);
 
+            // Any messages in case of any errors
             string errorMessage = null;
-            if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
+            if (Animation == null || Animation.WadAnimation == null) errorMessage = "No animation! Select animation to start editing.";
             else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
 
             if(!string.IsNullOrEmpty(errorMessage))
