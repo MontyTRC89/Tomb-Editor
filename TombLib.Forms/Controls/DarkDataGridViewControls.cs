@@ -68,7 +68,7 @@ namespace TombLib.Controls
 
         private void butDelete_Click(object sender, EventArgs e)
         {
-            if (DataGridView.SelectedRows.Count <= 0 || DataGridView.EditableRowCollection.Count <= 1)
+            if (DataGridView.SelectedRows.Count <= 0 || DataGridView.EditableRowCollection.Count < 1)
                 return;
 
             if (DeleteRowCheckIfCancel())
