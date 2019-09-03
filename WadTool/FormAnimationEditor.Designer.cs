@@ -1134,7 +1134,7 @@ namespace WadTool
             // trackFrames
             // 
             this.trackFrames.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.trackFrames.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackFrames.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.trackFrames.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.trackFrames.Location = new System.Drawing.Point(0, 0);
             this.trackFrames.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);

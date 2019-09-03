@@ -174,21 +174,18 @@ namespace WadTool
             panelRendering.CurrentKeyFrame = 0;
             panelRendering.SelectedMesh = null;
             panelRendering.Animation = node;
+            trackFrames.Animation = node;
 
-            if (node.DirectXAnimation.KeyFrames.Count != 0)
+            if (node.DirectXAnimation.KeyFrames.Count > 0)
             {
-                trackFrames.Visible = true;
-                trackFrames.Animation = node;
-
+                trackFrames.Value = 0;
                 OnKeyframesListChanged();
                 SelectFrame(0);
             }
             else
-            {
-                trackFrames.Visible = false;
                 statusFrame.Text = "";
-            }
 
+            trackFrames.Invalidate();
             panelRendering.Invalidate();
 
         }
@@ -393,8 +390,12 @@ namespace WadTool
                     if (treeAnimations.Nodes.Count != 0)
                         SelectAnimation(treeAnimations.Nodes[0].Tag as AnimationNode);
                     else
+                    {
                         _selectedNode = null;
+                        trackFrames.Animation = null;
+                    }
                     panelRendering.Invalidate();
+                    trackFrames.Invalidate();
 
                     _saved = false;
                 }
@@ -612,7 +613,7 @@ namespace WadTool
                     _saved = false;
                 }
 
-                trackFrames.Refresh();
+                trackFrames.Invalidate();
             }
         }
 
@@ -1114,7 +1115,7 @@ namespace WadTool
                     _saved = false;
                 }
 
-                trackFrames.Refresh();
+                trackFrames.Invalidate();
             }
         }
 
@@ -1338,7 +1339,7 @@ namespace WadTool
             _timerPlayAnimation.Enabled = !_timerPlayAnimation.Enabled;
 
             if (_timerPlayAnimation.Enabled)
-                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation?.FrameRate ?? 0;
+                _timerPlayAnimation.Interval = 30 * _selectedNode?.WadAnimation?.FrameRate ?? 1;
         }
 
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
