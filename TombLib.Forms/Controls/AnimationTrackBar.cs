@@ -28,6 +28,7 @@ namespace TombLib.Controls
             set
             {
                 if (_minimum == value) return;
+                if (value >= _maximum) return;
 
                 _minimum = value;
                 picSlider.Invalidate();
@@ -42,6 +43,7 @@ namespace TombLib.Controls
             set
             {
                 if (_maximum == value) return;
+                if (value < _minimum) return;
 
                 _maximum = value;
                 picSlider.Invalidate();
@@ -105,11 +107,13 @@ namespace TombLib.Controls
             mouseDown = true;
             Value = XtoValue(e.X);
         }
+
         private void picSlider_MouseMove(object sender, MouseEventArgs e)
         {
             if (!mouseDown) return;
             Value = XtoValue(e.X);
         }
+
         private void picSlider_MouseUp(object sender, MouseEventArgs e)
         {
             mouseDown = false;
