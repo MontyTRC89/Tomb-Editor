@@ -33,8 +33,8 @@ namespace WadTool
         private Timer _timerPlayAnimation;
 
         // Clipboard
-        private KeyFrame _clipboardKeyFrame = null;
-        private AnimationNode _clipboardNode = null;
+        private List<KeyFrame> _clipboardKeyFrames = new List<KeyFrame>();
+        private AnimationNode  _clipboardNode = null;
 
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
@@ -179,6 +179,7 @@ namespace WadTool
             if (node.DirectXAnimation.KeyFrames.Count > 0)
             {
                 trackFrames.Value = 0;
+                trackFrames.ResetSelection();
                 OnKeyframesListChanged();
                 SelectFrame(0);
             }
@@ -423,11 +424,13 @@ namespace WadTool
             }
         }
 
-        private void DeleteFrame()
+        private void DeleteFrames(IWin32Window owner) // No owner = no warning!
         {
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
-                if (DarkMessageBox.Show(this, "Do you really want to delete frame " + panelRendering.CurrentKeyFrame + "?",
+                if (owner == null || 
+                    DarkMessageBox.Show(this, "Do you really want to delete frame" + 
+                    (trackFrames.SelectionIsEmpty ? " " + panelRendering.CurrentKeyFrame : "s " + trackFrames.Selection.X + "-" + trackFrames.Selection.Y) + "?",
                                         "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     int currentIndex = _workingAnimations.IndexOf(_selectedNode);
@@ -452,8 +455,10 @@ namespace WadTool
                                       dispatch.NextAnimation--;*/
                     }
 
-                    // Remove the frame
-                    _selectedNode.DirectXAnimation.KeyFrames.RemoveAt(panelRendering.CurrentKeyFrame);
+                    // Remove the frames
+                    _selectedNode.DirectXAnimation.KeyFrames.RemoveRange(trackFrames.Selection.X, trackFrames.SelectionSize);
+                    trackFrames.ResetSelection();
+                        
 
                     // Update GUI
                     OnKeyframesListChanged();
@@ -468,28 +473,30 @@ namespace WadTool
             }
         }
 
-        private void CutFrame()
+        private void CutFrames()
         {
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
-                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
-                DeleteFrame();
+                CopyFrames();
+                DeleteFrames(null);
             }
         }
 
-        private void CopyFrame()
+        private void CopyFrames()
         {
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
-                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].Clone();
+                _clipboardKeyFrames.Clear();
+                for (int i = trackFrames.Selection.X; i <= trackFrames.Selection.Y; i++)
+                    _clipboardKeyFrames.Add(_selectedNode.DirectXAnimation.KeyFrames[i].Clone());
             }
         }
 
-        private void PasteFrame()
+        private void PasteFrames()
         {
-            if (_clipboardKeyFrame != null && _selectedNode != null)
+            if (_clipboardKeyFrames != null && _selectedNode != null)
             {
-                _selectedNode.DirectXAnimation.KeyFrames.Insert(panelRendering.CurrentKeyFrame, _clipboardKeyFrame);
+                _selectedNode.DirectXAnimation.KeyFrames.InsertRange(trackFrames.Selection.X, _clipboardKeyFrames);
                 //_clipboardKeyFrame = null;
                 OnKeyframesListChanged();
                 SelectFrame(panelRendering.CurrentKeyFrame);
@@ -497,11 +504,14 @@ namespace WadTool
             }
         }
 
-        private void ReplaceFrame()
+        private void ReplaceFrames()
         {
-            if (_clipboardKeyFrame != null && _selectedNode != null)
+            if (_clipboardKeyFrames != null && _selectedNode != null)
             {
-                _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
+                int index = trackFrames.Selection.X; // Save last index
+                DeleteFrames(null);
+
+                _selectedNode.DirectXAnimation.KeyFrames.InsertRange(index, _clipboardKeyFrames);
                 //_clipboardKeyFrame = null;
                 SelectFrame(panelRendering.CurrentKeyFrame);
                 _saved = false;
@@ -726,7 +736,7 @@ namespace WadTool
 
         private void butDeleteFrame_Click(object sender, EventArgs e)
         {
-            DeleteFrame();
+            DeleteFrames(this);
         }
 
         private void tbCollisionBoxMinX_Validated(object sender, EventArgs e)
@@ -827,7 +837,7 @@ namespace WadTool
 
         private void deleteFrameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DeleteFrame();
+            DeleteFrames(this);
         }
 
         private void comboSkeleton_SelectedIndexChanged(object sender, EventArgs e)
@@ -840,22 +850,22 @@ namespace WadTool
 
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CutFrame();
+            CutFrames();
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CopyFrame();
+            CopyFrames();
         }
 
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PasteFrame();
+            PasteFrames();
         }
 
         private void pasteReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ReplaceFrame();
+            ReplaceFrames();
         }
 
         private void calculateCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -894,22 +904,22 @@ namespace WadTool
 
         private void butTbDeleteFrame_Click(object sender, EventArgs e)
         {
-            DeleteFrame();
+            DeleteFrames(this);
         }
 
         private void butTbCutFrame_Click(object sender, EventArgs e)
         {
-            CutFrame();
+            CutFrames();
         }
 
         private void butTbCopyFrame_Click(object sender, EventArgs e)
         {
-            CopyFrame();
+            CopyFrames();
         }
 
         private void butTbPasteFrame_Click(object sender, EventArgs e)
         {
-            PasteFrame();
+            PasteFrames();
         }
 
         private void insertnFramesAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1196,7 +1206,7 @@ namespace WadTool
 
         private void butTbReplaceFrame_Click(object sender, EventArgs e)
         {
-            ReplaceFrame();
+            ReplaceFrames();
         }
 
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1402,7 +1412,10 @@ namespace WadTool
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Space) PlayAnimation();
+            if (keyData == Keys.Space)  PlayAnimation();
+            if (keyData == Keys.Escape) trackFrames.ResetSelection();
+            if (keyData == Keys.Left)   trackFrames.ValueLoopDec();
+            if (keyData == Keys.Right)  trackFrames.ValueLoopInc();
             return base.ProcessCmdKey(ref msg, keyData);
         }
 

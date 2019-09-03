@@ -12,6 +12,8 @@ namespace TombLib.Controls
     {
         private static readonly Pen _frameBorderPen = new Pen(Color.FromArgb(140, 140, 140), 1);
         private static readonly Pen _keyFrameBorderPen = new Pen(Color.FromArgb(170, 160, 160), 2);
+        private static readonly Pen _selectionPen = new Pen(Color.FromArgb(190, 140, 140, 250), 1);
+        private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(80, 170, 170, 250));
         private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(180, 240, 140, 50));
         private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
         private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 80, 80, 250));
@@ -21,7 +23,7 @@ namespace TombLib.Controls
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
-        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
+        private int realFrameCount => Animation.DirectXAnimation.Framerate * (Animation.DirectXAnimation.KeyFrames.Count - 1) + 1;
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
@@ -58,6 +60,34 @@ namespace TombLib.Controls
             }
         }
 
+        private int _selectionStart;
+        private int _selectionEnd;
+        public int SelectionStart
+        {
+            get { return _selectionStart; }
+            set
+            {
+                if (value == _selectionStart || value < _minimum || value > _maximum) return;
+                _selectionStart = value;
+                picSlider.Invalidate();
+            }
+        }
+        public int SelectionEnd
+        {
+            get { return _selectionEnd; }
+            set
+            {
+                if (value == _selectionEnd || value < _minimum || value > _maximum) return;
+                _selectionEnd = value;
+                picSlider.Invalidate();
+            }
+        }
+
+        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, 1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
+        public bool SelectionIsEmpty => SelectionEnd == SelectionStart;
+        public int SelectionSize => SelectionIsEmpty ? 1 : Math.Abs(SelectionEnd - SelectionStart);
+        public void ResetSelection() => SelectionEnd = SelectionStart = 0;
+
         private int _value;
         public int Value
         {
@@ -75,6 +105,9 @@ namespace TombLib.Controls
             }
         }
 
+        public void ValueLoopInc() { if (Value < Maximum) Value++; else Value = 0; }
+        public void ValueLoopDec() { if (Value > Minimum) Value--; else Value = Maximum; }
+                
         public override Color BackColor
         {
             get { return picSlider.BackColor; }
@@ -111,7 +144,14 @@ namespace TombLib.Controls
         private void picSlider_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;
-            Value = XtoValue(e.X);
+
+            if (e.Button == MouseButtons.Middle || (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift))
+            {
+                SelectionStart = XtoValue(e.X);
+                SelectionEnd = SelectionStart;
+            }
+            else if (e.Button == MouseButtons.Left)
+                Value = XtoValue(e.X);
         }
 
         private void picSlider_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -133,23 +173,28 @@ namespace TombLib.Controls
 
         private void picSlider_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (e.Delta < 0)
-                if (Value < Maximum) Value++; else Value = 0;
-            else if (e.Delta > 0)
-                if (Value > Minimum) Value--; else Value = Maximum;
+            if (e.Delta < 0) ValueLoopInc();
+            else if (e.Delta > 0) ValueLoopDec();
         }
 
         private void picSlider_MouseMove(object sender, MouseEventArgs e)
         {
             if (!mouseDown) return;
 
-            // Warp cursor
-            if (e.X <= 0)
-                Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
-            else if (e.X >= Width - 1)
-                Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
+            if (e.Button == MouseButtons.Middle || (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift))
+            {
+                SelectionEnd = XtoValue(e.X);
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                // Warp cursor
+                if (e.X <= 0)
+                    Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
+                else if (e.X >= Width - 1)
+                    Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
 
-            Value = XtoValue(e.X);
+                Value = XtoValue(e.X);
+            }
         }
 
         private void picSlider_Paint(object sender, PaintEventArgs e)
@@ -158,8 +203,8 @@ namespace TombLib.Controls
 
             // Any messages in case of any errors
             string errorMessage = null;
-            if (Animation == null || Animation.WadAnimation == null) errorMessage = "No animation! Select animation to start editing.";
-            else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
+            if (Animation == null || Animation.DirectXAnimation == null || Animation.WadAnimation == null) errorMessage = "No animation! Select animation to start editing.";
+            else if (Animation.DirectXAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
 
             if(!string.IsNullOrEmpty(errorMessage))
             {
@@ -186,6 +231,14 @@ namespace TombLib.Controls
             if (Value == 0) addShift += _cursorWidth / 2;
             else if (Value == Maximum) addShift += -_cursorWidth / 2;
 
+            // Draw selection
+            if (!SelectionIsEmpty)
+            {
+                var rect = new Rectangle(ValueToX(Selection.X) + picSlider.Padding.Left, picSlider.Padding.Top, ValueToX(Selection.Y) - ValueToX(Selection.X), picSlider.ClientSize.Height - picSlider.Padding.Bottom);
+                e.Graphics.FillRectangle(_selectionBrush, rect);
+                e.Graphics.DrawRectangle(_selectionPen, rect);
+            }
+
             // Draw cursors
             e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
@@ -194,7 +247,7 @@ namespace TombLib.Controls
                 for (int i = 0; i < realFrameCount; ++i)
                 {
                     int  currX = (int)Math.Round(frameStep * i, MidpointRounding.ToEven) + picSlider.Padding.Left;
-                    bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
+                    bool isKeyFrame = (i % (Animation.DirectXAnimation.Framerate == 0 ? 1 : Animation.DirectXAnimation.Framerate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
 
