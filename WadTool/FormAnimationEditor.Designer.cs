@@ -106,6 +106,7 @@ namespace WadTool
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.trackFrames = new TombLib.Controls.AnimationTrackBar();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
             this.butSaveAllChanges = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -135,7 +136,6 @@ namespace WadTool
             this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogPrj2 = new System.Windows.Forms.OpenFileDialog();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
-            this.trackFrames = new TombLib.Controls.AnimationTrackBar();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -1125,10 +1125,26 @@ namespace WadTool
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.trackFrames);
-            this.panel1.Location = new System.Drawing.Point(0, 635);
+            this.panel1.Location = new System.Drawing.Point(3, 658);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(812, 65);
+            this.panel1.Size = new System.Drawing.Size(809, 42);
             this.panel1.TabIndex = 5;
+            // 
+            // trackFrames
+            // 
+            this.trackFrames.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.trackFrames.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackFrames.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.trackFrames.Location = new System.Drawing.Point(0, 0);
+            this.trackFrames.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.trackFrames.Maximum = 0;
+            this.trackFrames.Minimum = 0;
+            this.trackFrames.Name = "trackFrames";
+            this.trackFrames.Size = new System.Drawing.Size(809, 42);
+            this.trackFrames.TabIndex = 1;
+            this.trackFrames.Value = 0;
+            this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
+            this.trackFrames.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackFrames_MouseDown);
             // 
             // topBar
             // 
@@ -1447,24 +1463,14 @@ namespace WadTool
             this.openFileDialogPrj2.Title = "Open Prj2";
             // 
             // panelRendering
-            // trackFrames
             // 
             this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRendering.Location = new System.Drawing.Point(3, 59);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(809, 570);
+            this.panelRendering.Size = new System.Drawing.Size(809, 600);
             this.panelRendering.TabIndex = 7;
-            this.trackFrames.Location = new System.Drawing.Point(7, 10);
-            this.trackFrames.Maximum = 0;
-            this.trackFrames.Minimum = 0;
-            this.trackFrames.Name = "trackFrames";
-            this.trackFrames.Size = new System.Drawing.Size(567, 34);
-            this.trackFrames.TabIndex = 1;
-            this.trackFrames.Value = 0;
-            this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
-            this.trackFrames.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackFrames_MouseDown);
             // 
             // FormAnimationEditor
             // 

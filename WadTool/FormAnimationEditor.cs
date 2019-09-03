@@ -176,6 +176,7 @@ namespace WadTool
             if (node.DirectXAnimation.KeyFrames.Count != 0)
             {
                 trackFrames.Visible = true;
+                trackFrames.Animation = node;
 
                 OnKeyframesListChanged();
                 SelectFrame(0);

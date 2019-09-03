@@ -28,45 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panelCommands = new System.Windows.Forms.Panel();
             this.picSlider = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.picSlider)).BeginInit();
             this.SuspendLayout();
             // 
-            // panelCommands
-            // 
-            this.panelCommands.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.panelCommands.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelCommands.Location = new System.Drawing.Point(0, 25);
-            this.panelCommands.Name = "panelCommands";
-            this.panelCommands.Size = new System.Drawing.Size(391, 72);
-            this.panelCommands.TabIndex = 1;
-            // 
             // picSlider
             // 
-            this.picSlider.BackColor = System.Drawing.Color.Black;
-            this.picSlider.Dock = System.Windows.Forms.DockStyle.Top;
+            this.picSlider.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(53)))), ((int)(((byte)(55)))));
+            this.picSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             this.picSlider.Location = new System.Drawing.Point(0, 0);
+            this.picSlider.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.picSlider.Name = "picSlider";
-            this.picSlider.Size = new System.Drawing.Size(391, 25);
+            this.picSlider.Padding = new System.Windows.Forms.Padding(4);
+            this.picSlider.Size = new System.Drawing.Size(326, 69);
             this.picSlider.TabIndex = 1;
             this.picSlider.TabStop = false;
+            this.picSlider.SizeChanged += new System.EventHandler(this.picSlider_SizeChanged);
+            this.picSlider.Paint += new System.Windows.Forms.PaintEventHandler(this.picSlider_Paint);
+            this.picSlider.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseDown);
+            this.picSlider.MouseMove += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseMove);
+            this.picSlider.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picSlider_MouseUp);
             // 
             // AnimationTrackBar
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panelCommands);
             this.Controls.Add(this.picSlider);
+            this.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "AnimationTrackBar";
-            this.Size = new System.Drawing.Size(391, 97);
+            this.Size = new System.Drawing.Size(326, 69);
             ((System.ComponentModel.ISupportInitialize)(this.picSlider)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.Panel panelCommands;
         private System.Windows.Forms.PictureBox picSlider;
     }
 }
