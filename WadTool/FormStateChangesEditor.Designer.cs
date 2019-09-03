@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             this.dgvStateChanges = new DarkUI.Controls.DarkDataGridView();
+            this.btCancel = new DarkUI.Controls.DarkButton();
+            this.btOk = new DarkUI.Controls.DarkButton();
             this.columnStateId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnLowFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnHighFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextAnimation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btCancel = new DarkUI.Controls.DarkButton();
-            this.btOk = new DarkUI.Controls.DarkButton();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
+            this.darkSectionPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvStateChanges
@@ -56,12 +58,32 @@
             this.columnHighFrame,
             this.columnNextAnimation,
             this.columnNextFrame});
-            this.dgvStateChanges.Location = new System.Drawing.Point(12, 12);
+            this.dgvStateChanges.Location = new System.Drawing.Point(6, 6);
             this.dgvStateChanges.Name = "dgvStateChanges";
             this.dgvStateChanges.RowHeadersWidth = 40;
             this.dgvStateChanges.RowTemplate.Height = 16;
-            this.dgvStateChanges.Size = new System.Drawing.Size(517, 372);
+            this.dgvStateChanges.Size = new System.Drawing.Size(525, 209);
             this.dgvStateChanges.TabIndex = 48;
+            // 
+            // btCancel
+            // 
+            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.Location = new System.Drawing.Point(407, 231);
+            this.btCancel.Name = "btCancel";
+            this.btCancel.Size = new System.Drawing.Size(81, 23);
+            this.btCancel.TabIndex = 50;
+            this.btCancel.Text = "Cancel";
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            // 
+            // btOk
+            // 
+            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Location = new System.Drawing.Point(494, 231);
+            this.btOk.Name = "btOk";
+            this.btOk.Size = new System.Drawing.Size(81, 23);
+            this.btOk.TabIndex = 51;
+            this.btOk.Text = "OK";
+            this.btOk.Click += new System.EventHandler(this.btOk_Click);
             // 
             // columnStateId
             // 
@@ -89,58 +111,55 @@
             // 
             // columnNextFrame
             // 
+            this.columnNextFrame.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.columnNextFrame.DataPropertyName = "NextFrame";
             this.columnNextFrame.HeaderText = "NextFrame";
             this.columnNextFrame.Name = "columnNextFrame";
             // 
-            // btCancel
+            // darkSectionPanel1
             // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.Location = new System.Drawing.Point(168, 400);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(113, 26);
-            this.btCancel.TabIndex = 50;
-            this.btCancel.Text = "Cancel";
-            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-            // 
-            // btOk
-            // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOk.Location = new System.Drawing.Point(287, 400);
-            this.btOk.Name = "btOk";
-            this.btOk.Size = new System.Drawing.Size(113, 26);
-            this.btOk.TabIndex = 51;
-            this.btOk.Text = "Ok";
-            this.btOk.Click += new System.EventHandler(this.btOk_Click);
+            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkSectionPanel1.Controls.Add(this.dgvStateChanges);
+            this.darkSectionPanel1.Controls.Add(this.dgvControls);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(5, 5);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(570, 221);
+            this.darkSectionPanel1.TabIndex = 52;
             // 
             // dgvControls
             // 
+            this.dgvControls.AlwaysInsertAtZero = false;
             this.dgvControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvControls.Enabled = false;
-            this.dgvControls.Location = new System.Drawing.Point(538, 12);
+            this.dgvControls.Location = new System.Drawing.Point(537, 6);
             this.dgvControls.MinimumSize = new System.Drawing.Size(24, 24);
             this.dgvControls.Name = "dgvControls";
-            this.dgvControls.Size = new System.Drawing.Size(27, 372);
+            this.dgvControls.Size = new System.Drawing.Size(27, 209);
             this.dgvControls.TabIndex = 49;
             // 
             // FormStateChangesEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(577, 438);
+            this.ClientSize = new System.Drawing.Size(580, 260);
+            this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
-            this.Controls.Add(this.dgvControls);
-            this.Controls.Add(this.dgvStateChanges);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(596, 242);
             this.Name = "FormStateChangesEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "State changes";
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).EndInit();
+            this.darkSectionPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -156,5 +175,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn columnHighFrame;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNextAnimation;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNextFrame;
+        private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
     }
 }
