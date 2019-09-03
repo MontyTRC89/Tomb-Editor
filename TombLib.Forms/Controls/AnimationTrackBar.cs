@@ -28,7 +28,7 @@ namespace TombLib.Controls
         private int XtoMinMax(int x, int max, bool interpolate = true) => (int)Math.Round((double)(Minimum + (max - Minimum) * x) / (double)(picSlider.ClientSize.Width - picSlider.Padding.Horizontal), interpolate ? MidpointRounding.ToEven : MidpointRounding.AwayFromZero);
         private int XtoRealFrameNumber(int x) => XtoMinMax(x, realFrameCount - 1, false);
         private int XtoValue(int x) => XtoMinMax(x, Maximum, false);
-        private int ValueToX(int value) => Maximum - Minimum == 0 ? 0 : (picSlider.ClientSize.Width - picSlider.Padding.Horizontal) * (value - Minimum) / (int)(Maximum - Minimum);
+        private int ValueToX(int value) => Maximum - Minimum == 0 ? 0 : (int)Math.Round((double)((picSlider.ClientSize.Width - picSlider.Padding.Horizontal) * (value - Minimum)) / (double)(Maximum - Minimum), MidpointRounding.ToEven);
 
         private int _minimum;
         public int Minimum
@@ -166,8 +166,8 @@ namespace TombLib.Controls
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
-                    int  currX = (int)(frameStep * i) + picSlider.Padding.Left;
-                    bool isKeyFrame = (i % Animation.WadAnimation.FrameRate == 0);
+                    int  currX = (int)Math.Round(frameStep * i, MidpointRounding.ToEven) + picSlider.Padding.Left;
+                    bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
 
