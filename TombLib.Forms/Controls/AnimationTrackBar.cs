@@ -11,7 +11,7 @@ namespace TombLib.Controls
     public partial class AnimationTrackBar : UserControl
     {
         private static readonly Pen _frameBorderPen = new Pen(Color.FromArgb(140, 140, 140), 1);
-        private static readonly Pen _keyFrameBorderPen = new Pen(Color.FromArgb(180, 160, 160), 2);
+        private static readonly Pen _keyFrameBorderPen = new Pen(Color.FromArgb(170, 160, 160), 2);
         private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(180, 240, 140, 50));
         private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
         private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 80, 80, 250));
@@ -141,7 +141,7 @@ namespace TombLib.Controls
         {
             if (Animation == null) return;
 
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             
             // Draw state change ranges
             foreach (var sch in Animation.WadAnimation.StateChanges)
@@ -166,8 +166,10 @@ namespace TombLib.Controls
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
-                    int currX = (int)(frameStep * i) + picSlider.Padding.Left;
+                    int  currX = (int)(frameStep * i) + picSlider.Padding.Left;
                     bool isKeyFrame = (i % Animation.WadAnimation.FrameRate == 0);
+                    bool first = i == 0;
+                    bool last  = i >= realFrameCount - 1;
 
                     if (passes == 0)
                     {
@@ -175,25 +177,26 @@ namespace TombLib.Controls
                         foreach (var ac in Animation.WadAnimation.AnimCommands)
                         {
                             Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, picSlider.Padding.Top - _animCommandMarkerRadius / 2, _animCommandMarkerRadius, _animCommandMarkerRadius);
+                            float startAngle = !first ? (!last ? 0   : 90 ) : 0;
+                            float endAngle   = !first ? (!last ? 180 : 90 ) : 90;
 
                             switch (ac.Type)
                             {
                                 case WadAnimCommandType.PlaySound:
                                     if (ac.Parameter1 == i)
-                                        e.Graphics.FillPie(_animCommandSoundBrush, currRect, 0, 180);
+                                        e.Graphics.FillPie(_animCommandSoundBrush, currRect, startAngle, endAngle);
                                     break;
                                 case WadAnimCommandType.FlipEffect:
                                     if (ac.Parameter1 == i)
-                                        e.Graphics.FillPie(_animCommandFlipeffectBrush, currRect, 0, 180);
+                                        e.Graphics.FillPie(_animCommandFlipeffectBrush, currRect, startAngle, endAngle);
                                     break;
                             }
                         }
 
                         // Draw dividers
-                        if (isKeyFrame)
-                            e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, picSlider.Height / 2);  // Draw keyframe
-                        else
-                            e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, picSlider.Height / 3);  // Draw ordinary frame
+                        var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
+                        e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
+                        if (isKeyFrame) e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight - 1);  // Draw keyframe
                     }
 
                     // Measure maximum label size
@@ -218,12 +221,12 @@ namespace TombLib.Controls
                             // Align first and last numerical entries so they are not concealed by control border
                             StringAlignment align = StringAlignment.Center;
                             int shift = 0;
-                            if (i == 0)
+                            if (first)
                             {
                                 shift -= picSlider.Padding.Left;
                                 align = StringAlignment.Near;
                             }
-                            else if (i >= realFrameCount - 1)
+                            else if (last)
                             {
                                 shift += picSlider.Padding.Left;
                                 align = StringAlignment.Far;
