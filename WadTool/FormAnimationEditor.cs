@@ -1120,6 +1120,9 @@ namespace WadTool
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
+            if (_selectedNode?.WadAnimation == null)
+                return;
+
             if (_selectedNode.WadAnimation.KeyFrames.Count <= 0) return;
 
             // Update animation
@@ -1335,7 +1338,7 @@ namespace WadTool
             _timerPlayAnimation.Enabled = !_timerPlayAnimation.Enabled;
 
             if (_timerPlayAnimation.Enabled)
-                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
+                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation?.FrameRate ?? 0;
         }
 
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
