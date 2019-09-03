@@ -98,8 +98,10 @@ namespace TombLib.Controls
 
         private void picSlider_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (e.Delta < 0 && Value < Maximum) Value++;
-            else if (e.Delta > 0 && Value > Minimum) Value--;
+            if (e.Delta < 0)
+                if (Value < Maximum) Value++; else Value = 0;
+            else if (e.Delta > 0)
+                if (Value > Minimum) Value--; else Value = Maximum;
         }
 
         private void picSlider_MouseDown(object sender, MouseEventArgs e)
