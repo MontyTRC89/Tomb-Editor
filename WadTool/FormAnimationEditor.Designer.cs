@@ -130,7 +130,6 @@ namespace WadTool
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.panelView = new DarkUI.Controls.DarkSectionPanel();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
-            this.topBar.SuspendLayout();
             this.panelTimeline = new System.Windows.Forms.Panel();
             this.timeline = new TombLib.Controls.AnimationTrackBar();
             this.panelTransport = new System.Windows.Forms.Panel();
@@ -153,6 +152,9 @@ namespace WadTool
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelTools = new System.Windows.Forms.Panel();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.topMenu.SuspendLayout();
+            this.darkStatusStrip1.SuspendLayout();
+            this.topBar.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.panelView.SuspendLayout();
             this.panelTimeline.SuspendLayout();
@@ -594,6 +596,8 @@ namespace WadTool
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusFrame});
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 716);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
@@ -955,11 +959,10 @@ namespace WadTool
             // 
             // topBar
             // 
-            this.topBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.topBar.AutoSize = false;
             this.topBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.topBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.topBar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.butSaveAllChanges,
             this.toolStripSeparator1,
@@ -984,7 +987,7 @@ namespace WadTool
             this.comboSkeleton,
             this.toolStripLabel4,
             this.comboRooms});
-            this.topBar.Location = new System.Drawing.Point(0, 28);
+            this.topBar.Location = new System.Drawing.Point(0, 24);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
             this.topBar.Size = new System.Drawing.Size(1058, 28);
@@ -1227,7 +1230,7 @@ namespace WadTool
             this.comboSkeleton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboSkeleton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.comboSkeleton.Name = "comboSkeleton";
-            this.comboSkeleton.Size = new System.Drawing.Size(120, 20);
+            this.comboSkeleton.Size = new System.Drawing.Size(120, 28);
             this.comboSkeleton.SelectedIndexChanged += new System.EventHandler(this.comboSkeleton_SelectedIndexChanged);
             // 
             // toolStripLabel4
@@ -1245,7 +1248,7 @@ namespace WadTool
             this.comboRooms.Enabled = false;
             this.comboRooms.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.comboRooms.Name = "comboRooms";
-            this.comboRooms.Size = new System.Drawing.Size(120, 20);
+            this.comboRooms.Size = new System.Drawing.Size(120, 28);
             this.comboRooms.SelectedIndexChanged += new System.EventHandler(this.comboRooms_SelectedIndexChanged);
             // 
             // timerPlayAnimation
@@ -1340,6 +1343,7 @@ namespace WadTool
             this.timeline.Size = new System.Drawing.Size(630, 38);
             this.timeline.TabIndex = 3;
             this.timeline.Value = 0;
+            this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
             // 
             // panelTransport
             // 
@@ -1633,6 +1637,12 @@ namespace WadTool
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animation editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormAnimationEditor_FormClosing);
+            this.topMenu.ResumeLayout(false);
+            this.topMenu.PerformLayout();
+            this.darkStatusStrip1.ResumeLayout(false);
+            this.darkStatusStrip1.PerformLayout();
+            this.topBar.ResumeLayout(false);
+            this.topBar.PerformLayout();
             this.darkSectionPanel1.ResumeLayout(false);
             this.darkSectionPanel1.PerformLayout();
             this.panelView.ResumeLayout(false);

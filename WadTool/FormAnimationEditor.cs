@@ -55,7 +55,7 @@ namespace WadTool
             _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
 
             // Add custom event handler for direct editing of animcommands
-            timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(trackFrames_AnimCommandDoubleClick);
+            timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(timeline_AnimCommandDoubleClick);
 
             // Initialize the panel
             var skin = _moveableId;
@@ -190,7 +190,7 @@ namespace WadTool
 
         }
 
-        private void trackFrames_ValueChanged(object sender, EventArgs e)
+        private void timeline_ValueChanged(object sender, EventArgs e)
         {
             SelectFrame(timeline.Value);
         }
@@ -1350,11 +1350,11 @@ namespace WadTool
 
             if (_timerPlayAnimation.Enabled)
             {
-                butTransportPlay.Image = Properties.Resources.transport_play_24;
+                butTransportPlay.Image = Properties.Resources.transport_stop_24;
                 _timerPlayAnimation.Interval = 30 * _selectedNode?.WadAnimation?.FrameRate ?? 1;
             }
             else
-                butTransportPlay.Image = Properties.Resources.transport_stop_24;
+                butTransportPlay.Image = Properties.Resources.transport_play_24;
         }
 
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1385,13 +1385,6 @@ namespace WadTool
                     SelectFrame(startFrame);
                 }
             }
-        }
-
-        private void trackFrames_MouseDown(object sender, MouseEventArgs e)
-        {
-            double dblValue;
-            dblValue = ((double)e.X / (double)timeline.Width) * (timeline.Maximum - timeline.Minimum);
-            timeline.Value = Convert.ToInt32(dblValue);
         }
 
         private void FormAnimationEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -1447,7 +1440,7 @@ namespace WadTool
                 _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
         }
 
-        private void trackFrames_AnimCommandDoubleClick(object sender, WadAnimCommand ac)
+        private void timeline_AnimCommandDoubleClick(object sender, WadAnimCommand ac)
         {
             EditAnimCommands(ac);
         }
