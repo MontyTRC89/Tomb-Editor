@@ -272,10 +272,14 @@ namespace TombLib.Controls
                                 }
                         }
 
+                        e.Graphics.SmoothingMode = SmoothingMode.Default;
+
                         // Draw dividers
                         var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
-                        e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
-                        if (isKeyFrame) e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight - 1);  // Draw keyframe
+                        if (isKeyFrame)
+                            e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw keyframe
+                        else
+                            e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
                     }
 
                     // Measure maximum label size
@@ -320,7 +324,7 @@ namespace TombLib.Controls
 
             // Draw horizontal guide (only for real anims, for single-frame anims we wouldn't wanna show that
             if(realFrameCount > 1)
-                e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top);
+                e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top + 1, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top + 1);
         }
     }
 }

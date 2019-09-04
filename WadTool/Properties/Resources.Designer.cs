@@ -93,6 +93,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_refresh_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_refresh_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap angle_left_16 {
             get {
                 object obj = ResourceManager.GetObject("angle_left-16", resourceCulture);
@@ -627,6 +637,86 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap toolbox_Pencil_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_Pencil-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_audio_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_audio_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_end_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_end_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_frame_back_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_frame_back_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_frame_forward_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_frame_forward_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_mute_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_mute_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_play_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_play_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_start_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_start_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_stop_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_stop_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
