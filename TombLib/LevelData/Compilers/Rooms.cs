@@ -1205,7 +1205,7 @@ namespace TombLib.LevelData.Compilers
                     //if (yAtXMaxZMin < 0.0f) n.Y = -n.Y;*/
 
                     // TEST: this should solve flickering rooms when camera is on portal
-                    n = Vector3.UnitY;
+                    Vector3 n = Vector3.UnitY;
 
                     portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));
