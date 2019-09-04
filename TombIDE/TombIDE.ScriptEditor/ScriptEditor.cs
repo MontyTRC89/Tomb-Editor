@@ -947,6 +947,7 @@ namespace TombIDE.ScriptEditor
 			// Only allow the Object Browser to work for actual script files (might add support for more files later)
 			if (tabControl_Editor.SelectedTab.Text.TrimEnd('*') != Path.GetFileName(GetScriptFilePath()))
 			{
+				treeView_Objects.SelectedNodes.Clear();
 				treeView_Objects.Nodes.Clear();
 				treeView_Objects.Invalidate();
 				return;
