@@ -459,7 +459,7 @@ namespace TombEditor
             Texture32 = ZLib.DecompressData(Texture32);
 
             ImageC img = ImageC.FromByteArray(Texture32, 256, (int)Texture32UncompressedSize / 262144 * 256);
-            img.Save("H:\\karnak.png");
+            //img.Save("H:\\karnak.png");
 
             BinaryWriterEx wrttext = new BinaryWriterEx(new FileStream("textures.raw", FileMode.Create, FileAccess.Write, FileShare.None));
             wrttext.WriteBlockArray(Texture32);
@@ -832,7 +832,7 @@ namespace TombEditor
             BinaryWriterEx bwex = new BinaryWriterEx(new FileStream("sounds" + outFileName + ".sfx", FileMode.Create, FileAccess.Write, FileShare.None));
 
             var numDemo = reader.ReadInt16();
-            byte[] soundmap = reader.ReadBytes(numDemo * 2);
+            byte[] soundmap = reader.ReadBytes((numDemo != 0 ? numDemo * 2 : 740));
             int numSoundDetails = reader.ReadInt32();
             byte[] details = reader.ReadBytes(8 * numSoundDetails);
             int numIndices = reader.ReadInt32();

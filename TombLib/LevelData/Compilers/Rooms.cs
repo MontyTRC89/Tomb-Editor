@@ -1182,7 +1182,7 @@ namespace TombLib.LevelData.Compilers
                     normal = new tr_vertex(portalPlane.SlopeX, 4, portalPlane.SlopeZ);
 
                     // HACK: this prevents flickering when camera is exactly on the portal
-                    var n = new Vector3(normal.X, normal.Y, normal.Z);
+                    /*var n = new Vector3(normal.X, normal.Y, normal.Z);
                     if (normal.X < 0.0f)
                         n.X = -1;
                     if (normal.X == 0.0f)
@@ -1202,7 +1202,10 @@ namespace TombLib.LevelData.Compilers
                     if (normal.Z > 0.0f)
                         n.Z = 1;
 
-                    //if (yAtXMaxZMin < 0.0f) n.Y = -n.Y;
+                    //if (yAtXMaxZMin < 0.0f) n.Y = -n.Y;*/
+
+                    // TEST: this should solve flickering rooms when camera is on portal
+                    n = Vector3.UnitY;
 
                     portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));

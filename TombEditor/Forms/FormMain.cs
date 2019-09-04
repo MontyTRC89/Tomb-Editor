@@ -591,7 +591,8 @@ namespace TombEditor.Forms
         {
             //level.Load("");
             //var level = new TestLevel("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
-            var level = new TestLevel("h:\\pyramid8px_padding.tr4");
+            var level = new TestLevel("test\\Dustie\\data\\shore.tr4", "shore.ngle");
+            level = new TestLevel("test\\Dustie\\data\\gauntlet.tr4", "shore.te");
 
             // var level = new TrLevel();
             // level.LoadLevel("H:\\tomb5\\data\\joby5.trc");
