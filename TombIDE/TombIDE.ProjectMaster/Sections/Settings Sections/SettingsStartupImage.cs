@@ -24,12 +24,39 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
+			radioButton_Wide.Checked = !_ide.Configuration.StandardAspectRatioPreviewEnabled;
+			radioButton_Standard.Checked = _ide.Configuration.StandardAspectRatioPreviewEnabled;
+
 			UpdatePreview();
 		}
 
 		#endregion Initialization
 
 		#region Events
+
+		private void radioButton_Wide_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButton_Wide.Checked)
+			{
+				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
+					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
+
+				_ide.Configuration.StandardAspectRatioPreviewEnabled = false;
+				_ide.Configuration.Save();
+			}
+		}
+
+		private void radioButton_Standard_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButton_Standard.Checked)
+			{
+				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
+					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
+
+				_ide.Configuration.StandardAspectRatioPreviewEnabled = true;
+				_ide.Configuration.Save();
+			}
+		}
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
@@ -107,7 +134,11 @@ namespace TombIDE.ProjectMaster
 			{
 				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
 				{
-					panel_Preview.BackgroundImage = ImageHandling.ResizeKeepAspect(image, panel_Preview.Width, panel_Preview.Height);
+					if (radioButton_Wide.Checked)
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
+					else if (radioButton_Standard.Checked)
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
+
 					label_Blank.Visible = image.Width == 1 && image.Height == 1;
 				}
 			}

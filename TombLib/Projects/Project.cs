@@ -18,6 +18,11 @@ namespace TombLib.Projects
 		public GameVersion GameVersion { get; set; }
 
 		/// <summary>
+		/// The path of the file, which launches the game.
+		/// </summary>
+		public string LaunchFilePath { get; set; }
+
+		/// <summary>
 		/// The .trproj folder path.
 		/// </summary>
 		[XmlIgnore]

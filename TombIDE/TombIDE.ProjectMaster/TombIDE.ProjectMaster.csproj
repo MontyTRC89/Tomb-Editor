@@ -121,11 +121,11 @@
     <Compile Include="Sections\Settings Sections\SettingsProjectInfo.Designer.cs">
       <DependentUpon>SettingsProjectInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsGameIcon.cs">
+    <Compile Include="Sections\Settings Sections\SettingsIcon.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsGameIcon.Designer.cs">
-      <DependentUpon>SettingsGameIcon.cs</DependentUpon>
+    <Compile Include="Sections\Settings Sections\SettingsIcon.Designer.cs">
+      <DependentUpon>SettingsIcon.cs</DependentUpon>
     </Compile>
     <Compile Include="Sections\Settings Sections\SettingsLogo.cs">
       <SubType>UserControl</SubType>
@@ -187,8 +187,8 @@
     <EmbeddedResource Include="ProjectMaster.resx">
       <DependentUpon>ProjectMaster.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsGameIcon.resx">
-      <DependentUpon>SettingsGameIcon.cs</DependentUpon>
+    <EmbeddedResource Include="Sections\Settings Sections\SettingsIcon.resx">
+      <DependentUpon>SettingsIcon.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsProjectInfo.resx">
       <DependentUpon>SettingsProjectInfo.cs</DependentUpon>

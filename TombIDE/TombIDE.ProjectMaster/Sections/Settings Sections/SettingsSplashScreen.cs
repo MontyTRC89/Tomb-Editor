@@ -77,8 +77,18 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				File.Copy(imagePath, Path.Combine(_ide.Project.EnginePath, "splash.bmp"), true);
-				UpdatePreview();
+				using (Image image = Image.FromFile(imagePath))
+				{
+					if ((image.Width == 1024 && image.Height == 512)
+						|| (image.Width == 768 && image.Height == 384)
+						|| (image.Width == 512 && image.Height == 256))
+					{
+						File.Copy(imagePath, Path.Combine(_ide.Project.EnginePath, "splash.bmp"), true);
+						UpdatePreview();
+					}
+					else
+						throw new ArgumentException("Wrong image size.");
+				}
 			}
 			catch (Exception ex)
 			{
@@ -96,8 +106,15 @@ namespace TombIDE.ProjectMaster
 				{
 					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "splash.bmp")))
 					{
-						panel_Preview.BackgroundImage = ImageHandling.ResizeKeepAspect(image, panel_Preview.Width, panel_Preview.Height);
-						label_Blank.Visible = false;
+						if ((image.Width == 1024 && image.Height == 512)
+						|| (image.Width == 768 && image.Height == 384)
+						|| (image.Width == 512 && image.Height == 256))
+						{
+							panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 460, 230);
+							label_Blank.Visible = false;
+						}
+						else
+							label_Blank.Visible = true;
 					}
 				}
 				else

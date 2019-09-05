@@ -1,6 +1,6 @@
-﻿namespace TombIDE.ProjectMaster
+namespace TombIDE.ProjectMaster
 {
-	partial class SettingsGameIcon
+	partial class SettingsIcon
 	{
 		private System.ComponentModel.IContainer components = null;
 
@@ -178,7 +178,7 @@
 			this.sectionPanel.Size = new System.Drawing.Size(640, 310);
 			this.sectionPanel.TabIndex = 2;
 			// 
-			// SettingsGameIcon
+			// SettingsIcon
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -186,7 +186,7 @@
 			this.Controls.Add(this.sectionPanel);
 			this.MaximumSize = new System.Drawing.Size(640, 310);
 			this.MinimumSize = new System.Drawing.Size(640, 310);
-			this.Name = "SettingsGameIcon";
+			this.Name = "SettingsIcon";
 			this.Size = new System.Drawing.Size(640, 310);
 			this.panel_PreviewBackground.ResumeLayout(false);
 			this.sectionPanel.ResumeLayout(false);

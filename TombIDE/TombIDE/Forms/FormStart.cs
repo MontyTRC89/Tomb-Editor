@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -439,6 +440,24 @@ namespace TombIDE
 			if (!_ide.Project.IsValidProject())
 				return;
 
+			if (!File.Exists(_ide.Project.LaunchFilePath))
+			{
+				string[] exeFiles = Directory.GetFiles(_ide.Project.ProjectPath, "*.exe", SearchOption.TopDirectoryOnly);
+
+				if (exeFiles.Length > 1)
+				{
+					DarkMessageBox.Show(this, "Couldn't find the project's launch.exe file. Please select its new location.", "Warning",
+						MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+					ShowFindLauncherDialog();
+				}
+				else
+				{
+					_ide.Project.LaunchFilePath = exeFiles.First();
+					XmlHandling.SaveTRPROJ(_ide.Project);
+				}
+			}
+
 			// Set RememberedProject if checkBox_Remember is checked
 			if (checkBox_Remember.Checked)
 				_ide.Configuration.RememberedProject = _ide.Project.Name;
@@ -467,6 +486,33 @@ namespace TombIDE
 				}
 				else if (result == DialogResult.Cancel) // Cancel means the user closed the program
 					Application.Exit();
+			}
+		}
+
+		private void ShowFindLauncherDialog()
+		{
+			try
+			{
+				using (OpenFileDialog dialog = new OpenFileDialog())
+				{
+					dialog.Title = "Choose the launch.exe file of the current game project";
+					dialog.Filter = "Executable Files|*.exe";
+					dialog.InitialDirectory = _ide.Project.ProjectPath;
+
+					if (dialog.ShowDialog(this) == DialogResult.OK)
+					{
+						if (Path.GetDirectoryName(dialog.FileName).ToLower() != _ide.Project.ProjectPath.ToLower())
+							throw new ArgumentException("This is not the project folder. Please try again.");
+
+						_ide.Project.LaunchFilePath = dialog.FileName;
+						XmlHandling.SaveTRPROJ(_ide.Project);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowFindLauncherDialog();
 			}
 		}
 

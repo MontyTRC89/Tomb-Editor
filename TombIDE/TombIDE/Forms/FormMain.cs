@@ -41,7 +41,7 @@ namespace TombIDE
 
 			panel_CoverLoading.BringToFront(); // Cover the whole form with this panel to hide the graphical glitches happening while loading
 
-			// Check if flep.exe exists in the ProjectPath folder, if so, then create a "Launch FLEP" button for quick access
+			// Check if flep.exe exists in the EnginePath folder, if so, then create a "Launch FLEP" button for quick access
 			string flepExePath = Path.Combine(_ide.Project.EnginePath, "flep.exe");
 
 			if (File.Exists(flepExePath))

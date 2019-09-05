@@ -55,7 +55,8 @@ namespace TombIDE.ProjectMaster
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			panel.BackgroundImage.Dispose();
+			if (panel.BackgroundImage != null)
+				panel.BackgroundImage.Dispose();
 
 			base.OnDeactivate(e);
 		}
