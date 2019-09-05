@@ -86,7 +86,7 @@ namespace TombLib.Controls
 
         public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, 1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
         public bool SelectionIsEmpty => SelectionEnd == SelectionStart;
-        public int SelectionSize => SelectionIsEmpty ? 1 : Math.Abs(SelectionEnd - SelectionStart + 1);
+        public int SelectionSize => SelectionIsEmpty ? 1 : Selection.Y - Selection.X + 1;
         public void ResetSelection() => SelectionEnd = SelectionStart = 0;
 
         private int _value;
