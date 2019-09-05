@@ -71,6 +71,12 @@
     <Compile Include="Forms\FormRenameLevel.Designer.cs">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormSplashPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSplashPreview.Designer.cs">
+      <DependentUpon>FormSplashPreview.cs</DependentUpon>
+    </Compile>
     <Compile Include="IconExtractor.cs" />
     <Compile Include="IconInjector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -133,6 +139,12 @@
     <Compile Include="Sections\Settings Sections\SettingsSpecialFunctions.Designer.cs">
       <DependentUpon>SettingsSpecialFunctions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sections\Settings Sections\SettingsSplashScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Sections\Settings Sections\SettingsSplashScreen.Designer.cs">
+      <DependentUpon>SettingsSplashScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sections\Settings Sections\SettingsStartupImage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,6 +164,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameLevel.resx">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSplashPreview.resx">
+      <DependentUpon>FormSplashPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -183,6 +198,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsSpecialFunctions.resx">
       <DependentUpon>SettingsSpecialFunctions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sections\Settings Sections\SettingsSplashScreen.resx">
+      <DependentUpon>SettingsSplashScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsStartupImage.resx">
       <DependentUpon>SettingsStartupImage.cs</DependentUpon>

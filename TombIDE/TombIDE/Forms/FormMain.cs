@@ -42,7 +42,7 @@ namespace TombIDE
 			panel_CoverLoading.BringToFront(); // Cover the whole form with this panel to hide the graphical glitches happening while loading
 
 			// Check if flep.exe exists in the ProjectPath folder, if so, then create a "Launch FLEP" button for quick access
-			string flepExePath = Path.Combine(_ide.Project.ProjectPath, "flep.exe");
+			string flepExePath = Path.Combine(_ide.Project.EnginePath, "flep.exe");
 
 			if (File.Exists(flepExePath))
 			{
@@ -522,8 +522,8 @@ namespace TombIDE
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Path.Combine(_ide.Project.ProjectPath, "flep.exe"),
-				WorkingDirectory = _ide.Project.ProjectPath
+				FileName = Path.Combine(_ide.Project.EnginePath, "flep.exe"),
+				WorkingDirectory = _ide.Project.EnginePath
 			};
 
 			Process.Start(startInfo);
@@ -541,7 +541,7 @@ namespace TombIDE
 		{
 			try
 			{
-				string scriptDatFilePath = Path.Combine(_ide.Project.ProjectPath, "script.dat");
+				string scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
 
 				if (!File.Exists(scriptDatFilePath))
 				{
@@ -554,14 +554,14 @@ namespace TombIDE
 				}
 
 				string launchFile = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
-				string gameFile = Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName());
+				string gameFile = Path.Combine(_ide.Project.EnginePath, _ide.Project.GetExeFileName());
 
 				string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
 
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
 					FileName = exeFilePath,
-					WorkingDirectory = _ide.Project.ProjectPath
+					WorkingDirectory = _ide.Project.EnginePath
 				};
 
 				Process.Start(startInfo);

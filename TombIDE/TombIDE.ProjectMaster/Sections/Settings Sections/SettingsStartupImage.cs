@@ -54,7 +54,7 @@ namespace TombIDE.ProjectMaster
 					using (Bitmap bitmap = new Bitmap(1, 1))
 					{
 						bitmap.SetPixel(0, 0, Color.Black);
-						bitmap.Save(Path.Combine(_ide.Project.ProjectPath, "load.bmp"), ImageFormat.Bmp);
+						bitmap.Save(Path.Combine(_ide.Project.EnginePath, "load.bmp"), ImageFormat.Bmp);
 					}
 
 					UpdatePreview();
@@ -92,7 +92,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				File.Copy(imagePath, Path.Combine(_ide.Project.ProjectPath, "load.bmp"), true);
+				File.Copy(imagePath, Path.Combine(_ide.Project.EnginePath, "load.bmp"), true);
 				UpdatePreview();
 			}
 			catch (Exception ex)
@@ -105,7 +105,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				using (Image image = Image.FromFile(Path.Combine(_ide.Project.ProjectPath, "load.bmp")))
+				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
 				{
 					panel_Preview.BackgroundImage = ImageHandling.ResizeKeepAspect(image, panel_Preview.Width, panel_Preview.Height);
 					label_Blank.Visible = image.Width == 1 && image.Height == 1;

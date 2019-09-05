@@ -65,11 +65,9 @@ namespace TombLib.Projects
 
 		private bool FolderContainsLevelFiles()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(FolderPath);
-
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.prj2", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(FolderPath, "*.prj2", SearchOption.TopDirectoryOnly))
 			{
-				if (!IsBackupFile(fileInfo.Name))
+				if (!IsBackupFile(Path.GetFileName(file)))
 					return true;
 			}
 

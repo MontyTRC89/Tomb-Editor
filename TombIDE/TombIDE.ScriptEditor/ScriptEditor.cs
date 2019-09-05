@@ -779,7 +779,7 @@ namespace TombIDE.ScriptEditor
 		{
 			IScriptCompiler compiler = new ScriptCompilerNew(GameVersion.TR4);
 
-			if (compiler.CompileScripts(_ide.Project.ScriptPath, _ide.Project.ProjectPath))
+			if (compiler.CompileScripts(_ide.Project.ScriptPath, _ide.Project.EnginePath))
 				DarkMessageBox.Show(this, "Script compiled successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			else
 				DarkMessageBox.Show(this, "Error while compiling the script.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -882,7 +882,7 @@ namespace TombIDE.ScriptEditor
 
 				// Replace the VGE paths in the log file with the current project ones
 				string vgePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE";
-				File.WriteAllText(logFilePath, logFileContent.Replace(vgePath, _ide.Project.ProjectPath), Encoding.GetEncoding(1252));
+				File.WriteAllText(logFilePath, logFileContent.Replace(vgePath, _ide.Project.EnginePath), Encoding.GetEncoding(1252));
 
 				application.Close(); // Done!
 
@@ -891,10 +891,10 @@ namespace TombIDE.ScriptEditor
 				string compiledEnglishFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\English.dat";
 
 				if (File.Exists(compiledScriptFilePath))
-					File.Copy(compiledScriptFilePath, Path.Combine(_ide.Project.ProjectPath, "Script.dat"), true);
+					File.Copy(compiledScriptFilePath, Path.Combine(_ide.Project.EnginePath, "Script.dat"), true);
 
 				if (File.Exists(compiledEnglishFilePath))
-					File.Copy(compiledEnglishFilePath, Path.Combine(_ide.Project.ProjectPath, "English.dat"), true);
+					File.Copy(compiledEnglishFilePath, Path.Combine(_ide.Project.EnginePath, "English.dat"), true);
 
 				// Read and show the logs in the "Compiler Logs" richTextBox
 				richTextBox_Logs.Text = File.ReadAllText(logFilePath);

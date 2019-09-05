@@ -292,7 +292,7 @@ namespace TombIDE
 		}
 
 		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(Path.Combine(_ide.Project.ProjectPath, "audio"));
+			SharedMethods.OpenFolderInExplorer(Path.Combine(_ide.Project.EnginePath, "audio"));
 
 		#endregion Script section generating
 	}

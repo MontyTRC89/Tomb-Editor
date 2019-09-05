@@ -33,7 +33,7 @@ namespace TombIDE.ProjectMaster
 			if (!Directory.Exists(pluginsFolderPath))
 				Directory.CreateDirectory(pluginsFolderPath);
 
-			projectDLLFileWatcher.Path = _ide.Project.ProjectPath;
+			projectDLLFileWatcher.Path = _ide.Project.EnginePath;
 			internalDLLFileWatcher.Path = pluginsFolderPath;
 			internalPluginFolderWatcher.Path = pluginsFolderPath;
 
@@ -147,7 +147,7 @@ namespace TombIDE.ProjectMaster
 		{
 			List<Plugin> projectPlugins = new List<Plugin>();
 
-			foreach (string pluginFile in Directory.GetFiles(_ide.Project.ProjectPath, "plugin_*.dll", SearchOption.TopDirectoryOnly))
+			foreach (string pluginFile in Directory.GetFiles(_ide.Project.EnginePath, "plugin_*.dll", SearchOption.TopDirectoryOnly))
 			{
 				// Check if the plugin is available in TombIDE
 				bool isPluginAvailable = false;

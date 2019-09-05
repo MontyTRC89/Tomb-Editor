@@ -25,16 +25,16 @@ namespace TombIDE.Shared
 		{
 			Level level = Prj2Loader.LoadFromPrj2(prj2FilePath, null);
 
-			string exeFilePath = Path.Combine(destProject.ProjectPath, destProject.GetExeFileName());
+			string exeFilePath = Path.Combine(destProject.EnginePath, destProject.GetExeFileName());
 
 			string dataFileName = destLevel.Name.Replace(' ', '_') + destProject.GetLevelFileExtension();
-			string dataFilePath = Path.Combine(destProject.ProjectPath, "data", dataFileName);
+			string dataFilePath = Path.Combine(destProject.EnginePath, "data", dataFileName);
 
-			string projectSamplesPath = Path.Combine(destProject.ProjectPath, @"sounds\Samples");
+			string projectSamplesPath = Path.Combine(destProject.ProjectPath, "Sounds");
 
 			level.Settings.LevelFilePath = prj2FilePath;
 
-			level.Settings.GameDirectory = level.Settings.MakeRelative(destProject.ProjectPath, VariableType.LevelDirectory);
+			level.Settings.GameDirectory = level.Settings.MakeRelative(destProject.EnginePath, VariableType.LevelDirectory);
 			level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 			level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 			level.Settings.GameVersion = destProject.GameVersion;

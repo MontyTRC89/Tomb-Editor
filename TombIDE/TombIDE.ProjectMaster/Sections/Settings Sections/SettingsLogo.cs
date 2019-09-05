@@ -45,7 +45,7 @@ namespace TombIDE.ProjectMaster
 							if (image.Width != 512 || image.Height != 256)
 								throw new ArgumentException("Wrong image size. The size of the logo has to be 512x256 px.");
 
-							string pakFilePath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
+							string pakFilePath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 							byte[] rawImageData = null;
 
 							if (Path.GetExtension(dialog.FileName).ToLower() == ".bmp")
@@ -82,7 +82,7 @@ namespace TombIDE.ProjectMaster
 						graphics.FillRectangle(Brushes.Black, imageSize);
 					}
 
-					string pakFilePath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
+					string pakFilePath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 					byte[] rawImageData = ImageHandling.GetRawDataFromBitmap(bitmap);
 
 					PakFile.SavePakFile(pakFilePath, rawImageData);
@@ -111,7 +111,7 @@ namespace TombIDE.ProjectMaster
 					else if (_ide.Project.GameVersion == GameVersion.TR5Main)
 						sourcePakPath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "uklogo.pak");
 
-					string destPakPath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
+					string destPakPath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 
 					File.Copy(sourcePakPath, destPakPath, true);
 					UpdatePreview();
@@ -131,7 +131,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string pakFilePath = Path.Combine(_ide.Project.ProjectPath, @"data\uklogo.pak");
+				string pakFilePath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 				byte[] pakData = PakFile.GetDecompressedData(pakFilePath);
 
 				panel_Preview.BackgroundImage = ImageHandling.GetImageFromRawData(pakData, 512, 256);

@@ -24,7 +24,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string[] files = Directory.GetFiles(_ide.Project.ProjectPath);
+				string[] files = Directory.GetFiles(_ide.Project.EnginePath);
 
 				bool wereFilesDeleted = false;
 
@@ -41,6 +41,14 @@ namespace TombIDE.ProjectMaster
 						File.Delete(file);
 						wereFilesDeleted = true;
 					}
+				}
+
+				string logsDirectory = Path.Combine(_ide.Project.EnginePath, "logs");
+
+				if (Directory.Exists(logsDirectory))
+				{
+					Directory.Delete(logsDirectory, true);
+					wereFilesDeleted = true;
 				}
 
 				if (wereFilesDeleted)

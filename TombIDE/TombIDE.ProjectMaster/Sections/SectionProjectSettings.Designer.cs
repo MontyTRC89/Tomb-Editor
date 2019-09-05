@@ -19,6 +19,7 @@
 		{
 			this.panel_Background = new System.Windows.Forms.Panel();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			this.settings_SplashScreen = new TombIDE.ProjectMaster.SettingsSplashScreen();
 			this.settings_SpecialFunctions = new TombIDE.ProjectMaster.SettingsSpecialFunctions();
 			this.settings_Logo = new TombIDE.ProjectMaster.SettingsLogo();
 			this.settings_StartupImage = new TombIDE.ProjectMaster.SettingsStartupImage();
@@ -33,6 +34,7 @@
 			this.panel_Background.AutoScroll = true;
 			this.panel_Background.AutoScrollMargin = new System.Drawing.Size(0, 9);
 			this.panel_Background.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.panel_Background.Controls.Add(this.settings_SplashScreen);
 			this.panel_Background.Controls.Add(this.settings_SpecialFunctions);
 			this.panel_Background.Controls.Add(this.settings_Logo);
 			this.panel_Background.Controls.Add(this.settings_StartupImage);
@@ -41,7 +43,7 @@
 			this.panel_Background.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel_Background.Location = new System.Drawing.Point(1, 25);
 			this.panel_Background.Name = "panel_Background";
-			this.panel_Background.Size = new System.Drawing.Size(658, 1272);
+			this.panel_Background.Size = new System.Drawing.Size(658, 1616);
 			this.panel_Background.TabIndex = 0;
 			// 
 			// sectionPanel
@@ -52,8 +54,19 @@
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
 			this.sectionPanel.SectionHeader = "General Project Settings";
-			this.sectionPanel.Size = new System.Drawing.Size(662, 1300);
+			this.sectionPanel.Size = new System.Drawing.Size(662, 1644);
 			this.sectionPanel.TabIndex = 0;
+			// 
+			// settings_SplashScreen
+			// 
+			this.settings_SplashScreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_SplashScreen.Location = new System.Drawing.Point(9, 743);
+			this.settings_SplashScreen.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
+			this.settings_SplashScreen.MaximumSize = new System.Drawing.Size(640, 280);
+			this.settings_SplashScreen.MinimumSize = new System.Drawing.Size(640, 280);
+			this.settings_SplashScreen.Name = "settings_SplashScreen";
+			this.settings_SplashScreen.Size = new System.Drawing.Size(640, 280);
+			this.settings_SplashScreen.TabIndex = 5;
 			// 
 			// settings_SpecialFunctions
 			// 
@@ -69,7 +82,7 @@
 			// settings_Logo
 			// 
 			this.settings_Logo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.settings_Logo.Location = new System.Drawing.Point(9, 983);
+			this.settings_Logo.Location = new System.Drawing.Point(9, 1327);
 			this.settings_Logo.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_Logo.MaximumSize = new System.Drawing.Size(640, 280);
 			this.settings_Logo.MinimumSize = new System.Drawing.Size(640, 280);
@@ -80,7 +93,7 @@
 			// settings_StartupImage
 			// 
 			this.settings_StartupImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.settings_StartupImage.Location = new System.Drawing.Point(9, 691);
+			this.settings_StartupImage.Location = new System.Drawing.Point(9, 1035);
 			this.settings_StartupImage.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_StartupImage.MaximumSize = new System.Drawing.Size(640, 280);
 			this.settings_StartupImage.MinimumSize = new System.Drawing.Size(640, 280);
@@ -91,7 +104,7 @@
 			// settings_GameIcon
 			// 
 			this.settings_GameIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.settings_GameIcon.Location = new System.Drawing.Point(9, 369);
+			this.settings_GameIcon.Location = new System.Drawing.Point(9, 421);
 			this.settings_GameIcon.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_GameIcon.MaximumSize = new System.Drawing.Size(640, 310);
 			this.settings_GameIcon.MinimumSize = new System.Drawing.Size(640, 310);
@@ -104,10 +117,10 @@
 			this.settings_ProjectInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_ProjectInfo.Location = new System.Drawing.Point(9, 89);
 			this.settings_ProjectInfo.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
-			this.settings_ProjectInfo.MaximumSize = new System.Drawing.Size(640, 268);
-			this.settings_ProjectInfo.MinimumSize = new System.Drawing.Size(640, 268);
+			this.settings_ProjectInfo.MaximumSize = new System.Drawing.Size(640, 320);
+			this.settings_ProjectInfo.MinimumSize = new System.Drawing.Size(640, 320);
 			this.settings_ProjectInfo.Name = "settings_ProjectInfo";
-			this.settings_ProjectInfo.Size = new System.Drawing.Size(640, 268);
+			this.settings_ProjectInfo.Size = new System.Drawing.Size(640, 320);
 			this.settings_ProjectInfo.TabIndex = 1;
 			// 
 			// SectionProjectSettings
@@ -117,7 +130,7 @@
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.sectionPanel);
 			this.Name = "SectionProjectSettings";
-			this.Size = new System.Drawing.Size(662, 1300);
+			this.Size = new System.Drawing.Size(662, 1644);
 			this.panel_Background.ResumeLayout(false);
 			this.sectionPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -133,5 +146,6 @@
 		private SettingsSpecialFunctions settings_SpecialFunctions;
 		private SettingsStartupImage settings_StartupImage;
 		private System.Windows.Forms.Panel panel_Background;
+		private SettingsSplashScreen settings_SplashScreen;
 	}
 }
