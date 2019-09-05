@@ -93,6 +93,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_interpolate_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_interpolate_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_refresh_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_refresh_16", resourceCulture);
@@ -326,6 +336,16 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap general_Import_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Import-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_Save_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Save_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

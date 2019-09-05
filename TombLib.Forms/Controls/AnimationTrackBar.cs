@@ -23,7 +23,7 @@ namespace TombLib.Controls
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
-        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
+        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.DirectXAnimation.KeyFrames.Count - 1) + 1;
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
@@ -38,7 +38,12 @@ namespace TombLib.Controls
             get { return _minimum; }
             set
             {
-                if (_minimum == value) return;
+                if (_minimum == value)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 if (value >= _maximum || value < 0) return;
 
                 _minimum = value;
@@ -52,10 +57,16 @@ namespace TombLib.Controls
             get { return _maximum; }
             set
             {
-                if (_maximum == value) return;
+                if (_maximum == value)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 if (value < _minimum || value < 0) return;
 
                 _maximum = value;
+                if (_maximum < Value) Value = _maximum;
                 picSlider.Invalidate();
             }
         }
@@ -67,7 +78,12 @@ namespace TombLib.Controls
             get { return _selectionStart; }
             set
             {
-                if (value == _selectionStart || value < _minimum || value > _maximum) return;
+                if (value == _selectionStart || value < _minimum || value > _maximum)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 _selectionStart = value;
                 picSlider.Invalidate();
             }
@@ -77,15 +93,20 @@ namespace TombLib.Controls
             get { return _selectionEnd; }
             set
             {
-                if (value == _selectionEnd || value < _minimum || value > _maximum) return;
+                if (value == _selectionEnd || value < _minimum || value > _maximum)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 _selectionEnd = value;
                 picSlider.Invalidate();
             }
         }
 
-        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, 1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
+        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, Value) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
         public bool SelectionIsEmpty => SelectionEnd == SelectionStart;
-        public int SelectionSize => SelectionIsEmpty ? 1 : Math.Abs(SelectionEnd - SelectionStart);
+        public int SelectionSize => SelectionIsEmpty ? 1 : Selection.Y - Selection.X + 1;
         public void ResetSelection() => SelectionEnd = SelectionStart = 0;
 
         private int _value;
@@ -94,7 +115,11 @@ namespace TombLib.Controls
             get { return _value; }
             set
             {
-                if (value == _value) return;
+                if (value == _value)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
                 if (value < _minimum) value = _minimum;
                 if (value > _maximum) value = _maximum;
 
@@ -204,8 +229,8 @@ namespace TombLib.Controls
             // Any messages in case of any errors
             string errorMessage = null;
             if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
-            else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
-
+            else if (Animation.DirectXAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
+            
             if(!string.IsNullOrEmpty(errorMessage))
             {
                 e.Graphics.DrawString(errorMessage, Font, Brushes.DarkGray, ClientRectangle,
