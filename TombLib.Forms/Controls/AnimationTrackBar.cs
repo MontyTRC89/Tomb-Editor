@@ -239,10 +239,6 @@ namespace TombLib.Controls
                 e.Graphics.DrawRectangle(_selectionPen, rect);
             }
 
-            // Draw cursor (only for real animations, not for single-frame ones)
-            if (realFrameCount > 1)
-                e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
-
             // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
@@ -280,7 +276,13 @@ namespace TombLib.Controls
                             e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw keyframe
                         else
                             e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
+
+                        e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
                     }
+
+                    // Draw cursor on 2nd pass's first occurence (only for real animations, not for single-frame ones)
+                    if (i == 0 && passes == 1 && realFrameCount > 1)
+                        e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
                     // Measure maximum label size
                     SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
@@ -324,7 +326,10 @@ namespace TombLib.Controls
 
             // Draw horizontal guide (only for real anims, for single-frame anims we wouldn't wanna show that
             if(realFrameCount > 1)
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.Default;
                 e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top + 1, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top + 1);
+            }
         }
     }
 }
