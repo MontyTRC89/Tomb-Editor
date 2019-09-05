@@ -1290,6 +1290,7 @@ namespace WadTool
             // comboRoomList
             // 
             this.comboRoomList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.comboRoomList.Enabled = false;
             this.comboRoomList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.comboRoomList.Name = "comboRoomList";
             this.comboRoomList.SelectedIndex = -1;
