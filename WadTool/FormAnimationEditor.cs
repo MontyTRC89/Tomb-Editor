@@ -729,7 +729,7 @@ namespace WadTool
         private void InterpolateFrames(int numFrames = -1)
         {
             if (numFrames < 0)
-                using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:") { Width = 200 })
+                using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:") { Width = 300 })
                 {
                     if (inputBox.ShowDialog(this) == DialogResult.Cancel)
                         return;
