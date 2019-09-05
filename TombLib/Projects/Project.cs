@@ -13,16 +13,22 @@ namespace TombLib.Projects
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Game engine version. (TR4, TRNG, TR5, ...)
+		/// Game engine version. (TR4, TRNG, TR5Main, ...)
 		/// </summary>
 		public GameVersion GameVersion { get; set; }
 
 		/// <summary>
 		/// The .trproj folder path.
-		/// <para>Note: The .trproj file should always be in the exact same folder as the engine's .exe file.</para>
 		/// </summary>
 		[XmlIgnore]
 		public string ProjectPath { get; set; }
+
+		/// <summary>
+		/// The path where the game's tomb4.exe / PCTomb5.exe file is contained.
+		/// <para>For the new project format, the game's .exe file is in the /Engine/ directory.</para>
+		/// </summary>
+		[XmlIgnore]
+		public string EnginePath { get; set; }
 
 		/// <summary>
 		/// The path where the project's SCRIPT.TXT and {LANGUAGE}.TXT files are being stored.
@@ -54,8 +60,9 @@ namespace TombLib.Projects
 				Name = Name,
 				GameVersion = GameVersion,
 				ProjectPath = ProjectPath,
+				EnginePath = EnginePath,
 				ScriptPath = ScriptPath,
-				LevelsPath = LevelsPath,
+				LevelsPath = LevelsPath
 			};
 
 			foreach (ProjectLevel level in Levels)
@@ -74,13 +81,15 @@ namespace TombLib.Projects
 		{
 			if (renameDirectory)
 			{
-				// Rename project (Game) directory
+				// Rename the project directory
 				string newProjectPath = Path.Combine(Path.GetDirectoryName(ProjectPath), newName);
 
 				if (Directory.Exists(ProjectPath + "_TEMP")) // The "_TEMP" suffix exists only when the directory name just changed letter cases
 					Directory.Move(ProjectPath + "_TEMP", newProjectPath);
 				else
 					Directory.Move(ProjectPath, newProjectPath);
+
+				EnginePath = Path.Combine(newProjectPath, EnginePath.Remove(0, ProjectPath.Length + 1));
 
 				// Change ScriptPath / LevelsPath values of the project if they were inside the ProjectPath folder
 				if (ScriptPath.StartsWith(ProjectPath))
@@ -102,6 +111,25 @@ namespace TombLib.Projects
 		public void DecodeProjectPaths(string trprojFilePath)
 		{
 			ProjectPath = Path.GetDirectoryName(trprojFilePath);
+
+			string engineDirectory = Path.Combine(ProjectPath, "Engine");
+
+			if (Directory.Exists(engineDirectory))
+			{
+				foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
+				{
+					if (((GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
+						|| (GameVersion == GameVersion.TR5Main && Path.GetFileName(file).ToLower() == "pctomb5.exe"))
+					{
+						EnginePath = engineDirectory;
+						break;
+					}
+				}
+			}
+
+			// If the /Engine/ directory doesn't exist or no valid .exe file was found in that directory
+			if (string.IsNullOrEmpty(EnginePath))
+				EnginePath = ProjectPath;
 
 			if (ScriptPath.StartsWith("$(ProjectDirectory)"))
 				ScriptPath = ScriptPath.Replace("$(ProjectDirectory)", ProjectPath);
@@ -142,20 +170,12 @@ namespace TombLib.Projects
 		/// </summary>
 		public string GetTRPROJFilePath()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(ProjectPath);
-
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.exe", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG)
-				{
-					if (fileInfo.Name.ToLower() == "tomb4.exe")
-						return Path.Combine(Path.GetDirectoryName(fileInfo.FullName), Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".trproj");
-				}
-				else if (GameVersion == GameVersion.TR5 || GameVersion == GameVersion.TR5Main)
-				{
-					if (fileInfo.Name.ToLower() == "pctomb5.exe")
-						return Path.Combine(Path.GetDirectoryName(fileInfo.FullName), Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".trproj");
-				}
+				if ((GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
+					return Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(file)), Path.GetFileNameWithoutExtension(file) + ".trproj");
+				else if ((GameVersion == GameVersion.TR5Main) && Path.GetFileName(file).ToLower() == "pctomb5.exe")
+					return Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(file)), Path.GetFileNameWithoutExtension(file) + ".trproj");
 			}
 
 			return null;
@@ -173,9 +193,6 @@ namespace TombLib.Projects
 
 				case GameVersion.TRNG:
 					return "tomb4.exe";
-
-				case GameVersion.TR5:
-					return "PCTomb5.exe";
 
 				case GameVersion.TR5Main:
 					return "PCTomb5.exe";
@@ -198,9 +215,6 @@ namespace TombLib.Projects
 				case GameVersion.TRNG:
 					return ".tr4";
 
-				case GameVersion.TR5:
-					return ".trc";
-
 				case GameVersion.TR5Main:
 					return ".trc";
 
@@ -214,6 +228,9 @@ namespace TombLib.Projects
 		/// </summary>
 		public bool IsValidProject()
 		{
+			if (Path.GetFileName(ProjectPath).ToLower() == "engine")
+				return false; // LOL you ain't trickin' me
+
 			try
 			{
 				return IsExeFileValid() && IsScriptFileValid();
@@ -226,11 +243,9 @@ namespace TombLib.Projects
 
 		public bool IsExeFileValid()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(ProjectPath);
-
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.exe", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (fileInfo.Name.ToLower() == "tomb4.exe" || fileInfo.Name.ToLower() == "pctomb5.exe")
+				if (Path.GetFileName(file).ToLower() == "tomb4.exe" || Path.GetFileName(file).ToLower() == "pctomb5.exe")
 					return true;
 			}
 
@@ -239,11 +254,9 @@ namespace TombLib.Projects
 
 		public bool IsScriptFileValid()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(ScriptPath);
-
-			foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.txt", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(ScriptPath, "*.txt", SearchOption.TopDirectoryOnly))
 			{
-				if (fileInfo.Name.ToLower() == "script.txt")
+				if (Path.GetFileName(file).ToLower() == "script.txt")
 					return true;
 			}
 

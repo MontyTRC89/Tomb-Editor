@@ -34,7 +34,7 @@ namespace TombIDE.ProjectMaster
 			using (File.Create(tempExeFilePath))
 			{
 				Bitmap defaultExeIcon = IconExtractor.GetIconFrom(tempExeFilePath, IconSize.Large, false).ToBitmap();
-				Bitmap gameExeIcon = IconExtractor.GetIconFrom(Path.Combine(_ide.Project.ProjectPath, _ide.Project.GetExeFileName()), IconSize.Large, false).ToBitmap();
+				Bitmap gameExeIcon = IconExtractor.GetIconFrom(Path.Combine(_ide.Project.EnginePath, _ide.Project.GetExeFileName()), IconSize.Large, false).ToBitmap();
 
 				byte[] defaultExeStream = ImageHandling.GetBitmapStream(defaultExeIcon);
 				byte[] gameExeStream = ImageHandling.GetBitmapStream(gameExeIcon);
@@ -102,7 +102,7 @@ namespace TombIDE.ProjectMaster
 
 				if (_ide.Project.GameVersion == GameVersion.TR4 || _ide.Project.GameVersion == GameVersion.TRNG)
 				{
-					if (_ide.Project.GameVersion == GameVersion.TRNG && File.Exists(Path.Combine(_ide.Project.ProjectPath, "flep.exe")))
+					if (_ide.Project.GameVersion == GameVersion.TRNG && File.Exists(Path.Combine(_ide.Project.EnginePath, "flep.exe")))
 						icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "FLEP.ico");
 					else
 						icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", _ide.Project.GameVersion + ".ico");

@@ -111,6 +111,9 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for your project.");
 
+				if (projectName.ToLower() == "engine") // Safety
+					throw new ArgumentException("Invalid project name.");
+
 				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
 					throw new ArgumentException("You must select a folder where you want to install your project.");
 
@@ -131,6 +134,7 @@ namespace TombIDE
 					throw new ArgumentException("You must specify the engine type of the project.");
 
 				string projectPath = textBox_ProjectPath.Text.Trim();
+				string enginePath = Path.Combine(projectPath, "Engine");
 				string scriptPath = radio_Script_01.Checked ? Path.Combine(projectPath, "Script") : textBox_ScriptPath.Text.Trim();
 				string levelsPath = radio_Levels_01.Checked ? Path.Combine(projectPath, "Levels") : textBox_LevelsPath.Text.Trim();
 
@@ -153,7 +157,7 @@ namespace TombIDE
 					throw new ArgumentException("Selected /Levels/ folder is not empty.");
 
 				// Create the Project instance
-				Project createdProject = CreateNewProject(projectName, projectPath, scriptPath, levelsPath);
+				Project createdProject = CreateNewProject(projectName, projectPath, enginePath, scriptPath, levelsPath);
 
 				// Install the game files into the specified projectPath folder
 				InstallEngine(createdProject);
@@ -179,7 +183,7 @@ namespace TombIDE
 
 		#region Methods
 
-		private Project CreateNewProject(string projectName, string projectPath, string scriptPath, string levelsPath)
+		private Project CreateNewProject(string projectName, string projectPath, string enginePath, string scriptPath, string levelsPath)
 		{
 			GameVersion gameVersion = 0;
 
@@ -207,6 +211,7 @@ namespace TombIDE
 				Name = projectName,
 				GameVersion = gameVersion,
 				ProjectPath = projectPath,
+				EnginePath = enginePath,
 				ScriptPath = scriptPath,
 				LevelsPath = levelsPath
 			};

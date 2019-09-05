@@ -139,7 +139,7 @@ namespace TombIDE
 		private void AddProjectToList(Project project, bool reserialize = false)
 		{
 			string launchFile = Path.Combine(project.ProjectPath, "launch.exe");
-			string gameFile = Path.Combine(project.ProjectPath, project.GetExeFileName());
+			string gameFile = Path.Combine(project.EnginePath, project.GetExeFileName());
 
 			string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
 
@@ -303,14 +303,19 @@ namespace TombIDE
 						{
 							bool validExeFound = false;
 
-							foreach (string file in Directory.GetFiles(Path.GetDirectoryName(exeFilePath), "*.exe", SearchOption.TopDirectoryOnly))
-							{
-								if (Path.GetFileName(file).ToLower() == "tomb4.exe")
-								{
-									exeFilePath = file;
-									validExeFound = true;
+							string engineDirectory = Path.Combine(Path.GetDirectoryName(exeFilePath), "Engine");
 
-									break;
+							if (Directory.Exists(engineDirectory))
+							{
+								foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
+								{
+									if (Path.GetFileName(file).ToLower() == "tomb4.exe")
+									{
+										exeFilePath = file;
+										validExeFound = true;
+
+										break;
+									}
 								}
 							}
 

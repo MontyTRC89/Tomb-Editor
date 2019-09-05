@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace TombLib.Projects
@@ -28,13 +27,7 @@ namespace TombLib.Projects
 
 			string pluginName = Path.GetFileName(pluginFolderPath);
 
-			string scriptFilePath = Path.Combine(pluginFolderPath, Path.GetFileNameWithoutExtension(dllFilePath) + ".script");
 			string btnFilePath = Path.Combine(pluginFolderPath, Path.GetFileNameWithoutExtension(dllFilePath) + ".btn");
-
-			string programPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-			if (File.Exists(scriptFilePath))
-				File.Copy(scriptFilePath, Path.Combine(programPath, "NGC", Path.GetFileName(scriptFilePath)), true);
 
 			if (File.Exists(btnFilePath))
 			{

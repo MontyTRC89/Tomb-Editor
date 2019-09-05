@@ -94,7 +94,7 @@ namespace TombIDE.ProjectMaster
 					// Copy the plugin DLL file into the current project folder
 
 					string dllFilePath = ((Plugin)node.Tag).InternalDllPath;
-					string destPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
+					string destPath = Path.Combine(_ide.Project.EnginePath, Path.GetFileName(dllFilePath));
 
 					File.Copy(dllFilePath, destPath);
 
@@ -125,11 +125,11 @@ namespace TombIDE.ProjectMaster
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 						if (result == DialogResult.Yes)
-							FileSystem.DeleteFile(Path.Combine(_ide.Project.ProjectPath, ((Plugin)node.Tag).Name), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+							FileSystem.DeleteFile(Path.Combine(_ide.Project.EnginePath, ((Plugin)node.Tag).Name), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 					}
 					else
 					{
-						string dllProjectPath = Path.Combine(_ide.Project.ProjectPath, Path.GetFileName(dllFilePath));
+						string dllProjectPath = Path.Combine(_ide.Project.EnginePath, Path.GetFileName(dllFilePath));
 
 						if (File.Exists(dllProjectPath))
 							File.Delete(dllProjectPath);

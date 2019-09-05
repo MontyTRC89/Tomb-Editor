@@ -39,7 +39,7 @@ namespace TombIDE
 			{
 				string newName = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 
-				if (string.IsNullOrWhiteSpace(newName))
+				if (string.IsNullOrWhiteSpace(newName) || newName.ToLower() == "engine")
 					throw new ArgumentException("Invalid name.");
 
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
