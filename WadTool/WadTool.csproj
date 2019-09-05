@@ -447,6 +447,12 @@
   <ItemGroup>
     <None Include="Resources\icons_general\general_filter-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Save-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_interpolate-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
