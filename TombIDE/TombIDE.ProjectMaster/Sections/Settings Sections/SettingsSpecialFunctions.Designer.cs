@@ -21,6 +21,7 @@
 			this.button_DeleteLogs = new DarkUI.Controls.DarkButton();
 			this.button_RenameLauncher = new DarkUI.Controls.DarkButton();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			this.textBox_LauncherName = new System.Windows.Forms.TextBox();
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -54,16 +55,18 @@
 			this.button_RenameLauncher.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_RenameLauncher.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_RenameLauncher.Location = new System.Drawing.Point(7, 34);
-			this.button_RenameLauncher.Margin = new System.Windows.Forms.Padding(6, 9, 6, 3);
+			this.button_RenameLauncher.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
 			this.button_RenameLauncher.Name = "button_RenameLauncher";
-			this.button_RenameLauncher.Size = new System.Drawing.Size(624, 25);
+			this.button_RenameLauncher.Size = new System.Drawing.Size(192, 25);
 			this.button_RenameLauncher.TabIndex = 2;
 			this.button_RenameLauncher.Text = "Rename the launcher file...";
 			this.button_RenameLauncher.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_RenameLauncher.Click += new System.EventHandler(this.button_RenameLauncher_Click);
 			// 
 			// sectionPanel
 			// 
 			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.sectionPanel.Controls.Add(this.textBox_LauncherName);
 			this.sectionPanel.Controls.Add(this.button_RenameLauncher);
 			this.sectionPanel.Controls.Add(this.button_BuildArchive);
 			this.sectionPanel.Controls.Add(this.button_DeleteLogs);
@@ -73,6 +76,19 @@
 			this.sectionPanel.SectionHeader = "Special Functions";
 			this.sectionPanel.Size = new System.Drawing.Size(640, 130);
 			this.sectionPanel.TabIndex = 0;
+			// 
+			// textBox_LauncherName
+			// 
+			this.textBox_LauncherName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.textBox_LauncherName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBox_LauncherName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_LauncherName.ForeColor = System.Drawing.Color.Gainsboro;
+			this.textBox_LauncherName.Location = new System.Drawing.Point(205, 33);
+			this.textBox_LauncherName.Margin = new System.Windows.Forms.Padding(3, 8, 6, 3);
+			this.textBox_LauncherName.Name = "textBox_LauncherName";
+			this.textBox_LauncherName.ReadOnly = true;
+			this.textBox_LauncherName.Size = new System.Drawing.Size(426, 26);
+			this.textBox_LauncherName.TabIndex = 3;
 			// 
 			// SettingsSpecialFunctions
 			// 
@@ -85,6 +101,7 @@
 			this.Name = "SettingsSpecialFunctions";
 			this.Size = new System.Drawing.Size(640, 130);
 			this.sectionPanel.ResumeLayout(false);
+			this.sectionPanel.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -95,5 +112,6 @@
 		private DarkUI.Controls.DarkButton button_DeleteLogs;
 		private DarkUI.Controls.DarkButton button_RenameLauncher;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
+		private System.Windows.Forms.TextBox textBox_LauncherName;
 	}
 }

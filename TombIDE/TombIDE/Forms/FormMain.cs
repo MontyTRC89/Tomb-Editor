@@ -553,14 +553,9 @@ namespace TombIDE
 					return;
 				}
 
-				string launchFile = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
-				string gameFile = Path.Combine(_ide.Project.EnginePath, _ide.Project.GetExeFileName());
-
-				string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
-
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					FileName = exeFilePath,
+					FileName = _ide.Project.LaunchFilePath,
 					WorkingDirectory = _ide.Project.EnginePath
 				};
 

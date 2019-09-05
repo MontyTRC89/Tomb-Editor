@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormFileSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFileSelection.Designer.cs">
+      <DependentUpon>FormFileSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormLoading.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FormFileSelection.resx">
+      <DependentUpon>FormFileSelection.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormLoading.resx">
       <DependentUpon>FormLoading.cs</DependentUpon>
     </EmbeddedResource>
