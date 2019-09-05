@@ -271,9 +271,11 @@ namespace WadTool
                 OnKeyframesListChanged();
             }
             else
+            {
                 statusFrame.Text = "";
+                timeline.Invalidate();
+            }
 
-            timeline.Invalidate();
             panelRendering.Invalidate();
 
         }
@@ -580,7 +582,7 @@ namespace WadTool
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
                 _clipboardKeyFrames.Clear();
-                for (int i = timeline.Selection.X; i < timeline.Selection.Y; i++)
+                for (int i = timeline.Selection.X; i <= timeline.Selection.Y; i++)
                     _clipboardKeyFrames.Add(_selectedNode.DirectXAnimation.KeyFrames[i].Clone());
             }
         }
@@ -698,7 +700,7 @@ namespace WadTool
             }
         }
 
-        private int UpdateAnimationParameter(Control control)
+        private int UpdateAnimationParameter(Control control, float multiplier = 1.0f)
         {
             if (_selectedNode == null) return 0;
 
@@ -713,7 +715,9 @@ namespace WadTool
                 result = (float)((DarkNumericUpDown)control).Value;
 
             Saved = false;
-            return (int)Math.Round(result * 65536.0f, 0);
+            timeline.Invalidate();
+
+            return (int)Math.Round(result * multiplier, 0);
         }
 
         private void InterpolateFrames(int numFrames = -1)
