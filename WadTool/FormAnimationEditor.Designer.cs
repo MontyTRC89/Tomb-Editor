@@ -96,7 +96,7 @@ namespace WadTool
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.butShowAll = new DarkUI.Controls.DarkButton();
-            this.tbSearchByStateID = new DarkUI.Controls.DarkTextBox();
+            this.tbSearchAnimation = new DarkUI.Controls.DarkTextBox();
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
             this.butSaveAllChanges = new System.Windows.Forms.ToolStripButton();
@@ -153,6 +153,7 @@ namespace WadTool
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelTools = new System.Windows.Forms.Panel();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -793,6 +794,7 @@ namespace WadTool
             this.butAddNewAnimation.Name = "butAddNewAnimation";
             this.butAddNewAnimation.Size = new System.Drawing.Size(23, 24);
             this.butAddNewAnimation.TabIndex = 93;
+            this.toolTip1.SetToolTip(this.butAddNewAnimation, "Add new animation");
             this.butAddNewAnimation.Click += new System.EventHandler(this.butAddNewAnimation_Click);
             // 
             // butCalculateCollisionBox
@@ -927,6 +929,7 @@ namespace WadTool
             this.butDeleteAnimation.Name = "butDeleteAnimation";
             this.butDeleteAnimation.Size = new System.Drawing.Size(23, 24);
             this.butDeleteAnimation.TabIndex = 23;
+            this.toolTip1.SetToolTip(this.butDeleteAnimation, "Delete animation");
             this.butDeleteAnimation.Click += new System.EventHandler(this.butDeleteAnimation_Click);
             // 
             // butShowAll
@@ -937,25 +940,28 @@ namespace WadTool
             this.butShowAll.Name = "butShowAll";
             this.butShowAll.Size = new System.Drawing.Size(22, 22);
             this.butShowAll.TabIndex = 124;
+            this.toolTip1.SetToolTip(this.butShowAll, "Reset filtering");
             this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
             // 
-            // tbSearchByStateID
+            // tbSearchAnimation
             // 
-            this.tbSearchByStateID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbSearchAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearchByStateID.Location = new System.Drawing.Point(4, 28);
-            this.tbSearchByStateID.Name = "tbSearchByStateID";
-            this.tbSearchByStateID.Size = new System.Drawing.Size(181, 22);
-            this.tbSearchByStateID.TabIndex = 123;
+            this.tbSearchAnimation.Location = new System.Drawing.Point(4, 28);
+            this.tbSearchAnimation.Name = "tbSearchAnimation";
+            this.tbSearchAnimation.Size = new System.Drawing.Size(181, 22);
+            this.tbSearchAnimation.TabIndex = 123;
+            this.tbSearchAnimation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchByStateID_KeyDown);
             // 
             // darkButton1
             // 
             this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkButton1.Image = ((System.Drawing.Image)(resources.GetObject("darkButton1.Image")));
+            this.darkButton1.Image = global::WadTool.Properties.Resources.general_filter_16;
             this.darkButton1.Location = new System.Drawing.Point(188, 28);
             this.darkButton1.Name = "darkButton1";
             this.darkButton1.Size = new System.Drawing.Size(22, 22);
             this.darkButton1.TabIndex = 122;
+            this.toolTip1.SetToolTip(this.darkButton1, "Filter list");
             this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
             // 
             // topBar
@@ -1020,7 +1026,7 @@ namespace WadTool
             // labelAnims
             // 
             this.labelAnims.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.labelAnims.ForeColor = System.Drawing.Color.DarkGray;
+            this.labelAnims.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.labelAnims.Name = "labelAnims";
             this.labelAnims.Size = new System.Drawing.Size(34, 25);
             this.labelAnims.Text = "Anims:";
@@ -1127,7 +1133,7 @@ namespace WadTool
             // toolStripLabel2
             // 
             this.toolStripLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel2.ForeColor = System.Drawing.Color.DarkGray;
+            this.toolStripLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel2.Name = "toolStripLabel2";
             this.toolStripLabel2.Size = new System.Drawing.Size(38, 25);
             this.toolStripLabel2.Text = "Frames:";
@@ -1221,7 +1227,7 @@ namespace WadTool
             // toolStripLabel3
             // 
             this.toolStripLabel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel3.ForeColor = System.Drawing.Color.DarkGray;
+            this.toolStripLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel3.Name = "toolStripLabel3";
             this.toolStripLabel3.Size = new System.Drawing.Size(30, 25);
             this.toolStripLabel3.Text = "Bone:";
@@ -1247,7 +1253,7 @@ namespace WadTool
             // toolStripLabel4
             // 
             this.toolStripLabel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel4.ForeColor = System.Drawing.Color.DarkGray;
+            this.toolStripLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel4.Name = "toolStripLabel4";
             this.toolStripLabel4.Size = new System.Drawing.Size(34, 25);
             this.toolStripLabel4.Text = "Room:";
@@ -1295,7 +1301,7 @@ namespace WadTool
             // darkSectionPanel1
             // 
             this.darkSectionPanel1.Controls.Add(this.butShowAll);
-            this.darkSectionPanel1.Controls.Add(this.tbSearchByStateID);
+            this.darkSectionPanel1.Controls.Add(this.tbSearchAnimation);
             this.darkSectionPanel1.Controls.Add(this.butDeleteAnimation);
             this.darkSectionPanel1.Controls.Add(this.darkButton1);
             this.darkSectionPanel1.Controls.Add(this.lstAnimations);
@@ -1792,7 +1798,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem loadPrj2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.OpenFileDialog openFileDialogPrj2;
-        private DarkUI.Controls.DarkTextBox tbSearchByStateID;
+        private DarkUI.Controls.DarkTextBox tbSearchAnimation;
         private DarkUI.Controls.DarkButton darkButton1;
         private DarkUI.Controls.DarkButton butShowAll;
         private System.Windows.Forms.ToolStripMenuItem deleteBoundingBoxForAllFramesToolStripMenuItem;
@@ -1826,5 +1832,6 @@ namespace WadTool
         private DarkUI.Controls.ToolStripDarkComboBox comboBoneList;
         private DarkUI.Controls.ToolStripDarkComboBox comboRoomList;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
