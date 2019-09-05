@@ -1233,6 +1233,7 @@ namespace WadTool
             this.butTbInterpolateFrames.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbInterpolateFrames.Name = "butTbInterpolateFrames";
             this.butTbInterpolateFrames.Size = new System.Drawing.Size(23, 25);
+            this.butTbInterpolateFrames.ToolTipText = "Interpolate frames";
             this.butTbInterpolateFrames.Click += new System.EventHandler(this.butTbInterpolateFrames_Click);
             // 
             // tbInterpolateFrameCount
@@ -1289,6 +1290,7 @@ namespace WadTool
             // comboRoomList
             // 
             this.comboRoomList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.comboRoomList.Enabled = false;
             this.comboRoomList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.comboRoomList.Name = "comboRoomList";
             this.comboRoomList.SelectedIndex = -1;
