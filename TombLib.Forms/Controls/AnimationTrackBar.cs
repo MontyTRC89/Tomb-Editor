@@ -23,7 +23,7 @@ namespace TombLib.Controls
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
-        private int realFrameCount => Animation.DirectXAnimation.Framerate * (Animation.DirectXAnimation.KeyFrames.Count - 1) + 1;
+        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
@@ -203,8 +203,8 @@ namespace TombLib.Controls
 
             // Any messages in case of any errors
             string errorMessage = null;
-            if (Animation == null || Animation.DirectXAnimation == null || Animation.WadAnimation == null) errorMessage = "No animation! Select animation to start editing.";
-            else if (Animation.DirectXAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
+            if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
+            else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
 
             if(!string.IsNullOrEmpty(errorMessage))
             {
@@ -239,16 +239,12 @@ namespace TombLib.Controls
                 e.Graphics.DrawRectangle(_selectionPen, rect);
             }
 
-            // Draw cursor (only for real animations, not for single-frame ones)
-            if (realFrameCount > 1)
-                e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
-
             // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
                     int  currX = (int)Math.Round(frameStep * i, MidpointRounding.ToEven) + picSlider.Padding.Left;
-                    bool isKeyFrame = (i % (Animation.DirectXAnimation.Framerate == 0 ? 1 : Animation.DirectXAnimation.Framerate) == 0);
+                    bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
 
@@ -272,11 +268,21 @@ namespace TombLib.Controls
                                 }
                         }
 
+                        e.Graphics.SmoothingMode = SmoothingMode.Default;
+
                         // Draw dividers
                         var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
-                        e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
-                        if (isKeyFrame) e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight - 1);  // Draw keyframe
+                        if (isKeyFrame)
+                            e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw keyframe
+                        else
+                            e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
+
+                        e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
                     }
+
+                    // Draw cursor on 2nd pass's first occurence (only for real animations, not for single-frame ones)
+                    if (i == 0 && passes == 1 && realFrameCount > 1)
+                        e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
                     // Measure maximum label size
                     SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
@@ -320,7 +326,10 @@ namespace TombLib.Controls
 
             // Draw horizontal guide (only for real anims, for single-frame anims we wouldn't wanna show that
             if(realFrameCount > 1)
-                e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top);
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.Default;
+                e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top + 1, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top + 1);
+            }
         }
     }
 }
