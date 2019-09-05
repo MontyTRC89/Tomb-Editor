@@ -23,7 +23,7 @@ namespace TombLib.Controls
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
-        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
+        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.DirectXAnimation.KeyFrames.Count - 1) + 1;
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
@@ -85,7 +85,7 @@ namespace TombLib.Controls
 
         public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, 1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
         public bool SelectionIsEmpty => SelectionEnd == SelectionStart;
-        public int SelectionSize => SelectionIsEmpty ? 1 : Math.Abs(SelectionEnd - SelectionStart);
+        public int SelectionSize => SelectionIsEmpty ? 1 : Math.Abs(SelectionEnd - SelectionStart + 1);
         public void ResetSelection() => SelectionEnd = SelectionStart = 0;
 
         private int _value;
@@ -204,8 +204,8 @@ namespace TombLib.Controls
             // Any messages in case of any errors
             string errorMessage = null;
             if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
-            else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
-
+            else if (Animation.DirectXAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
+            
             if(!string.IsNullOrEmpty(errorMessage))
             {
                 e.Graphics.DrawString(errorMessage, Font, Brushes.DarkGray, ClientRectangle,
