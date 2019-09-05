@@ -16,6 +16,15 @@ namespace WadTool
 {
     public partial class FormAnimationEditor : DarkUI.Forms.DarkForm
     {
+
+        private enum SearchType
+        {
+            None,
+            StateID,
+            AnimNumber,
+            Name
+        }
+
         private WadMoveableId _moveableId;
         private Wad2 _wad;
         private WadMoveable _moveable;
@@ -121,22 +130,88 @@ namespace WadTool
         {
             lstAnimations.Items.Clear();
 
+            // Try to filter by request
             int index = 0;
+            int searchNumber = -1;
+            var searchString = tbSearchAnimation.Text.Trim().ToLower();
+            string finalSearchString = "";
+            SearchType searchType = SearchType.None;
 
-            // Filter by State ID?
-            int searchStateId = -1;
-            tbSearchByStateID.Text = tbSearchByStateID.Text.Trim();
-            if (!int.TryParse(tbSearchByStateID.Text, out searchStateId))
-                searchStateId = -1;
-
-            foreach (var animation in _workingAnimations)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                // Filter by State ID?
-                if (searchStateId >= 0 && animation.WadAnimation.StateId != searchStateId)
-                    continue;
+                // Find possible tokens
+                int tokenEndIndex = searchString.IndexOf(":");
 
-                var item = new DarkUI.Controls.DarkListItem(index++ + ": " + animation.WadAnimation.Name);
-                item.Tag = animation;
+                if (tokenEndIndex >= 0)
+                {
+                    string possibleToken = searchString.Substring(0, tokenEndIndex).ToLower();
+                    if (!string.IsNullOrEmpty(possibleToken))
+                    {
+                        switch (possibleToken)
+                        {
+                            case "num":
+                            case "n":
+                            case "number":
+                            case "anim":
+                            case "animation":
+                            case "a":
+                                searchType = SearchType.AnimNumber;
+                                break;
+
+                            case "state":
+                            case "s":
+                            case "stateid":
+                                searchType = SearchType.StateID;
+                                break;
+
+                            case "name":
+                                searchType = SearchType.Name;
+                                break;
+                        }
+
+                        // Force name search type if there's not a number after numerical token
+                        if (!int.TryParse(searchString.Substring(tokenEndIndex + 1), out searchNumber) && searchType != SearchType.Name)
+                        {
+                            finalSearchString = searchString.Substring(tokenEndIndex + 1);
+                            searchType = SearchType.Name;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!int.TryParse(searchString, out searchNumber))
+                    {
+                        searchType = SearchType.Name; // If no numerical, always search as by name
+                        finalSearchString = searchString;
+                    }
+                    else
+                        searchType = SearchType.StateID; // Otherwise prioritize state id
+                }
+            }
+
+            // Filter regarding request
+            for (int i = 0; i < _workingAnimations.Count; i++)
+            {
+                switch(searchType)
+                {
+                    case SearchType.StateID:
+                        if (searchNumber >= 0 && _workingAnimations[i].WadAnimation.StateId != searchNumber)
+                            continue;
+                        break;
+                    case SearchType.AnimNumber:
+                        if (searchNumber >= 0 && i != searchNumber)
+                            continue;
+                        break;
+                    case SearchType.Name:
+                        if (!_workingAnimations[i].WadAnimation.Name.ToLower().Contains(finalSearchString))
+                            continue;
+                        break;
+                    default:
+                        break;
+                }
+
+                var item = new DarkUI.Controls.DarkListItem("(" + index++ + ") " + _workingAnimations[i].WadAnimation.Name);
+                item.Tag = _workingAnimations[i];
                 lstAnimations.Items.Add(item);
             }
 
@@ -1321,7 +1396,7 @@ namespace WadTool
 
         private void butShowAll_Click(object sender, EventArgs e)
         {
-            tbSearchByStateID.Text = "";
+            tbSearchAnimation.Text = "";
             ReloadAnimations();
         }
 
@@ -1409,16 +1484,30 @@ namespace WadTool
             }
         }
 
+        private Control GetFocusedControl(ContainerControl control) => (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             switch (keyData)
             {
-                case Keys.Space:  PlayAnimation(); break;
                 case Keys.Escape: timeline.ResetSelection(); break;
                 case Keys.Left:   timeline.ValueLoopDec(); break;
                 case Keys.Right:  timeline.ValueLoopInc(); break;
-                case Keys.I:      timeline.SelectionStart = timeline.Value; break;
-                case Keys.O:      timeline.SelectionEnd = timeline.Value; break;
+            }
+
+            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
+            var activeControlType = GetFocusedControl(this)?.GetType().Name;
+            if  (activeControlType == "DarkTextBox" ||
+                 activeControlType == "DarkAutocompleteTextBox" ||
+                 activeControlType == "DarkComboBox" ||
+                 activeControlType == "DarkListBox" ||
+                 activeControlType == "UpDownEdit")
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            switch (keyData)
+            {
+                case Keys.Space: PlayAnimation(); break;
+                case Keys.I: timeline.SelectionStart = timeline.Value; break;
+                case Keys.O: timeline.SelectionEnd = timeline.Value; break;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -1460,6 +1549,11 @@ namespace WadTool
                 butTransportSound.Image = Properties.Resources.transport_mute_24;
             else
                 butTransportSound.Image = Properties.Resources.transport_audio_24;
+        }
+
+        private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return) ReloadAnimations();
         }
     }
 }

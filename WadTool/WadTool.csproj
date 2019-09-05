@@ -444,6 +444,9 @@
   <ItemGroup>
     <None Include="Resources\icons_transport\transport-frame_forward-24.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_filter-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
