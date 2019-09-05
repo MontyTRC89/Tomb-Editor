@@ -154,6 +154,8 @@ namespace TombEditor.Forms
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.editOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keyboardLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -192,8 +194,6 @@ namespace TombEditor.Forms
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1624,6 +1624,23 @@ namespace TombEditor.Forms
             this.keyboardLayoutToolStripMenuItem.Tag = "EditKeyboardLayout";
             this.keyboardLayoutToolStripMenuItem.Text = "EditKeyboardLayout";
             // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(155, 6);
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(158, 22);
+            this.toolStripMenuItem7.Tag = "StartWadTool";
+            this.toolStripMenuItem7.Text = "StartWadTool";
+            // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1983,23 +2000,6 @@ namespace TombEditor.Forms
             this.panelDockArea.Name = "panelDockArea";
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(155, 6);
-            // 
-            // toolStripMenuItem7
-            // 
-            this.toolStripMenuItem7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(158, 22);
-            this.toolStripMenuItem7.Tag = "StartWadTool";
-            this.toolStripMenuItem7.Text = "StartWadTool";
             // 
             // FormMain
             // 

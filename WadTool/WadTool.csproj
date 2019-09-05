@@ -378,6 +378,75 @@
   <ItemGroup>
     <None Include="Resources\icons_general\general_ArrowUp-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_refresh-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-play-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-stop-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-mute-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-sound-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame-back-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame-forward-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-skip-to-end-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-skip-to-start-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-animcommands-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-markout-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-markin-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-audio-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-mute-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_back-button-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_forward-button-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-play-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-start-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-stop-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-end-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_back-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_forward-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_filter-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
