@@ -23,7 +23,7 @@ namespace TombLib.Controls
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
 
-        private int realFrameCount => Animation.DirectXAnimation.Framerate * (Animation.DirectXAnimation.KeyFrames.Count - 1) + 1;
+        private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.WadAnimation.KeyFrames.Count - 1) + 1;
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
@@ -203,8 +203,8 @@ namespace TombLib.Controls
 
             // Any messages in case of any errors
             string errorMessage = null;
-            if (Animation == null || Animation.DirectXAnimation == null || Animation.WadAnimation == null) errorMessage = "No animation! Select animation to start editing.";
-            else if (Animation.DirectXAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
+            if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
+            else if (Animation.WadAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
 
             if(!string.IsNullOrEmpty(errorMessage))
             {
@@ -248,7 +248,7 @@ namespace TombLib.Controls
                 for (int i = 0; i < realFrameCount; ++i)
                 {
                     int  currX = (int)Math.Round(frameStep * i, MidpointRounding.ToEven) + picSlider.Padding.Left;
-                    bool isKeyFrame = (i % (Animation.DirectXAnimation.Framerate == 0 ? 1 : Animation.DirectXAnimation.Framerate) == 0);
+                    bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
 
