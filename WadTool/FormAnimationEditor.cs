@@ -31,6 +31,7 @@ namespace WadTool
 
         // Player
         private Timer _timerPlayAnimation;
+        private bool _previewSounds;
 
         // Clipboard
         private List<KeyFrame> _clipboardKeyFrames = new List<KeyFrame>();
@@ -72,10 +73,10 @@ namespace WadTool
             _bones = _moveable.Bones;
 
             // Load skeleton in combobox
-            comboSkeleton.Items.Add("--- Select a mesh ---");
+            comboBoneList.ComboBox.Items.Add("--- Select a mesh ---");
             foreach (var bone in panelRendering.Model.Bones)
-                comboSkeleton.Items.Add(bone.Name);
-            comboSkeleton.SelectedIndex = 0;
+                comboBoneList.ComboBox.Items.Add(bone.Name);
+            comboBoneList.ComboBox.SelectedIndex = 0;
 
             // NOTE: we work with a pair WadAnimation - Animation. All changes to animation data like name,
             // framerate, next animation, state changes... will be saved directly to WadAnimation.
@@ -98,9 +99,9 @@ namespace WadTool
             {
                 var e = obj as WadToolClass.AnimationEditorMeshSelectedEvent;
                 if (e != null)
-                    comboSkeleton.SelectedIndex = e.Model.Meshes.IndexOf(e.Mesh) + 1;
+                    comboBoneList.ComboBox.SelectedIndex = e.Model.Meshes.IndexOf(e.Mesh) + 1;
                 else
-                    comboSkeleton.SelectedIndex = 0;
+                    comboBoneList.ComboBox.SelectedIndex = 0;
             }
         }
 
@@ -840,11 +841,11 @@ namespace WadTool
             DeleteFrames(this);
         }
 
-        private void comboSkeleton_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoneList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboSkeleton.SelectedIndex < 1)
+            if (comboBoneList.ComboBox.SelectedIndex < 1)
                 return;
-            panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboSkeleton.SelectedIndex - 1];
+            panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboBoneList.ComboBox.SelectedIndex - 1];
             panelRendering.Invalidate();
         }
 
@@ -1282,26 +1283,26 @@ namespace WadTool
             panelRendering.Level = _level;
 
             // Load rooms into the combo box
-            comboRooms.Enabled = true;
-            comboRooms.Items.Clear();
-            comboRooms.Items.Add("--- Select room ---");
+            comboRoomList.Enabled = true;
+            comboRoomList.ComboBox.Items.Clear();
+            comboRoomList.ComboBox.Items.Add("--- Select room ---");
             foreach (var room in _level.Rooms)
                 if (room != null)
-                    comboRooms.Items.Add(room);
+                    comboRoomList.ComboBox.Items.Add(room);
 
             panelRendering.Invalidate();
         }
 
-        private void comboRooms_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboRooms.SelectedIndex == 0)
+            if (comboRoomList.ComboBox.SelectedIndex == 0)
             {
                 panelRendering.Room = null;
                 panelRendering.RoomPosition = Vector3.Zero;
             }
             else
             {
-                panelRendering.Room = (Room)comboRooms.SelectedItem;
+                panelRendering.Room = (Room)comboRoomList.ComboBox.SelectedItem;
                 panelRendering.RoomPosition = panelRendering.Room.GetLocalCenter();
             }
 
@@ -1450,5 +1451,15 @@ namespace WadTool
         private void butTransportFrameBack_Click(object sender, EventArgs e) => timeline.Value--;
         private void butTransportFrameForward_Click(object sender, EventArgs e) => timeline.Value++;
         private void butTransportEnd_Click(object sender, EventArgs e) => timeline.Value = timeline.Maximum;
+
+        private void butTransportSound_Click(object sender, EventArgs e)
+        {
+            _previewSounds = !_previewSounds;
+
+            if (_previewSounds)
+                butTransportSound.Image = Properties.Resources.transport_mute_24;
+            else
+                butTransportSound.Image = Properties.Resources.transport_audio_24;
+        }
     }
 }
