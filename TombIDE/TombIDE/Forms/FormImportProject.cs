@@ -92,9 +92,6 @@ namespace TombIDE
 
 		private void FillLevelsPathTextBox(string exeFilePath)
 		{
-			string levelsPath = string.Empty;
-			string mapsPath = string.Empty; // Legacy solution
-
 			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
 
 			// Check if the project is using the new format
@@ -113,8 +110,11 @@ namespace TombIDE
 			}
 
 			// If the project is using the old format or no /Levels/ folder was found in the previous directory
-			if (string.IsNullOrEmpty(levelsPath))
+			if (string.IsNullOrEmpty(textBox_LevelsPath.Text))
 			{
+				string levelsPath = string.Empty;
+				string mapsPath = string.Empty; // Legacy solution
+
 				foreach (string directory in Directory.GetDirectories(gameExeDirectory))
 				{
 					if (Path.GetFileName(directory).ToLower() == "levels")
