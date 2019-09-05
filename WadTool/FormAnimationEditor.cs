@@ -505,8 +505,7 @@ namespace WadTool
                     int framesCount = 0;
                     if (!int.TryParse(form.Result, out framesCount) || framesCount <= 0)
                     {
-                        DarkMessageBox.Show(this, "You must insert a number greater than 0",
-                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        popup.ShowError(panelRendering, "You must insert a number greater than 0");
                         return;
                     }
 
@@ -552,13 +551,15 @@ namespace WadTool
                     _selectedNode.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
                     timeline.ResetSelection();
                         
-
                     // Update GUI
                     OnKeyframesListChanged();
                     if (_selectedNode.DirectXAnimation.KeyFrames.Count != 0)
-                        timeline.Value = (panelRendering.CurrentKeyFrame);
+                        timeline.Value = (timeline.Selection.X);
                     else
+                    {
+                        timeline.Invalidate();
                         statusFrame.Text = "";
+                    }
                     panelRendering.Invalidate();
 
                     Saved = false;
@@ -665,8 +666,7 @@ namespace WadTool
                 // I need at least 1 frame in the middle
                 if (_selectedNode.DirectXAnimation.KeyFrames.Count < 3)
                 {
-                    DarkMessageBox.Show(this, "You must have at least 3 frames for splitting the animation", "Error",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    popup.ShowError(panelRendering, "You must have at least 3 frames for splitting the animation");
                     return;
                 }
 
@@ -674,8 +674,7 @@ namespace WadTool
                 int numFrames = _selectedNode.DirectXAnimation.KeyFrames.Count;
                 if (panelRendering.CurrentKeyFrame == 0 || panelRendering.CurrentKeyFrame == numFrames - 1)
                 {
-                    DarkMessageBox.Show(this, "You can't set the first or the last frame for splitting the animation", "Error",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    popup.ShowError(panelRendering, "You can't set the first or the last frame for splitting the animation");
                     return;
                 }
                 var newWadAnimation = _selectedNode.WadAnimation.Clone();
@@ -740,8 +739,7 @@ namespace WadTool
 
             if (frameIndex1 >= frameIndex2)
             {
-                DarkMessageBox.Show(this, "The first frame index can't be greater than the second frame index", "Error",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                popup.ShowError(panelRendering, "The first frame index can't be greater than the second frame index");
                 return;
             }
 
@@ -1080,8 +1078,7 @@ namespace WadTool
 
             if (!WadActions.ExportAnimationToXml(_moveable, animationToSave, saveFileDialogExport.FileName))
             {
-                DarkMessageBox.Show(this, "Can't export current animation to XML file",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                popup.ShowError(panelRendering, "Can't export current animation to XML file");
                 return;
             }
         }
@@ -1097,15 +1094,13 @@ namespace WadTool
             var animation = WadActions.ImportAnimationFromXml(_wad, openFileDialogImport.FileName);
             if (animation == null)
             {
-                DarkMessageBox.Show(this, "Can't import a valid animation",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                popup.ShowError(panelRendering, "Can't import a valid animation");
                 return;
             }
 
             if (animation.KeyFrames[0].Angles.Count != _bones.Count)
             {
-                DarkMessageBox.Show(this, "You can only import an animation with the same number of bones of the current moveable",
-                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                popup.ShowError(panelRendering, "You can only import an animation with the same number of bones of the current moveable");
                 return;
             }
 

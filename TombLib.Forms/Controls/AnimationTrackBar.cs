@@ -56,6 +56,7 @@ namespace TombLib.Controls
                 if (value < _minimum || value < 0) return;
 
                 _maximum = value;
+                if (_maximum < Value) Value = _maximum;
                 picSlider.Invalidate();
             }
         }
