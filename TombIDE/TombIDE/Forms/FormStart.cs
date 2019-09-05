@@ -289,8 +289,8 @@ namespace TombIDE
 				{
 					string selectedExePath = dialog.FileName;
 
-					string selectedExeName = Path.GetFileName(selectedExePath);
-					string selectedExeDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedExePath));
+					string selectedFileName = Path.GetFileName(selectedExePath);
+					string selectedFileDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedExePath));
 
 					try
 					{
@@ -299,12 +299,12 @@ namespace TombIDE
 
 						string engineDirectory = Path.Combine(Path.GetDirectoryName(selectedExePath), "Engine");
 
-						if (selectedExeName.ToLower() == "tomb4.exe" && selectedExeDirectoryName.ToLower() != "engine")
+						if (selectedFileName.ToLower() == "tomb4.exe" && selectedFileDirectoryName.ToLower() != "engine")
 						{
 							gameExeFilePath = selectedExePath;
 							launcherFilePath = selectedExePath;
 						}
-						else if (selectedExeName.ToLower() == "tomb4.exe" && selectedExeDirectoryName.ToLower() == "engine")
+						else if (selectedFileName.ToLower() == "tomb4.exe" && selectedFileDirectoryName.ToLower() == "engine")
 						{
 							gameExeFilePath = selectedExePath;
 
@@ -331,7 +331,7 @@ namespace TombIDE
 								throw new ArgumentException("Selected project doesn't contain any launcher executable.\n" +
 									"Please check if the project is correctly installed.");
 						}
-						else if (selectedExeName.ToLower() != "tomb4.exe" && Directory.Exists(engineDirectory))
+						else if (selectedFileName.ToLower() != "tomb4.exe" && Directory.Exists(engineDirectory))
 						{
 							foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
 							{
