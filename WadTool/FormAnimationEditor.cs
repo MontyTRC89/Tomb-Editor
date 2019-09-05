@@ -750,7 +750,7 @@ namespace WadTool
 
             int frameIndex1 = timeline.SelectionIsEmpty ? timeline.Value : timeline.Selection.X;
             int frameIndex2 = timeline.SelectionIsEmpty ? (timeline.Value < timeline.Maximum ? timeline.Value + 1 : timeline.Value) : timeline.Selection.Y;
-
+           
             if (frameIndex1 >= frameIndex2)
             {
                 popup.ShowError(panelRendering, "First frame index can't be greater than the second frame index");
@@ -776,8 +776,6 @@ namespace WadTool
                     keyFrame.Translations.Add(frame1.Translations[0] + bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(frame1.Translations[0] + bone.Translation));
                 }
-
-                frameIndex2++;
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(frameIndex1 + 1 + i, keyFrame);
             }
 
