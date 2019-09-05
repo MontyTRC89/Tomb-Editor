@@ -16,30 +16,31 @@ namespace TombIDE
 
 		#region Initialization
 
-		public FormImportProject(IDE ide, string exeFilePath)
+		public FormImportProject(IDE ide, string gameExeFilePath, string launcherFilePath)
 		{
 			_ide = ide;
 
 			InitializeComponent();
 
 			// Setup some information
-			textBox_ExePath.BackColor = Color.FromArgb(48, 48, 48); // Mark as uneditable
-			textBox_ExePath.Text = exeFilePath;
+
+			textBox_ExePath.Text = gameExeFilePath;
+			textBox_LauncherPath.Text = launcherFilePath;
 
 			// Get the "ProjectPath" folder name
-			string currentDirectory = Path.GetDirectoryName(exeFilePath);
-			string prevDirectory = Path.GetDirectoryName(currentDirectory);
+			string gameExeDirectory = Path.GetDirectoryName(gameExeFilePath);
+			string prevDirectory = Path.GetDirectoryName(gameExeDirectory);
 
-			if (Path.GetFileName(currentDirectory).ToLower() == "engine")
+			if (Path.GetFileName(gameExeDirectory).ToLower() == "engine")
 				textBox_ProjectName.Text = Path.GetFileName(prevDirectory); // If it's still "engine", OnShown() will show an error message
 			else
-				textBox_ProjectName.Text = Path.GetFileName(currentDirectory);
+				textBox_ProjectName.Text = Path.GetFileName(gameExeDirectory);
 
 			// Fill the text boxes
-			FillScriptPathTextBox(exeFilePath);
-			FillLevelsPathTextBox(exeFilePath);
+			FillScriptPathTextBox(gameExeFilePath);
+			FillLevelsPathTextBox(gameExeFilePath);
 
-			button_Import.Text = "Import " + GetGameVersion(exeFilePath) + " Project";
+			button_Import.Text = "Import " + GetGameVersion(gameExeFilePath) + " Project";
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -61,10 +62,10 @@ namespace TombIDE
 		{
 			// Find the /Script/ directory
 
-			string currentDirectory = Path.GetDirectoryName(exeFilePath);
-			string prevDirectory = Path.GetDirectoryName(currentDirectory);
+			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
+			string prevDirectory = Path.GetDirectoryName(gameExeDirectory);
 
-			foreach (string directory in Directory.GetDirectories(currentDirectory))
+			foreach (string directory in Directory.GetDirectories(gameExeDirectory))
 			{
 				if (Path.GetFileName(directory).ToLower() == "script")
 				{
@@ -98,10 +99,10 @@ namespace TombIDE
 			string levelsPath = string.Empty;
 			string mapsPath = string.Empty; // Legacy solution
 
-			string currentDirectory = Path.GetDirectoryName(exeFilePath);
-			string prevDirectory = Path.GetDirectoryName(currentDirectory);
+			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
+			string prevDirectory = Path.GetDirectoryName(gameExeDirectory);
 
-			foreach (string directory in Directory.GetDirectories(currentDirectory))
+			foreach (string directory in Directory.GetDirectories(gameExeDirectory))
 			{
 				if (Path.GetFileName(directory).ToLower() == "levels")
 					levelsPath = directory;
@@ -149,6 +150,19 @@ namespace TombIDE
 			}
 		}
 
+		private void button_BrowseLauncher_Click(object sender, EventArgs e)
+		{
+			using (OpenFileDialog dialog = new OpenFileDialog())
+			{
+				dialog.Title = "Select the launcher .exe file of the project";
+				dialog.Filter = "Executable Files|*.exe";
+				dialog.InitialDirectory = Path.GetDirectoryName(textBox_ExePath.Text);
+
+				if (dialog.ShowDialog(this) == DialogResult.OK)
+					textBox_LauncherPath.Text = dialog.FileName;
+			}
+		}
+
 		private void button_BrowseScript_Click(object sender, EventArgs e)
 		{
 			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
@@ -177,6 +191,12 @@ namespace TombIDE
 
 			try
 			{
+				if (!File.Exists(textBox_ExePath.Text))
+					throw new ArgumentException("The game's .exe file doesn't exist anymore.");
+
+				if (!File.Exists(textBox_LauncherPath.Text))
+					throw new ArgumentException("The project's launcher executable doesn't exist anymore.");
+
 				string projectName = SharedMethods.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(projectName))
@@ -200,15 +220,17 @@ namespace TombIDE
 
 				GameVersion gameVersion = GetGameVersion(textBox_ExePath.Text);
 
+				string launcherFilePath = textBox_LauncherPath.Text;
+
 				string projectPath = string.Empty;
 
-				string currentDirectory = Path.GetDirectoryName(textBox_ExePath.Text);
-				string prevDirectory = Path.GetDirectoryName(currentDirectory);
+				string gameExeDirectory = Path.GetDirectoryName(textBox_ExePath.Text);
+				string prevDirectory = Path.GetDirectoryName(gameExeDirectory);
 
-				if (Path.GetFileName(currentDirectory).ToLower() == "engine")
+				if (Path.GetFileName(gameExeDirectory).ToLower() == "engine")
 					projectPath = prevDirectory;
 				else
-					projectPath = currentDirectory;
+					projectPath = gameExeDirectory;
 
 				string enginePath = Path.GetDirectoryName(textBox_ExePath.Text);
 				string scriptPath = textBox_ScriptPath.Text.Trim();
@@ -225,6 +247,7 @@ namespace TombIDE
 				{
 					Name = projectName,
 					GameVersion = gameVersion,
+					LaunchFilePath = launcherFilePath,
 					ProjectPath = projectPath,
 					EnginePath = enginePath,
 					ScriptPath = scriptPath,
@@ -243,6 +266,33 @@ namespace TombIDE
 				button_Import.Enabled = true;
 
 				DialogResult = DialogResult.None;
+			}
+		}
+
+		private void ShowFindLauncherDialog(Project project)
+		{
+			try
+			{
+				using (OpenFileDialog dialog = new OpenFileDialog())
+				{
+					dialog.Title = "Choose the launch.exe file of the current game project";
+					dialog.Filter = "Executable Files|*.exe";
+					dialog.InitialDirectory = project.ProjectPath;
+
+					if (dialog.ShowDialog(this) == DialogResult.OK)
+					{
+						if (Path.GetDirectoryName(dialog.FileName).ToLower() != project.ProjectPath.ToLower())
+							throw new ArgumentException("This is not the project folder. Please try again.");
+
+						project.LaunchFilePath = dialog.FileName;
+						XmlHandling.SaveTRPROJ(project);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowFindLauncherDialog(project);
 			}
 		}
 

@@ -1,6 +1,7 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -139,20 +140,15 @@ namespace TombIDE
 
 		private void AddProjectToList(Project project, bool reserialize = false)
 		{
-			string launchFile = Path.Combine(project.ProjectPath, "launch.exe");
-			string gameFile = Path.Combine(project.EnginePath, project.GetExeFileName());
-
-			string exeFilePath = File.Exists(launchFile) ? launchFile : gameFile;
-
-			Bitmap icon = Icon.ExtractAssociatedIcon(exeFilePath).ToBitmap();
-
 			// Create the node
 			DarkTreeNode node = new DarkTreeNode
 			{
-				Icon = icon,
 				Text = project.Name,
 				Tag = project
 			};
+
+			if (!string.IsNullOrEmpty(project.LaunchFilePath))
+				node.Icon = Icon.ExtractAssociatedIcon(project.LaunchFilePath).ToBitmap();
 
 			// Add the node to the list
 			treeView.Nodes.Add(node);
@@ -291,47 +287,75 @@ namespace TombIDE
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
+					string selectedExePath = dialog.FileName;
+
+					string selectedExeName = Path.GetFileName(selectedExePath);
+					string selectedExeDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedExePath));
+
 					try
 					{
-						string exeFilePath = dialog.FileName;
-						string exeName = Path.GetFileName(exeFilePath).ToLower();
+						string gameExeFilePath = string.Empty;
+						string launcherFilePath = string.Empty;
 
-						// Check if the imported .exe file is a TR game that's actually supported
-						if (exeName != "tomb4.exe" && exeName != "launch.exe")
-							throw new ArgumentException("Invalid game .exe file.");
+						string engineDirectory = Path.Combine(Path.GetDirectoryName(selectedExePath), "Engine");
 
-						if (exeName == "launch.exe")
+						if (selectedExeName.ToLower() == "tomb4.exe" && selectedExeDirectoryName.ToLower() != "engine")
 						{
-							bool validExeFound = false;
+							gameExeFilePath = selectedExePath;
+							launcherFilePath = selectedExePath;
+						}
+						else if (selectedExeName.ToLower() == "tomb4.exe" && selectedExeDirectoryName.ToLower() == "engine")
+						{
+							gameExeFilePath = selectedExePath;
 
-							string engineDirectory = Path.Combine(Path.GetDirectoryName(exeFilePath), "Engine");
+							string prevDirectory = Path.GetDirectoryName(Path.GetDirectoryName(selectedExePath));
+							List<string> launcherFiles = Project.GetLauncherExecutablesFromDirectory(prevDirectory);
 
-							if (Directory.Exists(engineDirectory))
+							if (launcherFiles.Count == 1)
+								launcherFilePath = launcherFiles.First();
+							else if (launcherFiles.Count > 1)
 							{
-								foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
-								{
-									if (Path.GetFileName(file).ToLower() == "tomb4.exe")
-									{
-										exeFilePath = file;
-										validExeFound = true;
+								DarkMessageBox.Show(this, "Selected project contains more than one launcher executable.\n" +
+									"Please specify which one you want to use.", "Warning",
+										MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-										break;
-									}
+								using (FormFileSelection form = new FormFileSelection(launcherFiles.ToArray()))
+								{
+									if (form.ShowDialog(this) == DialogResult.OK)
+										launcherFilePath = form.SelectedFile;
+									else
+										return;
 								}
 							}
-
-							if (!validExeFound)
-								throw new ArgumentException("Invalid game .exe file.");
+							else
+								throw new ArgumentException("Selected project doesn't contain any launcher executable.\n" +
+									"Please check if the project is correctly installed.");
 						}
+						else if (selectedExeName.ToLower() != "tomb4.exe" && Directory.Exists(engineDirectory))
+						{
+							foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
+							{
+								if (Path.GetFileName(file).ToLower() == "tomb4.exe")
+								{
+									gameExeFilePath = file;
+									launcherFilePath = selectedExePath;
+
+									break;
+								}
+							}
+						}
+
+						if (string.IsNullOrEmpty(gameExeFilePath) || string.IsNullOrEmpty(launcherFilePath))
+							throw new ArgumentException("Invalid game .exe file.");
 
 						// Check if a project that's using the same .exe file exists on the list
 						foreach (Project project in _ide.AvailableProjects)
 						{
-							if (project.ProjectPath.ToLower() == Path.GetDirectoryName(exeFilePath).ToLower())
+							if (project.EnginePath.ToLower() == Path.GetDirectoryName(gameExeFilePath).ToLower())
 								throw new ArgumentException("Project already exists on the list.\nIt's called \"" + project.Name + "\"");
 						}
 
-						using (FormImportProject form = new FormImportProject(_ide, exeFilePath))
+						using (FormImportProject form = new FormImportProject(_ide, gameExeFilePath, launcherFilePath))
 							form.ShowDialog(this); // After the form is done, it will trigger IDE.ProjectAddedEvent
 					}
 					catch (Exception ex)
@@ -449,7 +473,7 @@ namespace TombIDE
 					DarkMessageBox.Show(this, "Couldn't find the project's launch.exe file. Please select its new location.", "Warning",
 						MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-					ShowFindLauncherDialog();
+					ShowFindLauncherDialog(_ide.Project);
 				}
 				else
 				{
@@ -489,7 +513,7 @@ namespace TombIDE
 			}
 		}
 
-		private void ShowFindLauncherDialog()
+		private void ShowFindLauncherDialog(Project project)
 		{
 			try
 			{
@@ -497,22 +521,22 @@ namespace TombIDE
 				{
 					dialog.Title = "Choose the launch.exe file of the current game project";
 					dialog.Filter = "Executable Files|*.exe";
-					dialog.InitialDirectory = _ide.Project.ProjectPath;
+					dialog.InitialDirectory = project.ProjectPath;
 
 					if (dialog.ShowDialog(this) == DialogResult.OK)
 					{
-						if (Path.GetDirectoryName(dialog.FileName).ToLower() != _ide.Project.ProjectPath.ToLower())
+						if (Path.GetDirectoryName(dialog.FileName).ToLower() != project.ProjectPath.ToLower())
 							throw new ArgumentException("This is not the project folder. Please try again.");
 
-						_ide.Project.LaunchFilePath = dialog.FileName;
-						XmlHandling.SaveTRPROJ(_ide.Project);
+						project.LaunchFilePath = dialog.FileName;
+						XmlHandling.SaveTRPROJ(project);
 					}
 				}
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				ShowFindLauncherDialog();
+				ShowFindLauncherDialog(project);
 			}
 		}
 

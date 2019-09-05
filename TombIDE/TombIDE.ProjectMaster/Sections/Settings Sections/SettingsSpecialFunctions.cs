@@ -18,6 +18,8 @@ namespace TombIDE.ProjectMaster
 		public void Initialize(IDE ide)
 		{
 			_ide = ide;
+
+			textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
 		}
 
 		private void button_DeleteLogs_Click(object sender, EventArgs e)
@@ -62,6 +64,14 @@ namespace TombIDE.ProjectMaster
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		private void button_RenameLauncher_Click(object sender, EventArgs e)
+		{
+			using (FormRenameLauncher form = new FormRenameLauncher(_ide))
+				form.ShowDialog(this);
+
+			textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
 		}
 	}
 }

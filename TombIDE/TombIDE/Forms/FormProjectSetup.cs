@@ -206,10 +206,13 @@ namespace TombIDE
 					break;
 			}
 
+			string launchFilePath = Path.Combine(projectPath, "launch.exe");
+
 			return new Project
 			{
 				Name = projectName,
 				GameVersion = gameVersion,
+				LaunchFilePath = launchFilePath,
 				ProjectPath = projectPath,
 				EnginePath = enginePath,
 				ScriptPath = scriptPath,

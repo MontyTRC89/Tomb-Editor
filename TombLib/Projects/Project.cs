@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 using TombLib.LevelData;
@@ -64,6 +65,7 @@ namespace TombLib.Projects
 			{
 				Name = Name,
 				GameVersion = GameVersion,
+				LaunchFilePath = LaunchFilePath,
 				ProjectPath = ProjectPath,
 				EnginePath = EnginePath,
 				ScriptPath = ScriptPath,
@@ -117,6 +119,9 @@ namespace TombLib.Projects
 		{
 			ProjectPath = Path.GetDirectoryName(trprojFilePath);
 
+			if (!string.IsNullOrEmpty(LaunchFilePath))
+				LaunchFilePath = Path.Combine(ProjectPath, LaunchFilePath.Replace(@"$(ProjectDirectory)\", string.Empty));
+
 			string engineDirectory = Path.Combine(ProjectPath, "Engine");
 
 			if (Directory.Exists(engineDirectory))
@@ -155,6 +160,8 @@ namespace TombLib.Projects
 		/// </summary>
 		public void EncodeProjectPaths()
 		{
+			LaunchFilePath = Path.Combine("$(ProjectDirectory)", Path.GetFileName(LaunchFilePath));
+
 			if (ScriptPath.StartsWith(ProjectPath))
 				ScriptPath = ScriptPath.Replace(ProjectPath, "$(ProjectDirectory)");
 
@@ -266,6 +273,20 @@ namespace TombLib.Projects
 			}
 
 			return false;
+		}
+
+		public static List<string> GetLauncherExecutablesFromDirectory(string directoryPath)
+		{
+			string[] exeFiles = Directory.GetFiles(directoryPath, "*.exe", SearchOption.TopDirectoryOnly);
+			List<string> validExeFiles = new List<string>();
+
+			foreach (string file in exeFiles)
+			{
+				if (FileVersionInfo.GetVersionInfo(file).OriginalFilename == "launch.exe")
+					validExeFiles.Add(file);
+			}
+
+			return validExeFiles;
 		}
 	}
 }
