@@ -24,6 +24,7 @@ namespace TombIDE.Shared
 		public bool ViewFileNames { get; set; } = true;
 		public bool ViewFullFolderPaths { get; set; } = false;
 		public bool LightModePreviewEnabled { get; set; } = false;
+		public bool StandardAspectRatioPreviewEnabled { get; set; } = false;
 
 		/// <summary>
 		/// This can only be set by directly modifying the .xml file

@@ -11,13 +11,13 @@ using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
-	public partial class SettingsGameIcon : UserControl
+	public partial class SettingsIcon : UserControl
 	{
 		private IDE _ide;
 
 		#region Initialization
 
-		public SettingsGameIcon()
+		public SettingsIcon()
 		{
 			InitializeComponent();
 		}

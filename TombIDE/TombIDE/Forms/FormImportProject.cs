@@ -31,7 +31,7 @@ namespace TombIDE
 			string prevDirectory = Path.GetDirectoryName(currentDirectory);
 
 			if (Path.GetFileName(currentDirectory).ToLower() == "engine")
-				textBox_ProjectName.Text = Path.GetFileName(prevDirectory);
+				textBox_ProjectName.Text = Path.GetFileName(prevDirectory); // If it's still "engine", OnShown() will show an error message
 			else
 				textBox_ProjectName.Text = Path.GetFileName(currentDirectory);
 
@@ -261,14 +261,12 @@ namespace TombIDE
 					break;
 
 				case "pctomb5.exe":
-					gameVersion = GameVersion.TR5;
+					gameVersion = GameVersion.TR5Main;
 					break;
 			}
 
 			if (gameVersion == GameVersion.TR4 && File.Exists(Path.Combine(Path.GetDirectoryName(exeFilePath), "tomb_nextgeneration.dll")))
 				gameVersion = GameVersion.TRNG;
-
-			// TODO: Add TR5Main detection
 
 			return gameVersion;
 		}
