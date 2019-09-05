@@ -1233,6 +1233,7 @@ namespace WadTool
             this.butTbInterpolateFrames.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbInterpolateFrames.Name = "butTbInterpolateFrames";
             this.butTbInterpolateFrames.Size = new System.Drawing.Size(23, 25);
+            this.butTbInterpolateFrames.ToolTipText = "Interpolate frames";
             this.butTbInterpolateFrames.Click += new System.EventHandler(this.butTbInterpolateFrames_Click);
             // 
             // tbInterpolateFrameCount

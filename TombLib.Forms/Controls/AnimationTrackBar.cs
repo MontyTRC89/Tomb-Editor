@@ -14,6 +14,7 @@ namespace TombLib.Controls
         private static readonly Pen _keyFrameBorderPen = new Pen(Color.FromArgb(170, 160, 160), 2);
         private static readonly Pen _selectionPen = new Pen(Color.FromArgb(190, 140, 140, 250), 1);
         private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(80, 170, 170, 250));
+        private static readonly Brush _highlightBrush = new SolidBrush(Color.FromArgb(160, 200, 200, 200));
         private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(180, 240, 140, 50));
         private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
         private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 80, 80, 250));
@@ -22,6 +23,28 @@ namespace TombLib.Controls
         private static readonly int _cursorWidth = 6;
         private static readonly int _animCommandMarkerRadius = 14;
         private static readonly int _stateChangeMarkerThicknessDivider = 2;
+
+        private static readonly int _highlightTimerInterval = 30;
+        private static readonly float _highlightTime = 1000;
+        private static readonly float _highlightStep = (float)_highlightTimerInterval / _highlightTime;
+
+        private Timer _highlightTimer = new Timer() { Interval = 30 };
+        private float _highlightCounter = 0;
+        private int _highlightStart;
+        private int _highlightEnd;
+
+        private void highlightTimer_Tick(object sender, EventArgs e)
+        {
+            _highlightCounter -= _highlightStep;
+
+            if (_highlightCounter <= 0.0f)
+            {
+                _highlightCounter = 0.0f;
+                _highlightTimer.Stop();
+            }
+
+            Invalidate();
+        }
 
         private int realFrameCount => Animation.WadAnimation.FrameRate * (Animation.DirectXAnimation.KeyFrames.Count - 1) + 1;
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
@@ -152,6 +175,7 @@ namespace TombLib.Controls
             InitializeComponent();
             picSlider.MouseWheel += picSlider_MouseWheel;
             picSlider.MouseEnter += picSlider_MouseEnter;
+            _highlightTimer.Tick += highlightTimer_Tick;
 
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
         }
@@ -160,6 +184,15 @@ namespace TombLib.Controls
         {
             picSlider.Invalidate();
             base.OnInvalidated(e);
+        }
+
+        public void Highlight(int start, int end)
+        {
+            if (start >= end || start < _minimum || end > _maximum) return;
+            _highlightStart = start;
+            _highlightEnd = end;
+            _highlightCounter = 1.0f;
+            _highlightTimer.Start();
         }
 
         private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
@@ -262,6 +295,17 @@ namespace TombLib.Controls
                 var rect = new Rectangle(ValueToX(Selection.X) + picSlider.Padding.Left, picSlider.Padding.Top, ValueToX(Selection.Y) - ValueToX(Selection.X), picSlider.ClientSize.Height - picSlider.Padding.Bottom);
                 e.Graphics.FillRectangle(_selectionBrush, rect);
                 e.Graphics.DrawRectangle(_selectionPen, rect);
+            }
+
+            // Draw highlight
+            if (_highlightTimer.Enabled)
+            {
+                using (SolidBrush currBrush = (SolidBrush)_highlightBrush.Clone())
+                {
+                    currBrush.Color = Color.FromArgb((int)((float)currBrush.Color.A * _highlightCounter), currBrush.Color);
+                    var rect = new Rectangle(ValueToX(_highlightStart) + picSlider.Padding.Left, picSlider.Padding.Top, ValueToX(_highlightEnd) - ValueToX(_highlightStart), picSlider.ClientSize.Height - picSlider.Padding.Bottom);
+                    e.Graphics.FillRectangle(currBrush, rect);
+                }
             }
 
             // Draw frame-specific animcommands, numericals and dividers

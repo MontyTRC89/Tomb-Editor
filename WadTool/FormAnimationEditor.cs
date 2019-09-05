@@ -26,7 +26,7 @@ namespace WadTool
             Name
         }
 
-        private bool _saved = true;
+        private bool _saved = false;
         private bool Saved
         {
             get { return _saved; }
@@ -34,7 +34,7 @@ namespace WadTool
             {
                 if (value == _saved) return;
                 _saved = value;
-                Text = "Animation editor - " + _moveable.ToString() + (value == false ? "*" : "");
+                Text = "Animation editor - " + _moveable.Id.ToString(_wad.SuggestedGameVersion) + (value == false ? "*" : "");
             }
         }
 
@@ -118,6 +118,8 @@ namespace WadTool
                 SelectAnimation(_workingAnimations[0]);
 
             tool.EditorEventRaised += Tool_EditorEventRaised;
+
+            Saved = true;
         }
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
@@ -737,7 +739,12 @@ namespace WadTool
                 }
             else if (numFrames == 0)
             {
-                popup.ShowError(panelRendering, "Interpolation requires at least 1 frame to insert!");
+                popup.ShowError(panelRendering, "Interpolation requires at least 1 frame to insert");
+                return;
+            }
+            else if (timeline.SelectionIsEmpty && timeline.Value == timeline.Maximum)
+            {
+                popup.ShowError(panelRendering, "It's not possible to interpolate a single last frame");
                 return;
             }
 
@@ -746,15 +753,20 @@ namespace WadTool
 
             if (frameIndex1 >= frameIndex2)
             {
-                popup.ShowError(panelRendering, "The first frame index can't be greater than the second frame index");
+                popup.ShowError(panelRendering, "First frame index can't be greater than the second frame index");
                 return;
             }
 
             var frame1 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex1];
+            var frame2 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex2];
+
+            // Cut existing frames between 1 and 2
+
+            if (frameIndex2 - frameIndex1 > 1)
+                _selectedNode.DirectXAnimation.KeyFrames.RemoveRange(frameIndex1 + 1, frameIndex2 - frameIndex1 - 1);
 
             // Now calculate how many frames I must insert
-            int numFramesToAdd = numFrames - (frameIndex2 - frameIndex1) + 1;
-            for (int i = 0; i < numFramesToAdd; i++)
+            for (int i = 0; i < numFrames; i++)
             {
                 var keyFrame = new KeyFrame();
                 foreach (var bone in _bones)
@@ -768,11 +780,6 @@ namespace WadTool
                 frameIndex2++;
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(frameIndex1 + 1 + i, keyFrame);
             }
-
-            OnKeyframesListChanged();
-            Saved = false;
-
-            var frame2 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex2];
 
             // Slerp factor
             float k = 1.0f / (numFrames + 1);
@@ -795,9 +802,10 @@ namespace WadTool
             }
 
             // All done! Now I reset a bit the GUI
-            timeline.SelectionStart = panelRendering.CurrentKeyFrame + 1;
-            timeline.Value = panelRendering.CurrentKeyFrame + numFrames;
-            timeline.SelectionEnd = timeline.Value;
+            OnKeyframesListChanged();
+            timeline.Highlight(frameIndex1, frameIndex1 + numFrames + 1);
+            timeline.ResetSelection();
+            timeline.Value = frameIndex1 + numFrames + 1;
             popup.ShowInfo(panelRendering, "Successfully inserted " + numFrames + " interpolated frames between frames " + frameIndex1 + " and " + frameIndex2);
 
             Saved = false;
@@ -1050,7 +1058,6 @@ namespace WadTool
         private void butEditAnimCommands_Click(object sender, EventArgs e) => EditAnimCommands();
         private void butEditStateChanges_Click(object sender, EventArgs e) => EditStateChanges();
 
-        private void tbFramerate_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.FrameRate = (byte)MathC.Clamp(UpdateAnimationParameter(tbFramerate), 1, 255);
         private void tbStateId_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.StateId = (byte)UpdateAnimationParameter(tbStateId);
         private void tbNextAnimation_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.NextAnimation = (byte)UpdateAnimationParameter(tbNextAnimation);
         private void tbNextFrame_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.NextFrame = (byte)UpdateAnimationParameter(tbNextFrame);
@@ -1058,6 +1065,13 @@ namespace WadTool
         private void tbEndVelocity_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.EndVelocity = UpdateAnimationParameter(tbEndVelocity);
         private void tbLateralStartVelocity_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.StartLateralVelocity = UpdateAnimationParameter(tbLateralStartVelocity);
         private void tbLateralEndVelocity_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.EndLateralVelocity = UpdateAnimationParameter(tbLateralEndVelocity);
+
+        private void tbFramerate_Validated(object sender, EventArgs e)
+        {
+            _selectedNode.WadAnimation.FrameRate = (byte)MathC.Clamp(UpdateAnimationParameter(tbFramerate), 1, 255);
+            if (_timerPlayAnimation.Enabled)
+                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
+        }
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
