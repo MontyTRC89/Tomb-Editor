@@ -38,7 +38,12 @@ namespace TombLib.Controls
             get { return _minimum; }
             set
             {
-                if (_minimum == value) return;
+                if (_minimum == value)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 if (value >= _maximum || value < 0) return;
 
                 _minimum = value;
@@ -52,7 +57,12 @@ namespace TombLib.Controls
             get { return _maximum; }
             set
             {
-                if (_maximum == value) return;
+                if (_maximum == value)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 if (value < _minimum || value < 0) return;
 
                 _maximum = value;
@@ -68,7 +78,12 @@ namespace TombLib.Controls
             get { return _selectionStart; }
             set
             {
-                if (value == _selectionStart || value < _minimum || value > _maximum) return;
+                if (value == _selectionStart || value < _minimum || value > _maximum)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 _selectionStart = value;
                 picSlider.Invalidate();
             }
@@ -78,13 +93,18 @@ namespace TombLib.Controls
             get { return _selectionEnd; }
             set
             {
-                if (value == _selectionEnd || value < _minimum || value > _maximum) return;
+                if (value == _selectionEnd || value < _minimum || value > _maximum)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
+
                 _selectionEnd = value;
                 picSlider.Invalidate();
             }
         }
 
-        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, 1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
+        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, Value) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
         public bool SelectionIsEmpty => SelectionEnd == SelectionStart;
         public int SelectionSize => SelectionIsEmpty ? 1 : Selection.Y - Selection.X + 1;
         public void ResetSelection() => SelectionEnd = SelectionStart = 0;
@@ -95,7 +115,11 @@ namespace TombLib.Controls
             get { return _value; }
             set
             {
-                if (value == _value) return;
+                if (value == _value)
+                {
+                    picSlider.Invalidate(); // Invalidate anyway in case other values have changed
+                    return;
+                }
                 if (value < _minimum) value = _minimum;
                 if (value > _maximum) value = _maximum;
 

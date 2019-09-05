@@ -280,7 +280,7 @@ namespace WadTool
 
         private void SelectFrame(int frameIndex)
         {
-            if (_selectedNode != null)
+            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count > 0)
             {
                 if (frameIndex >= _selectedNode.DirectXAnimation.KeyFrames.Count)
                     frameIndex = _selectedNode.DirectXAnimation.KeyFrames.Count - 1;
@@ -290,7 +290,6 @@ namespace WadTool
                 panelRendering.Invalidate();
 
                 // Update GUI
-                timeline.Value = frameIndex;
                 OnKeyframesListChanged();
 
                 tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
@@ -557,7 +556,7 @@ namespace WadTool
                         timeline.Value = (timeline.Selection.X);
                     else
                     {
-                        timeline.Invalidate();
+                        timeline.Value = 0;
                         statusFrame.Text = "";
                     }
                     panelRendering.Invalidate();
@@ -581,14 +580,14 @@ namespace WadTool
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
                 _clipboardKeyFrames.Clear();
-                for (int i = timeline.Selection.X; i <= timeline.Selection.Y; i++)
+                for (int i = timeline.Selection.X; i < timeline.Selection.Y; i++)
                     _clipboardKeyFrames.Add(_selectedNode.DirectXAnimation.KeyFrames[i].Clone());
             }
         }
 
         private void PasteFrames()
         {
-            if (_clipboardKeyFrames != null && _selectedNode != null)
+            if (_clipboardKeyFrames != null && _clipboardKeyFrames.Count > 0 && _selectedNode != null)
             {
                 _selectedNode.DirectXAnimation.KeyFrames.InsertRange(timeline.Selection.X, _clipboardKeyFrames);
                 //_clipboardKeyFrame = null;
