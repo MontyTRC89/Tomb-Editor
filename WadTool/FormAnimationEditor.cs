@@ -259,10 +259,14 @@ namespace WadTool
             tbLatSpeed.Text = (node.WadAnimation.LateralSpeed / 65536.0f).ToString();
             tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();*/
 
+            timeline.Animation = node;
             panelRendering.CurrentKeyFrame = 0;
             panelRendering.SelectedMesh = null;
             panelRendering.Animation = node;
-            timeline.Animation = node;
+
+            if (node.DirectXAnimation.KeyFrames.Count > 0)
+                panelRendering.Model.BuildAnimationPose(node.DirectXAnimation.KeyFrames[0]);
+
 
             if (node.DirectXAnimation.KeyFrames.Count > 0)
             {
