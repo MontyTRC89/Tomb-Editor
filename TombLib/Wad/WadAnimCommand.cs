@@ -29,14 +29,20 @@ namespace TombLib.Wad
                     return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
                 case WadAnimCommandType.PlaySound:
                     int soundId = Parameter2 & 0x3FFF;
-                    if ((Parameter1 & 0x8000) != 0)
+                    if ((Parameter2 & 0x8000) != 0)
                         return "Play Sound ID = " + soundId + " (water) on Frame = " + Parameter1;
-                    else if ((Parameter1 & 0x8000) != 0)
+                    else if ((Parameter2 & 0x4000) != 0)
                         return "Play Sound ID = " + soundId + " (land) on Frame = " + Parameter1;
                     else
                         return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
                 case WadAnimCommandType.FlipEffect:
-                    return "Play FlipEffect ID = " + Parameter2 + " on Frame = " + Parameter1;
+                    int flipeffectId = Parameter2 & 0x3FFF;
+                    if ((Parameter2 & 0x8000) != 0)
+                        return "Play FlipEffect ID = " + flipeffectId + " (right foot) on Frame = " + Parameter1;
+                    else if ((Parameter2 & 0x4000) != 0)
+                        return "Play FlipEffect ID = " + flipeffectId + " (left foot) on Frame = " + Parameter1;
+                    else
+                        return "Play FlipEffect ID = " + flipeffectId + " on Frame = " + Parameter1;
             }
 
             return "";

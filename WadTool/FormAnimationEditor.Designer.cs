@@ -137,12 +137,15 @@ namespace WadTool
             this.timeline = new TombLib.Controls.AnimationTrackBar();
             this.panelTransport = new System.Windows.Forms.Panel();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.butTransportStart = new System.Windows.Forms.ToolStripButton();
             this.butTransportFrameBack = new System.Windows.Forms.ToolStripButton();
             this.butTransportPlay = new System.Windows.Forms.ToolStripButton();
             this.butTransportFrameForward = new System.Windows.Forms.ToolStripButton();
             this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
+            this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
@@ -595,7 +598,6 @@ namespace WadTool
             // darkStatusStrip1
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkStatusStrip1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusFrame});
@@ -608,10 +610,11 @@ namespace WadTool
             // 
             // statusFrame
             // 
+            this.statusFrame.Margin = new System.Windows.Forms.Padding(0, 1, 0, 2);
             this.statusFrame.Name = "statusFrame";
-            this.statusFrame.Size = new System.Drawing.Size(38, 12);
-            this.statusFrame.Text = "Frame";
-            this.statusFrame.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.statusFrame.Size = new System.Drawing.Size(34, 14);
+            this.statusFrame.Text = "Frame:";
+            this.statusFrame.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // tbLateralEndVelocity
             // 
@@ -1381,7 +1384,7 @@ namespace WadTool
             this.timeline.Name = "timeline";
             this.timeline.SelectionEnd = 0;
             this.timeline.SelectionStart = 0;
-            this.timeline.Size = new System.Drawing.Size(547, 38);
+            this.timeline.Size = new System.Drawing.Size(504, 38);
             this.timeline.TabIndex = 3;
             this.timeline.Value = 0;
             this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
@@ -1390,9 +1393,9 @@ namespace WadTool
             // 
             this.panelTransport.Controls.Add(this.darkToolStrip1);
             this.panelTransport.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelTransport.Location = new System.Drawing.Point(547, 0);
+            this.panelTransport.Location = new System.Drawing.Point(504, 0);
             this.panelTransport.Name = "panelTransport";
-            this.panelTransport.Size = new System.Drawing.Size(178, 38);
+            this.panelTransport.Size = new System.Drawing.Size(221, 38);
             this.panelTransport.TabIndex = 2;
             // 
             // darkToolStrip1
@@ -1404,18 +1407,29 @@ namespace WadTool
             this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator6,
             this.butTransportStart,
             this.butTransportFrameBack,
             this.butTransportPlay,
             this.butTransportFrameForward,
             this.butTransportEnd,
-            this.butTransportSound});
+            this.toolStripSeparator7,
+            this.butTransportSound,
+            this.butTransportLandWater});
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(178, 38);
+            this.darkToolStrip1.Size = new System.Drawing.Size(221, 38);
             this.darkToolStrip1.TabIndex = 0;
             this.darkToolStrip1.Text = "darkToolStrip1";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator6.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 38);
             // 
             // butTransportStart
             // 
@@ -1484,6 +1498,14 @@ namespace WadTool
             this.butTransportEnd.ToolTipText = "Go to end";
             this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 38);
+            // 
             // butTransportSound
             // 
             this.butTransportSound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1497,6 +1519,19 @@ namespace WadTool
             this.butTransportSound.Text = "toolStripButton7";
             this.butTransportSound.ToolTipText = "Toggle sound preview";
             this.butTransportSound.Click += new System.EventHandler(this.butTransportSound_Click);
+            // 
+            // butTransportLandWater
+            // 
+            this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_land_24;
+            this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportLandWater.Name = "butTransportLandWater";
+            this.butTransportLandWater.Size = new System.Drawing.Size(28, 35);
+            this.butTransportLandWater.ToolTipText = "Toggle sound conditions";
+            this.butTransportLandWater.Click += new System.EventHandler(this.butTransportLandWater_Click);
             // 
             // toolStripButton1
             // 
@@ -1591,6 +1626,7 @@ namespace WadTool
             this.darkButton3.Size = new System.Drawing.Size(114, 23);
             this.darkButton3.TabIndex = 123;
             this.darkButton3.Text = "Anim commands...";
+            this.darkButton3.Click += new System.EventHandler(this.butEditAnimCommands_Click);
             // 
             // butEditStateChanges
             // 
@@ -1851,5 +1887,8 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbInterpolateFrames;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripTextBox tbInterpolateFrameCount;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton butTransportLandWater;
     }
 }

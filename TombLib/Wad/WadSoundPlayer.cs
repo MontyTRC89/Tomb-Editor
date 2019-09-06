@@ -13,9 +13,9 @@ namespace TombLib.Wad
         private static Random _rng = new Random();
         private static WasapiOut _channel = null;
 
-        public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo)
+        public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo, bool rewind)
         {
-            if (_channel != null && _channel.PlaybackState == PlaybackState.Playing)
+            if (_channel != null && _channel.PlaybackState == PlaybackState.Playing && rewind)
                 StopSample();
 
             if (soundInfo.EmbeddedSamples.Count == 0)
@@ -44,10 +44,10 @@ namespace TombLib.Wad
                     volume -= (float)_rng.NextDouble() * 0.125f;
             }
 
-            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], volume, pitch, pan, loopCount);
+            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], rewind, volume, pitch, pan, loopCount);
         }
 
-        public static void PlaySample(Level level, WadSample sample, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
+        public static void PlaySample(Level level, WadSample sample, bool rewind, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
         {
             if (volume <= 0.0f || loopCount <= 0)
                 return;
@@ -94,7 +94,8 @@ namespace TombLib.Wad
                 sampleStream = new OffsetSampleProvider(sampleStream) { LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples };
 
                 // Clean previous preview, if by any chance it's still playing
-                StopSample(); 
+                if (rewind)
+                    StopSample(); 
 
                 // Play
                 _channel = disposables.AddAndReturn(new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, latencyInMilliseconds));
