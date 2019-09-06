@@ -60,7 +60,11 @@ namespace WadTool
         private Timer _timerPlayAnimation;
         private int _frameCount;
         private bool _previewSounds;
+        private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
+        private int _currentMaterialIndex;
         private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
+
+        private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
 
         // Clipboard
         private List<KeyFrame> _clipboardKeyFrames = new List<KeyFrame>();
@@ -1144,6 +1148,16 @@ namespace WadTool
 
             int realFrameNumber = _selectedNode.WadAnimation.FrameRate * (_selectedNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
 
+            // This additional counter is used to randomize material index every 3 seconds of playback
+            _overallPlaybackCount++; 
+            if (_overallPlaybackCount > _materialIndexSwitchInterval)
+            {
+                _overallPlaybackCount = 0;
+
+                var listOfMaterialSounds = _tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
+                _currentMaterialIndex = listOfMaterialSounds[(new Random()).Next(0, listOfMaterialSounds.Count() - 1)].Id;
+            }
+
             _frameCount++;
             if (_frameCount >= realFrameNumber)
                 _frameCount = 0;
@@ -1170,7 +1184,7 @@ namespace WadTool
                     if (ac.Type == WadAnimCommandType.PlaySound)
                         idToPlay = ac.Parameter2 & 0x3FFF;
                     else if (_soundPreviewType == SoundPreviewType.LandWithMaterial && ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
-                        idToPlay = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).Id;
+                        idToPlay = _currentMaterialIndex;
 
                     if (idToPlay != -1 && ac.Parameter1 == _frameCount)
                     {
