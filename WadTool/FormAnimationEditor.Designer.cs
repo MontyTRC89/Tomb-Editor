@@ -988,8 +988,9 @@ namespace WadTool
             // 
             this.butTbSaveAllChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbSaveAllChanges.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbSaveAllChanges.Enabled = false;
             this.butTbSaveAllChanges.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbSaveAllChanges.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butTbSaveAllChanges.Image = global::WadTool.Properties.Resources.general_Save_16;
             this.butTbSaveAllChanges.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbSaveAllChanges.Name = "butTbSaveAllChanges";
             this.butTbSaveAllChanges.Size = new System.Drawing.Size(23, 25);
