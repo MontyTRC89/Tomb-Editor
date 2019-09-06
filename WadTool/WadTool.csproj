@@ -453,6 +453,12 @@
   <ItemGroup>
     <None Include="Resources\icons_actions\actions_interpolate-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-on_land-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-on_water-24.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
