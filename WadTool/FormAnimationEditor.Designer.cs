@@ -62,7 +62,6 @@ namespace WadTool
             this.loadPrj2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusFrame2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tbLateralEndVelocity = new DarkUI.Controls.DarkTextBox();
             this.tbLateralStartVelocity = new DarkUI.Controls.DarkTextBox();
             this.tbStartVelocity = new DarkUI.Controls.DarkTextBox();
@@ -599,11 +598,9 @@ namespace WadTool
             // darkStatusStrip1
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkStatusStrip1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusFrame,
-            this.statusFrame2});
+            this.statusFrame});
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 634);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
@@ -613,21 +610,11 @@ namespace WadTool
             // 
             // statusFrame
             // 
-            this.statusFrame.AutoSize = false;
             this.statusFrame.Margin = new System.Windows.Forms.Padding(0, 1, 0, 2);
             this.statusFrame.Name = "statusFrame";
-            this.statusFrame.Size = new System.Drawing.Size(80, 14);
-            this.statusFrame.Text = "Frame";
+            this.statusFrame.Size = new System.Drawing.Size(34, 14);
+            this.statusFrame.Text = "Frame:";
             this.statusFrame.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            // 
-            // statusFrame2
-            // 
-            this.statusFrame2.AutoSize = false;
-            this.statusFrame2.Margin = new System.Windows.Forms.Padding(0, 1, 0, 2);
-            this.statusFrame2.Name = "statusFrame2";
-            this.statusFrame2.Size = new System.Drawing.Size(80, 14);
-            this.statusFrame2.Text = "Keyframe:";
-            this.statusFrame2.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // tbLateralEndVelocity
             // 
@@ -1903,6 +1890,5 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripButton butTransportLandWater;
-        private System.Windows.Forms.ToolStripStatusLabel statusFrame2;
     }
 }
