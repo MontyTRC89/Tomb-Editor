@@ -442,7 +442,7 @@
             // 
             // butAddLight
             // 
-            this.butAddLight.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddLight.Image = global::WadTool.Properties.Resources.general_plus_math_16;
             this.butAddLight.Location = new System.Drawing.Point(182, 7);
             this.butAddLight.Name = "butAddLight";
             this.butAddLight.Size = new System.Drawing.Size(24, 23);
