@@ -35,11 +35,11 @@
             this.butDeleteEffect = new DarkUI.Controls.DarkButton();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.lstCommands = new DarkUI.Controls.DarkListView();
             this.butCommandDown = new DarkUI.Controls.DarkButton();
             this.butCommandUp = new DarkUI.Controls.DarkButton();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.lstCommands = new DarkUI.Controls.DarkListView();
             this.commandControls = new TombLib.Controls.DarkTabbedContainer();
             this.tabSetPosition = new System.Windows.Forms.TabPage();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -54,6 +54,8 @@
             this.tbVertical = new DarkUI.Controls.DarkNumericUpDown();
             this.tbHorizontal = new DarkUI.Controls.DarkNumericUpDown();
             this.tabFlipeffect = new System.Windows.Forms.TabPage();
+            this.lblLaraFoot = new DarkUI.Controls.DarkLabel();
+            this.comboFlipeffectConditions = new DarkUI.Controls.DarkComboBox();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
             this.tbFlipEffectFrame = new DarkUI.Controls.DarkNumericUpDown();
@@ -169,6 +171,18 @@
             this.darkGroupBox1.TabIndex = 99;
             this.darkGroupBox1.TabStop = false;
             // 
+            // lstCommands
+            // 
+            this.lstCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstCommands.Location = new System.Drawing.Point(6, 7);
+            this.lstCommands.Name = "lstCommands";
+            this.lstCommands.Size = new System.Drawing.Size(329, 121);
+            this.lstCommands.TabIndex = 98;
+            this.lstCommands.Text = "darkListView1";
+            this.lstCommands.SelectedIndicesChanged += new System.EventHandler(this.lstCommands_SelectedIndicesChanged);
+            // 
             // butCommandDown
             // 
             this.butCommandDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -213,18 +227,6 @@
             this.darkSectionPanel1.SectionHeader = null;
             this.darkSectionPanel1.Size = new System.Drawing.Size(359, 101);
             this.darkSectionPanel1.TabIndex = 54;
-            // 
-            // lstCommands
-            // 
-            this.lstCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstCommands.Location = new System.Drawing.Point(6, 7);
-            this.lstCommands.Name = "lstCommands";
-            this.lstCommands.Size = new System.Drawing.Size(329, 121);
-            this.lstCommands.TabIndex = 98;
-            this.lstCommands.Text = "darkListView1";
-            this.lstCommands.SelectedIndicesChanged += new System.EventHandler(this.lstCommands_SelectedIndicesChanged);
             // 
             // commandControls
             // 
@@ -453,6 +455,8 @@
             // tabFlipeffect
             // 
             this.tabFlipeffect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabFlipeffect.Controls.Add(this.lblLaraFoot);
+            this.tabFlipeffect.Controls.Add(this.comboFlipeffectConditions);
             this.tabFlipeffect.Controls.Add(this.darkLabel4);
             this.tabFlipeffect.Controls.Add(this.darkLabel7);
             this.tabFlipeffect.Controls.Add(this.tbFlipEffectFrame);
@@ -463,6 +467,31 @@
             this.tabFlipeffect.Size = new System.Drawing.Size(349, 73);
             this.tabFlipeffect.TabIndex = 2;
             this.tabFlipeffect.Text = "flipeffect";
+            // 
+            // lblLaraFoot
+            // 
+            this.lblLaraFoot.AutoSize = true;
+            this.lblLaraFoot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblLaraFoot.Location = new System.Drawing.Point(164, 8);
+            this.lblLaraFoot.Name = "lblLaraFoot";
+            this.lblLaraFoot.Size = new System.Drawing.Size(62, 13);
+            this.lblLaraFoot.TabIndex = 104;
+            this.lblLaraFoot.Text = "Condition:";
+            // 
+            // comboFlipeffectConditions
+            // 
+            this.comboFlipeffectConditions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboFlipeffectConditions.FormattingEnabled = true;
+            this.comboFlipeffectConditions.Items.AddRange(new object[] {
+            "Always",
+            "Lara\'s left foot",
+            "Lara\'s right foot"});
+            this.comboFlipeffectConditions.Location = new System.Drawing.Point(167, 24);
+            this.comboFlipeffectConditions.Name = "comboFlipeffectConditions";
+            this.comboFlipeffectConditions.Size = new System.Drawing.Size(176, 23);
+            this.comboFlipeffectConditions.TabIndex = 103;
+            this.comboFlipeffectConditions.SelectedIndexChanged += new System.EventHandler(this.comboFlipeffectConditions_SelectedIndexChanged);
             // 
             // darkLabel4
             // 
@@ -717,5 +746,7 @@
         private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private DarkUI.Controls.DarkListView lstCommands;
+        private DarkUI.Controls.DarkLabel lblLaraFoot;
+        private DarkUI.Controls.DarkComboBox comboFlipeffectConditions;
     }
 }

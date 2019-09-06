@@ -52,7 +52,9 @@ namespace WadTool
 
         // Player
         private Timer _timerPlayAnimation;
+        private int _frameCount;
         private bool _previewSounds;
+        private bool _previewWaterSounds;
 
         // Clipboard
         private List<KeyFrame> _clipboardKeyFrames = new List<KeyFrame>();
@@ -78,9 +80,10 @@ namespace WadTool
 
             panelRendering.Configuration = _tool.Configuration;
 
-            // Initialize playback timer
+            // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
             _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
+            _previewSounds = true;
 
             // Add custom event handler for direct editing of animcommands
             timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(timeline_AnimCommandDoubleClick);
@@ -272,9 +275,9 @@ namespace WadTool
 
             if (node.DirectXAnimation.KeyFrames.Count > 0)
             {
+                OnKeyframesListChanged();
                 timeline.Value = 0;
                 timeline.ResetSelection();
-                OnKeyframesListChanged();
             }
             else
             {
@@ -313,10 +316,17 @@ namespace WadTool
         {
             if (_selectedNode != null)
             {
+                _frameCount = timeline.Value * _selectedNode.WadAnimation.FrameRate;
                 timeline.Minimum = 0;
                 timeline.Maximum = _selectedNode.DirectXAnimation.KeyFrames.Count - 1;
-                statusFrame.Text = "Frame: " + ((timeline.Value * _selectedNode.WadAnimation.FrameRate) + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + "   Keyframe: " + (timeline.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
+                UpdateStatusLabel();
             }
+        }
+
+        private void UpdateStatusLabel()
+        {
+            statusFrame.Text = "Frame: " + (_frameCount + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1);
+            statusFrame2.Text = "Keyframe: " + (timeline.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
         }
 
         private WadAnimation SaveAnimationChanges(AnimationNode animation)
@@ -722,6 +732,7 @@ namespace WadTool
 
             Saved = false;
             timeline.Invalidate();
+            panelRendering.Invalidate();
 
             return (int)Math.Round(result * multiplier, 0);
         }
@@ -875,11 +886,14 @@ namespace WadTool
 
             if (_timerPlayAnimation.Enabled)
             {
+                if (_selectedNode?.WadAnimation != null && _selectedNode.WadAnimation.KeyFrames.Count > 1)
+                    _frameCount = timeline.Value * _selectedNode.WadAnimation.FrameRate;
                 butTransportPlay.Image = Properties.Resources.transport_stop_24;
-                _timerPlayAnimation.Interval = 30 * _selectedNode?.WadAnimation?.FrameRate ?? 1;
             }
             else
+            {
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
+            }
         }
 
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1063,26 +1077,67 @@ namespace WadTool
         private void tbEndVelocity_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.EndVelocity = UpdateAnimationParameter(tbEndVelocity);
         private void tbLateralStartVelocity_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.StartLateralVelocity = UpdateAnimationParameter(tbLateralStartVelocity);
         private void tbLateralEndVelocity_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.EndLateralVelocity = UpdateAnimationParameter(tbLateralEndVelocity);
-
-        private void tbFramerate_Validated(object sender, EventArgs e)
-        {
-            _selectedNode.WadAnimation.FrameRate = (byte)MathC.Clamp(UpdateAnimationParameter(tbFramerate), 1, 255);
-            if (_timerPlayAnimation.Enabled)
-                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
-        }
+        private void tbFramerate_Validated(object sender, EventArgs e) => _selectedNode.WadAnimation.FrameRate = (byte)MathC.Clamp(UpdateAnimationParameter(tbFramerate), 1, 255);
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
-            if (_selectedNode?.WadAnimation == null)
+            if (_selectedNode?.WadAnimation == null || _selectedNode.WadAnimation.KeyFrames.Count <= 1)
                 return;
 
-            if (_selectedNode.WadAnimation.KeyFrames.Count <= 0) return;
+            int realFrameNumber = _selectedNode.WadAnimation.FrameRate * (_selectedNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
+
+            _frameCount++;
+            if (_frameCount >= realFrameNumber)
+                _frameCount = 0;
+
+            bool isKeyFrame = (_frameCount % (_selectedNode.WadAnimation.FrameRate == 0 ? 1 : _selectedNode.WadAnimation.FrameRate) == 0);
 
             // Update animation
-            if (timeline.Value == timeline.Maximum)
-                timeline.Value = 0;
-            else
-                timeline.Value++;
+            if (isKeyFrame)
+            {
+                if (timeline.Value == timeline.Maximum)
+                    timeline.Value = 0;
+                else
+                    timeline.Value++;
+            }
+
+            UpdateStatusLabel();
+
+            // Preview sounds
+            if (_previewSounds && _level != null)
+                foreach (var ac in _selectedNode.WadAnimation.AnimCommands)
+                {
+                    int idToPlay = -1;
+
+                    if (ac.Type == WadAnimCommandType.PlaySound)
+                        idToPlay = ac.Parameter2 & 0x3FFF;
+                    else if (ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
+                        idToPlay = _level.Settings.GlobalSoundMap.FirstOrDefault(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).Id;
+
+                    if (idToPlay != -1 && ac.Parameter1 == _frameCount)
+                    {
+                        int sfx_type = ac.Parameter2 & 0xC000;
+
+                        // Don't play footprint FX sounds in water
+                        if (ac.Type == WadAnimCommandType.FlipEffect && _previewWaterSounds) continue;
+
+                        // Don't play water sounds not in water and vice versa
+                        if (sfx_type == 0x8000 && !_previewWaterSounds) continue;
+                        if (sfx_type == 0x4000 &&  _previewWaterSounds) continue;
+
+                        var soundInfo = _level.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
+                        if (soundInfo != null)
+                            try
+                            {
+                                // Task.Factory.StartNew(() => WadSoundPlayer.PlaySoundInfo(_level, soundInfo, false));
+                                WadSoundPlayer.PlaySoundInfo(_level, soundInfo, false);
+                            }
+                            catch (Exception exc)
+                            {
+                                popup.ShowWarning(panelRendering, "Unable to play sound " + ac.Parameter2);
+                            }
+                    }
+                }
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1136,13 +1191,19 @@ namespace WadTool
 
         private void loadPrj2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _level = Prj2Loader.LoadFromPrj2("testwall.prj2", null, new Prj2Loader.Settings { IgnoreWads = true });
+            var fileName = LevelFileDialog.BrowseFile(this, null, null, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            _level = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+
             panelRendering.Level = _level;
 
             // Load rooms into the combo box
             comboRoomList.Enabled = true;
             comboRoomList.ComboBox.Items.Clear();
             comboRoomList.ComboBox.Items.Add("--- Select room ---");
+
             foreach (var room in _level.Rooms)
                 if (room != null)
                     comboRoomList.ComboBox.Items.Add(room);
@@ -1221,6 +1282,9 @@ namespace WadTool
                 else
                     DialogResult = DialogResult.Cancel;
             }
+
+            _timerPlayAnimation.Stop();
+            _timerPlayAnimation.Tick -= timerPlayAnimation_Tick;
         }
 
         private Control GetFocusedControl(ContainerControl control) => (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
@@ -1259,9 +1323,6 @@ namespace WadTool
 
             var node = (AnimationNode)lstAnimations.Items[lstAnimations.SelectedIndices[0]].Tag;
             SelectAnimation(node);
-
-            if (_timerPlayAnimation.Enabled)
-                _timerPlayAnimation.Interval = 30 * _selectedNode.WadAnimation.FrameRate;
         }
 
         private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame(timeline.Value);
@@ -1278,9 +1339,19 @@ namespace WadTool
             _previewSounds = !_previewSounds;
 
             if (_previewSounds)
-                butTransportSound.Image = Properties.Resources.transport_mute_24;
-            else
                 butTransportSound.Image = Properties.Resources.transport_audio_24;
+            else
+                butTransportSound.Image = Properties.Resources.transport_mute_24;
+        }
+
+        private void butTransportLandWater_Click(object sender, EventArgs e)
+        {
+            _previewWaterSounds = !_previewWaterSounds;
+
+            if (_previewWaterSounds)
+                butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
+            else
+                butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
         }
 
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
