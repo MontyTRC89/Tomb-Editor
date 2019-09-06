@@ -128,7 +128,7 @@
             // butAddEffect
             // 
             this.butAddEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddEffect.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddEffect.Image = global::WadTool.Properties.Resources.general_plus_math_16;
             this.butAddEffect.Location = new System.Drawing.Point(341, 6);
             this.butAddEffect.Name = "butAddEffect";
             this.butAddEffect.Size = new System.Drawing.Size(24, 24);

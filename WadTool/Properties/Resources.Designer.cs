@@ -93,6 +93,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_delete_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_delete_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_interpolate_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_interpolate_16", resourceCulture);
@@ -343,6 +353,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_plus_math_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_plus_math_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_Save_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Save_16", resourceCulture);
@@ -476,16 +496,6 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap play_16 {
             get {
                 object obj = ResourceManager.GetObject("play-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap plus_math_16 {
-            get {
-                object obj = ResourceManager.GetObject("plus_math-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

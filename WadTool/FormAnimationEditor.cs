@@ -84,7 +84,7 @@ namespace WadTool
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
             _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
-            _previewSounds = true;
+            _previewSounds = false;
 
             // Add custom event handler for direct editing of animcommands
             timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(timeline_AnimCommandDoubleClick);
@@ -383,7 +383,7 @@ namespace WadTool
             return true;
         }
 
-        private void CalculateAnimationBoundingBox()
+        private void CalculateAnimationBoundingBox(bool clear = false)
         {
             if (_selectedNode != null)
             {
@@ -391,18 +391,34 @@ namespace WadTool
                 for (int i = 0; i < _selectedNode.DirectXAnimation.KeyFrames.Count; i++)
                 {
                     timeline.Value = i;
-                    CalculateKeyframeBoundingBox(i);
+                    CalculateKeyframeBoundingBox(i, clear);
                 }
                 timeline.Value = (startFrame);
             }
         }
 
-        private void CalculateKeyframeBoundingBox(int index)
+        private void ClearAnimationBoundingBox(bool confirm = false)
+        {
+            if (_selectedNode == null)
+                return;
+
+            if (confirm && (DarkMessageBox.Show(this, "Do you really want to delete the collision box for each frame of animation '" + _selectedNode.WadAnimation.Name + "'?",
+                           "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No))
+                return;
+
+            CalculateAnimationBoundingBox(true);
+        }
+
+        private void CalculateKeyframeBoundingBox(int index, bool clear = false)
         {
             if (_selectedNode != null)
             {
                 var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[index];
-                keyFrame.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
+                
+                if (clear)
+                    keyFrame.BoundingBox = new BoundingBox();
+                else
+                    keyFrame.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
 
                 panelRendering.Invalidate();
 
@@ -415,6 +431,18 @@ namespace WadTool
 
                 Saved = false;
             }
+        }
+
+        private void ClearFrameBoundingBox(bool confirm = false)
+        {
+            if (_selectedNode == null)
+                return;
+
+            if (confirm && (DarkMessageBox.Show(this, "Do you really want to delete the collision box for the current keyframe?",
+                                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No))
+                return;
+
+            CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame, true);
         }
 
         private void AddNewAnimation()
@@ -862,26 +890,6 @@ namespace WadTool
             }
         }
 
-        private void DeleteKeyframeBoundingBox(int index)
-        {
-            if (_selectedNode != null)
-            {
-                var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[index];
-                keyFrame.BoundingBox = new BoundingBox();
-
-                panelRendering.Invalidate();
-
-                tbCollisionBoxMinX.Text = "0";
-                tbCollisionBoxMinY.Text = "0";
-                tbCollisionBoxMinZ.Text = "0";
-                tbCollisionBoxMaxX.Text = "0";
-                tbCollisionBoxMaxY.Text = "0";
-                tbCollisionBoxMaxZ.Text = "0";
-
-                Saved = false;
-            }
-        }
-
         private void PlayAnimation()
         {
             _timerPlayAnimation.Enabled = !_timerPlayAnimation.Enabled;
@@ -1048,6 +1056,7 @@ namespace WadTool
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges(false);
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
+        private void loadPrj2ToolStripMenuItem_Click(object sender, EventArgs e) => LoadReferenceProject();
 
         private void butTbAddAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butTbDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
@@ -1068,6 +1077,9 @@ namespace WadTool
         private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
         private void butSearchByStateID_Click(object sender, EventArgs e) => ReloadAnimations();
         private void butCalculateBoundingBoxForCurrentFrame_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame);
+        private void butCalculateAnimCollision_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
+        private void butClearCollisionBox_Click(object sender, EventArgs e) => ClearFrameBoundingBox(false);
+        private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(false);
         private void insertFramesAfterCurrentToolStripMenuItem_Click(object sender, EventArgs e) => InsertMultipleFrames();
         private void butEditAnimCommands_Click(object sender, EventArgs e) => EditAnimCommands();
         private void butEditStateChanges_Click(object sender, EventArgs e) => EditStateChanges();
@@ -1191,11 +1203,11 @@ namespace WadTool
             }
         }
 
-        private void loadPrj2ToolStripMenuItem_Click(object sender, EventArgs e)
+        private bool LoadReferenceProject()
         {
             var fileName = LevelFileDialog.BrowseFile(this, null, null, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
             if (string.IsNullOrEmpty(fileName))
-                return;
+                return false;
 
             _level = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
 
@@ -1211,6 +1223,8 @@ namespace WadTool
                     comboRoomList.ComboBox.Items.Add(room);
 
             panelRendering.Invalidate();
+
+            return true;
         }
 
         private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)
@@ -1237,32 +1251,12 @@ namespace WadTool
 
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_selectedNode != null)
-            {
-                if (DarkMessageBox.Show(this, "Do you really want to delete the collision box for the current keyframe?",
-                                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    DeleteKeyframeBoundingBox(panelRendering.CurrentKeyFrame);
-                }
-            }
+            ClearFrameBoundingBox(true);
         }
 
         private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_selectedNode != null)
-            {
-                if (DarkMessageBox.Show(this, "Do you really want to delete the collision box for each frame of animation '" + _selectedNode.WadAnimation.Name + "'?",
-                                          "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    int startFrame = panelRendering.CurrentKeyFrame;
-                    for (int i = 0; i < _selectedNode.DirectXAnimation.KeyFrames.Count; i++)
-                    {
-                        timeline.Value = i;
-                        DeleteKeyframeBoundingBox(i);
-                    }
-                    timeline.Value = startFrame;
-                }
-            }
+            ClearAnimationBoundingBox(true);
         }
 
         private void formAnimationEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -1338,6 +1332,8 @@ namespace WadTool
 
         private void butTransportSound_Click(object sender, EventArgs e)
         {
+            if (_level == null && !LoadReferenceProject()) return;
+
             _previewSounds = !_previewSounds;
 
             if (_previewSounds)
@@ -1348,6 +1344,8 @@ namespace WadTool
 
         private void butTransportLandWater_Click(object sender, EventArgs e)
         {
+            if (_level == null && !LoadReferenceProject()) return;
+
             _previewWaterSounds = !_previewWaterSounds;
 
             if (_previewWaterSounds)
