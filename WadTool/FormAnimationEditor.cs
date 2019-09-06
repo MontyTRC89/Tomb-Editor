@@ -1152,16 +1152,6 @@ namespace WadTool
 
             int realFrameNumber = _selectedNode.WadAnimation.FrameRate * (_selectedNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
 
-            // This additional counter is used to randomize material index every 3 seconds of playback
-            _overallPlaybackCount++; 
-            if (_overallPlaybackCount > _materialIndexSwitchInterval)
-            {
-                _overallPlaybackCount = 0;
-
-                var listOfMaterialSounds = _tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
-                _currentMaterialIndex = listOfMaterialSounds[(new Random()).Next(0, listOfMaterialSounds.Count() - 1)].Id;
-            }
-
             _frameCount++;
             if (_frameCount >= realFrameNumber)
                 _frameCount = 0;
@@ -1181,6 +1171,17 @@ namespace WadTool
 
             // Preview sounds
             if (_previewSounds && _tool.ReferenceLevel != null)
+            {
+                // This additional counter is used to randomize material index every 3 seconds of playback
+                _overallPlaybackCount++;
+                if (_overallPlaybackCount > _materialIndexSwitchInterval)
+                {
+                    _overallPlaybackCount = 0;
+
+                    var listOfMaterialSounds = _tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
+                    _currentMaterialIndex = listOfMaterialSounds[(new Random()).Next(0, listOfMaterialSounds.Count() - 1)].Id;
+                }
+
                 foreach (var ac in _selectedNode.WadAnimation.AnimCommands)
                 {
                     int idToPlay = -1;
@@ -1214,6 +1215,7 @@ namespace WadTool
                             }
                     }
                 }
+            }
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
