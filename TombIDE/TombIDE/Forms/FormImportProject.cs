@@ -48,7 +48,10 @@ namespace TombIDE
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				DialogResult = DialogResult.Cancel;
+				return;
 			}
+
+			textBox_ProjectName.Focus();
 		}
 
 		private void FillScriptPathTextBox(string exeFilePath)
