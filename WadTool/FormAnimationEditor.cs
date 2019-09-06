@@ -26,6 +26,13 @@ namespace WadTool
             Name
         }
 
+        private enum SoundPreviewType
+        {
+            Land,
+            LandWithMaterial,
+            Water
+        }
+
         private bool _saved = false;
         private bool Saved
         {
@@ -53,7 +60,7 @@ namespace WadTool
         private Timer _timerPlayAnimation;
         private int _frameCount;
         private bool _previewSounds;
-        private bool _previewWaterSounds;
+        private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
 
         // Clipboard
         private List<KeyFrame> _clipboardKeyFrames = new List<KeyFrame>();
@@ -1162,19 +1169,19 @@ namespace WadTool
 
                     if (ac.Type == WadAnimCommandType.PlaySound)
                         idToPlay = ac.Parameter2 & 0x3FFF;
-                    else if (ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
+                    else if (_soundPreviewType == SoundPreviewType.LandWithMaterial && ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
                         idToPlay = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).Id;
 
                     if (idToPlay != -1 && ac.Parameter1 == _frameCount)
                     {
-                        int sfx_type = ac.Parameter2 & 0xC000;
+                        int sfx_type = ac.Type == WadAnimCommandType.FlipEffect ? 0x4000 : ac.Parameter2 & 0xC000;
 
                         // Don't play footprint FX sounds in water
-                        if (ac.Type == WadAnimCommandType.FlipEffect && _previewWaterSounds) continue;
+                        if (ac.Type == WadAnimCommandType.FlipEffect && _soundPreviewType == SoundPreviewType.Water) continue;
 
                         // Don't play water sounds not in water and vice versa
-                        if (sfx_type == 0x8000 && !_previewWaterSounds) continue;
-                        if (sfx_type == 0x4000 &&  _previewWaterSounds) continue;
+                        if (sfx_type == 0x8000 && _soundPreviewType != SoundPreviewType.Water) continue;
+                        if (sfx_type == 0x4000 && _soundPreviewType == SoundPreviewType.Water) continue;
 
                         var soundInfo = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
                         if (soundInfo != null)
@@ -1359,12 +1366,22 @@ namespace WadTool
         {
             if (_tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_tool, this)) return;
 
-            _previewWaterSounds = !_previewWaterSounds;
+            if (_soundPreviewType == SoundPreviewType.Land) _soundPreviewType = SoundPreviewType.LandWithMaterial;
+            else if (_soundPreviewType == SoundPreviewType.LandWithMaterial) _soundPreviewType = SoundPreviewType.Water;
+            else if (_soundPreviewType == SoundPreviewType.Water) _soundPreviewType = SoundPreviewType.Land;
 
-            if (_previewWaterSounds)
-                butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
-            else
-                butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+            switch (_soundPreviewType)
+            {
+                case SoundPreviewType.Land:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
+                    break;
+                case SoundPreviewType.LandWithMaterial:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+                    break;
+                case SoundPreviewType.Water:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
+                    break;
+            }
         }
 
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
