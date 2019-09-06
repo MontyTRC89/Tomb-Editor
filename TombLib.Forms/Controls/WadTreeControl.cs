@@ -194,6 +194,7 @@ namespace TombLib.Controls
             }
         }
         public void Select(IWadObjectId Id) => Select(new List<IWadObjectId>() { Id });
+        public void SelectFirst() => Select((IWadObjectId)CollectAllNodes(tree.Nodes).FirstOrDefault(node => node.Tag is IWadObjectId).Tag);
 
         private void suggestedGameVersionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
