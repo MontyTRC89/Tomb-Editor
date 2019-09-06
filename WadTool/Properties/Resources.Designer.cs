@@ -113,6 +113,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_play_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_play_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_refresh_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_refresh_16", resourceCulture);
@@ -323,6 +333,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_create_new_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_create_new_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_Export_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Export-16", resourceCulture);
@@ -353,6 +373,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_Open_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Open_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_plus_math_16 {
             get {
                 object obj = ResourceManager.GetObject("general_plus_math_16", resourceCulture);
@@ -366,6 +396,16 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap general_Save_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Save_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_search_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_search_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

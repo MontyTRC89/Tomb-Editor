@@ -468,6 +468,18 @@
   <ItemGroup>
     <None Include="Resources\icons_actions\actions_delete-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_search-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_play-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_create_new-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_Open-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"

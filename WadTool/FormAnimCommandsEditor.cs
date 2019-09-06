@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -328,6 +329,26 @@ namespace WadTool
             _selectedCommand.Parameter2 &= unchecked((short)~0xC000);
             _selectedCommand.Parameter2 |= (short)(comboFlipeffectConditions.SelectedIndex << 14);
             UpdateSelectedItemText();
+        }
+
+        private void butSearchSounds_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(comboSound);
+            searchPopUp.Show(this);
+        }
+
+        private void butPlaySound_Click(object sender, EventArgs e)
+        {
+            var soundInfo = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == comboSound.SelectedIndex);
+            if (soundInfo != null)
+                try
+                {
+                    WadSoundPlayer.PlaySoundInfo(_tool.ReferenceLevel, soundInfo, false);
+                }
+                catch (Exception exc)
+                {
+                    // FIXME: do something!
+                }
         }
     }
 }
