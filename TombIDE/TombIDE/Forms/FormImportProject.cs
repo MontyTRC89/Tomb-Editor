@@ -1,7 +1,9 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombLib.LevelData;
@@ -194,7 +196,7 @@ namespace TombIDE
 					throw new ArgumentException("You must enter a valid name for the project.");
 
 				if (projectName.ToLower() == "engine") // Safety
-					throw new ArgumentException("Invalid project name.");
+					throw new ArgumentException("Illegal project name.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ScriptPath.Text))
 					throw new ArgumentException("You must specify the /Script/ folder path of the project.");
@@ -222,7 +224,21 @@ namespace TombIDE
 				if (!File.Exists(Path.Combine(scriptPath, "script.txt")))
 					throw new ArgumentException("Selected /Script/ folder does not contain a Script.txt file.");
 
-				if (!Directory.Exists(levelsPath))
+				if (Directory.Exists(levelsPath))
+				{
+					if (Directory.GetFiles(levelsPath, "*.prj2", SearchOption.AllDirectories).Length > 0)
+					{
+						DialogResult result = DarkMessageBox.Show(this,
+							"While opening the project, TombIDE will change the \"Game\" settings of all the\n" +
+							".prj2 files in the specified /Levels/ folder to match the imported project settings.\n" +
+							"Do you want to create a backup of the folder?", "Create backup?",
+							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+						if (result == DialogResult.Yes)
+							CreateLevelsBackup(levelsPath);
+					}
+				}
+				else
 					Directory.CreateDirectory(levelsPath);
 
 				Project importedProject = new Project
@@ -254,6 +270,40 @@ namespace TombIDE
 		#endregion Events
 
 		#region Methods
+
+		private void CreateLevelsBackup(string levelsPath)
+		{
+			string[] existingBackupFolders = Directory.GetDirectories(Path.GetDirectoryName(levelsPath), "*_BACKUP_*", SearchOption.TopDirectoryOnly);
+
+			string newbackupFolderPath = string.Empty;
+
+			if (existingBackupFolders.Length == 0)
+				newbackupFolderPath = levelsPath + "_BACKUP_1";
+			else
+			{
+				List<int> existingNumbers = new List<int>();
+
+				foreach (string existingBackupFolder in existingBackupFolders)
+					existingNumbers.Add(int.Parse(Path.GetFileNameWithoutExtension(existingBackupFolder).Split('_')[2]));
+
+				int nextFolderNumber = existingNumbers.Max() + 1;
+
+				newbackupFolderPath = levelsPath + "_BACKUP_" + nextFolderNumber;
+			}
+
+			Directory.CreateDirectory(newbackupFolderPath);
+
+			// Create all of the subdirectories
+			foreach (string directory in Directory.GetDirectories(levelsPath, "*", SearchOption.AllDirectories))
+				Directory.CreateDirectory(directory.Replace(levelsPath, newbackupFolderPath));
+
+			// Copy all the .prj2 files
+			foreach (string file in Directory.GetFiles(levelsPath, "*.prj2", SearchOption.AllDirectories))
+				File.Copy(file, file.Replace(levelsPath, newbackupFolderPath));
+
+			DarkMessageBox.Show(this, "Backup successfully created in /" + Path.GetFileName(newbackupFolderPath) + "/", "Information",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
 
 		private string GetProjectDirectory(string gameExeFilePath)
 		{
