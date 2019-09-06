@@ -1263,6 +1263,9 @@
   <metadata name="darkStatusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>156, 17</value>
   </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1032, 17</value>
+  </metadata>
   <data name="butAddNewAnimation.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -1270,9 +1273,6 @@
         DNWGH5CkGBsYNYAugIEBABqKrknAf2mEAAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>1032, 17</value>
-  </metadata>
   <data name="butDeleteAnimation.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAIGNIUk0AAHolAACAgwAA+f8AAIDoAABS
@@ -1672,6 +1672,9 @@
   <metadata name="darkToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>1129, 17</value>
   </metadata>
+  <metadata name="darkToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1129, 17</value>
+  </metadata>
   <data name="toolStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -1707,19 +1710,22 @@
   <data name="toolStripButton6.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAI1SURBVEhL7ZS9a5NhFMWDCIIdKuogVKcOCiL1axQqOCjo
-        5qTiUNRWBBFB/4Ii4iCCVpxSELspJcUWNDRWBUF0EhcVF3UKiBki5Dv6O5fzvpQQNZWMPXC5595zn3uS
-        532TzCr6hna7feYXIJ91q39g6aVisVgjT7RarQW3A/TWESeIAbdWBg6e9yffRBrEoGAphUyr1ep39C1u
-        9QaWjnn5dtXQHSx7FiKgvy1ZSv+GZzeG+C8weNIHdrnVzeCIZ/aqRptqNpvvQ1wOZjYwdFyHifvEvVKp
-        VKG33yOBTgOBmXMyAZtVY/CO3kSICTiUrdfrX8k3ieuFQoGZ9iHLKVgig8dkPYtb5OR6poh4Npwbgy+R
-        T6sO0MgReZeq8wxsdZnCBvPi5CeNRuNTCIBP/iYxhL9Cz4YgUMhgUZyhNQy8+ItBekXwOWLSfB593DxP
-        5MQDKojUgHjeo0GWuGP+iDMXzReIWfEARXpFMoDrIQyFuAw2eCqOfrVSqZToDarmW7+mNyLOzBLxQDxA
-        Mav7ZGCUOMwD/0beaTmFDebQBnTP5HgR6I9TvxXXefhL8mXVAQZ2c3ASk8/kRfIHBf21HgnYoPM1Haav
-        30KYoet6rtFaHwN/AkPT5XL5p8tApwH1Pi+/oJp8qlarFUPsBSyb4Z5/uOxmcIClx8wP2mw0xF7BwofJ
-        p+LwEHW3P7vkf+ioWysDC3I8k48sGIGnP0iBvXrr7qLtcev/wJLbvF1fWHTFrVX0A5nMb/t0hvXcsfuT
-        AAAAAElFTkSuQmCC
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAI3SURBVEhL7ZTPS1RxFMWHCIRcKNkisFYuFCLs1zJQcGFg
+        u1YpLiTTECSC+gskokUEZrgaIXRXyEgKOjy1hEBqFW1K3GirgWgWE8zvqc+53PeQYawxZumByz33nvu9
+        Z+b73kzsGA1DpVK58xuQR73VOLD0fiqVypPHy+XyircN9JqI20Szt44GDt7zT95GasFg3aUIMs3lcj/Q
+        z3qrPrB0xJd3qoZ2sWzDRED/fLiU/lOfPW3iv8DgoB+46K1aBjd85opqtJlSqfTFxINgppWhWzpMvCJm
+        0+l0lt41HzFUGwjM3JUJOKMag8/0xk0MwaF4oVDYJz8jngRBwEylz+UILJHBW7KexXNyeD0zhD0bzo3A
+        N8nDqg00EkTSS9VJBs55GcENlsXJq8VicccEwCf/GBrCP6DHTRAoZBCIM3SCgfd/MYiuCL5ETDlfRh9z
+        niQS4gYVRGRAvKvTIE68cP6GM5POV4hFcQNFdEUygK8z3G7iAbjBmjj6o2w2m6bXoppvvU2vW5yZTWJe
+        3ECxqPtkoIfo54F/J19wOYIbLKE1657J9iLQH6P+JK7z8C3yA9UGBi5xcAqTXXJA/qqgf9JHDG5Q/Zp2
+        0NdvwczQdT2PaZ2ygcPA0Fwmk/nlpaHagPqqL59QTR7K5/MpE+sByxa4559e1jK4ztKbznvdrMfEesHC
+        1+Gn4nA7da0/u/B/aMBbRwMLEjyTbyzohkc/SIG9euteol321v+BJdO8XXsseuitYzQCsdgf6qmG8uGk
+        ezQAAAAASUVORK5CYII=
 </value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1032, 17</value>
+  </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>46</value>
   </metadata>
