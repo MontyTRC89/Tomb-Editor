@@ -1499,7 +1499,7 @@ namespace WadTool
             this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_land_24;
+            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
             this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportLandWater.Name = "butTransportLandWater";

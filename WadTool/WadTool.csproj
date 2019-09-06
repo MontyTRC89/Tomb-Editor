@@ -480,6 +480,9 @@
   <ItemGroup>
     <None Include="Resources\icons_general\general_Open-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-on_nothing-24.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
