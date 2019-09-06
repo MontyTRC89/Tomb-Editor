@@ -41,7 +41,9 @@ namespace WadTool
             {
                 if (value == _saved) return;
                 _saved = value;
-                Text = "Animation editor - " + _moveable.Id.ToString(_wad.SuggestedGameVersion) + (value == false ? "*" : "");
+                butTbSaveAllChanges.Enabled = !_saved;
+                saveChangesToolStripMenuItem.Enabled = !_saved;
+                Text = "Animation editor - " + _moveable.Id.ToString(_wad.SuggestedGameVersion) + (!_saved ? "*" : "");
             }
         }
 
@@ -151,6 +153,8 @@ namespace WadTool
                     comboBoneList.ComboBox.SelectedIndex = e.Model.Meshes.IndexOf(e.Mesh) + 1;
                 else
                     comboBoneList.ComboBox.SelectedIndex = 0;
+
+                Saved = false;
             }
 
             if (obj is WadToolClass.ReferenceLevelChangedEvent)
