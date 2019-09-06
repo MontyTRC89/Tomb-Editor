@@ -588,7 +588,6 @@
             // 
             // butPlaySound
             // 
-            this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlaySound.Image = global::WadTool.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(320, 53);
             this.butPlaySound.Name = "butPlaySound";
@@ -695,6 +694,7 @@
             this.butApply.Size = new System.Drawing.Size(80, 23);
             this.butApply.TabIndex = 101;
             this.butApply.Text = "Apply";
+            this.butApply.Visible = false;
             // 
             // FormAnimCommandsEditor
             // 
