@@ -38,11 +38,18 @@ namespace TombIDE.ProjectMaster
 		{
 			if (radioButton_Wide.Checked)
 			{
-				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
-					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
+				try
+				{
+					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
 
-				_ide.Configuration.StandardAspectRatioPreviewEnabled = false;
-				_ide.Configuration.Save();
+					_ide.Configuration.StandardAspectRatioPreviewEnabled = false;
+					_ide.Configuration.Save();
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 			}
 		}
 
@@ -50,11 +57,18 @@ namespace TombIDE.ProjectMaster
 		{
 			if (radioButton_Standard.Checked)
 			{
-				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
-					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
+				try
+				{
+					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
 
-				_ide.Configuration.StandardAspectRatioPreviewEnabled = true;
-				_ide.Configuration.Save();
+					_ide.Configuration.StandardAspectRatioPreviewEnabled = true;
+					_ide.Configuration.Save();
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 			}
 		}
 
