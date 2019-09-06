@@ -65,7 +65,7 @@ namespace WadTool
 
         // Helpers
         private static string GetAnimLabel(int index, AnimationNode anim) => "(" + index + ") " + anim.WadAnimation.Name;
-        private void UpdateStatusLabel() => statusFrame.Text = "Frame: " + (_frameCount + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + "Keyframe: " + (timeline.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
+        private void UpdateStatusLabel() => statusFrame.Text = "Frame: " + (_frameCount + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + " Keyframe: " + (timeline.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
 
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
@@ -119,7 +119,10 @@ namespace WadTool
             ReloadAnimations();
 
             if (_workingAnimations.Count() != 0)
+            {
                 SelectAnimation(_workingAnimations[0]);
+                SelectFrame(0);
+            }
 
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
