@@ -123,7 +123,20 @@ namespace WadTool
                         commandControls.SelectedTab = tabFlipeffect;
 
                         tbFlipEffectFrame.Value = cmd.Parameter1;
-                        tbFlipEffect.Value = cmd.Parameter2;
+                        tbFlipEffect.Value = cmd.Parameter2 & 0x3FFF;
+
+                        switch (cmd.Parameter2 & 0xC000)
+                        {
+                            default:
+                                comboFlipeffectConditions.SelectedIndex = 0;
+                                break;
+                            case 0x4000:
+                                comboFlipeffectConditions.SelectedIndex = 1;
+                                break;
+                            case 0x8000:
+                                comboFlipeffectConditions.SelectedIndex = 2;
+                                break;
+                        }
                         break;
                 }
             }
@@ -271,7 +284,9 @@ namespace WadTool
         {
             if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.FlipEffect)
                 return;
-            _selectedCommand.Parameter2 = (short)tbFlipEffect.Value;
+
+            _selectedCommand.Parameter2 &= unchecked((short)~0x3FFF);
+            _selectedCommand.Parameter2 |= (short)tbFlipEffect.Value;
             UpdateSelectedItemText();
         }
 
@@ -306,6 +321,13 @@ namespace WadTool
         {
             if (e.KeyCode == Keys.Delete)
                 DeleteCommand();
+        }
+
+        private void comboFlipeffectConditions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _selectedCommand.Parameter2 &= unchecked((short)~0xC000);
+            _selectedCommand.Parameter2 |= (short)(comboFlipeffectConditions.SelectedIndex << 14);
+            UpdateSelectedItemText();
         }
     }
 }
