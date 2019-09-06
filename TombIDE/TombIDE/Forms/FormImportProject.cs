@@ -224,14 +224,24 @@ namespace TombIDE
 				if (!File.Exists(Path.Combine(scriptPath, "script.txt")))
 					throw new ArgumentException("Selected /Script/ folder does not contain a Script.txt file.");
 
+				// Check if the levelsPath directory exists, if so, check if it contains any valid .prj2 files
 				if (Directory.Exists(levelsPath))
 				{
-					if (Directory.GetFiles(levelsPath, "*.prj2", SearchOption.AllDirectories).Length > 0)
+					// Check if the directory contains non-backup .prj2 files
+					List<string> validPrj2Files = new List<string>();
+
+					foreach (string file in Directory.GetFiles(levelsPath, "*.prj2", SearchOption.AllDirectories))
+					{
+						if (!ProjectLevel.IsBackupFile(Path.GetFileName(file)))
+							validPrj2Files.Add(file);
+					}
+
+					if (validPrj2Files.Count > 0)
 					{
 						DialogResult result = DarkMessageBox.Show(this,
-							"While opening the project, TombIDE will change the \"Game\" settings of all the\n" +
-							".prj2 files in the specified /Levels/ folder to match the imported project settings.\n" +
-							"Do you want to create a backup of the folder?", "Create backup?",
+							"TombIDE will change the \"Game\" settings of all the .prj2 files\n" +
+							"in the specified /Levels/ folder to match the imported project settings.\n" +
+							"Would you like to to create a backup of the folder first?", "Create backup?",
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 						if (result == DialogResult.Yes)
@@ -299,9 +309,12 @@ namespace TombIDE
 
 			// Copy all the .prj2 files
 			foreach (string file in Directory.GetFiles(levelsPath, "*.prj2", SearchOption.AllDirectories))
-				File.Copy(file, file.Replace(levelsPath, newbackupFolderPath));
+			{
+				if (!ProjectLevel.IsBackupFile(Path.GetFileName(file)))
+					File.Copy(file, file.Replace(levelsPath, newbackupFolderPath));
+			}
 
-			DarkMessageBox.Show(this, "Backup successfully created in /" + Path.GetFileName(newbackupFolderPath) + "/", "Information",
+			DarkMessageBox.Show(this, "Backup successfully created in\n" + newbackupFolderPath, "Information",
 				MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
