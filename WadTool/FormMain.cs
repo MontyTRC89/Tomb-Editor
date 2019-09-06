@@ -162,6 +162,14 @@ namespace WadTool
             }
         }
 
+        private void CopyObject(bool otherSlot)
+        {
+            var objectsToCopy = treeSourceWad.SelectedWadObjectIds.ToList();
+
+            if (WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), otherSlot))
+                treeDestWad.Select(objectsToCopy);
+        }
+
         private void Panel3D_ObjectWasModified(object sender, System.EventArgs e)
         {
         }
@@ -210,7 +218,7 @@ namespace WadTool
 
         private void butAddObject_Click(object sender, EventArgs e)
         {
-            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
+            CopyObject(false);
         }
 
         private void butDeleteObject_Click(object sender, EventArgs e)
@@ -245,7 +253,7 @@ namespace WadTool
 
         private void butAddObjectToDifferentSlot_Click(object sender, EventArgs e)
         {
-            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), true);
+            CopyObject(true);
         }
 
         private void butNewWad_Click(object sender, EventArgs e)
@@ -282,8 +290,7 @@ namespace WadTool
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            if (treeSourceWad.ItemSelected)
-                WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
+            CopyObject(false);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)

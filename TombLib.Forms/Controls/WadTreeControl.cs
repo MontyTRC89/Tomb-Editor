@@ -168,21 +168,32 @@ namespace TombLib.Controls
             }
         }
 
-        public void SelectFirst()
+        public void Select(List<IWadObjectId> IdList)
         {
-            DarkTreeNode firstNode = CollectAllNodes(tree.Nodes).FirstOrDefault(node => node.Tag is IWadObjectId);
-            if (firstNode != null)
-            {
-                tree.SelectNode(firstNode);
+            var list = CollectAllNodes(tree.Nodes).ToList();
+            List<DarkTreeNode> selectedNodesList = list.Where(node => node.Tag is IWadObjectId && IdList.Any(entry => entry.ToString() == ((IWadObjectId)(node.Tag)).ToString())).ToList();
 
-                // Expand
-                while (firstNode != null)
+            if (selectedNodesList.Count > 0)
+            {
+                tree.SelectedNodes.Clear();
+
+                foreach(var node in selectedNodesList)
                 {
-                    firstNode.Expanded = true;
-                    firstNode = firstNode.ParentNode;
+                    var currentNode = node;
+                    tree.SelectedNodes.Add(currentNode);
+
+                    // Expand
+                    while (currentNode != null)
+                    {
+                        currentNode.Expanded = true;
+                        currentNode = currentNode.ParentNode;
+                    }
                 }
+
+                tree.EnsureVisible();
             }
         }
+        public void Select(IWadObjectId Id) => Select(new List<IWadObjectId>() { Id });
 
         private void suggestedGameVersionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {

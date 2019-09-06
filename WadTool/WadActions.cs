@@ -317,7 +317,7 @@ namespace WadTool
             }
         }
 
-        public static void CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
+        public static bool CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
         {
             Wad2 sourceWad = tool.SourceWad;
             Wad2 destinationWad = tool.DestinationWad;
@@ -325,7 +325,7 @@ namespace WadTool
             if (destinationWad == null || sourceWad == null || objectIdsToMove.Count == 0)
             {
                 tool.SendMessage("You must have two wads loaded and at least one source object selected.", PopupType.Error);
-                return;
+                return false;
             }
 
             // Figure out the new ids if there are any id collisions
@@ -364,13 +364,13 @@ namespace WadTool
                     askConfirm = true;
 
                     if (result == DialogResult.Cancel)
-                        return;
+                        return false;
                     else if (result == DialogResult.No)
                     {
                         using (var form = new FormSelectSlot(newIds[i], destinationWad.SuggestedGameVersion))
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
-                                return;
+                                return false;
                             if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
                             {
                                 destinationWad.Remove(form.NewId);
@@ -402,10 +402,9 @@ namespace WadTool
             tool.DestinationWadChanged();
 
             // Indicate that object is copied
-            if(objectIdsToMove.Count == 1)
-                tool.SendMessage("Object successfully copied.", PopupType.Info);
-            else
-                tool.SendMessage("Objects successfully copied.", PopupType.Info);
+            tool.SendMessage((objectIdsToMove.Count == 1 ? "Object" : "Objects") + " successfully copied.", PopupType.Info);
+
+            return true;
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
