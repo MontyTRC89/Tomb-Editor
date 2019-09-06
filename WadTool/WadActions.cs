@@ -142,6 +142,10 @@ namespace WadTool
             {
                 // XML_SOUND_SYSTEM
                 Wad2Writer.SaveToFile(wadToSave, outPath);
+
+                // Immediately reload new wad, if it wasn't saved before (new or imported)
+                if(wadToSave.FileName == null)
+                    LoadWad(tool, owner, true, outPath);
             }
             catch (Exception exc)
             {

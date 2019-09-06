@@ -167,13 +167,15 @@ namespace WadTool
                 if (_tool.ReferenceLevel != null)
                 {
                     butCloseRefLevel.Enabled = true;
+                    lblRefLevel.Enabled = true;
                     closeReferenceLevelToolStripMenuItem.Enabled = true;
                     lblRefLevel.Text = Path.GetFileNameWithoutExtension(_tool.ReferenceLevel.Settings.LevelFilePath);
                 }
                 else
                 {
-                    butCloseRefLevel.Enabled = true;
-                    closeReferenceLevelToolStripMenuItem.Enabled = true;
+                    butCloseRefLevel.Enabled = false;
+                    lblRefLevel.Enabled = false;
+                    closeReferenceLevelToolStripMenuItem.Enabled = false;
                     lblRefLevel.Text = "(project not loaded)";
                 }
             }
@@ -307,7 +309,8 @@ namespace WadTool
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            CopyObject(false);
+            if(treeSourceWad.SelectedWadObjectIds.Count() > 0)
+                CopyObject(false);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
@@ -473,9 +476,14 @@ namespace WadTool
             WadActions.UnloadReferenceLevel(_tool);
         }
 
-        private void tbRefLevel_Click(object sender, EventArgs e)
+        private void lblRefLevel_Click(object sender, EventArgs e)
         {
             if (_tool.ReferenceLevel == null) WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void closeReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.UnloadReferenceLevel(_tool);
         }
     }
 }
