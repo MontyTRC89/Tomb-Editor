@@ -22,7 +22,16 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			UpdatePreview();
+			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
+			{
+				label_NotSupported.Visible = true;
+
+				button_Preview.Enabled = false;
+				button_Change.Enabled = false;
+				button_Remove.Enabled = false;
+			}
+			else
+				UpdatePreview();
 		}
 
 		#endregion Initialization

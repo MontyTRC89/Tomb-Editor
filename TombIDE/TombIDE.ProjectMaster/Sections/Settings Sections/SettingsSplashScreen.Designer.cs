@@ -22,6 +22,7 @@
 			this.button_Remove = new DarkUI.Controls.DarkButton();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
 			this.label_Blank = new DarkUI.Controls.DarkLabel();
+			this.label_NotSupported = new DarkUI.Controls.DarkLabel();
 			this.panel_Preview = new System.Windows.Forms.Panel();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.panel_Preview.SuspendLayout();
@@ -84,11 +85,24 @@
 			this.label_Blank.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.label_Blank.Visible = false;
 			// 
+			// label_NotSupported
+			// 
+			this.label_NotSupported.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_NotSupported.ForeColor = System.Drawing.Color.Gray;
+			this.label_NotSupported.Location = new System.Drawing.Point(0, 0);
+			this.label_NotSupported.Name = "label_NotSupported";
+			this.label_NotSupported.Size = new System.Drawing.Size(458, 228);
+			this.label_NotSupported.TabIndex = 1;
+			this.label_NotSupported.Text = "Legacy projects don\'t support splash screens.";
+			this.label_NotSupported.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label_NotSupported.Visible = false;
+			// 
 			// panel_Preview
 			// 
 			this.panel_Preview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.panel_Preview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.panel_Preview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_Preview.Controls.Add(this.label_NotSupported);
 			this.panel_Preview.Controls.Add(this.label_Blank);
 			this.panel_Preview.Location = new System.Drawing.Point(7, 31);
 			this.panel_Preview.Margin = new System.Windows.Forms.Padding(6);
@@ -134,6 +148,7 @@
 		private DarkUI.Controls.DarkButton button_Remove;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_Blank;
+		private DarkUI.Controls.DarkLabel label_NotSupported;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
 		private System.Windows.Forms.Panel panel_Preview;
 	}

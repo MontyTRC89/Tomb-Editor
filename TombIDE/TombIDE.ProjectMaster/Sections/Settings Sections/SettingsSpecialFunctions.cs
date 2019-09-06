@@ -1,5 +1,6 @@
 using DarkUI.Forms;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -19,7 +20,15 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
+			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
+			{
+				button_RenameLauncher.Enabled = false;
+
+				textBox_LauncherName.ForeColor = Color.Gray;
+				textBox_LauncherName.Text = "Unavailable for legacy projects";
+			}
+			else
+				textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
 		}
 
 		private void button_DeleteLogs_Click(object sender, EventArgs e)
@@ -68,6 +77,15 @@ namespace TombIDE.ProjectMaster
 
 		private void button_RenameLauncher_Click(object sender, EventArgs e)
 		{
+			if (!File.Exists(_ide.Project.LaunchFilePath))
+			{
+				DarkMessageBox.Show(this, "Couldn't find the launcher executable of the project.\n" +
+					"Please restart TombIDE to resolve any issues.", "Error",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			using (FormRenameLauncher form = new FormRenameLauncher(_ide))
 				form.ShowDialog(this);
 
