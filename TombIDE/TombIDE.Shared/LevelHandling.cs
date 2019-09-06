@@ -30,16 +30,12 @@ namespace TombIDE.Shared
 			string dataFileName = destLevel.Name.Replace(' ', '_') + destProject.GetLevelFileExtension();
 			string dataFilePath = Path.Combine(destProject.EnginePath, "data", dataFileName);
 
-			string projectSamplesPath = Path.Combine(destProject.ProjectPath, "Sounds");
-
 			level.Settings.LevelFilePath = prj2FilePath;
 
 			level.Settings.GameDirectory = level.Settings.MakeRelative(destProject.EnginePath, VariableType.LevelDirectory);
 			level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 			level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 			level.Settings.GameVersion = destProject.GameVersion;
-
-			level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, projectSamplesPath));
 
 			Prj2Writer.SaveToPrj2(prj2FilePath, level);
 		}

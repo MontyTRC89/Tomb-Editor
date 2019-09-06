@@ -105,6 +105,20 @@ namespace TombLib.Projects
 				if (LevelsPath.StartsWith(ProjectPath))
 					LevelsPath = Path.Combine(newProjectPath, LevelsPath.Remove(0, ProjectPath.Length + 1));
 
+				List<ProjectLevel> cachedLevelList = new List<ProjectLevel>();
+				cachedLevelList.AddRange(Levels);
+
+				// Remove all internal levels from the project's list to update all .prj2 files with new paths
+
+				Levels.Clear();
+
+				// Restore external levels, because we don't chenge them
+				foreach (ProjectLevel projectLevel in cachedLevelList)
+				{
+					if (Path.GetDirectoryName(projectLevel.FolderPath).ToLower() != LevelsPath.ToLower())
+						Levels.Add(projectLevel);
+				}
+
 				ProjectPath = newProjectPath;
 			}
 

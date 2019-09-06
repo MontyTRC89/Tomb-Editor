@@ -1,6 +1,5 @@
 ﻿using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -105,23 +104,6 @@ namespace TombIDE
 
 			string tempPath = _ide.Project.ProjectPath + "_TEMP";
 			Directory.Move(_ide.Project.ProjectPath, tempPath);
-
-			// Adjust the ProjectLevel paths too
-			if (_ide.Project.LevelsPath.StartsWith(_ide.Project.ProjectPath, StringComparison.OrdinalIgnoreCase))
-			{
-				string newProjectPath = Path.Combine(Path.GetDirectoryName(_ide.Project.ProjectPath), newName);
-
-				List<ProjectLevel> cachedLevelList = new List<ProjectLevel>();
-				cachedLevelList.AddRange(_ide.Project.Levels);
-
-				_ide.Project.Levels.Clear();
-
-				foreach (ProjectLevel projectLevel in cachedLevelList)
-				{
-					projectLevel.FolderPath = projectLevel.FolderPath.Replace(_ide.Project.ProjectPath, newProjectPath);
-					_ide.Project.Levels.Add(projectLevel);
-				}
-			}
 		}
 
 		#endregion Methods
