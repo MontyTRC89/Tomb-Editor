@@ -520,13 +520,17 @@ namespace TombIDE
 
 		private void Special_LaunchFLEP(object sender, EventArgs e)
 		{
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			try
 			{
-				FileName = Path.Combine(_ide.Project.EnginePath, "flep.exe"),
-				WorkingDirectory = _ide.Project.EnginePath
-			};
+				ProcessStartInfo startInfo = new ProcessStartInfo
+				{
+					FileName = Path.Combine(_ide.Project.EnginePath, "flep.exe"),
+					WorkingDirectory = _ide.Project.EnginePath
+				};
 
-			Process.Start(startInfo);
+				Process.Start(startInfo);
+			}
+			catch { }
 		}
 
 		// All 3 methods below trigger IDE.SelectedIDETabChangedEvent
@@ -539,31 +543,29 @@ namespace TombIDE
 
 		private void button_LaunchGame_Click(object sender, EventArgs e)
 		{
-			try
+			string scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
+
+			if (File.Exists(scriptDatFilePath))
 			{
-				string scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
-
-				if (!File.Exists(scriptDatFilePath))
+				try
 				{
-					// A friendly reminder
-					DarkMessageBox.Show(this, "Before launching the game, you must compile\n" +
-						"your first script using the Script Editor.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					ProcessStartInfo startInfo = new ProcessStartInfo
+					{
+						FileName = _ide.Project.LaunchFilePath,
+						WorkingDirectory = _ide.Project.EnginePath
+					};
 
-					_ide.SelectIDETab("Script Editor");
-					return;
+					Process.Start(startInfo);
 				}
-
-				ProcessStartInfo startInfo = new ProcessStartInfo
-				{
-					FileName = _ide.Project.LaunchFilePath,
-					WorkingDirectory = _ide.Project.EnginePath
-				};
-
-				Process.Start(startInfo);
+				catch { }
 			}
-			catch (Exception ex)
+			else
 			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				// A friendly reminder
+				DarkMessageBox.Show(this, "Before launching the game, you must compile\n" +
+					"your first script using the Script Editor.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+				_ide.SelectIDETab("Script Editor");
 			}
 		}
 
