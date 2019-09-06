@@ -14,6 +14,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using TombLib;
 using System.Numerics;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
 
 namespace WadTool
 {
@@ -157,6 +159,21 @@ namespace WadTool
 
                 tool.DestinationWad = new Wad2 { SuggestedGameVersion = form.Version };
             }
+        }
+
+        public static bool LoadReferenceLevel(WadToolClass tool, IWin32Window owner)
+        {
+            var fileName = LevelFileDialog.BrowseFile(owner, null, null, "Open Tomb Editor reference level", LevelSettings.FileFormatsLevel, null, false);
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+
+            tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            return true;
+        }
+
+        public static void UnloadReferenceLevel(WadToolClass tool)
+        {
+            tool.ReferenceLevel = null;
         }
 
         public static void ChangeSlot(WadToolClass tool, IWin32Window owner)
