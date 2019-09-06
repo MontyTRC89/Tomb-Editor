@@ -88,6 +88,7 @@ namespace TombIDE
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
 				DialogResult = DialogResult.None;
 			}
 		}

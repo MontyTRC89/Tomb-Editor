@@ -29,28 +29,15 @@ namespace TombIDE.ProjectMaster
 			radioButton_Dark.Checked = !_ide.Configuration.LightModePreviewEnabled;
 			radioButton_Light.Checked = _ide.Configuration.LightModePreviewEnabled;
 
-			string tempExeFilePath = Path.Combine(Path.GetTempPath(), "tomb_temp.exe");
-
-			using (File.Create(tempExeFilePath))
+			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
 			{
-				Bitmap defaultExeIcon = IconExtractor.GetIconFrom(tempExeFilePath, IconSize.Large, false).ToBitmap();
-				Bitmap gameExeIcon = IconExtractor.GetIconFrom(Path.Combine(_ide.Project.EnginePath, _ide.Project.GetExeFileName()), IconSize.Large, false).ToBitmap();
+				label_Unavailable.Visible = true;
 
-				byte[] defaultExeStream = ImageHandling.GetBitmapStream(defaultExeIcon);
-				byte[] gameExeStream = ImageHandling.GetBitmapStream(gameExeIcon);
-
-				if (gameExeStream.SequenceEqual(defaultExeStream) && File.Exists(Path.Combine(_ide.Project.ProjectPath, "launch.exe")))
-					UpdateIcons();
-				else
-				{
-					label_Unavailable.Visible = true;
-
-					button_Change.Enabled = false;
-					button_Reset.Enabled = false;
-				}
+				button_Change.Enabled = false;
+				button_Reset.Enabled = false;
 			}
-
-			File.Delete(tempExeFilePath);
+			else
+				UpdateIcons();
 		}
 
 		#endregion Initialization
@@ -122,8 +109,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string launchFilePath = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
-				IconInjector.InjectIcon(launchFilePath, iconPath);
+				IconInjector.InjectIcon(_ide.Project.LaunchFilePath, iconPath);
 
 				UpdateIcons();
 				UpdateWindowsIconCache();
@@ -136,8 +122,6 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateIcons() // This method is trash I know, but I couldn't find a better one
 		{
-			string launchFilePath = Path.Combine(_ide.Project.ProjectPath, "launch.exe");
-
 			// Generate a random string to create a temporary .exe file.
 			// We will extract the icon from the .exe copy because Windows is caching icons which doesn't allow us to easily extract
 			// icons larger than 32x32 px.
@@ -146,8 +130,8 @@ namespace TombIDE.ProjectMaster
 			string randomString = new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
 
 			// Create the temporary .exe file
-			string tempFilePath = launchFilePath + "." + randomString + ".exe";
-			File.Copy(launchFilePath, tempFilePath);
+			string tempFilePath = _ide.Project.LaunchFilePath + "." + randomString + ".exe";
+			File.Copy(_ide.Project.LaunchFilePath, tempFilePath);
 
 			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap());
 

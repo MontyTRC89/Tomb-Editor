@@ -148,7 +148,10 @@ namespace TombIDE
 			};
 
 			if (!string.IsNullOrEmpty(project.LaunchFilePath))
-				node.Icon = Icon.ExtractAssociatedIcon(project.LaunchFilePath).ToBitmap();
+			{
+				if (File.Exists(project.LaunchFilePath))
+					node.Icon = Icon.ExtractAssociatedIcon(project.LaunchFilePath).ToBitmap();
+			}
 
 			// Add the node to the list
 			treeView.Nodes.Add(node);
@@ -466,19 +469,20 @@ namespace TombIDE
 
 			if (!File.Exists(_ide.Project.LaunchFilePath))
 			{
-				string[] exeFiles = Directory.GetFiles(_ide.Project.ProjectPath, "*.exe", SearchOption.TopDirectoryOnly);
-
-				if (exeFiles.Length > 1)
+				try
 				{
-					DarkMessageBox.Show(this, "Couldn't find the project's launch.exe file. Please select its new location.", "Warning",
-						MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					string launchFilePath = GetLauncherExecutable(_ide.Project);
 
-					ShowFindLauncherDialog(_ide.Project);
-				}
-				else
-				{
-					_ide.Project.LaunchFilePath = exeFiles.First();
+					if (string.IsNullOrEmpty(launchFilePath))
+						return;
+
+					_ide.Project.LaunchFilePath = launchFilePath;
 					XmlHandling.SaveTRPROJ(_ide.Project);
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
 				}
 			}
 
@@ -513,33 +517,6 @@ namespace TombIDE
 			}
 		}
 
-		private void ShowFindLauncherDialog(Project project)
-		{
-			try
-			{
-				using (OpenFileDialog dialog = new OpenFileDialog())
-				{
-					dialog.Title = "Choose the launch.exe file of the current game project";
-					dialog.Filter = "Executable Files|*.exe";
-					dialog.InitialDirectory = project.ProjectPath;
-
-					if (dialog.ShowDialog(this) == DialogResult.OK)
-					{
-						if (Path.GetDirectoryName(dialog.FileName).ToLower() != project.ProjectPath.ToLower())
-							throw new ArgumentException("This is not the project folder. Please try again.");
-
-						project.LaunchFilePath = dialog.FileName;
-						XmlHandling.SaveTRPROJ(project);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				ShowFindLauncherDialog(project);
-			}
-		}
-
 		#endregion Event methods
 
 		#region Other methods
@@ -566,6 +543,44 @@ namespace TombIDE
 				int iconHeight = (40 * node.VisibleIndex) + 4;
 				node.IconArea = new Rectangle(new Point(4, iconHeight), new Size(32, 32));
 			}
+		}
+
+		public string GetLauncherExecutable(Project project)
+		{
+			if (project.EnginePath.ToLower() == project.ProjectPath.ToLower())
+			{
+				foreach (string file in Directory.GetFiles(project.EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
+				{
+					if (Path.GetFileName(file).ToLower() == "tomb4.exe")
+						return file;
+				}
+			}
+			else
+			{
+				List<string> launcherFiles = Project.GetLauncherExecutablesFromDirectory(project.ProjectPath);
+
+				if (launcherFiles.Count == 1)
+					return launcherFiles.First();
+				else if (launcherFiles.Count > 1)
+				{
+					DarkMessageBox.Show(this, "Selected project contains more than one launcher executable.\n" +
+						"Please specify which one you want to use.", "Warning",
+							MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+					using (FormFileSelection form = new FormFileSelection(launcherFiles.ToArray()))
+					{
+						if (form.ShowDialog(this) == DialogResult.OK)
+							return form.SelectedFile;
+						else
+							return null;
+					}
+				}
+				else
+					throw new ArgumentException("Selected project doesn't contain any launcher executable.\n" +
+						"Please check if the project is correctly installed.");
+			}
+
+			return null;
 		}
 
 		private bool IsProjectOnList(Project project)

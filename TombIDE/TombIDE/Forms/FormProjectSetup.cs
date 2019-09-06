@@ -112,7 +112,7 @@ namespace TombIDE
 					throw new ArgumentException("You must enter a valid name for your project.");
 
 				if (projectName.ToLower() == "engine") // Safety
-					throw new ArgumentException("Invalid project name.");
+					throw new ArgumentException("Illegal project name.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
 					throw new ArgumentException("You must select a folder where you want to install your project.");

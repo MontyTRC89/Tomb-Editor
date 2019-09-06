@@ -185,9 +185,9 @@ namespace TombLib.Projects
 			foreach (string file in Directory.GetFiles(EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
 				if ((GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
-					return Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(file)), Path.GetFileNameWithoutExtension(file) + ".trproj");
+					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
 				else if ((GameVersion == GameVersion.TR5Main) && Path.GetFileName(file).ToLower() == "pctomb5.exe")
-					return Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(file)), Path.GetFileNameWithoutExtension(file) + ".trproj");
+					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
 			}
 
 			return null;

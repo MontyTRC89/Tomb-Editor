@@ -543,6 +543,15 @@ namespace TombIDE
 
 		private void button_LaunchGame_Click(object sender, EventArgs e)
 		{
+			if (!File.Exists(_ide.Project.LaunchFilePath))
+			{
+				DarkMessageBox.Show(this, "Couldn't find the launcher executable of the project.\n" +
+					"Please restart TombIDE to resolve any issues.", "Error",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			string scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
 
 			if (File.Exists(scriptDatFilePath))
