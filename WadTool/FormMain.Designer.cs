@@ -27,6 +27,9 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWad2AsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.openReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,25 +50,29 @@
             this.debugAction8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction9ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.labelDest = new System.Windows.Forms.ToolStripLabel();
             this.butNewWad2 = new System.Windows.Forms.ToolStripButton();
             this.butOpenDestWad = new System.Windows.Forms.ToolStripButton();
             this.butSave = new System.Windows.Forms.ToolStripButton();
             this.butSaveAs = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.labelSource = new System.Windows.Forms.ToolStripLabel();
             this.butOpenSourceWad = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.labelRefProject = new System.Windows.Forms.ToolStripLabel();
             this.lblRefLevel = new System.Windows.Forms.ToolStripLabel();
             this.butOpenRefLevel = new System.Windows.Forms.ToolStripButton();
+            this.butCloseRefLevel = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.treeSourceWad = new TombLib.Controls.WadTreeView();
             this.darkToolStrip4 = new DarkUI.Controls.DarkToolStrip();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.treeDestWad = new TombLib.Controls.WadTreeView();
             this.darkToolStrip3 = new DarkUI.Controls.DarkToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -89,13 +96,6 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.changeSlorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.butCloseRefLevel = new System.Windows.Forms.ToolStripButton();
-            this.closeReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.openReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.treeSourceWad = new TombLib.Controls.WadTreeView();
-            this.treeDestWad = new TombLib.Controls.WadTreeView();
-            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.darkStatusStrip1.SuspendLayout();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
@@ -107,6 +107,7 @@
             this.darkSectionPanel1.SuspendLayout();
             this.darkToolStrip3.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.darkSectionPanel3.SuspendLayout();
             this.darkToolStrip2.SuspendLayout();
             this.contextMenuMoveableItem.SuspendLayout();
             this.cmStatics.SuspendLayout();
@@ -155,12 +156,12 @@
             this.toolStripMenuItem3,
             this.openDestinationWadToolStripMenuItem,
             this.openSourceWADToolStripMenuItem,
+            this.openReferenceLevelToolStripMenuItem,
+            this.closeReferenceLevelToolStripMenuItem,
             this.toolStripMenuItem1,
             this.saveWad2ToolStripMenuItem,
             this.saveWad2AsToolStripMenuItem,
             this.toolStripSeparator2,
-            this.openReferenceLevelToolStripMenuItem,
-            this.closeReferenceLevelToolStripMenuItem,
             this.toolStripMenuItem2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -201,7 +202,7 @@
             this.openSourceWADToolStripMenuItem.Image = global::WadTool.Properties.Resources.import_16;
             this.openSourceWADToolStripMenuItem.Name = "openSourceWADToolStripMenuItem";
             this.openSourceWADToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.openSourceWADToolStripMenuItem.Text = "Open reference";
+            this.openSourceWADToolStripMenuItem.Text = "Open source";
             this.openSourceWADToolStripMenuItem.Click += new System.EventHandler(this.openSourceWADToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
@@ -230,6 +231,33 @@
             this.saveWad2AsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.saveWad2AsToolStripMenuItem.Text = "Save Wad2 as...";
             this.saveWad2AsToolStripMenuItem.Click += new System.EventHandler(this.saveWad2AsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
+            // 
+            // openReferenceLevelToolStripMenuItem
+            // 
+            this.openReferenceLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.openReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openReferenceLevelToolStripMenuItem.Name = "openReferenceLevelToolStripMenuItem";
+            this.openReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.openReferenceLevelToolStripMenuItem.Text = "Open reference Tomb Editor project";
+            this.openReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.openReferenceLevelToolStripMenuItem_Click);
+            // 
+            // closeReferenceLevelToolStripMenuItem
+            // 
+            this.closeReferenceLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.closeReferenceLevelToolStripMenuItem.Enabled = false;
+            this.closeReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.closeReferenceLevelToolStripMenuItem.Name = "closeReferenceLevelToolStripMenuItem";
+            this.closeReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.closeReferenceLevelToolStripMenuItem.Text = "Close reference Tomb Editor project";
+            this.closeReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.closeReferenceLevelToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -420,16 +448,16 @@
             this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
+            this.labelDest,
             this.butNewWad2,
             this.butOpenDestWad,
             this.butSave,
             this.butSaveAs,
             this.toolStripSeparator3,
-            this.toolStripLabel2,
+            this.labelSource,
             this.butOpenSourceWad,
             this.toolStripSeparator1,
-            this.toolStripLabel4,
+            this.labelRefProject,
             this.lblRefLevel,
             this.butOpenRefLevel,
             this.butCloseRefLevel});
@@ -440,13 +468,13 @@
             this.darkToolStrip1.TabIndex = 3;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
-            // toolStripLabel1
+            // labelDest
             // 
-            this.toolStripLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel1.ForeColor = System.Drawing.Color.DarkGray;
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(56, 25);
-            this.toolStripLabel1.Text = "Destination:";
+            this.labelDest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelDest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelDest.Name = "labelDest";
+            this.labelDest.Size = new System.Drawing.Size(56, 25);
+            this.labelDest.Text = "Destination:";
             // 
             // butNewWad2
             // 
@@ -504,13 +532,13 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
             // 
-            // toolStripLabel2
+            // labelSource
             // 
-            this.toolStripLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel2.ForeColor = System.Drawing.Color.DarkGray;
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(37, 25);
-            this.toolStripLabel2.Text = "Source:";
+            this.labelSource.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelSource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelSource.Name = "labelSource";
+            this.labelSource.Size = new System.Drawing.Size(37, 25);
+            this.labelSource.Text = "Source:";
             // 
             // butOpenSourceWad
             // 
@@ -532,13 +560,23 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
+            // labelRefProject
+            // 
+            this.labelRefProject.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelRefProject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelRefProject.Name = "labelRefProject";
+            this.labelRefProject.Size = new System.Drawing.Size(83, 25);
+            this.labelRefProject.Text = "Reference project:";
+            // 
             // lblRefLevel
             // 
             this.lblRefLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.lblRefLevel.Enabled = false;
             this.lblRefLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblRefLevel.Name = "lblRefLevel";
             this.lblRefLevel.Size = new System.Drawing.Size(92, 25);
             this.lblRefLevel.Text = "(project not loaded)";
+            this.lblRefLevel.Click += new System.EventHandler(this.lblRefLevel_Click);
             // 
             // butOpenRefLevel
             // 
@@ -551,6 +589,18 @@
             this.butOpenRefLevel.Size = new System.Drawing.Size(23, 25);
             this.butOpenRefLevel.Text = "Open source file";
             this.butOpenRefLevel.Click += new System.EventHandler(this.butOpenRefLevel_Click);
+            // 
+            // butCloseRefLevel
+            // 
+            this.butCloseRefLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butCloseRefLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butCloseRefLevel.Enabled = false;
+            this.butCloseRefLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butCloseRefLevel.Image = global::WadTool.Properties.Resources.actions_delete_16;
+            this.butCloseRefLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butCloseRefLevel.Name = "butCloseRefLevel";
+            this.butCloseRefLevel.Size = new System.Drawing.Size(23, 25);
+            this.butCloseRefLevel.Click += new System.EventHandler(this.butCloseRefLevel_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -590,6 +640,19 @@
             this.darkSectionPanel2.SectionHeader = "Source";
             this.darkSectionPanel2.Size = new System.Drawing.Size(324, 631);
             this.darkSectionPanel2.TabIndex = 12;
+            // 
+            // treeSourceWad
+            // 
+            this.treeSourceWad.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeSourceWad.Location = new System.Drawing.Point(1, 25);
+            this.treeSourceWad.Name = "treeSourceWad";
+            this.treeSourceWad.Padding = new System.Windows.Forms.Padding(3);
+            this.treeSourceWad.Size = new System.Drawing.Size(322, 605);
+            this.treeSourceWad.TabIndex = 8;
+            this.treeSourceWad.ClickOnEmpty += new System.EventHandler(this.treeSourceWad_ClickOnEmpty);
+            this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
+            this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
+            this.treeSourceWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeSourceWad_KeyDown);
             // 
             // darkToolStrip4
             // 
@@ -652,6 +715,19 @@
             this.darkSectionPanel1.SectionHeader = "Destination";
             this.darkSectionPanel1.Size = new System.Drawing.Size(323, 631);
             this.darkSectionPanel1.TabIndex = 23;
+            // 
+            // treeDestWad
+            // 
+            this.treeDestWad.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDestWad.Location = new System.Drawing.Point(1, 25);
+            this.treeDestWad.Name = "treeDestWad";
+            this.treeDestWad.Padding = new System.Windows.Forms.Padding(3);
+            this.treeDestWad.Size = new System.Drawing.Size(321, 605);
+            this.treeDestWad.TabIndex = 7;
+            this.treeDestWad.ClickOnEmpty += new System.EventHandler(this.treeDestWad_ClickOnEmpty);
+            this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
+            this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
+            this.treeDestWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeDestWad_KeyDown);
             // 
             // darkToolStrip3
             // 
@@ -913,78 +989,6 @@
             this.deleteObjectToolStripMenuItem.Text = "Delete object";
             this.deleteObjectToolStripMenuItem.Click += new System.EventHandler(this.deleteObjectToolStripMenuItem_Click);
             // 
-            // butCloseRefLevel
-            // 
-            this.butCloseRefLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butCloseRefLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butCloseRefLevel.Enabled = false;
-            this.butCloseRefLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butCloseRefLevel.Image = global::WadTool.Properties.Resources.actions_delete_16;
-            this.butCloseRefLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butCloseRefLevel.Name = "butCloseRefLevel";
-            this.butCloseRefLevel.Size = new System.Drawing.Size(23, 25);
-            this.butCloseRefLevel.Click += new System.EventHandler(this.butCloseRefLevel_Click);
-            // 
-            // closeReferenceLevelToolStripMenuItem
-            // 
-            this.closeReferenceLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.closeReferenceLevelToolStripMenuItem.Enabled = false;
-            this.closeReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.closeReferenceLevelToolStripMenuItem.Name = "closeReferenceLevelToolStripMenuItem";
-            this.closeReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.closeReferenceLevelToolStripMenuItem.Text = "Close reference Tomb Editor project";
-            this.closeReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.openReferenceLevelToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
-            // 
-            // openReferenceLevelToolStripMenuItem
-            // 
-            this.openReferenceLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.openReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.openReferenceLevelToolStripMenuItem.Name = "openReferenceLevelToolStripMenuItem";
-            this.openReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.openReferenceLevelToolStripMenuItem.Text = "Open reference Tomb Editor project";
-            // 
-            // treeSourceWad
-            // 
-            this.treeSourceWad.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeSourceWad.Location = new System.Drawing.Point(1, 25);
-            this.treeSourceWad.Name = "treeSourceWad";
-            this.treeSourceWad.Padding = new System.Windows.Forms.Padding(3);
-            this.treeSourceWad.Size = new System.Drawing.Size(322, 605);
-            this.treeSourceWad.TabIndex = 8;
-            this.treeSourceWad.ClickOnEmpty += new System.EventHandler(this.treeSourceWad_ClickOnEmpty);
-            this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
-            this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
-            this.treeSourceWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeSourceWad_KeyDown);
-            // 
-            // treeDestWad
-            // 
-            this.treeDestWad.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeDestWad.Location = new System.Drawing.Point(1, 25);
-            this.treeDestWad.Name = "treeDestWad";
-            this.treeDestWad.Padding = new System.Windows.Forms.Padding(3);
-            this.treeDestWad.Size = new System.Drawing.Size(321, 605);
-            this.treeDestWad.TabIndex = 7;
-            this.treeDestWad.ClickOnEmpty += new System.EventHandler(this.treeDestWad_ClickOnEmpty);
-            this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
-            this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
-            this.treeDestWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeDestWad_KeyDown);
-            // 
-            // toolStripLabel4
-            // 
-            this.toolStripLabel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel4.ForeColor = System.Drawing.Color.DarkGray;
-            this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(83, 25);
-            this.toolStripLabel4.Text = "Reference project:";
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1018,6 +1022,7 @@
             this.darkToolStrip3.ResumeLayout(false);
             this.darkToolStrip3.PerformLayout();
             this.panel3.ResumeLayout(false);
+            this.darkSectionPanel3.ResumeLayout(false);
             this.darkToolStrip2.ResumeLayout(false);
             this.darkToolStrip2.PerformLayout();
             this.contextMenuMoveableItem.ResumeLayout(false);
@@ -1098,8 +1103,8 @@
         private DarkUI.Controls.DarkToolStrip darkToolStrip4;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripLabel labelDest;
+        private System.Windows.Forms.ToolStripLabel labelSource;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel lblRefLevel;
         private System.Windows.Forms.ToolStripButton butOpenRefLevel;
@@ -1107,7 +1112,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem closeReferenceLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openReferenceLevelToolStripMenuItem;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripLabel labelRefProject;
     }
 }
 

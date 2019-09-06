@@ -2,6 +2,7 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -105,7 +106,7 @@ namespace WadTool
             _bones = _moveable.Bones;
 
             // Load skeleton in combobox
-            comboBoneList.ComboBox.Items.Add("--- Select a mesh ---");
+            comboBoneList.ComboBox.Items.Add("(select mesh)");
             foreach (var bone in panelRendering.Model.Bones)
                 comboBoneList.ComboBox.Items.Add(bone.Name);
             comboBoneList.ComboBox.SelectedIndex = 0;
