@@ -436,6 +436,10 @@ namespace WadTool
 
             _workingAnimations.Add(node);
             lstAnimations.Items.Add(item);
+            lstAnimations.SelectItem(lstAnimations.Items.Count - 1);
+            lstAnimations.EnsureVisible();
+
+            tbName.Focus();
 
             Saved = false;
         }
