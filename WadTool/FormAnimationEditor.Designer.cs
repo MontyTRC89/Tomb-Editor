@@ -33,7 +33,6 @@ namespace WadTool
             this.curToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteReplaceToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -114,7 +113,6 @@ namespace WadTool
             this.butTbCutFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbCopyFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbPasteFrame = new System.Windows.Forms.ToolStripButton();
-            this.butTbReplaceFrame = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbInterpolateFrames = new System.Windows.Forms.ToolStripButton();
             this.tbInterpolateFrameCount = new System.Windows.Forms.ToolStripTextBox();
@@ -237,7 +235,6 @@ namespace WadTool
             this.curToolStripMenuItem,
             this.copyToolStripMenuItem1,
             this.pasteToolStripMenuItem1,
-            this.pasteReplaceToolStripMenuItem1,
             this.toolStripMenuItem2,
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem,
@@ -314,18 +311,8 @@ namespace WadTool
             this.pasteToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem1.Image")));
             this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
             this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
-            this.pasteToolStripMenuItem1.Text = "Paste (Insert)";
+            this.pasteToolStripMenuItem1.Text = "Paste";
             this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.pasteAnimationToolStripMenuItem_Click);
-            // 
-            // pasteReplaceToolStripMenuItem1
-            // 
-            this.pasteReplaceToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.pasteReplaceToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.pasteReplaceToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("pasteReplaceToolStripMenuItem1.Image")));
-            this.pasteReplaceToolStripMenuItem1.Name = "pasteReplaceToolStripMenuItem1";
-            this.pasteReplaceToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
-            this.pasteReplaceToolStripMenuItem1.Text = "Paste (Replace)";
-            this.pasteReplaceToolStripMenuItem1.Click += new System.EventHandler(this.replaceAnimationToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -479,7 +466,6 @@ namespace WadTool
             this.pasteReplaceToolStripMenuItem.Name = "pasteReplaceToolStripMenuItem";
             this.pasteReplaceToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.pasteReplaceToolStripMenuItem.Text = "Paste (Replace)";
-            this.pasteReplaceToolStripMenuItem.Click += new System.EventHandler(this.replaceFramesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -784,6 +770,7 @@ namespace WadTool
             this.butCalculateCollisionBox.Name = "butCalculateCollisionBox";
             this.butCalculateCollisionBox.Size = new System.Drawing.Size(23, 23);
             this.butCalculateCollisionBox.TabIndex = 91;
+            this.toolTip1.SetToolTip(this.butCalculateCollisionBox, "Calculate bounding box for current frame");
             this.butCalculateCollisionBox.Click += new System.EventHandler(this.butCalculateBoundingBoxForCurrentFrame_Click);
             // 
             // tbCollisionBoxMaxZ
@@ -967,7 +954,6 @@ namespace WadTool
             this.butTbCutFrame,
             this.butTbCopyFrame,
             this.butTbPasteFrame,
-            this.butTbReplaceFrame,
             this.toolStripSeparator5,
             this.butTbInterpolateFrames,
             this.tbInterpolateFrameCount,
@@ -1184,19 +1170,6 @@ namespace WadTool
             this.butTbPasteFrame.ToolTipText = "Paste frames";
             this.butTbPasteFrame.Click += new System.EventHandler(this.butTbPasteFrame_Click);
             // 
-            // butTbReplaceFrame
-            // 
-            this.butTbReplaceFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbReplaceFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbReplaceFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbReplaceFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbReplaceFrame.Image")));
-            this.butTbReplaceFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbReplaceFrame.Name = "butTbReplaceFrame";
-            this.butTbReplaceFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbReplaceFrame.Text = "toolStripButton5";
-            this.butTbReplaceFrame.ToolTipText = "Replace frames";
-            this.butTbReplaceFrame.Click += new System.EventHandler(this.butTbReplaceFrame_Click);
-            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1299,6 +1272,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstAnimations.Location = new System.Drawing.Point(4, 53);
+            this.lstAnimations.MouseWheelScrollSpeedV = 0.2F;
             this.lstAnimations.Name = "lstAnimations";
             this.lstAnimations.Size = new System.Drawing.Size(231, 167);
             this.lstAnimations.TabIndex = 8;
@@ -1366,6 +1340,7 @@ namespace WadTool
             this.timeline.TabIndex = 3;
             this.timeline.Value = 0;
             this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
+            this.timeline.SelectionChanged += new System.EventHandler(this.timeline_SelectionChanged);
             // 
             // panelTransport
             // 
@@ -1613,6 +1588,7 @@ namespace WadTool
             this.butClearCollisionBox.Name = "butClearCollisionBox";
             this.butClearCollisionBox.Size = new System.Drawing.Size(23, 23);
             this.butClearCollisionBox.TabIndex = 94;
+            this.toolTip1.SetToolTip(this.butClearCollisionBox, "Clear bounding box for current frame");
             this.butClearCollisionBox.Click += new System.EventHandler(this.butClearCollisionBox_Click);
             // 
             // butClearAnimCollision
@@ -1622,6 +1598,7 @@ namespace WadTool
             this.butClearAnimCollision.Name = "butClearAnimCollision";
             this.butClearAnimCollision.Size = new System.Drawing.Size(23, 23);
             this.butClearAnimCollision.TabIndex = 93;
+            this.toolTip1.SetToolTip(this.butClearAnimCollision, "Clear bounding box for current animation");
             this.butClearAnimCollision.Click += new System.EventHandler(this.butClearAnimCollision_Click);
             // 
             // butCalculateAnimCollision
@@ -1631,6 +1608,7 @@ namespace WadTool
             this.butCalculateAnimCollision.Name = "butCalculateAnimCollision";
             this.butCalculateAnimCollision.Size = new System.Drawing.Size(23, 23);
             this.butCalculateAnimCollision.TabIndex = 92;
+            this.toolTip1.SetToolTip(this.butCalculateAnimCollision, "Calculate bounding box for current animation");
             this.butCalculateAnimCollision.Click += new System.EventHandler(this.butCalculateAnimCollision_Click);
             // 
             // panelMain
@@ -1734,7 +1712,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
@@ -1790,7 +1767,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripLabel labelBone;
         private System.Windows.Forms.ToolStripMenuItem insertnFramesAfterCurrentOneToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pasteReplaceToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem curToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butTbCutAnimation;
         private DarkUI.Controls.DarkTextBox tbLatAccel;
@@ -1812,7 +1789,6 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel25;
         private System.Windows.Forms.ToolStripButton butTbReplaceAnimation;
         private System.Windows.Forms.ToolStripButton butTbSplitAnimation;
-        private System.Windows.Forms.ToolStripButton butTbReplaceFrame;
         private System.Windows.Forms.ToolStripMenuItem splitAnimationToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogImport;
         private System.Windows.Forms.SaveFileDialog saveFileDialogExport;

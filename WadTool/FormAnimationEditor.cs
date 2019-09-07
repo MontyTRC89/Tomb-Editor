@@ -77,8 +77,7 @@ namespace WadTool
 
         // Helpers
         private static string GetAnimLabel(int index, AnimationNode anim) => "(" + index + ") " + anim.WadAnimation.Name;
-        private void UpdateStatusLabel() => statusFrame.Text = "Frame: " + (_frameCount + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + " Keyframe: " + (timeline.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
-
+       
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
             InitializeComponent();
@@ -208,6 +207,9 @@ namespace WadTool
 
         private void ReloadAnimations()
         {
+            // Preserve currently selected index
+            var currAnimIndex = lstAnimations.SelectedIndices[0];
+
             lstAnimations.Items.Clear();
 
             // Try to filter by request
@@ -290,7 +292,7 @@ namespace WadTool
                         break;
                 }
 
-                var item = new DarkUI.Controls.DarkListItem(GetAnimLabel(index++, _workingAnimations[i]));
+                var item = new DarkListItem(GetAnimLabel(index++, _workingAnimations[i]));
                 item.Tag = _workingAnimations[i];
                 lstAnimations.Items.Add(item);
             }
@@ -429,7 +431,7 @@ namespace WadTool
             foreach (var animation in _workingAnimations)
                 _moveable.Animations.Add(SaveAnimationChanges(animation));
 
-            ReloadAnimations();
+            // ReloadAnimations(); // Why the hell we need to do this? -- Lwmte
 
             _moveable.Version = DataVersion.GetNext();
             Saved = true;
@@ -616,98 +618,102 @@ namespace WadTool
             }
         }
 
-        private void DeleteFrames(IWin32Window owner) // No owner = no warning!
+        private void DeleteFrames(IWin32Window owner, bool updateGUI = true) // No owner = no warnings!
         {
-            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
+            if (!ValidAndSelected(owner != null)) return;
+
+            if (owner != null &&
+                DarkMessageBox.Show(this, "Do you really want to delete frame" +
+                (timeline.SelectionSize == 1 ? " " + panelRendering.CurrentKeyFrame : "s " + timeline.Selection.X + "-" + timeline.Selection.Y) + "?",
+                                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+
+            int selectionStart = timeline.Selection.X; // Save last index
+            int selectionEnd = timeline.Selection.Y;
+
+            // Save cursor position to restore later. Only do it if cursor is outside selection.
+            int cursorPos = (timeline.Value < timeline.Selection.X || timeline.Value > timeline.Selection.Y) ? timeline.Value : -1;
+
+            // Remove the frames
+            _selectedNode.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
+            
+            Saved = false;
+            if (!updateGUI) return;
+
+            // Update GUI
+            timeline.ResetSelection();
+            OnKeyframesListChanged();
+            if (_selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
-                if (owner == null || 
-                    DarkMessageBox.Show(this, "Do you really want to delete frame" + 
-                    (timeline.SelectionIsEmpty ? " " + panelRendering.CurrentKeyFrame : "s " + timeline.Selection.X + "-" + timeline.Selection.Y) + "?",
-                                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                int insertEnd = selectionStart + _clipboardKeyFrames.Count - 1;
+
+                if (cursorPos != -1)
                 {
-                    int currentIndex = _workingAnimations.IndexOf(_selectedNode);
-
-                    // Update all references
-                    for (int i = 0; i < _workingAnimations.Count; i++)
-                    {
-                        // Ignore the animation I'm deleting
-                        if (i == currentIndex)
-                            continue;
-
-                        var animation = _workingAnimations[i];
-
-                        // Update NextAnimation
-                        /*  if (animation.WadAnimation.NextFrame > panelRendering.CurrentKeyFrame)
-                              animation.WadAnimation.NextFrame--;
-
-                          // Update state changes
-                          foreach (var stateChange in animation.WadAnimation.StateChanges)
-                              foreach (var dispatch in stateChange.Dispatches)
-                                  if (dispatch.NextAnimation > currentIndex)
-                                      dispatch.NextAnimation--;*/
-                    }
-
-                    // Remove the frames
-                    _selectedNode.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
-                    timeline.ResetSelection();
-                        
-                    // Update GUI
-                    OnKeyframesListChanged();
-                    if (_selectedNode.DirectXAnimation.KeyFrames.Count != 0)
-                        timeline.Value = (timeline.Selection.X);
+                    if (cursorPos < selectionStart)
+                        timeline.Value = cursorPos;
                     else
-                    {
-                        timeline.Value = 0;
-                        statusFrame.Text = "";
-                    }
-                    panelRendering.Invalidate();
-
-                    Saved = false;
+                        timeline.Value = selectionStart + (cursorPos - selectionEnd - 1);
                 }
+                else
+                    timeline.Value = selectionStart;
             }
+            else
+            {
+                timeline.Value = 0;
+                statusFrame.Text = "";
+            }
+            panelRendering.Invalidate();
         }
 
         private void CutFrames()
         {
-            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
-            {
-                CopyFrames();
-                DeleteFrames(null);
-            }
+            if (!ValidAndSelected()) return;
+
+            CopyFrames();
+            DeleteFrames(null);
         }
 
         private void CopyFrames()
         {
-            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
-            {
-                _clipboardKeyFrames.Clear();
-                for (int i = timeline.Selection.X; i <= timeline.Selection.Y; i++)
-                    _clipboardKeyFrames.Add(_selectedNode.DirectXAnimation.KeyFrames[i].Clone());
-            }
+            if (!ValidAndSelected()) return;
+
+            _clipboardKeyFrames.Clear();
+            for (int i = timeline.Selection.X; i <= timeline.Selection.Y; i++)
+                _clipboardKeyFrames.Add(_selectedNode.DirectXAnimation.KeyFrames[i].Clone());
+
+            timeline.Highlight(timeline.Selection.X, timeline.Selection.Y);
         }
 
         private void PasteFrames()
         {
             if (_clipboardKeyFrames != null && _clipboardKeyFrames.Count > 0 && _selectedNode != null)
             {
-                _selectedNode.DirectXAnimation.KeyFrames.InsertRange(timeline.Selection.X, _clipboardKeyFrames);
-                //_clipboardKeyFrame = null;
+                int startIndex = timeline.SelectionIsEmpty ? timeline.Value : timeline.Selection.X; // Save last index
+                int endIndex = timeline.SelectionIsEmpty ? timeline.Value : timeline.Selection.Y;
+
+                // Save cursor position to restore later. Only do it if cursor is outside selection.
+                int cursorPos = (timeline.SelectionIsEmpty || timeline.Value < timeline.Selection.X || timeline.Value > timeline.Selection.Y) ? timeline.Value : -1;
+
+                // Replace if there is a selection.
+                if (!timeline.SelectionIsEmpty)
+                    DeleteFrames(null, false);
+
+                _selectedNode.DirectXAnimation.KeyFrames.InsertRange(startIndex, _clipboardKeyFrames);
                 OnKeyframesListChanged();
-                timeline.Value = (panelRendering.CurrentKeyFrame);
-                Saved = false;
-            }
-        }
 
-        private void ReplaceFrames()
-        {
-            if (_clipboardKeyFrames != null && _selectedNode != null)
-            {
-                int index = timeline.Selection.X; // Save last index
-                DeleteFrames(null);
+                int insertEnd = startIndex + _clipboardKeyFrames.Count - 1;
+                if (cursorPos != -1)
+                {
+                    if (cursorPos < startIndex)
+                        timeline.Value = cursorPos;
+                    else
+                        timeline.Value = insertEnd + (cursorPos - endIndex) + (timeline.SelectionIsEmpty ? 1 : 0);
+                }
+                else
+                    timeline.Value = insertEnd;
 
-                _selectedNode.DirectXAnimation.KeyFrames.InsertRange(index, _clipboardKeyFrames);
-                //_clipboardKeyFrame = null;
-                timeline.Value = (panelRendering.CurrentKeyFrame);
+                timeline.Highlight(startIndex, insertEnd);
+                panelRendering.Invalidate();
                 Saved = false;
             }
         }
@@ -822,6 +828,8 @@ namespace WadTool
 
         private void InterpolateFrames(int numFrames = -1)
         {
+            if (!ValidAndSelected()) return;
+
             if (numFrames < 0)
                 using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:") { Width = 300 })
                 {
@@ -836,20 +844,9 @@ namespace WadTool
                 popup.ShowError(panelRendering, "Interpolation requires at least 1 frame to insert");
                 return;
             }
-            else if (timeline.SelectionIsEmpty && timeline.Value == timeline.Maximum)
-            {
-                popup.ShowError(panelRendering, "It's not possible to interpolate a single last frame");
-                return;
-            }
 
-            int frameIndex1 = timeline.SelectionIsEmpty ? timeline.Value : timeline.Selection.X;
-            int frameIndex2 = timeline.SelectionIsEmpty ? (timeline.Value < timeline.Maximum ? timeline.Value + 1 : timeline.Value) : timeline.Selection.Y;
-           
-            if (frameIndex1 >= frameIndex2)
-            {
-                popup.ShowError(panelRendering, "First frame index can't be greater than the second frame index");
-                return;
-            }
+            int frameIndex1 = timeline.Selection.X;
+            int frameIndex2 = (timeline.SelectionSize == 1 && timeline.Selection.Y == timeline.Maximum) ? timeline.Minimum : timeline.Selection.Y;
 
             var frame1 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex1];
             var frame2 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex2];
@@ -957,6 +954,38 @@ namespace WadTool
             {
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
             }
+        }
+
+        private void UpdateStatusLabel()
+        {
+            string newLabel =
+                "Frame: " + (_frameCount + 1) + " / " + (_selectedNode.WadAnimation.FrameRate * (_selectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + "   " +
+                "Keyframe: " + (timeline.Value + 1) + " / " + _selectedNode.DirectXAnimation.KeyFrames.Count;
+
+            if (!timeline.SelectionIsEmpty)
+            {
+                newLabel += "   Selected keyframe";
+                if (timeline.SelectionSize == 1)
+                    newLabel += ": " + timeline.Selection.X;
+                else
+                    newLabel += "s: " + timeline.Selection.X + " to " + timeline.Selection.Y;
+            }
+
+            statusFrame.Text = newLabel;
+        }
+
+        private bool ValidAndSelected(bool prompt = true)
+        {
+            if (timeline.SelectionIsEmpty)
+                popup.ShowError(panelRendering, "No frames selected. Please select at least 1 frame.");
+            else if (_selectedNode == null)
+                popup.ShowError(panelRendering, "No animation selected. Select animation to work with.");
+            else if (_selectedNode.DirectXAnimation.KeyFrames.Count == 0)
+                popup.ShowError(panelRendering, "Current animation contains no frames.");
+            else
+                return true;
+
+            return false;
         }
 
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1098,11 +1127,9 @@ namespace WadTool
         private void copyFramesToolStripMenuItem_Click(object sender, EventArgs e) => CopyFrames();
         private void pasteFramesToolStripMenuItem_Click(object sender, EventArgs e) => PasteFrames();
         private void deleteFramesToolStripMenuItem_Click(object sender, EventArgs e) => DeleteFrames(this);
-        private void replaceFramesToolStripMenuItem_Click(object sender, EventArgs e) => ReplaceFrames();
         private void cutAnimationToolStripMenuItem_Click(object sender, EventArgs e) => CutAnimation();
         private void copyAnimationToolStripMenuItem_Click(object sender, EventArgs e) => CopyAnimation();
         private void pasteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => PasteAnimation();
-        private void replaceAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReplaceAnimation();
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame);
         private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
@@ -1117,7 +1144,6 @@ namespace WadTool
         private void butTbCopyFrame_Click(object sender, EventArgs e) => CopyFrames();
         private void butTbPasteFrame_Click(object sender, EventArgs e) => PasteFrames();
         private void butTbDeleteFrame_Click(object sender, EventArgs e) => DeleteFrames(this);
-        private void butTbReplaceFrame_Click(object sender, EventArgs e) => ReplaceFrames();
         private void butTbCutAnimation_Click(object sender, EventArgs e) => CutAnimation();
         private void butTbCopyAnimation_Click(object sender, EventArgs e) => CopyAnimation();
         private void butTbPasteAnimation_Click(object sender, EventArgs e) => PasteAnimation();
@@ -1204,15 +1230,22 @@ namespace WadTool
 
                         var soundInfo = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
                         if (soundInfo != null)
-                            try
-                            {
-                                // Task.Factory.StartNew(() => WadSoundPlayer.PlaySoundInfo(_level, soundInfo, false));
-                                WadSoundPlayer.PlaySoundInfo(_tool.ReferenceLevel, soundInfo, false);
-                            }
-                            catch (Exception exc)
-                            {
-                                popup.ShowWarning(panelRendering, "Unable to play sound " + ac.Parameter2);
-                            }
+                        {
+                            if (!_tool.ReferenceLevel.Settings.SelectedSounds.Contains(idToPlay))
+                                popup.ShowWarning(panelRendering, "Sound info " + idToPlay + " is disabled in level settings.");
+                            else
+                                try
+                                {
+                                    // Task.Factory.StartNew(() => WadSoundPlayer.PlaySoundInfo(_level, soundInfo, false));
+                                    WadSoundPlayer.PlaySoundInfo(_tool.ReferenceLevel, soundInfo, false);
+                                }
+                                catch (Exception exc)
+                                {
+                                    popup.ShowWarning(panelRendering, "Unable to play sound info " + idToPlay + ". Exception: \n" + exc.Message);
+                                }
+                        }
+                        else
+                            popup.ShowWarning(panelRendering, "Sound info " + idToPlay + " missing in reference project");
                     }
                 }
             }
@@ -1347,6 +1380,12 @@ namespace WadTool
                 case Keys.Space: PlayAnimation(); break;
                 case Keys.I: timeline.SelectionStart = timeline.Value; break;
                 case Keys.O: timeline.SelectionEnd = timeline.Value; break;
+                case Keys.Delete: DeleteFrames(this); break;
+
+                case (Keys.Control | Keys.X): CutFrames(); break;
+                case (Keys.Control | Keys.C): CopyFrames(); break;
+                case (Keys.Control | Keys.V): PasteFrames(); break;
+                case (Keys.Control | Keys.S): SaveChanges(true); break;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -1414,6 +1453,11 @@ namespace WadTool
             int frameCount = 3;
             int.TryParse(tbInterpolateFrameCount.Text, out frameCount);
             InterpolateFrames(frameCount);
+        }
+
+        private void timeline_SelectionChanged(object sender, EventArgs e)
+        {
+            UpdateStatusLabel();
         }
     }
 }
