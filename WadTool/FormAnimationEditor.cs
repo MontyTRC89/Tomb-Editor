@@ -2,6 +2,7 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -9,7 +10,6 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
-using TombLib.LevelData.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -26,6 +26,13 @@ namespace WadTool
             Name
         }
 
+        private enum SoundPreviewType
+        {
+            Land,
+            LandWithMaterial,
+            Water
+        }
+
         private bool _saved = false;
         private bool Saved
         {
@@ -34,7 +41,9 @@ namespace WadTool
             {
                 if (value == _saved) return;
                 _saved = value;
-                Text = "Animation editor - " + _moveable.Id.ToString(_wad.SuggestedGameVersion) + (value == false ? "*" : "");
+                butTbSaveAllChanges.Enabled = !_saved;
+                saveChangesToolStripMenuItem.Enabled = !_saved;
+                Text = "Animation editor - " + _moveable.Id.ToString(_wad.SuggestedGameVersion) + (!_saved ? "*" : "");
             }
         }
 
@@ -48,13 +57,16 @@ namespace WadTool
         private AnimationNode _selectedNode;
         private WadRenderer _renderer;
         private AnimatedModel _model;
-        private Level _level;
 
         // Player
         private Timer _timerPlayAnimation;
         private int _frameCount;
         private bool _previewSounds;
-        private bool _previewWaterSounds;
+        private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
+        private int _currentMaterialIndex;
+        private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
+
+        private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
 
         // Clipboard
         private List<KeyFrame> _clipboardKeyFrames = new List<KeyFrame>();
@@ -81,6 +93,9 @@ namespace WadTool
 
             panelRendering.Configuration = _tool.Configuration;
 
+            // Update reference level
+            UpdateReferenceLevelControls();
+
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
             _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
@@ -104,7 +119,7 @@ namespace WadTool
             _bones = _moveable.Bones;
 
             // Load skeleton in combobox
-            comboBoneList.ComboBox.Items.Add("--- Select a mesh ---");
+            comboBoneList.ComboBox.Items.Add("(select mesh)");
             foreach (var bone in panelRendering.Model.Bones)
                 comboBoneList.ComboBox.Items.Add(bone.Name);
             comboBoneList.ComboBox.SelectedIndex = 0;
@@ -138,6 +153,13 @@ namespace WadTool
                     comboBoneList.ComboBox.SelectedIndex = e.Model.Meshes.IndexOf(e.Mesh) + 1;
                 else
                     comboBoneList.ComboBox.SelectedIndex = 0;
+
+                Saved = false;
+            }
+
+            if (obj is WadToolClass.ReferenceLevelChangedEvent)
+            {
+                UpdateReferenceLevelControls();
             }
         }
 
@@ -151,6 +173,37 @@ namespace WadTool
                 _tool.EditorEventRaised -= Tool_EditorEventRaised;
             }
             base.Dispose(disposing);
+        }
+
+        private void UpdateReferenceLevelControls()
+        {
+            panelRendering.Level = _tool.ReferenceLevel;
+            panelRendering.Invalidate();
+
+            comboRoomList.ComboBox.Items.Clear();
+
+            if (_tool.ReferenceLevel != null)
+            {
+                // Load rooms into the combo box
+                comboRoomList.Enabled = true;
+                comboRoomList.ComboBox.Items.Add("--- Select room ---");
+
+                foreach (var room in _tool.ReferenceLevel.Rooms)
+                    if (room != null)
+                        comboRoomList.ComboBox.Items.Add(room);
+
+                // Enable sound transport
+                butTransportSound.Enabled = true;
+                butTransportLandWater.Enabled = true;
+            }
+            else
+            {
+                comboRoomList.Enabled = false;
+
+                // Disable sound transport
+                butTransportSound.Enabled = false;
+                butTransportLandWater.Enabled = false;
+            }
         }
 
         private void ReloadAnimations()
@@ -1056,7 +1109,6 @@ namespace WadTool
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges(false);
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
-        private void loadPrj2ToolStripMenuItem_Click(object sender, EventArgs e) => LoadReferenceProject();
 
         private void butTbAddAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butTbDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
@@ -1118,33 +1170,44 @@ namespace WadTool
             UpdateStatusLabel();
 
             // Preview sounds
-            if (_previewSounds && _level != null)
+            if (_previewSounds && _tool.ReferenceLevel != null)
+            {
+                // This additional counter is used to randomize material index every 3 seconds of playback
+                _overallPlaybackCount++;
+                if (_overallPlaybackCount > _materialIndexSwitchInterval)
+                {
+                    _overallPlaybackCount = 0;
+
+                    var listOfMaterialSounds = _tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
+                    _currentMaterialIndex = listOfMaterialSounds[(new Random()).Next(0, listOfMaterialSounds.Count() - 1)].Id;
+                }
+
                 foreach (var ac in _selectedNode.WadAnimation.AnimCommands)
                 {
                     int idToPlay = -1;
 
                     if (ac.Type == WadAnimCommandType.PlaySound)
                         idToPlay = ac.Parameter2 & 0x3FFF;
-                    else if (ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
-                        idToPlay = _level.Settings.GlobalSoundMap.FirstOrDefault(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).Id;
+                    else if (_soundPreviewType == SoundPreviewType.LandWithMaterial && ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
+                        idToPlay = _currentMaterialIndex;
 
                     if (idToPlay != -1 && ac.Parameter1 == _frameCount)
                     {
-                        int sfx_type = ac.Parameter2 & 0xC000;
+                        int sfx_type = ac.Type == WadAnimCommandType.FlipEffect ? 0x4000 : ac.Parameter2 & 0xC000;
 
                         // Don't play footprint FX sounds in water
-                        if (ac.Type == WadAnimCommandType.FlipEffect && _previewWaterSounds) continue;
+                        if (ac.Type == WadAnimCommandType.FlipEffect && _soundPreviewType == SoundPreviewType.Water) continue;
 
                         // Don't play water sounds not in water and vice versa
-                        if (sfx_type == 0x8000 && !_previewWaterSounds) continue;
-                        if (sfx_type == 0x4000 &&  _previewWaterSounds) continue;
+                        if (sfx_type == 0x8000 && _soundPreviewType != SoundPreviewType.Water) continue;
+                        if (sfx_type == 0x4000 && _soundPreviewType == SoundPreviewType.Water) continue;
 
-                        var soundInfo = _level.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
+                        var soundInfo = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
                         if (soundInfo != null)
                             try
                             {
                                 // Task.Factory.StartNew(() => WadSoundPlayer.PlaySoundInfo(_level, soundInfo, false));
-                                WadSoundPlayer.PlaySoundInfo(_level, soundInfo, false);
+                                WadSoundPlayer.PlaySoundInfo(_tool.ReferenceLevel, soundInfo, false);
                             }
                             catch (Exception exc)
                             {
@@ -1152,6 +1215,7 @@ namespace WadTool
                             }
                     }
                 }
+            }
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1201,30 +1265,6 @@ namespace WadTool
                 timeline.Value = 0;
                 panelRendering.Invalidate();
             }
-        }
-
-        private bool LoadReferenceProject()
-        {
-            var fileName = LevelFileDialog.BrowseFile(this, null, null, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
-            if (string.IsNullOrEmpty(fileName))
-                return false;
-
-            _level = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
-
-            panelRendering.Level = _level;
-
-            // Load rooms into the combo box
-            comboRoomList.Enabled = true;
-            comboRoomList.ComboBox.Items.Clear();
-            comboRoomList.ComboBox.Items.Add("--- Select room ---");
-
-            foreach (var room in _level.Rooms)
-                if (room != null)
-                    comboRoomList.ComboBox.Items.Add(room);
-
-            panelRendering.Invalidate();
-
-            return true;
         }
 
         private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)
@@ -1332,7 +1372,7 @@ namespace WadTool
 
         private void butTransportSound_Click(object sender, EventArgs e)
         {
-            if (_level == null && !LoadReferenceProject()) return;
+            if (_tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_tool, this)) return;
 
             _previewSounds = !_previewSounds;
 
@@ -1344,14 +1384,24 @@ namespace WadTool
 
         private void butTransportLandWater_Click(object sender, EventArgs e)
         {
-            if (_level == null && !LoadReferenceProject()) return;
+            if (_tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_tool, this)) return;
 
-            _previewWaterSounds = !_previewWaterSounds;
+            if (_soundPreviewType == SoundPreviewType.Land) _soundPreviewType = SoundPreviewType.LandWithMaterial;
+            else if (_soundPreviewType == SoundPreviewType.LandWithMaterial) _soundPreviewType = SoundPreviewType.Water;
+            else if (_soundPreviewType == SoundPreviewType.Water) _soundPreviewType = SoundPreviewType.Land;
 
-            if (_previewWaterSounds)
-                butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
-            else
-                butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+            switch (_soundPreviewType)
+            {
+                case SoundPreviewType.Land:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
+                    break;
+                case SoundPreviewType.LandWithMaterial:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+                    break;
+                case SoundPreviewType.Water:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
+                    break;
+            }
         }
 
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)

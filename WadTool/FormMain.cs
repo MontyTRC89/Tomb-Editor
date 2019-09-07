@@ -11,13 +11,13 @@ using TombLib.Graphics;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Utils;
+using System.IO;
 
 namespace WadTool
 {
     public partial class FormMain : DarkForm
     {
         private readonly WadToolClass _tool;
-        private bool _playAnimation;
 
         private readonly PopUpInfo popup = new PopUpInfo();
 
@@ -115,6 +115,7 @@ namespace WadTool
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
+
             if (obj is WadToolClass.MainSelectionChangedEvent ||
                 obj is WadToolClass.DestinationWadChangedEvent ||
                 obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
@@ -159,6 +160,24 @@ namespace WadTool
 
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
+            }
+
+            if (obj is WadToolClass.ReferenceLevelChangedEvent)
+            {
+                if (_tool.ReferenceLevel != null)
+                {
+                    butCloseRefLevel.Enabled = true;
+                    lblRefLevel.Enabled = true;
+                    closeReferenceLevelToolStripMenuItem.Enabled = true;
+                    lblRefLevel.Text = Path.GetFileNameWithoutExtension(_tool.ReferenceLevel.Settings.LevelFilePath);
+                }
+                else
+                {
+                    butCloseRefLevel.Enabled = false;
+                    lblRefLevel.Enabled = false;
+                    closeReferenceLevelToolStripMenuItem.Enabled = false;
+                    lblRefLevel.Text = "(project not loaded)";
+                }
             }
         }
 
@@ -290,7 +309,8 @@ namespace WadTool
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            CopyObject(false);
+            if(treeSourceWad.SelectedWadObjectIds.Count() > 0)
+                CopyObject(false);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
@@ -439,6 +459,31 @@ namespace WadTool
         private void treeSourceWad_ClickOnEmpty(object sender, EventArgs e)
         {
             WadActions.LoadWadOpenFileDialog(_tool, this, false);
+        }
+
+        private void butOpenRefLevel_Click(object sender, EventArgs e)
+        {
+            WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void openReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void butCloseRefLevel_Click(object sender, EventArgs e)
+        {
+            WadActions.UnloadReferenceLevel(_tool);
+        }
+
+        private void lblRefLevel_Click(object sender, EventArgs e)
+        {
+            if (_tool.ReferenceLevel == null) WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void closeReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.UnloadReferenceLevel(_tool);
         }
     }
 }

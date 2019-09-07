@@ -58,8 +58,6 @@ namespace WadTool
             this.drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadPrj2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.tbLateralEndVelocity = new DarkUI.Controls.DarkTextBox();
@@ -110,7 +108,7 @@ namespace WadTool
             this.butTbReplaceAnimation = new System.Windows.Forms.ToolStripButton();
             this.butTbSplitAnimation = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.labelFrames = new System.Windows.Forms.ToolStripLabel();
             this.butTbAddFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbDeleteFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbCutFrame = new System.Windows.Forms.ToolStripButton();
@@ -121,10 +119,10 @@ namespace WadTool
             this.butTbInterpolateFrames = new System.Windows.Forms.ToolStripButton();
             this.tbInterpolateFrameCount = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
+            this.labelBone = new System.Windows.Forms.ToolStripLabel();
             this.comboBoneList = new DarkUI.Controls.ToolStripDarkComboBox();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.labelRoom = new System.Windows.Forms.ToolStripLabel();
             this.comboRoomList = new DarkUI.Controls.ToolStripDarkComboBox();
             this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
@@ -181,8 +179,7 @@ namespace WadTool
             this.fileeToolStripMenuItem,
             this.animationToolStripMenuItem,
             this.frameToolStripMenuItem,
-            this.renderingToolStripMenuItem,
-            this.advancedToolStripMenuItem});
+            this.renderingToolStripMenuItem});
             this.topMenu.Location = new System.Drawing.Point(0, 0);
             this.topMenu.Name = "topMenu";
             this.topMenu.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
@@ -576,25 +573,6 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
             // 
-            // advancedToolStripMenuItem
-            // 
-            this.advancedToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.advancedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadPrj2ToolStripMenuItem});
-            this.advancedToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.advancedToolStripMenuItem.Text = "Advanced";
-            // 
-            // loadPrj2ToolStripMenuItem
-            // 
-            this.loadPrj2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.loadPrj2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.loadPrj2ToolStripMenuItem.Name = "loadPrj2ToolStripMenuItem";
-            this.loadPrj2ToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
-            this.loadPrj2ToolStripMenuItem.Text = "Load Prj2";
-            this.loadPrj2ToolStripMenuItem.Click += new System.EventHandler(this.loadPrj2ToolStripMenuItem_Click);
-            // 
             // darkStatusStrip1
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -983,7 +961,7 @@ namespace WadTool
             this.butTbReplaceAnimation,
             this.butTbSplitAnimation,
             this.toolStripSeparator2,
-            this.toolStripLabel2,
+            this.labelFrames,
             this.butTbAddFrame,
             this.butTbDeleteFrame,
             this.butTbCutFrame,
@@ -994,10 +972,10 @@ namespace WadTool
             this.butTbInterpolateFrames,
             this.tbInterpolateFrameCount,
             this.toolStripSeparator4,
-            this.toolStripLabel3,
+            this.labelBone,
             this.comboBoneList,
             this.toolStripSeparator3,
-            this.toolStripLabel4,
+            this.labelRoom,
             this.comboRoomList});
             this.topBar.Location = new System.Drawing.Point(0, 24);
             this.topBar.Name = "topBar";
@@ -1010,8 +988,9 @@ namespace WadTool
             // 
             this.butTbSaveAllChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbSaveAllChanges.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbSaveAllChanges.Enabled = false;
             this.butTbSaveAllChanges.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbSaveAllChanges.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butTbSaveAllChanges.Image = global::WadTool.Properties.Resources.general_Save_16;
             this.butTbSaveAllChanges.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbSaveAllChanges.Name = "butTbSaveAllChanges";
             this.butTbSaveAllChanges.Size = new System.Drawing.Size(23, 25);
@@ -1132,13 +1111,13 @@ namespace WadTool
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
             // 
-            // toolStripLabel2
+            // labelFrames
             // 
-            this.toolStripLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(38, 25);
-            this.toolStripLabel2.Text = "Frames:";
+            this.labelFrames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelFrames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelFrames.Name = "labelFrames";
+            this.labelFrames.Size = new System.Drawing.Size(38, 25);
+            this.labelFrames.Text = "Frames:";
             // 
             // butTbAddFrame
             // 
@@ -1255,13 +1234,13 @@ namespace WadTool
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
             // 
-            // toolStripLabel3
+            // labelBone
             // 
-            this.toolStripLabel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(30, 25);
-            this.toolStripLabel3.Text = "Bone:";
+            this.labelBone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelBone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelBone.Name = "labelBone";
+            this.labelBone.Size = new System.Drawing.Size(30, 25);
+            this.labelBone.Text = "Bone:";
             // 
             // comboBoneList
             // 
@@ -1281,13 +1260,13 @@ namespace WadTool
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
             // 
-            // toolStripLabel4
+            // labelRoom
             // 
-            this.toolStripLabel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(34, 25);
-            this.toolStripLabel4.Text = "Room:";
+            this.labelRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelRoom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelRoom.Name = "labelRoom";
+            this.labelRoom.Size = new System.Drawing.Size(34, 25);
+            this.labelRoom.Text = "Room:";
             // 
             // comboRoomList
             // 
@@ -1521,7 +1500,7 @@ namespace WadTool
             this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_land_24;
+            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
             this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportLandWater.Name = "butTransportLandWater";
@@ -1803,13 +1782,13 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbPasteAnimation;
         private System.Windows.Forms.ToolStripButton butTbCutFrame;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripLabel labelFrames;
         private System.Windows.Forms.ToolStripButton butTbAddFrame;
         private System.Windows.Forms.ToolStripButton butTbDeleteFrame;
         private System.Windows.Forms.ToolStripButton butTbCopyFrame;
         private System.Windows.Forms.ToolStripButton butTbPasteFrame;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
+        private System.Windows.Forms.ToolStripLabel labelBone;
         private System.Windows.Forms.ToolStripMenuItem insertnFramesAfterCurrentOneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteReplaceToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem curToolStripMenuItem;
@@ -1837,9 +1816,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem splitAnimationToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogImport;
         private System.Windows.Forms.SaveFileDialog saveFileDialogExport;
-        private System.Windows.Forms.ToolStripMenuItem advancedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadPrj2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripLabel labelRoom;
         private System.Windows.Forms.OpenFileDialog openFileDialogPrj2;
         private DarkUI.Controls.DarkTextBox tbSearchAnimation;
         private DarkUI.Controls.DarkButton darkButton1;
