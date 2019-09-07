@@ -463,12 +463,9 @@ namespace TombLib.LevelData.IO
                     chunkIO.ReadChunks((id2, size) => {
                         if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
                         {
-                            int value = chunkIO.ReadChunkInt(size);
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry((uint)value, true, settings));
-                            return true;
-                        }
-                        else if (id2 == Prj2Chunks.InterpretVertexDataForMerge) {
-                            settings.InterpretStaticMeshVertexDataForMerge = chunkIO.ReadChunkBool(size);
+                            uint value = chunkIO.Raw.ReadUInt32();
+                            bool vertexShades = chunkIO.Raw.ReadBoolean();
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, settings));
                             return true;
                         }
                         else return false;

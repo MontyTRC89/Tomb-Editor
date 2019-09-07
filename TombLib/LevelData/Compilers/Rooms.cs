@@ -310,9 +310,12 @@ namespace TombLib.LevelData.Compilers
 
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
-                    if (!IsStaticMeshInMergeList(staticMesh))
+                    //check if static Mesh is in the Auto Merge list
+                    var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
+                        mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
+                    if (entry == null)
                         continue;
-
+                    bool interpretShadesAsMovement = entry.InterpretShadesAsMovement;
                     int meshVertexBase = roomVertices.Count;
                     var worldTransform = staticMesh.RotationMatrix *
                                          Matrix4x4.CreateTranslation(staticMesh.Position);
@@ -325,7 +328,8 @@ namespace TombLib.LevelData.Compilers
                         Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
                         normal = Vector3.Normalize(normal);
                         int lightingEffect = 0;
-                        if (_level.Settings.InterpretStaticMeshVertexDataForMerge)
+                        float shade = 1.0f;
+                        if (interpretShadesAsMovement)
                         {
                             if (j < wadStatic.Mesh.VerticesShades.Count)
                             {
@@ -343,8 +347,19 @@ namespace TombLib.LevelData.Compilers
                                     lightingEffect = 0x0;
                                 }
                             }
+                        } else {
+                            //If we have shades, use them as a factor for the resulting vertex color
+                            if (j < wadStatic.Mesh.VerticesShades.Count) {
+                                shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
+                                shade = 1.0f - shade;
+                            }
+                            
                         }
-
+                        Vector3 color = CalculateLightForVertex(room, position, normal);
+                        //Apply Shade factor
+                        color *= shade;
+                        //Apply Instance Color
+                        color *= staticMesh.Color;
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -357,7 +372,7 @@ namespace TombLib.LevelData.Compilers
                             Lighting2 = 0,
                             Attributes = (ushort)lightingEffect
                         };
-                        trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal));
+                        trVertex.Lighting2 = PackColorTo16Bit(color);
                         // Check for maximum vertices reached
                         if (roomVertices.Count >= 65536)
                         {
@@ -1430,11 +1445,6 @@ namespace TombLib.LevelData.Compilers
             result.Green = (byte)color.Y;
             result.Blue = (byte)color.Z;
             return result;
-        }
-
-        private bool IsStaticMeshInMergeList(StaticInstance instance)
-        {
-            return (_level.Settings.AutoStaticMeshMerges.Any(e => e.Merge && e.meshId == instance.WadObjectId.TypeId));
         }
 
     }

@@ -391,7 +391,7 @@ namespace TombEditor.Forms
                     }
                 }
                 if(!added)
-                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,_levelSettings));
+                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,false,_levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
 
@@ -572,8 +572,6 @@ namespace TombEditor.Forms
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
-
-            cbInterpretStaticMeshVertexDataForMerge.Checked = _levelSettings.InterpretStaticMeshVertexDataForMerge;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -1191,12 +1189,6 @@ namespace TombEditor.Forms
         private void cbAgressiveFloordataPacking_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
-            UpdateDialog();
-        }
-
-        private void cbInterpretStaticMeshVertexDataForMerge_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.InterpretStaticMeshVertexDataForMerge = cbInterpretStaticMeshVertexDataForMerge.Checked;
             UpdateDialog();
         }
 
