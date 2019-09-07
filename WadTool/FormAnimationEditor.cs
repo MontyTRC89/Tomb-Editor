@@ -1008,7 +1008,7 @@ namespace WadTool
             if (_selectedNode != null && tbName.Text.Trim() != "")
             {
                 _selectedNode.WadAnimation.Name = tbName.Text.Trim();
-                lstAnimations.Items[lstAnimations.SelectedIndices[0]].Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _selectedNode);
+                lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _selectedNode);
                 Saved = false;
             }
         }
@@ -1405,7 +1405,7 @@ namespace WadTool
             if (lstAnimations.SelectedIndices.Count == 0)
                 return;
 
-            var node = (AnimationNode)lstAnimations.Items[lstAnimations.SelectedIndices[0]].Tag;
+            var node = (AnimationNode)lstAnimations.SelectedItem.Tag;
             SelectAnimation(node);
         }
 

@@ -20,8 +20,8 @@
             this.butEditObject = new DarkUI.Controls.DarkButton();
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.panelTriggerList = new System.Windows.Forms.Panel();
-            this.lstObjects = new DarkUI.Controls.DarkListBox(this.components);
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.lstObjects = new DarkUI.Controls.DarkListView();
             this.panelTriggerTools.SuspendLayout();
             this.panelTriggerList.SuspendLayout();
             this.SuspendLayout();
@@ -62,33 +62,28 @@
             this.panelTriggerList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTriggerList.Location = new System.Drawing.Point(0, 25);
             this.panelTriggerList.Name = "panelTriggerList";
-            this.panelTriggerList.Padding = new System.Windows.Forms.Padding(2);
+            this.panelTriggerList.Padding = new System.Windows.Forms.Padding(3, 2, 2, 2);
             this.panelTriggerList.Size = new System.Drawing.Size(284, 118);
             this.panelTriggerList.TabIndex = 58;
-            // 
-            // lstObjects
-            // 
-            this.lstObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.lstObjects.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lstObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstObjects.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.lstObjects.ForeColor = System.Drawing.Color.White;
-            this.lstObjects.FormattingEnabled = true;
-            this.lstObjects.IntegralHeight = false;
-            this.lstObjects.ItemHeight = 18;
-            this.lstObjects.Location = new System.Drawing.Point(2, 2);
-            this.lstObjects.Name = "lstObjects";
-            this.lstObjects.Size = new System.Drawing.Size(280, 114);
-            this.lstObjects.TabIndex = 0;
-            this.lstObjects.SelectedIndexChanged += new System.EventHandler(this.lstObjects_SelectedIndexChanged);
-            this.lstObjects.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjects_KeyDown);
-            this.lstObjects.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstObjects_MouseDoubleClick);
             // 
             // toolTip
             // 
             this.toolTip.AutoPopDelay = 5000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
+            // 
+            // lstObjects
+            // 
+            this.lstObjects.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstObjects.Location = new System.Drawing.Point(3, 2);
+            this.lstObjects.MouseWheelScrollSpeedV = 0.2F;
+            this.lstObjects.Name = "lstObjects";
+            this.lstObjects.Size = new System.Drawing.Size(279, 114);
+            this.lstObjects.TabIndex = 7;
+            this.lstObjects.Text = "darkListView1";
+            this.lstObjects.SelectedIndicesChanged += new System.EventHandler(this.lstObjects_SelectedIndicesChanged);
+            this.lstObjects.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjects_KeyDown);
+            this.lstObjects.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstObjects_MouseDoubleClick);
             // 
             // ObjectList
             // 
@@ -112,9 +107,9 @@
         #endregion
         private System.Windows.Forms.Panel panelTriggerTools;
         private System.Windows.Forms.Panel panelTriggerList;
-        private DarkUI.Controls.DarkListBox lstObjects;
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkButton butEditObject;
         private DarkUI.Controls.DarkButton butDeleteObject;
+        private DarkUI.Controls.DarkListView lstObjects;
     }
 }
