@@ -629,7 +629,7 @@ namespace TombEditor
 
 
         // Undo-redo manager
-        public UndoManager UndoManager { get; private set; }
+        public EditorUndoManager UndoManager { get; private set; }
 
         public class UndoStackChangedEvent : IEditorEvent
         {
@@ -970,7 +970,7 @@ namespace TombEditor
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             SectorColoringManager = new SectorColoringManager(this);
-            UndoManager = new UndoManager(this, configuration.Editor_UndoDepth);
+            UndoManager = new EditorUndoManager(this, configuration.Editor_UndoDepth);
             Level = level;
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });

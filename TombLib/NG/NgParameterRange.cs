@@ -237,14 +237,16 @@ namespace TombLib.NG
 
         public IEnumerable<ITriggerParameter> BuildList(Level level)
         {
-            Func<int, TriggerParameterUshort> formatSounds = i =>
+            Func<int, int, TriggerParameterUshort> formatSounds = (add, i) =>
             {
-                WadSoundInfo info = level?.Settings?.WadTryGetSoundInfo(i);
+                WadSoundInfo info = level?.Settings?.WadTryGetSoundInfo(add + i);
                 if (info != null)
-                    return new TriggerParameterUshort((ushort)i, i + ": " + info.Name);
+                    return new TriggerParameterUshort((ushort)i, (add + i) + ": " + info.Name);
                 else
-                    return new TriggerParameterUshort((ushort)i, i + ": --- Not present ---");
+                    return new TriggerParameterUshort((ushort)i, (add + i) + ": --- Not present ---");
             };
+            Func<int, TriggerParameterUshort> formatSounds1 = i => formatSounds(0,   i);
+            Func<int, TriggerParameterUshort> formatSounds2 = i => formatSounds(256, i);
 
             switch (Kind)
             {
@@ -287,13 +289,13 @@ namespace TombLib.NG
                     return level.Rooms.Where(room => room != null);
 
                 case NgParameterKind.SoundEffectsA:
-                    return Enumerable.Range(0, 256).Select(formatSounds);
+                    return Enumerable.Range(0, 256).Select(formatSounds1);
 
                 case NgParameterKind.SoundEffectsB:
-                    return Enumerable.Range(256, 512).Select(formatSounds);
+                    return Enumerable.Range(0, 114).Select(formatSounds2);
 
                 case NgParameterKind.Sfx1024:
-                    return Enumerable.Range(0, 1024).Select(formatSounds);
+                    return Enumerable.Range(0, 1024).Select(formatSounds1);
 
                 case NgParameterKind.PcStringsList:
                     return LoadStringsFromTxt(level, "PCStrings");
