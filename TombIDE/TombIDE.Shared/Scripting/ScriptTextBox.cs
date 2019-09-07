@@ -362,7 +362,7 @@ namespace TombIDE.Shared.Scripting
 			};
 
 			popupMenu.Font = new Font(popupMenu.Font.FontFamily, 8F);
-			popupMenu.Scale(new SizeF(2, (float)1.5));
+			popupMenu.Scale(new SizeF(2F, (float)1.5));
 
 			try { popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems()); }
 			catch { }
@@ -389,34 +389,7 @@ namespace TombIDE.Shared.Scripting
 			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(oldCommandColor, @"\b(" + string.Join("|", KeyWords.TR5Commands) + @")\s*?=", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(unknownCommandColor, @"\b(" + string.Join("|", KeyWords.Unknown) + @")\s*?=", RegexOptions.IgnoreCase);
-			e.ChangedRange.SetStyle(valueColor, "=.*");
-
-			e.ChangedRange.SetStyle(valueColor, @">\s*?(;.*)?" + Environment.NewLine + ".+?(?=>|" + Environment.NewLine + @"|\z)");
-
-			if (noLoop)
-				return;
-
-			for (int i = e.ChangedRange.FromLine; i > 0; i--)
-			{
-				if (GetLineText(i).Contains("=") || Regex.IsMatch(GetLineText(i), @"\[.*\]"))
-				{
-					for (int j = i + 1; j < LinesCount; j++)
-					{
-						if (GetLineText(j).Contains("=") || Regex.IsMatch(GetLineText(j), @"\[.*\]") || j == LinesCount - 1)
-						{
-							Place start = new Place(0, i);
-							Place end = new Place(GetLineText(j).Length, j);
-
-							e.ChangedRange = new Range(this, start, end);
-							DoSyntaxHighlighting(e, true);
-
-							break;
-						}
-					}
-
-					break;
-				}
-			}
+			e.ChangedRange.SetStyle(valueColor, ".*");
 		}
 
 		#endregion Other methods

@@ -17,6 +17,10 @@
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			this.animationTimer = new System.Windows.Forms.Timer(this.components);
+			this.button_HidePlugins = new DarkUI.Controls.DarkButton();
+			this.button_ShowPlugins = new DarkUI.Controls.DarkButton();
 			this.internalDLLFileWatcher = new System.IO.FileSystemWatcher();
 			this.internalPluginFolderWatcher = new System.IO.FileSystemWatcher();
 			this.levelFolderWatcher = new System.IO.FileSystemWatcher();
@@ -29,6 +33,7 @@
 			this.splitContainer_Info = new System.Windows.Forms.SplitContainer();
 			this.splitContainer_Levels = new System.Windows.Forms.SplitContainer();
 			this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.internalDLLFileWatcher)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.internalPluginFolderWatcher)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.levelFolderWatcher)).BeginInit();
@@ -47,6 +52,36 @@
 			this.splitContainer_Main.Panel2.SuspendLayout();
 			this.splitContainer_Main.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// animationTimer
+			// 
+			this.animationTimer.Interval = 1;
+			this.animationTimer.Tick += new System.EventHandler(this.animationTimer_Tick);
+			// 
+			// button_HidePlugins
+			// 
+			this.button_HidePlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_HidePlugins.ForeColor = System.Drawing.Color.Gainsboro;
+			this.button_HidePlugins.Location = new System.Drawing.Point(653, 3);
+			this.button_HidePlugins.Name = "button_HidePlugins";
+			this.button_HidePlugins.Size = new System.Drawing.Size(24, 24);
+			this.button_HidePlugins.TabIndex = 1;
+			this.button_HidePlugins.Text = "▼";
+			this.toolTip.SetToolTip(this.button_HidePlugins, "Hide Project Plugins");
+			this.button_HidePlugins.Click += new System.EventHandler(this.button_HidePlugins_Click);
+			// 
+			// button_ShowPlugins
+			// 
+			this.button_ShowPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_ShowPlugins.ForeColor = System.Drawing.Color.Gainsboro;
+			this.button_ShowPlugins.Location = new System.Drawing.Point(616, 256);
+			this.button_ShowPlugins.Margin = new System.Windows.Forms.Padding(3, 3, 32, 12);
+			this.button_ShowPlugins.Name = "button_ShowPlugins";
+			this.button_ShowPlugins.Size = new System.Drawing.Size(32, 32);
+			this.button_ShowPlugins.TabIndex = 1;
+			this.button_ShowPlugins.Text = "▲";
+			this.toolTip.SetToolTip(this.button_ShowPlugins, "Show Project Plugins");
+			this.button_ShowPlugins.Click += new System.EventHandler(this.button_ShowPlugins_Click);
 			// 
 			// internalDLLFileWatcher
 			// 
@@ -137,11 +172,13 @@
 			// 
 			// splitContainer_Info.Panel1
 			// 
+			this.splitContainer_Info.Panel1.Controls.Add(this.button_ShowPlugins);
 			this.splitContainer_Info.Panel1.Controls.Add(this.section_ProjectInfo);
 			this.splitContainer_Info.Panel1MinSize = 300;
 			// 
 			// splitContainer_Info.Panel2
 			// 
+			this.splitContainer_Info.Panel2.Controls.Add(this.button_HidePlugins);
 			this.splitContainer_Info.Panel2.Controls.Add(this.section_PluginList);
 			this.splitContainer_Info.Panel2MinSize = 294;
 			this.splitContainer_Info.Size = new System.Drawing.Size(680, 600);
@@ -222,6 +259,8 @@
 
 		#endregion
 
+		private DarkUI.Controls.DarkButton button_HidePlugins;
+		private DarkUI.Controls.DarkButton button_ShowPlugins;
 		private SectionLevelList section_LevelList;
 		private SectionLevelProperties section_LevelProperties;
 		private SectionPluginList section_PluginList;
@@ -234,5 +273,7 @@
 		private System.Windows.Forms.SplitContainer splitContainer_Info;
 		private System.Windows.Forms.SplitContainer splitContainer_Levels;
 		private System.Windows.Forms.SplitContainer splitContainer_Main;
+		private System.Windows.Forms.Timer animationTimer;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }
