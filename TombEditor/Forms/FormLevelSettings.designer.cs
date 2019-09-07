@@ -776,7 +776,7 @@
             this.staticMeshMergeDataGridView.MultiSelect = false;
             this.staticMeshMergeDataGridView.Name = "staticMeshMergeDataGridView";
             this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
-            this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(551, 367);
+            this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(551, 386);
             this.staticMeshMergeDataGridView.TabIndex = 2;
             // 
             // darkLabel18
