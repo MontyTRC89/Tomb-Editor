@@ -40,14 +40,14 @@ namespace TombLib.LevelData
         private LevelSettings parent;
         public uint meshId;
         public bool Merge { get; set; }
-        public bool InterpretShadesAsMovement { get; set; }
+        public bool InterpretShadesAsEffect { get; set; }
 
-        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsMovement, LevelSettings parent)
+        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect, LevelSettings parent)
         {
             this.meshId = staticMesh;
             this.parent = parent;
             this.Merge = merge;
-            this.InterpretShadesAsMovement = interpretShadesAsMovement;
+            this.InterpretShadesAsEffect = interpretShadesAsEffect;
         }
 
         public AutoStaticMeshMergeEntry Clone()
