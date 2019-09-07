@@ -185,7 +185,7 @@ namespace WadTool
             {
                 // Load rooms into the combo box
                 comboRoomList.Enabled = true;
-                comboRoomList.ComboBox.Items.Add("--- Select room ---");
+                comboRoomList.ComboBox.Items.Add("(select room)");
 
                 foreach (var room in _tool.ReferenceLevel.Rooms)
                     if (room != null)
@@ -1112,8 +1112,10 @@ namespace WadTool
         private void comboBoneList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoneList.ComboBox.SelectedIndex < 1)
-                return;
-            panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboBoneList.ComboBox.SelectedIndex - 1];
+                panelRendering.SelectedMesh = null;
+            else
+                panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboBoneList.ComboBox.SelectedIndex - 1];
+
             panelRendering.Invalidate();
         }
 
