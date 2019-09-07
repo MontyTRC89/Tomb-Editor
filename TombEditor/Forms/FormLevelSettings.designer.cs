@@ -67,7 +67,6 @@
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.tabStaticMeshes = new System.Windows.Forms.TabPage();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
-            this.cbInterpretStaticMeshVertexDataForMerge = new DarkUI.Controls.DarkCheckBox();
             this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
@@ -202,14 +201,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -740,7 +739,6 @@
             // 
             this.tabStaticMeshes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabStaticMeshes.Controls.Add(this.darkLabel19);
-            this.tabStaticMeshes.Controls.Add(this.cbInterpretStaticMeshVertexDataForMerge);
             this.tabStaticMeshes.Controls.Add(this.staticMeshMergeDataGridView);
             this.tabStaticMeshes.Controls.Add(this.darkLabel18);
             this.tabStaticMeshes.Controls.Add(this.darkLabel17);
@@ -759,20 +757,8 @@
             this.darkLabel19.Name = "darkLabel19";
             this.darkLabel19.Size = new System.Drawing.Size(557, 34);
             this.darkLabel19.TabIndex = 4;
-            this.darkLabel19.Text = "When checked, vertex lighting from static meshes are interpreted as follows:\r\n0 =" +
-    " No Effect, 1-14 = Glow, 15-31 = Movement/Glow.";
-            // 
-            // cbInterpretStaticMeshVertexDataForMerge
-            // 
-            this.cbInterpretStaticMeshVertexDataForMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbInterpretStaticMeshVertexDataForMerge.AutoSize = true;
-            this.cbInterpretStaticMeshVertexDataForMerge.Location = new System.Drawing.Point(6, 392);
-            this.cbInterpretStaticMeshVertexDataForMerge.Name = "cbInterpretStaticMeshVertexDataForMerge";
-            this.cbInterpretStaticMeshVertexDataForMerge.Size = new System.Drawing.Size(214, 17);
-            this.cbInterpretStaticMeshVertexDataForMerge.TabIndex = 3;
-            this.cbInterpretStaticMeshVertexDataForMerge.Tag = "InterpretStaticMeshVertexDataForMerge";
-            this.cbInterpretStaticMeshVertexDataForMerge.Text = "Interpret old vertex lighting as effect";
-            this.cbInterpretStaticMeshVertexDataForMerge.CheckedChanged += new System.EventHandler(this.cbInterpretStaticMeshVertexDataForMerge_CheckedChanged);
+            this.darkLabel19.Text = "Vertex Shades from static meshes are interpreted as follows:\r\n0 = No Effect, 1-14" +
+    " = Glow, 15-31 = Movement/Glow.";
             // 
             // staticMeshMergeDataGridView
             // 
@@ -1924,7 +1910,6 @@
         private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
         private DarkUI.Controls.DarkLabel darkLabel50;
         private DarkUI.Controls.DarkLabel darkLabel19;
-        private DarkUI.Controls.DarkCheckBox cbInterpretStaticMeshVertexDataForMerge;
         private DarkUI.Controls.DarkLabel darkLabel21;
         private TombLib.Controls.DarkDataGridViewControls soundDataGridViewControls;
         private DarkUI.Controls.DarkDataGridView soundDataGridView;
