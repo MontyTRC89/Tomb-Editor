@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using TombLib.Forms;
 using TombLib.Graphics;
+using TombLib.LevelData;
 using TombLib.Wad;
 
 namespace WadTool
@@ -78,6 +80,20 @@ namespace WadTool
             }
         }
 
+        private Level _referenceLevel;
+        public Level ReferenceLevel
+        {
+            get { return _referenceLevel; }
+            set
+            {
+                if (value == _referenceLevel)
+                    return;
+
+                _referenceLevel = value;
+                RaiseEvent(new ReferenceLevelChangedEvent());
+            }
+        }
+
         public Wad2 GetWad(WadArea? wadArea)
         {
             if (!wadArea.HasValue)
@@ -135,6 +151,13 @@ namespace WadTool
                 _mainSelection = value;
                 RaiseEvent(new MainSelectionChangedEvent());
             }
+        }
+
+        public class ReferenceLevelChangedEvent : IEditorEvent
+        { }
+        public void ReferenceLevelChanged()
+        {
+            RaiseEvent(new ReferenceLevelChangedEvent());
         }
 
         public class StaticSelectedLightChangedEvent : IEditorEvent

@@ -260,7 +260,7 @@ namespace TombLib.LevelData.Compilers
             {
                 Vector3 direction = instance.GetDirection();
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                ushort rollTo65536 = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Roll * (65536.0 / 360.0))));
+                ushort rollTo65536 = (ushort)(65536 - Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Roll * (65536.0 / 360.0)))));
                 _flyByCameras.Add(new tr4_flyby_camera
                 {
                     X = (int)Math.Round(position.X),
