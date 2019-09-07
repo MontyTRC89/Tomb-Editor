@@ -15,10 +15,10 @@ namespace TombLib.Controls
         private static readonly Pen _selectionPen = new Pen(Color.FromArgb(190, 140, 140, 250), 1);
         private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(80, 170, 170, 250));
         private static readonly Brush _highlightBrush = new SolidBrush(Color.FromArgb(160, 200, 200, 200));
-        private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(180, 240, 140, 50));
+        private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(170, 170, 170, 170));
         private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
-        private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 80, 80, 250));
-        private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 80, 20));
+        private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 110, 110, 250));
+        private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 110, 110));
 
         private static readonly int _cursorWidth = 6;
         private static readonly int _animCommandMarkerRadius = 14;
@@ -70,6 +70,9 @@ namespace TombLib.Controls
                 if (value >= _maximum || value < 0) return;
 
                 _minimum = value;
+                if (_minimum > Value) Value = _minimum;
+
+                MinMaxChanged?.Invoke(this, new EventArgs());
                 picSlider.Invalidate();
             }
         }
@@ -90,6 +93,8 @@ namespace TombLib.Controls
 
                 _maximum = value;
                 if (_maximum < Value) Value = _maximum;
+
+                MinMaxChanged?.Invoke(this, new EventArgs());
                 picSlider.Invalidate();
             }
         }
@@ -108,6 +113,10 @@ namespace TombLib.Controls
                 }
 
                 _selectionStart = value;
+                if (_selectionEnd == -1) _selectionEnd = value;
+                else if (_selectionStart > _selectionEnd)  _selectionEnd = _selectionStart;
+
+                SelectionChanged?.Invoke(this, new EventArgs());
                 picSlider.Invalidate();
             }
         }
@@ -123,14 +132,23 @@ namespace TombLib.Controls
                 }
 
                 _selectionEnd = value;
+                if (_selectionEnd == -1) _selectionEnd = value;
+                else if (_selectionStart > _selectionEnd) _selectionStart = _selectionEnd;
+
+                SelectionChanged?.Invoke(this, new EventArgs());
                 picSlider.Invalidate();
             }
         }
 
-        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(Value, Value) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
-        public bool SelectionIsEmpty => SelectionEnd == SelectionStart;
-        public int SelectionSize => SelectionIsEmpty ? 1 : Selection.Y - Selection.X + 1;
-        public void ResetSelection() => SelectionEnd = SelectionStart = 0;
+        public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(-1, -1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
+        public bool SelectionIsEmpty => SelectionEnd == -1 && SelectionStart == -1;
+        public int SelectionSize => SelectionIsEmpty ? 0 : Selection.Y - Selection.X + 1;
+
+        public void ResetSelection()
+        {
+            _selectionStart = _selectionEnd = -1;
+            Invalidate();
+        }
 
         private int _value;
         public int Value
@@ -164,6 +182,8 @@ namespace TombLib.Controls
 
         public event EventHandler<WadAnimCommand> AnimCommandDoubleClick; // Happens when user double-clicks on frame with frame-based animcommands
         public event EventHandler ValueChanged;
+        public event EventHandler SelectionChanged;
+        public event EventHandler MinMaxChanged;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimationNode Animation { get; set; }
@@ -188,16 +208,37 @@ namespace TombLib.Controls
 
         public void Highlight(int start, int end)
         {
-            if (start >= end || start < _minimum || end > _maximum) return;
+            if (start > end || start < _minimum || end > _maximum) return;
             _highlightStart = start;
             _highlightEnd = end;
             _highlightCounter = 1.0f;
             _highlightTimer.Start();
         }
 
+        public void SelectCurrentValue()
+        {
+            _selectionStart = Value;
+            _selectionEnd = Value;
+            SelectionChanged?.Invoke(this, new EventArgs());
+        }
+
+
+
         private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
-        private void picSlider_MouseUp(object sender, MouseEventArgs e) => mouseDown = false;
         private void picSlider_MouseEnter(object sender, EventArgs e) => picSlider.Focus();
+
+        private void picSlider_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
+
+            // Fix selection dimensions after possible reverse dragging
+            if (_selectionStart > _selectionEnd)
+            {
+                int v = _selectionStart;
+                _selectionStart = _selectionEnd;
+                _selectionEnd = v;
+            }
+        }
 
         private void picSlider_MouseDown(object sender, MouseEventArgs e)
         {
@@ -241,7 +282,18 @@ namespace TombLib.Controls
 
             if (e.Button == MouseButtons.Middle || (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift))
             {
-                SelectionEnd = XtoValue(e.X);
+                if (SelectionIsEmpty)
+                    SelectionStart = XtoValue(e.X);
+
+                // Manually update selection end to allow "reverse dragging"
+                int potentialNewSelection = XtoValue(e.X);
+                if (!SelectionIsEmpty && potentialNewSelection != _selectionEnd && potentialNewSelection >= _minimum && potentialNewSelection <= _maximum)
+                {
+                    _selectionEnd = XtoValue(e.X);
+                    SelectionChanged?.Invoke(this, new EventArgs());
+                }
+
+                Invalidate();
             }
             else if (e.Button == MouseButtons.Left)
             {
@@ -284,27 +336,55 @@ namespace TombLib.Controls
                         picSlider.ClientSize.Height / _stateChangeMarkerThicknessDivider - picSlider.Padding.Bottom - 2));
                 }
 
+            int halfCursorWidth = _cursorWidth / 2;
+
             // Shift the cursor at start/stop positions to prevent clipping
-            int addShift = -_cursorWidth / 2;
-            if (Value == 0) addShift += _cursorWidth / 2;
-            else if (Value == Maximum) addShift += -_cursorWidth / 2;
+            int addShift = -halfCursorWidth;
+            if (Value == 0) addShift += halfCursorWidth;
+            else if (Value == Maximum) addShift += -halfCursorWidth;
 
-            // Draw selection
-            if (!SelectionIsEmpty)
+            // Draw selection and highlight in 2 passes
+            for (int passes = 0; passes < 2; passes++)
             {
-                var rect = new Rectangle(ValueToX(Selection.X) + picSlider.Padding.Left, picSlider.Padding.Top, ValueToX(Selection.Y) - ValueToX(Selection.X), picSlider.ClientSize.Height - picSlider.Padding.Bottom);
-                e.Graphics.FillRectangle(_selectionBrush, rect);
-                e.Graphics.DrawRectangle(_selectionPen, rect);
-            }
+                int x = passes == 0 ? Selection.X : _highlightStart;
+                int y = passes == 0 ? Selection.Y : _highlightEnd;
+                int realX = ValueToX(x);
+                int realY = ValueToX(y);
+                int size = realY - realX;
 
-            // Draw highlight
-            if (_highlightTimer.Enabled)
-            {
-                using (SolidBrush currBrush = (SolidBrush)_highlightBrush.Clone())
+                if ((passes == 0 && !SelectionIsEmpty) || (passes == 1 && _highlightTimer.Enabled))
                 {
-                    currBrush.Color = Color.FromArgb((int)((float)currBrush.Color.A * _highlightCounter), currBrush.Color);
-                    var rect = new Rectangle(ValueToX(_highlightStart) + picSlider.Padding.Left, picSlider.Padding.Top, ValueToX(_highlightEnd) - ValueToX(_highlightStart), picSlider.ClientSize.Height - picSlider.Padding.Bottom);
-                    e.Graphics.FillRectangle(currBrush, rect);
+                    int width = size == 0 ? _cursorWidth : size + halfCursorWidth;
+                    Rectangle rect = new Rectangle(realX + picSlider.Padding.Left - halfCursorWidth, picSlider.Padding.Top, width, picSlider.ClientSize.Height - picSlider.Padding.Bottom); ;
+
+                    if (size == 0)
+                    {
+                        if (y == Maximum) rect.X -= halfCursorWidth;
+                        else if (x == Minimum) rect.X += halfCursorWidth;
+                    }
+                    else
+                    {
+                        //if (y == Maximum) rect.Width -= _cursorWidth;
+                        if (x == Minimum)
+                        {
+                            rect.X += halfCursorWidth;
+                            rect.Width -= halfCursorWidth;
+                        }
+                    }
+
+                    if(passes == 0)
+                    {
+                        e.Graphics.FillRectangle(_selectionBrush, rect);
+                        e.Graphics.DrawRectangle(_selectionPen, rect);
+                    }
+                    else
+                    {
+                        using (SolidBrush currBrush = (SolidBrush)_highlightBrush.Clone())
+                        {
+                            currBrush.Color = Color.FromArgb((int)((float)currBrush.Color.A * _highlightCounter), currBrush.Color);
+                            e.Graphics.FillRectangle(currBrush, rect);
+                        }
+                    }
                 }
             }
 
@@ -353,16 +433,16 @@ namespace TombLib.Controls
                     if (i == 0 && passes == 1 && realFrameCount > 1)
                         e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
 
-                    // Measure maximum label size
-                    SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
-                                                                  new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
-                                                                  TextFormatFlags.WordBreak);
 
                     // Draw labels
                     bool drawCurrentLabel = true;
-
                     if ((passes == 0 && !isKeyFrame) || (passes != 0 && isKeyFrame))
                     {
+                        // Measure maximum label size
+                        SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
+                                                                      new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
+                                                                      TextFormatFlags.WordBreak);
+
                         // Determine if labels are overlapping and decide on drawing
                         if (frameStep < maxLabelSize.Width * 1.25)
                         {
