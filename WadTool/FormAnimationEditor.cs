@@ -207,9 +207,6 @@ namespace WadTool
 
         private void ReloadAnimations()
         {
-            // Preserve currently selected index
-            var currAnimIndex = lstAnimations.SelectedIndices[0];
-
             lstAnimations.Items.Clear();
 
             // Try to filter by request

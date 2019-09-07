@@ -47,7 +47,6 @@ namespace WadTool
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.interpolateFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
@@ -380,7 +379,6 @@ namespace WadTool
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem,
-            this.pasteReplaceToolStripMenuItem,
             this.toolStripMenuItem1,
             this.interpolateFramesToolStripMenuItem,
             this.toolStripMenuItem6,
@@ -455,17 +453,8 @@ namespace WadTool
             this.pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem.Image")));
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.pasteToolStripMenuItem.Text = "Paste (Insert)";
+            this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteFramesToolStripMenuItem_Click);
-            // 
-            // pasteReplaceToolStripMenuItem
-            // 
-            this.pasteReplaceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.pasteReplaceToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.pasteReplaceToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteReplaceToolStripMenuItem.Image")));
-            this.pasteReplaceToolStripMenuItem.Name = "pasteReplaceToolStripMenuItem";
-            this.pasteReplaceToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.pasteReplaceToolStripMenuItem.Text = "Paste (Replace)";
             // 
             // toolStripMenuItem1
             // 
@@ -1704,7 +1693,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pasteReplaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem interpolateFramesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem animationToolStripMenuItem;
