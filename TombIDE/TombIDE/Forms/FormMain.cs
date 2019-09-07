@@ -47,7 +47,7 @@ namespace TombIDE
 			if (File.Exists(flepExePath))
 			{
 				button_Special.Image = Icon.ExtractAssociatedIcon(flepExePath).ToBitmap();
-				toolTip.SetToolTip(button_Special, "Launch FLEP");
+				toolTip.SetToolTip(button_Special, "Launch FLEP (F2)");
 				button_Special.Click += Special_LaunchFLEP;
 			}
 			else
@@ -518,13 +518,51 @@ namespace TombIDE
 				RestartApplication();
 		}
 
-		private void Special_LaunchFLEP(object sender, EventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
+			base.OnKeyDown(e);
+
+			if (e.KeyCode == Keys.F2)
+				LaunchFLEP();
+
+			if (e.KeyCode == Keys.F3)
+				SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
+
+			if (e.KeyCode == Keys.F4)
+				LaunchGame();
+		}
+
+		// All 3 methods below trigger IDE.SelectedIDETabChangedEvent
+		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => _ide.SelectIDETab("Project Master");
+		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => _ide.SelectIDETab("Script Editor");
+		private void panelButton_Tools_Click(object sender, EventArgs e) => _ide.SelectIDETab("Tools");
+
+		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
+		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
+		private void button_LaunchGame_Click(object sender, EventArgs e) => LaunchGame();
+
+		private void timer_ScriptButtonBlinking_Tick(object sender, EventArgs e)
+		{
+			if (panelButton_ScriptEditor.BackColor == Color.FromArgb(48, 48, 48))
+				panelButton_ScriptEditor.BackColor = Color.FromArgb(180, 100, 0);
+			else
+				panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
+
+			timer_ScriptButtonBlinking.Interval = 500;
+		}
+
+		private void LaunchFLEP()
+		{
+			string flepExePath = Path.Combine(_ide.Project.EnginePath, "flep.exe");
+
+			if (!File.Exists(flepExePath))
+				return;
+
 			try
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					FileName = Path.Combine(_ide.Project.EnginePath, "flep.exe"),
+					FileName = flepExePath,
 					WorkingDirectory = _ide.Project.EnginePath
 				};
 
@@ -533,15 +571,7 @@ namespace TombIDE
 			catch { }
 		}
 
-		// All 3 methods below trigger IDE.SelectedIDETabChangedEvent
-		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => _ide.SelectIDETab("Project Master");
-		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => _ide.SelectIDETab("Script Editor");
-		private void panelButton_Tools_Click(object sender, EventArgs e) => _ide.SelectIDETab("Tools");
-
-		private void button_OpenFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
-
-		private void button_LaunchGame_Click(object sender, EventArgs e)
+		private void LaunchGame()
 		{
 			if (!File.Exists(_ide.Project.LaunchFilePath))
 			{
@@ -576,16 +606,6 @@ namespace TombIDE
 
 				_ide.SelectIDETab("Script Editor");
 			}
-		}
-
-		private void timer_ScriptButtonBlinking_Tick(object sender, EventArgs e)
-		{
-			if (panelButton_ScriptEditor.BackColor == Color.FromArgb(48, 48, 48))
-				panelButton_ScriptEditor.BackColor = Color.FromArgb(180, 100, 0);
-			else
-				panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
-
-			timer_ScriptButtonBlinking.Interval = 500;
 		}
 
 		#endregion Other events

@@ -76,7 +76,7 @@
 			this.button_LaunchGame.Name = "button_LaunchGame";
 			this.button_LaunchGame.Size = new System.Drawing.Size(42, 42);
 			this.button_LaunchGame.TabIndex = 8;
-			this.toolTip.SetToolTip(this.button_LaunchGame, "Launch Game");
+			this.toolTip.SetToolTip(this.button_LaunchGame, "Launch Game (F4)");
 			this.button_LaunchGame.Click += new System.EventHandler(this.button_LaunchGame_Click);
 			// 
 			// button_Leave
@@ -102,7 +102,7 @@
 			this.button_OpenFolder.Name = "button_OpenFolder";
 			this.button_OpenFolder.Size = new System.Drawing.Size(42, 42);
 			this.button_OpenFolder.TabIndex = 7;
-			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Project Folder");
+			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Project Folder (F3)");
 			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
 			// 
 			// button_Special
@@ -348,6 +348,7 @@
 			this.Controls.Add(this.panel_Programs);
 			this.Controls.Add(this.panel_CoverLoading);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(1070, 640);
 			this.Name = "FormMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
