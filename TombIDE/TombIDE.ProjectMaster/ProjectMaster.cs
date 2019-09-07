@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -43,9 +44,27 @@ namespace TombIDE.ProjectMaster
 			section_ProjectInfo.Initialize(_ide);
 			section_PluginList.Initialize(_ide);
 
-			// Collapse the "Plugins" section if the engine doesn't support plugins
 			if (_ide.Project.GameVersion == GameVersion.TR4)
+			{
+				button_ShowPlugins.Enabled = false;
+				button_ShowPlugins.Visible = false;
+
 				splitContainer_Info.Panel2Collapsed = true;
+			}
+			else if (_ide.Configuration.PluginsPanelHidden)
+			{
+				button_ShowPlugins.Enabled = true;
+				button_ShowPlugins.Visible = true;
+
+				splitContainer_Info.Panel2Collapsed = true;
+			}
+			else if (!_ide.Configuration.PluginsPanelHidden)
+			{
+				button_ShowPlugins.Enabled = false;
+				button_ShowPlugins.Visible = false;
+
+				splitContainer_Info.Panel2Collapsed = false;
+			}
 
 			CheckPlugins();
 		}
@@ -58,6 +77,45 @@ namespace TombIDE.ProjectMaster
 		{
 			if (obj is IDE.RequestedPluginListRefreshEvent)
 				CheckPlugins();
+		}
+
+		private void button_ShowPlugins_Click(object sender, System.EventArgs e)
+		{
+			splitContainer_Info.Panel2Collapsed = false;
+
+			button_ShowPlugins.Enabled = false;
+			button_ShowPlugins.Visible = false;
+
+			_ide.Configuration.PluginsPanelHidden = false;
+			_ide.Configuration.Save();
+		}
+
+		private void button_HidePlugins_Click(object sender, System.EventArgs e)
+		{
+			int prevPanelHeight = splitContainer_Info.Panel1.Height;
+
+			splitContainer_Info.Panel2Collapsed = true;
+
+			button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, prevPanelHeight - 32 - 12);
+
+			button_ShowPlugins.Enabled = true;
+			button_ShowPlugins.Visible = true;
+
+			_ide.Configuration.PluginsPanelHidden = true;
+			_ide.Configuration.Save();
+
+			animationTimer.Start();
+		}
+
+		private void animationTimer_Tick(object sender, System.EventArgs e)
+		{
+			button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, button_ShowPlugins.Location.Y + 16);
+
+			if (button_ShowPlugins.Location.Y >= splitContainer_Info.Panel1.Height - (32 + 12))
+			{
+				button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, splitContainer_Info.Panel1.Height - (32 + 12));
+				animationTimer.Stop();
+			}
 		}
 
 		#endregion Events
