@@ -315,7 +315,7 @@ namespace TombLib.LevelData.Compilers
                         mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
                     if (entry == null)
                         continue;
-                    bool interpretShadesAsMovement = entry.InterpretShadesAsMovement;
+                    bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
                     int meshVertexBase = roomVertices.Count;
                     var worldTransform = staticMesh.RotationMatrix *
                                          Matrix4x4.CreateTranslation(staticMesh.Position);
