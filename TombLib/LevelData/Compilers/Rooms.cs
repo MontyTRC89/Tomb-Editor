@@ -78,7 +78,13 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
-            MatchPortalVertexColors();
+            var rooms = _tempRooms.Values.ToList();
+            for (int i = 0; i < rooms.Count; i++)
+            {
+                var room = rooms[i];
+                MatchDoorShades(room);
+            }
+            //MatchPortalVertexColors();
 
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
@@ -1233,6 +1239,121 @@ namespace TombLib.LevelData.Compilers
                     Vertices = portalVertices,
                     Normal = normal
                 });
+            }
+        }
+
+        private void MatchPortalVertexColorsTest()
+        {
+            /*for (int flipped=0;flipped <=1;flipped++)
+            {
+                foreach (var room in )
+            }*/
+        }
+
+        private void MatchDoorShades(tr_room room)
+        {
+            var rooms = _tempRooms.Values.ToList();
+
+            foreach (var p in room.Portals)
+            {
+                var otherRoom = rooms[p.AdjoiningRoom];
+
+                if (!((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1))
+                {
+                    int x1 = p.Vertices[0].X;
+                    int y1 = p.Vertices[0].Y;
+                    int z1 = p.Vertices[0].Z;
+
+                    int x2 = x1 + 1;
+                    int y2 = y1 + 1;
+                    int z2 = z1 + 1;
+
+                    for (int i = 1; i < 4; i++)
+                    {
+                        if (p.Vertices[i].X < x1)
+                            x1 = p.Vertices[i].X;
+                        else if (p.Vertices[i].X > x2)
+                            x2 = p.Vertices[i].X + 1;
+
+                        if (p.Vertices[i].Y < y1)
+                            y1 = p.Vertices[i].Y;
+                        else if (p.Vertices[i].Y > y2)
+                            y2 = p.Vertices[i].Y + 1;
+
+                        if (p.Vertices[i].Z < z1)
+                            z1 = p.Vertices[i].Z;
+                        else if (p.Vertices[i].Z > z2)
+                            z2 = p.Vertices[i].Z + 1;
+
+                        /*if (p.Vertices[i].X <= x2)
+                            {
+                                if (p.Vertices[i].X < x1)
+                                    x1 = p.Vertices[i].X;
+                            }
+                            else
+                            {
+                                x2 = p.Vertices[i].X + 1;
+                            }
+
+                            if (p.Vertices[i].Y <= y2)
+                            {
+                                if (p.Vertices[i].Y < y1)
+                                    y1 = p.Vertices[i].Y;
+                            }
+                            else
+                            {
+                                y2 = p.Vertices[i].Y + 1;
+                            }
+
+                            if (p.Vertices[i].Z <= z2)
+                            {
+                                if (p.Vertices[i].Z < z1)
+                                    z1 = p.Vertices[i].Z;
+                            }
+                            else
+                            {
+                                z2 = p.Vertices[i].Z + 1;
+                            }*/
+                    }
+
+                    for (int i = 0; i < room.Vertices.Count; i++)
+                    {
+                        var v1 = room.Vertices[i];
+
+                        if (v1.Position.X >= x1 && v1.Position.X <= x2)
+                            if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
+                                if (v1.Position.Z >= z1 && v1.Position.Z <= z2)
+                                {
+                                    int otherX = v1.Position.X + room.Info.X - otherRoom.Info.X;
+                                    int otherY = v1.Position.Y + room.Info.YBottom - otherRoom.Info.YBottom;
+                                    int otherZ = v1.Position.X + room.Info.Z - otherRoom.Info.Z;
+
+                                    for (int j = 0; j < otherRoom.Vertices.Count; j++)
+                                    {
+                                        var v2 = otherRoom.Vertices[j];
+
+                                        if (otherX == v2.Position.X && otherY == v2.Position.Y && otherZ == v2.Position.Z)
+                                        {
+                                            /*var newColor = (ushort)((((v2.Color & 0x1f) + (v1.Color & 0x1f)) >> 1) |
+                                                32 * (((((v2.Color >> 5) & 0x1f) + ((v1.Color >> 5) & 0x1f)) >> 1) |
+                                                 32 * ((((v2.Color >> 10) & 0x1f) + ((v1.Color >> 10) & 0x1f)) >> 1)));*/
+                                            int r1 = (v1.Lighting2 >> 10) & 0x1F;
+                                            int g1 = (v1.Lighting2 >> 5) & 0x1F;
+                                            int b1 = v1.Lighting2 & 0x1F;
+
+                                            int r2 = (v2.Lighting2 >> 10) & 0x1F;
+                                            int g2 = (v2.Lighting2 >> 5) & 0x1F;
+                                            int b2 = v2.Lighting2 & 0x1F;
+
+                                            ushort newColor = PackColorTo16Bit(new Vector3(r1 + r2, g1 + g2, b1 + b2) / 2);
+
+                                            v1.Lighting2 = newColor;
+                                            v2.Lighting2 = newColor;
+                                        }
+                                    }
+                                }
+                    }
+                }
             }
         }
 
