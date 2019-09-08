@@ -771,12 +771,34 @@ namespace TombLib.LevelData.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
+            /*while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
                 if (!((room.Type == RoomType.Water) ^ (adjoiningRoom2.Type == RoomType.Water)))
                     break;
+
+                dec_currentRoom = adjoiningRoom2;
+                room = dec_currentRoom;
+
+                posXblocks = room.Position.X;
+                posZblocks = room.Position.Z;
+
+                xInRoom = x - posXblocks;
+                zInRoom = z - posZblocks;
+
+                block = room.Blocks[xInRoom, zInRoom];
+            }*/
+
+            while(block.FloorPortal != null)
+            {
+                Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
+
+                if (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
+                {
+                    if (!((room.Type == RoomType.Water) ^ (adjoiningRoom2.Type == RoomType.Water)))
+                        break;
+                }
 
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;
