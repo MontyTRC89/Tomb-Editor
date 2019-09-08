@@ -210,6 +210,16 @@ namespace WadTool
             RaiseEvent(new AnimationEditorMeshSelectedEvent(model, mesh));
         }
 
+        public class AnimationEditorRequestAnimationChangeEvent : IEditorEvent
+        {
+            public AnimationNode Animation { get; set; }
+            public AnimationEditorRequestAnimationChangeEvent(AnimationNode animation) { Animation = animation; }
+        }
+        public void AnimationEditorRequestAnimationChange(AnimationNode animation)
+        {
+            RaiseEvent(new AnimationEditorRequestAnimationChangeEvent(animation));
+        }
+
         // Send message
         public class MessageEvent : IEditorEvent
         {
@@ -221,10 +231,32 @@ namespace WadTool
             RaiseEvent(new MessageEvent { Message = message, Type = type });
         }
 
+        // Undo-redo manager
+        public WadToolUndoManager UndoManager { get; private set; }
+
+        public class UndoStackChangedEvent : IEditorEvent
+        {
+            public bool UndoPossible { get; set; }
+            public bool RedoPossible { get; set; }
+            public bool UndoReversible { get; set; }
+            public bool RedoReversible { get; set; }
+        }
+        public void UndoStackChanged()
+        {
+            RaiseEvent(new UndoStackChangedEvent()
+            {
+                UndoPossible = UndoManager.UndoPossible,
+                RedoPossible = UndoManager.RedoPossible,
+                UndoReversible = UndoManager.UndoReversible,
+                RedoReversible = UndoManager.UndoReversible
+            });
+        }
+
         // Construction and destruction
         public WadToolClass(Configuration configuration)
         {
             Configuration = configuration;
+            UndoManager = new WadToolUndoManager(this, 20);
         }
 
         public void Dispose()

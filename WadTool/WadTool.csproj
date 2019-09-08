@@ -205,6 +205,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Undo.cs" />
     <Compile Include="WadActions.cs" />
     <Compile Include="WadMeshBoneNode.cs" />
     <Compile Include="WadToolClass.cs" />
@@ -482,6 +483,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icons_transport\transport-on_nothing-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_redo-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_undo_irreversible-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_undo-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

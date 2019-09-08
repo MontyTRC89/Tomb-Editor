@@ -214,12 +214,9 @@ namespace TombEditor
         {
             Editor = editor;
 
-            UndoStackChanged += editorUndoManager_UndoStackChanged;
-            MessageSent += editorUndoManager_MessageSent;
+            UndoStackChanged += (s, e) => Editor.UndoStackChanged();
+            MessageSent += (s, e) => Editor.SendMessage(e.Message, TombLib.Forms.PopupType.Warning);
         }
-
-        private void editorUndoManager_UndoStackChanged(object sender, EventArgs e) => Editor.UndoStackChanged();
-        private void editorUndoManager_MessageSent(object sender, UndoManagerMessageEventArgs e) => Editor.SendMessage(e.Message, TombLib.Forms.PopupType.Warning);
 
         public void PushRoomCreated(Room room) => Push(new AddRoomUndoInstance(this, room));
         public void PushAdjoiningRoomCreated(Room room) => Push(new AddAdjoiningRoomUndoInstance(this, room));
