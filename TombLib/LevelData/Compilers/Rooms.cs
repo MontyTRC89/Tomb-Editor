@@ -10,6 +10,13 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
+    public enum AlternateKind
+    {
+        NotAlternated,
+        BaseRoom,
+        AlternateRoom
+    }
+
     public sealed partial class LevelCompilerClassicTR
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
@@ -79,12 +86,12 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
             var rooms = _tempRooms.Values.ToList();
-            for (int i = 0; i < rooms.Count; i++)
-            {
-                var room = rooms[i];
-                MatchDoorShades(room);
-            }
-            //MatchPortalVertexColors();
+            for (int flipped = 0; flipped <= 1; flipped++)
+                for (int i = 0; i < rooms.Count; i++)
+                {
+                    var room = rooms[i];
+                    MatchDoorShades(room, (flipped == 1));
+                }
 
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
@@ -133,6 +140,13 @@ namespace TombLib.LevelData.Compilers
                 ReverbInfo = (byte)room.Reverberation,
                 Flags = 0x40
             };
+
+            if (!room.Alternated)
+                newRoom.AlternateKind = AlternateKind.NotAlternated;
+            else if (room.AlternateBaseRoom != null)
+                newRoom.AlternateKind = AlternateKind.AlternateRoom;
+            else if (room.AlternateRoom != null)
+                newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
             if (_level.Settings.GameVersion == GameVersion.TR2)
@@ -1242,21 +1256,29 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void MatchPortalVertexColorsTest()
-        {
-            /*for (int flipped=0;flipped <=1;flipped++)
-            {
-                foreach (var room in )
-            }*/
-        }
-
-        private void MatchDoorShades(tr_room room)
+        private void MatchDoorShades(tr_room room, bool flipped)
         {
             var rooms = _tempRooms.Values.ToList();
 
             foreach (var p in room.Portals)
             {
                 var otherRoom = rooms[p.AdjoiningRoom];
+
+                // Here we must decide if match or not, basing on flipped flag.
+                // In winroomedit.exe, all flipped rooms were swapped with their counterparts,
+                // here instead we'll decide per portal
+                if (!flipped)
+                {
+                    // Here we can match only normal rooms vs normal rooms (if they are not flipped)
+                    if (room.AlternateKind == otherRoom.AlternateKind && room.AlternateKind == AlternateKind.AlternateRoom)
+                        continue;
+                }
+                else
+                {
+                    // Here we can match flipped vs flipped and flipped vs normal
+                    if (room.AlternateKind == otherRoom.AlternateKind && room.AlternateKind != AlternateKind.AlternateRoom)
+                        continue;
+                }
 
                 if (!((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1))
                 {
@@ -1284,36 +1306,6 @@ namespace TombLib.LevelData.Compilers
                             z1 = p.Vertices[i].Z;
                         else if (p.Vertices[i].Z > z2)
                             z2 = p.Vertices[i].Z + 1;
-
-                        /*if (p.Vertices[i].X <= x2)
-                            {
-                                if (p.Vertices[i].X < x1)
-                                    x1 = p.Vertices[i].X;
-                            }
-                            else
-                            {
-                                x2 = p.Vertices[i].X + 1;
-                            }
-
-                            if (p.Vertices[i].Y <= y2)
-                            {
-                                if (p.Vertices[i].Y < y1)
-                                    y1 = p.Vertices[i].Y;
-                            }
-                            else
-                            {
-                                y2 = p.Vertices[i].Y + 1;
-                            }
-
-                            if (p.Vertices[i].Z <= z2)
-                            {
-                                if (p.Vertices[i].Z < z1)
-                                    z1 = p.Vertices[i].Z;
-                            }
-                            else
-                            {
-                                z2 = p.Vertices[i].Z + 1;
-                            }*/
                     }
 
                     for (int i = 0; i < room.Vertices.Count; i++)
@@ -1325,8 +1317,8 @@ namespace TombLib.LevelData.Compilers
                                 if (v1.Position.Z >= z1 && v1.Position.Z <= z2)
                                 {
                                     int otherX = v1.Position.X + room.Info.X - otherRoom.Info.X;
-                                    int otherY = v1.Position.Y + room.Info.YBottom - otherRoom.Info.YBottom;
-                                    int otherZ = v1.Position.X + room.Info.Z - otherRoom.Info.Z;
+                                    int otherY = v1.Position.Y;
+                                    int otherZ = v1.Position.Z + room.Info.Z - otherRoom.Info.Z;
 
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
                                     {
@@ -1334,21 +1326,15 @@ namespace TombLib.LevelData.Compilers
 
                                         if (otherX == v2.Position.X && otherY == v2.Position.Y && otherZ == v2.Position.Z)
                                         {
-                                            /*var newColor = (ushort)((((v2.Color & 0x1f) + (v1.Color & 0x1f)) >> 1) |
-                                                32 * (((((v2.Color >> 5) & 0x1f) + ((v1.Color >> 5) & 0x1f)) >> 1) |
-                                                 32 * ((((v2.Color >> 10) & 0x1f) + ((v1.Color >> 10) & 0x1f)) >> 1)));*/
-                                            int r1 = (v1.Lighting2 >> 10) & 0x1F;
-                                            int g1 = (v1.Lighting2 >> 5) & 0x1F;
-                                            int b1 = v1.Lighting2 & 0x1F;
-
-                                            int r2 = (v2.Lighting2 >> 10) & 0x1F;
-                                            int g2 = (v2.Lighting2 >> 5) & 0x1F;
-                                            int b2 = v2.Lighting2 & 0x1F;
-
-                                            ushort newColor = PackColorTo16Bit(new Vector3(r1 + r2, g1 + g2, b1 + b2) / 2);
+                                            var newColor = (ushort)((((v2.Lighting2 & 0x1f) + (v1.Lighting2 & 0x1f)) >> 1) |
+                                                                    32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((v1.Lighting2 >> 5) & 0x1f)) >> 1) |
+                                                                        32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((v1.Lighting2 >> 10) & 0x1f)) >> 1)));
 
                                             v1.Lighting2 = newColor;
                                             v2.Lighting2 = newColor;
+
+                                            room.Vertices[i] = v1;
+                                            otherRoom.Vertices[j] = v2;
                                         }
                                     }
                                 }
