@@ -359,6 +359,9 @@ namespace TombIDE.ScriptEditor
 
 		private void sectionPanel_Files_Resize(object sender, EventArgs e) => AdjustFileListButtons();
 
+		private void tabControl_Info_SelectedIndexChanged(object sender, EventArgs e) =>
+			label_Hint.Visible = tabControl_Info.SelectedIndex == 0;
+
 		#endregion Events
 
 		#region Event Methods
@@ -524,6 +527,8 @@ namespace TombIDE.ScriptEditor
 
 		private void ToggleInfoBox(bool state)
 		{
+			label_Hint.Visible = !sectionPanel_InfoBox.Visible;
+
 			menuItem_InfoBox.Checked = state;
 			splitter_Bottom.Visible = state;
 			sectionPanel_InfoBox.Visible = state;
