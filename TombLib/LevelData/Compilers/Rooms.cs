@@ -1307,14 +1307,17 @@ namespace TombLib.LevelData.Compilers
                 // here instead we'll decide per portal
                 if (!flipped)
                 {
-                    // Here we can match only normal rooms vs normal rooms (if they are not flipped)
-                    if (room.AlternateKind == otherRoom.AlternateKind && room.AlternateKind == AlternateKind.AlternateRoom)
+                    // We allow here normal vs normal or base room vs base room
+                    if (room.AlternateKind == AlternateKind.AlternateRoom || otherRoom.AlternateKind == AlternateKind.AlternateRoom)
                         continue;
                 }
                 else
                 {
-                    // Here we can match flipped vs flipped and flipped vs normal
-                    if (room.AlternateKind == otherRoom.AlternateKind && room.AlternateKind != AlternateKind.AlternateRoom)
+                    // We allow here flipped vs flipped, flipped vs normal and flipped vs base room
+                    if (otherRoom.AlternateKind == AlternateKind.BaseRoom)
+                        otherRoom = rooms[otherRoom.AlternateRoom];
+
+                    if (room.AlternateKind != AlternateKind.AlternateRoom)
                         continue;
                 }
 
