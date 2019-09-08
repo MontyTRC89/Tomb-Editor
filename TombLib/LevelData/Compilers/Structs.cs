@@ -215,7 +215,7 @@ namespace TombLib.LevelData.Compilers
 
         // Helper data
         public TrSectorAux[,] AuxSectors;
-
+        public AlternateKind AlternateKind;
         public List<Room> ReachableRooms;
         public bool Visited;
         public bool Flipped;
