@@ -421,13 +421,7 @@ namespace TombEditor.Forms
                 return base.ProcessCmdKey(ref msg, keyData);
 
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input
-            var activeControlType = GetFocusedControl(this)?.GetType().Name;
-            if ((keyData.HasFlag(Keys.Control | Keys.A) || !keyData.HasFlag(Keys.Control)) && !keyData.HasFlag(Keys.Alt) &&
-                (activeControlType == "DarkTextBox" ||
-                 activeControlType == "DarkAutocompleteTextBox" ||
-                 activeControlType == "DarkComboBox" ||
-                 activeControlType == "DarkListBox" ||
-                 activeControlType == "UpDownEdit"))
+            if (WinFormsUtils.CurrentControlSupportsInput(this, keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
 
             CommandHandler.ExecuteHotkey(new CommandArgs
@@ -442,11 +436,6 @@ namespace TombEditor.Forms
                 return true;
 
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private static Control GetFocusedControl(ContainerControl control)
-        {
-            return (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
         }
 
         protected override void OnLostFocus(EventArgs e)
