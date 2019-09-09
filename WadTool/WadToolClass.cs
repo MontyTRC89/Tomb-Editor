@@ -210,14 +210,27 @@ namespace WadTool
             RaiseEvent(new AnimationEditorMeshSelectedEvent(model, mesh));
         }
 
-        public class AnimationEditorRequestAnimationChangeEvent : IEditorEvent
+        public class AnimationEditorGizmoPickedEvent : IEditorEvent
+        {
+            public AnimationEditorGizmoPickedEvent() { }
+        }
+        public void AnimationEditorGizmoPicked()
+        {
+            RaiseEvent(new AnimationEditorGizmoPickedEvent());
+        }
+
+        public class AnimationEditorAnimationChangedEvent : IEditorEvent
         {
             public AnimationNode Animation { get; set; }
-            public AnimationEditorRequestAnimationChangeEvent(AnimationNode animation) { Animation = animation; }
+
+            public AnimationEditorAnimationChangedEvent(AnimationNode anim)
+            {
+                Animation = anim;
+            }
         }
-        public void AnimationEditorRequestAnimationChange(AnimationNode animation)
+        public void AnimationEditorAnimationChanged(AnimationNode anim)
         {
-            RaiseEvent(new AnimationEditorRequestAnimationChangeEvent(animation));
+            RaiseEvent(new AnimationEditorAnimationChangedEvent(anim));
         }
 
         // Send message

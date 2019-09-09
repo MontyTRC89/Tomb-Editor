@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationEditor.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>

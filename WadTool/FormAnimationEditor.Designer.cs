@@ -908,6 +908,8 @@ namespace WadTool
             this.tbSearchAnimation.Name = "tbSearchAnimation";
             this.tbSearchAnimation.Size = new System.Drawing.Size(181, 22);
             this.tbSearchAnimation.TabIndex = 123;
+            this.toolTip1.SetToolTip(this.tbSearchAnimation, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
+        "");
             this.tbSearchAnimation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchByStateID_KeyDown);
             // 
             // darkButton1
@@ -918,7 +920,8 @@ namespace WadTool
             this.darkButton1.Name = "darkButton1";
             this.darkButton1.Size = new System.Drawing.Size(22, 22);
             this.darkButton1.TabIndex = 122;
-            this.toolTip1.SetToolTip(this.darkButton1, "Filter list");
+            this.toolTip1.SetToolTip(this.darkButton1, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
+        "");
             this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
             // 
             // topBar

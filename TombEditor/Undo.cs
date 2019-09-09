@@ -72,8 +72,8 @@ namespace TombEditor
             Rooms.ForEach(room => Sizes.Add(room, room.SectorSize));
 
             Valid = () => Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Locked) &&
-                                          Rooms.All(room => !Parent.Editor.Level.GetConnectedRooms(room).Except(Rooms).Any()) &&
-                                          Rooms.All(room => Sizes.ContainsKey(room) && room.SectorSize == Sizes[room]);
+                                           Rooms.All(room => !Parent.Editor.Level.GetConnectedRooms(room).Except(Rooms).Any()) &&
+                                           Rooms.All(room => Sizes.ContainsKey(room) && room.SectorSize == Sizes[room]);
             UndoAction = () => EditorActions.MoveRooms(Delta, Rooms, true);
             RedoInstance = () => new MoveRoomsUndoInstance(Parent, Rooms, Delta);
         }
