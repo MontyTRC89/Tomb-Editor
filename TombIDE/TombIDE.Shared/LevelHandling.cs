@@ -15,7 +15,7 @@ namespace TombIDE.Shared
 			{
 				"\n[Level]",
 				"Name= " + level.Name,
-				"Level= DATA\\" + level.Name.ToUpper().Replace(' ', '_') + ", " + ambientSoundID,
+				"Level= DATA\\" + level.DataFileName.ToUpper() + ", " + ambientSoundID,
 				"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
 				"Horizon= " + (horizon? "ENABLED" : "DISABLED")
 			};
@@ -27,7 +27,7 @@ namespace TombIDE.Shared
 
 			string exeFilePath = Path.Combine(destProject.EnginePath, destProject.GetExeFileName());
 
-			string dataFileName = destLevel.Name.Replace(' ', '_') + destProject.GetLevelFileExtension();
+			string dataFileName = destLevel.DataFileName + destProject.GetLevelFileExtension();
 			string dataFilePath = Path.Combine(destProject.EnginePath, "data", dataFileName);
 
 			level.Settings.LevelFilePath = prj2FilePath;

@@ -57,10 +57,15 @@ namespace TombIDE
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
 
+				string dataFileName = textBox_CustomFileName.Text.Trim();
+
+				if (string.IsNullOrWhiteSpace(dataFileName))
+					throw new ArgumentException("You must specify the custom DAT file name.");
+
 				if (radioButton_SpecifiedCopy.Checked || radioButton_SelectedCopy.Checked)
-					ImportAndCopyFiles(levelName);
+					ImportAndCopyFiles(levelName, dataFileName);
 				else if (radioButton_FolderKeep.Checked)
-					ImportButKeepFiles(levelName);
+					ImportButKeepFiles(levelName, dataFileName);
 			}
 			catch (Exception ex)
 			{
@@ -72,7 +77,7 @@ namespace TombIDE
 			}
 		}
 
-		private void ImportAndCopyFiles(string levelName)
+		private void ImportAndCopyFiles(string levelName, string dataFileName)
 		{
 			string fullSpecifiedPrj2FilePath = textBox_Prj2Path.Tag.ToString();
 
@@ -113,26 +118,27 @@ namespace TombIDE
 					specificFileName = "$(LatestFile)";
 			}
 
-			CreateAndAddLevelToProject(levelName, levelFolderPath, specificFileName);
+			CreateAndAddLevelToProject(levelName, levelFolderPath, dataFileName, specificFileName);
 		}
 
-		private void ImportButKeepFiles(string levelName)
+		private void ImportButKeepFiles(string levelName, string dataFileName)
 		{
 			string fullSpecifiedPrj2FilePath = textBox_Prj2Path.Tag.ToString();
 
 			string levelFolderPath = Path.GetDirectoryName(fullSpecifiedPrj2FilePath);
 			string specificFile = Path.GetFileName(fullSpecifiedPrj2FilePath);
 
-			CreateAndAddLevelToProject(levelName, levelFolderPath, specificFile);
+			CreateAndAddLevelToProject(levelName, levelFolderPath, dataFileName, specificFile);
 		}
 
-		private void CreateAndAddLevelToProject(string levelName, string levelFolderPath, string specificFileName)
+		private void CreateAndAddLevelToProject(string levelName, string levelFolderPath, string dataFileName, string specificFileName)
 		{
 			// Create the ProjectLevel instance
 			ProjectLevel importedLevel = new ProjectLevel
 			{
 				Name = levelName,
 				FolderPath = levelFolderPath,
+				DataFileName = dataFileName,
 				SpecificFile = specificFileName
 			};
 
@@ -194,6 +200,31 @@ namespace TombIDE
 		#endregion Level importing methods
 
 		#region Other level importing events / methods
+
+		private void textBox_LevelName_TextChanged(object sender, EventArgs e)
+		{
+			if (!checkBox_CustomFileName.Checked)
+				textBox_CustomFileName.Text = textBox_LevelName.Text.Trim().Replace(' ', '_');
+		}
+
+		private void checkBox_CustomFileName_CheckedChanged(object sender, EventArgs e)
+		{
+			if (checkBox_CustomFileName.Checked)
+				textBox_CustomFileName.Enabled = true;
+			else
+			{
+				textBox_CustomFileName.Enabled = false;
+				textBox_CustomFileName.Text = textBox_LevelName.Text.Trim().Replace(' ', '_');
+			}
+		}
+
+		private void textBox_CustomFileName_TextChanged(object sender, EventArgs e)
+		{
+			int cachedCaretPosition = textBox_CustomFileName.SelectionStart;
+
+			textBox_CustomFileName.Text = textBox_CustomFileName.Text.Replace(' ', '_');
+			textBox_CustomFileName.SelectionStart = cachedCaretPosition;
+		}
 
 		private void radioButton_SpecifiedCopy_CheckedChanged(object sender, EventArgs e)
 		{

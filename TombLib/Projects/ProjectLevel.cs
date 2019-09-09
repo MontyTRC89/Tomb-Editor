@@ -7,6 +7,7 @@ namespace TombLib.Projects
 	public class ProjectLevel
 	{
 		public string Name { get; set; }
+		public string DataFileName { get; set; }
 		public string FolderPath { get; set; }
 		public string SpecificFile { get; set; } = "$(LatestFile)";
 
