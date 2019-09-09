@@ -97,7 +97,6 @@ namespace TombIDE.ScriptEditor
 			this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
 			this.panel_Editor = new System.Windows.Forms.Panel();
 			this.tabControl_Editor = new System.Windows.Forms.CustomTabControl();
-			this.referenceBrowser = new TombIDE.ScriptEditor.ReferenceBrowser();
 			this.richTextBox_Logs = new System.Windows.Forms.RichTextBox();
 			this.scriptFolderWatcher = new System.IO.FileSystemWatcher();
 			this.sectionPanel_Files = new DarkUI.Controls.DarkSectionPanel();
@@ -119,6 +118,8 @@ namespace TombIDE.ScriptEditor
 			this.splitter_Right = new System.Windows.Forms.Splitter();
 			this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+			this.textBox_Syntax = new System.Windows.Forms.TextBox();
+			this.referenceBrowser = new TombIDE.ScriptEditor.ReferenceBrowser();
 			this.contextMenu_TextBox.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.panel_Editor.SuspendLayout();
@@ -985,15 +986,6 @@ namespace TombIDE.ScriptEditor
 			this.tabControl_Editor.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.Editor_TabControl_Selecting);
 			this.tabControl_Editor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Editor_TabControl_MouseClick);
 			// 
-			// referenceBrowser
-			// 
-			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.referenceBrowser.Location = new System.Drawing.Point(0, 0);
-			this.referenceBrowser.Name = "referenceBrowser";
-			this.referenceBrowser.Size = new System.Drawing.Size(948, 143);
-			this.referenceBrowser.TabIndex = 0;
-			// 
 			// richTextBox_Logs
 			// 
 			this.richTextBox_Logs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
@@ -1268,11 +1260,34 @@ namespace TombIDE.ScriptEditor
 			this.toolStrip.Size = new System.Drawing.Size(960, 28);
 			this.toolStrip.TabIndex = 1;
 			// 
+			// textBox_Syntax
+			// 
+			this.textBox_Syntax.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox_Syntax.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.textBox_Syntax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.textBox_Syntax.ForeColor = System.Drawing.Color.Gainsboro;
+			this.textBox_Syntax.Location = new System.Drawing.Point(289, 581);
+			this.textBox_Syntax.Name = "textBox_Syntax";
+			this.textBox_Syntax.ReadOnly = true;
+			this.textBox_Syntax.Size = new System.Drawing.Size(512, 13);
+			this.textBox_Syntax.TabIndex = 10;
+			// 
+			// referenceBrowser
+			// 
+			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.referenceBrowser.Location = new System.Drawing.Point(0, 0);
+			this.referenceBrowser.Name = "referenceBrowser";
+			this.referenceBrowser.Size = new System.Drawing.Size(948, 143);
+			this.referenceBrowser.TabIndex = 0;
+			// 
 			// ScriptEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.Controls.Add(this.textBox_Syntax);
 			this.Controls.Add(this.panel_Editor);
 			this.Controls.Add(this.splitter_Left);
 			this.Controls.Add(this.sectionPanel_ObjBrowser);
@@ -1411,6 +1426,7 @@ namespace TombIDE.ScriptEditor
 		private System.Windows.Forms.ToolStripStatusLabel label_ColNumber;
 		private System.Windows.Forms.ToolStripStatusLabel label_LineNumber;
 		private System.Windows.Forms.ToolStripStatusLabel label_SelectedChars;
+		private System.Windows.Forms.TextBox textBox_Syntax;
 	}
 }
 

@@ -350,6 +350,29 @@ namespace TombIDE.ScriptEditor
 			// Reset the timer
 			inputTimer.Stop();
 			inputTimer.Start();
+
+			Regex regex = new Regex(@"\ACustomize\s*?=.*,", RegexOptions.IgnoreCase);
+			string currentLine = _textBox.GetLineText(_textBox.Selection.Start.iLine);
+
+			if (regex.IsMatch(currentLine))
+			{
+				string firstMnemonic = currentLine.Split('=')[1].Replace(',', ' ').Trim();
+
+				foreach (PluginMnemonic pluginMnemonic in KeyWords.PluginMnemonics)
+				{
+					if (pluginMnemonic.Flag.ToLower() == firstMnemonic.ToLower())
+					{
+						try
+						{
+							string syntaxText = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
+							textBox_Syntax.Text = syntaxText;
+
+							break;
+						}
+						catch { }
+					}
+				}
+			}
 		}
 
 		private void Editor_UndoRedoState_Changed(object sender, EventArgs e) => UpdateUndoRedoSaveStates();
