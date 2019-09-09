@@ -334,6 +334,7 @@ namespace TombLib.Utils
                                     continue;
 
                                 // Attempt to actually reload (Likely to fail because files may still be locked!)
+                                if(objToReload.Key != null)
                                 try
                                 {
                                     objToReload.Key.TryReload(this, new ReloadArgs { Obj = objToReload.Key, ElapsedTime = elapsedTime, AttemptIndex = attemptIndex });
@@ -353,7 +354,12 @@ namespace TombLib.Utils
                             foreach (var objDone in objsDone)
                                 if (objDone.Value.ChangeTimestamp <= timestamp)
                                     for (int i = _objsToReloadQueue.Count - 1; i >= 0; --i)
-                                        if (objDone.Key.IsRepresentingSameObject(_objsToReloadQueue[i].Key))
+                                        if(objDone.Key != null)
+                                        {
+                                            if (objDone.Key.IsRepresentingSameObject(_objsToReloadQueue[i].Key))
+                                                _objsToReloadQueue.RemoveAt(i);
+                                        }
+                                        else
                                             _objsToReloadQueue.RemoveAt(i);
                     } while (true);
                 } while (true);
