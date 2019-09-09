@@ -21,6 +21,7 @@
 			this.button_Import = new DarkUI.Controls.DarkButton();
 			this.button_OpenAudioFolder = new DarkUI.Controls.DarkButton();
 			this.button_SelectAll = new DarkUI.Controls.DarkButton();
+			this.checkBox_CustomFileName = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_EnableHorizon = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_GenerateSection = new DarkUI.Controls.DarkCheckBox();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
@@ -30,6 +31,7 @@
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.textBox_Prj2Path = new DarkUI.Controls.DarkTextBox();
 			this.panel_02 = new System.Windows.Forms.Panel();
+			this.textBox_CustomFileName = new DarkUI.Controls.DarkTextBox();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.radioButton_FolderKeep = new DarkUI.Controls.DarkRadioButton();
 			this.radioButton_SelectedCopy = new DarkUI.Controls.DarkRadioButton();
@@ -48,11 +50,11 @@
 			// button_DeselectAll
 			// 
 			this.button_DeselectAll.Enabled = false;
-			this.button_DeselectAll.Location = new System.Drawing.Point(225, 118);
+			this.button_DeselectAll.Location = new System.Drawing.Point(225, 147);
 			this.button_DeselectAll.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.button_DeselectAll.Name = "button_DeselectAll";
 			this.button_DeselectAll.Size = new System.Drawing.Size(213, 23);
-			this.button_DeselectAll.TabIndex = 5;
+			this.button_DeselectAll.TabIndex = 7;
 			this.button_DeselectAll.Text = "Deselect all";
 			this.button_DeselectAll.Click += new System.EventHandler(this.button_DeselectAll_Click);
 			// 
@@ -61,7 +63,7 @@
 			this.button_Import.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Import.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Import.Location = new System.Drawing.Point(9, 520);
+			this.button_Import.Location = new System.Drawing.Point(9, 549);
 			this.button_Import.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.button_Import.Name = "button_Import";
 			this.button_Import.Size = new System.Drawing.Size(446, 23);
@@ -84,13 +86,23 @@
 			// button_SelectAll
 			// 
 			this.button_SelectAll.Enabled = false;
-			this.button_SelectAll.Location = new System.Drawing.Point(6, 118);
+			this.button_SelectAll.Location = new System.Drawing.Point(6, 147);
 			this.button_SelectAll.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.button_SelectAll.Name = "button_SelectAll";
 			this.button_SelectAll.Size = new System.Drawing.Size(213, 23);
-			this.button_SelectAll.TabIndex = 4;
+			this.button_SelectAll.TabIndex = 6;
 			this.button_SelectAll.Text = "Select all";
 			this.button_SelectAll.Click += new System.EventHandler(this.button_SelectAll_Click);
+			// 
+			// checkBox_CustomFileName
+			// 
+			this.checkBox_CustomFileName.Location = new System.Drawing.Point(6, 57);
+			this.checkBox_CustomFileName.Margin = new System.Windows.Forms.Padding(6, 6, 3, 6);
+			this.checkBox_CustomFileName.Name = "checkBox_CustomFileName";
+			this.checkBox_CustomFileName.Size = new System.Drawing.Size(112, 20);
+			this.checkBox_CustomFileName.TabIndex = 2;
+			this.checkBox_CustomFileName.Text = "Custom DAT name";
+			this.checkBox_CustomFileName.CheckedChanged += new System.EventHandler(this.checkBox_CustomFileName_CheckedChanged);
 			// 
 			// checkBox_EnableHorizon
 			// 
@@ -197,6 +209,8 @@
 			// panel_02
 			// 
 			this.panel_02.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_02.Controls.Add(this.textBox_CustomFileName);
+			this.panel_02.Controls.Add(this.checkBox_CustomFileName);
 			this.panel_02.Controls.Add(this.treeView);
 			this.panel_02.Controls.Add(this.button_DeselectAll);
 			this.panel_02.Controls.Add(this.button_SelectAll);
@@ -208,39 +222,49 @@
 			this.panel_02.Location = new System.Drawing.Point(9, 68);
 			this.panel_02.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.panel_02.Name = "panel_02";
-			this.panel_02.Size = new System.Drawing.Size(446, 332);
+			this.panel_02.Size = new System.Drawing.Size(446, 361);
 			this.panel_02.TabIndex = 1;
+			// 
+			// textBox_CustomFileName
+			// 
+			this.textBox_CustomFileName.Enabled = false;
+			this.textBox_CustomFileName.Location = new System.Drawing.Point(124, 57);
+			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
+			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
+			this.textBox_CustomFileName.Size = new System.Drawing.Size(314, 20);
+			this.textBox_CustomFileName.TabIndex = 3;
+			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
 			// 
 			// treeView
 			// 
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Enabled = false;
-			this.treeView.Location = new System.Drawing.Point(6, 147);
+			this.treeView.Location = new System.Drawing.Point(6, 176);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.MultiSelect = true;
 			this.treeView.Name = "treeView";
 			this.treeView.Size = new System.Drawing.Size(432, 148);
-			this.treeView.TabIndex = 6;
+			this.treeView.TabIndex = 8;
 			// 
 			// radioButton_FolderKeep
 			// 
-			this.radioButton_FolderKeep.Location = new System.Drawing.Point(6, 301);
+			this.radioButton_FolderKeep.Location = new System.Drawing.Point(6, 330);
 			this.radioButton_FolderKeep.Margin = new System.Windows.Forms.Padding(6, 3, 6, 9);
 			this.radioButton_FolderKeep.Name = "radioButton_FolderKeep";
 			this.radioButton_FolderKeep.Size = new System.Drawing.Size(432, 20);
-			this.radioButton_FolderKeep.TabIndex = 7;
+			this.radioButton_FolderKeep.TabIndex = 9;
 			this.radioButton_FolderKeep.Text = "Import the whole specified folder but keep it\'s original location (Not recommende" +
     "d)";
 			this.radioButton_FolderKeep.CheckedChanged += new System.EventHandler(this.radioButton_SpecificKeep_CheckedChanged);
 			// 
 			// radioButton_SelectedCopy
 			// 
-			this.radioButton_SelectedCopy.Location = new System.Drawing.Point(6, 86);
+			this.radioButton_SelectedCopy.Location = new System.Drawing.Point(6, 115);
 			this.radioButton_SelectedCopy.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.radioButton_SelectedCopy.Name = "radioButton_SelectedCopy";
 			this.radioButton_SelectedCopy.Size = new System.Drawing.Size(432, 26);
-			this.radioButton_SelectedCopy.TabIndex = 3;
+			this.radioButton_SelectedCopy.TabIndex = 5;
 			this.radioButton_SelectedCopy.Text = "Import selected .prj2 files from the specified folder and copy them into the proj" +
     "ect\'s /Levels/ folder";
 			this.radioButton_SelectedCopy.CheckedChanged += new System.EventHandler(this.radioButton_SelectedCopy_CheckedChanged);
@@ -248,11 +272,11 @@
 			// radioButton_SpecifiedCopy
 			// 
 			this.radioButton_SpecifiedCopy.Checked = true;
-			this.radioButton_SpecifiedCopy.Location = new System.Drawing.Point(6, 60);
-			this.radioButton_SpecifiedCopy.Margin = new System.Windows.Forms.Padding(6, 9, 6, 3);
+			this.radioButton_SpecifiedCopy.Location = new System.Drawing.Point(6, 89);
+			this.radioButton_SpecifiedCopy.Margin = new System.Windows.Forms.Padding(6, 6, 6, 3);
 			this.radioButton_SpecifiedCopy.Name = "radioButton_SpecifiedCopy";
 			this.radioButton_SpecifiedCopy.Size = new System.Drawing.Size(432, 20);
-			this.radioButton_SpecifiedCopy.TabIndex = 2;
+			this.radioButton_SpecifiedCopy.TabIndex = 4;
 			this.radioButton_SpecifiedCopy.TabStop = true;
 			this.radioButton_SpecifiedCopy.Text = "Only import the specified .prj2 file and copy it into the project\'s /Levels/ fold" +
     "er";
@@ -266,13 +290,14 @@
 			this.textBox_LevelName.Name = "textBox_LevelName";
 			this.textBox_LevelName.Size = new System.Drawing.Size(432, 26);
 			this.textBox_LevelName.TabIndex = 1;
+			this.textBox_LevelName.TextChanged += new System.EventHandler(this.textBox_LevelName_TextChanged);
 			// 
 			// panel_04
 			// 
 			this.panel_04.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel_04.Controls.Add(this.panel_ScriptSettings);
 			this.panel_04.Controls.Add(this.checkBox_GenerateSection);
-			this.panel_04.Location = new System.Drawing.Point(9, 406);
+			this.panel_04.Location = new System.Drawing.Point(9, 435);
 			this.panel_04.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.panel_04.Name = "panel_04";
 			this.panel_04.Size = new System.Drawing.Size(446, 108);
@@ -293,7 +318,7 @@
 			// 
 			// progressBar
 			// 
-			this.progressBar.Location = new System.Drawing.Point(9, 520);
+			this.progressBar.Location = new System.Drawing.Point(9, 549);
 			this.progressBar.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(446, 23);
@@ -305,7 +330,7 @@
 			this.AcceptButton = this.button_Import;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(464, 555);
+			this.ClientSize = new System.Drawing.Size(464, 584);
 			this.Controls.Add(this.panel_04);
 			this.Controls.Add(this.button_Import);
 			this.Controls.Add(this.panel_01);
@@ -334,6 +359,7 @@
 		private DarkUI.Controls.DarkButton button_Import;
 		private DarkUI.Controls.DarkButton button_OpenAudioFolder;
 		private DarkUI.Controls.DarkButton button_SelectAll;
+		private DarkUI.Controls.DarkCheckBox checkBox_CustomFileName;
 		private DarkUI.Controls.DarkCheckBox checkBox_EnableHorizon;
 		private DarkUI.Controls.DarkCheckBox checkBox_GenerateSection;
 		private DarkUI.Controls.DarkLabel label_01;
@@ -344,6 +370,7 @@
 		private DarkUI.Controls.DarkRadioButton radioButton_FolderKeep;
 		private DarkUI.Controls.DarkRadioButton radioButton_SelectedCopy;
 		private DarkUI.Controls.DarkRadioButton radioButton_SpecifiedCopy;
+		private DarkUI.Controls.DarkTextBox textBox_CustomFileName;
 		private DarkUI.Controls.DarkTextBox textBox_LevelName;
 		private DarkUI.Controls.DarkTextBox textBox_Prj2Path;
 		private DarkUI.Controls.DarkTreeView treeView;

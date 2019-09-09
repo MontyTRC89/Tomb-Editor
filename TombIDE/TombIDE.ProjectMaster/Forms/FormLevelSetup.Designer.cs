@@ -19,6 +19,7 @@
 		{
 			this.button_Create = new DarkUI.Controls.DarkButton();
 			this.button_OpenAudioFolder = new DarkUI.Controls.DarkButton();
+			this.checkBox_CustomFileName = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_EnableHorizon = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_GenerateSection = new DarkUI.Controls.DarkCheckBox();
 			this.label_01 = new DarkUI.Controls.DarkLabel();
@@ -26,6 +27,7 @@
 			this.numeric_SoundID = new DarkUI.Controls.DarkNumericUpDown();
 			this.panel_01 = new System.Windows.Forms.Panel();
 			this.panel_ScriptSettings = new System.Windows.Forms.Panel();
+			this.textBox_CustomFileName = new DarkUI.Controls.DarkTextBox();
 			this.textBox_LevelName = new DarkUI.Controls.DarkTextBox();
 			((System.ComponentModel.ISupportInitialize)(this.numeric_SoundID)).BeginInit();
 			this.panel_01.SuspendLayout();
@@ -37,11 +39,11 @@
 			this.button_Create.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Create.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Create.Location = new System.Drawing.Point(9, 171);
+			this.button_Create.Location = new System.Drawing.Point(9, 203);
 			this.button_Create.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.button_Create.Name = "button_Create";
 			this.button_Create.Size = new System.Drawing.Size(446, 23);
-			this.button_Create.TabIndex = 3;
+			this.button_Create.TabIndex = 5;
 			this.button_Create.Text = "Create New Level";
 			this.button_Create.Click += new System.EventHandler(this.button_Create_Click);
 			// 
@@ -56,6 +58,16 @@
 			this.button_OpenAudioFolder.Text = "Open /audio/";
 			this.button_OpenAudioFolder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.button_OpenAudioFolder.Click += new System.EventHandler(this.button_OpenAudioFolder_Click);
+			// 
+			// checkBox_CustomFileName
+			// 
+			this.checkBox_CustomFileName.Location = new System.Drawing.Point(9, 60);
+			this.checkBox_CustomFileName.Margin = new System.Windows.Forms.Padding(0, 6, 3, 6);
+			this.checkBox_CustomFileName.Name = "checkBox_CustomFileName";
+			this.checkBox_CustomFileName.Size = new System.Drawing.Size(150, 20);
+			this.checkBox_CustomFileName.TabIndex = 2;
+			this.checkBox_CustomFileName.Text = "Custom PRJ2 / DAT name";
+			this.checkBox_CustomFileName.CheckedChanged += new System.EventHandler(this.checkBox_CustomFileName_CheckedChanged);
 			// 
 			// checkBox_EnableHorizon
 			// 
@@ -133,7 +145,7 @@
 			this.panel_01.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel_01.Controls.Add(this.panel_ScriptSettings);
 			this.panel_01.Controls.Add(this.checkBox_GenerateSection);
-			this.panel_01.Location = new System.Drawing.Point(9, 57);
+			this.panel_01.Location = new System.Drawing.Point(9, 89);
 			this.panel_01.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.panel_01.Name = "panel_01";
 			this.panel_01.Size = new System.Drawing.Size(446, 108);
@@ -152,6 +164,16 @@
 			this.panel_ScriptSettings.Size = new System.Drawing.Size(432, 68);
 			this.panel_ScriptSettings.TabIndex = 1;
 			// 
+			// textBox_CustomFileName
+			// 
+			this.textBox_CustomFileName.Enabled = false;
+			this.textBox_CustomFileName.Location = new System.Drawing.Point(165, 60);
+			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(3, 6, 0, 6);
+			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
+			this.textBox_CustomFileName.Size = new System.Drawing.Size(290, 20);
+			this.textBox_CustomFileName.TabIndex = 3;
+			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
+			// 
 			// textBox_LevelName
 			// 
 			this.textBox_LevelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -160,13 +182,16 @@
 			this.textBox_LevelName.Name = "textBox_LevelName";
 			this.textBox_LevelName.Size = new System.Drawing.Size(446, 26);
 			this.textBox_LevelName.TabIndex = 1;
+			this.textBox_LevelName.TextChanged += new System.EventHandler(this.textBox_LevelName_TextChanged);
 			// 
 			// FormLevelSetup
 			// 
 			this.AcceptButton = this.button_Create;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(464, 206);
+			this.ClientSize = new System.Drawing.Size(464, 238);
+			this.Controls.Add(this.textBox_CustomFileName);
+			this.Controls.Add(this.checkBox_CustomFileName);
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.button_Create);
 			this.Controls.Add(this.label_01);
@@ -190,11 +215,13 @@
 
 		private DarkUI.Controls.DarkButton button_Create;
 		private DarkUI.Controls.DarkButton button_OpenAudioFolder;
+		private DarkUI.Controls.DarkCheckBox checkBox_CustomFileName;
 		private DarkUI.Controls.DarkCheckBox checkBox_EnableHorizon;
 		private DarkUI.Controls.DarkCheckBox checkBox_GenerateSection;
 		private DarkUI.Controls.DarkLabel label_01;
 		private DarkUI.Controls.DarkLabel label_02;
 		private DarkUI.Controls.DarkNumericUpDown numeric_SoundID;
+		private DarkUI.Controls.DarkTextBox textBox_CustomFileName;
 		private DarkUI.Controls.DarkTextBox textBox_LevelName;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_ScriptSettings;

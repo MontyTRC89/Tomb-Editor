@@ -28,6 +28,31 @@ namespace TombIDE.ProjectMaster
 
 		#region Events
 
+		private void textBox_LevelName_TextChanged(object sender, EventArgs e)
+		{
+			if (!checkBox_CustomFileName.Checked)
+				textBox_CustomFileName.Text = textBox_LevelName.Text.Trim().Replace(' ', '_');
+		}
+
+		private void checkBox_CustomFileName_CheckedChanged(object sender, EventArgs e)
+		{
+			if (checkBox_CustomFileName.Checked)
+				textBox_CustomFileName.Enabled = true;
+			else
+			{
+				textBox_CustomFileName.Enabled = false;
+				textBox_CustomFileName.Text = textBox_LevelName.Text.Trim().Replace(' ', '_');
+			}
+		}
+
+		private void textBox_CustomFileName_TextChanged(object sender, EventArgs e)
+		{
+			int cachedCaretPosition = textBox_CustomFileName.SelectionStart;
+
+			textBox_CustomFileName.Text = textBox_CustomFileName.Text.Replace(' ', '_');
+			textBox_CustomFileName.SelectionStart = cachedCaretPosition;
+		}
+
 		private void button_Create_Click(object sender, EventArgs e)
 		{
 			button_Create.Enabled = false;
@@ -47,6 +72,11 @@ namespace TombIDE.ProjectMaster
 						throw new ArgumentException("A level with the same name already exists on the list.");
 				}
 
+				string dataFileName = textBox_CustomFileName.Text.Trim();
+
+				if (string.IsNullOrWhiteSpace(dataFileName))
+					throw new ArgumentException("You must specify the custom PRJ2 / DAT file name.");
+
 				string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName);
 
 				// Create the level folder
@@ -60,17 +90,17 @@ namespace TombIDE.ProjectMaster
 				ProjectLevel addedProjectLevel = new ProjectLevel
 				{
 					Name = levelName,
+					DataFileName = dataFileName,
 					FolderPath = levelFolderPath
 				};
 
 				// Create a simple .prj2 file with pre-set project settings (game paths etc.)
 				Level level = Level.CreateSimpleLevel();
 
-				string prj2FilePath = Path.Combine(addedProjectLevel.FolderPath, addedProjectLevel.Name) + ".prj2";
+				string prj2FilePath = Path.Combine(addedProjectLevel.FolderPath, addedProjectLevel.DataFileName) + ".prj2";
 				string exeFilePath = Path.Combine(_ide.Project.EnginePath, _ide.Project.GetExeFileName());
 
-				string dataFileName = addedProjectLevel.Name.Replace(' ', '_') + _ide.Project.GetLevelFileExtension();
-				string dataFilePath = Path.Combine(_ide.Project.EnginePath, "data", dataFileName);
+				string dataFilePath = Path.Combine(_ide.Project.EnginePath, "data", addedProjectLevel.DataFileName + _ide.Project.GetLevelFileExtension());
 
 				level.Settings.LevelFilePath = prj2FilePath;
 
