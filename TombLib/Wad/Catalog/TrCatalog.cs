@@ -8,15 +8,11 @@ namespace TombLib.Wad.Catalog
 {
     public class TrCatalog
     {
-        public struct OriginalNameInfo
-        {
-            public bool IsStatic { get; set; }
-            public uint Id { get; set; }
-        }
-
         private struct Item
         {
             public string Name { get; set; }
+            public string Description { get; set; }
+            public uint SkinId { get; set; }
         }
 
         private struct ItemSound
@@ -26,6 +22,13 @@ namespace TombLib.Wad.Catalog
             public bool FixedByDefault { get; set; }
         }
 
+        private struct ItemAnimation
+        {
+            public uint Item;
+            public uint Animation;
+            public string Name { get; set; }
+        }
+
         private class Game
         {
             internal WadGameVersion Version { get; private set; }
@@ -33,7 +36,7 @@ namespace TombLib.Wad.Catalog
             internal SortedList<uint, Item> SpriteSequences { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, Item> Statics { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, ItemSound> Sounds { get; private set; } = new SortedList<uint, ItemSound>();
-            internal SortedList<string, OriginalNameInfo> OriginalNames { get; private set; } = new SortedList<string, OriginalNameInfo>();
+            internal List<ItemAnimation> Animations { get; private set; } = new List<ItemAnimation>();
             //internal int SoundMapSize { get; set; }
 
             public Game(WadGameVersion version)
@@ -74,6 +77,17 @@ namespace TombLib.Wad.Catalog
             return game.Moveables[id].Name;
         }
 
+        public static uint GetMoveableSkin(WadGameVersion version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return id;
+            Item entry;
+            if (!game.Moveables.TryGetValue(id, out entry))
+                return id;
+            return game.Moveables[id].SkinId;
+        }
+
         public static string GetStaticName(WadGameVersion version, uint id)
         {
             Game game;
@@ -83,6 +97,33 @@ namespace TombLib.Wad.Catalog
             if (!game.Statics.TryGetValue(id, out entry))
                 return "Unknown #" + id;
             return game.Statics[id].Name;
+        }
+
+        public static uint? GetItemIndex(WadGameVersion version, string name, out bool isMoveable)
+        {
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+            {
+                isMoveable = false;
+                return null;
+            }
+
+            var entry = game.Moveables.FirstOrDefault(item => item.Value.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            if (entry.Value.Name != null)
+            {
+                isMoveable = true;
+                return entry.Key;
+            }
+
+            entry = game.Statics.FirstOrDefault(item => item.Value.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            if (entry.Value.Name != null)
+            {
+                isMoveable = false;
+                return entry.Key;
+            }
+
+            isMoveable = false;
+            return null;
         }
 
         public static string GetOriginalSoundName(WadGameVersion version, uint id)
@@ -116,17 +157,6 @@ namespace TombLib.Wad.Catalog
             return game.SpriteSequences[id].Name;
         }
 
-        public static OriginalNameInfo? GetSlotFromOriginalName(WadGameVersion version, string name)
-        {
-            Game game;
-            if (!Games.TryGetValue(version, out game))
-                return null;
-            OriginalNameInfo entry;
-            if (!game.OriginalNames.TryGetValue(name, out entry))
-                return null;
-            return entry;
-        }
-
         public static bool IsSoundFixedByDefault(WadGameVersion version, uint id)
         {
             Game game;
@@ -136,6 +166,29 @@ namespace TombLib.Wad.Catalog
             if (!game.Sounds.TryGetValue(id, out entry))
                 return false;
             return game.Sounds[id].FixedByDefault;
+        }
+
+        public static string GetAnimationName(WadGameVersion version, uint objectId, uint animId)
+        {
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return "Animation " + animId;
+
+            ItemAnimation entry = game.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
+            if (entry.Name == null)
+            {
+                foreach (var otherGame in Games.Where(g => g.Key != version))
+                {
+                    entry = otherGame.Value.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
+                    if (entry.Name != null)
+                        break;
+                }
+            }
+
+            if (entry.Name == null)
+                return "Animation " + animId;
+            else
+                return entry.Name;
         }
 
         public static IDictionary<uint, string> GetAllMoveables(WadGameVersion version)
@@ -226,7 +279,12 @@ namespace TombLib.Wad.Catalog
 
                         uint id = uint.Parse(moveableNode.Attributes["id"].Value);
                         string name = moveableNode.Attributes["name"].Value;
-                        game.Moveables.Add(id, new Item { Name = name });
+
+                        var skinId = id;
+                        if (moveableNode.Attributes["use_body_from"] != null)
+                            skinId = uint.Parse(moveableNode.Attributes["use_body_from"].Value);
+
+                        game.Moveables.Add(id, new Item { Name = name, SkinId = skinId });
                     }
 
                 // Parse statics
@@ -242,7 +300,7 @@ namespace TombLib.Wad.Catalog
                         game.Statics.Add(id, new Item { Name = name });
                     }
 
-                // Parse sprite sequences
+                // Parse sounds
                 XmlNode sounds = gameNode.SelectSingleNode("sounds");
                 if (sounds != null)
                     foreach (XmlNode soundNode in sounds.ChildNodes)
@@ -270,18 +328,19 @@ namespace TombLib.Wad.Catalog
                         game.SpriteSequences.Add(id, new Item { Name = name });
                     }
 
-                // Parse original names
-                XmlNode originalNames = gameNode.SelectSingleNode("original_names");
-                if (originalNames != null)
-                    foreach (XmlNode originalNameNode in originalNames.ChildNodes)
+                // Parse animations
+                XmlNode animations = gameNode.SelectSingleNode("animations");
+                if (animations != null)
+                    foreach (XmlNode originalNameNode in animations.ChildNodes)
                     {
-                        if (originalNameNode.Name != "org")
+                        if (originalNameNode.Name != "anim")
                             continue;
 
-                        bool isStatic = bool.Parse(originalNameNode.Attributes["is_static"].Value);
+                        uint item = uint.Parse(originalNameNode.Attributes["item"].Value);
                         uint id = uint.Parse(originalNameNode.Attributes["id"].Value);
                         string name = originalNameNode.Attributes["name"].Value;
-                        game.OriginalNames.Add(name, new OriginalNameInfo { IsStatic = isStatic, Id = id });
+
+                        game.Animations.Add(new ItemAnimation { Name = name, Animation = id, Item = item });
                     }
                 Games.Add(version, game);
             }

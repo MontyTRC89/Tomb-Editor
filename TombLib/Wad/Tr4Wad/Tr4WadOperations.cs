@@ -291,7 +291,7 @@ namespace TombLib.Wad.Tr4Wad
                 newAnimation.FrameRate = oldAnimation.FrameDuration;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.AnimationIndex);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
-                newAnimation.Name = "Animation " + j;
+                newAnimation.Name = TrCatalog.GetAnimationName(WadGameVersion.TR4_TRNG, oldMoveable.ObjectID, (uint)j);
 
                 // Fix wadmerger bug with inverted frame start/end on 0-frame anims
                 ushort newFrameStart = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameStart : oldAnimation.FrameEnd;
