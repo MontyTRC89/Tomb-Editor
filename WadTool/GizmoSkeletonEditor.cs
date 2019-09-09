@@ -29,12 +29,16 @@ namespace WadTool
         protected override void GizmoMove(Vector3 newPos) { }
         protected override void GizmoMoveDelta(Vector3 delta)
         {
-            // Move the bone offset
-            _control.SelectedNode.Bone.Translation += delta;
-            _tool.BoneOffsetMoved();
+            if (_control != null && _control.SelectedNode != null)
+            {
+                // Move the bone offset
+                _control.SelectedNode.Bone.Translation += delta;
+                _tool.BoneOffsetMoved();
 
-            // Draw scene
-            _control.Invalidate();
+                // Draw scene
+                _control.Invalidate();
+            }
+
         }
 
         protected override Vector3 Position => _control != null && _control.SelectedNode != null ? _control.SelectedNode.Centre : Vector3.Zero;
