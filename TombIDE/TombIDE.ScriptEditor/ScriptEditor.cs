@@ -606,6 +606,8 @@ namespace TombIDE.ScriptEditor
 			}
 
 			// Prevent a graphical glitch
+			tabControl_Info.Visible = false;
+
 			if (tabControl_Info.SelectedIndex == 0)
 			{
 				tabControl_Info.SelectTab(1);
@@ -618,6 +620,8 @@ namespace TombIDE.ScriptEditor
 				tabControl_Info.Invalidate();
 				tabControl_Info.SelectTab(1);
 			}
+
+			tabControl_Info.Visible = true;
 
 			AdjustFileListButtons();
 
