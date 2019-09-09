@@ -564,7 +564,7 @@ namespace WadTool
 
         private void DeleteFrames(IWin32Window owner, bool undo, bool updateGUI) // No owner = no warnings!
         {
-            if (!ValidAndSelected(owner != null)) return;
+            if (!ValidAndSelected(false)) return;
 
             if (owner != null &&
                 DarkMessageBox.Show(this, "Do you really want to delete frame" +
@@ -998,7 +998,7 @@ namespace WadTool
                 if (form.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode); // @FIXME: POSSIBLE DEEP CLONING ISSUES!!!!!!!
+                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
 
                 // Add the new state changes
                 _editor.SelectedNode.WadAnimation.AnimCommands.Clear();
@@ -1019,7 +1019,7 @@ namespace WadTool
                 if (form.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode); // @FIXME: POSSIBLE DEEP CLONING ISSUES!!!!!!!
+                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
 
                 // Add the new state changes
                 _editor.SelectedNode.WadAnimation.StateChanges.Clear();
@@ -1074,15 +1074,21 @@ namespace WadTool
         private bool ValidAndSelected(bool prompt = true)
         {
             if (timeline.SelectionIsEmpty)
+            {
                 if (prompt) popup.ShowError(panelRendering, "No frames selected. Please select at least 1 frame.");
+            }
             else if (_editor.SelectedNode == null)
+            {
                 if (prompt) popup.ShowError(panelRendering, "No animation selected. Select animation to work with.");
+            }
             else if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count == 0)
+            {
                 if (prompt) popup.ShowError(panelRendering, "Current animation contains no frames.");
+            }
             else
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
 
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1157,6 +1163,8 @@ namespace WadTool
         private void butTbReplaceAnimation_Click(object sender, EventArgs e) => ReplaceAnimation();
         private void butTbSplitAnimation_Click(object sender, EventArgs e) => SplitAnimation();
         private void butTbSaveChanges_Click(object sender, EventArgs e) => SaveChanges();
+        private void butTbUndo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
+        private void butTbRedo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
 
         private void butAddNewAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
@@ -1183,6 +1191,8 @@ namespace WadTool
         private void tbCollisionBoxMaxX_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxX);
         private void tbCollisionBoxMaxY_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxY);
         private void tbCollisionBoxMaxZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxZ);
+
+        private void tbName_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) tbName_Validated(this, e); }
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
@@ -1383,11 +1393,12 @@ namespace WadTool
         {
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input
             var activeControlType = GetFocusedControl(this)?.GetType().Name;
-            if  (activeControlType == "DarkTextBox" ||
+            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
+                (activeControlType == "DarkTextBox" ||
                  activeControlType == "DarkAutocompleteTextBox" ||
                  activeControlType == "DarkComboBox" ||
                  activeControlType == "DarkListBox" ||
-                 activeControlType == "UpDownEdit")
+                 activeControlType == "UpDownEdit"))
                 return base.ProcessCmdKey(ref msg, keyData);
 
             switch (keyData)
@@ -1420,6 +1431,7 @@ namespace WadTool
             SelectAnimation(node);
         }
 
+        private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateStatusLabel();
         private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame(timeline.Value);
         private void timeline_AnimCommandDoubleClick(object sender, WadAnimCommand ac) => EditAnimCommands(ac);
 
@@ -1474,9 +1486,5 @@ namespace WadTool
             int.TryParse(tbInterpolateFrameCount.Text, out frameCount);
             InterpolateFrames(frameCount);
         }
-
-        private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateStatusLabel();
-        private void butTbUndo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
-        private void butTbRedo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
     }
 }

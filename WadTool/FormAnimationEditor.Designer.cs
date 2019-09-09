@@ -731,6 +731,7 @@ namespace WadTool
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(167, 22);
             this.tbName.TabIndex = 95;
+            this.tbName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbName_KeyDown);
             this.tbName.Validated += new System.EventHandler(this.tbName_Validated);
             // 
             // darkLabel3
