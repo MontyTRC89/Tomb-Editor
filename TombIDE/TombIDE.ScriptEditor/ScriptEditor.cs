@@ -540,6 +540,8 @@ namespace TombIDE.ScriptEditor
 
 		private void ToggleToolStrip(bool state)
 		{
+			menuStrip.SendToBack(); // Preventing a glitch
+
 			menuItem_ToolStrip.Checked = state;
 			toolStrip.Visible = state;
 			_ide.Configuration.View_ShowToolStrip = state;
@@ -601,6 +603,20 @@ namespace TombIDE.ScriptEditor
 
 				Controls.SetChildIndex(splitter_Bottom, 5);
 				Controls.SetChildIndex(splitter_Right, 3);
+			}
+
+			// Prevent a graphical glitch
+			if (tabControl_Info.SelectedIndex == 0)
+			{
+				tabControl_Info.SelectTab(1);
+				tabControl_Info.Invalidate();
+				tabControl_Info.SelectTab(0);
+			}
+			else
+			{
+				tabControl_Info.SelectTab(0);
+				tabControl_Info.Invalidate();
+				tabControl_Info.SelectTab(1);
 			}
 
 			AdjustFileListButtons();
