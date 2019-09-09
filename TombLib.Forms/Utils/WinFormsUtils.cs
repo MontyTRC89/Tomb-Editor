@@ -83,9 +83,23 @@ namespace TombLib.Utils
                 return newObjects;
         }
 
-        public static IEnumerable<Control> AllSubControls(Control control)
+        public static IEnumerable<Control> AllSubControls(Control control) => Enumerable.Repeat(control, 1).Union(control.Controls.OfType<Control>().SelectMany(AllSubControls));
+        public static Control GetFocusedControl(ContainerControl control) => (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
+
+        public static bool CurrentControlSupportsInput(Form form, Keys keyData)
         {
-            return Enumerable.Repeat(control, 1).Union(control.Controls.OfType<Control>().SelectMany(AllSubControls));
+            var activeControlType = GetFocusedControl(form)?.GetType().Name;
+            if ((keyData.HasFlag(Keys.Control | Keys.A) || !keyData.HasFlag(Keys.Control)) && !keyData.HasFlag(Keys.Alt) &&
+                (activeControlType == "DarkTextBox" ||
+                 activeControlType == "DarkAutocompleteTextBox" ||
+                 activeControlType == "DarkComboBox" ||
+                 activeControlType == "DarkListBox" ||
+                 activeControlType == "DarkListView" ||
+                 activeControlType == "DarkTreeView" ||
+                 activeControlType == "UpDownEdit"))
+                return true;
+            else
+                return false;
         }
     }
 }

@@ -8,6 +8,7 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool
@@ -1431,17 +1432,11 @@ namespace WadTool
             _timerPlayAnimation.Tick -= timerPlayAnimation_Tick;
         }
 
-        private Control GetFocusedControl(ContainerControl control) => (control.ActiveControl is ContainerControl ? GetFocusedControl((ContainerControl)control.ActiveControl) : control.ActiveControl);
+        
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input
-            var activeControlType = GetFocusedControl(this)?.GetType().Name;
-            if (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt) &&
-                (activeControlType == "DarkTextBox" ||
-                 activeControlType == "DarkAutocompleteTextBox" ||
-                 activeControlType == "DarkComboBox" ||
-                 activeControlType == "DarkListBox" ||
-                 activeControlType == "UpDownEdit"))
+            if (WinFormsUtils.CurrentControlSupportsInput(this, keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
 
             switch (keyData)
@@ -1449,6 +1444,8 @@ namespace WadTool
                 case Keys.Escape: timeline.ResetSelection(); break;
                 case Keys.Left: timeline.ValueLoopDec(); break;
                 case Keys.Right: timeline.ValueLoopInc(); break;
+                case Keys.Up: timeline.Value = timeline.Minimum; break;
+                case Keys.Down: timeline.Value = timeline.Maximum; break;
                 case Keys.Space: PlayAnimation(); break;
                 case Keys.I: timeline.SelectionStart = timeline.Value; break;
                 case Keys.O: timeline.SelectionEnd = timeline.Value; break;
