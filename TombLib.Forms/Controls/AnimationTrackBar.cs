@@ -215,6 +215,7 @@ namespace TombLib.Controls
             _highlightCounter = 1.0f;
             _highlightTimer.Start();
         }
+        public void Highlight() => Highlight(Minimum, Maximum);
 
         public void SelectCurrentValue()
         {

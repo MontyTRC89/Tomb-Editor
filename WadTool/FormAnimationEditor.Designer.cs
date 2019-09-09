@@ -39,6 +39,8 @@ namespace WadTool
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.calculateBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resampleAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resampleAnimationToKeyframesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertnFramesAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -241,7 +243,9 @@ namespace WadTool
             this.exportToolStripMenuItem,
             this.toolStripMenuItem7,
             this.calculateBoundingBoxForAllFramesToolStripMenuItem,
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem});
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem,
+            this.resampleAnimationToolStripMenuItem,
+            this.resampleAnimationToKeyframesToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";
             this.animationToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
@@ -369,6 +373,24 @@ namespace WadTool
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete collision box for all frames";
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.deleteBoundingBoxForAllFramesToolStripMenuItem_Click);
+            // 
+            // resampleAnimationToolStripMenuItem
+            // 
+            this.resampleAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.resampleAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.resampleAnimationToolStripMenuItem.Name = "resampleAnimationToolStripMenuItem";
+            this.resampleAnimationToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.resampleAnimationToolStripMenuItem.Text = "Resample animation";
+            this.resampleAnimationToolStripMenuItem.Click += new System.EventHandler(this.resampleAnimationToolStripMenuItem_Click);
+            // 
+            // resampleAnimationToKeyframesToolStripMenuItem
+            // 
+            this.resampleAnimationToKeyframesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.resampleAnimationToKeyframesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.resampleAnimationToKeyframesToolStripMenuItem.Name = "resampleAnimationToKeyframesToolStripMenuItem";
+            this.resampleAnimationToKeyframesToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.resampleAnimationToKeyframesToolStripMenuItem.Text = "Resample animation to framerate";
+            this.resampleAnimationToKeyframesToolStripMenuItem.Click += new System.EventHandler(this.resampleAnimationToKeyframesToolStripMenuItem_Click);
             // 
             // frameToolStripMenuItem
             // 
@@ -1860,5 +1882,7 @@ namespace WadTool
         private DarkUI.Controls.DarkButton butCalculateAnimCollision;
         private System.Windows.Forms.ToolStripButton butTbUndo;
         private System.Windows.Forms.ToolStripButton butTbRedo;
+        private System.Windows.Forms.ToolStripMenuItem resampleAnimationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resampleAnimationToKeyframesToolStripMenuItem;
     }
 }

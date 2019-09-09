@@ -551,7 +551,7 @@ namespace WadTool
                     int framesCount = 0;
                     if (!int.TryParse(form.Result, out framesCount) || framesCount <= 0)
                     {
-                        popup.ShowError(panelRendering, "You must insert a number greater than 0");
+                        popup.ShowError(panelRendering, "You must insert a number greater than 1");
                         return;
                     }
 
@@ -913,30 +913,8 @@ namespace WadTool
             }
         }
 
-        private void InterpolateFrames(int numFrames = -1)
+        private void InterpolateFrames(int frameIndex1, int frameIndex2, int numFrames, bool updateGUI = true)
         {
-            if (!ValidAndSelected()) return;
-
-            if (numFrames < 0)
-                using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:") { Width = 300 })
-                {
-                    if (inputBox.ShowDialog(this) == DialogResult.Cancel)
-                        return;
-
-                    if (!int.TryParse(inputBox.Result, out numFrames))
-                        numFrames = 3; // Default value
-                }
-            else if (numFrames == 0)
-            {
-                popup.ShowError(panelRendering, "Interpolation requires at least 1 frame to insert");
-                return;
-            }
-
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
-
-            int frameIndex1 = timeline.Selection.X;
-            int frameIndex2 = (timeline.SelectionSize == 1 && timeline.Selection.Y == timeline.Maximum) ? timeline.Minimum : timeline.Selection.Y;
-
             var frame1 = _editor.SelectedNode.DirectXAnimation.KeyFrames[frameIndex1];
             var frame2 = _editor.SelectedNode.DirectXAnimation.KeyFrames[frameIndex2];
 
@@ -977,16 +955,81 @@ namespace WadTool
                     keyframe.Quaternions[j] = Quaternion.Slerp(frame1.Quaternions[j], frame2.Quaternions[j], k * (i + 1));
                     keyframe.Rotations[j] = MathC.QuaternionToEuler(keyframe.Quaternions[j]);
                 }
+
+                keyframe.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
             }
 
-            // All done! Now I reset a bit the GUI
-            OnKeyframesListChanged();
-            timeline.Highlight(frameIndex1, frameIndex1 + numFrames + 1);
-            timeline.ResetSelection();
-            timeline.Value = frameIndex1 + numFrames + 1;
-            popup.ShowInfo(panelRendering, "Successfully inserted " + numFrames + " interpolated frames between frames " + frameIndex1 + " and " + frameIndex2);
+            Saved = false;
+
+            if (updateGUI)
+            {
+                // All done! Now I reset a bit the GUI
+                OnKeyframesListChanged();
+                timeline.Highlight(frameIndex1, frameIndex1 + numFrames + 1);
+                timeline.ResetSelection();
+                timeline.Value = frameIndex1 + numFrames + 1;
+                popup.ShowInfo(panelRendering, "Successfully inserted " + numFrames + " interpolated frames between frames " + frameIndex1 + " and " + frameIndex2);
+            }
+        }
+
+        private void InterpolateFrames(int numFrames = -1)
+        {
+            if (!ValidAndSelected()) return;
+
+            if (numFrames < 0)
+                using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:") { Width = 300 })
+                {
+                    if (inputBox.ShowDialog(this) == DialogResult.Cancel)
+                        return;
+
+                    if (!int.TryParse(inputBox.Result, out numFrames))
+                        numFrames = 3; // Default value
+                }
+            else if (numFrames == 0)
+            {
+                popup.ShowError(panelRendering, "Interpolation requires at least 1 frame to insert");
+                return;
+            }
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+
+            int start = timeline.Selection.X;
+            int end = (timeline.SelectionSize == 1 && timeline.Selection.Y == timeline.Maximum) ? timeline.Minimum : timeline.Selection.Y;
+
+            InterpolateFrames(start, end, numFrames);
+        }
+
+        private void InterpolateAnimation(int numFrames, bool fixAnimCommands, bool updateGUI = true)
+        {
+            int stepCount = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
+            if (stepCount <= 0) return;
+
+            if (numFrames <= 0) return;
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+
+            for (int i = 0; i < stepCount; i++)
+            {
+                int startFrame = i * (numFrames + 1);
+                InterpolateFrames(startFrame, startFrame + 1, numFrames, false);
+            }
+
+            if (fixAnimCommands && _editor.SelectedNode.WadAnimation.AnimCommands.Count > 0)
+            {
+                foreach (var ac in _editor.SelectedNode.WadAnimation.AnimCommands)
+                {
+                    if (ac.Type >= WadAnimCommandType.PlaySound)
+                        ac.Parameter1 *= (short)(numFrames + 1);
+                }
+            }
 
             Saved = false;
+
+            if (updateGUI)
+            {
+                SelectAnimation(_editor.SelectedNode);
+                timeline.Highlight();
+            }
         }
 
         private void EditAnimCommands(WadAnimCommand cmd = null)
@@ -1056,8 +1099,8 @@ namespace WadTool
         private void UpdateStatusLabel()
         {
             string newLabel =
-                "Frame: " + (_frameCount + 1) + " / " + (_editor.SelectedNode.WadAnimation.FrameRate * (_editor.SelectedNode.WadAnimation.KeyFrames.Count - 1) + 1) + "   " +
-                "Keyframe: " + (timeline.Value + 1) + " / " + _editor.SelectedNode.DirectXAnimation.KeyFrames.Count;
+                "Frame: " + (_frameCount) + " / " + (_editor.SelectedNode.WadAnimation.FrameRate * (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1)) + "   " +
+                "Keyframe: " + timeline.Value + " / " + (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1);
 
             if (!timeline.SelectionIsEmpty)
             {
@@ -1485,6 +1528,44 @@ namespace WadTool
             int frameCount = 3;
             int.TryParse(tbInterpolateFrameCount.Text, out frameCount);
             InterpolateFrames(frameCount);
+        }
+
+        private void resampleAnimationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormInputBox("Resample animation", "Enter resample multiplier (speed)", "1"))
+            {
+                form.Width = 300;
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+
+                    int result = 0;
+                    if (!int.TryParse(form.Result, out result) || result <= 1)
+                    {
+                        popup.ShowError(panelRendering, "You must insert a number greater than 1");
+                        return;
+                    }
+
+                    InterpolateAnimation(result - 1, true, true);
+                }
+            }
+        }
+
+        private void resampleAnimationToKeyframesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedNode.WadAnimation.FrameRate < 2)
+            {
+                popup.ShowError(panelRendering, "Animation is already at framerate 1. You need other framerate to resample.");
+                return;
+            }
+            
+            InterpolateAnimation(_editor.SelectedNode.WadAnimation.FrameRate - 1, false, false);
+            _editor.SelectedNode.WadAnimation.FrameRate = 1;
+
+            Saved = false;
+
+            SelectAnimation(_editor.SelectedNode);
+            timeline.Highlight();
         }
     }
 }

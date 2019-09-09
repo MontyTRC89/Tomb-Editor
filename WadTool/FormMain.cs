@@ -198,11 +198,9 @@ namespace WadTool
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-            return; // FIXME: Add an option to enable source wad editing LATER...
-
-            // IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
-            // if (currentSelection != null)
-            //     _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
+             IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
+             if (currentSelection != null)
+                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
         }
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
