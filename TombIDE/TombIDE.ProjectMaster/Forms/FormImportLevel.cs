@@ -60,7 +60,7 @@ namespace TombIDE
 				string dataFileName = textBox_CustomFileName.Text.Trim();
 
 				if (string.IsNullOrWhiteSpace(dataFileName))
-					throw new ArgumentException("You must specify the custom DAT file name.");
+					throw new ArgumentException("You must specify the custom DATA file name.");
 
 				if (radioButton_SpecifiedCopy.Checked || radioButton_SelectedCopy.Checked)
 					ImportAndCopyFiles(levelName, dataFileName);

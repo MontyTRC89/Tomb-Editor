@@ -99,9 +99,9 @@
 			this.checkBox_CustomFileName.Location = new System.Drawing.Point(6, 57);
 			this.checkBox_CustomFileName.Margin = new System.Windows.Forms.Padding(6, 6, 3, 6);
 			this.checkBox_CustomFileName.Name = "checkBox_CustomFileName";
-			this.checkBox_CustomFileName.Size = new System.Drawing.Size(112, 20);
+			this.checkBox_CustomFileName.Size = new System.Drawing.Size(120, 20);
 			this.checkBox_CustomFileName.TabIndex = 2;
-			this.checkBox_CustomFileName.Text = "Custom DAT name";
+			this.checkBox_CustomFileName.Text = "Custom DATA name";
 			this.checkBox_CustomFileName.CheckedChanged += new System.EventHandler(this.checkBox_CustomFileName_CheckedChanged);
 			// 
 			// checkBox_EnableHorizon
@@ -228,10 +228,10 @@
 			// textBox_CustomFileName
 			// 
 			this.textBox_CustomFileName.Enabled = false;
-			this.textBox_CustomFileName.Location = new System.Drawing.Point(124, 57);
+			this.textBox_CustomFileName.Location = new System.Drawing.Point(132, 57);
 			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
-			this.textBox_CustomFileName.Size = new System.Drawing.Size(314, 20);
+			this.textBox_CustomFileName.Size = new System.Drawing.Size(306, 20);
 			this.textBox_CustomFileName.TabIndex = 3;
 			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
 			// 

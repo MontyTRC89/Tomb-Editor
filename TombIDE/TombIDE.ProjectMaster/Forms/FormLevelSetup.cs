@@ -75,7 +75,7 @@ namespace TombIDE.ProjectMaster
 				string dataFileName = textBox_CustomFileName.Text.Trim();
 
 				if (string.IsNullOrWhiteSpace(dataFileName))
-					throw new ArgumentException("You must specify the custom PRJ2 / DAT file name.");
+					throw new ArgumentException("You must specify the custom PRJ2 / DATA file name.");
 
 				string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName);
 

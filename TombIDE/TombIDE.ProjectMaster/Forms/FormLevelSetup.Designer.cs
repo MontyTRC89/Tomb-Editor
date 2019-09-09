@@ -64,9 +64,9 @@
 			this.checkBox_CustomFileName.Location = new System.Drawing.Point(9, 60);
 			this.checkBox_CustomFileName.Margin = new System.Windows.Forms.Padding(0, 6, 3, 6);
 			this.checkBox_CustomFileName.Name = "checkBox_CustomFileName";
-			this.checkBox_CustomFileName.Size = new System.Drawing.Size(150, 20);
+			this.checkBox_CustomFileName.Size = new System.Drawing.Size(158, 20);
 			this.checkBox_CustomFileName.TabIndex = 2;
-			this.checkBox_CustomFileName.Text = "Custom PRJ2 / DAT name";
+			this.checkBox_CustomFileName.Text = "Custom PRJ2 / DATA name";
 			this.checkBox_CustomFileName.CheckedChanged += new System.EventHandler(this.checkBox_CustomFileName_CheckedChanged);
 			// 
 			// checkBox_EnableHorizon
@@ -167,10 +167,10 @@
 			// textBox_CustomFileName
 			// 
 			this.textBox_CustomFileName.Enabled = false;
-			this.textBox_CustomFileName.Location = new System.Drawing.Point(165, 60);
+			this.textBox_CustomFileName.Location = new System.Drawing.Point(173, 60);
 			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(3, 6, 0, 6);
 			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
-			this.textBox_CustomFileName.Size = new System.Drawing.Size(290, 20);
+			this.textBox_CustomFileName.Size = new System.Drawing.Size(282, 20);
 			this.textBox_CustomFileName.TabIndex = 3;
 			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
 			// 
