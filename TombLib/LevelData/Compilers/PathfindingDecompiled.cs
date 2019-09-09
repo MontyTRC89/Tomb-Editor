@@ -794,11 +794,11 @@ namespace TombLib.LevelData.Compilers
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
-                //if (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
-                //{
+                if (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
+                {
                     if (!((room.Type == RoomType.Water) ^ (adjoiningRoom2.Type == RoomType.Water)))
                         break;
-                //}
+                }
 
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;

@@ -294,7 +294,7 @@ namespace TombLib.LevelData.Compilers
                     if (zoneType == 5)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
-                        if (water == isWater &&
+                        if (/*water == isWater &&*/
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
