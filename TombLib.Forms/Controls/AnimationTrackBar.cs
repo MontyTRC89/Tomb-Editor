@@ -147,6 +147,7 @@ namespace TombLib.Controls
         public void ResetSelection()
         {
             _selectionStart = _selectionEnd = -1;
+            SelectionChanged?.Invoke(this, new EventArgs());
             Invalidate();
         }
 
