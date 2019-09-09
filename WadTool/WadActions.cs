@@ -182,6 +182,9 @@ namespace WadTool
 
         public static void ChangeSlot(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
             if (wad == null || wadObject == null)
@@ -433,7 +436,7 @@ namespace WadTool
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
 
-            if (wadObject == null)
+            if (wadObject == null || tool.MainSelection?.WadArea == WadArea.Source)
                 return;
 
             if (wad == null)
@@ -666,6 +669,9 @@ namespace WadTool
 
         public static void EditAnimations(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
             var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
             using (var form = new FormAnimationEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
@@ -678,6 +684,9 @@ namespace WadTool
 
         public static void EditSkeletion(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
             var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
             using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
