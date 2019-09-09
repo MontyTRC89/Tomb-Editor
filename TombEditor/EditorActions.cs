@@ -2202,6 +2202,10 @@ namespace TombEditor
         {
             // Create new room
             var newRoom = room.Clone(_editor.Level, instance => instance.CopyToAlternateRooms);
+
+            // Disable lock flag to prevent deadlocks
+            newRoom.Locked = false;
+
             newRoom.Name = "Flipped of " + room;
             newRoom.BuildGeometry();
 
