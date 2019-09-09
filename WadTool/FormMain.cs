@@ -1,8 +1,6 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -61,22 +59,7 @@ namespace WadTool
             if (obj is WadToolClass.MessageEvent)
             {
                 var msg = (WadToolClass.MessageEvent)obj;
-
-                switch (msg.Type)
-                {
-                    case PopupType.None:
-                        popup.ShowSimple(panel3D, msg.Message);
-                        break;
-                    case PopupType.Info:
-                        popup.ShowInfo(panel3D, msg.Message);
-                        break;
-                    case PopupType.Warning:
-                        popup.ShowWarning(panel3D, msg.Message);
-                        break;
-                    case PopupType.Error:
-                        popup.ShowError(panel3D, msg.Message);
-                        break;
-                }
+                PopUpInfo.Show(popup, this, panel3D, msg.Message, msg.Type);
             }
 
             if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
@@ -215,9 +198,11 @@ namespace WadTool
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-            IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
-            if (currentSelection != null)
-                _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
+            return; // FIXME: Add an option to enable source wad editing LATER...
+
+            // IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
+            // if (currentSelection != null)
+            //     _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
         }
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)

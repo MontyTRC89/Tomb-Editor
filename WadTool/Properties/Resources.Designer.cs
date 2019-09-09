@@ -393,6 +393,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_redo_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_redo_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_Save_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Save_16", resourceCulture);
@@ -406,6 +416,26 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap general_search_16 {
             get {
                 object obj = ResourceManager.GetObject("general_search_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_undo_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_undo_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_undo_irreversible_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_undo_irreversible_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

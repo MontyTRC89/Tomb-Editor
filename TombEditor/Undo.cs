@@ -72,8 +72,8 @@ namespace TombEditor
             Rooms.ForEach(room => Sizes.Add(room, room.SectorSize));
 
             Valid = () => Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Locked) &&
-                                          Rooms.All(room => !Parent.Editor.Level.GetConnectedRooms(room).Except(Rooms).Any()) &&
-                                          Rooms.All(room => Sizes.ContainsKey(room) && room.SectorSize == Sizes[room]);
+                                           Rooms.All(room => !Parent.Editor.Level.GetConnectedRooms(room).Except(Rooms).Any()) &&
+                                           Rooms.All(room => Sizes.ContainsKey(room) && room.SectorSize == Sizes[room]);
             UndoAction = () => EditorActions.MoveRooms(Delta, Rooms, true);
             RedoInstance = () => new MoveRoomsUndoInstance(Parent, Rooms, Delta);
         }
@@ -214,12 +214,9 @@ namespace TombEditor
         {
             Editor = editor;
 
-            UndoStackChanged += editorUndoManager_UndoStackChanged;
-            MessageSent += editorUndoManager_MessageSent;
+            UndoStackChanged += (s, e) => Editor.UndoStackChanged();
+            MessageSent += (s, e) => Editor.SendMessage(e.Message, TombLib.Forms.PopupType.Warning);
         }
-
-        private void editorUndoManager_UndoStackChanged(object sender, EventArgs e) => Editor.UndoStackChanged();
-        private void editorUndoManager_MessageSent(object sender, UndoManagerMessageEventArgs e) => Editor.SendMessage(e.Message, TombLib.Forms.PopupType.Warning);
 
         public void PushRoomCreated(Room room) => Push(new AddRoomUndoInstance(this, room));
         public void PushAdjoiningRoomCreated(Room room) => Push(new AddAdjoiningRoomUndoInstance(this, room));

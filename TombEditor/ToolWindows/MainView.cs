@@ -146,22 +146,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
-
-                switch(msg.Type)
-                {
-                    case PopupType.None:
-                        popup.ShowSimple(this, msg.Message);
-                        break;
-                    case PopupType.Info:
-                        popup.ShowInfo(this, msg.Message);
-                        break;
-                    case PopupType.Warning:
-                        popup.ShowWarning(this, msg.Message);
-                        break;
-                    case PopupType.Error:
-                        popup.ShowError(this, msg.Message);
-                        break;
-                }
+                PopUpInfo.Show(popup, FindForm(), this, msg.Message, msg.Type);
             }
 
             if (obj is Editor.UndoStackChangedEvent)
