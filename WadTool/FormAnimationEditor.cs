@@ -564,7 +564,7 @@ namespace WadTool
 
         private void DeleteFrames(IWin32Window owner, bool undo, bool updateGUI) // No owner = no warnings!
         {
-            if (!ValidAndSelected(false)) return;
+            if (!ValidAndSelected(owner != null)) return;
 
             if (owner != null &&
                 DarkMessageBox.Show(this, "Do you really want to delete frame" +
