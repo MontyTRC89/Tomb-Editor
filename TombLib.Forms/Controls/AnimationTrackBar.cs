@@ -151,6 +151,14 @@ namespace TombLib.Controls
             Invalidate();
         }
 
+        public void SelectAll()
+        {
+            _selectionStart = _minimum;
+            _selectionEnd = _maximum;
+            SelectionChanged?.Invoke(this, new EventArgs());
+            Invalidate();
+        }
+
         private int _value;
         public int Value
         {

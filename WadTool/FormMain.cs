@@ -118,17 +118,11 @@ namespace WadTool
                     Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
 
                     // Display the object (or set it to Lara's skin instead if it's Lara)
-                    if (mainSelection.Value.Id is WadMoveableId &&
-                        ((WadMoveableId)mainSelection.Value.Id) == WadMoveableId.Lara &&
-                        (wad.SuggestedGameVersion == WadGameVersion.TR4_TRNG || wad.SuggestedGameVersion == WadGameVersion.TR5) &&
-                        wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                    {
-                        panel3D.CurrentObject = wad.TryGet(WadMoveableId.LaraSkin);
-                    }
+                    if (mainSelection.Value.Id is WadMoveableId)
+                        panel3D.CurrentObject = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.SuggestedGameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
                     else
-                    {
                         panel3D.CurrentObject = wad.TryGet(mainSelection.Value.Id);
-                    }
+
                     panel3D.AnimationIndex = 0;
                     panel3D.KeyFrameIndex = 0;
 

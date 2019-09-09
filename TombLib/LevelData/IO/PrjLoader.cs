@@ -1360,27 +1360,17 @@ namespace TombLib.LevelData.IO
                         string slotName;
                         if (!slots.TryGetValue(currentObj.WadObjectId, out slotName))
                             slotName = "Unknown " + currentObj.WadObjectId;
-                        TrCatalog.OriginalNameInfo? slotInfo = TrCatalog.GetSlotFromOriginalName(WadGameVersion.TR4_TRNG, slotName);
-                        if (slotInfo == null)
+
+                        bool isMoveable;
+                        var index = TrCatalog.GetItemIndex(WadGameVersion.TR4_TRNG, slotName, out isMoveable);
+
+                        if (index == null)
                         {
                             progressReporter.ReportWarn("Unknown slot name '" + slotName + "' used for object with id '" + currentObj.ScriptId + "' in room '" + level.Rooms[i] + "' at " + currentObj.Position + ". It was removed.");
                             continue;
                         }
 
-                        if (slotInfo.Value.IsStatic)
-                        {
-                            var instance = new StaticInstance()
-                            {
-                                ScriptId = currentObj.ScriptId,
-                                WadObjectId = new WadStaticId(slotInfo.Value.Id),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
-                                RotationY = currentObj.RotationY,
-                                Color = currentObj.Color,
-                                Ocb = unchecked((short)currentObj.Ocb)
-                            };
-                            level.Rooms[i].AddObject(level, instance);
-                        }
-                        else
+                        if (isMoveable)
                         {
                             var instance = new MoveableInstance()
                             {
@@ -1388,10 +1378,23 @@ namespace TombLib.LevelData.IO
                                 CodeBits = currentObj.CodeBits,
                                 Invisible = currentObj.Invisible,
                                 ClearBody = currentObj.ClearBody,
-                                WadObjectId = new WadMoveableId(slotInfo.Value.Id),
+                                WadObjectId = new WadMoveableId(index.Value),
                                 Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                 Ocb = currentObj.Ocb,
                                 RotationY = currentObj.RotationY
+                            };
+                            level.Rooms[i].AddObject(level, instance);
+                        }
+                        else
+                        {
+                            var instance = new StaticInstance()
+                            {
+                                ScriptId = currentObj.ScriptId,
+                                WadObjectId = new WadStaticId(index.Value),
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                RotationY = currentObj.RotationY,
+                                Color = currentObj.Color,
+                                Ocb = unchecked((short)currentObj.Ocb)
                             };
                             level.Rooms[i].AddObject(level, instance);
                         }

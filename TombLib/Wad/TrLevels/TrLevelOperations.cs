@@ -423,7 +423,7 @@ namespace TombLib.Wad.TrLevels
                 newAnimation.NextFrame = oldAnimation.NextFrame;
                 newAnimation.StateId = oldAnimation.StateID;
                 newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
-                newAnimation.Name = "Animation " + j;
+                newAnimation.Name = TrCatalog.GetAnimationName((WadGameVersion)oldLevel.Version, oldMoveable.ObjectID, (uint)j);
 
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {

@@ -10,6 +10,7 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -61,7 +62,7 @@ namespace WadTool
         private readonly PopUpInfo popup = new PopUpInfo();
 
         // Helpers
-        private static string GetAnimLabel(int index, AnimationNode anim) => "(" + index + ") " + anim.WadAnimation.Name;
+        private static string GetAnimLabel(int index, AnimationNode anim) => "(" + anim.Index + ") " + anim.WadAnimation.Name;
        
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
@@ -84,10 +85,7 @@ namespace WadTool
             timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(timeline_AnimCommandDoubleClick);
 
             // Initialize the panel
-            var skin = _editor.Wad.Moveables[id];
-            if (id.TypeId == 0 && _editor.Wad.SuggestedGameVersion >= WadGameVersion.TR4_TRNG && _editor.Wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                skin = _editor.Wad.Moveables[WadMoveableId.LaraSkin];
-
+            var skin = _editor.Wad.Moveables[new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Wad.SuggestedGameVersion, id.TypeId))];
             panelRendering.InitializeRendering(_editor, _deviceManager, skin);
 
             // Load skeleton in combobox
@@ -1192,6 +1190,8 @@ namespace WadTool
         private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges();
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         private void butTbAddAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
@@ -1451,6 +1451,7 @@ namespace WadTool
                 case Keys.O: timeline.SelectionEnd = timeline.Value; break;
                 case Keys.Delete: DeleteFrames(this, true, true); break;
 
+                case (Keys.Control | Keys.A): timeline.SelectAll(); break;
                 case (Keys.Control | Keys.X): CutFrames(); break;
                 case (Keys.Control | Keys.C): CopyFrames(); break;
                 case (Keys.Control | Keys.V): PasteFrames(); break;
