@@ -359,12 +359,11 @@ namespace TombLib.Controls
 
                     if (size == 0)
                     {
-                        if (y == Maximum) rect.X -= halfCursorWidth;
+                        if (y != Minimum && y == Maximum) rect.X -= halfCursorWidth;
                         else if (x == Minimum) rect.X += halfCursorWidth;
                     }
                     else
                     {
-                        //if (y == Maximum) rect.Width -= _cursorWidth;
                         if (x == Minimum)
                         {
                             rect.X += halfCursorWidth;
