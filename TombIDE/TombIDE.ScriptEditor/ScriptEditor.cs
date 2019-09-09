@@ -359,8 +359,13 @@ namespace TombIDE.ScriptEditor
 
 		private void sectionPanel_Files_Resize(object sender, EventArgs e) => AdjustFileListButtons();
 
-		private void tabControl_Info_SelectedIndexChanged(object sender, EventArgs e) =>
-			label_Hint.Visible = tabControl_Info.SelectedIndex == 0;
+		private void tabControl_Info_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (tabControl_Info.SelectedIndex == 0)
+				sectionPanel_InfoBox.SectionHeader = "Information Box - Double-click on a row to view details.";
+			else
+				sectionPanel_InfoBox.SectionHeader = "Information Box";
+		}
 
 		#endregion Events
 
@@ -527,8 +532,6 @@ namespace TombIDE.ScriptEditor
 
 		private void ToggleInfoBox(bool state)
 		{
-			label_Hint.Visible = !sectionPanel_InfoBox.Visible;
-
 			menuItem_InfoBox.Checked = state;
 			splitter_Bottom.Visible = state;
 			sectionPanel_InfoBox.Visible = state;

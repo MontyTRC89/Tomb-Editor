@@ -119,7 +119,6 @@ namespace TombIDE.ScriptEditor
 			this.splitter_Right = new System.Windows.Forms.Splitter();
 			this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
-			this.label_Hint = new DarkUI.Controls.DarkLabel();
 			this.contextMenu_TextBox.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.panel_Editor.SuspendLayout();
@@ -1055,7 +1054,7 @@ namespace TombIDE.ScriptEditor
 			this.sectionPanel_InfoBox.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.sectionPanel_InfoBox.Location = new System.Drawing.Point(0, 372);
 			this.sectionPanel_InfoBox.Name = "sectionPanel_InfoBox";
-			this.sectionPanel_InfoBox.SectionHeader = "Information Box";
+			this.sectionPanel_InfoBox.SectionHeader = "Information Box - Double-click on a row to view details.";
 			this.sectionPanel_InfoBox.Size = new System.Drawing.Size(960, 200);
 			this.sectionPanel_InfoBox.TabIndex = 5;
 			// 
@@ -1269,23 +1268,11 @@ namespace TombIDE.ScriptEditor
 			this.toolStrip.Size = new System.Drawing.Size(960, 28);
 			this.toolStrip.TabIndex = 1;
 			// 
-			// label_Hint
-			// 
-			this.label_Hint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.label_Hint.AutoSize = true;
-			this.label_Hint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_Hint.Location = new System.Drawing.Point(782, 552);
-			this.label_Hint.Name = "label_Hint";
-			this.label_Hint.Size = new System.Drawing.Size(174, 13);
-			this.label_Hint.TabIndex = 1;
-			this.label_Hint.Text = "Double-click on row to view details.";
-			// 
 			// ScriptEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.Controls.Add(this.label_Hint);
 			this.Controls.Add(this.panel_Editor);
 			this.Controls.Add(this.splitter_Left);
 			this.Controls.Add(this.sectionPanel_ObjBrowser);
@@ -1424,7 +1411,6 @@ namespace TombIDE.ScriptEditor
 		private System.Windows.Forms.ToolStripStatusLabel label_ColNumber;
 		private System.Windows.Forms.ToolStripStatusLabel label_LineNumber;
 		private System.Windows.Forms.ToolStripStatusLabel label_SelectedChars;
-		private DarkUI.Controls.DarkLabel label_Hint;
 	}
 }
 
