@@ -96,6 +96,8 @@ namespace WadTool
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
             this.butTbSaveAllChanges = new System.Windows.Forms.ToolStripButton();
+            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
+            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.labelAnims = new System.Windows.Forms.ToolStripLabel();
             this.butTbAddAnimation = new System.Windows.Forms.ToolStripButton();
@@ -906,6 +908,8 @@ namespace WadTool
             this.tbSearchAnimation.Name = "tbSearchAnimation";
             this.tbSearchAnimation.Size = new System.Drawing.Size(181, 22);
             this.tbSearchAnimation.TabIndex = 123;
+            this.toolTip1.SetToolTip(this.tbSearchAnimation, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
+        "");
             this.tbSearchAnimation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchByStateID_KeyDown);
             // 
             // darkButton1
@@ -916,7 +920,8 @@ namespace WadTool
             this.darkButton1.Name = "darkButton1";
             this.darkButton1.Size = new System.Drawing.Size(22, 22);
             this.darkButton1.TabIndex = 122;
-            this.toolTip1.SetToolTip(this.darkButton1, "Filter list");
+            this.toolTip1.SetToolTip(this.darkButton1, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
+        "");
             this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
             // 
             // topBar
@@ -927,6 +932,8 @@ namespace WadTool
             this.topBar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.butTbSaveAllChanges,
+            this.butTbUndo,
+            this.butTbRedo,
             this.toolStripSeparator1,
             this.labelAnims,
             this.butTbAddAnimation,
@@ -970,6 +977,32 @@ namespace WadTool
             this.butTbSaveAllChanges.Name = "butTbSaveAllChanges";
             this.butTbSaveAllChanges.Size = new System.Drawing.Size(23, 25);
             this.butTbSaveAllChanges.Click += new System.EventHandler(this.butTbSaveChanges_Click);
+            // 
+            // butTbUndo
+            // 
+            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbUndo.Enabled = false;
+            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
+            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbUndo.Name = "butTbUndo";
+            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
+            this.butTbUndo.ToolTipText = "Undo";
+            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
+            // 
+            // butTbRedo
+            // 
+            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRedo.Enabled = false;
+            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
+            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRedo.Name = "butTbRedo";
+            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
+            this.butTbRedo.ToolTipText = "Redo";
+            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
             // 
             // toolStripSeparator1
             // 
@@ -1824,5 +1857,7 @@ namespace WadTool
         private DarkUI.Controls.DarkButton butClearCollisionBox;
         private DarkUI.Controls.DarkButton butClearAnimCollision;
         private DarkUI.Controls.DarkButton butCalculateAnimCollision;
+        private System.Windows.Forms.ToolStripButton butTbUndo;
+        private System.Windows.Forms.ToolStripButton butTbRedo;
     }
 }
