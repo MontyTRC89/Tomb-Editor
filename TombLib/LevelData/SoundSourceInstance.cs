@@ -7,13 +7,14 @@ namespace TombLib.LevelData
     {
         Always = 0,
         OnlyInBaseRoom = 1,
-        OnlyInAlternateRoom = 2
+        OnlyInAlternateRoom = 2,
+        Automatic = 3
     }
 
     public class SoundSourceInstance : PositionAndScriptBasedObjectInstance
     {
         public int SoundId { get; set; } = -1;
-        public SoundSourcePlayMode PlayMode { get; set; } = SoundSourcePlayMode.Always;
+        public SoundSourcePlayMode PlayMode { get; set; } = SoundSourcePlayMode.Automatic;
 
         // XML_SOUND_SYSTEM: legacy stuff present only for loading. Probably we'll force user to to a one-way migration on 
         // load time so we need just properties

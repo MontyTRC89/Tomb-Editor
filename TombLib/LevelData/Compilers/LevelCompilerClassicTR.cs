@@ -187,6 +187,24 @@ namespace TombLib.LevelData.Compilers
                     continue;
                 }
 
+                ushort flags = 0;
+
+                switch (instance.PlayMode)
+                {
+                    case SoundSourcePlayMode.Automatic:
+                        flags = instance.Room.Alternated ? (instance.Room.IsAlternate ? (ushort)0x40 : (ushort)0x80) : (ushort)0xC0;
+                        break;
+                    case SoundSourcePlayMode.Always:
+                        flags = 0xC0;
+                        break;
+                    case SoundSourcePlayMode.OnlyInBaseRoom:
+                        flags = 0x80;
+                        break;
+                    case SoundSourcePlayMode.OnlyInAlternateRoom:
+                        flags = 0x40;
+                        break;
+                }
+
                 Vector3 position = instance.Room.WorldPos + instance.Position;
                 _soundSources.Add(new tr_sound_source
                 {
@@ -194,7 +212,7 @@ namespace TombLib.LevelData.Compilers
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     SoundID = (ushort)instance.SoundId,
-                    Flags = instance.Room?.AlternateBaseRoom != null ? (ushort)0x40 : (instance.Room?.AlternateRoom != null ? (ushort)0x80 : (ushort)0xC0)
+                    Flags = flags
                 });
             }
 

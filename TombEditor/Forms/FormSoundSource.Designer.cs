@@ -108,8 +108,9 @@
             this.comboPlayMode.FormattingEnabled = true;
             this.comboPlayMode.Items.AddRange(new object[] {
             "Always",
-            "Only in base room",
-            "Only in alternate room"});
+            "Only when flipmaps are off",
+            "Only when flipmaps are on",
+            "Auto-decide based on room type"});
             this.comboPlayMode.Location = new System.Drawing.Point(77, 486);
             this.comboPlayMode.Name = "comboPlayMode";
             this.comboPlayMode.Size = new System.Drawing.Size(277, 23);
