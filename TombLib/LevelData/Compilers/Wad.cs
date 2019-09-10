@@ -86,7 +86,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     if (oldMesh.VerticesNormals.Count == 0)
                     {
-                        _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                        _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
                         oldMesh.CalculateNormals();
                     }
                     useShades = false;
@@ -97,7 +97,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         if (oldMesh.VerticesNormals.Count == 0)
                         {
-                            _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                            
+                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
                             oldMesh.CalculateNormals();
                         }
                         useShades = false;
@@ -112,7 +113,8 @@ namespace TombLib.LevelData.Compilers
             {
                 if (oldMesh.VerticesNormals.Count == 0)
                 {
-                    _progressReporter.ReportWarn("Moveable '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                    
+                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", oldMesh, objectId));
                     oldMesh.CalculateNormals();
                 }
                 useShades = false;
