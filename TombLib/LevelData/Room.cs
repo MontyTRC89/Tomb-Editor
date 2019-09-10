@@ -301,6 +301,7 @@ namespace TombLib.LevelData
 
         public bool ExistsInLevel => Level != null && Array.IndexOf(Level.Rooms, this) != -1;
         public bool Alternated => AlternateRoom != null || AlternateBaseRoom != null;
+        public bool IsAlternate => AlternateRoom == null && AlternateBaseRoom != null;
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
@@ -444,6 +445,10 @@ namespace TombLib.LevelData
                 return new RoomBlockPair { Room = this, Block = sector, Pos = pos };
 
             Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
+
+            if (IsAlternate && adjoiningRoom.AlternateRoom != null)
+                adjoiningRoom = adjoiningRoom.AlternateRoom;
+
             VectorInt2 adjoiningSectorCoordinate = pos + (SectorPos - adjoiningRoom.SectorPos);
             Block sector2 = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             return new RoomBlockPair { Room = adjoiningRoom, Block = sector2, Pos = adjoiningSectorCoordinate };
