@@ -967,6 +967,14 @@ namespace TombEditor
 
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
+            if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
+                !room.FlagHorizon && (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2) &&
+                texture.TextureIsInvisible)
+            {
+                room.FlagHorizon = true;
+                _editor.RoomPropertiesChange(room);
+            }
+
             var block = room.GetBlock(pos);
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
 
