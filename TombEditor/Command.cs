@@ -756,6 +756,25 @@ namespace TombEditor
                     existingWindow.Focus();
             });
 
+            AddCommand("AddNewRoom", "Add new room", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.Level.Rooms == null)
+                    return;
+
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
+                {
+                    if (args.Editor.Level.Rooms[i] != null)
+                        continue;
+                    else
+                    {
+                        EditorActions.MakeNewRoom(i);
+                        return;
+                    }
+                }
+
+                args.Editor.SendMessage("Maximum amount of rooms reached. Can't create new room.", PopupType.Error);
+            });
+
             AddCommand("DeleteRooms", "Delete rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Map2D)

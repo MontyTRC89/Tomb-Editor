@@ -1615,6 +1615,20 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
+        
+        public static void MakeNewRoom(int index)
+        {
+            Room newRoom = new Room(_editor.Level,
+                        Room.DefaultRoomDimensions,
+                        Room.DefaultRoomDimensions,
+                        _editor.Level.Settings.DefaultAmbientLight,
+                        "Room " + index);
+
+            _editor.Level.Rooms[index] = newRoom;
+            _editor.RoomListChange();
+            _editor.UndoManager.PushRoomCreated(newRoom);
+            _editor.SelectRoom(newRoom);
+        }
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
         {

@@ -48,6 +48,7 @@
             this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.butNewRoom = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -196,7 +197,7 @@
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(228, 28);
+            this.butSearch.Location = new System.Drawing.Point(198, 28);
             this.butSearch.Name = "butSearch";
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 23);
@@ -372,7 +373,7 @@
             this.comboRoom.IntegralHeight = false;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
-            this.comboRoom.Size = new System.Drawing.Size(226, 23);
+            this.comboRoom.Size = new System.Drawing.Size(196, 23);
             this.comboRoom.TabIndex = 0;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
@@ -442,10 +443,21 @@
             this.darkLabel2.TabIndex = 110;
             this.darkLabel2.Text = "Tags:";
             // 
+            // butNewRoom
+            // 
+            this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_create_new_16;
+            this.butNewRoom.Location = new System.Drawing.Point(228, 28);
+            this.butNewRoom.Name = "butNewRoom";
+            this.butNewRoom.Size = new System.Drawing.Size(24, 23);
+            this.butNewRoom.TabIndex = 111;
+            this.butNewRoom.Tag = "AddNewRoom";
+            // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.butNewRoom);
             this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.tbRoomTags);
             this.Controls.Add(this.darkLabel1);
@@ -521,5 +533,6 @@
         private DarkUI.Controls.DarkLabel darkLabel1;
         private TombLib.Controls.DarkAutocompleteTextBox tbRoomTags;
         private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkButton butNewRoom;
     }
 }
