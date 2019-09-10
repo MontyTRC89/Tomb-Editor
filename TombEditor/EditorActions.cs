@@ -4054,7 +4054,7 @@ namespace TombEditor
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
-                    _editor.HasUnsavedChanges = false;
+                    _editor.HasUnsavedChanges = true;
                 }
             }
             catch (Exception exc)
