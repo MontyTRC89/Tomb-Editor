@@ -13,6 +13,7 @@ namespace TombLib.Wad.Catalog
             public string Name { get; set; }
             public string Description { get; set; }
             public uint SkinId { get; set; }
+            public bool AIObject { get; set; }
         }
 
         private struct ItemSound
@@ -86,6 +87,18 @@ namespace TombLib.Wad.Catalog
             if (!game.Moveables.TryGetValue(id, out entry))
                 return id;
             return game.Moveables[id].SkinId;
+        }
+
+        public static bool IsMoveableAI(WadGameVersion version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return false;
+            Item entry;
+            if (!game.Moveables.TryGetValue(id, out entry))
+                return false;
+
+            return entry.AIObject;
         }
 
         public static string GetStaticName(WadGameVersion version, uint id)
@@ -284,7 +297,11 @@ namespace TombLib.Wad.Catalog
                         if (moveableNode.Attributes["use_body_from"] != null)
                             skinId = uint.Parse(moveableNode.Attributes["use_body_from"].Value);
 
-                        game.Moveables.Add(id, new Item { Name = name, SkinId = skinId });
+                        bool isAI = false;
+                        if (moveableNode.Attributes["ai"] != null)
+                            isAI = short.Parse(moveableNode.Attributes["ai"].Value) > 0;
+
+                        game.Moveables.Add(id, new Item { Name = name, SkinId = skinId, AIObject = isAI });
                     }
 
                 // Parse statics

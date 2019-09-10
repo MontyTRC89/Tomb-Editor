@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -63,7 +64,7 @@ namespace TombLib.LevelData.Compilers
         private tr_zone[] _zones = new tr_zone[0];
 
         private readonly List<tr_item> _items = new List<tr_item>();
-        private readonly List<tr_ai_item> _aiItems = new List<tr_ai_item>();
+        private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
         private Util.TexInfoManager _textureInfoManager;
 
@@ -425,7 +426,7 @@ namespace TombLib.LevelData.Compilers
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
                     ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
-                    if (wadMoveable.Id.IsAI(_level.Settings.WadGameVersion))
+                    if (TrCatalog.IsMoveableAI(_level.Settings.WadGameVersion, wadMoveable.Id.TypeId))
                     {
                         _aiItems.Add(new tr_ai_item
                         {
@@ -463,6 +464,9 @@ namespace TombLib.LevelData.Compilers
                                 _luaIdToItems.Add(instance.LuaId, _items.Count - 1);
                     }
                 }
+
+            // Sort AI objects and put all LARA_START_POS objects (last AI object by ID) in front
+            _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
 
             ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
             ReportProgress(45, "    Number of items: " + _items.Count);
