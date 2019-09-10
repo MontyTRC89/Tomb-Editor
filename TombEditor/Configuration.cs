@@ -138,6 +138,7 @@ namespace TombEditor
         // User interface options
 
         public bool UI_AutoFillTriggerTypesForSwitchAndKey { get; set; } = false;
+        public bool UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture { get; set; } = false;
         public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool UI_ProbeAttributesThroughPortals { get; set; } = true;
         public bool UI_SetAttributesAtOnce { get; set; } = true;

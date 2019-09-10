@@ -232,6 +232,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
+            this.darkCheckBox32 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -694,7 +695,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(364, 906);
+            this.panel2.Size = new System.Drawing.Size(364, 928);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
@@ -750,7 +751,7 @@
             this.darkGroupBox8.Controls.Add(this.darkLabel42);
             this.darkGroupBox8.Controls.Add(this.panelColorSelector1);
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox8.Location = new System.Drawing.Point(3, 159);
+            this.darkGroupBox8.Location = new System.Drawing.Point(3, 181);
             this.darkGroupBox8.Name = "darkGroupBox8";
             this.darkGroupBox8.Size = new System.Drawing.Size(358, 744);
             this.darkGroupBox8.TabIndex = 3;
@@ -1260,6 +1261,7 @@
             // 
             // darkGroupBox6
             // 
+            this.darkGroupBox6.Controls.Add(this.darkCheckBox32);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox33);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox31);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox25);
@@ -1269,7 +1271,7 @@
             this.darkGroupBox6.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox6.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox6.Name = "darkGroupBox6";
-            this.darkGroupBox6.Size = new System.Drawing.Size(358, 159);
+            this.darkGroupBox6.Size = new System.Drawing.Size(358, 181);
             this.darkGroupBox6.TabIndex = 2;
             this.darkGroupBox6.TabStop = false;
             this.darkGroupBox6.Text = "General";
@@ -1279,10 +1281,10 @@
             this.darkCheckBox33.AutoSize = true;
             this.darkCheckBox33.Location = new System.Drawing.Point(6, 136);
             this.darkCheckBox33.Name = "darkCheckBox33";
-            this.darkCheckBox33.Size = new System.Drawing.Size(342, 17);
+            this.darkCheckBox33.Size = new System.Drawing.Size(339, 17);
             this.darkCheckBox33.TabIndex = 46;
             this.darkCheckBox33.Tag = "UI_AutoFillTriggerTypesForSwitchAndKey";
-            this.darkCheckBox33.Text = "Auto fill \"Key\" and \"Switch\" trigger types with selected objects";
+            this.darkCheckBox33.Text = "Autofill \"Key\" and \"Switch\" trigger types with selected objects";
             // 
             // darkCheckBox31
             // 
@@ -3029,6 +3031,16 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
+            // darkCheckBox32
+            // 
+            this.darkCheckBox32.AutoSize = true;
+            this.darkCheckBox32.Location = new System.Drawing.Point(6, 159);
+            this.darkCheckBox32.Name = "darkCheckBox32";
+            this.darkCheckBox32.Size = new System.Drawing.Size(318, 17);
+            this.darkCheckBox32.TabIndex = 46;
+            this.darkCheckBox32.Tag = "UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture";
+            this.darkCheckBox32.Text = "Automatically enable skybox if invisible texture is applied";
+            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -3343,5 +3355,6 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox10;
         private DarkUI.Controls.DarkCheckBox darkCheckBox22;
         private DarkUI.Controls.DarkCheckBox darkCheckBox2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox32;
     }
 }
