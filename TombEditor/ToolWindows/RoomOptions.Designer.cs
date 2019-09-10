@@ -224,7 +224,7 @@
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butLocked.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.butLocked.Image = global::TombEditor.Properties.Resources.general_Lock_16;
-            this.butLocked.Location = new System.Drawing.Point(228, 57);
+            this.butLocked.Location = new System.Drawing.Point(228, 86);
             this.butLocked.Name = "butLocked";
             this.butLocked.Size = new System.Drawing.Size(54, 22);
             this.butLocked.TabIndex = 15;
@@ -264,7 +264,7 @@
             // 
             this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(258, 28);
+            this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
             this.butEditRoomName.TabIndex = 2;
@@ -381,7 +381,7 @@
             // 
             this.butDublicateRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDublicateRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butDublicateRoom.Location = new System.Drawing.Point(228, 85);
+            this.butDublicateRoom.Location = new System.Drawing.Point(228, 57);
             this.butDublicateRoom.Name = "butDublicateRoom";
             this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
             this.butDublicateRoom.TabIndex = 16;
@@ -391,7 +391,7 @@
             // 
             this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteRoom.Location = new System.Drawing.Point(258, 85);
+            this.butDeleteRoom.Location = new System.Drawing.Point(258, 57);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 23);
             this.butDeleteRoom.TabIndex = 17;
@@ -447,7 +447,7 @@
             // 
             this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_create_new_16;
-            this.butNewRoom.Location = new System.Drawing.Point(228, 28);
+            this.butNewRoom.Location = new System.Drawing.Point(258, 28);
             this.butNewRoom.Name = "butNewRoom";
             this.butNewRoom.Size = new System.Drawing.Size(24, 23);
             this.butNewRoom.TabIndex = 111;
