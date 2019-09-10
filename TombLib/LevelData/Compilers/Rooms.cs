@@ -304,9 +304,6 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
                         }
-                // We don't want merged meshes to be taken into account for portal connections
-                // So we save the last vertex of the original room
-                int maxRoomVertexCount = roomVertices.Count;
 
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
@@ -344,7 +341,8 @@ namespace TombLib.LevelData.Compilers
                                 }
                                 else
                                 {
-                                    lightingEffect = 0x0;
+                                    // Mark this vertex with zero attrib as already processed.
+                                    lightingEffect = 0xFFFF; 
                                 }
                             }
                         } else {
@@ -530,9 +528,23 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-                for (int i = 0; i < maxRoomVertexCount; ++i)
+                for (int i = 0; i < roomVertices.Count; ++i)
                 {
                     var trVertex = roomVertices[i];
+
+                    // If vertex already has attribute assigned, bypass it.
+                    // It's needed for merged statics which already have effect applied or
+                    // for forward-compatibility with any future vertex attrib assignment code.
+                    if (trVertex.Attributes == 0xFFFF)
+                    {
+                        // Unmark processed vertex with already applied zero attrib.
+                        trVertex.Attributes = 0x0000; 
+                        roomVertices[i] = trVertex;
+                        continue;
+                    }
+                    else if (trVertex.Attributes != 0x0000)
+                        continue;
+
                     ushort flags = 0x0000;
                     
                     bool allowMovement = true;
