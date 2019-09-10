@@ -80,7 +80,7 @@ namespace DarkUI.Controls
                 if (_lockGoingBack)
                 {
                     if (_lastValue < Value) _lastValue = Value;
-                    else if (_lastValue > Value) Value = _lastValue;
+                    else if (_lastValue > Value && _lastValue < Maximum) Value = _lastValue;
                 }
 
                 float percentage = (Value - Minimum) / (float)(Maximum - Minimum);
