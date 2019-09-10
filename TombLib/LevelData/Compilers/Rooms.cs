@@ -556,7 +556,7 @@ namespace TombLib.LevelData.Compilers
                         var zv = trVertex.Position.Z / 1024;
 
                         // Check for imported geometry out of room bounds
-                        if (xv >= 0 && zv >= 0 && xv < room.NumXSectors && zv < room.NumZSectors)
+                        if (xv > 0 && zv > 0 && xv < room.NumXSectors && zv < room.NumZSectors)
                         {
                             var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
                             var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
