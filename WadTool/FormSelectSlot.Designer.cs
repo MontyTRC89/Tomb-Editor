@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeSlots = new DarkUI.Controls.DarkTreeView();
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
@@ -36,22 +35,9 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.chosenId = new DarkUI.Controls.DarkNumericUpDown();
             this.chosenIdText = new DarkUI.Controls.DarkTextBox();
+            this.lstSlots = new DarkUI.Controls.DarkListView();
             ((System.ComponentModel.ISupportInitialize)(this.chosenId)).BeginInit();
             this.SuspendLayout();
-            // 
-            // treeSlots
-            // 
-            this.treeSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeSlots.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.treeSlots.Location = new System.Drawing.Point(5, 67);
-            this.treeSlots.MaxDragChange = 20;
-            this.treeSlots.Name = "treeSlots";
-            this.treeSlots.Size = new System.Drawing.Size(397, 335);
-            this.treeSlots.TabIndex = 2;
-            this.treeSlots.Text = "darkTreeView1";
-            this.treeSlots.SelectedNodesChanged += new System.EventHandler(this.treeSlots_SelectedNodesChanged);
             // 
             // butOK
             // 
@@ -143,19 +129,31 @@
             this.chosenIdText.TabIndex = 21;
             this.chosenIdText.Visible = false;
             // 
+            // lstSlots
+            // 
+            this.lstSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstSlots.Location = new System.Drawing.Point(4, 67);
+            this.lstSlots.Name = "lstSlots";
+            this.lstSlots.Size = new System.Drawing.Size(398, 335);
+            this.lstSlots.TabIndex = 22;
+            this.lstSlots.SelectedIndicesChanged += new System.EventHandler(this.lstSlots_SelectedIndicesChanged);
+            // 
             // FormSelectSlot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(406, 434);
+            this.Controls.Add(this.lstSlots);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.chosenId);
             this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.tbSearchLabel);
             this.Controls.Add(this.tbSearch);
-            this.Controls.Add(this.treeSlots);
             this.Controls.Add(this.chosenIdText);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
             this.Name = "FormSelectSlot";
             this.ShowIcon = false;
@@ -170,8 +168,6 @@
         }
 
         #endregion
-
-        private DarkUI.Controls.DarkTreeView treeSlots;
         private DarkUI.Controls.DarkButton butOK;
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkTextBox tbSearch;
@@ -179,5 +175,6 @@
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkNumericUpDown chosenId;
         private DarkUI.Controls.DarkTextBox chosenIdText;
+        private DarkUI.Controls.DarkListView lstSlots;
     }
 }
