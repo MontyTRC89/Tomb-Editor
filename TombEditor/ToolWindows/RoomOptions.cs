@@ -138,15 +138,9 @@ namespace TombEditor.ToolWindows
         {
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
             if (selectedRoom == null)
-            {
-                selectedRoom = new Room(_editor.Level, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions,
-                                        _editor.Level.Settings.DefaultAmbientLight,
-                                        "Room " + comboRoom.SelectedIndex);
-                _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
-                _editor.RoomListChange();
-                _editor.UndoManager.PushRoomCreated(selectedRoom);
-            }
-            _editor.SelectRoom(selectedRoom);
+                EditorActions.MakeNewRoom(comboRoom.SelectedIndex);
+            else
+                _editor.SelectRoom(selectedRoom);
         }
 
         private void comboFlipMap_SelectedIndexChanged(object sender, EventArgs e)
