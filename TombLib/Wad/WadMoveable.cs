@@ -48,12 +48,6 @@ namespace TombLib.Wad
             return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 461 && TypeId <= 462) ||
                    (gameVersion >= WadGameVersion.TR5 && TypeId >= 456 && TypeId <= 457);
         }
-
-        public bool IsAI(WadGameVersion gameVersion)
-        {
-            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 398 && TypeId <= 406) ||
-                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 378 && TypeId <= 386);
-        }
     }
 
     public class WadMoveable : IWadObject

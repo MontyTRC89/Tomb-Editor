@@ -1270,14 +1270,14 @@
       <moveable id="70" name="Temple statue" />
       <moveable id="71" name="Monkey" />
       <moveable id="73" name="Tony Firehands" />
-      <moveable id="74" name="AI Guard" />
-      <moveable id="75" name="AI Ambush" />
-      <moveable id="76" name="AI Patrol 1" />
-      <moveable id="77" name="AI Modify" />
-      <moveable id="78" name="AI Follow" />
-      <moveable id="79" name="AI Patrol 2" />
-      <moveable id="80" name="AI Path" />
-      <moveable id="81" name="AI Check" />
+      <moveable id="74" ai="1" name="AI Guard" />
+      <moveable id="75" ai="1" name="AI Ambush" />
+      <moveable id="76" ai="1" name="AI Patrol 1" />
+      <moveable id="77" ai="1" name="AI Modify" />
+      <moveable id="78" ai="1" name="AI Follow" />
+      <moveable id="79" ai="1" name="AI Patrol 2" />
+      <moveable id="80" ai="1" name="AI Path" />
+      <moveable id="81" ai="1" name="AI Check" />
       <moveable id="82" name="Unknown Id #82" />
       <moveable id="83" name="Collapsible floor" />
       <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" />
@@ -2329,15 +2329,15 @@
       <moveable id="395" name="WHITE_LIGHT" description="White Light" />
       <moveable id="396" name="BLINKING_LIGHT" description="Blinking Light" />
       <moveable id="397" name="LENS_FLARE" description="Lens Flare" />
-      <moveable id="398" name="AI_GUARD" description="Ai Guard" />
-      <moveable id="399" name="AI_AMBUSH" description="Ai Ambush" />
-      <moveable id="400" name="AI_PATROL1" description="Ai Patrol1" />
-      <moveable id="401" name="AI_MODIFY" description="Ai Modify" />
-      <moveable id="402" name="AI_FOLLOW" description="Ai Follow" />
-      <moveable id="403" name="AI_PATROL2" description="Ai Patrol2" />
-      <moveable id="404" name="AI_X1" description="Ai X1" />
-      <moveable id="405" name="AI_X2" description="Ai X2" />
-      <moveable id="406" name="LARA_START_POS" description="Lara Start Pos" />
+      <moveable id="398" ai="1" name="AI_GUARD" description="Ai Guard" />
+      <moveable id="399" ai="1" name="AI_AMBUSH" description="Ai Ambush" />
+      <moveable id="400" ai="1" name="AI_PATROL1" description="Ai Patrol1" />
+      <moveable id="401" ai="1" name="AI_MODIFY" description="Ai Modify" />
+      <moveable id="402" ai="1" name="AI_FOLLOW" description="Ai Follow" />
+      <moveable id="403" ai="1" name="AI_PATROL2" description="Ai Patrol2" />
+      <moveable id="404" ai="1" name="AI_X1" description="Ai X1" />
+      <moveable id="405" ai="1" name="AI_X2" description="Ai X2" />
+      <moveable id="406" ai="1" name="LARA_START_POS" description="Lara Start Pos" />
       <moveable id="407" name="KILL_ALL_TRIGGERS" description="Kill All Triggers" />
       <moveable id="408" name="TRIGGER_TRIGGERER" description="Trigger Triggerer" />
       <moveable id="409" name="SMASH_OBJECT1" description="Smash Object1" />
