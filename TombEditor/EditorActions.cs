@@ -4031,14 +4031,14 @@ namespace TombEditor
                         if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName, 
                                                                      FileFormatConversions.SoundsCatalogPath, false))
                         {
-                            MessageBox.Show("There was an error while converting your project to the new " +
+                            DarkMessageBox.Show(owner, "There was an error while converting your project to the new " +
                                             "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             newLevel = null;
                             return;
                         }
                         else
                         {
-                            MessageBox.Show("Your level was converted to the new Xml sound system. Please save it.",
+                            DarkMessageBox.Show(owner, "Your level was converted to the new Xml sound system. Please save it.",
                                             "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
