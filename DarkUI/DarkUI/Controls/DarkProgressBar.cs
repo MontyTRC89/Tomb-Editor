@@ -18,6 +18,8 @@ namespace DarkUI.Controls
         private static readonly StringFormat _textAlignment = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
         private DarkProgressBarMode _textMode = DarkProgressBarMode.Percentage;
+        private bool _lockGoingBack = true;
+        private int _lastValue = 0;
 
         [Category("Appearance")]
         [DefaultValue(DarkProgressBarMode.Percentage)]
@@ -29,6 +31,20 @@ namespace DarkUI.Controls
                 if (value == _textMode)
                     return;
                 _textMode = value;
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool LockGoingBack
+        {
+            get { return _lockGoingBack; }
+            set
+            {
+                if (value == _lockGoingBack)
+                    return;
+                _lockGoingBack = value;
                 Invalidate();
             }
         }
@@ -60,6 +76,13 @@ namespace DarkUI.Controls
 
             if (m.Msg == 0x000F)
             {
+                // Prevent progressbar from going back
+                if (_lockGoingBack)
+                {
+                    if (_lastValue < Value) _lastValue = Value;
+                    else if (_lastValue > Value) Value = _lastValue;
+                }
+
                 float percentage = (Value - Minimum) / (float)(Maximum - Minimum);
 
                 using (Graphics g = CreateGraphics())
