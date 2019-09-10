@@ -4032,6 +4032,8 @@ namespace TombEditor
                             }
                         }*/
 
+                    bool hasUnsavedChanges = false;
+
                     // SOUND_SYSTEM_XML: Check if the level needs to be converted to new Xml sound system
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
@@ -4048,13 +4050,14 @@ namespace TombEditor
                         {
                             DarkMessageBox.Show(owner, "Your level was converted to the new Xml sound system. Please save it.",
                                             "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            hasUnsavedChanges = true;
                         }
                     }
 
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
-                    _editor.HasUnsavedChanges = true;
+                    _editor.HasUnsavedChanges = hasUnsavedChanges;
                 }
             }
             catch (Exception exc)
