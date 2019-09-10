@@ -139,5 +139,11 @@ namespace TombEditor.Forms
 
         private void lstSounds_DoubleClick(object sender, EventArgs e) => butOK_Click(sender, e);
         private void butSearch_Click(object sender, EventArgs e) => TryToFindSound();
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            lstSounds.EnsureVisible();
+        }
     }
 }
