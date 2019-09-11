@@ -1271,8 +1271,8 @@ namespace TombLib.LevelData
             {
                 Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                 VectorInt2 adjoiningPos = pos + (SectorPos - adjoiningRoom.SectorPos);
-                Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
-                if (adjoiningBlock.CeilingPortal != null)
+                Block adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningPos);
+                if (adjoiningBlock?.CeilingPortal != null)
                     return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningPos, pos, true));
             }
             return new RoomConnectionInfo();
@@ -1285,8 +1285,8 @@ namespace TombLib.LevelData
             {
                 Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
                 VectorInt2 adjoiningPos = pos + (SectorPos - adjoiningRoom.SectorPos);
-                Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
-                if (adjoiningBlock.FloorPortal != null)
+                Block adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningPos);
+                if (adjoiningBlock?.FloorPortal != null)
                     return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, pos, adjoiningPos, false));
             }
             return new RoomConnectionInfo();
