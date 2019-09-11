@@ -552,6 +552,64 @@
       <anim item="0" id="158" name="SWANDIVE_START" />
       <anim item="0" id="159" name="CLIMB_ON2" />
     </animations>
+    <states>
+      <state item="0" id="0" name="WALK_FORWARD" />
+      <state item="0" id="1" name="RUN_FORWARD" />
+      <state item="0" id="2" name="STOP" />
+      <state item="0" id="3" name="JUMP_FORWARD" />
+      <state item="0" id="4" name="POSE" />
+      <state item="0" id="5" name="RUN_BACK" />
+      <state item="0" id="6" name="TURN_RIGHT" />
+      <state item="0" id="7" name="TURN_LEFT" />
+      <state item="0" id="8" name="DEATH" />
+      <state item="0" id="9" name="FREEFALL" />
+      <state item="0" id="10" name="HANG" />
+      <state item="0" id="11" name="REACH" />
+      <state item="0" id="12" name="SPLAT" />
+      <state item="0" id="13" name="UNDERWATER_STOP" />
+      <state item="0" id="14" name="GRAB_TO_FALL" />
+      <state item="0" id="15" name="COMPRESS" />
+      <state item="0" id="16" name="WALK_BACK" />
+      <state item="0" id="17" name="UNDERWATER_SWIM" />
+      <state item="0" id="18" name="UNDERWATER_GLIDE" />
+      <state item="0" id="19" name="GRABBING" />
+      <state item="0" id="20" name="TURN_FAST" />
+      <state item="0" id="21" name="STEP_RIGHT" />
+      <state item="0" id="22" name="STEP_LEFT" />
+      <state item="0" id="23" name="ROLL_BACK" />
+      <state item="0" id="24" name="SLIDE_FORWARD" />
+      <state item="0" id="25" name="JUMP_BACK" />
+      <state item="0" id="26" name="JUMP_LEFT" />
+      <state item="0" id="27" name="JUMP_RIGHT" />
+      <state item="0" id="28" name="JUMP_UP" />
+      <state item="0" id="29" name="FALL_BACKWARD" />
+      <state item="0" id="30" name="SHIMMY_LEFT" />
+      <state item="0" id="31" name="SHIMMY_RIGHT" />
+      <state item="0" id="32" name="SLIDE_BACK" />
+      <state item="0" id="33" name="ONWATER_STOP" />
+      <state item="0" id="34" name="ONWATER_FORWARD" />
+      <state item="0" id="35" name="DIVE" />
+      <state item="0" id="36" name="PUSHABLE_PUSH" />
+      <state item="0" id="37" name="PUSHABLE_PULL" />
+      <state item="0" id="38" name="PUSHABLE_GRAB" />
+      <state item="0" id="39" name="PICKUP" />
+      <state item="0" id="40" name="SWITCH_DOWN" />
+      <state item="0" id="41" name="SWITCH_UP" />
+      <state item="0" id="42" name="INSERT_KEY" />
+      <state item="0" id="43" name="INSERT_PUZZLE" />
+      <state item="0" id="44" name="WATER_DEATH" />
+      <state item="0" id="45" name="ROLL_FORWARD" />
+      <state item="0" id="46" name="BOULDER_DEATH" />
+      <state item="0" id="47" name="ONWATER_BACK" />
+      <state item="0" id="48" name="ONWATER_LEFT" />
+      <state item="0" id="49" name="ONWATER_RIGHT" />
+      <state item="0" id="50" name="USE_MIDAS" />
+      <state item="0" id="51" name="DIE_MIDAS" />
+      <state item="0" id="52" name="SWANDIVE_BEGIN" />
+      <state item="0" id="53" name="SWANDIVE_END" />
+      <state item="0" id="54" name="HANDSTAND" />
+      <state item="0" id="55" name="ONWATER_EXIT" />
+    </states>
   </game>
   <game id="TR2">
     <moveables>
@@ -1200,6 +1258,23 @@
       <anim item="0" id="216" name="ZIPLINE_RIDE" />
       <anim item="0" id="217" name="ZIPLINE_FALL" />
     </animations>
+    <states>
+      <state item="0" id="56" name="LADDER_IDLE" />
+      <state item="0" id="57" name="LADDER_UP" />
+      <state item="0" id="58" name="LADDER_LEFT" />
+      <state item="0" id="59" name="LADDER_STOP" />
+      <state item="0" id="60" name="LADDER_RIGHT" />
+      <state item="0" id="61" name="LADDER_DOWN" />
+      <state item="0" id="62" name="TEST_1" />
+      <state item="0" id="63" name="TEST_2" />
+      <state item="0" id="64" name="TEST_3" />
+      <state item="0" id="65" name="WADE_FORWARD" />
+      <state item="0" id="66" name="UNDERWATER_ROLL" />
+      <state item="0" id="67" name="FLARE_PICKUP" />
+      <state item="0" id="68" name="JUMP_ROLL" />
+      <state item="0" id="69" name="KICK" />
+      <state item="0" id="70" name="ZIPLINE_RIDE" />
+    </states>
   </game>
   <game id="TR3">
     <moveables>
@@ -1928,6 +2003,27 @@
       <anim item="0" id="311" name="SPRINT_TO_CROUCH_RIGHT" />
       <anim item="0" id="312" name="CROUCH_PICKUP_FLARE" />
     </animations>
+    <states>
+      <state item="0" id="71" name="CROUCH_IDLE" />
+      <state item="0" id="72" name="CROUCH_ROLL" />
+      <state item="0" id="73" name="SPRINT" />
+      <state item="0" id="74" name="SPRINT_ROLL" />
+      <state item="0" id="75" name="MONKEY_IDLE" />
+      <state item="0" id="76" name="MONKEY_FORWARD" />
+      <state item="0" id="77" name="MONKEY_LEFT" />
+      <state item="0" id="78" name="MONKEY_RIGHT" />
+      <state item="0" id="79" name="MONKEY_ROLL" />
+      <state item="0" id="80" name="CRAWL_IDLE" />
+      <state item="0" id="81" name="CRAWL_FORWARD" />
+      <state item="0" id="82" name="MONKEY_TURN_LEFT" />
+      <state item="0" id="83" name="MONKEY_TURN_RIGHT" />
+      <state item="0" id="84" name="CRAWL_TURN_LEFT" />
+      <state item="0" id="85" name="CRAWL_TURN_RIGHT" />
+      <state item="0" id="86" name="CRAWL_BACK" />
+      <state item="0" id="87" name="CLIMB_TO_CRAWL" />
+      <state item="0" id="88" name="CRAWL_TO_CLIMB" />
+      <state item="0" id="89" name="MISC_CONTROL" />
+    </states>
   </game>
   <game id="TR4">
     <moveables>
@@ -3122,6 +3218,37 @@
       <anim item="0" id="443" name="DEATH_SETH" />
       <anim item="0" id="444" name="BEETLE_PUT" />
     </animations>
+    <states>
+      <state item="0" id="90" name="ROPE_TURN_LEFT" />
+      <state item="0" id="91" name="ROPE_TURN_RIGHT" />
+      <state item="0" id="92" name="GIANT_BUTTON_PUSH" />
+      <state item="0" id="93" name="TRAPDOOR_FLOOR_OPEN" />
+      <state item="0" id="94" name="UNKNOWN1" />
+      <state item="0" id="95" name="ROUND_HANDLE" />
+      <state item="0" id="96" name="COGWHEEL" />
+      <state item="0" id="97" name="LEVERSWITCH_PUSH" />
+      <state item="0" id="98" name="HOLE" />
+      <state item="0" id="99" name="POLE_IDLE" />
+      <state item="0" id="100" name="POLE_UP" />
+      <state item="0" id="101" name="POLE_DOWN" />
+      <state item="0" id="102" name="POLE_TURN_LEFT" />
+      <state item="0" id="103" name="POLE_TURN_RIGHT" />
+      <state item="0" id="104" name="PULLEY" />
+      <state item="0" id="105" name="CROUCH_TURN_LEFT" />
+      <state item="0" id="106" name="CROUCH_TURN_RIGHT" />
+      <state item="0" id="107" name="SHIMMY_OUTER_LEFT" />
+      <state item="0" id="108" name="SHIMMY_OUTER_RIGHT" />
+      <state item="0" id="109" name="SHIMMY_INNER_LEFT" />
+      <state item="0" id="110" name="SHIMMY_INNER_RIGHT" />
+      <state item="0" id="111" name="ROPE_IDLE" />
+      <state item="0" id="112" name="ROPE_CLIMB_UP" />
+      <state item="0" id="113" name="ROPE_CLIMB_DOWN" />
+      <state item="0" id="114" name="ROPE_SWING" />
+      <state item="0" id="115" name="LADDER_TO_SHIMMY" />
+      <state item="0" id="116" name="POSITION_CORRECTOR" />
+      <state item="0" id="117" name="DOUBLEDOORS_PUSH" />
+      <state item="0" id="118" name="DOZY" />
+    </states>
   </game>
   <game id="TR5">
     <moveables>
@@ -4033,6 +4160,27 @@
       <anim item="0" id="472" name="LOOT_CHEST" />
       <anim item="0" id="473" name="LADDER_TO_CROUCH" />
     </animations>
+    <states>
+      <state item="0" id="119" name="TIGHTROPE_IDLE" />
+      <state item="0" id="120" name="TIGHTROPE_ROLL" />
+      <state item="0" id="121" name="TIGHTROPE_FORWARD" />
+      <state item="0" id="122" name="TIGHTROPE_BALANCING_LEFT" />
+      <state item="0" id="123" name="TIGHTROPE_BALANCING_RIGHT" />
+      <state item="0" id="124" name="TIGHTROPE_ENTER" />
+      <state item="0" id="125" name="TIGHTROPE_EXIT" />
+      <state item="0" id="126" name="DOVESWITCH" />
+      <state item="0" id="127" name="TIGHTROPE_RESTORE_BALANCE" />
+      <state item="0" id="128" name="BARS_SWING" />
+      <state item="0" id="129" name="BARS_JUMP" />
+      <state item="0" id="130" name="UNKNOWN2" />
+      <state item="0" id="131" name="RADIO_LISTENING" />
+      <state item="0" id="132" name="RADIO_OFF" />
+      <state item="0" id="133" name="UNKNOWN3" />
+      <state item="0" id="134" name="UNKNOWN4" />
+      <state item="0" id="135" name="UNKNOWN5" />
+      <state item="0" id="136" name="UNKNOWN6" />
+      <state item="0" id="137" name="PICKUP_FROM_CHEST" />
+    </states>
   </game>
   <game id="TR5Main">
     <moveables>

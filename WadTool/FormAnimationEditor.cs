@@ -80,8 +80,14 @@ namespace WadTool
 
             panelRendering.Configuration = _editor.Tool.Configuration;
 
-            // Update reference level
+            // Update UI
             UpdateReferenceLevelControls();
+            PopulateComboStateID();
+
+            // Hacks for textbox...
+            tbStateId.AutoSize = false;
+            tbStateId.Height = 23;
+            tbStateId.MouseWheel += tbStateID_MouseWheel;
 
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
@@ -316,14 +322,23 @@ namespace WadTool
             _editor.SelectedNode = node;
 
             tbName.Text = node.WadAnimation.Name;
-            tbFramerate.Text = node.WadAnimation.FrameRate.ToString();
-            tbNextAnimation.Text = node.WadAnimation.NextAnimation.ToString();
-            tbNextFrame.Text = node.WadAnimation.NextFrame.ToString();
-            tbStateId.Text = node.WadAnimation.StateId.ToString();
-            tbStartVelocity.Text = node.WadAnimation.StartVelocity.ToString();
-            tbEndVelocity.Text = node.WadAnimation.EndVelocity.ToString();
-            tbLateralStartVelocity.Text = node.WadAnimation.StartLateralVelocity.ToString();
-            tbLateralEndVelocity.Text = node.WadAnimation.EndLateralVelocity.ToString();
+            nudFramerate.Value = node.WadAnimation.FrameRate;
+            nudNextAnim.Value = node.WadAnimation.NextAnimation;
+            nudNextFrame.Value = node.WadAnimation.NextFrame;
+            nudVertStartVel.Value = (decimal)node.WadAnimation.StartVelocity;
+            nudVertEndVel.Value = (decimal)node.WadAnimation.EndVelocity;
+            nudLatStartVel.Value = (decimal)node.WadAnimation.StartLateralVelocity;
+            nudLatEndVel.Value = (decimal)node.WadAnimation.EndLateralVelocity;
+
+            var stateName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, node.WadAnimation.StateId);
+
+            if (cmbStateID.Items.Contains(stateName))
+            {
+                cmbStateID.FindStringExact(stateName);
+                tbStateId.Text = stateName;
+            }
+            else
+                tbStateId.Text = node.WadAnimation.StateId.ToString();
 
             timeline.Animation = node;
             panelRendering.CurrentKeyFrame = 0;
@@ -374,7 +389,6 @@ namespace WadTool
             }
             else
                 statusFrame.Text = "";
-
         }
 
         private void CalculateAnimationBoundingBox(bool clear = false)
@@ -779,6 +793,46 @@ namespace WadTool
             Saved = false;
         }
 
+        private void UpdateStateChange()
+        {
+            if (_editor.SelectedNode == null) return;
+
+            ushort oldValue = _editor.SelectedNode.WadAnimation.StateId;
+            ushort newValue = ushort.MaxValue; // Let's hope nobody will ever use state ID 65535...
+
+            // Try to find state ID with similar name in trcatalog
+
+            if (!ushort.TryParse(tbStateId.Text, out newValue))
+            {
+                var possibleID = TrCatalog.TryToGetStateID(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, tbStateId.Text.Trim());
+                if (possibleID >= 0)
+                    newValue = (ushort)possibleID;
+            }
+
+            // Don't update if not changed or parse failed
+            if (oldValue == newValue || newValue != ushort.MaxValue)
+                return;
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.SelectedNode.WadAnimation.StateId = newValue;
+
+            Saved = false;
+        }
+
+        private void PopulateComboStateID()
+        {
+            cmbStateID.Items.Clear();
+
+            for (uint i = 0; i < 256; i++) // Max state value in TR5 was 137 but just in case...
+            {
+                string name = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, i);
+                if (name.Contains("Unknown"))
+                    continue;
+                else
+                    cmbStateID.Items.Add(name);
+            }
+        }
+
         private void UpdateAnimationParameter(Control control)
         {
             if (_editor.SelectedNode == null) return;
@@ -800,32 +854,28 @@ namespace WadTool
             // Get actual old value
             switch (control.Name)
             {
-                case "tbStateId":
-                    oldValue = _editor.SelectedNode.WadAnimation.StateId;
-                    roundToShort = true;
-                    break;
-                case "tbNextAnimation":
+                case "nudNextAnim":
                     oldValue = _editor.SelectedNode.WadAnimation.NextAnimation;
                     roundToShort = true;
                     break;
-                case "tbNextFrame":
+                case "nudNextFrame":
                     oldValue = _editor.SelectedNode.WadAnimation.NextFrame;
                     roundToShort = true;
                     break;
-                case "tbFramerate":
+                case "nudFramerate":
                     oldValue = _editor.SelectedNode.WadAnimation.FrameRate;
                     roundToByte = true;
                     break;
-                case "tbStartVelocity":
+                case "nudVertStartVel":
                     oldValue = _editor.SelectedNode.WadAnimation.StartVelocity;
                     break;
-                case "tbEndVelocity":
+                case "nudVertEndVel":
                     oldValue = _editor.SelectedNode.WadAnimation.EndVelocity;
                     break;
-                case "tbLateralStartVelocity":
+                case "nudLatStartVel":
                     oldValue = _editor.SelectedNode.WadAnimation.StartLateralVelocity;
                     break;
-                case "tbLateralEndVelocity":
+                case "nudLatEndVel":
                     oldValue = _editor.SelectedNode.WadAnimation.EndLateralVelocity;
                     break;
             }
@@ -849,28 +899,25 @@ namespace WadTool
             // Update actual values
             switch (control.Name)
             {
-                case "tbStateId":
-                    _editor.SelectedNode.WadAnimation.StateId = (ushort)result;
-                    break;
-                case "tbNextAnimation":
+                case "nudNextAnim":
                     _editor.SelectedNode.WadAnimation.NextAnimation = (ushort)result;
                     break;
-                case "tbNextFrame":
+                case "nudNextFrame":
                     _editor.SelectedNode.WadAnimation.NextFrame = (ushort)result;
                     break;
-                case "tbFramerate":
+                case "nudFramerate":
                     _editor.SelectedNode.WadAnimation.FrameRate = (byte)result;
                     break;
-                case "tbStartVelocity":
+                case "nudVertStartVel":
                     _editor.SelectedNode.WadAnimation.StartVelocity = result;
                     break;
-                case "tbEndVelocity":
+                case "nudVertEndVel":
                     _editor.SelectedNode.WadAnimation.EndVelocity = result;
                     break;
-                case "tbLateralStartVelocity":
+                case "nudLatStartVel":
                     _editor.SelectedNode.WadAnimation.StartLateralVelocity = result;
                     break;
-                case "tbLateralEndVelocity":
+                case "nudLatEndVel":
                    _editor.SelectedNode.WadAnimation.EndLateralVelocity = result;
                     break;
             }
@@ -1273,14 +1320,14 @@ namespace WadTool
         private void butEditAnimCommands_Click(object sender, EventArgs e) => EditAnimCommands();
         private void butEditStateChanges_Click(object sender, EventArgs e) => EditStateChanges();
 
-        private void tbStateId_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbStateId);
-        private void tbNextAnimation_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbNextAnimation);
-        private void tbNextFrame_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbNextFrame);
-        private void tbStartVelocity_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbStartVelocity);
-        private void tbEndVelocity_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbEndVelocity);
-        private void tbLateralStartVelocity_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbLateralStartVelocity);
-        private void tbLateralEndVelocity_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbLateralEndVelocity);
-        private void tbFramerate_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbFramerate);
+        private void tbStateId_Validated(object sender, EventArgs e) => UpdateStateChange();
+        private void nudFramerate_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudFramerate);
+        private void nudNextAnim_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudNextAnim);
+        private void nudNextFrame_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudNextFrame);
+        private void nudVertStartVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudVertStartVel);
+        private void nudVertEndVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudVertEndVel);
+        private void nudLatStartVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudLatStartVel);
+        private void nudLatEndVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudLatEndVel);
         private void tbCollisionBoxMinX_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinX);
         private void tbCollisionBoxMinY_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinY);
         private void tbCollisionBoxMinZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinZ);
@@ -1683,6 +1730,22 @@ namespace WadTool
                 _chainedPlaybackInitialCursorPos = 0;
                 _chainedPlaybackInitialSelection = new VectorInt2();
             }
+        }
+
+        private void cmbStateID_SelectedIndexChanged(object sender, EventArgs e) => tbStateId.Text = (string)cmbStateID.SelectedItem;
+
+        private void tbStateID_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta < 0 && cmbStateID.SelectedIndex < cmbStateID.Items.Count)
+                cmbStateID.SelectedIndex++;
+            else if (e.Delta > 0 && cmbStateID.SelectedIndex > 0)
+                cmbStateID.SelectedIndex--;
+        }
+
+        private void butSearchStateID_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(cmbStateID);
+            searchPopUp.Show(this);
         }
     }
 }
