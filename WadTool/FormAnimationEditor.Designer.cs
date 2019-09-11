@@ -144,8 +144,8 @@ namespace WadTool
             this.butTransportPlay = new System.Windows.Forms.ToolStripButton();
             this.butTransportFrameForward = new System.Windows.Forms.ToolStripButton();
             this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
-            this.butTransportChained = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTransportChained = new System.Windows.Forms.ToolStripButton();
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
             this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
             this.darkSectionPanel4 = new DarkUI.Controls.DarkSectionPanel();
@@ -1406,7 +1406,7 @@ namespace WadTool
             this.timeline.Name = "timeline";
             this.timeline.SelectionEnd = 0;
             this.timeline.SelectionStart = 0;
-            this.timeline.Size = new System.Drawing.Size(473, 38);
+            this.timeline.Size = new System.Drawing.Size(478, 38);
             this.timeline.TabIndex = 3;
             this.timeline.Value = 0;
             this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
@@ -1416,9 +1416,9 @@ namespace WadTool
             // 
             this.panelTransport.Controls.Add(this.darkToolStrip1);
             this.panelTransport.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelTransport.Location = new System.Drawing.Point(473, 0);
+            this.panelTransport.Location = new System.Drawing.Point(478, 0);
             this.panelTransport.Name = "panelTransport";
-            this.panelTransport.Size = new System.Drawing.Size(252, 38);
+            this.panelTransport.Size = new System.Drawing.Size(247, 38);
             this.panelTransport.TabIndex = 2;
             // 
             // darkToolStrip1
@@ -1437,13 +1437,13 @@ namespace WadTool
             this.butTransportFrameForward,
             this.butTransportEnd,
             this.toolStripSeparator7,
+            this.butTransportChained,
             this.butTransportSound,
-            this.butTransportLandWater,
-            this.butTransportChained});
+            this.butTransportLandWater});
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
-            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(252, 38);
+            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(3, 0, 1, 0);
+            this.darkToolStrip1.Size = new System.Drawing.Size(247, 38);
             this.darkToolStrip1.TabIndex = 0;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
@@ -1520,6 +1520,14 @@ namespace WadTool
             this.butTransportEnd.ToolTipText = "Go to end";
             this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 38);
+            // 
             // butTransportChained
             // 
             this.butTransportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1532,14 +1540,6 @@ namespace WadTool
             this.butTransportChained.Size = new System.Drawing.Size(28, 35);
             this.butTransportChained.ToolTipText = "Chained playback";
             this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 38);
             // 
             // butTransportSound
             // 
