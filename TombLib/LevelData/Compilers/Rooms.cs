@@ -83,7 +83,7 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
 
-        private Vector3 CalculateLightForVertex(Room room, Vector3 position, Vector3 normal)
+        private Vector3 CalculateLightForVertex(Room room, Vector3 position, Vector3 normal, bool forImportedGeometry)
         {
             Vector3 output = room.AmbientLight * 128;
 
@@ -91,6 +91,10 @@ namespace TombLib.LevelData.Compilers
                 if (obj is LightInstance)
                 {
                     var light = obj as LightInstance;
+
+                    if (!light.IsUsedForImportedGeometry && forImportedGeometry)
+                        continue;
+
                     output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false);                    
                 }
 
@@ -345,15 +349,17 @@ namespace TombLib.LevelData.Compilers
                                     lightingEffect = 0xFFFF; 
                                 }
                             }
-                        } else {
+                        }
+                        else
+                        {
                             //If we have shades, use them as a factor for the resulting vertex color
-                            if (j < wadStatic.Mesh.VerticesShades.Count) {
+                            if (j < wadStatic.Mesh.VerticesShades.Count)
+                            {
                                 shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
                                 shade = 1.0f - shade;
                             }
-                            
                         }
-                        Vector3 color = CalculateLightForVertex(room, position, normal);
+                        Vector3 color = CalculateLightForVertex(room, position, normal, false);
                         //Apply Shade factor
                         color *= shade;
                         //Apply Instance Color
@@ -424,6 +430,7 @@ namespace TombLib.LevelData.Compilers
                         }
                     }
                 }
+
                 // Add geometry imported objects
                 int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
@@ -470,7 +477,7 @@ namespace TombLib.LevelData.Compilers
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom && 
                                          position.X >= 0 && position.Z >= 0 && 
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal));
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForVertex(room, position, normal, true));
                                 else
                                     trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
 
