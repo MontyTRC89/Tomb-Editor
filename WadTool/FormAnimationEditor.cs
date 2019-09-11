@@ -636,7 +636,7 @@ namespace WadTool
             if (_editor.SelectedNode == null) return;
             if (_editor.ClipboardKeyFrames == null || _editor.ClipboardKeyFrames.Count <= 0)
             {
-                popup.ShowWarning(this, "Nothing to paste!");
+                popup.ShowWarning(panelRendering, "Nothing to paste!");
                 return;
             }
 
@@ -675,7 +675,7 @@ namespace WadTool
         {
             if (_editor.SelectedNode == null)
             {
-                popup.ShowWarning(this, "No animation to cut!");
+                popup.ShowWarning(panelRendering, "No animation to cut!");
                 return;
             }
 
@@ -687,7 +687,7 @@ namespace WadTool
         {
             if (_editor.SelectedNode == null)
             {
-                popup.ShowWarning(this, "No animation to copy!");
+                popup.ShowWarning(panelRendering, "No animation to copy!");
                 return;
             }
 
@@ -698,7 +698,7 @@ namespace WadTool
         {
             if (_editor.ClipboardNode == null || _editor.SelectedNode == null)
             {
-                popup.ShowWarning(this, "No animation to paste!");
+                popup.ShowWarning(panelRendering, "No animation to paste!");
                 return;
             }
 
@@ -715,7 +715,7 @@ namespace WadTool
         {
             if (_editor.ClipboardNode == null || _editor.SelectedNode == null)
             {
-                popup.ShowWarning(this, "No animation to replace!");
+                popup.ShowWarning(panelRendering, "No animation to replace!");
                 return;
             }
 
@@ -734,7 +734,7 @@ namespace WadTool
         {
             if (_editor.SelectedNode != null)
             {
-                popup.ShowWarning(this, "No animation to split!");
+                popup.ShowWarning(panelRendering, "No animation to split!");
                 return;
             }
 
@@ -1284,13 +1284,13 @@ namespace WadTool
                             if (nextFrame > maxFrameNumber)
                             {
                                 _frameCount = 0;
-                                popup.ShowWarning(this, "No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.");
+                                popup.ShowWarning(panelRendering, "No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.");
                             }
                             else
                                 _frameCount = nextFrame;
                         }
                         else
-                            popup.ShowWarning(this, "Animation " + nextIndex + " wasn't found. Chain is broken.");
+                            popup.ShowWarning(panelRendering, "Animation " + nextIndex + " wasn't found. Chain is broken.");
                     }
                 }
                 else
