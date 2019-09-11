@@ -45,7 +45,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, 
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId,int meshIndex,
                                        bool isWaterfall = false, bool isOptics = false,
                                        WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
@@ -114,7 +114,7 @@ namespace TombLib.LevelData.Compilers
                 if (oldMesh.VerticesNormals.Count == 0)
                 {
                     
-                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", oldMesh, objectId));
+                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", meshIndex, objectId));
                     oldMesh.CalculateNormals();
                 }
                 useShades = false;
@@ -440,8 +440,10 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.MeshTree = (uint)_meshTrees.Count;
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
-                foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), oldMoveable.Id.IsOptics(_level.Settings.WadGameVersion));
+                for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
+                    var wadMesh = oldMoveable.Meshes[i];
+                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId,i, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), oldMoveable.Id.IsOptics(_level.Settings.WadGameVersion));
+                }
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
@@ -520,7 +522,7 @@ namespace TombLib.LevelData.Compilers
                 //do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                  if(!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
-                    ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
+                    ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
                 } else
                 {
                     _progressReporter.ReportInfo("Creating Dummy Mesh for automatically Merged Mesh :" + oldStaticMesh.ToString(_level.Settings.WadGameVersion));
