@@ -101,6 +101,77 @@ namespace TombLib.LevelData.Compilers
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
                     {
+                        /*if (i == 1 && x == 1 && z == 1)
+                        {
+                            tempFloorData.Clear();
+                            tempFloorData.Add(0x03C7);
+                            tempFloorData.Add(0x0222);
+                            tempFloorData.Add(0x83F0);
+                            tempFloorData.Add(0x0100);
+
+                            // Build sector info
+                            var sector2 = GetSector(tempRoom, x, z);
+                            sector2.Floor = 0;
+                            sector2.Ceiling = 1;
+                            sector2.FloorDataIndex = 0;
+                            sector2.RoomBelow = 255;
+                            sector2.RoomAbove = 0;
+
+                            sector2.FloorDataIndex = checked((ushort)_floorData.Count);
+                            _floorData.AddRange(tempFloorData);
+                            
+                            // Update the sector
+                            SaveSector(tempRoom, x, z, sector2);
+
+                            continue;
+                        }
+
+                        if (i == 1 && x == 2 && z == 1)
+                        {
+                            tempFloorData.Clear();
+                            tempFloorData.Add(0x83A7);
+                            tempFloorData.Add(0x0355);
+
+                            // Build sector info
+                            var sector2 = GetSector(tempRoom, x, z);
+                            sector2.Floor = 0;
+                            sector2.Ceiling = 0;
+                            sector2.FloorDataIndex = 0;
+                            sector2.RoomBelow = 255;
+                            sector2.RoomAbove = 0;
+
+                            sector2.FloorDataIndex = checked((ushort)_floorData.Count);
+                            _floorData.AddRange(tempFloorData);
+
+                            // Update the sector
+                            SaveSector(tempRoom, x, z, sector2);
+
+                            continue;
+                        }
+
+                        if (i == 1 && x == 3 && z == 1)
+                        {
+                            tempFloorData.Clear();
+                            tempFloorData.Add(0x83E7);
+                            tempFloorData.Add(0x0166);
+
+                            // Build sector info
+                            var sector2 = GetSector(tempRoom, x, z);
+                            sector2.Floor = 0;
+                            sector2.Ceiling = 0;
+                            sector2.FloorDataIndex = 0;
+                            sector2.RoomBelow = 255;
+                            sector2.RoomAbove = 0;
+
+                            sector2.FloorDataIndex = checked((ushort)_floorData.Count);
+                            _floorData.AddRange(tempFloorData);
+
+                            // Update the sector
+                            SaveSector(tempRoom, x, z, sector2);
+
+                            continue;
+                        }*/
+
                         Block block = room.Blocks[x, z];
 
                         // If a sector is a wall and this room is a water room,
@@ -817,11 +888,11 @@ namespace TombLib.LevelData.Compilers
                 BuildRoomSectorShape_t00_t01(shape, oppositeExtreme, isCeiling, out t00, out t01);
 
                 // Equalize height for maximum step size
-                {
+                /*{
                     int average = (t00 + t01) / 2;
                     t00 -= average;
                     t01 -= average;
-                }
+                }*/
 
                 int t10;
                 int t11;
@@ -961,7 +1032,7 @@ namespace TombLib.LevelData.Compilers
                 int t01;
                 BuildRoomSectorShape_t00_t01(shape, oppositeExtreme, isCeiling, out t00, out t01);
                 int average = (t00 + t01) / 2;
-                result += isCeiling ? average : -average;
+                //result += isCeiling ? average : -average;
             }
             return result;
         }
