@@ -51,11 +51,17 @@ namespace WadTool
         // Player
         private Timer _timerPlayAnimation;
         private int _frameCount;
-        private bool _chainedPlayback;
         private bool _previewSounds;
         private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
         private int _currentMaterialIndex;
         private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
+
+        // Chained playback vars
+        private bool _chainedPlayback;
+        private int _chainedPlaybackInitialAnim;
+        private int _chainedPlaybackInitialCursorPos;
+        private VectorInt2 _chainedPlaybackInitialSelection;
+
 
         private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
 
@@ -1080,12 +1086,57 @@ namespace WadTool
 
             if (_timerPlayAnimation.Enabled)
             {
-                if (_editor.SelectedNode?.WadAnimation != null && _editor.SelectedNode.WadAnimation.KeyFrames.Count > 1)
-                    _frameCount = timeline.Value * _editor.SelectedNode.WadAnimation.FrameRate;
+                if (_editor.SelectedNode?.WadAnimation != null)
+                {
+                    // Backup current state if chained playback is about to begin
+                    if (_chainedPlayback)
+                    {
+                        _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
+                        _chainedPlaybackInitialCursorPos = timeline.Value;
+                        _chainedPlaybackInitialSelection = timeline.Selection;
+                    }
+
+                    if (_editor.SelectedNode.WadAnimation.KeyFrames.Count > 1)
+                        _frameCount = timeline.Value * _editor.SelectedNode.WadAnimation.FrameRate;
+                }
+
                 butTransportPlay.Image = Properties.Resources.transport_stop_24;
             }
             else
             {
+                // Restore state of editor prior to chained playback. If user manually toggled
+                // chained mode off during playback, state won't restore. This is intended.
+                // FIXME: Make it an option!
+                if (_chainedPlayback)
+                {
+                    var origNode = _editor.WorkingAnimations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
+
+                    if (origNode != null)
+                    {
+                        // Only try to update UI if we've switched to different anim
+                        if (origNode != _editor.SelectedNode)
+                        {
+                            SelectAnimation(origNode);
+
+                            var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == _chainedPlaybackInitialAnim);
+                            if (listItem != null)
+                            {
+                                lstAnimations.SelectItem(lstAnimations.Items.IndexOf(listItem));
+                                lstAnimations.EnsureVisible();
+                            }
+                            else
+                            {
+                                lstAnimations.SelectedIndices.Clear();
+                                lstAnimations.Invalidate();
+                            }
+
+                            timeline.Value = _chainedPlaybackInitialCursorPos;
+                            timeline.SelectionStart = _chainedPlaybackInitialSelection.X;
+                            timeline.SelectionEnd = _chainedPlaybackInitialSelection.Y;
+                        }
+                    }
+                }
+
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
             }
         }
@@ -1255,43 +1306,40 @@ namespace WadTool
                 {
                     var nextIndex = _editor.SelectedNode.WadAnimation.NextAnimation;
                     var nextFrame = _editor.SelectedNode.WadAnimation.NextFrame;
+                    var nextNode  = _editor.WorkingAnimations.FirstOrDefault(item => item.Index == nextIndex);
 
-                    //if (nextIndex != _editor.SelectedNode.Index)
+                    if (nextNode != null)
                     {
-                        var nextNode = _editor.WorkingAnimations.FirstOrDefault(item => item.Index == nextIndex);
-                        if (nextNode != null)
+                        // Only try to update UI if next anim is different
+
+                        if (nextNode != _editor.SelectedNode)
                         {
-                            // Only try to update UI if next anim is different
+                            SelectAnimation(nextNode);
 
-                            if(nextNode != _editor.SelectedNode)
+                            var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == nextIndex);
+                            if (listItem != null)
                             {
-                                SelectAnimation(nextNode);
-
-                                var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == nextIndex);
-                                if (listItem != null)
-                                {
-                                    lstAnimations.SelectItem(lstAnimations.Items.IndexOf(listItem));
-                                    lstAnimations.EnsureVisible();
-                                }
-                                else
-                                {
-                                    lstAnimations.SelectedIndices.Clear();
-                                    lstAnimations.Invalidate();
-                                }
-                            }
-
-                            var maxFrameNumber = nextNode.WadAnimation.FrameRate * (nextNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
-                            if (nextFrame > maxFrameNumber)
-                            {
-                                _frameCount = 0;
-                                popup.ShowWarning(panelRendering, "No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.");
+                                lstAnimations.SelectItem(lstAnimations.Items.IndexOf(listItem));
+                                lstAnimations.EnsureVisible();
                             }
                             else
-                                _frameCount = nextFrame;
+                            {
+                                lstAnimations.SelectedIndices.Clear();
+                                lstAnimations.Invalidate();
+                            }
+                        }
+
+                        var maxFrameNumber = nextNode.WadAnimation.FrameRate * (nextNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
+                        if (nextFrame > maxFrameNumber)
+                        {
+                            _frameCount = 0;
+                            popup.ShowWarning(panelRendering, "No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.");
                         }
                         else
-                            popup.ShowWarning(panelRendering, "Animation " + nextIndex + " wasn't found. Chain is broken.");
+                            _frameCount = nextFrame;
                     }
+                    else
+                        popup.ShowWarning(panelRendering, "Animation " + nextIndex + " wasn't found. Chain is broken.");
                 }
                 else
                     _frameCount = 0;
@@ -1624,6 +1672,17 @@ namespace WadTool
                 butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
             else
                 butTransportChained.Image = Properties.Resources.transport_chain_disabled_24;
+        }
+
+        private void lstAnimations_Click(object sender, EventArgs e)
+        {
+            // Update saved state's anim number, in case chained playback is in effect
+            if (_chainedPlayback && _editor.SelectedNode != null && lstAnimations.SelectedItem != null)
+            {
+                _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
+                _chainedPlaybackInitialCursorPos = 0;
+                _chainedPlaybackInitialSelection = new VectorInt2();
+            }
         }
     }
 }

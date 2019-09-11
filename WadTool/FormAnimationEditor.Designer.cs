@@ -1347,6 +1347,7 @@ namespace WadTool
             this.lstAnimations.Size = new System.Drawing.Size(231, 167);
             this.lstAnimations.TabIndex = 8;
             this.lstAnimations.SelectedIndicesChanged += new System.EventHandler(this.lstAnimations_SelectedIndicesChanged);
+            this.lstAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
             // 
             // darkSectionPanel1
             // 
