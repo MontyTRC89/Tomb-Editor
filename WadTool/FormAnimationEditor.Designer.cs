@@ -22,6 +22,8 @@ namespace WadTool
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAnimationEditor));
             this.topMenu = new DarkUI.Controls.DarkMenuStrip();
             this.fileeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -142,6 +144,7 @@ namespace WadTool
             this.butTransportPlay = new System.Windows.Forms.ToolStripButton();
             this.butTransportFrameForward = new System.Windows.Forms.ToolStripButton();
             this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
+            this.butTransportChained = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
             this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
@@ -158,8 +161,6 @@ namespace WadTool
             this.panelTools = new System.Windows.Forms.Panel();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -204,13 +205,33 @@ namespace WadTool
             this.fileeToolStripMenuItem.Size = new System.Drawing.Size(33, 20);
             this.fileeToolStripMenuItem.Text = "Edit";
             // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.undoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.undoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_undo_16;
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.redoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.redoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_redo_16;
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+            // 
             // saveChangesToolStripMenuItem
             // 
             this.saveChangesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveChangesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveChangesToolStripMenuItem.Image")));
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.saveChangesToolStripMenuItem.Text = "Save changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
@@ -220,14 +241,14 @@ namespace WadTool
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(127, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.closeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -1078,7 +1099,7 @@ namespace WadTool
             this.butTbCutAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbCutAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbCutAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCutAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbCutAnimation.Image")));
+            this.butTbCutAnimation.Image = global::WadTool.Properties.Resources.actions_cut_16;
             this.butTbCutAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbCutAnimation.Name = "butTbCutAnimation";
             this.butTbCutAnimation.Size = new System.Drawing.Size(23, 25);
@@ -1185,7 +1206,7 @@ namespace WadTool
             this.butTbCutFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbCutFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbCutFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCutFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbCutFrame.Image")));
+            this.butTbCutFrame.Image = global::WadTool.Properties.Resources.actions_cut_16;
             this.butTbCutFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbCutFrame.Name = "butTbCutFrame";
             this.butTbCutFrame.Size = new System.Drawing.Size(23, 25);
@@ -1385,7 +1406,7 @@ namespace WadTool
             this.timeline.Name = "timeline";
             this.timeline.SelectionEnd = 0;
             this.timeline.SelectionStart = 0;
-            this.timeline.Size = new System.Drawing.Size(504, 38);
+            this.timeline.Size = new System.Drawing.Size(473, 38);
             this.timeline.TabIndex = 3;
             this.timeline.Value = 0;
             this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
@@ -1395,9 +1416,9 @@ namespace WadTool
             // 
             this.panelTransport.Controls.Add(this.darkToolStrip1);
             this.panelTransport.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelTransport.Location = new System.Drawing.Point(504, 0);
+            this.panelTransport.Location = new System.Drawing.Point(473, 0);
             this.panelTransport.Name = "panelTransport";
-            this.panelTransport.Size = new System.Drawing.Size(221, 38);
+            this.panelTransport.Size = new System.Drawing.Size(252, 38);
             this.panelTransport.TabIndex = 2;
             // 
             // darkToolStrip1
@@ -1417,11 +1438,12 @@ namespace WadTool
             this.butTransportEnd,
             this.toolStripSeparator7,
             this.butTransportSound,
-            this.butTransportLandWater});
+            this.butTransportLandWater,
+            this.butTransportChained});
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(221, 38);
+            this.darkToolStrip1.Size = new System.Drawing.Size(252, 38);
             this.darkToolStrip1.TabIndex = 0;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
@@ -1498,6 +1520,19 @@ namespace WadTool
             this.butTransportEnd.ToolTipText = "Go to end";
             this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
             // 
+            // butTransportChained
+            // 
+            this.butTransportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportChained.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportChained.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportChained.Image = global::WadTool.Properties.Resources.transport_chain_disabled_24;
+            this.butTransportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportChained.Name = "butTransportChained";
+            this.butTransportChained.Size = new System.Drawing.Size(28, 35);
+            this.butTransportChained.ToolTipText = "Chained playback";
+            this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
+            // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1523,6 +1558,7 @@ namespace WadTool
             // 
             this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportLandWater.DoubleClickEnabled = true;
             this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
             this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -1694,26 +1730,6 @@ namespace WadTool
             this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(28, 35);
-            // 
-            // undoToolStripMenuItem
-            // 
-            this.undoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.undoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.undoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_undo_16;
-            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.undoToolStripMenuItem.Text = "Undo";
-            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
-            // 
-            // redoToolStripMenuItem
-            // 
-            this.redoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.redoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.redoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_redo_16;
-            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.redoToolStripMenuItem.Text = "Redo";
-            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
             // 
             // FormAnimationEditor
             // 
@@ -1910,5 +1926,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem resampleAnimationToKeyframesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton butTransportChained;
     }
 }
