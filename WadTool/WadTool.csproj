@@ -494,6 +494,15 @@
   <ItemGroup>
     <None Include="Resources\icons_general\general_undo-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_cut-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-chain-disabled-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-chain-enabled-24.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
