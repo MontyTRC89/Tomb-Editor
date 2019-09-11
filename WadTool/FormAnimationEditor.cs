@@ -51,6 +51,7 @@ namespace WadTool
         // Player
         private Timer _timerPlayAnimation;
         private int _frameCount;
+        private bool _chainedPlayback;
         private bool _previewSounds;
         private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
         private int _currentMaterialIndex;
@@ -1240,24 +1241,73 @@ namespace WadTool
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
-            if (_editor.SelectedNode?.WadAnimation == null || _editor.SelectedNode.DirectXAnimation.KeyFrames.Count <= 1)
+            if (_editor.SelectedNode?.WadAnimation == null || _editor.SelectedNode.DirectXAnimation.KeyFrames.Count < 1)
                 return;
 
             int realFrameNumber = _editor.SelectedNode.WadAnimation.FrameRate * (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
 
             _frameCount++;
+
             if (_frameCount >= realFrameNumber)
-                _frameCount = 0;
+            {
+                // Chain playback handling
+                if (_chainedPlayback)
+                {
+                    var nextIndex = _editor.SelectedNode.WadAnimation.NextAnimation;
+                    var nextFrame = _editor.SelectedNode.WadAnimation.NextFrame;
+
+                    //if (nextIndex != _editor.SelectedNode.Index)
+                    {
+                        var nextNode = _editor.WorkingAnimations.FirstOrDefault(item => item.Index == nextIndex);
+                        if (nextNode != null)
+                        {
+                            // Only try to update UI if next anim is different
+
+                            if(nextNode != _editor.SelectedNode)
+                            {
+                                SelectAnimation(nextNode);
+
+                                var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == nextIndex);
+                                if (listItem != null)
+                                {
+                                    lstAnimations.SelectItem(lstAnimations.Items.IndexOf(listItem));
+                                    lstAnimations.EnsureVisible();
+                                }
+                                else
+                                {
+                                    lstAnimations.SelectedIndices.Clear();
+                                    lstAnimations.Invalidate();
+                                }
+                            }
+
+                            var maxFrameNumber = nextNode.WadAnimation.FrameRate * (nextNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
+                            if (nextFrame > maxFrameNumber)
+                            {
+                                _frameCount = 0;
+                                popup.ShowWarning(this, "No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.");
+                            }
+                            else
+                                _frameCount = nextFrame;
+                        }
+                        else
+                            popup.ShowWarning(this, "Animation " + nextIndex + " wasn't found. Chain is broken.");
+                    }
+                }
+                else
+                    _frameCount = 0;
+            }
 
             bool isKeyFrame = (_frameCount % (_editor.SelectedNode.WadAnimation.FrameRate == 0 ? 1 : _editor.SelectedNode.WadAnimation.FrameRate) == 0);
 
             // Update animation
             if (isKeyFrame)
             {
-                if (timeline.Value == timeline.Maximum)
+                int newFrameNumber = _frameCount / _editor.SelectedNode.WadAnimation.FrameRate;
+
+                if (newFrameNumber > timeline.Maximum)
                     timeline.Value = 0;
                 else
-                    timeline.Value++;
+                    timeline.Value = newFrameNumber;
             }
 
             UpdateStatusLabel();
@@ -1564,6 +1614,16 @@ namespace WadTool
 
             SelectAnimation(_editor.SelectedNode);
             timeline.Highlight();
+        }
+
+        private void transportChained_Click(object sender, EventArgs e)
+        {
+            _chainedPlayback = !_chainedPlayback;
+
+            if (_chainedPlayback)
+                butTransportSound.Image = Properties.Resources.transport_chain_enabled_24;
+            else
+                butTransportSound.Image = Properties.Resources.transport_chain_disabled_24;
         }
     }
 }

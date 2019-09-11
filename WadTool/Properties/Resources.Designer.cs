@@ -93,6 +93,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_cut_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_cut_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_delete_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_delete_16", resourceCulture);
@@ -757,6 +767,26 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap transport_audio_24 {
             get {
                 object obj = ResourceManager.GetObject("transport_audio_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_chain_disabled_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_chain_disabled_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transport_chain_enabled_24 {
+            get {
+                object obj = ResourceManager.GetObject("transport_chain_enabled_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
