@@ -1,0 +1,25 @@
+Used in GlobalTrigger= command
+This global trigger will be enabled everytime in game it has been created an item with same slot you typed in Parameter field.
+When the global trigger will be engaged the index of new created item (always a moveable) will be stored as found item index, and you can elaborate it adding to exported triggers the TGROUP_USE_FOUND_ITEM_INDEX flag.
+I remember that the items that could be created are:
+
+FLARE_ITEM (when lara throw away it)
+BURNING_TORCH_ITEM (when lara throw it. Note: it's not always "burning")
+CLOCKWORK_BEETLE (when lara places it on the floor)
+GRENADE (shot from Sas, from Lara and from enemy jeep)
+DARTS (emitted from dart emitter. Warning: if you intercept this item you'll have a huge quantity of items to manage)
+CROSSBOW_BOLT (shot from lara)
+
+while about the new created item with slots:
+PISTOLS_ANIM  (*)
+UZI_ANIM   (*)
+SIXSHOOTER_ANIM (*)
+SHOTGUN_ANIM
+CROSSBOW_ANIM
+GRENADE_GUN_ANIM
+
+the matter is complicated to explain.
+The hardcoded mangament of combat animations use a "fake" item only to store current animation, frame, state id of weapon animations, in spite the real item remains only main Lara.
+Anyway when you detect the creation of some of above weapon lara slots, it means that lara is loading that kind of weapon and changing animation and frame in this new fake item I suppose you could be able to affect that combat animation.
+(*)Note: It seems that the method of fake item created dynamically works only for shotgun, crossbow and grenade-gun weapons, while for other littlest weapons (*) the engine swaps simply the hand mesh with no new item created.
+Note: if you wish try to manage weapon animation you can use this global trigger to detect the moment of extracted weapons, but to manage it you can use also new savegame memory variables beginning with "WeaponAnim" names. See trng variables triggers.

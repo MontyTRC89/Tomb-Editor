@@ -1,0 +1,3 @@
+Used in Customize=CUST_CAMERA
+This flag get lara fully invisible when the player is using the look camera.
+By default Lara was only semi-transparent in that situation.

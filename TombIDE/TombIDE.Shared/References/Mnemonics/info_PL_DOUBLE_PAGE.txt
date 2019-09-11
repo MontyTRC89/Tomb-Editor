@@ -1,0 +1,13 @@
+Used in Diary= command.
+This layout divides the screen in two ideal pages.
+The text will be formatted in two columns: first the left column (left half of screen) and then in the right column (the right half of screen)
+
+IMAGE: if there is a (little) image to show in this layout, it will be always placed at top of left page and it will fit almost whole width of left page
+
+TITLE: if there is a title for this page, it will be placed at top of left page. If there is also an image, the sorting (in left page) will be:
+
+[Image]
+[Title]
+..text ..
+
+Remark: if you use as image a very hight image that convers all left side, you can have text only in right page while in left side you can place this image, where it could be two little images casted one over other.

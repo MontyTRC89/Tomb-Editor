@@ -1,0 +1,2 @@
+You can detect if lara is touching moveable with index you set in Parameter field.
+For more infos read also the description of GT_COLLIDE_SLOT global trigger, and FGT_PUSHING_COLLISION flag

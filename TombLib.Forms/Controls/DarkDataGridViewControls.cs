@@ -68,7 +68,7 @@ namespace TombLib.Controls
 
         private void butDelete_Click(object sender, EventArgs e)
         {
-            if (DataGridView.SelectedRows.Count <= 0)
+            if (DataGridView.SelectedRows.Count <= 0 || DataGridView.EditableRowCollection.Count < 1)
                 return;
 
             if (DeleteRowCheckIfCancel())
@@ -82,7 +82,8 @@ namespace TombLib.Controls
             //Remove rows
             var rows = DataGridView.EditableRowCollection;
             foreach (var selectedRowIndex in selectedRowIndices)
-                rows.RemoveAt(selectedRowIndex);
+                if (selectedRowIndex < rows.Count)
+                    rows.RemoveAt(selectedRowIndex);
 
             //Remove selection
             foreach (var selectedRow in DataGridView.SelectedRows.Cast<DataGridViewRow>().ToList())
@@ -91,7 +92,7 @@ namespace TombLib.Controls
 
         private void butUp_Click(object sender, EventArgs e)
         {
-            if (DataGridView.SelectedRows.Count <= 0)
+            if (DataGridView.SelectedRows.Count <= 1)
                 return;
 
             // Get sorted selection
@@ -114,7 +115,7 @@ namespace TombLib.Controls
 
         private void butDown_Click(object sender, EventArgs e)
         {
-            if (DataGridView.SelectedRows.Count <= 0)
+            if (DataGridView.SelectedRows.Count <= 1)
                 return;
 
             // Get sorted selection

@@ -238,28 +238,25 @@ namespace TombLib.LevelData.Compilers
 
                     var add = false;
 
-                    // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
+                    // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
                     if (zoneType == 1)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        if (water == isWater && step <= 256 &&
-                            (!flipped  && dec_boxes[boxIndex].Flag0x04 ||
+                        var canJump = dec_boxes[boxIndex].Jump;
+
+                        if (water == isWater && (canJump || step <= 256) &&
+                            (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 
-                    // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
+                    // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
                     if (zoneType == 2)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-
-                        // Check all possibilities
-                        var canJump = dec_boxes[boxIndex].Jump;
-                        var canClimb = Math.Abs(step) <= 256;
-
-                        if (water == isWater && (canJump || canClimb) &&
+                        if (water == isWater && step <= 256 &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
@@ -271,21 +268,23 @@ namespace TombLib.LevelData.Compilers
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        if (water == isWater && step <= 256 || water) add = true;
+                        if ((water == isWater && step <= 256 || water) &&
+                            (!flipped && dec_boxes[boxIndex].Flag0x04 ||
+                            flipped && dec_boxes[boxIndex].Flag0x02)) 
+                            add = true;
                     }
 
                     // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
                     if (zoneType == 4)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
-                        var step = _boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor;
+                        var step = Math.Abs(_boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor);
 
                         // Check all possibilities
                         var canJump = dec_boxes[boxIndex].Jump;
-                        var canClimb = Math.Abs(step) <= 1024;
                         var canMonkey = dec_boxes[boxIndex].Monkey;
 
-                        if (water == isWater && (canJump || canClimb || canMonkey) &&
+                        if (water == isWater && (canJump || step <= 1024 || canMonkey) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;

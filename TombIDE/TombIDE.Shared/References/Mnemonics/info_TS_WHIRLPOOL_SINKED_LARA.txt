@@ -1,0 +1,2 @@
+Used with Customize=CUST_SFX command.
+The sound when Lara and the boat will be sinked in the whirlpool.

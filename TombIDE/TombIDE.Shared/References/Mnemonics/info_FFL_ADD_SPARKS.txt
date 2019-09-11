@@ -1,0 +1,2 @@
+Used in Customize=CUST_FLARE command.
+Add to flare  sparks emission.

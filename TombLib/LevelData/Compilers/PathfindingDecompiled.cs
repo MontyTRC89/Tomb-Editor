@@ -772,8 +772,8 @@ namespace TombLib.LevelData.Compilers
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
-                if (room.Type == RoomType.Water != (adjoiningRoom2.Type == RoomType.Water))
-                    break;
+                /*if (room.Type == RoomType.Water != (adjoiningRoom2.Type == RoomType.Water))
+                    break;*/
 
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;

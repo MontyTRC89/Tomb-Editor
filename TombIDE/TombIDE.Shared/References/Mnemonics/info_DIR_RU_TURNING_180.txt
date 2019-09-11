@@ -1,0 +1,4 @@
+Used in Parameters=PARAM_MOVE_ITEM script command
+Relative direction with turning.
+This flag will move forward the item but changing continuosly its facing, turning at right, until it will have the opposite facing of start.
+See description of DIR_TURNING_LEFT_90 about customization of turning speed.

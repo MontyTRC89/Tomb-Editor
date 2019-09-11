@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -63,11 +64,9 @@ namespace TombLib.LevelData.Compilers
         private tr_zone[] _zones = new tr_zone[0];
 
         private readonly List<tr_item> _items = new List<tr_item>();
-        private readonly List<tr_ai_item> _aiItems = new List<tr_ai_item>();
+        private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
-        private Util.SoundManager _soundManager;
         private Util.TexInfoManager _textureInfoManager;
-        //private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -91,17 +90,13 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            //_objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
-            _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
-
+        
             // Prepare level data in parallel to the sounds
-            //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4();
             BuildRooms();
 
-            // New texture packer
+            // Compile textures
             ReportProgress(30, "Packing textures");
 
             _textureInfoManager.SortAnimatedTextures();
@@ -124,7 +119,6 @@ namespace TombLib.LevelData.Compilers
 
             // Combine the data collected
             PrepareTextures();
-            _soundManager.PrepareSoundsData(_progressReporter);
 
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
@@ -186,11 +180,29 @@ namespace TombLib.LevelData.Compilers
                 if (instance.IsEmpty)
                     continue;
 
-                WadSoundInfo soundInfo = instance.GetSoundInfo(_level);
+                WadSoundInfo soundInfo = _level.Settings.WadTryGetSoundInfo(instance.SoundId);
                 if (soundInfo == null)
                 {
                     _progressReporter.ReportWarn("Sound (" + instance.SoundNameToDisplay + ") for sound source in room '" + instance.Room + "' at '" + instance.Position + "' is missing.");
                     continue;
+                }
+
+                ushort flags = 0;
+
+                switch (instance.PlayMode)
+                {
+                    case SoundSourcePlayMode.Automatic:
+                        flags = instance.Room.Alternated ? (instance.Room.IsAlternate ? (ushort)0x40 : (ushort)0x80) : (ushort)0xC0;
+                        break;
+                    case SoundSourcePlayMode.Always:
+                        flags = 0xC0;
+                        break;
+                    case SoundSourcePlayMode.OnlyInBaseRoom:
+                        flags = 0x80;
+                        break;
+                    case SoundSourcePlayMode.OnlyInAlternateRoom:
+                        flags = 0x40;
+                        break;
                 }
 
                 Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -199,8 +211,8 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    SoundID = _soundManager.AllocateSoundInfo(soundInfo),
-                    Flags = instance.Room?.AlternateBaseRoom != null ? (ushort)0x40 : (instance.Room?.AlternateRoom != null ? (ushort)0x80 : (ushort)0xC0)
+                    SoundID = (ushort)instance.SoundId,
+                    Flags = flags
                 });
             }
 
@@ -267,7 +279,7 @@ namespace TombLib.LevelData.Compilers
             {
                 Vector3 direction = instance.GetDirection();
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                ushort rollTo65536 = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Roll * (65536.0 / 360.0))));
+                ushort rollTo65536 = (ushort)(65536 - Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Roll * (65536.0 / 360.0)))));
                 _flyByCameras.Add(new tr4_flyby_camera
                 {
                     X = (int)Math.Round(position.X),
@@ -288,7 +300,7 @@ namespace TombLib.LevelData.Compilers
             }
             _flyByCameras.Sort(new ComparerFlyBy());
 
-            // Check camera dublicates
+            // Check camera duplicates
             int lastSeq   = -1;
             int lastIndex = -1;
 
@@ -301,7 +313,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 if (_flyByCameras[i].Index == lastIndex && _flyByCameras[i].Sequence == lastSeq)
-                    _progressReporter.ReportWarn("Warning: flyby sequence " + _flyByCameras[i].Sequence + " has dublicated camera with ID " + lastIndex);
+                    _progressReporter.ReportWarn("Warning: flyby sequence " + _flyByCameras[i].Sequence + " has duplicated camera with ID " + lastIndex);
                 lastIndex = _flyByCameras[i].Index;
             }
 
@@ -432,7 +444,7 @@ namespace TombLib.LevelData.Compilers
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
                     ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
-                    if (wadMoveable.Id.IsAI(_level.Settings.WadGameVersion))
+                    if (TrCatalog.IsMoveableAI(_level.Settings.WadGameVersion, wadMoveable.Id.TypeId))
                     {
                         _aiItems.Add(new tr_ai_item
                         {
@@ -470,6 +482,9 @@ namespace TombLib.LevelData.Compilers
                                 _luaIdToItems.Add(instance.LuaId, _items.Count - 1);
                     }
                 }
+
+            // Sort AI objects and put all LARA_START_POS objects (last AI object by ID) in front
+            _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
 
             ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
             ReportProgress(45, "    Number of items: " + _items.Count);

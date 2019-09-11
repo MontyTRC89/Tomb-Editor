@@ -30,7 +30,7 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
+            this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabSubPanel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -38,12 +38,13 @@
             this.darkNumericUpDown1 = new DarkUI.Controls.DarkNumericUpDown();
             this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.darkGroupBox10 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox22 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
             this.darkCheckBox26 = new DarkUI.Controls.DarkCheckBox();
             this.darkNumericUpDown39 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel67 = new DarkUI.Controls.DarkLabel();
-            this.darkCheckBox22 = new DarkUI.Controls.DarkCheckBox();
-            this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
             this.darkGroupBox7 = new DarkUI.Controls.DarkGroupBox();
             this.darkCheckBox13 = new DarkUI.Controls.DarkCheckBox();
@@ -110,6 +111,8 @@
             this.darkLabel42 = new DarkUI.Controls.DarkLabel();
             this.panelColorSelector1 = new System.Windows.Forms.Panel();
             this.darkGroupBox6 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox33 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox31 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox25 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox24 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox15 = new DarkUI.Controls.DarkCheckBox();
@@ -229,7 +232,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox31 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox32 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -238,6 +241,7 @@
             this.panel1.SuspendLayout();
             this.darkGroupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown1)).BeginInit();
+            this.darkGroupBox10.SuspendLayout();
             this.darkGroupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).BeginInit();
             this.darkGroupBox7.SuspendLayout();
@@ -373,13 +377,14 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.Controls.Add(this.darkGroupBox1);
+            this.panel1.Controls.Add(this.darkGroupBox10);
             this.panel1.Controls.Add(this.darkGroupBox2);
             this.panel1.Controls.Add(this.darkGroupBox7);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel1.Size = new System.Drawing.Size(364, 377);
+            this.panel1.Size = new System.Drawing.Size(364, 396);
             this.panel1.TabIndex = 9;
             // 
             // darkGroupBox1
@@ -388,7 +393,7 @@
             this.darkGroupBox1.Controls.Add(this.cbEnableLogging);
             this.darkGroupBox1.Controls.Add(this.darkLabel1);
             this.darkGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox1.Location = new System.Drawing.Point(3, 297);
+            this.darkGroupBox1.Location = new System.Drawing.Point(3, 316);
             this.darkGroupBox1.Name = "darkGroupBox1";
             this.darkGroupBox1.Size = new System.Drawing.Size(358, 77);
             this.darkGroupBox1.TabIndex = 6;
@@ -431,18 +436,48 @@
             this.darkLabel1.TabIndex = 0;
             this.darkLabel1.Text = "Number of daily log files in history:";
             // 
+            // darkGroupBox10
+            // 
+            this.darkGroupBox10.Controls.Add(this.darkCheckBox22);
+            this.darkGroupBox10.Controls.Add(this.darkCheckBox2);
+            this.darkGroupBox10.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkGroupBox10.Location = new System.Drawing.Point(3, 247);
+            this.darkGroupBox10.Name = "darkGroupBox10";
+            this.darkGroupBox10.Size = new System.Drawing.Size(358, 69);
+            this.darkGroupBox10.TabIndex = 4;
+            this.darkGroupBox10.TabStop = false;
+            this.darkGroupBox10.Text = "PRJ import defaults";
+            // 
+            // darkCheckBox22
+            // 
+            this.darkCheckBox22.AutoSize = true;
+            this.darkCheckBox22.Location = new System.Drawing.Point(6, 44);
+            this.darkCheckBox22.Name = "darkCheckBox22";
+            this.darkCheckBox22.Size = new System.Drawing.Size(169, 17);
+            this.darkCheckBox22.TabIndex = 7;
+            this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrection";
+            this.darkCheckBox22.Text = "Use half-pixel UV correction";
+            // 
+            // darkCheckBox2
+            // 
+            this.darkCheckBox2.AutoSize = true;
+            this.darkCheckBox2.Location = new System.Drawing.Point(6, 21);
+            this.darkCheckBox2.Name = "darkCheckBox2";
+            this.darkCheckBox2.Size = new System.Drawing.Size(265, 17);
+            this.darkCheckBox2.TabIndex = 6;
+            this.darkCheckBox2.Tag = "Editor_RespectFlybyPatchOnPrjImport";
+            this.darkCheckBox2.Text = "Respect T4Larson\'s mousepatch flyby handling";
+            // 
             // darkGroupBox2
             // 
             this.darkGroupBox2.Controls.Add(this.darkCheckBox26);
             this.darkGroupBox2.Controls.Add(this.darkNumericUpDown39);
             this.darkGroupBox2.Controls.Add(this.darkLabel67);
-            this.darkGroupBox2.Controls.Add(this.darkCheckBox22);
-            this.darkGroupBox2.Controls.Add(this.darkCheckBox2);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox1);
             this.darkGroupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox2.Location = new System.Drawing.Point(3, 155);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(358, 142);
+            this.darkGroupBox2.Size = new System.Drawing.Size(358, 92);
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "System";
@@ -466,7 +501,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown39.Location = new System.Drawing.Point(254, 112);
+            this.darkNumericUpDown39.Location = new System.Drawing.Point(254, 64);
             this.darkNumericUpDown39.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -492,31 +527,11 @@
             // 
             this.darkLabel67.AutoSize = true;
             this.darkLabel67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel67.Location = new System.Drawing.Point(3, 114);
+            this.darkLabel67.Location = new System.Drawing.Point(3, 66);
             this.darkLabel67.Name = "darkLabel67";
             this.darkLabel67.Size = new System.Drawing.Size(107, 13);
             this.darkLabel67.TabIndex = 7;
             this.darkLabel67.Text = "Undo / redo depth:";
-            // 
-            // darkCheckBox22
-            // 
-            this.darkCheckBox22.AutoSize = true;
-            this.darkCheckBox22.Location = new System.Drawing.Point(6, 87);
-            this.darkCheckBox22.Name = "darkCheckBox22";
-            this.darkCheckBox22.Size = new System.Drawing.Size(227, 17);
-            this.darkCheckBox22.TabIndex = 5;
-            this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrection";
-            this.darkCheckBox22.Text = "Half-pixel UV correction (legacy option)";
-            // 
-            // darkCheckBox2
-            // 
-            this.darkCheckBox2.AutoSize = true;
-            this.darkCheckBox2.Location = new System.Drawing.Point(6, 64);
-            this.darkCheckBox2.Name = "darkCheckBox2";
-            this.darkCheckBox2.Size = new System.Drawing.Size(336, 17);
-            this.darkCheckBox2.TabIndex = 4;
-            this.darkCheckBox2.Tag = "Editor_RespectFlybyPatchOnPrjImport";
-            this.darkCheckBox2.Text = "Respect T4Larson\'s mousepatch flyby handling on prj import";
             // 
             // darkCheckBox1
             // 
@@ -680,7 +695,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(364, 882);
+            this.panel2.Size = new System.Drawing.Size(364, 928);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
@@ -736,7 +751,7 @@
             this.darkGroupBox8.Controls.Add(this.darkLabel42);
             this.darkGroupBox8.Controls.Add(this.panelColorSelector1);
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox8.Location = new System.Drawing.Point(3, 135);
+            this.darkGroupBox8.Location = new System.Drawing.Point(3, 181);
             this.darkGroupBox8.Name = "darkGroupBox8";
             this.darkGroupBox8.Size = new System.Drawing.Size(358, 744);
             this.darkGroupBox8.TabIndex = 3;
@@ -1246,6 +1261,8 @@
             // 
             // darkGroupBox6
             // 
+            this.darkGroupBox6.Controls.Add(this.darkCheckBox32);
+            this.darkGroupBox6.Controls.Add(this.darkCheckBox33);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox31);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox25);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox24);
@@ -1254,10 +1271,30 @@
             this.darkGroupBox6.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox6.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox6.Name = "darkGroupBox6";
-            this.darkGroupBox6.Size = new System.Drawing.Size(358, 135);
+            this.darkGroupBox6.Size = new System.Drawing.Size(358, 185);
             this.darkGroupBox6.TabIndex = 2;
             this.darkGroupBox6.TabStop = false;
             this.darkGroupBox6.Text = "General";
+            // 
+            // darkCheckBox33
+            // 
+            this.darkCheckBox33.AutoSize = true;
+            this.darkCheckBox33.Location = new System.Drawing.Point(6, 136);
+            this.darkCheckBox33.Name = "darkCheckBox33";
+            this.darkCheckBox33.Size = new System.Drawing.Size(339, 17);
+            this.darkCheckBox33.TabIndex = 46;
+            this.darkCheckBox33.Tag = "UI_AutoFillTriggerTypesForSwitchAndKey";
+            this.darkCheckBox33.Text = "Autofill \"Key\" and \"Switch\" trigger types with selected objects";
+            // 
+            // darkCheckBox31
+            // 
+            this.darkCheckBox31.AutoSize = true;
+            this.darkCheckBox31.Location = new System.Drawing.Point(6, 113);
+            this.darkCheckBox31.Name = "darkCheckBox31";
+            this.darkCheckBox31.Size = new System.Drawing.Size(269, 17);
+            this.darkCheckBox31.TabIndex = 26;
+            this.darkCheckBox31.Tag = "UI_SetAttributesAtOnce";
+            this.darkCheckBox31.Text = "Set or unset selected area\'s sector flags at once";
             // 
             // darkCheckBox25
             // 
@@ -2994,15 +3031,15 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkCheckBox31
+            // darkCheckBox32
             // 
-            this.darkCheckBox31.AutoSize = true;
-            this.darkCheckBox31.Location = new System.Drawing.Point(6, 113);
-            this.darkCheckBox31.Name = "darkCheckBox31";
-            this.darkCheckBox31.Size = new System.Drawing.Size(269, 17);
-            this.darkCheckBox31.TabIndex = 26;
-            this.darkCheckBox31.Tag = "UI_SetAttributesAtOnce";
-            this.darkCheckBox31.Text = "Set or unset selected area\'s sector flags at once";
+            this.darkCheckBox32.AutoSize = true;
+            this.darkCheckBox32.Location = new System.Drawing.Point(6, 159);
+            this.darkCheckBox32.Name = "darkCheckBox32";
+            this.darkCheckBox32.Size = new System.Drawing.Size(318, 17);
+            this.darkCheckBox32.TabIndex = 46;
+            this.darkCheckBox32.Tag = "UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture";
+            this.darkCheckBox32.Text = "Automatically enable skybox if invisible texture is applied";
             // 
             // FormOptions
             // 
@@ -3032,6 +3069,8 @@
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown1)).EndInit();
+            this.darkGroupBox10.ResumeLayout(false);
+            this.darkGroupBox10.PerformLayout();
             this.darkGroupBox2.ResumeLayout(false);
             this.darkGroupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown39)).EndInit();
@@ -3119,126 +3158,50 @@
         private DarkUI.Controls.DarkButton butApply;
         private DarkUI.Controls.DarkButton butOk;
         private DarkUI.Controls.DarkButton butCancel;
-        private Controls.DarkTabbedContainer tabbedContainer;
-        private System.Windows.Forms.TabPage tabPage8;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox3;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown6;
-        private DarkUI.Controls.DarkLabel darkLabel7;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown5;
-        private DarkUI.Controls.DarkLabel darkLabel6;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown4;
-        private DarkUI.Controls.DarkLabel darkLabel5;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown3;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown2;
-        private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkLabel darkLabel3;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel panel4;
+        private DarkUI.Controls.DarkButton butPageDefaults;
+        private TombLib.Controls.DarkTabbedContainer tabbedContainer;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Panel tabSubPanel2;
+        private System.Windows.Forms.Panel panel1;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown1;
+        private DarkUI.Controls.DarkCheckBox cbEnableLogging;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox26;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown39;
+        private DarkUI.Controls.DarkLabel darkLabel67;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox1;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox7;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox13;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown38;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox12;
+        private DarkUI.Controls.DarkTextBox darkTextBox1;
+        private DarkUI.Controls.DarkLabel darkLabel41;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown37;
+        private DarkUI.Controls.DarkLabel darkLabel40;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox11;
         private DarkUI.Controls.DarkLabel darkLabel2;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Panel tabSubPanel1;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox3;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox4;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox4;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown13;
-        private DarkUI.Controls.DarkLabel darkLabel14;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown12;
-        private DarkUI.Controls.DarkLabel darkLabel13;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown7;
-        private DarkUI.Controls.DarkLabel darkLabel8;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox5;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown14;
-        private DarkUI.Controls.DarkLabel darkLabel15;
-        private DarkUI.Controls.DarkLabel darkLabel12;
-        private DarkUI.Controls.DarkLabel darkLabel11;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown11;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown8;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown10;
-        private DarkUI.Controls.DarkLabel darkLabel9;
-        private DarkUI.Controls.DarkLabel darkLabel10;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown9;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox7;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox6;
-        private DarkUI.Controls.DarkComboBox cmbRendering3DFont;
-        private DarkUI.Controls.DarkLabel darkLabel16;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown15;
-        private DarkUI.Controls.DarkLabel darkLabel17;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox8;
-        private System.Windows.Forms.TabPage tabPage3;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown16;
-        private DarkUI.Controls.DarkLabel darkLabel18;
-        private DarkUI.Controls.DarkLabel darkLabel19;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown17;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown18;
-        private DarkUI.Controls.DarkLabel darkLabel20;
-        private DarkUI.Controls.DarkLabel darkLabel21;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown19;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox5;
-        private DarkUI.Controls.DarkLabel darkLabel22;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown20;
-        private DarkUI.Controls.DarkLabel darkLabel23;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown21;
-        private DarkUI.Controls.DarkLabel darkLabel24;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown22;
-        private DarkUI.Controls.DarkLabel darkLabel25;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown23;
-        private DarkUI.Controls.DarkLabel darkLabel26;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown24;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage4;
-        private DarkUI.Controls.DarkLabel darkLabel27;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown25;
-        private DarkUI.Controls.DarkLabel darkLabel28;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown26;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown27;
-        private DarkUI.Controls.DarkLabel darkLabel29;
-        private DarkUI.Controls.DarkLabel darkLabel30;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown28;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown29;
-        private DarkUI.Controls.DarkLabel darkLabel31;
-        private DarkUI.Controls.DarkLabel darkLabel32;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown30;
-        private DarkUI.Controls.DarkLabel darkLabel33;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown31;
-        private DarkUI.Controls.DarkComboBox cmbSelectionTileSize;
-        private DarkUI.Controls.DarkLabel darkLabel34;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox9;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox10;
-        private DarkUI.Controls.DarkLabel darkLabel38;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown35;
-        private DarkUI.Controls.DarkLabel darkLabel37;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown34;
-        private DarkUI.Controls.DarkLabel darkLabel36;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown33;
-        private DarkUI.Controls.DarkLabel darkLabel35;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown32;
         private System.Windows.Forms.TabPage tabPage6;
-        private DarkUI.Controls.DarkLabel darkLabel39;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown36;
         private System.Windows.Forms.Panel tabSubPanel3;
+        private System.Windows.Forms.Panel panel2;
         private DarkUI.Controls.DarkGroupBox darkGroupBox8;
-        private DarkUI.Controls.DarkLabel darkLabel47;
-        private System.Windows.Forms.Panel panelColorSelector6;
-        private DarkUI.Controls.DarkLabel darkLabel46;
-        private System.Windows.Forms.Panel panelColorSelector5;
-        private DarkUI.Controls.DarkLabel darkLabel45;
-        private System.Windows.Forms.Panel panelColorSelector4;
-        private DarkUI.Controls.DarkLabel darkLabel44;
-        private System.Windows.Forms.Panel panelColorSelector3;
-        private DarkUI.Controls.DarkLabel darkLabel43;
-        private System.Windows.Forms.Panel panelColorSelector2;
-        private DarkUI.Controls.DarkLabel darkLabel42;
-        private System.Windows.Forms.Panel panelColorSelector1;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox6;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox15;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox14;
-        private DarkUI.Controls.DarkLabel darkLabel48;
-        private System.Windows.Forms.Panel panelColorSelector7;
-        private DarkUI.Controls.DarkLabel darkLabel51;
-        private DarkUI.Controls.DarkLabel darkLabel50;
-        private System.Windows.Forms.Panel panelColorSelector10;
-        private System.Windows.Forms.Panel panelColorSelector9;
-        private DarkUI.Controls.DarkLabel darkLabel49;
-        private System.Windows.Forms.Panel panelColorSelector8;
+        private DarkUI.Controls.DarkLabel darkLabel66;
+        private DarkUI.Controls.DarkLabel darkLabel65;
+        private DarkUI.Controls.DarkLabel darkLabel64;
+        private DarkUI.Controls.DarkLabel darkLabel63;
+        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.Panel panel8;
+        private DarkUI.Controls.DarkLabel darkLabel62;
+        private System.Windows.Forms.Panel panel7;
+        private DarkUI.Controls.DarkLabel darkLabel61;
+        private System.Windows.Forms.Panel panel6;
+        private DarkUI.Controls.DarkLabel darkLabel60;
+        private System.Windows.Forms.Panel panelColorSelector0;
+        private System.Windows.Forms.Panel panelColorSelector19;
         private DarkUI.Controls.DarkLabel darkLabel59;
         private System.Windows.Forms.Panel panelColorSelector18;
         private DarkUI.Controls.DarkLabel darkLabel58;
@@ -3255,64 +3218,143 @@
         private System.Windows.Forms.Panel panelColorSelector12;
         private DarkUI.Controls.DarkLabel darkLabel52;
         private System.Windows.Forms.Panel panelColorSelector11;
-        private DarkUI.Controls.DarkLabel darkLabel60;
-        private System.Windows.Forms.Panel panelColorSelector19;
-        private System.Windows.Forms.Panel tabSubPanel2;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown1;
-        private DarkUI.Controls.DarkCheckBox cbEnableLogging;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox7;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox13;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown38;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox12;
-        private DarkUI.Controls.DarkTextBox darkTextBox1;
-        private DarkUI.Controls.DarkLabel darkLabel41;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown37;
-        private DarkUI.Controls.DarkLabel darkLabel40;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox11;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox2;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox1;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
-        private DarkUI.Controls.DarkButton butPageDefaults;
-        private DarkUI.Controls.DarkLabel darkLabel61;
-        private System.Windows.Forms.Panel panelColorSelector0;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox16;
-        private DarkUI.Controls.DarkLabel darkLabel62;
-        private System.Windows.Forms.Panel panel6;
-        private DarkUI.Controls.DarkLabel darkLabel63;
-        private System.Windows.Forms.Panel panel7;
-        private DarkUI.Controls.DarkLabel darkLabel65;
-        private DarkUI.Controls.DarkLabel darkLabel64;
-        private System.Windows.Forms.Panel panel9;
-        private System.Windows.Forms.Panel panel8;
-        private DarkUI.Controls.DarkLabel darkLabel66;
-        private System.Windows.Forms.Panel panel10;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox17;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox18;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox19;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox20;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox21;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox22;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown39;
-        private DarkUI.Controls.DarkLabel darkLabel67;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox23;
-        private DarkUI.Controls.DarkLabel darkLabel68;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox24;
+        private DarkUI.Controls.DarkLabel darkLabel51;
+        private DarkUI.Controls.DarkLabel darkLabel50;
+        private System.Windows.Forms.Panel panelColorSelector10;
+        private System.Windows.Forms.Panel panelColorSelector9;
+        private DarkUI.Controls.DarkLabel darkLabel49;
+        private System.Windows.Forms.Panel panelColorSelector8;
+        private DarkUI.Controls.DarkLabel darkLabel48;
+        private System.Windows.Forms.Panel panelColorSelector7;
+        private DarkUI.Controls.DarkLabel darkLabel47;
+        private System.Windows.Forms.Panel panelColorSelector6;
+        private DarkUI.Controls.DarkLabel darkLabel46;
+        private System.Windows.Forms.Panel panelColorSelector5;
+        private DarkUI.Controls.DarkLabel darkLabel45;
+        private System.Windows.Forms.Panel panelColorSelector4;
+        private DarkUI.Controls.DarkLabel darkLabel44;
+        private System.Windows.Forms.Panel panelColorSelector3;
+        private DarkUI.Controls.DarkLabel darkLabel43;
+        private System.Windows.Forms.Panel panelColorSelector2;
+        private DarkUI.Controls.DarkLabel darkLabel42;
+        private System.Windows.Forms.Panel panelColorSelector1;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox6;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox33;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox31;
         private DarkUI.Controls.DarkCheckBox darkCheckBox25;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox26;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox27;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox28;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox24;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox15;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox14;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.Panel tabSubPanel1;
+        private System.Windows.Forms.Panel panel3;
         private DarkUI.Controls.DarkGroupBox darkGroupBox9;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown40;
         private DarkUI.Controls.DarkLabel darkLabel69;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox3;
+        private DarkUI.Controls.DarkLabel darkLabel24;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown22;
         private DarkUI.Controls.DarkCheckBox darkCheckBox29;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox5;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown14;
+        private DarkUI.Controls.DarkLabel darkLabel15;
+        private DarkUI.Controls.DarkLabel darkLabel12;
+        private DarkUI.Controls.DarkLabel darkLabel11;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown11;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown8;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown10;
+        private DarkUI.Controls.DarkLabel darkLabel9;
+        private DarkUI.Controls.DarkLabel darkLabel10;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown9;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox5;
+        private DarkUI.Controls.DarkLabel darkLabel22;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown20;
+        private DarkUI.Controls.DarkLabel darkLabel23;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown21;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox4;
         private DarkUI.Controls.DarkCheckBox darkCheckBox30;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox31;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox28;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox27;
+        private DarkUI.Controls.DarkLabel darkLabel68;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox23;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox21;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox20;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox19;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox18;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox17;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox16;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox8;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown15;
+        private DarkUI.Controls.DarkLabel darkLabel17;
+        private DarkUI.Controls.DarkComboBox cmbRendering3DFont;
+        private DarkUI.Controls.DarkLabel darkLabel16;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox7;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox6;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox4;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown13;
+        private DarkUI.Controls.DarkLabel darkLabel14;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown12;
+        private DarkUI.Controls.DarkLabel darkLabel13;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown7;
+        private DarkUI.Controls.DarkLabel darkLabel8;
+        private System.Windows.Forms.TabPage tabPage5;
+        private DarkUI.Controls.DarkLabel darkLabel39;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown36;
+        private DarkUI.Controls.DarkLabel darkLabel38;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown35;
+        private DarkUI.Controls.DarkLabel darkLabel37;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown34;
+        private DarkUI.Controls.DarkLabel darkLabel36;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown33;
+        private DarkUI.Controls.DarkLabel darkLabel35;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown32;
+        private System.Windows.Forms.TabPage tabPage8;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox3;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown6;
+        private DarkUI.Controls.DarkLabel darkLabel7;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown5;
+        private DarkUI.Controls.DarkLabel darkLabel6;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown4;
+        private DarkUI.Controls.DarkLabel darkLabel5;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown3;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown2;
+        private DarkUI.Controls.DarkLabel darkLabel4;
+        private DarkUI.Controls.DarkLabel darkLabel3;
+        private System.Windows.Forms.TabPage tabPage3;
+        private DarkUI.Controls.DarkLabel darkLabel25;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown23;
+        private DarkUI.Controls.DarkLabel darkLabel26;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown24;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown16;
+        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkLabel darkLabel19;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown17;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown18;
+        private DarkUI.Controls.DarkLabel darkLabel20;
+        private DarkUI.Controls.DarkLabel darkLabel21;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown19;
+        private System.Windows.Forms.TabPage tabPage4;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox10;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox9;
+        private DarkUI.Controls.DarkLabel darkLabel34;
+        private DarkUI.Controls.DarkLabel darkLabel33;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown31;
+        private DarkUI.Controls.DarkLabel darkLabel27;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown25;
+        private DarkUI.Controls.DarkLabel darkLabel28;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown26;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown27;
+        private DarkUI.Controls.DarkLabel darkLabel29;
+        private DarkUI.Controls.DarkLabel darkLabel30;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown28;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown29;
+        private DarkUI.Controls.DarkLabel darkLabel31;
+        private DarkUI.Controls.DarkLabel darkLabel32;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown30;
+        private DarkUI.Controls.DarkComboBox cmbSelectionTileSize;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox10;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox22;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox32;
     }
 }

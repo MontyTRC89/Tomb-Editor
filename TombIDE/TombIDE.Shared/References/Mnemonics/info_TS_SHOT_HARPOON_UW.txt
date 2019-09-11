@@ -1,0 +1,4 @@
+Used with Customize=CUST_SFX command
+This is a single-shot sound that it will be played when you customized crossbow as harpoon-gun.
+The sound will work only when lara is underwater and she show an harpoon.
+The preset value for this sound is 68 PENDULUM_BLADES

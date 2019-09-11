@@ -34,7 +34,7 @@ namespace WadTool
             {
                 chosenId.Visible = false;
                 chosenIdText.Visible = true;
-                treeSlots.Enabled = false;
+                lstSlots.Enabled = false;
                 tbSearchLabel.Enabled = false;
                 tbSearch.Enabled = false;
 
@@ -48,37 +48,24 @@ namespace WadTool
 
         private void ReloadSlots()
         {
-            treeSlots.Nodes.Clear();
-
             // Decide on ID type
             if (TypeClass == typeof(WadMoveableId))
-                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllMoveables(GameVersion)));
+                PopulateSlots(TrCatalog.GetAllMoveables(GameVersion));
             else if (TypeClass == typeof(WadStaticId))
-                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllStatics(GameVersion)));
+                PopulateSlots(TrCatalog.GetAllStatics(GameVersion));
             else if (TypeClass == typeof(WadSpriteSequenceId))
-                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion)));
-            else if (TypeClass == typeof(WadFixedSoundInfoId))
-            {
-                DarkTreeNode usedSoundNode = new DarkTreeNode("Sounds used by the game");
-                usedSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllFixedByDefaultSounds(GameVersion)));
-                usedSoundNode.Expanded = true;
-                treeSlots.Nodes.Add(usedSoundNode);
-
-                DarkTreeNode allSoundNode = new DarkTreeNode("All sound slots");
-                allSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSounds(GameVersion)));
-                treeSlots.Nodes.Add(allSoundNode);
-            }
-            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
-            { }
+                PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion));
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
             // Make sure it redraws
-            treeSlots.Invalidate();
+            lstSlots.Invalidate();
         }
 
-        private IEnumerable<DarkTreeNode> PopulateSlots(IDictionary<uint, string> objectSlotSuggestions)
+        private void PopulateSlots(IDictionary<uint, string> objectSlotSuggestions)
         {
+            lstSlots.Items.Clear();
+
             string searchKeyword = tbSearch.Text;
             foreach (var objectSlotSuggestion in objectSlotSuggestions)
             {
@@ -86,7 +73,8 @@ namespace WadTool
                     if (objectSlotSuggestion.Value.IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) == -1)
                         continue;
                 string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value;
-                yield return new DarkTreeNode(label) { Tag = objectSlotSuggestion.Key };
+
+                lstSlots.Items.Add(new DarkListItem(label) { Tag = objectSlotSuggestion.Key });
             }
         }
 
@@ -117,25 +105,20 @@ namespace WadTool
 
         private void chosenId_ValueChanged(object sender, EventArgs e)
         {
-            foreach (DarkTreeNode node in treeSlots.Nodes)
-                if (node.Tag is uint)
-                    if ((uint)node.Tag == (uint)chosenId.Value)
+            for(int i = 0; i < lstSlots.Items.Count; i++)
+                if (lstSlots.Items[i].Tag is uint)
+                    if ((uint)lstSlots.Items[i].Tag == (uint)chosenId.Value)
                     {
-                        treeSlots.SelectNode(node);
+                        lstSlots.SelectItem(i);
                         return;
                     }
-            if (treeSlots.SelectedNodes.Count > 0)
-            {
-                treeSlots.SelectedNodes.Clear();
-                treeSlots.Invalidate();
-            }
         }
 
-        private void treeSlots_SelectedNodesChanged(object sender, EventArgs e)
+        private void lstSlots_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (treeSlots.SelectedNodes.Count > 0)
-                if (treeSlots.SelectedNodes[0].Tag is uint)
-                    chosenId.Value = (uint)treeSlots.SelectedNodes[0].Tag;
+            if (lstSlots.SelectedItems.Count > 0)
+                if (lstSlots.SelectedItems[0].Tag is uint)
+                    chosenId.Value = (uint)lstSlots.SelectedItems[0].Tag;
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e)

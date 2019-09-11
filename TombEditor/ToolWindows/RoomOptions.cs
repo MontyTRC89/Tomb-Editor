@@ -1,5 +1,6 @@
 ﻿using DarkUI.Docking;
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Forms;
@@ -22,6 +23,10 @@ namespace TombEditor.ToolWindows
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
             EditorEventRaised(new Editor.InitEvent());
+
+            // A hack to edit textbox size
+            tbRoomTags.AutoSize = false;
+            tbRoomTags.Height = 23;
         }
 
         protected override void Dispose(bool disposing)
@@ -50,6 +55,15 @@ namespace TombEditor.ToolWindows
                         comboRoom.Items[i] = i + ": " + _editor.Level.Rooms[i].Name;
                     else
                         comboRoom.Items[i] = i + ": --- Empty room ---";
+            }
+
+            // Update taglist
+            if (obj is Editor.LevelChangedEvent || obj is Editor.SelectedRoomChangedEvent)
+            {
+                tbRoomTags.AutocompleteWords.Clear();
+                foreach (var room in (_editor.Level.Rooms))
+                    if(room != null && room.ExistsInLevel)
+                        tbRoomTags.AutocompleteWords.AddRange(room.Tags.Except(tbRoomTags.AutocompleteWords));
             }
 
             // Update the room property controls
@@ -94,6 +108,14 @@ namespace TombEditor.ToolWindows
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
 
+                if (!tbRoomTags.ReadOnly) // Only update tags field if we're not in the process of editing
+                {
+                    if (room.Tags.Count > 0)
+                        tbRoomTags.Text = string.Join(" ", room.Tags);
+                    else
+                        tbRoomTags.Text = "";
+                }
+
                 if (room.AlternateBaseRoom != null)
                 {
                     butLocked.Enabled = false;
@@ -120,15 +142,9 @@ namespace TombEditor.ToolWindows
         {
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
             if (selectedRoom == null)
-            {
-                selectedRoom = new Room(_editor.Level, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions,
-                                        _editor.Level.Settings.DefaultAmbientLight,
-                                        "Room " + comboRoom.SelectedIndex);
-                _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
-                _editor.RoomListChange();
-                _editor.UndoManager.PushRoomCreated(selectedRoom);
-            }
-            _editor.SelectRoom(selectedRoom);
+                EditorActions.MakeNewRoom(comboRoom.SelectedIndex);
+            else
+                _editor.SelectRoom(selectedRoom);
         }
 
         private void comboFlipMap_SelectedIndexChanged(object sender, EventArgs e)
@@ -263,6 +279,19 @@ namespace TombEditor.ToolWindows
 
             _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
+        }
+
+        private void TbTags_TextChanged(object sender, EventArgs e)
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+
+            tbRoomTags.ReadOnly = true; // Prevent textbox from internally recalling this event
+
+            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
+
+            tbRoomTags.ReadOnly = false; // Re-enable editing
         }
     }
 }

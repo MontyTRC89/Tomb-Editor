@@ -184,7 +184,7 @@
             this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbSearch.Location = new System.Drawing.Point(121, 7);
             this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(449, 23);
+            this.tbSearch.Size = new System.Drawing.Size(456, 23);
             this.tbSearch.TabIndex = 8;
             this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
             // 

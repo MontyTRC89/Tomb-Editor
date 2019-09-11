@@ -1,0 +1,13 @@
+Used in DiagnosticType script command.
+This diagnostic mode works in a different way respect other DGX_ modes.
+It doesn't show anything on screen but it creates a full log you can see using TOMB4_LOG.exe utilty. You can find this utility in trle\Tools folder.
+This diagnostic mode pratically enables a debug mode about GlobalTrigger, Organizer and TriggerGroup commands, showing all further variables changed by above commands.
+It's advisable works with tomb raider in windowed mode to have the chance to see immediatly the tomb4_log window with last mexages. Anyway it's not required, you can also consult the full log at end of tomb4 running, using the command of tomb4_log program [Show/Last tomb.log]
+
+Tips & Tricks:
+1) You can add in Extra field of DiagnosticType comamnd the constant EDGX_CONCISE_SCRIPT_LOG to reduce the quantity of mexages in the log.
+See the description of EDGX_CONCISE_SCRIPT_LOG constant for more infos.
+
+2) You can use function Key F9 to suspend/resume the log about script comamands. You could use this feature to suspend temporary the log when lara is yet very far from the "zone" you wish check, and then reumse the log when you are ready. This trick is useful to reduce the size of log file and get more easy find the correct portion of log you are interested.
+
+3) The debug mode of script could slow down the game, so remember to disable it when you want play normally.

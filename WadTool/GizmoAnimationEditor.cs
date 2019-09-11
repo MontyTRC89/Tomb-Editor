@@ -17,13 +17,13 @@ namespace WadTool
         private readonly PanelRenderingAnimationEditor _control;
         private readonly WadToolClass _tool;
 
-        public GizmoAnimationEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device,
+        public GizmoAnimationEditor(AnimationEditor editor, GraphicsDevice device,
                                     Effect effect, PanelRenderingAnimationEditor control)
             : base(device, effect)
         {
-            _configuration = configuration;
+            _tool = editor.Tool;
+            _configuration = editor.Tool.Configuration;
             _control = control;
-            _tool = tool;
         }
 
         protected override void GizmoMove(Vector3 newPos)

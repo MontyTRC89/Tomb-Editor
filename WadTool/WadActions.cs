@@ -14,6 +14,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using TombLib;
 using System.Numerics;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
 
 namespace WadTool
 {
@@ -27,8 +29,27 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
+                newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+                if (Path.GetExtension(fileName).ToLower() == ".wad2" && newWad.SoundSystem == SoundSystem.Dynamic)
+                {
+                    if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
+                                            "to the new Xml sound system. A backup copy will be created under the same directory. " +
+                                            "Do you want to continue?",
+                                            "Convert Wad2", MessageBoxButtons.YesNo,
+                                            MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+
+                    File.Copy(fileName, fileName + ".bak", true);
+                    if (!FileFormatConversions.ConvertWad2ToNewSoundFormat(fileName, fileName, "Sounds\\TR4\\Sounds.txt"))
+                    {
+                        tool.SendMessage("Converting the file failed!", PopupType.Error);
+                        return;
+                    }
+
+                    newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
+                        .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+                }
             }
             catch (OperationCanceledException)
             {
@@ -37,7 +58,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 logger.Info(exc, "Unable to load " + (destination ? "destination" : "source") + " file from '" + fileName + "'.");
-                DarkMessageBox.Show(owner, "Loading the file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
+                tool.SendMessage("Loading the file failed! \n" + exc.Message, PopupType.Error);
                 return;
             }
 
@@ -82,7 +103,7 @@ namespace WadTool
         {
             if (wadToSave == null)
             {
-                DarkMessageBox.Show(owner, "You don't have a valid opened Wad", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You have no wad opened. Nothing to save.", PopupType.Warning);
                 return;
             }
 
@@ -119,12 +140,17 @@ namespace WadTool
             // Save the wad2
             try
             {
+                // XML_SOUND_SYSTEM
                 Wad2Writer.SaveToFile(wadToSave, outPath);
+
+                // Immediately reload new wad, if it wasn't saved before (new or imported)
+                if(wadToSave.FileName == null)
+                    LoadWad(tool, owner, true, outPath);
             }
             catch (Exception exc)
             {
                 logger.Warn(exc, "Unable to save to '" + outPath + "'");
-                DarkMessageBox.Show(owner, "Unable to save to '" + outPath + "'.   " + exc, "Unable to save.");
+                tool.SendMessage("Unable to save to '" + outPath + "'.   " + exc, PopupType.Error);
             }
         }
 
@@ -139,13 +165,31 @@ namespace WadTool
             }
         }
 
+        public static bool LoadReferenceLevel(WadToolClass tool, IWin32Window owner)
+        {
+            var fileName = LevelFileDialog.BrowseFile(owner, null, null, "Open Tomb Editor reference level", LevelSettings.FileFormatsLevel, null, false);
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+
+            tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            return true;
+        }
+
+        public static void UnloadReferenceLevel(WadToolClass tool)
+        {
+            tool.ReferenceLevel = null;
+        }
+
         public static void ChangeSlot(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
             if (wad == null || wadObject == null)
             {
-                DarkMessageBox.Show(owner, "You must have an object selected", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have an object selected", PopupType.Error);
                 return;
             }
 
@@ -158,7 +202,7 @@ namespace WadTool
                     return;
                 if (wad.Contains(form.NewId))
                 {
-                    DarkMessageBox.Show(owner, "The slot " + form.NewId.ToString(wad.SuggestedGameVersion) + " is already occupied.", "Error", MessageBoxIcon.Error);
+                    tool.SendMessage("The slot " + form.NewId.ToString(wad.SuggestedGameVersion) + " is already occupied.", PopupType.Error);
                     return;
                 }
                 wad.AssignNewId(wadObject.Id, form.NewId);
@@ -252,7 +296,7 @@ namespace WadTool
         {
             if (tool.DestinationWad == null)
             {
-                DarkMessageBox.Show(owner, "You must have a wad opened", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have a wad opened", PopupType.Error);
                 return;
             }
 
@@ -283,9 +327,9 @@ namespace WadTool
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                     if (mesh == null)
                     {
-                        DarkMessageBox.Show(owner, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        tool.SendMessage("Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured", PopupType.Error);
                         return;
                     }
                     @static.Mesh = mesh;
@@ -297,15 +341,15 @@ namespace WadTool
             }
         }
 
-        public static void CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
+        public static bool CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
         {
             Wad2 sourceWad = tool.SourceWad;
             Wad2 destinationWad = tool.DestinationWad;
 
             if (destinationWad == null || sourceWad == null || objectIdsToMove.Count == 0)
             {
-                DarkMessageBox.Show(owner, "You must have two wad loaded and at least one source object selected.", "Error", MessageBoxIcon.Error);
-                return;
+                tool.SendMessage("You must have two wads loaded and at least one source object selected.", PopupType.Error);
+                return false;
             }
 
             // Figure out the new ids if there are any id collisions
@@ -344,13 +388,13 @@ namespace WadTool
                     askConfirm = true;
 
                     if (result == DialogResult.Cancel)
-                        return;
+                        return false;
                     else if (result == DialogResult.No)
                     {
                         using (var form = new FormSelectSlot(newIds[i], destinationWad.SuggestedGameVersion))
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
-                                return;
+                                return false;
                             if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
                             {
                                 destinationWad.Remove(form.NewId);
@@ -380,15 +424,24 @@ namespace WadTool
 
             // Update the situation
             tool.DestinationWadChanged();
+
+            // Indicate that object is copied
+            tool.SendMessage((objectIdsToMove.Count == 1 ? "Object" : "Objects") + " successfully copied.", PopupType.Info);
+
+            return true;
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
         {
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
-            if (wad == null || wadObject == null)
+
+            if (wadObject == null || tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
+            if (wad == null)
             {
-                DarkMessageBox.Show(owner, "You must have a wad loaded and an object selected", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have a wad loaded and an object selected.", PopupType.Error);
                 return;
             }
 
@@ -416,28 +469,6 @@ namespace WadTool
                         return;
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
-            else if (wadObject is WadFixedSoundInfo)
-            {
-                WadFixedSoundInfo fixedSoundInfo = (WadFixedSoundInfo)wadObject;
-                using (var form = new FormSoundInfoEditor(true) { SoundInfo = fixedSoundInfo.SoundInfo })
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    fixedSoundInfo.SoundInfo = form.SoundInfo;
-                }
-                tool.WadChanged(tool.MainSelection.Value.WadArea);
-            }
-            else if (wadObject is WadAdditionalSoundInfo)
-            {
-                WadAdditionalSoundInfo additionalSoundInfo = (WadAdditionalSoundInfo)wadObject;
-                using (var form = new FormSoundInfoEditor(false) { SoundInfo = additionalSoundInfo.SoundInfo })
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    additionalSoundInfo.SoundInfo = form.SoundInfo;
-                }
-                tool.WadChanged(tool.MainSelection.Value.WadArea);
-            }
         }
 
         public static void DeleteObjects(WadToolClass tool, IWin32Window owner, WadArea wadArea, List<IWadObjectId> ObjectIdsToDelete)
@@ -459,7 +490,7 @@ namespace WadTool
             Wad2 destinationWad = tool.DestinationWad;
             if (destinationWad == null)
             {
-                DarkMessageBox.Show(owner, "You must have a destination wad open.", "Error", MessageBoxIcon.Error);
+                tool.SendMessage("You must have a destination wad opened.", PopupType.Error);
                 return;
             }
 
@@ -469,7 +500,7 @@ namespace WadTool
                     return;
                 if (destinationWad.Contains(form.NewId))
                 {
-                    DarkMessageBox.Show(owner, "The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", "Error", MessageBoxIcon.Error);
+                    tool.SendMessage("The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", PopupType.Error);
                     return;
                 }
 
@@ -577,32 +608,12 @@ namespace WadTool
             return mesh;
         }
 
-        public static void ShowSoundOverview(WadToolClass tool, IWin32Window owner, WadArea wadArea)
-        {
-            Wad2 wad = tool.GetWad(wadArea);
-            if (wad == null)
-            {
-                DarkMessageBox.Show(owner, "You must have a " + wadArea.ToString().ToLower() + " wad loaded.", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            using (FormSoundOverview form = new FormSoundOverview(wad))
-                if (form.ShowDialog(owner) != DialogResult.OK)
-                    return;
-            tool.WadChanged(wadArea);
-        }
-
         public static bool ExportAnimationToXml(WadMoveable moveable, WadAnimation animation, string fileName)
         {
             try
             {
                 if (File.Exists(fileName))
                     File.Delete(fileName);
-
-                // Save sound names
-                foreach (var cmd in animation.AnimCommands)
-                    if (cmd.Type == WadAnimCommandType.PlaySound)
-                        cmd.XmlSerializer_SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
 
                 // Serialize the animation to XML
                 var xmlSerializer = new XmlSerializer(typeof(WadAnimation));
@@ -636,33 +647,6 @@ namespace WadTool
             }
         }
 
-        public static bool ExportAnimation(WadMoveable moveable, WadAnimation animation, string fileName)
-        {
-            try
-            {
-                if (File.Exists(fileName))
-                    File.Delete(fileName);
-
-                // Create a new fake Wad2
-                var wad = new Wad2();
-
-                // Add a new fake moveable with animations
-                var newMoveable = new WadMoveable(moveable.Id);
-                newMoveable.Animations.Add(animation);
-                wad.Add(newMoveable.Id, newMoveable);
-
-                // Save the fake wad
-                Wad2Writer.SaveToFile(wad, fileName);
-
-                return true;
-            }
-            catch (Exception exc)
-            {
-                logger.Warn(exc, "'ExportAnimation' failed.");
-                return false;
-            }
-        }
-
         public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
         {
             try
@@ -674,23 +658,6 @@ namespace WadTool
                 WadAnimation animation = (WadAnimation)obj;
                 reader.Close();
 
-                // Try to link sounds
-                foreach (var cmd in animation.AnimCommands)
-                {
-                    if (cmd.Type == WadAnimCommandType.PlaySound)
-                    {
-                        // Try to get a sound with the same name
-                        foreach (var soundInfo in wad.SoundInfosUnique)
-                            if (soundInfo.Name == cmd.XmlSerializer_SoundInfoName)
-                            {
-                                cmd.SoundInfo = soundInfo;
-                                break;
-                            }
-                        if (cmd.SoundInfo == null)
-                            cmd.SoundInfo = wad.SoundInfosUnique.First();
-                    }
-                }
-
                 return animation;
             }
             catch (Exception exc)
@@ -700,24 +667,11 @@ namespace WadTool
             }
         }
 
-        public static WadAnimation ImportAnimation(string fileName)
-        {
-            try
-            {
-                var wad = Wad2Loader.LoadFromFile(fileName);
-                if (wad == null || wad.Moveables.Count == 0 || wad.Moveables.ElementAt(0).Value.Animations.Count == 0) return null;
-
-                return wad.Moveables.ElementAt(0).Value.Animations[0];
-            }
-            catch (Exception exc)
-            {
-                logger.Warn(exc, "'ImportAnimation' failed.");
-                return null;
-            }
-        }
-
         public static void EditAnimations(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
             var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
             using (var form = new FormAnimationEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
@@ -730,6 +684,9 @@ namespace WadTool
 
         public static void EditSkeletion(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
             var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
             using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))

@@ -46,6 +46,32 @@ namespace TombLib.Forms
             InitializeComponent();
             _animTimer.Tick += UpdateTimer;
         }
+        
+        // Generic function to call popup from any window
+        public static void Show(PopUpInfo popup, IWin32Window owner, Control parent, string message, PopupType type)
+        {
+            var form = owner.Handle == IntPtr.Zero ? null : Control.FromHandle(owner.Handle) as Form;
+            if (form == null) return;
+
+            if (ActiveForm == form)
+            {
+                switch (type)
+                {
+                    case PopupType.None:
+                        popup.ShowSimple(parent, message);
+                        break;
+                    case PopupType.Info:
+                        popup.ShowInfo(parent, message);
+                        break;
+                    case PopupType.Warning:
+                        popup.ShowWarning(parent, message);
+                        break;
+                    case PopupType.Error:
+                        popup.ShowError(parent, message);
+                        break;
+                }
+            }
+        }
 
         // Common message helpers
         public void ShowInfo(Control parent, string message, string title = "Information")
@@ -165,7 +191,7 @@ namespace TombLib.Forms
 
         private void UpdateTimer(object sender, EventArgs e)
         {
-            if (_parent.Disposing || _parent.IsDisposed)
+            if (_parent == null || _parent.Disposing || _parent.IsDisposed)
             {
                 _animTimer.Stop();
                 _animTimer.Tick -= UpdateTimer;

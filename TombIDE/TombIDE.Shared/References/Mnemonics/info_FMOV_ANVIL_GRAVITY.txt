@@ -1,0 +1,3 @@
+used in Paramaters=PARAM_MOVE_ITEM script command
+This flag enable the max level of (downstairs) gravity.
+The "anvil" name has been chosen as symbol of very very heavy item, in this logical you should think to anvil like it had a heavier weight than man (in spite it is not true, probably).

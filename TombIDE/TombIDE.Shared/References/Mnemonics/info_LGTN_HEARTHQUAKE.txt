@@ -1,0 +1,3 @@
+Used with Parameters=PARAM_LIGHTNING script command
+Add a short heartquake effect when Lara is closed to the target position of the lightning.
+The distance to enable the earthquake is about 6 sectors or less.

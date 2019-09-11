@@ -210,6 +210,9 @@ namespace TombLib.LevelData
 
                 SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
                    {
+                       if (TemporaryDevice == null)
+                           return;
+
                        // Create a new static model
                        DirectXModel = new Model(TemporaryDevice, info.Scale);
                        DirectXModel.BoundingBox = tmpModel.BoundingBox;

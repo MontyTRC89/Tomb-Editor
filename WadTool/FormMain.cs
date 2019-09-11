@@ -1,8 +1,6 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -11,13 +9,15 @@ using TombLib.Graphics;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Utils;
+using System.IO;
 
 namespace WadTool
 {
     public partial class FormMain : DarkForm
     {
         private readonly WadToolClass _tool;
-        private bool _playAnimation;
+
+        private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormMain(WadToolClass tool)
         {
@@ -52,13 +52,21 @@ namespace WadTool
             if (obj is InitEvent)
             {
                 // At startup initialise a new Wad2
-                _tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
-                _tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
+                //_tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
+                //_tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
             }
+
+            if (obj is WadToolClass.MessageEvent)
+            {
+                var msg = (WadToolClass.MessageEvent)obj;
+                PopUpInfo.Show(popup, this, panel3D, msg.Message, msg.Type);
+            }
+
             if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
             {
                 
             }
+
             if (obj is WadToolClass.DestinationWadChangedEvent || obj is InitEvent)
             {
                 treeDestWad.Wad = _tool.DestinationWad;
@@ -74,8 +82,6 @@ namespace WadTool
                     labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
                                            "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
                                            "Sprites sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
-                                           "Fixed sounds: " + _tool.DestinationWad.FixedSoundInfos.Count + " | " +
-                                           "Additional sounds: " + _tool.DestinationWad.AdditionalSoundInfos.Count + " | " +
                                            "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count;
                 }
                 else
@@ -83,6 +89,7 @@ namespace WadTool
                     labelStatistics.Text = "";
                 }
             }
+
             if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
                 treeSourceWad.Wad = _tool.SourceWad;
@@ -91,6 +98,7 @@ namespace WadTool
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
+
             if (obj is WadToolClass.MainSelectionChangedEvent ||
                 obj is WadToolClass.DestinationWadChangedEvent ||
                 obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
@@ -104,24 +112,17 @@ namespace WadTool
                     butEditSkeleton.Visible = false;
                     butEditStaticModel.Visible = false;
                     butEditSpriteSequence.Visible = false;
-                    butEditSound.Visible = false;
                 }
                 else
                 {
                     Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
 
                     // Display the object (or set it to Lara's skin instead if it's Lara)
-                    if (mainSelection.Value.Id is WadMoveableId &&
-                        ((WadMoveableId)mainSelection.Value.Id) == WadMoveableId.Lara &&
-                        (wad.SuggestedGameVersion == WadGameVersion.TR4_TRNG || wad.SuggestedGameVersion == WadGameVersion.TR5) &&
-                        wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                    {
-                        panel3D.CurrentObject = wad.TryGet(WadMoveableId.LaraSkin);
-                    }
+                    if (mainSelection.Value.Id is WadMoveableId)
+                        panel3D.CurrentObject = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.SuggestedGameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
                     else
-                    {
                         panel3D.CurrentObject = wad.TryGet(mainSelection.Value.Id);
-                    }
+
                     panel3D.AnimationIndex = 0;
                     panel3D.KeyFrameIndex = 0;
 
@@ -130,8 +131,6 @@ namespace WadTool
                     butEditSkeleton.Visible = (mainSelection.Value.Id is WadMoveableId);
                     butEditStaticModel.Visible = (mainSelection.Value.Id is WadStaticId);
                     butEditSpriteSequence.Visible = (mainSelection.Value.Id is WadSpriteSequenceId);
-                    butEditSound.Visible = (mainSelection.Value.Id is WadFixedSoundInfo ||
-                                            mainSelection.Value.Id is WadAdditionalSoundInfoId);
 
                     panel3D.Invalidate();
                 }
@@ -139,6 +138,32 @@ namespace WadTool
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
+
+            if (obj is WadToolClass.ReferenceLevelChangedEvent)
+            {
+                if (_tool.ReferenceLevel != null)
+                {
+                    butCloseRefLevel.Enabled = true;
+                    lblRefLevel.Enabled = true;
+                    closeReferenceLevelToolStripMenuItem.Enabled = true;
+                    lblRefLevel.Text = Path.GetFileNameWithoutExtension(_tool.ReferenceLevel.Settings.LevelFilePath);
+                }
+                else
+                {
+                    butCloseRefLevel.Enabled = false;
+                    lblRefLevel.Enabled = false;
+                    closeReferenceLevelToolStripMenuItem.Enabled = false;
+                    lblRefLevel.Text = "(project not loaded)";
+                }
+            }
+        }
+
+        private void CopyObject(bool otherSlot)
+        {
+            var objectsToCopy = treeSourceWad.SelectedWadObjectIds.ToList();
+
+            if (WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), otherSlot))
+                treeDestWad.Select(objectsToCopy);
         }
 
         private void Panel3D_ObjectWasModified(object sender, System.EventArgs e)
@@ -167,9 +192,9 @@ namespace WadTool
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-            IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
-            if (currentSelection != null)
-                _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
+             IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
+             if (currentSelection != null)
+                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
         }
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -189,7 +214,7 @@ namespace WadTool
 
         private void butAddObject_Click(object sender, EventArgs e)
         {
-            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
+            CopyObject(false);
         }
 
         private void butDeleteObject_Click(object sender, EventArgs e)
@@ -224,7 +249,7 @@ namespace WadTool
 
         private void butAddObjectToDifferentSlot_Click(object sender, EventArgs e)
         {
-            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), true);
+            CopyObject(true);
         }
 
         private void butNewWad_Click(object sender, EventArgs e)
@@ -255,13 +280,14 @@ namespace WadTool
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)
         {
-            butEditItem_Click(null, null);
+            if (treeDestWad.ItemSelected)
+                butEditItem_Click(null, null);
         }
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            //WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
-            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
+            if(treeSourceWad.SelectedWadObjectIds.Count() > 0)
+                CopyObject(false);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
@@ -292,11 +318,6 @@ namespace WadTool
         private void newSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
-        }
-
-        private void newFixedSoundInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WadActions.CreateObject(_tool, this, new WadFixedSoundInfo(new WadFixedSoundInfoId()));
         }
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -352,21 +373,6 @@ namespace WadTool
 
         }
 
-        private void butRenameSound_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void destinationSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WadActions.ShowSoundOverview(_tool, this, WadArea.Destination);
-        }
-
-        private void sourceSoundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WadActions.ShowSoundOverview(_tool, this, WadArea.Source);
-        }
-
         private void butEditSkeleton_Click(object sender, EventArgs e)
         {
             WadActions.EditSkeletion(_tool, this);
@@ -397,11 +403,6 @@ namespace WadTool
             WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
-        private void butEditSound_Click(object sender, EventArgs e)
-        {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
-        }
-
         private void changeSlotToolStripMenuItem_Click(object sender, EventArgs e)
         {
             butChangeSlot_Click(null, null);
@@ -425,6 +426,41 @@ namespace WadTool
         private void toolStripMenuItemMoveablesDelete_Click(object sender, EventArgs e)
         {
             butDeleteObject_Click(null, null);
+        }
+
+        private void treeDestWad_ClickOnEmpty(object sender, EventArgs e)
+        {
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
+        }
+
+        private void treeSourceWad_ClickOnEmpty(object sender, EventArgs e)
+        {
+            WadActions.LoadWadOpenFileDialog(_tool, this, false);
+        }
+
+        private void butOpenRefLevel_Click(object sender, EventArgs e)
+        {
+            WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void openReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void butCloseRefLevel_Click(object sender, EventArgs e)
+        {
+            WadActions.UnloadReferenceLevel(_tool);
+        }
+
+        private void lblRefLevel_Click(object sender, EventArgs e)
+        {
+            if (_tool.ReferenceLevel == null) WadActions.LoadReferenceLevel(_tool, this);
+        }
+
+        private void closeReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.UnloadReferenceLevel(_tool);
         }
     }
 }

@@ -1,0 +1,3 @@
+Used with Customize=CUST_SFX command.
+When the trigger "Inventory-Item. Pop up inventory screen to select the <&
+Item" has been performed and the required item is missing, this sound will be played (by default it was lara say "no").

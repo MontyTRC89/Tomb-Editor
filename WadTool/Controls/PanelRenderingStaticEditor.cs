@@ -527,7 +527,7 @@ namespace WadTool.Controls
                 Invalidate();
             }
 
-             ((FormStaticEditor)Parent).UpdatePositionUI();
+             ((FormStaticEditor)FindForm()).UpdatePositionUI();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -540,7 +540,7 @@ namespace WadTool.Controls
             if (_gizmoLight.MouseUp())
                 Invalidate();
 
-            ((FormStaticEditor)Parent).UpdatePositionUI();
+            ((FormStaticEditor)FindForm()).UpdatePositionUI();
         }
 
         public void UpdateLights()

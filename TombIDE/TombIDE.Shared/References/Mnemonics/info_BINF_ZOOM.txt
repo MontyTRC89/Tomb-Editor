@@ -1,0 +1,3 @@
+Used into Customize=CUST_BINOCULARS command
+To enable the showing of infos about current zoom-in factor.
+See also the description of ZoomRectAndFlags field.

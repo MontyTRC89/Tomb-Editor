@@ -1,0 +1,2 @@
+Setting this flag the script.dat file will be crypted to forbid decompilation with some utilities.
+If you set some security issues, like SET_DISABLE_CHEATS, it's advisable set also crypting of script.dat, otherwise some guy could simply decompile the script.dat and recompile it removing the SET_DISABLE_CHEATS flag.

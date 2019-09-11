@@ -92,7 +92,9 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter, bool remapFlybyBitmask = true, bool adjustUV = false)
+        public static Level LoadFromPrj(string filename, string soundsPath, 
+                                        IProgressReporter progressReporter, 
+                                        bool remapFlybyBitmask = true, bool adjustUV = false)
         {
             var level = new Level();
 
@@ -578,7 +580,7 @@ namespace TombLib.LevelData.IO
                                 var sound = new SoundSourceInstance()
                                 {
                                     ScriptId = unchecked((ushort)objectsThings2[j]),
-                                    WadReferencedSoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
+                                    SoundId = objSlot,
                                     Position = position
                                 };
                                 room.AddObject(level, sound);
@@ -646,7 +648,7 @@ namespace TombLib.LevelData.IO
                     if ((flags1 & 0x0200) != 0)
                         room.LightEffect = RoomLightEffect.Reflection;
                     else if ((flags1 & 0x0100) != 0)
-                        room.LightEffect = RoomLightEffect.Glow;
+                        room.LightEffect = RoomLightEffect.Mist;
                     else
                         room.LightEffect = RoomLightEffect.Default;
 
@@ -1249,6 +1251,20 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
+                // XML_SOUND_SYSTEM: Read sounds catalog. We need it just for names, because we'll take 
+                // sound infos from SFX/SAM.
+                WadSounds sounds = null;
+                {
+                    // If no sounds file was provided, just take the default one
+                    if (soundsPath == "")
+                        soundsPath = "Sounds\\TR4\\Sounds.xml";
+                    if (File.Exists(soundsPath))
+                        sounds = WadSounds.ReadFromFile(soundsPath);
+                    if (sounds != null)
+                        level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                                                          level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
+                }
+
                 // Read WAD path
                 {
                     var stringBuffer = GetPrjString(reader);
@@ -1258,11 +1274,35 @@ namespace TombLib.LevelData.IO
                         string wadPath = PathC.TryFindFile(
                             level.Settings.GetVariable(VariableType.LevelDirectory),
                             Path.ChangeExtension(wadName.Trim('\0', ' '), "wad"), 3, 2);
-                        wadPath = level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory);
-                        ReferencedWad newWad = new ReferencedWad(level.Settings, wadPath, progressReporter);
+                        ReferencedWad newWad = new ReferencedWad(level.Settings, level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory), progressReporter);
                         level.Settings.Wads.Add(newWad);
                         if (newWad.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
+
+                        // XML_SOUND_SYSTEM: SFX is a valid catalog source so let's add it (SAM is implicity loaded)
+                        string sfxName = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx";
+                        if (File.Exists(sfxName))
+                        {
+                            sfxName = level.Settings.MakeRelative(sfxName, VariableType.LevelDirectory);
+                            level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, sfxName));
+                        }
+
+                        // XML_SOUND_SYSTEM: we actually have a valid WAD loaded, let's change names using the catalog
+                        // and mark them automatically for compilation
+                        foreach (var soundInfo in newWad.Wad.Sounds.SoundInfos)
+                        {
+                            if (sounds != null)
+                            {
+                                var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
+                                if (catalogInfo != null)
+                                    soundInfo.Name = catalogInfo.Name;
+                                else
+                                    soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                            }
+                            else
+                                soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                            level.Settings.SelectedSounds.Add(soundInfo.Id);
+                        }
 
                         progressReporter.ReportProgress(60, "Loaded WAD '" + wadPath + "'");
 
@@ -1320,27 +1360,17 @@ namespace TombLib.LevelData.IO
                         string slotName;
                         if (!slots.TryGetValue(currentObj.WadObjectId, out slotName))
                             slotName = "Unknown " + currentObj.WadObjectId;
-                        TrCatalog.OriginalNameInfo? slotInfo = TrCatalog.GetSlotFromOriginalName(WadGameVersion.TR4_TRNG, slotName);
-                        if (slotInfo == null)
+
+                        bool isMoveable;
+                        var index = TrCatalog.GetItemIndex(WadGameVersion.TR4_TRNG, slotName, out isMoveable);
+
+                        if (index == null)
                         {
                             progressReporter.ReportWarn("Unknown slot name '" + slotName + "' used for object with id '" + currentObj.ScriptId + "' in room '" + level.Rooms[i] + "' at " + currentObj.Position + ". It was removed.");
                             continue;
                         }
 
-                        if (slotInfo.Value.IsStatic)
-                        {
-                            var instance = new StaticInstance()
-                            {
-                                ScriptId = currentObj.ScriptId,
-                                WadObjectId = new WadStaticId(slotInfo.Value.Id),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
-                                RotationY = currentObj.RotationY,
-                                Color = currentObj.Color,
-                                Ocb = unchecked((ushort)currentObj.Ocb)
-                            };
-                            level.Rooms[i].AddObject(level, instance);
-                        }
-                        else
+                        if (isMoveable)
                         {
                             var instance = new MoveableInstance()
                             {
@@ -1348,10 +1378,23 @@ namespace TombLib.LevelData.IO
                                 CodeBits = currentObj.CodeBits,
                                 Invisible = currentObj.Invisible,
                                 ClearBody = currentObj.ClearBody,
-                                WadObjectId = new WadMoveableId(slotInfo.Value.Id),
+                                WadObjectId = new WadMoveableId(index.Value),
                                 Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                 Ocb = currentObj.Ocb,
                                 RotationY = currentObj.RotationY
+                            };
+                            level.Rooms[i].AddObject(level, instance);
+                        }
+                        else
+                        {
+                            var instance = new StaticInstance()
+                            {
+                                ScriptId = currentObj.ScriptId,
+                                WadObjectId = new WadStaticId(index.Value),
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                RotationY = currentObj.RotationY,
+                                Color = currentObj.Color,
+                                Ocb = unchecked((short)currentObj.Ocb)
                             };
                             level.Rooms[i].AddObject(level, instance);
                         }
@@ -1874,7 +1917,7 @@ namespace TombLib.LevelData.IO
             }
 
             if (adjustUV)
-                progressReporter.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, turn off 'Half-pixel UV correction' in editor options and re-import project.");
+                progressReporter.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, re-import project and turn off 'Half-pixel UV correction' in import settings.");
 
             // Update level geometry
             progressReporter.ReportProgress(95, "Building rooms");

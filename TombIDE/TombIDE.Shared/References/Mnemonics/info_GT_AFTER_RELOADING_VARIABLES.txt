@@ -1,0 +1,4 @@
+Used in GlobalTrigger= command.
+This condition will be true when player has just loaded a savegame, or when lara enters in a new level using a finish trigger with no ResetHub command.
+If you had saved some critical memory in variables with GT_BEFORE_SAVING_VARIABLES global trigger, you can now restore them, when the variables has been just reloaded, to create newly the same situation previously of saving game.
+In Parameter field you type the level number after the reloading of game, about when perform this global trigger. So, if lara from level 1, touchs a finish trigger and she goes to level 2, you'll have to type the number "2" to reload from begin of this level.

@@ -214,9 +214,6 @@
   <data name="volume_up-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\volume_up-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="plus_math-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="angle_left-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\angle_left-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -291,5 +288,83 @@
   </data>
   <data name="paste-special-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\paste-special-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_ArrowDown_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_ArrowDown-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_ArrowUp_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_ArrowUp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_refresh_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_refresh-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_audio_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-audio-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_end_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-end-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_frame_back_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-frame_back-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_frame_forward_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-frame_forward-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_mute_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-mute-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_play_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-play-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_start_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-start-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_stop_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-stop-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_filter_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_filter-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_Save_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\general_Save-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_interpolate_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_interpolate-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_on_land_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-on_land-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_on_water_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-on_water-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_plus_math_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_delete_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_delete-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_search_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_search-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_play_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_play-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_create_new_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_create_new-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_Open_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_Open-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transport_on_nothing_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transport\transport-on_nothing-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_redo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_redo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_undo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_undo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_undo_irreversible_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_undo_irreversible-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

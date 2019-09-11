@@ -35,7 +35,7 @@ namespace TombLib.Wad
     public class WadFixedSoundInfo : IWadObject
     {
         public WadFixedSoundInfoId Id { get; private set; }
-        public WadSoundInfo SoundInfo { get; set; } = WadSoundInfo.Empty;
+        public WadSoundInfo SoundInfo { get; set; } = new WadSoundInfo(-1);
 
         public WadFixedSoundInfo(WadFixedSoundInfoId id)
         {

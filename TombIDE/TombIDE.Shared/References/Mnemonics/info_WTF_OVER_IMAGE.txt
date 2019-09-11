@@ -1,0 +1,3 @@
+Used with Parameters=PARAM_WTEXT script command
+This flag allows to your windows text to stand over furhter full screen image that is currently drawn on the screen.
+By default, omitting this flag, the text will be disabled when a full screen image has been showed on screen.

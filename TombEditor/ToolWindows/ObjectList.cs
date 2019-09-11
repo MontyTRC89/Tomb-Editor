@@ -1,4 +1,5 @@
-﻿using DarkUI.Docking;
+﻿using DarkUI.Controls;
+using DarkUI.Docking;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -32,35 +33,41 @@ namespace TombEditor.ToolWindows
             // Update the trigger control
             if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ObjectChangedEvent)
             {
-                lstObjects.BeginUpdate();
                 lstObjects.Items.Clear();
-                lstObjects.Items.AddRange(_editor.SelectedRoom.Objects.ToArray());
-                lstObjects.EndUpdate();
+
+                foreach (var o in _editor.SelectedRoom.Objects)
+                    lstObjects.Items.Add(new DarkListItem(o.ToShortString()) { Tag = o });
             }
 
             // Update the object control selection
             if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.SelectedObjectChangedEvent)
             {
-                lstObjects.SelectedItem = _editor.SelectedObject?.Room == _editor.SelectedRoom ? _editor.SelectedObject : null;
+                if (_editor.SelectedObject?.Room == _editor.SelectedRoom && _editor.SelectedObject is PositionBasedObjectInstance)
+                {
+                    var o = _editor.SelectedObject as PositionBasedObjectInstance;
+                    var entry = lstObjects.Items.FirstOrDefault(t => t.Tag == o);
+                    if (entry != null) lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                }
+                
             }
         }
 
-        private void lstObjects_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstObjects_SelectedIndicesChanged(object sender, EventArgs e)
         {
             if (_editor.SelectedRoom == null || lstObjects.SelectedItem == null)
                 return;
-            _editor.SelectedObject = (ObjectInstance)lstObjects.SelectedItem;
+
+            _editor.SelectedObject = (ObjectInstance)lstObjects.SelectedItem.Tag;
         }
 
         private void lstObjects_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            int index = lstObjects.IndexFromPoint(e.Location);
-            if (index != ListBox.NoMatches)
-            {
-                var instance = lstObjects.Items[index] as ObjectInstance;
-                if (instance != null)
-                    EditorActions.EditObject(instance, this);
-            }
+            if (lstObjects.SelectedIndices.Count == 0)
+                return;
+
+            var instance = lstObjects.SelectedItem.Tag as ObjectInstance;
+            if (instance != null)
+                EditorActions.EditObject(instance, this);
         }
 
         private void lstObjects_KeyDown(object sender, KeyEventArgs e)
@@ -71,14 +78,17 @@ namespace TombEditor.ToolWindows
 
         private void butDeleteObject_Click(object sender, EventArgs e)
         {
-            var instance = lstObjects.SelectedItem as ObjectInstance;
+            if (lstObjects.SelectedIndices.Count == 0)
+                return;
+
+            var instance = lstObjects.SelectedItem.Tag as ObjectInstance;
             if (instance != null)
                 EditorActions.DeleteObject(instance);
         }
 
         private void butEditObject_Click(object sender, EventArgs e)
         {
-            var instance = lstObjects.SelectedItem as ObjectInstance;
+            var instance = lstObjects.SelectedItem.Tag as ObjectInstance;
             if (instance != null)
                 EditorActions.EditObject(instance, this);
         }

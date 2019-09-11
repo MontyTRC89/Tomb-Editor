@@ -60,12 +60,7 @@ namespace WadTool.Controls
         public ObjectMesh SelectedMesh { get; set; }
 
         // General state
-        private WadToolClass _tool;
-        private Wad2 _wad;
-        private WadMoveableId _moveableId;
-        private WadMoveable _moveable;
-        private WadMoveableId _skinMoveableId;
-        private WadMoveable _skinMoveable;
+        private AnimationEditor _editor;
 
         // Interaction state
         private float _lastX;
@@ -78,31 +73,23 @@ namespace WadTool.Controls
         // Legacy rendering state
         private GraphicsDevice _device;
         private DeviceManager _deviceManager;
+        private WadRenderer _wadRenderer;
         private GizmoAnimationEditor _gizmo;
         private GeometricPrimitive _plane;
         private AnimatedModel _model;
         private AnimatedModel _skinModel;
-        private WadRenderer _wadRenderer;
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
-        public void InitializeRendering(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId,
-                                    WadMoveableId skinMoveableId)
+        public void InitializeRendering(AnimationEditor editor, DeviceManager deviceManager, WadMoveable skin)
         {
             base.InitializeRendering(deviceManager.Device, false);
 
-            _tool = tool;
+            _editor = editor;
             _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
-            _wad = wad;
-            _moveableId = moveableId;
-            _moveable = _wad.Moveables[_moveableId];
-            _model = _wadRenderer.GetMoveable(_moveable);
+            _model = _wadRenderer.GetMoveable(editor.Moveable);
 
-            if (skinMoveableId != null)
-            {
-                _skinMoveableId = skinMoveableId;
-                _skinMoveable = _wad.Moveables[_skinMoveableId];
-                _skinModel = _wadRenderer.GetMoveable(_skinMoveable);
-            }
+            if (skin != null)
+                _skinModel = _wadRenderer.GetMoveable(skin);
 
             // Actual "InitializeRendering"
             _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
@@ -127,7 +114,7 @@ namespace WadTool.Controls
                         IsScissorEnabled = false,
                         SlopeScaledDepthBias = 0
                     };
-                _gizmo = new GizmoAnimationEditor(_tool, _tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
+                _gizmo = new GizmoAnimationEditor(editor, _device, _deviceManager.___LegacyEffects["Solid"], this);
                 _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             }
         }
@@ -350,7 +337,7 @@ namespace WadTool.Controls
         {
             base.OnMouseWheel(e);
 
-            Camera.Zoom(-e.Delta * _tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
+            Camera.Zoom(-e.Delta * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
             Invalidate();
         }
 
@@ -373,7 +360,9 @@ namespace WadTool.Controls
                         var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
                         if (result != null)
                         {
+                            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
                             _gizmo.ActivateGizmo(result);
+                            _editor.Tool.AnimationEditorGizmoPicked();
                             Invalidate();
                             return;
                         }
@@ -394,13 +383,14 @@ namespace WadTool.Controls
                             }
                         }
                     }
+
                     SelectedMesh = foundMesh;
-                    _tool.AnimationEditorMeshSelected(Model, SelectedMesh);
+                    _editor.Tool.AnimationEditorMeshSelected(Model, SelectedMesh);
                 }
                 else
                 {
                     SelectedMesh = null;
-                    _tool.AnimationEditorMeshSelected(Model, SelectedMesh);
+                    _editor.Tool.AnimationEditorMeshSelected(Model, SelectedMesh);
                 }
             }
 
@@ -434,12 +424,12 @@ namespace WadTool.Controls
                 _lastY = e.Y;
 
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                    Camera.Zoom(-deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
                 else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
-                    Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                  -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                    Camera.Rotate(deltaX * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
+                                  -deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 Invalidate();
             }
         }

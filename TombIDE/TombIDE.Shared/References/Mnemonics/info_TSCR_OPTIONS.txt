@@ -1,0 +1,2 @@
+Used with GT_TITLE_SCREEN global trigger.
+Detect the [Options] screen

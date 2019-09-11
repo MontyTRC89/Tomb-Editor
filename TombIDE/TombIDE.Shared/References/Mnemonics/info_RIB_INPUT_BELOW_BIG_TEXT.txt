@@ -1,0 +1,5 @@
+Used with Parameters=PARAM_INPUT_BOX
+This flag could be used only with RIB_PRINT_BIG_TEXT flag.
+When you enable the print of a text (that in trng BigText variable) on screen, before waiting for user input, you can use the RIB_INPUT_BELOW_BIG_TEXT flag, to change the Y position (in height axis) of input box rectangle, to show input text immediately below last row of BigText drawn.
+In this way the input zone will change in according with last printed text.
+Note: this flag affects only the Y position of input box rect, while the relative height of rect or its width and X origin will be not modified.

@@ -1,0 +1,6 @@
+Used to enable to customize the viewing of FMVs (cutscenes base on videos) in
+
+Syntax: Customize=CUST_FMV_CUTSCENE, FMV_ flags
+
+You can type one or more FMV_... flags to set some features about the showing of videos (FMVS) in game.
+See the description of FMV_... constants in [Reference] panel of NG_Center for more infos.

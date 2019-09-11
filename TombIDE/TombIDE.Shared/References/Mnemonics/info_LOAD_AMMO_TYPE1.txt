@@ -1,0 +1,10 @@
+Used in Equipment command.
+If your equipment command is working on a weapon slot (weapon, not ammo), you can add to the Amount field the LOAD_AMMO_TYPE1 flag to set that the ammo is currently loaded with normal ammo (ammo type 1)
+Remark: pistol, revolver and UZI can use only ammo type 1. For Shotgun the ammo_type1 is the normal ammo.
+
+Example:
+
+Equipment=SHOTGUN_ITEM, 1+LOAD_AMMO_TYPE1
+To set that the shotgun will be present in the inventoy and the loaded ammo will be normal ammo.
+
+If you omit the ammo type currently loaded in the weapon, the engine will use as default the ammo type 1 for that weapon.

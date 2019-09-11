@@ -951,37 +951,37 @@ namespace TombLib.Wad.TrLevels
             if (Version == TrVersion.TR2 || Version == TrVersion.TR3)
             {
                 string path = PathC.TryFindFile(Path.GetDirectoryName(fileName), "data/main.sfx", 4, 4);
-                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-                    throw new Exception("Unable to load sounds.");
-
-                using (var sampleReader = new BinaryReaderEx(File.OpenRead(path)))
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
                 {
-                    while (sampleReader.BaseStream.Position < sampleReader.BaseStream.Length)
+                    using (var sampleReader = new BinaryReaderEx(File.OpenRead(path)))
                     {
-                        var sample = new tr_sample();
-
-                        // Check for RIFF header
-                        var riff = System.Text.Encoding.ASCII.GetString(sampleReader.ReadBytes(4));
-                        if (riff != "RIFF")
-                            continue;
-
-                        // Read the chunk size (in this case, the entire file size)
-                        var fileSize = sampleReader.ReadInt32();
-
-                        // Write to a MemoryStream
-                        using (var ms = new MemoryStream())
+                        while (sampleReader.BaseStream.Position < sampleReader.BaseStream.Length)
                         {
-                            using (var writerSample = new BinaryWriterEx(ms))
+                            var sample = new tr_sample();
+
+                            // Check for RIFF header
+                            var riff = System.Text.Encoding.ASCII.GetString(sampleReader.ReadBytes(4));
+                            if (riff != "RIFF")
+                                continue;
+
+                            // Read the chunk size (in this case, the entire file size)
+                            var fileSize = sampleReader.ReadInt32();
+
+                            // Write to a MemoryStream
+                            using (var ms = new MemoryStream())
                             {
-                                writerSample.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
-                                writerSample.Write(fileSize);
-                                writerSample.Write(sampleReader.ReadBytes(fileSize));
+                                using (var writerSample = new BinaryWriterEx(ms))
+                                {
+                                    writerSample.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
+                                    writerSample.Write(fileSize);
+                                    writerSample.Write(sampleReader.ReadBytes(fileSize));
+                                }
+
+                                sample.Data = ms.ToArray();
                             }
 
-                            sample.Data = ms.ToArray();
+                            Samples.Add(sample);
                         }
-
-                        Samples.Add(sample);
                     }
                 }
             }

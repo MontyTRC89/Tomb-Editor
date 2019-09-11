@@ -1,0 +1,2 @@
+Used into Customize=CUST_BINOCULARS command
+When you use compass strip, you can add the BINF_SWING_COMPASS flag, to simulate a random swinging of compass everytime player move the binoculars.

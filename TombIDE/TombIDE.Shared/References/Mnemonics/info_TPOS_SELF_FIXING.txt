@@ -1,0 +1,6 @@
+Used in TestPosition command.
+The self fixing works to recognize a problematic situation and it tries to fix it itself.
+Technically, the problematic situation is when the difference between HOrient of Lara and that of Item is about $8000.
+The problem is that, in short values (like tomb4 manages the horient values) the $7fff value is a great positive number (+32767), while the $8000 value is a very little (and negative) number (-32768).
+This situation creates the paradox that, the "hOrientDifMin" value, you set in script command, it will be higher than "hOrientDifMax". This is bad, and tomb4 procedure return false.
+The self-fixing recognize itself, this situation and tries to fix it.

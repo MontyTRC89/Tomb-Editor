@@ -30,6 +30,56 @@ namespace TombLib.LevelData
         SoundEngineVersion
     }
 
+    public class AutoStaticMeshMergeEntry : ICloneable
+    {
+        public string StaticMesh
+        {
+            get { return parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.WadGameVersion); }
+        }
+
+        private LevelSettings parent;
+        public uint meshId;
+        public bool Merge { get; set; }
+        public bool InterpretShadesAsEffect { get; set; }
+
+        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect, LevelSettings parent)
+        {
+            this.meshId = staticMesh;
+            this.parent = parent;
+            this.Merge = merge;
+            this.InterpretShadesAsEffect = interpretShadesAsEffect;
+        }
+
+        public AutoStaticMeshMergeEntry Clone()
+        {
+            return (AutoStaticMeshMergeEntry)MemberwiseClone();
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj is AutoStaticMeshMergeEntry)
+            {
+                AutoStaticMeshMergeEntry other = (AutoStaticMeshMergeEntry)obj;
+                if(other.meshId == meshId)
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)meshId;
+        }
+    }
+
     public class OldWadSoundPath : ICloneable
     {
         public string Path { get; set; }
@@ -98,6 +148,26 @@ namespace TombLib.LevelData
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
 
+        // New sound system
+        public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
+        public List<int> SelectedSounds { get; set; } = new List<int>();
+        public List<WadSoundInfo> GlobalSoundMap
+        {
+            get
+            {
+                var soundmap = new SortedDictionary<int, WadSoundInfo>();
+
+                // Loop through all reference classes, collecting sounds
+                foreach (var soundsRef in SoundsCatalogs)
+                    if (soundsRef.LoadException == null)
+                        foreach (var sound in soundsRef.Sounds.SoundInfos)
+                            if (!soundmap.ContainsKey(sound.Id))
+                                soundmap.Add(sound.Id, sound);
+
+                return soundmap.Values.ToList();
+            }
+        }
+
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
@@ -122,6 +192,7 @@ namespace TombLib.LevelData
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
+        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
         public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
@@ -133,7 +204,8 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
         public List<ImportedGeometry> ImportedRooms { get; set; } = new List<ImportedGeometry>();
-
+        public bool InterpretStaticMeshVertexDataForMerge { get; set; } = false;
+        public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         // Compiler options
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
@@ -148,9 +220,11 @@ namespace TombLib.LevelData
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.Wads = Wads.ConvertAll(wad => wad.Clone());
             result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
+            result.SoundsCatalogs = SoundsCatalogs.ConvertAll(catalog => catalog.Clone());
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
+            result.AutoStaticMeshMerges = AutoStaticMeshMerges.ConvertAll(entry => entry.Clone());
             return result;
         }
 
@@ -419,27 +493,6 @@ namespace TombLib.LevelData
             return null;
         }
 
-        public WadFixedSoundInfo WadTryGetFixedSoundInfo(WadFixedSoundInfoId id)
-        {
-            WadFixedSoundInfo result;
-            foreach (ReferencedWad wad in Wads)
-                if (wad.Wad != null && wad.Wad.FixedSoundInfos.TryGetValue(id, out result))
-                    return result;
-            return null;
-        }
-
-        public WadSoundInfo WadTryGetSoundInfo(string soundName)
-        {
-            foreach (ReferencedWad wad in Wads)
-                if (wad.Wad != null)
-                {
-                    WadSoundInfo result = wad.Wad.TryGetSound(soundName);
-                    if (result != null)
-                        return result;
-                }
-            return null;
-        }
-
         public SortedList<WadMoveableId, WadMoveable> WadGetAllMoveables()
         {
             SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();
@@ -472,24 +525,6 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> WadGetAllFixedSoundInfos()
-        {
-            SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> result = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
-            foreach (ReferencedWad wad in Wads)
-                foreach (KeyValuePair<WadFixedSoundInfoId, WadFixedSoundInfo> moveable in wad.Wad.FixedSoundInfos)
-                    if (!result.ContainsKey(moveable.Key))
-                        result.Add(moveable.Key, moveable.Value);
-            return result;
-        }
-
-        public HashSet<WadSoundInfo> WadGetAllSoundInfos()
-        {
-            HashSet<WadSoundInfo> result = new HashSet<WadSoundInfo>();
-            foreach (ReferencedWad wad in Wads)
-                result.UnionWith(wad.Wad.SoundInfosUnique);
-            return result;
-        }
-
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
             new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new[] { new FileFormat("Tomb Editor Level", "prj2") };
@@ -501,6 +536,12 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]
+        {
+            new FileFormat("TRLE sounds catalog", "txt"),
+            new FileFormat("Tomb Editor sounds catalog", "xml")
+        };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsXmlFiles = new[] { new FileFormat("XML file", "xml") };
 
         public static WadGameVersion WadGameVersionFromGameVersion(GameVersion v)
         {
@@ -512,6 +553,19 @@ namespace TombLib.LevelData
                 case GameVersion.TR5Main: return WadGameVersion.TR5Main;
                 default: return WadGameVersion.TR4_TRNG;
             }
+        }
+
+        public WadSoundInfo WadTryGetSoundInfo(int id)
+        {
+            foreach (var soundInfo in GlobalSoundMap)
+                if (soundInfo.Id == id)
+                    return soundInfo;
+            return null;
+        }
+
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) 
+        {
+            return (AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any());
         }
     }
 }

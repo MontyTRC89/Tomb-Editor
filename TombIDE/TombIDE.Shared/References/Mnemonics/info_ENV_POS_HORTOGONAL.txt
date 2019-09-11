@@ -1,0 +1,3 @@
+For hortogonal we mean :non diagonal.
+For many animation it's necessary lara is facing exaclty a wall otherwise she will be not able to climb, hang ect.
+If you add this ENV_POS flag the condition will be false if lara is too diagonal respect to wall lines.
