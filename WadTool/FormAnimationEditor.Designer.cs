@@ -144,7 +144,7 @@ namespace WadTool
             this.butTransportPlay = new System.Windows.Forms.ToolStripButton();
             this.butTransportFrameForward = new System.Windows.Forms.ToolStripButton();
             this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
-            this.transportChained = new System.Windows.Forms.ToolStripButton();
+            this.butTransportChained = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
             this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
@@ -1436,10 +1436,10 @@ namespace WadTool
             this.butTransportPlay,
             this.butTransportFrameForward,
             this.butTransportEnd,
-            this.transportChained,
             this.toolStripSeparator7,
             this.butTransportSound,
-            this.butTransportLandWater});
+            this.butTransportLandWater,
+            this.butTransportChained});
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -1520,18 +1520,18 @@ namespace WadTool
             this.butTransportEnd.ToolTipText = "Go to end";
             this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
             // 
-            // transportChained
+            // butTransportChained
             // 
-            this.transportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.transportChained.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.transportChained.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.transportChained.Image = global::WadTool.Properties.Resources.transport_chain_disabled_24;
-            this.transportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.transportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.transportChained.Name = "transportChained";
-            this.transportChained.Size = new System.Drawing.Size(28, 35);
-            this.transportChained.Text = "toolStripButton1";
-            this.transportChained.Click += new System.EventHandler(this.transportChained_Click);
+            this.butTransportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportChained.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportChained.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportChained.Image = global::WadTool.Properties.Resources.transport_chain_disabled_24;
+            this.butTransportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportChained.Name = "butTransportChained";
+            this.butTransportChained.Size = new System.Drawing.Size(28, 35);
+            this.butTransportChained.ToolTipText = "Chained playback";
+            this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
             // 
             // toolStripSeparator7
             // 
@@ -1926,6 +1926,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem resampleAnimationToKeyframesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton transportChained;
+        private System.Windows.Forms.ToolStripButton butTransportChained;
     }
 }
