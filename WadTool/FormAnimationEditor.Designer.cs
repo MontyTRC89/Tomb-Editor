@@ -62,21 +62,14 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tbLateralEndVelocity = new DarkUI.Controls.DarkTextBox();
-            this.tbLateralStartVelocity = new DarkUI.Controls.DarkTextBox();
-            this.tbStartVelocity = new DarkUI.Controls.DarkTextBox();
-            this.tbEndVelocity = new DarkUI.Controls.DarkTextBox();
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkLabel24 = new DarkUI.Controls.DarkLabel();
             this.darkLabel25 = new DarkUI.Controls.DarkLabel();
             this.tbStateId = new DarkUI.Controls.DarkTextBox();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.tbNextFrame = new DarkUI.Controls.DarkTextBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-            this.tbNextAnimation = new DarkUI.Controls.DarkTextBox();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.tbFramerate = new DarkUI.Controls.DarkTextBox();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -149,6 +142,15 @@ namespace WadTool
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
             this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
             this.darkSectionPanel4 = new DarkUI.Controls.DarkSectionPanel();
+            this.nudVertEndVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudLatEndVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudVertStartVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudLatStartVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudNextFrame = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudNextAnim = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudFramerate = new DarkUI.Controls.DarkNumericUpDown();
+            this.butSearchStateID = new DarkUI.Controls.DarkButton();
+            this.cmbStateID = new DarkUI.Controls.DarkComboBox();
             this.darkButton3 = new DarkUI.Controls.DarkButton();
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel6 = new DarkUI.Controls.DarkSectionPanel();
@@ -170,6 +172,13 @@ namespace WadTool
             this.panelTransport.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.darkSectionPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVertEndVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLatEndVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVertStartVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLatStartVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNextFrame)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).BeginInit();
             this.darkSectionPanel6.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelTools.SuspendLayout();
@@ -618,165 +627,93 @@ namespace WadTool
             this.statusFrame.Text = "Frame:";
             this.statusFrame.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
-            // tbLateralEndVelocity
-            // 
-            this.tbLateralEndVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLateralEndVelocity.Location = new System.Drawing.Point(179, 139);
-            this.tbLateralEndVelocity.Name = "tbLateralEndVelocity";
-            this.tbLateralEndVelocity.Size = new System.Drawing.Size(56, 22);
-            this.tbLateralEndVelocity.TabIndex = 121;
-            this.tbLateralEndVelocity.Validated += new System.EventHandler(this.tbLateralEndVelocity_Validated);
-            // 
-            // tbLateralStartVelocity
-            // 
-            this.tbLateralStartVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLateralStartVelocity.Location = new System.Drawing.Point(179, 111);
-            this.tbLateralStartVelocity.Name = "tbLateralStartVelocity";
-            this.tbLateralStartVelocity.Size = new System.Drawing.Size(56, 22);
-            this.tbLateralStartVelocity.TabIndex = 119;
-            this.tbLateralStartVelocity.Validated += new System.EventHandler(this.tbLateralStartVelocity_Validated);
-            // 
-            // tbStartVelocity
-            // 
-            this.tbStartVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbStartVelocity.Location = new System.Drawing.Point(179, 55);
-            this.tbStartVelocity.Name = "tbStartVelocity";
-            this.tbStartVelocity.Size = new System.Drawing.Size(56, 22);
-            this.tbStartVelocity.TabIndex = 115;
-            this.tbStartVelocity.Validated += new System.EventHandler(this.tbStartVelocity_Validated);
-            // 
-            // tbEndVelocity
-            // 
-            this.tbEndVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbEndVelocity.Location = new System.Drawing.Point(179, 83);
-            this.tbEndVelocity.Name = "tbEndVelocity";
-            this.tbEndVelocity.Size = new System.Drawing.Size(56, 22);
-            this.tbEndVelocity.TabIndex = 117;
-            this.tbEndVelocity.Validated += new System.EventHandler(this.tbEndVelocity_Validated);
-            // 
             // darkLabel22
             // 
             this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel22.Location = new System.Drawing.Point(116, 141);
+            this.darkLabel22.Location = new System.Drawing.Point(121, 166);
             this.darkLabel22.Name = "darkLabel22";
-            this.darkLabel22.Size = new System.Drawing.Size(62, 13);
+            this.darkLabel22.Size = new System.Drawing.Size(99, 13);
             this.darkLabel22.TabIndex = 120;
-            this.darkLabel22.Text = "End H vel:";
-            this.darkLabel22.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.darkLabel22.Text = "End H velocity";
             // 
             // darkLabel23
             // 
             this.darkLabel23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel23.Location = new System.Drawing.Point(115, 57);
+            this.darkLabel23.Location = new System.Drawing.Point(3, 124);
             this.darkLabel23.Name = "darkLabel23";
-            this.darkLabel23.Size = new System.Drawing.Size(63, 13);
+            this.darkLabel23.Size = new System.Drawing.Size(113, 13);
             this.darkLabel23.TabIndex = 114;
-            this.darkLabel23.Text = "Start V vel:";
-            this.darkLabel23.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.darkLabel23.Text = "Start V velocity";
             // 
             // darkLabel24
             // 
             this.darkLabel24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel24.Location = new System.Drawing.Point(115, 113);
+            this.darkLabel24.Location = new System.Drawing.Point(2, 166);
             this.darkLabel24.Name = "darkLabel24";
-            this.darkLabel24.Size = new System.Drawing.Size(63, 13);
+            this.darkLabel24.Size = new System.Drawing.Size(87, 13);
             this.darkLabel24.TabIndex = 118;
-            this.darkLabel24.Text = "Start H vel:";
-            this.darkLabel24.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.darkLabel24.Text = "Start H velocity";
             // 
             // darkLabel25
             // 
             this.darkLabel25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel25.Location = new System.Drawing.Point(118, 85);
+            this.darkLabel25.Location = new System.Drawing.Point(122, 124);
             this.darkLabel25.Name = "darkLabel25";
-            this.darkLabel25.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel25.Size = new System.Drawing.Size(95, 13);
             this.darkLabel25.TabIndex = 116;
-            this.darkLabel25.Text = "End V vel:";
-            this.darkLabel25.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.darkLabel25.Text = "End V velocity";
             // 
             // tbStateId
             // 
-            this.tbStateId.Location = new System.Drawing.Point(68, 55);
+            this.tbStateId.Location = new System.Drawing.Point(44, 56);
             this.tbStateId.Name = "tbStateId";
-            this.tbStateId.Size = new System.Drawing.Size(47, 22);
+            this.tbStateId.Size = new System.Drawing.Size(153, 22);
             this.tbStateId.TabIndex = 103;
             this.tbStateId.Validated += new System.EventHandler(this.tbStateId_Validated);
             // 
             // darkLabel7
             // 
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel7.Location = new System.Drawing.Point(14, 57);
+            this.darkLabel7.Location = new System.Drawing.Point(2, 59);
             this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(53, 13);
+            this.darkLabel7.Size = new System.Drawing.Size(38, 13);
             this.darkLabel7.TabIndex = 102;
-            this.darkLabel7.Text = "State ID:";
-            this.darkLabel7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // tbNextFrame
-            // 
-            this.tbNextFrame.Location = new System.Drawing.Point(68, 139);
-            this.tbNextFrame.Name = "tbNextFrame";
-            this.tbNextFrame.Size = new System.Drawing.Size(47, 22);
-            this.tbNextFrame.TabIndex = 101;
-            this.tbNextFrame.Validated += new System.EventHandler(this.tbNextFrame_Validated);
+            this.darkLabel7.Text = "State:";
             // 
             // darkLabel6
             // 
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel6.Location = new System.Drawing.Point(2, 140);
+            this.darkLabel6.Location = new System.Drawing.Point(159, 82);
             this.darkLabel6.Name = "darkLabel6";
-            this.darkLabel6.Size = new System.Drawing.Size(65, 17);
+            this.darkLabel6.Size = new System.Drawing.Size(65, 13);
             this.darkLabel6.TabIndex = 100;
-            this.darkLabel6.Text = "Next frame:";
-            this.darkLabel6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // tbNextAnimation
-            // 
-            this.tbNextAnimation.Location = new System.Drawing.Point(68, 111);
-            this.tbNextAnimation.Name = "tbNextAnimation";
-            this.tbNextAnimation.Size = new System.Drawing.Size(47, 22);
-            this.tbNextAnimation.TabIndex = 99;
-            this.tbNextAnimation.Validated += new System.EventHandler(this.tbNextAnimation_Validated);
+            this.darkLabel6.Text = "Next frame";
             // 
             // darkLabel5
             // 
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(3, 113);
+            this.darkLabel5.Location = new System.Drawing.Point(80, 82);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(64, 20);
+            this.darkLabel5.Size = new System.Drawing.Size(64, 13);
             this.darkLabel5.TabIndex = 98;
-            this.darkLabel5.Text = "Next anim:";
-            this.darkLabel5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // tbFramerate
-            // 
-            this.tbFramerate.Location = new System.Drawing.Point(68, 83);
-            this.tbFramerate.Name = "tbFramerate";
-            this.tbFramerate.Size = new System.Drawing.Size(47, 22);
-            this.tbFramerate.TabIndex = 97;
-            this.tbFramerate.Validated += new System.EventHandler(this.tbFramerate_Validated);
+            this.darkLabel5.Text = "Next anim";
             // 
             // darkLabel4
             // 
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(3, 85);
+            this.darkLabel4.Location = new System.Drawing.Point(2, 82);
             this.darkLabel4.Name = "darkLabel4";
             this.darkLabel4.Size = new System.Drawing.Size(64, 13);
             this.darkLabel4.TabIndex = 96;
-            this.darkLabel4.Text = "Framerate:";
-            this.darkLabel4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.darkLabel4.Text = "Framerate";
             // 
             // tbName
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(68, 28);
+            this.tbName.Location = new System.Drawing.Point(44, 28);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(167, 22);
+            this.tbName.Size = new System.Drawing.Size(191, 22);
             this.tbName.TabIndex = 95;
             this.tbName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbName_KeyDown);
             this.tbName.Validated += new System.EventHandler(this.tbName_Validated);
@@ -784,18 +721,17 @@ namespace WadTool
             // darkLabel3
             // 
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(17, 30);
+            this.darkLabel3.Location = new System.Drawing.Point(2, 30);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(50, 20);
+            this.darkLabel3.Size = new System.Drawing.Size(41, 20);
             this.darkLabel3.TabIndex = 94;
             this.darkLabel3.Text = "Name:";
-            this.darkLabel3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // butAddNewAnimation
             // 
             this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddNewAnimation.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddNewAnimation.Location = new System.Drawing.Point(185, 224);
+            this.butAddNewAnimation.Location = new System.Drawing.Point(185, 181);
             this.butAddNewAnimation.Name = "butAddNewAnimation";
             this.butAddNewAnimation.Size = new System.Drawing.Size(23, 24);
             this.butAddNewAnimation.TabIndex = 93;
@@ -930,7 +866,7 @@ namespace WadTool
             // 
             this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butDeleteAnimation.Image")));
-            this.butDeleteAnimation.Location = new System.Drawing.Point(212, 224);
+            this.butDeleteAnimation.Location = new System.Drawing.Point(212, 181);
             this.butDeleteAnimation.Name = "butDeleteAnimation";
             this.butDeleteAnimation.Size = new System.Drawing.Size(23, 24);
             this.butDeleteAnimation.TabIndex = 23;
@@ -1344,7 +1280,7 @@ namespace WadTool
             this.lstAnimations.Location = new System.Drawing.Point(4, 53);
             this.lstAnimations.MouseWheelScrollSpeedV = 0.2F;
             this.lstAnimations.Name = "lstAnimations";
-            this.lstAnimations.Size = new System.Drawing.Size(231, 167);
+            this.lstAnimations.Size = new System.Drawing.Size(231, 124);
             this.lstAnimations.TabIndex = 8;
             this.lstAnimations.SelectedIndicesChanged += new System.EventHandler(this.lstAnimations_SelectedIndicesChanged);
             this.lstAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
@@ -1363,7 +1299,7 @@ namespace WadTool
             this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(240, 120);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Animation List";
-            this.darkSectionPanel1.Size = new System.Drawing.Size(240, 252);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(240, 209);
             this.darkSectionPanel1.TabIndex = 9;
             // 
             // panelView
@@ -1571,49 +1507,250 @@ namespace WadTool
             // 
             // darkSectionPanel4
             // 
-            this.darkSectionPanel4.Controls.Add(this.darkButton3);
-            this.darkSectionPanel4.Controls.Add(this.butEditStateChanges);
-            this.darkSectionPanel4.Controls.Add(this.tbLateralEndVelocity);
+            this.darkSectionPanel4.Controls.Add(this.nudVertEndVel);
+            this.darkSectionPanel4.Controls.Add(this.nudLatEndVel);
+            this.darkSectionPanel4.Controls.Add(this.nudVertStartVel);
+            this.darkSectionPanel4.Controls.Add(this.nudLatStartVel);
+            this.darkSectionPanel4.Controls.Add(this.nudNextFrame);
+            this.darkSectionPanel4.Controls.Add(this.nudNextAnim);
+            this.darkSectionPanel4.Controls.Add(this.tbStateId);
+            this.darkSectionPanel4.Controls.Add(this.nudFramerate);
+            this.darkSectionPanel4.Controls.Add(this.butSearchStateID);
             this.darkSectionPanel4.Controls.Add(this.darkLabel25);
-            this.darkSectionPanel4.Controls.Add(this.darkLabel22);
+            this.darkSectionPanel4.Controls.Add(this.cmbStateID);
+            this.darkSectionPanel4.Controls.Add(this.darkButton3);
             this.darkSectionPanel4.Controls.Add(this.darkLabel24);
-            this.darkSectionPanel4.Controls.Add(this.tbLateralStartVelocity);
-            this.darkSectionPanel4.Controls.Add(this.tbEndVelocity);
-            this.darkSectionPanel4.Controls.Add(this.tbStartVelocity);
             this.darkSectionPanel4.Controls.Add(this.darkLabel23);
+            this.darkSectionPanel4.Controls.Add(this.darkLabel22);
+            this.darkSectionPanel4.Controls.Add(this.butEditStateChanges);
             this.darkSectionPanel4.Controls.Add(this.tbName);
             this.darkSectionPanel4.Controls.Add(this.darkLabel3);
             this.darkSectionPanel4.Controls.Add(this.darkLabel4);
-            this.darkSectionPanel4.Controls.Add(this.tbFramerate);
             this.darkSectionPanel4.Controls.Add(this.darkLabel5);
-            this.darkSectionPanel4.Controls.Add(this.tbNextAnimation);
             this.darkSectionPanel4.Controls.Add(this.darkLabel6);
-            this.darkSectionPanel4.Controls.Add(this.tbNextFrame);
             this.darkSectionPanel4.Controls.Add(this.darkLabel7);
-            this.darkSectionPanel4.Controls.Add(this.tbStateId);
             this.darkSectionPanel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkSectionPanel4.Location = new System.Drawing.Point(0, 252);
-            this.darkSectionPanel4.MaximumSize = new System.Drawing.Size(240, 195);
-            this.darkSectionPanel4.MinimumSize = new System.Drawing.Size(240, 195);
+            this.darkSectionPanel4.Location = new System.Drawing.Point(0, 352);
+            this.darkSectionPanel4.MaximumSize = new System.Drawing.Size(240, 238);
+            this.darkSectionPanel4.MinimumSize = new System.Drawing.Size(240, 238);
             this.darkSectionPanel4.Name = "darkSectionPanel4";
             this.darkSectionPanel4.SectionHeader = "Current Animation";
-            this.darkSectionPanel4.Size = new System.Drawing.Size(240, 195);
+            this.darkSectionPanel4.Size = new System.Drawing.Size(240, 238);
             this.darkSectionPanel4.TabIndex = 127;
+            // 
+            // nudVertEndVel
+            // 
+            this.nudVertEndVel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudVertEndVel.DecimalPlaces = 8;
+            this.nudVertEndVel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudVertEndVel.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVertEndVel.Location = new System.Drawing.Point(124, 141);
+            this.nudVertEndVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudVertEndVel.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudVertEndVel.MousewheelSingleIncrement = true;
+            this.nudVertEndVel.Name = "nudVertEndVel";
+            this.nudVertEndVel.Size = new System.Drawing.Size(112, 22);
+            this.nudVertEndVel.TabIndex = 131;
+            this.nudVertEndVel.Validated += new System.EventHandler(this.nudVertEndVel_Validated);
+            // 
+            // nudLatEndVel
+            // 
+            this.nudLatEndVel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudLatEndVel.DecimalPlaces = 8;
+            this.nudLatEndVel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudLatEndVel.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudLatEndVel.Location = new System.Drawing.Point(123, 181);
+            this.nudLatEndVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudLatEndVel.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudLatEndVel.MousewheelSingleIncrement = true;
+            this.nudLatEndVel.Name = "nudLatEndVel";
+            this.nudLatEndVel.Size = new System.Drawing.Size(112, 22);
+            this.nudLatEndVel.TabIndex = 129;
+            this.nudLatEndVel.Validated += new System.EventHandler(this.nudLatEndVel_Validated);
+            // 
+            // nudVertStartVel
+            // 
+            this.nudVertStartVel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudVertStartVel.DecimalPlaces = 8;
+            this.nudVertStartVel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudVertStartVel.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVertStartVel.Location = new System.Drawing.Point(6, 141);
+            this.nudVertStartVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudVertStartVel.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudVertStartVel.MousewheelSingleIncrement = true;
+            this.nudVertStartVel.Name = "nudVertStartVel";
+            this.nudVertStartVel.Size = new System.Drawing.Size(112, 22);
+            this.nudVertStartVel.TabIndex = 130;
+            this.nudVertStartVel.Validated += new System.EventHandler(this.nudVertStartVel_Validated);
+            // 
+            // nudLatStartVel
+            // 
+            this.nudLatStartVel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudLatStartVel.DecimalPlaces = 8;
+            this.nudLatStartVel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudLatStartVel.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudLatStartVel.Location = new System.Drawing.Point(5, 181);
+            this.nudLatStartVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudLatStartVel.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudLatStartVel.MousewheelSingleIncrement = true;
+            this.nudLatStartVel.Name = "nudLatStartVel";
+            this.nudLatStartVel.Size = new System.Drawing.Size(112, 22);
+            this.nudLatStartVel.TabIndex = 128;
+            this.nudLatStartVel.Validated += new System.EventHandler(this.nudLatStartVel_Validated);
+            // 
+            // nudNextFrame
+            // 
+            this.nudNextFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudNextFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudNextFrame.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudNextFrame.Location = new System.Drawing.Point(162, 98);
+            this.nudNextFrame.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudNextFrame.MousewheelSingleIncrement = true;
+            this.nudNextFrame.Name = "nudNextFrame";
+            this.nudNextFrame.Size = new System.Drawing.Size(73, 22);
+            this.nudNextFrame.TabIndex = 128;
+            this.nudNextFrame.Validated += new System.EventHandler(this.nudNextFrame_Validated);
+            // 
+            // nudNextAnim
+            // 
+            this.nudNextAnim.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudNextAnim.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudNextAnim.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudNextAnim.Location = new System.Drawing.Point(83, 98);
+            this.nudNextAnim.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudNextAnim.MousewheelSingleIncrement = true;
+            this.nudNextAnim.Name = "nudNextAnim";
+            this.nudNextAnim.Size = new System.Drawing.Size(73, 22);
+            this.nudNextAnim.TabIndex = 127;
+            this.nudNextAnim.Validated += new System.EventHandler(this.nudNextAnim_Validated);
+            // 
+            // nudFramerate
+            // 
+            this.nudFramerate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudFramerate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudFramerate.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudFramerate.Location = new System.Drawing.Point(4, 98);
+            this.nudFramerate.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudFramerate.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudFramerate.MousewheelSingleIncrement = true;
+            this.nudFramerate.Name = "nudFramerate";
+            this.nudFramerate.Size = new System.Drawing.Size(73, 22);
+            this.nudFramerate.TabIndex = 126;
+            this.nudFramerate.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudFramerate.Validated += new System.EventHandler(this.nudFramerate_Validated);
+            // 
+            // butSearchStateID
+            // 
+            this.butSearchStateID.Image = global::WadTool.Properties.Resources.general_search_16;
+            this.butSearchStateID.Location = new System.Drawing.Point(212, 56);
+            this.butSearchStateID.Name = "butSearchStateID";
+            this.butSearchStateID.Size = new System.Drawing.Size(23, 23);
+            this.butSearchStateID.TabIndex = 125;
+            this.butSearchStateID.Click += new System.EventHandler(this.butSearchStateID_Click);
+            // 
+            // cmbStateID
+            // 
+            this.cmbStateID.FormattingEnabled = true;
+            this.cmbStateID.Location = new System.Drawing.Point(44, 56);
+            this.cmbStateID.Name = "cmbStateID";
+            this.cmbStateID.Size = new System.Drawing.Size(169, 23);
+            this.cmbStateID.TabIndex = 124;
+            this.cmbStateID.SelectedIndexChanged += new System.EventHandler(this.cmbStateID_SelectedIndexChanged);
             // 
             // darkButton3
             // 
-            this.darkButton3.Location = new System.Drawing.Point(121, 167);
+            this.darkButton3.Location = new System.Drawing.Point(123, 210);
             this.darkButton3.Name = "darkButton3";
-            this.darkButton3.Size = new System.Drawing.Size(114, 23);
+            this.darkButton3.Size = new System.Drawing.Size(112, 23);
             this.darkButton3.TabIndex = 123;
             this.darkButton3.Text = "Anim commands...";
             this.darkButton3.Click += new System.EventHandler(this.butEditAnimCommands_Click);
             // 
             // butEditStateChanges
             // 
-            this.butEditStateChanges.Location = new System.Drawing.Point(5, 167);
+            this.butEditStateChanges.Location = new System.Drawing.Point(5, 210);
             this.butEditStateChanges.Name = "butEditStateChanges";
-            this.butEditStateChanges.Size = new System.Drawing.Size(110, 23);
+            this.butEditStateChanges.Size = new System.Drawing.Size(112, 23);
             this.butEditStateChanges.TabIndex = 122;
             this.butEditStateChanges.Text = "State changes...";
             this.butEditStateChanges.Click += new System.EventHandler(this.butEditStateChanges_Click);
@@ -1639,7 +1776,7 @@ namespace WadTool
             this.darkSectionPanel6.Controls.Add(this.tbCollisionBoxMaxX);
             this.darkSectionPanel6.Controls.Add(this.darkLabel9);
             this.darkSectionPanel6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkSectionPanel6.Location = new System.Drawing.Point(0, 447);
+            this.darkSectionPanel6.Location = new System.Drawing.Point(0, 209);
             this.darkSectionPanel6.MaximumSize = new System.Drawing.Size(240, 143);
             this.darkSectionPanel6.MinimumSize = new System.Drawing.Size(240, 143);
             this.darkSectionPanel6.Name = "darkSectionPanel6";
@@ -1711,8 +1848,8 @@ namespace WadTool
             // panelTools
             // 
             this.panelTools.Controls.Add(this.darkSectionPanel1);
-            this.panelTools.Controls.Add(this.darkSectionPanel4);
             this.panelTools.Controls.Add(this.darkSectionPanel6);
+            this.panelTools.Controls.Add(this.darkSectionPanel4);
             this.panelTools.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelTools.Location = new System.Drawing.Point(4, 4);
             this.panelTools.MaximumSize = new System.Drawing.Size(240, 10000);
@@ -1767,6 +1904,13 @@ namespace WadTool
             this.darkToolStrip1.PerformLayout();
             this.darkSectionPanel4.ResumeLayout(false);
             this.darkSectionPanel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVertEndVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLatEndVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVertStartVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLatStartVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNextFrame)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).EndInit();
             this.darkSectionPanel6.ResumeLayout(false);
             this.darkSectionPanel6.PerformLayout();
             this.panelMain.ResumeLayout(false);
@@ -1821,15 +1965,12 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel13;
         private System.Windows.Forms.ToolStripStatusLabel statusFrame;
         private DarkUI.Controls.DarkButton butAddNewAnimation;
-        private DarkUI.Controls.DarkTextBox tbFramerate;
         private DarkUI.Controls.DarkLabel darkLabel4;
         private DarkUI.Controls.DarkTextBox tbName;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkTextBox tbStateId;
         private DarkUI.Controls.DarkLabel darkLabel7;
-        private DarkUI.Controls.DarkTextBox tbNextFrame;
         private DarkUI.Controls.DarkLabel darkLabel6;
-        private DarkUI.Controls.DarkTextBox tbNextAnimation;
         private DarkUI.Controls.DarkLabel darkLabel5;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem calculateCollisionBoxForCurrentFrameToolStripMenuItem;
@@ -1864,10 +2005,6 @@ namespace WadTool
         private DarkUI.Controls.DarkTextBox tbSpeed;
         private DarkUI.Controls.DarkLabel darkLabel17;
         private DarkUI.Controls.DarkLabel darkLabel20;
-        private DarkUI.Controls.DarkTextBox tbLateralEndVelocity;
-        private DarkUI.Controls.DarkTextBox tbLateralStartVelocity;
-        private DarkUI.Controls.DarkTextBox tbStartVelocity;
-        private DarkUI.Controls.DarkTextBox tbEndVelocity;
         private DarkUI.Controls.DarkLabel darkLabel22;
         private DarkUI.Controls.DarkLabel darkLabel23;
         private DarkUI.Controls.DarkLabel darkLabel24;
@@ -1928,5 +2065,14 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butTransportChained;
+        private DarkUI.Controls.DarkComboBox cmbStateID;
+        private DarkUI.Controls.DarkNumericUpDown nudNextFrame;
+        private DarkUI.Controls.DarkNumericUpDown nudNextAnim;
+        private DarkUI.Controls.DarkNumericUpDown nudFramerate;
+        private DarkUI.Controls.DarkButton butSearchStateID;
+        private DarkUI.Controls.DarkNumericUpDown nudVertEndVel;
+        private DarkUI.Controls.DarkNumericUpDown nudVertStartVel;
+        private DarkUI.Controls.DarkNumericUpDown nudLatEndVel;
+        private DarkUI.Controls.DarkNumericUpDown nudLatStartVel;
     }
 }

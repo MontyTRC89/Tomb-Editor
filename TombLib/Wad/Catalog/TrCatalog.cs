@@ -25,8 +25,15 @@ namespace TombLib.Wad.Catalog
 
         private struct ItemAnimation
         {
-            public uint Item;
-            public uint Animation;
+            public uint Item { get; set; }
+            public uint Animation { get; set; }
+            public string Name { get; set; }
+        }
+
+        private struct ItemState
+        {
+            public uint Item { get; set; }
+            public uint State { get; set; }
             public string Name { get; set; }
         }
 
@@ -38,7 +45,7 @@ namespace TombLib.Wad.Catalog
             internal SortedList<uint, Item> Statics { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, ItemSound> Sounds { get; private set; } = new SortedList<uint, ItemSound>();
             internal List<ItemAnimation> Animations { get; private set; } = new List<ItemAnimation>();
-            //internal int SoundMapSize { get; set; }
+            internal List<ItemState> States { get; private set; } = new List<ItemState>();
 
             public Game(WadGameVersion version)
             {
@@ -184,24 +191,61 @@ namespace TombLib.Wad.Catalog
         public static string GetAnimationName(WadGameVersion version, uint objectId, uint animId)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
-                return "Animation " + animId;
+            ItemAnimation entry = new ItemAnimation();
+            Games.TryGetValue(version, out game);
 
-            ItemAnimation entry = game.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
+            if (game != null)
+                entry = game.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
+
             if (entry.Name == null)
-            {
                 foreach (var otherGame in Games.Where(g => g.Key != version))
                 {
                     entry = otherGame.Value.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
-                    if (entry.Name != null)
-                        break;
+                    if (entry.Name != null) break;
                 }
-            }
+
+            if (entry.Name == null) return "Animation " + animId;
+            else return entry.Name;
+        }
+
+        public static string GetStateName(WadGameVersion version, uint objectId, uint stateId)
+        {
+            Game game;
+            ItemState entry = new ItemState();
+            Games.TryGetValue(version, out game);
+
+            if (game != null)
+                entry = game.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
 
             if (entry.Name == null)
-                return "Animation " + animId;
-            else
-                return entry.Name;
+                foreach (var otherGame in Games.Where(g => g.Key != version))
+                {
+                    entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
+                    if (entry.Name != null) break;
+                }
+
+            if (entry.Name == null) return "Unknown state " + stateId;
+            else return entry.Name;
+        }
+
+        public static int TryToGetStateID(WadGameVersion version, uint objectId, string stateName)
+        {
+            Game game;
+            ItemState entry = new ItemState();
+            Games.TryGetValue(version, out game);
+            
+            if (game != null)
+                entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (entry.Name == null)
+                foreach (var otherGame in Games.Where(g => g.Key != version))
+                {
+                    entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
+                    if (entry.Name != null) break;
+                }
+
+            if (entry.Name == null) return -1;
+            else return (int)entry.State;
         }
 
         public static IDictionary<uint, string> GetAllMoveables(WadGameVersion version)
@@ -358,6 +402,21 @@ namespace TombLib.Wad.Catalog
                         string name = originalNameNode.Attributes["name"].Value;
 
                         game.Animations.Add(new ItemAnimation { Name = name, Animation = id, Item = item });
+                    }
+
+                // Parse states
+                XmlNode states = gameNode.SelectSingleNode("states");
+                if (states != null)
+                    foreach (XmlNode originalNameNode in states.ChildNodes)
+                    {
+                        if (originalNameNode.Name != "state")
+                            continue;
+
+                        uint item = uint.Parse(originalNameNode.Attributes["item"].Value);
+                        uint id = uint.Parse(originalNameNode.Attributes["id"].Value);
+                        string name = originalNameNode.Attributes["name"].Value;
+
+                        game.States.Add(new ItemState { Name = name, State = id, Item = item });
                     }
                 Games.Add(version, game);
             }
