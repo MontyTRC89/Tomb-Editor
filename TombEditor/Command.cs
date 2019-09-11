@@ -936,7 +936,7 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("ApplyAmbientLightToSelectedRooms", "Apply current ambient light to selected rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("ApplyAmbientLightToSelectedRooms", "Set ambient light for selected rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.ApplyAmbientLightToSelectedRooms(args.Window);
                 args.Editor.SendMessage("Ambient light was applied to selected rooms.", PopupType.Info);
