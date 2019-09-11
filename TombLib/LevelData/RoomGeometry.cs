@@ -1738,7 +1738,7 @@ namespace TombLib.LevelData
         public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, 
                                                       Vector3 normal, bool forRooms)
         {
-            if (!light.Enabled || !light.IsStaticallyUsed)
+            if (!light.Enabled)
                 return Vector3.Zero;
 
             Vector3 lightDirection;
@@ -1931,7 +1931,8 @@ namespace TombLib.LevelData
 
                     foreach (var light in lights) // No Linq here because it's slow
                     {
-                        color += CalculateLightForVertex(room, light, position, normal, true);
+                        if (light.IsStaticallyUsed)
+                            color += CalculateLightForVertex(room, light, position, normal, true);
                     }
 
                     // Apply color
