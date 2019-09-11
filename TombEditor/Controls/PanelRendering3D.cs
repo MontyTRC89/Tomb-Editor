@@ -1889,6 +1889,7 @@ namespace TombEditor.Controls
                             instance.RotationPositionMatrix * viewProjection,
                             "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") " +
                                 "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                                "\nRoll = " + instance.Roll + ", XRot = " + instance.RotationX + ", YRot = " + instance.RotationY + 
                                 "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
