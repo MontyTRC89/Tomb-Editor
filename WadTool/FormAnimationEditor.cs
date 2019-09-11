@@ -1621,9 +1621,9 @@ namespace WadTool
             _chainedPlayback = !_chainedPlayback;
 
             if (_chainedPlayback)
-                butTransportSound.Image = Properties.Resources.transport_chain_enabled_24;
+                butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
             else
-                butTransportSound.Image = Properties.Resources.transport_chain_disabled_24;
+                butTransportChained.Image = Properties.Resources.transport_chain_disabled_24;
         }
     }
 }
