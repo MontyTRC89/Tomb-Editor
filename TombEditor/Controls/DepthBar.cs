@@ -204,7 +204,11 @@ namespace TombEditor.Controls
                                             {
                                                 _roomMouseClicked = roomSequences[i][j].Room;
                                                 _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
-                                                SelectedRoom?.Invoke(new[] { _roomMouseClicked });
+
+                                                // If multiple rooms are selected, don't reset selection.
+                                                if (_editor.SelectedRooms.Count <= 1 || !_editor.SelectedRooms.Contains(_roomMouseClicked))
+                                                    SelectedRoom?.Invoke(new[] { _roomMouseClicked });
+
                                                 InvalidateParent?.Invoke();
                                                 _selectionMode = SelectionMode.RoomMove;
                                                 return false;
@@ -275,7 +279,17 @@ namespace TombEditor.Controls
 
                     if (_roomsToMove == null)
                     {
-                        HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_roomMouseClicked);
+                        HashSet<Room> roomsToMove = new HashSet<Room>();
+
+                        // If multiple rooms are selected, build a list of rooms to move based on that.
+                        // Otherwise, use only room which was clicked before.
+                        if (_editor.SelectedRooms.Count > 1)
+                            foreach (var room in _editor.SelectedRooms)
+                                roomsToMove.UnionWith(_editor.Level.GetConnectedRooms(room));
+                        else
+                            roomsToMove = _editor.Level.GetConnectedRooms(_roomMouseClicked);
+
+
                         if (EditorActions.CheckForLockedRooms(GetParent?.Invoke(), roomsToMove))
                         {
                             _roomsToMove = null;
