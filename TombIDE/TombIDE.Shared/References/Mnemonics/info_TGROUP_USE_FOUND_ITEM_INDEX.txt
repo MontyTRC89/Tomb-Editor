@@ -1,0 +1,22 @@
+Used with to force to use the index of last moveable detected by some condition.
+The found index will be used in all following triggers or conditions of TriggerGroup that require an index for moveable.
+Pratically using this flag, the index found from some condition will become the index to use for following condition and triggers, ignoring further moveable index of thoose triggers.
+This overriding of original indices will be stopped only when it will be found another TGROUP_ flags used to change the default index of moveable to use.
+
+Other TGROUP_ flags to change the default index for moveable are:
+TGROUP_USE_OWNER_ANIM_ITEM_INDEX
+TGROUP_USE_TRIGGER_ITEM_INDEX
+See descriptions of above flags.
+Remark. Not all condition trigger may be used to set a moveable index, of course.
+You can add the flag TGROUP_USE_FOUND_ITEM_INDEX to (first value) of exported condition, only on those condition try to verify the presence of some moveable.
+For example the condition trigger "Lara collides with moveable with [&] slot"  or the ENV condition "Lara has in front the object with slot = ExtraSlot"
+This method to force another index to use with following triggers it's necessary to handle situation where you are not able to know exactly WHAT moveable lara will collide or she'll have in front of her.
+For example if we could build a TriggerGroup to handle a fighting like following:
+
+Conditions: "When right hand of lara touch head of [&] slot moveable"
+   then: (above condition is true)  Toggle vitalty to current enemy moveable
+
+In above trigger group, when we build our condition trigger we can set the slot of moveable for condition, for example we could use the slot "95 SAS", but when in game lara hits a SAS moveable it could be one of many SAS preset in the level, and we cann't know its index while we build the condition trigger.
+If we don't know the index, we cann't set in following trigger to toggle vitality.
+
+To solve above problems, there are some TGROUP_ flags used to get the index of moveable to use in dynamic way: when engine with some condition detects a moveable, it could use that index for following trigger.

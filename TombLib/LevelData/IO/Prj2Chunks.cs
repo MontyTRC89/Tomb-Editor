@@ -8,9 +8,13 @@ namespace TombLib.LevelData.IO
         public static readonly byte[] MagicNumber = new byte[] { 0x50, 0x52, 0x4A, 0x32 };
 
         public static readonly ChunkId Settings = ChunkId.FromString("TeSettings");
+        /**/public static readonly ChunkId SoundSystem = ChunkId.FromString("TeSoundSystem"); // UTF-8 string
         /**/public static readonly ChunkId ObsoleteWadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId SkyTextureFilePath = ChunkId.FromString("TeSkyTextureFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId SoundsCatalogs = ChunkId.FromString("TeSoundsCatalogs"); // UTF-8 string
+        /****/public static readonly ChunkId SoundsCatalog = ChunkId.FromString("TeSoundsCatalog"); // UTF-8 string
+        /******/public static readonly ChunkId SoundsCatalogPath = ChunkId.FromString("TeSoundsCatalogPath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5ExtraSpritesFilePath = ChunkId.FromString("TeTr5ExtraSpritesFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");
         /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");
@@ -30,6 +34,8 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId AgressiveFloordataPacking = ChunkId.FromString("TeAgressiveFloordataPacking");
         /**/public static readonly ChunkId Wads = ChunkId.FromString("TeWads");
         /****/public static readonly ChunkId Wad = ChunkId.FromString("TeWad");
+        /**/public static readonly ChunkId SelectedSounds = ChunkId.FromString("TeSelectedSounds");
+        /****/public static readonly ChunkId SelectedSound = ChunkId.FromString("TeSelSnd");
         /******/public static readonly ChunkId WadPath = ChunkId.FromString("TePath");
         /**/public static readonly ChunkId Textures = ChunkId.FromString("TeTextures");
         /******/public static readonly ChunkId InvisibleTexture = ChunkId.FromString("TeInvisibleTexture");
@@ -95,6 +101,7 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId RoomReverberation = ChunkId.FromString("TeReverb");
         /******/public static readonly ChunkId RoomLocked = ChunkId.FromString("TeLocked");
         /******/public static readonly ChunkId Objects = ChunkId.FromString("TeObjects");
+        /******/public static readonly ChunkId RoomTags = ChunkId.FromString("TeTags");
         /**********/public static readonly ChunkId ObjectMovable = ChunkId.FromString("TeMov");
         /**********/public static readonly ChunkId ObjectMovable2 = ChunkId.FromString("TeMov2");
         /**********/public static readonly ChunkId ObjectItemLuaId = ChunkId.FromString("TeItLuaId");
@@ -108,6 +115,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectSoundSource = ChunkId.FromString("TeSou");
         /**********/public static readonly ChunkId ObjectSoundSource2 = ChunkId.FromString("TeSou2");
         /**********/public static readonly ChunkId ObjectSoundSource3 = ChunkId.FromString("TeSou3");
+        /**********/public static readonly ChunkId ObjectSoundSource4 = ChunkId.FromString("TeSou4");
+        /**********/public static readonly ChunkId ObjectSoundSourceFinal = ChunkId.FromString("TeSndSrc");
         /**********/public static readonly ChunkId ObjectImportedGeometry = ChunkId.FromString("TeImp");
         /**********/public static readonly ChunkId ObjectImportedGeometry2 = ChunkId.FromString("TeImp2");
         /**********/public static readonly ChunkId ObjectImportedGeometry3 = ChunkId.FromString("TeImp3");
@@ -126,6 +135,9 @@ namespace TombLib.LevelData.IO
         /************/public static readonly ChunkId ObjectTrigger2CodeBits = ChunkId.FromString("TeCo");
         /************/public static readonly ChunkId ObjectTrigger2OneShot = ChunkId.FromString("TeOS");
         /************/public static readonly ChunkId ObjectTrigger2LuaScript = ChunkId.FromString("TeTrLua");
+        /****/public static readonly ChunkId AutoMergeStaticMeshes = ChunkId.FromString("TeMergeStatics");
+        /****/public static readonly ChunkId AutoMergeStaticMeshEntry = ChunkId.FromString("TeMergeStaticsEntry");
+        /****/public static readonly ChunkId AutoMergeStaticMeshEntryShades = ChunkId.FromString("TeMergeStaticsEntryShades");
         public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
     }
 }

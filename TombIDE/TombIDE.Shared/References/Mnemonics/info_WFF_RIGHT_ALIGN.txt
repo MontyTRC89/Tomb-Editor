@@ -1,0 +1,2 @@
+Used in WindowsFont= command.
+The text will be aligned on right margin of text frame.

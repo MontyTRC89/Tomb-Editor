@@ -5,23 +5,15 @@ namespace TombLib.Wad
 {
     public class WadAnimCommand : ICloneable
     {
-        public class WadAnimCommandSoundXml
-        {
-            public WadSoundInfo SoundInfo { get; set; }
-        }
-
         public WadAnimCommandType Type { get; set; }
         public short Parameter1 { get; set; }
         public short Parameter2 { get; set; }
         public short Parameter3 { get; set; }
 
-        [XmlElement("SoundInfoName")]
-        public string XmlSerializer_SoundInfoName { get; set; }
-        [XmlElement("Sound")]
-        public string XmlSerializer_Sound { get; set; }
+        public bool FrameBased => Type >= WadAnimCommandType.PlaySound;
 
-        [XmlIgnore]
-        public WadSoundInfo SoundInfo { get; set; }
+        // Only for old Wad2 importing
+        public WadSoundInfo SoundInfoObsolete { get; set; }
 
         public override string ToString()
         {
@@ -36,14 +28,21 @@ namespace TombLib.Wad
                 case WadAnimCommandType.SetPosition:
                     return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
                 case WadAnimCommandType.PlaySound:
-                    if ((Parameter1 & 0x8000) != 0)
-                        return "Play Sound ID = " + (SoundInfo != null ? "\"" + SoundInfo.Name + "\"" : (Parameter2 & 0x3FFF).ToString()) + " (water) on Frame = " + Parameter1;
-                    else if ((Parameter1 & 0x8000) != 0)
-                        return "Play Sound ID = " + (SoundInfo != null ? "\"" + SoundInfo.Name + "\"" : (Parameter2 & 0x3FFF).ToString()) + " (land) on Frame = " + Parameter1;
+                    int soundId = Parameter2 & 0x3FFF;
+                    if ((Parameter2 & 0x8000) != 0)
+                        return "Play Sound ID = " + soundId + " (water) on Frame = " + Parameter1;
+                    else if ((Parameter2 & 0x4000) != 0)
+                        return "Play Sound ID = " + soundId + " (land) on Frame = " + Parameter1;
                     else
-                        return "Play Sound ID = " + (SoundInfo != null ? "\"" + SoundInfo.Name + "\"" : (Parameter2 & 0x3FFF).ToString()) + " on Frame = " + Parameter1;
+                        return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
                 case WadAnimCommandType.FlipEffect:
-                    return "Play FlipEffect ID = " + Parameter2 + " on Frame = " + Parameter1;
+                    int flipeffectId = Parameter2 & 0x3FFF;
+                    if ((Parameter2 & 0x8000) != 0)
+                        return "Play FlipEffect ID = " + flipeffectId + " (right foot) on Frame = " + Parameter1;
+                    else if ((Parameter2 & 0x4000) != 0)
+                        return "Play FlipEffect ID = " + flipeffectId + " (left foot) on Frame = " + Parameter1;
+                    else
+                        return "Play FlipEffect ID = " + flipeffectId + " on Frame = " + Parameter1;
             }
 
             return "";

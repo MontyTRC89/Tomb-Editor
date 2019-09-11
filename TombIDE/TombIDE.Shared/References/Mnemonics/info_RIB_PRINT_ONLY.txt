@@ -1,0 +1,5 @@
+Used with Parameters=PARAM_INPUT_BOX
+With this flag, it happens that the input box will draw on the screen the "Last Input Text" typed text, (and the further BigText) without allowing to the user the chance to type text. In this way the input box works like a common overlapped image with some printed text.
+Only one advantage, using Input box in this way, is to have already all settings, about position, color and font, to print the text in right position of previous inserted text.
+You should use this flag only with a distinct Paramaters=PARAM_INPUT_BOX command, used only to display error messages.
+Indeed, the input box with this flag doesn't allow any kind of text input but only to give the Escape command to quit the input box.

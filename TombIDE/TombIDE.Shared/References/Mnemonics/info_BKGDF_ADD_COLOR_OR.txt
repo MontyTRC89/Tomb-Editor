@@ -1,0 +1,8 @@
+Used into Customize=CUST_BACKGROUND command
+This flag perform an OR operation between the game scene colors and the color whom you set the ColorRGB ID in Parameter field.
+The Or operation returns a lighter image with a preponderance of the color you linked with it.
+With BKGDF_ADD_COLOR_OR flag, it's better set colors with perfect power by 2, like 128, 64, 32 or 16
+For example to have the game scene changed with a dominant red color you could use the color:
+ColorRGB= ID, 128, 0, 0
+
+Note: This flag works only togheter with BKGDT_INVENTORY type + BKGDF_KEEP_GAME_SCREEN flag since it performs a change on original game scene.

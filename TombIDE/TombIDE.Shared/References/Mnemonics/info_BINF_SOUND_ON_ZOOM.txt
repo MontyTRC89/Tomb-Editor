@@ -1,0 +1,3 @@
+Used into Customize=CUST_BINOCULARS command
+If you wish having a sound while the player is zooming in or out, you can add the BINF_SOUND_ON_ZOOM flag to the flags.
+By default will be played the SFX 309 (MAPPER_MOVE), anyway you can modify this sound using the Customize=CUST_SFX with the TS_BINOCULAR_ZOOM constant

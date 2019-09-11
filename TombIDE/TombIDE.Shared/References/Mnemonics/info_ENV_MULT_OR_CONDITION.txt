@@ -1,0 +1,2 @@
+Works like ENV_MULT_CONDITION but the final condition will be true if just a single condition of MultEnvCondition command is true.
+See description of ENV_MULT_CONDITION for more infos.

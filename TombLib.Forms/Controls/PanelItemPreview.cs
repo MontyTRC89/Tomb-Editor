@@ -1,5 +1,4 @@
-﻿using DarkUI.Controls;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,18 +20,6 @@ namespace TombLib.Controls
             set
             {
                 _currentObject = value;
-                if (value is WadFixedSoundInfo)
-                {
-                    _soundInfoEditor.SoundInfo = ((WadFixedSoundInfo)value).SoundInfo;
-                    _soundInfoEditor.Visible = true;
-                }
-                else if (value is WadAdditionalSoundInfo)
-                {
-                    _soundInfoEditor.SoundInfo = ((WadAdditionalSoundInfo)value).SoundInfo;
-                    _soundInfoEditor.Visible = true;
-                }
-                else
-                    _soundInfoEditor.Visible = false;
                 Invalidate();
             }
         }
@@ -47,7 +34,6 @@ namespace TombLib.Controls
         // Interaction state
         private float _lastX;
         private float _lastY;
-        private SoundInfoEditor _soundInfoEditor;
         private IWadObject _currentObject = null;
 
         // Rendering state
@@ -59,31 +45,6 @@ namespace TombLib.Controls
 
         public PanelItemPreview()
         {
-            // Init fixed sound info editor
-            _soundInfoEditor = new SoundInfoEditor();
-            _soundInfoEditor.Name = "_soundInfoEditor";
-            _soundInfoEditor.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-            Rectangle clientRectangle = ClientRectangle;
-            clientRectangle.Inflate(new Size(-5, -5));
-            _soundInfoEditor.Bounds = clientRectangle;
-            _soundInfoEditor.Visible = false;
-            _soundInfoEditor.ReadOnly = ReadOnly;
-            _soundInfoEditor.SoundInfoChanged += delegate
-            {
-                if (ReadOnly)
-                    return;
-                if (CurrentObject is WadFixedSoundInfo)
-                {
-                    WadFixedSoundInfo fixedSoundInfo = (WadFixedSoundInfo)CurrentObject;
-                    fixedSoundInfo.SoundInfo = _soundInfoEditor.SoundInfo;
-                }
-                if (CurrentObject is WadAdditionalSoundInfo)
-                {
-                    WadAdditionalSoundInfo additionalSoundInfo = (WadAdditionalSoundInfo)CurrentObject;
-                    additionalSoundInfo.SoundInfo = _soundInfoEditor.SoundInfo;
-                }
-            };
-            Controls.Add(_soundInfoEditor);
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -92,7 +53,6 @@ namespace TombLib.Controls
 
             Rectangle clientRectangle = ClientRectangle;
             clientRectangle.Inflate(new Size(-5, -5));
-            _soundInfoEditor.Bounds = clientRectangle;
         }
 
         public override void InitializeRendering(RenderingDevice device, bool antialias = false)
@@ -138,23 +98,13 @@ namespace TombLib.Controls
             {
                 _wadRenderer?.Dispose();
                 _textureAllocator?.Dispose();
-                _soundInfoEditor?.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            if (_soundInfoEditor.Visible)
-                using (var brush = new SolidBrush(_soundInfoEditor.BackColor))
-                    e.Graphics.FillRectangle(brush, ClientRectangle);
-            else
-                base.OnPaintBackground(e);
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_soundInfoEditor.Visible || _legacyDevice == null)
+            if (_legacyDevice == null)
                 return;
             base.OnPaint(e);
         }

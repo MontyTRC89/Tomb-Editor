@@ -4,90 +4,107 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
     public partial class FormAnimCommandsEditor : DarkForm
     {
         private readonly WadToolClass _tool;
-        public IEnumerable<WadAnimCommand> AnimCommands => treeCommands.Nodes.Select(node => node.Tag).OfType<WadAnimCommand>();
+        public IEnumerable<WadAnimCommand> AnimCommands => lstCommands.Items.Select(item => item.Tag).OfType<WadAnimCommand>();
         private bool _currentlyDoingCommandSelection = false;
-        private List<WadSoundInfo> _sounds;
+        private List<int> _sounds;
 
-        private WadAnimCommand _selectedCommand => treeCommands.SelectedNodes.FirstOrDefault()?.Tag as WadAnimCommand;
+        private WadAnimCommand _selectedCommand => lstCommands.Items.Count == 0 || lstCommands.SelectedIndices.Count == 0 ? null : lstCommands.Items[lstCommands.SelectedIndices[0]]?.Tag as WadAnimCommand;
 
-        public FormAnimCommandsEditor(WadToolClass tool, List<WadAnimCommand> animCommands)
+        public FormAnimCommandsEditor(WadToolClass tool, List<WadAnimCommand> animCommands, WadAnimCommand startupCommand = null)
         {
             InitializeComponent();
             _tool = tool;
 
-            // Setup panels for form
-            foreach (Panel panel in new[] { panelPosition, panelJumpDistance, panelSound, panelEffect })
-                panel.SetBounds(panelPosition.Left, panelPosition.Top, panel.Width, panelSound.Bottom - panelPosition.Top);
+            ReloadSounds();
 
             foreach (var cmd in animCommands)
-                treeCommands.Nodes.Add(new DarkTreeNode(cmd.ToString()) { Tag = cmd.Clone() });
+                lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd.Clone() });
+
+            if (startupCommand != null)
+            {
+                if (!animCommands.Contains(startupCommand))
+                    lstCommands.Items.Add(new DarkListItem(startupCommand.ToString()) { Tag = startupCommand.Clone() });
+                SelectCommand(startupCommand);
+            }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            if (lstCommands.SelectedIndices.Count > 0)
+                lstCommands.EnsureVisible();
         }
 
         private void SelectCommand(WadAnimCommand cmd, bool selectInTree = true)
         {
             if (_currentlyDoingCommandSelection)
                 return;
+
+            if (cmd == null)
+            {
+                comboCommandType.Enabled = false;
+                commandControls.Visible = false;
+                return;
+            }
+            else
+            {
+                comboCommandType.Enabled = true;
+                commandControls.Visible = true;
+            }
+
             try
             {
                 _currentlyDoingCommandSelection = true;
+
                 if (selectInTree)
-                    treeCommands.SelectNode(treeCommands.Nodes.FirstOrDefault(node => node.Tag == cmd));
+                {
+                    for (int i = 0; i < lstCommands.Items.Count; i++)
+                        if (lstCommands.Items[i].Text == cmd.ToString()) lstCommands.SelectItem(i);
+                    lstCommands.EnsureVisible();
+                }
+
+                comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
 
                 switch (cmd.Type)
                 {
                     case WadAnimCommandType.SetPosition:
-                        comboCommandType.Enabled = true;
-                        panelEffect.Visible = false;
-                        panelJumpDistance.Visible = false;
-                        panelPosition.Visible = true;
-                        panelSound.Visible = false;
+                        commandControls.Visible = true;
+                        commandControls.SelectedTab = tabSetPosition;
 
-                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbPosX.Value = cmd.Parameter1;
                         tbPosY.Value = cmd.Parameter2;
                         tbPosZ.Value = cmd.Parameter3;
                         break;
 
                     case WadAnimCommandType.SetJumpDistance:
-                        comboCommandType.Enabled = true;
-                        panelEffect.Visible = false;
-                        panelJumpDistance.Visible = true;
-                        panelPosition.Visible = false;
-                        panelSound.Visible = false;
+                        commandControls.Visible = true;
+                        commandControls.SelectedTab = tabSetJumpDistance;
 
-                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbHorizontal.Value = cmd.Parameter1;
                         tbVertical.Value = cmd.Parameter2;
                         break;
 
                     case WadAnimCommandType.EmptyHands:
                     case WadAnimCommandType.KillEntity:
-                        comboCommandType.Enabled = true;
-                        panelEffect.Visible = false;
-                        panelJumpDistance.Visible = false;
-                        panelPosition.Visible = false;
-                        panelSound.Visible = false;
-
-                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                        commandControls.Visible = false;
                         break;
 
                     case WadAnimCommandType.PlaySound:
-                        comboCommandType.Enabled = true;
-                        panelEffect.Visible = false;
-                        panelJumpDistance.Visible = false;
-                        panelPosition.Visible = false;
-                        panelSound.Visible = true;
+                        commandControls.Visible = true;
+                        commandControls.SelectedTab = tabPlaySound;
 
-                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbPlaySoundFrame.Value = cmd.Parameter1;
-                        soundInfoEditor.SoundInfo = cmd.SoundInfo;
+                        comboSound.SelectedIndex = _sounds.IndexOf(cmd.Parameter2 & 0x3FFF);
+
                         switch (cmd.Parameter2 & 0xC000)
                         {
                             default:
@@ -101,24 +118,26 @@ namespace WadTool
                                 break;
                         }
                         break;
+
                     case WadAnimCommandType.FlipEffect:
-                        comboCommandType.Enabled = true;
-                        panelEffect.Visible = true;
-                        panelJumpDistance.Visible = false;
-                        panelPosition.Visible = false;
-                        panelSound.Visible = false;
+                        commandControls.Visible = true;
+                        commandControls.SelectedTab = tabFlipeffect;
 
-                        comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
                         tbFlipEffectFrame.Value = cmd.Parameter1;
-                        tbFlipEffect.Value = cmd.Parameter2;
-                        break;
+                        tbFlipEffect.Value = cmd.Parameter2 & 0x3FFF;
 
-                    default:
-                        //comboCommandType.Enabled = false;
-                        panelEffect.Visible = false;
-                        panelJumpDistance.Visible = false;
-                        panelPosition.Visible = false;
-                        panelSound.Visible = false;
+                        switch (cmd.Parameter2 & 0xC000)
+                        {
+                            default:
+                                comboFlipeffectConditions.SelectedIndex = 0;
+                                break;
+                            case 0x4000:
+                                comboFlipeffectConditions.SelectedIndex = 1;
+                                break;
+                            case 0x8000:
+                                comboFlipeffectConditions.SelectedIndex = 2;
+                                break;
+                        }
                         break;
                 }
             }
@@ -128,19 +147,59 @@ namespace WadTool
             }
         }
 
-        private void butAddEffect_Click(object sender, EventArgs e)
+        private void DeleteCommand()
         {
-            var newCmd = new WadAnimCommand();
-            treeCommands.Nodes.Add(new DarkTreeNode(newCmd.ToString()) { Tag = newCmd });
-            SelectCommand(newCmd);
+            if (lstCommands.SelectedIndices.Count == 0)
+                return;
+
+            for (int i = lstCommands.Items.Count - 1; i >= 0; i--)
+                if (lstCommands.SelectedIndices.Contains(i))
+                    lstCommands.Items.RemoveAt(i);
+
+            SelectCommand(lstCommands.Items.FirstOrDefault()?.Tag as WadAnimCommand);
         }
 
-        private void butDeleteEffect_Click(object sender, EventArgs e)
+        private void MoveCommand(bool down)
         {
-            if (treeCommands.SelectedNodes.Count == 0)
+            if (lstCommands.Items.Count <= 1)
                 return;
-            treeCommands.Nodes.Remove(treeCommands.SelectedNodes[0]);
-            SelectCommand(treeCommands.Nodes.FirstOrDefault()?.Tag as WadAnimCommand);
+
+            int index = lstCommands.SelectedIndices[0];
+            int newIndex = down ? index + 1 : index - 1;
+            var item = lstCommands.Items[index];
+
+            if (down && index >= lstCommands.Items.Count - 1) return;
+            if (!down && index <= 0) return;
+
+            lstCommands.Items.RemoveAt(index);
+            lstCommands.Items.Insert((newIndex), item);
+            lstCommands.SelectItem(newIndex);
+            lstCommands.EnsureVisible();
+        }
+
+        private void ReloadSounds()
+        {
+            _sounds = new List<int>();
+            comboSound.Items.Clear();
+            foreach (var sound in TrCatalog.GetAllSounds(_tool.DestinationWad.SuggestedGameVersion))
+            {
+                _sounds.Add((int)sound.Key);
+                comboSound.Items.Add(sound.Key.ToString().PadLeft(4, '0') + ": " + sound.Value);
+            }
+            comboSound.SelectedIndex = 0;
+        }
+
+        public void UpdateSelectedItemText() => lstCommands.Items[lstCommands.SelectedIndices[0]].Text = lstCommands.Items[lstCommands.SelectedIndices[0]].Tag.ToString();
+
+        private void butCommandUp_Click(object sender, EventArgs e) => MoveCommand(false);
+        private void butCommandDown_Click(object sender, EventArgs e) => MoveCommand(true);
+        private void butDeleteEffect_Click(object sender, EventArgs e) => DeleteCommand();
+
+        private void butAddEffect_Click(object sender, EventArgs e)
+        {
+            var newCmd = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
+            lstCommands.Items.Add(new DarkListItem(newCmd.ToString()) { Tag = newCmd });
+            SelectCommand(newCmd);
         }
 
         private void btOk_Click(object sender, EventArgs e)
@@ -155,126 +214,141 @@ namespace WadTool
             Close();
         }
 
-        private void treeCommands_SelectedNodesChanged(object sender, EventArgs e)
+        private void lstCommands_SelectedIndicesChanged(object sender, EventArgs e)
         {
             if (_selectedCommand == null)
                 return;
-                SelectCommand(_selectedCommand, false);
+            SelectCommand(_selectedCommand, false);
         }
 
         private void comboCommandType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ReloadSounds();
-
             if (_selectedCommand == null || _currentlyDoingCommandSelection)
                 return;
 
             WadAnimCommandType newType = (WadAnimCommandType)(comboCommandType.SelectedIndex + 1);
             _selectedCommand.Type = newType;
 
-            // Add a new sound info if needed
-            if (_selectedCommand.Type == WadAnimCommandType.PlaySound)
-            {
-                if (_selectedCommand.SoundInfo == null)
-                    _selectedCommand.SoundInfo = new WadSoundInfo();
-            }
-
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            lstCommands.Items[lstCommands.SelectedIndices[0]].Text = lstCommands.Items[lstCommands.SelectedIndices[0]].Tag.ToString();
             SelectCommand(_selectedCommand, false);
         }
 
         private void tbPosX_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.SetPosition)
                 return;
             _selectedCommand.Parameter1 = (short)tbPosX.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void tbPosY_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.SetPosition)
                 return;
             _selectedCommand.Parameter2 = (short)tbPosY.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void tbPosZ_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.SetPosition)
                 return;
             _selectedCommand.Parameter3 = (short)tbPosZ.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void tbHorizontal_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.SetJumpDistance)
                 return;
             _selectedCommand.Parameter1 = (short)tbHorizontal.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void tbVertical_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.SetJumpDistance)
                 return;
             _selectedCommand.Parameter2 = (short)tbVertical.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void tbFlipEffectFrame_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.FlipEffect)
                 return;
             _selectedCommand.Parameter1 = (short)tbFlipEffectFrame.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void tbFlipEffect_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.FlipEffect)
                 return;
-            _selectedCommand.Parameter2 = (short)tbFlipEffect.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+
+            _selectedCommand.Parameter2 &= unchecked((short)~0x3FFF);
+            _selectedCommand.Parameter2 |= (short)tbFlipEffect.Value;
+            UpdateSelectedItemText();
         }
 
         private void tbPlaySoundFrame_ValueChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.PlaySound)
                 return;
             _selectedCommand.Parameter1 = (short)tbPlaySoundFrame.Value;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
         private void comboPlaySoundConditions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.PlaySound)
                 return;
             _selectedCommand.Parameter2 &= unchecked((short)~0xC000);
             _selectedCommand.Parameter2 |= (short)(comboPlaySoundConditions.SelectedIndex << 14);
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+            UpdateSelectedItemText();
         }
 
-        private void soundInfoEditor_SoundInfoChanged(object sender, EventArgs e)
+        private void comboSound_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_selectedCommand == null)
+            if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.PlaySound)
                 return;
-            _selectedCommand.SoundInfo = soundInfoEditor.SoundInfo;
-            treeCommands.SelectedNodes.First().Text = treeCommands.SelectedNodes.First().Tag.ToString();
+
+            _selectedCommand.Parameter2 &= unchecked((short)~0x3FFF);
+            _selectedCommand.Parameter2 |= (short)(_sounds[comboSound.SelectedIndex]);
+            UpdateSelectedItemText();
         }
 
-        private void ReloadSounds()
+        private void FormAnimCommandsEditor_KeyDown(object sender, KeyEventArgs e)
         {
-            _sounds = new List<WadSoundInfo>();
-            comboSound.Items.Clear();
-            comboSound.Items.Add("(Select a sound info)");
-            foreach (var sound in _tool.DestinationWad.SoundInfosUnique)
-            {
-                _sounds.Add(sound);
-                comboSound.Items.Add(sound.Name);
-            }
-            comboSound.SelectedIndex = 0;
+            if (e.KeyCode == Keys.Delete)
+                DeleteCommand();
+        }
+
+        private void comboFlipeffectConditions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _selectedCommand.Parameter2 &= unchecked((short)~0xC000);
+            _selectedCommand.Parameter2 |= (short)(comboFlipeffectConditions.SelectedIndex << 14);
+            UpdateSelectedItemText();
+        }
+
+        private void butSearchSounds_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(comboSound);
+            searchPopUp.Show(this);
+        }
+
+        private void butPlaySound_Click(object sender, EventArgs e)
+        {
+            var soundInfo = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == comboSound.SelectedIndex);
+            if (soundInfo != null)
+                try
+                {
+                    WadSoundPlayer.PlaySoundInfo(_tool.ReferenceLevel, soundInfo, false);
+                }
+                catch (Exception exc)
+                {
+                    // FIXME: do something!
+                }
         }
     }
 }

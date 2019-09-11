@@ -1,0 +1,50 @@
+Used in Customize= command.
+Syntax: Customize=CUST_RAIN, FlagsForRain (FR_...), DropSize, SprinklerAmount, MaxRain, MinRain, Float1, Float4, Float8, Float16, Extra
+
+This command it's not necessary to do work the rain. You can also omit this command.
+You could use CUST_RAIN only when you set RAIN_ALL_OUTSIDE in the Rain= command, and you omit to type [Rain] intensity in rooms of your level. In this situation you can use the CUST_RAIN customize to set the features of the rain for your level.
+Remember that if you use CUST_RAIN and keep different settings for rain in different rooms (RAIN_SINGLE_ROOMS mode, with intensities 1/4 closed to [Rain] button) these differences will be very little or absent because the cust_rain overrides almost fully the individual settings for room.
+
+FlagsForRain (FR_...) field
+---------------------------
+In this field you can type on more flags FR_...
+You can type IGNORE in this field to omit FR_ flags.
+
+DropSize field
+--------------
+This value is the width of water drop. Each drop is like a triangle where the base is the DropSize value.
+You can type IGNORE in this field to preserve the default value 2.
+
+SprinklerAmount field
+------------------
+This field should be the number of Sprinkler for each drop when it touches the ground.
+You can type IGNORE in this field to preserve the default value 1.
+Remark: if you increase too much this value you could create troubles with ohter particle resoruces like smoke and flames.
+
+MaxRain and MinRain fields
+--------------------------
+I'm not sure about the meaning of these two fields, but I suppose they are a range to set the density of rains, i.e. the number of drops (MinRain) in a given space (MaxRain).
+When you decrease the MaxRain, the space covered by rain in front of lara will be reduced, while when you increase the MinRain the number of single drops will be increased.
+Anyway remember that if you try to get in same moment a wide space covered by the rain and a more deep rain you could get bad results. You should balance these two values: when you increase one, you have to decrease the other and vice-versa.
+You can type IGNORE in these fields to preserve the default values: MaxRain = $800, MinRain=$80
+
+Float1 field
+------------
+Unknown
+
+Float4 field
+------------
+Unknown
+
+Float8 field
+------------
+Unknown
+
+Float16 field
+-------------
+Unknown
+
+Extra field
+-----------
+You can set in this field some extra value required by some FR_ flags.
+See the description of FR_ constnats to discover how using the Extra field.

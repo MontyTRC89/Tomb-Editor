@@ -14,6 +14,9 @@ namespace TombLib.Graphics
 
         public static Texture2D Load(GraphicsDevice graphicsDevice, ImageC image, ResourceUsage usage = ResourceUsage.Immutable)
         {
+            if (graphicsDevice == null)
+                return null;
+
             Texture2D result = null;
             image.GetIntPtr((IntPtr data) =>
                 {

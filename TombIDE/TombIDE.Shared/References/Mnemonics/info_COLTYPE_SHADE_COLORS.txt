@@ -1,0 +1,2 @@
+Used in Parameters=PARAM_COLOR_ITEM. The shade colors shade from first color (Index1ColorRGB) to second color (Index2ColorRGB) and vice versa.
+You can set the speed of shading typing a value in SpeedChange field.

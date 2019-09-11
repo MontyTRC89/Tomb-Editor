@@ -1,0 +1,2 @@
+used for enemy command
+Using this flag the enemy will become like a semigod and it will be not possible kill him.

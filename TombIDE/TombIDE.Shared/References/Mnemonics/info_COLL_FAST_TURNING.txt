@@ -1,0 +1,5 @@
+Used with Customize=CUST_SET_STILL_COLLISION command.
+When there are still collision enabled, and Lara touches an item with an acute angle, she will be not  stopped but only turned to continue her race in correct direction to avoid the obstacle.
+Using the COLL_FAST_TURNING flag you can increase the rotation speed in above situation.
+
+Remark: the fast turning could be suggested when you place static items with an intermediate facing (non-hortogonal facing) with 45 degrees respect room's walls.

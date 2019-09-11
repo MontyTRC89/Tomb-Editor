@@ -1,0 +1,3 @@
+Used with Parameters=PARAM_WTEXT script command
+Set that, this text, will be showed over futher inventory and pause screen.
+If you omit this flag, when the inventory pops up, the text will be removed and then it will be showed newly when the inventory screen quits.

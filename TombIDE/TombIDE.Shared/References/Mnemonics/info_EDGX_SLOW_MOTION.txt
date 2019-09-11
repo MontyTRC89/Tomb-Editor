@@ -1,0 +1,8 @@
+Used in DiagnosticType script command.
+You can use this flag with any combination of DGX_ diagnostic type.
+When you enable the slow motion you can slow down the frame rate in game using the F11 key like switch.
+Press F11 first time to enable the slow-motion.
+If you wish have an extreme slow motion just press different time the F11 key.
+To disable the slow-motion you have to hit ESCape key.
+
+The slow motion is useful when you are studying some custom animation or other dynamic movements and you wish have all details about this action.

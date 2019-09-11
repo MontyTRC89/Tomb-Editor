@@ -89,6 +89,12 @@ namespace TombEditor.ToolWindows
                     panelStaticMeshColor.Visible = false;
                 }
             }
+            if (obj is Editor.ObjectChangedEvent)
+            {
+                var instance = ((Editor.ObjectChangedEvent)obj).Object;
+                if (instance == _editor.SelectedObject && instance is StaticInstance)
+                    panelStaticMeshColor.BackColor = (((StaticInstance)instance).Color * 0.5f).ToWinFormsColor();
+            }
 
             // Update tooltip texts
             if(obj is Editor.ConfigurationChangedEvent)
@@ -112,7 +118,6 @@ namespace TombEditor.ToolWindows
 
             using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
             {
-                panelStaticMeshColor.BackColor = c;
                 instance.Color = c.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }, _editor.Configuration.UI_ColorScheme))
@@ -123,7 +128,6 @@ namespace TombEditor.ToolWindows
                 if (colorDialog.ShowDialog(this) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
 
-                panelStaticMeshColor.BackColor = colorDialog.Color;
                 instance.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }

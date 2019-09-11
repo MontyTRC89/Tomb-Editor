@@ -1,0 +1,55 @@
+Used to store all informations used to print text.
+
+Syntax: Parameters=PARAM_PRINT_TEXT, IdPrintText, Color (CL_...), FontType (FT_...), BlinkTime, DurateTime, X_Position, Y_Position
+
+This parameter list will be required by new flipeffect trigger "Text. Print formatted ... string"
+
+IdPrintText field
+-----------------
+This is the number you have to choose in Set Trigger Window with "print formatted text" trigger.
+
+Color (CL_...) field
+--------------------
+The color of this text.
+See the values CL_... in Reference panel.
+
+FontType (FT_...) field
+-----------------------
+In this field you can set two or more FT_... constants to describe the size or the preassigned position for text.
+Remark: if you wish you can omit the FT_ value to set position and instead you can set the position in pixel coordinates typing two valid values in fields: X_Position and Y_Position. See description of these fields.
+
+BlinkTime field
+---------------
+Numeric value to signal interval for blinking when you set also flag FT_BLINK_CHARS in FontType field
+Note: for blink time you can use only power by 2 values, like: 1, 2, 4, 8, 16, 32, 64, 128
+
+DurateTime field
+----------------
+Number of seconds to show the text on screen.
+If you want set as time "forever" type -1 or IGNORE in this field.
+Remarks:
+(1) If you set forever (IGNORE) for durate, then you can remove the string from screen using flipeffect "Text. Print. Remove (&)Extra NG String from screen"
+(2) If you use this parameter data for vertical or horizontal scrolling text, the value you type in DurateTime field will be interpreted by trng as the speed value used for scrolling text.
+The values for scrolling speed are the following:
+
+0: Abs. Normal Speed  (30 fps)
+1: Abs. Slow Speed (15 fps)
+2: Abs. Very Slow Speed (10 fps)
+3: Abs. Fast Speed (60 fps)
+4: Abs. Very Fast Speed (90 fps)
+5: Prop. Normal Speed  (30 fps)
+6: Prop. Slow Speed (15 fps)
+7: Prop. Very Slow Speed (10 fps)
+8: Prop. Fast Speed (60 fps)
+9: Prop. Very Fast Speed (90 fps)
+
+If you set IGNORE in this field (used by scrolling text) the default value used will be 0 i.e.
+"Abs. Normal Speed  (30 fps)"
+
+X_Position and Y_Position fields
+--------------------------------
+If you set two valid values in these two fields the further FT_ value to set the position will be ignored.
+Differently, if you want use some FT_ prefixed position you should type in X_Position and Y_Position fields the values IGNORE for both.
+The values you type in these fields are in pixels, anyway, since you cann't to known in advance what it will be the resolution in game (each player could set a different resolution) you should set your coordinates like if screen was always in 1024x768 pixels resolution, then, if the game will have a different resolution the TRNG engine will change the position proportionally in according with the real resolution.
+For example if you set Y_Position the value 384 (i.e. 768 / 2) the text will be showd in vertical half position of screen in each screen resolution thanks to trng adapting.
+Remark: The Y_Position is not the top pixel of character but the baseline character. This means that if for example you use as Y_Position the value 0 the chracter will be not visible except a little bottom side.

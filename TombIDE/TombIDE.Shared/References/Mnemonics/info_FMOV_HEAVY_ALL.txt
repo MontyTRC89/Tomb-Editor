@@ -1,0 +1,1 @@
+Enable all heavy triggers that item meets in its path. You can use this feature to create a chain of events in game.

@@ -48,12 +48,6 @@ namespace TombLib.Wad
             return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 461 && TypeId <= 462) ||
                    (gameVersion >= WadGameVersion.TR5 && TypeId >= 456 && TypeId <= 457);
         }
-
-        public bool IsAI(WadGameVersion gameVersion)
-        {
-            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 398 && TypeId <= 406) ||
-                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 378 && TypeId <= 386);
-        }
     }
 
     public class WadMoveable : IWadObject
@@ -73,17 +67,6 @@ namespace TombLib.Wad
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
         public override string ToString() => Id.ToString();
         IWadObjectId IWadObject.Id => Id;
-
-        public IEnumerable<WadSoundInfo> Sounds
-        {
-            get
-            {
-                foreach (var animation in Animations)
-                    foreach (var command in animation.AnimCommands)
-                        if (command.Type == WadAnimCommandType.PlaySound)
-                            yield return command.SoundInfo;
-            }
-        }
 
         public WadMoveable Clone()
         {

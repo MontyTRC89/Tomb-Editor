@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationEditor.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
@@ -133,12 +134,6 @@
     </Compile>
     <Compile Include="FormAnimationEditor.Designer.cs">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSoundInfoEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSoundInfoEditor.Designer.cs">
-      <DependentUpon>FormSoundInfoEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -169,12 +164,6 @@
     </Compile>
     <Compile Include="FormSkeletonEditor.Designer.cs">
       <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSoundOverview.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSoundOverview.Designer.cs">
-      <DependentUpon>FormSoundOverview.cs</DependentUpon>
     </Compile>
     <Compile Include="FormSpriteSequenceEditor.cs">
       <SubType>Form</SubType>
@@ -217,14 +206,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Undo.cs" />
     <Compile Include="WadActions.cs" />
     <Compile Include="WadMeshBoneNode.cs" />
     <Compile Include="WadToolClass.cs" />
     <EmbeddedResource Include="FormAnimationEditor.resx">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSoundInfoEditor.resx">
-      <DependentUpon>FormSoundInfoEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
@@ -240,9 +227,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSkeletonEditor.resx">
       <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSoundOverview.resx">
-      <DependentUpon>FormSoundOverview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSpriteSequenceEditor.resx">
       <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
@@ -389,6 +373,126 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_ArrowDown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_ArrowUp-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_refresh-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-play-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-stop-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-mute-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-sound-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame-back-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame-forward-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-skip-to-end-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-skip-to-start-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-animcommands-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-markout-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-markin-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-audio-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-mute-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_back-button-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_forward-button-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-play-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-start-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-stop-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-end-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_back-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-frame_forward-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_filter-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Save-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_interpolate-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-on_land-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-on_water-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_plus_math-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_delete-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_delete-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_search-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_actions\actions_play-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_create_new-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_Open-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_transport\transport-on_nothing-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_redo-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_undo_irreversible-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_undo-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

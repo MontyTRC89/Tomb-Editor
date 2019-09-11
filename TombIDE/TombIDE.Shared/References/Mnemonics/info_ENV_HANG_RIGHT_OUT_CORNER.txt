@@ -1,0 +1,1 @@
+Same mean of ENV_HANG_RIGHT_IN_CORNER but for outside corners. See description of ENV_HANG_LEFT_IN_CORNER costant

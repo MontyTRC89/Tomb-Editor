@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using DarkUI.Win32;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -52,7 +53,10 @@ namespace WadTool
 
                 // Run
                 TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
+
+                Application.AddMessageFilter(new ControlScrollFilter());
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+
                 using (WadToolClass tool = new WadToolClass(configuration))
                 using (FormMain form = new FormMain(tool))
                 {

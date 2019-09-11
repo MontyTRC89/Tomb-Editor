@@ -1,0 +1,6 @@
+Used in TriggerGroup= command.
+This constant should be used as second value of three values, where the first was TGROUP_COMMAND.
+It changes the following (real) trigger, of current TriggerGroup, replacing the Timer value with that taken from trng variable set in next value (third value of curren command trigger).
+
+Range: 0/255
+Scope: Used only with Flipeffects, it is the "Timer (Parameter (&)) parameter.

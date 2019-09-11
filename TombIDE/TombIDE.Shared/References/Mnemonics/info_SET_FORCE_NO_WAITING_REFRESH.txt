@@ -1,0 +1,6 @@
+Used in Settings= command.
+This setting, togheter with SET_FORCE_SOFT_FULL_SCREEN setting, borns to change the setting of tomb raider game to solve some problem with FMV playing or about flickering with images.
+The speech about the opportunity to use this setting is the same done in the SET_FORCE_SOFT_FULL_SCREEN description: since the player is able to set or less this option byself, using the tomb raider setup window, it's better do not use this setting in the script to let the player free to enable or less it in according with the performance of
+
+Technically this setting disables the waiting setting in the flip directx method.
+Some experiment demostrates that this disabling is able to remove flickering of images from exclusive full screen resolution.

@@ -1,0 +1,2 @@
+This flag works only in Pointer mode.
+By default the pointer points exactly to target, anyway if you want you can add a swinging simulation of pointer like the compass in inventory to get more realistic detector.

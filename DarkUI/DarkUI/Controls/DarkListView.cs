@@ -282,6 +282,9 @@ namespace DarkUI.Controls
             Invalidate();
         }
 
+        public DarkListItem SelectedItem => (SelectedIndices.Count == 0 || SelectedIndices[0] >= Items.Count) ? null : Items[SelectedIndices[0]];
+        public List<DarkListItem> SelectedItems => Items.Where(item => SelectedIndices.Any(index => Items.IndexOf(item) == index)).ToList();
+
         public void ToggleItem(int index)
         {
             if (_selectedIndices.Contains(index))
@@ -533,12 +536,6 @@ namespace DarkUI.Controls
                         g.DrawString(Items[i].Text, modFont, b, modRect, stringFormat);
                     }
                 }
-            }
-
-            // Border
-            using (var p = new Pen(Colors.LightBorder))
-            {
-                g.DrawRectangle(p, new Rectangle(new Point(), ClientSize - new Size(1, 1)));
             }
         }
 

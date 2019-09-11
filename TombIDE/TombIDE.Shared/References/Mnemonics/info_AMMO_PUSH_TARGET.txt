@@ -1,0 +1,1 @@
+When the ammo will hit the enemy, he will be pushed (moved) like if the impact of ammo had moved him. You have to type in Extra field the distance of movement. The distance units are 1024 = one sector, 256 = one click.

@@ -10,6 +10,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor
 {
@@ -628,7 +629,7 @@ namespace TombEditor
 
 
         // Undo-redo manager
-        public UndoManager UndoManager { get; private set; }
+        public EditorUndoManager UndoManager { get; private set; }
 
         public class UndoStackChangedEvent : IEditorEvent
         {
@@ -702,6 +703,7 @@ namespace TombEditor
             bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
             bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
             bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
+            bool soundsChanged = !newSettings.SoundsCatalogs.SequenceEqual(_level.Settings.SoundsCatalogs);
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
 
@@ -968,7 +970,7 @@ namespace TombEditor
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             SectorColoringManager = new SectorColoringManager(this);
-            UndoManager = new UndoManager(this, configuration.Editor_UndoDepth);
+            UndoManager = new EditorUndoManager(this, configuration.Editor_UndoDepth);
             Level = level;
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });

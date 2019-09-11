@@ -50,6 +50,13 @@ namespace WadTool
             ExpandSkeleton();
 
             panelRendering.Skeleton = _bones;
+
+            if (treeSkeleton.SelectedNodes.Count <= 0)
+            {
+                treeSkeleton.SelectNode(treeSkeleton.Nodes[0]);
+                panelRendering.SelectedNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+            }
+
             panelRendering.Invalidate();
         }
 
@@ -274,6 +281,7 @@ namespace WadTool
                     form.AddPreset(IOSettingsPresets.SettingsPresets);
                     if (form.ShowDialog(this) != DialogResult.OK)
                         return;
+
                     var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                     if (mesh == null)

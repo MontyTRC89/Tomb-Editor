@@ -1,6 +1,8 @@
-﻿using DarkUI.Docking;
+﻿using DarkUI.Controls;
+using DarkUI.Docking;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -36,7 +38,6 @@ namespace TombEditor.ToolWindows
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent)
             {
-                lstTriggers.BeginUpdate();
                 lstTriggers.Items.Clear();
 
                 if (_editor.Level != null && _editor.SelectedSectors.Valid)
@@ -52,12 +53,8 @@ namespace TombEditor.ToolWindows
 
                     // Add triggers to listbox
                     foreach (TriggerInstance trigger in triggers)
-                    {
-                        lstTriggers.Items.Add(trigger);
-                    }
+                        lstTriggers.Items.Add(new DarkListItem(trigger.ToShortString()) { Tag = trigger });
                 }
-
-                lstTriggers.EndUpdate();
             }
 
             // Update the trigger control selection
@@ -66,8 +63,12 @@ namespace TombEditor.ToolWindows
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent)
             {
-                var trigger = _editor.SelectedObject as TriggerInstance;
-                lstTriggers.SelectedItem = trigger != null && lstTriggers.Items.Contains(trigger) ? trigger : null;
+                if (_editor.SelectedObject is TriggerInstance)
+                {
+                    var trigger = _editor.SelectedObject as TriggerInstance;
+                    var entry = lstTriggers.Items.FirstOrDefault(t => t.Tag == trigger);
+                    if (entry != null) lstTriggers.SelectItem(lstTriggers.Items.IndexOf(entry));
+                }
             }
 
             // Update tooltip texts
@@ -80,12 +81,12 @@ namespace TombEditor.ToolWindows
 
         private void DeleteTriggers()
         {
-            if (_editor.SelectedRoom == null || lstTriggers.SelectedItems.Count == 0)
+            if (_editor.SelectedRoom == null || lstTriggers.SelectedIndices.Count == 0)
                 return;
 
             var triggersToRemove = new List<ObjectInstance>();
-            foreach (object obj in lstTriggers.SelectedItems)
-                triggersToRemove.Add((ObjectInstance)obj);
+            foreach (var obj in lstTriggers.SelectedIndices)
+                triggersToRemove.Add((ObjectInstance)(lstTriggers.Items[obj].Tag));
             triggersToRemove.ForEach(obj => { if (obj != null) EditorActions.DeleteObjectWithoutUpdate(obj); });
         }
 
@@ -107,22 +108,21 @@ namespace TombEditor.ToolWindows
             EditorActions.EditObject(_editor.SelectedObject, this);
         }
 
-        private void lstTriggers_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstTriggers_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom == null || lstTriggers.SelectedItem == null)
+            if (_editor.SelectedRoom == null || lstTriggers.SelectedIndices.Count == 0)
                 return;
-            _editor.SelectedObject = (ObjectInstance)lstTriggers.SelectedItem;
+            _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem.Tag);
         }
 
         private void lstTriggers_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            int index = lstTriggers.IndexFromPoint(e.Location);
-            if (index != ListBox.NoMatches)
-            {
-                var instance = lstTriggers.Items[index] as ObjectInstance;
-                if (instance != null)
-                    EditorActions.EditObject(instance, this);
-            }
+            if (lstTriggers.SelectedIndices.Count == 0)
+                return;
+
+            var instance = lstTriggers.SelectedItem.Tag as ObjectInstance;
+            if (instance != null)
+                EditorActions.EditObject(instance, this);
         }
 
         private void butAddTrigger_MouseEnter(object sender, EventArgs e)

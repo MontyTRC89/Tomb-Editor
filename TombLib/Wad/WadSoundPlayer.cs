@@ -3,11 +3,7 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.Wad
@@ -17,45 +13,61 @@ namespace TombLib.Wad
         private static Random _rng = new Random();
         private static WasapiOut _channel = null;
 
-        public static void PlaySoundInfo(WadSoundInfo soundInfo)
+        public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo, bool rewind)
         {
-            if (soundInfo.Data.Samples.Count == 0)
+            if (_channel != null && _channel.PlaybackState == PlaybackState.Playing && rewind)
+                StopSample();
+
+            if (soundInfo.EmbeddedSamples.Count == 0)
                 return;
 
             // Figure out the precise play parameters
             int sampleIndex;
-            int loopCount = soundInfo.Data.LoopBehaviour == WadSoundLoopBehaviour.Looped ? 3 : 1;
+            int loopCount = soundInfo.LoopBehaviour == WadSoundLoopBehaviour.Looped ? 3 : 1;
             float pan = 0.0f;
-            float volume = soundInfo.Data.Volume;
-            float pitch = soundInfo.Data.PitchFactor;
+            float volume = soundInfo.Volume / 100.0f;
+            float pitch = (soundInfo.PitchFactor / 127.0f) + 1.0f;
+            float chance = soundInfo.Chance == 0 ? 1.0f : soundInfo.Chance / 100.0f;
+
             lock (_rng)
             {
-                if (_rng.NextDouble() > soundInfo.Data.Chance)
+                if (chance != 1.0f && _rng.NextDouble() > chance)
                     return;
-                sampleIndex = _rng.Next(0, soundInfo.Data.Samples.Count - 1);
-                if (!soundInfo.Data.DisablePanning)
+
+                sampleIndex = _rng.Next(0, soundInfo.EmbeddedSamples.Count - 1);
+
+                if (!soundInfo.DisablePanning)
                     pan = (float)((_rng.NextDouble() - 0.5f) * 1.6);
-                if (soundInfo.Data.RandomizePitch)
+                if (soundInfo.RandomizePitch)
                     pitch += (float)(_rng.NextDouble() * (6000.0 / 65536.0));
-                if (soundInfo.Data.RandomizeVolume)
+                if (soundInfo.RandomizeVolume)
                     volume -= (float)_rng.NextDouble() * 0.125f;
             }
-            PlaySample(soundInfo.Data.Samples[sampleIndex], volume, pitch, pan, loopCount);
+
+            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], rewind, volume, pitch, pan, loopCount);
         }
 
-        public static void PlaySample(WadSample sample, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
+        public static void PlaySample(Level level, WadSample sample, bool rewind, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
         {
             if (volume <= 0.0f || loopCount <= 0)
                 return;
 
-            //new PanningSampleProvider
-            // To change the pitch: SmbPitchShiftingSampleProvider or WdlResamplingSampleProvider
             var disposables = new List<IDisposable>();
             try
             {
-                // Load data
-                var memoryStream = disposables.AddAndReturn(new MemoryStream(sample.Data, false));
-                var waveStream = disposables.AddAndReturn(new WaveFileReader(memoryStream));
+                // Load data.
+                // If waveform data is loaded into memory, use it to play sound, otherwise find wav file on disk.
+
+                WaveFileReader waveStream;
+                MemoryStream memoryStream;
+
+                if (sample.IsLoaded)
+                {
+                    memoryStream = disposables.AddAndReturn(new MemoryStream(sample.Data, false));
+                    waveStream = disposables.AddAndReturn(new WaveFileReader(memoryStream));
+                }
+                else
+                    waveStream = disposables.AddAndReturn(new WaveFileReader(WadSounds.TryGetSamplePath(level, sample.FileName)));
 
                 // Apply looping
                 ISampleProvider sampleStream;
@@ -79,13 +91,11 @@ namespace TombLib.Wad
                 // Add some silence to make sure the audio plays out.
                 const int latencyInMilliseconds = 200;
                 int latencyInSamples = (sampleStream.WaveFormat.SampleRate * latencyInMilliseconds * 2) / 1000;
-                sampleStream = new OffsetSampleProvider(sampleStream)
-                {
-                    LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples
-                };
+                sampleStream = new OffsetSampleProvider(sampleStream) { LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples };
 
-                // Clean previous preview
-                StopSample(); 
+                // Clean previous preview, if by any chance it's still playing
+                if (rewind)
+                    StopSample(); 
 
                 // Play
                 _channel = disposables.AddAndReturn(new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, latencyInMilliseconds));
@@ -116,48 +126,6 @@ namespace TombLib.Wad
             }
         }
 
-        public static ImageC DrawWaveformForSample(WadSample sampleData, VectorInt2 imageSize, double startPositionInSeconds, double secondsPerPixel, ColorC graphColor)
-        {
-            // Read samples
-            using (var memoryStream = new MemoryStream(sampleData.Data, false))
-            using (var waveStream = new WaveFileReader(memoryStream))
-            {
-                double startPositionInSamples = waveStream.WaveFormat.SampleRate * startPositionInSeconds;
-                double samplesPerPixel = waveStream.WaveFormat.SampleRate * secondsPerPixel;
-
-                ImageC result = ImageC.CreateNew(imageSize.X, imageSize.Y);
-                const int bytesPerSample = 2;
-                byte[] waveData = new byte[((int)(samplesPerPixel) + 10) * bytesPerSample];
-                waveStream.Position = ((int)(startPositionInSamples)) * bytesPerSample;
-
-                for (int i = 0; i < imageSize.X; i += 1)
-                {
-                    // Read raw data
-                    int samplesForPixel = (int)(samplesPerPixel * (i + 1) + 0.5f) - (int)(samplesPerPixel * i + 0.5f);
-                    int bytesRead = waveStream.Read(waveData, 0, samplesForPixel * bytesPerSample);
-                    if (bytesRead == 0)
-                        break;
-
-                    // Combine samples that all fall into a single pixel
-                    short min = BitConverter.ToInt16(waveData, 0);
-                    short max = min;
-                    for (int j = bytesPerSample; j < bytesRead; j += bytesPerSample)
-                    {
-                        short sample = BitConverter.ToInt16(waveData, j);
-                        min = Math.Min(min, sample);
-                        max = Math.Max(max, sample);
-                    }
-
-                    // Fill in the line
-                    int factor = imageSize.Y - 1;
-                    int minImageY = ((min + 32768) * factor + 32768) >> 16;
-                    int maxImageY = ((max + 32768) * factor + 32768) >> 16;
-                    for (int j = minImageY; j <= maxImageY; ++j)
-                        result.SetPixel(i, j, graphColor);
-                }
-                return result;
-            }
-        }
         private class RepeatedStream : ISampleProvider
         {
             public int LoopCount;

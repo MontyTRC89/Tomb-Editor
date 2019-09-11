@@ -95,6 +95,8 @@ namespace TombEditor
         {
             if (_commands.Any(cmd => cmd.Name.Equals(commandName, StringComparison.InvariantCultureIgnoreCase)))
                 throw new InvalidOperationException("You cannot add multiple commands with the same name.");
+
+            command += delegate { logger.Info(commandName); };
             _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Execute = command, Type = type });
         }
 
@@ -128,7 +130,7 @@ namespace TombEditor
                 args.Editor.Mode = EditorMode.Lighting;
             });
 
-            AddCommand("ResetCamera", "Reset camera position to default", CommandType.View, delegate (CommandArgs args)
+            AddCommand("ResetCamera", "Reset camera position", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.ResetCamera();
             });
@@ -295,6 +297,18 @@ namespace TombEditor
             {
                 if (args.Editor.SelectedRoom != null)
                     EditorActions.MoveRooms(new VectorInt3(0, -1, 0), args.Editor.SelectedRoom.Versions);
+            });
+
+            AddCommand("MoveRoomUp4Clicks", "Move room up (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, 4, 0), args.Editor.SelectedRoom.Versions);
+            });
+
+            AddCommand("MoveRoomDown4Clicks", "Move room down (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null)
+                    EditorActions.MoveRooms(new VectorInt3(0, -4, 0), args.Editor.SelectedRoom.Versions);
             });
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
@@ -742,6 +756,25 @@ namespace TombEditor
                     existingWindow.Focus();
             });
 
+            AddCommand("AddNewRoom", "Add new room", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                if (args.Editor.Level.Rooms == null)
+                    return;
+
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
+                {
+                    if (args.Editor.Level.Rooms[i] != null)
+                        continue;
+                    else
+                    {
+                        EditorActions.MakeNewRoom(i);
+                        return;
+                    }
+                }
+
+                args.Editor.SendMessage("Maximum amount of rooms reached. Can't create new room.", PopupType.Error);
+            });
+
             AddCommand("DeleteRooms", "Delete rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Map2D)
@@ -859,6 +892,12 @@ namespace TombEditor
                     EditorActions.ApplyCurrentAmbientLightToAllRooms();
                     args.Editor.SendMessage("Ambient light was applied to all rooms.", PopupType.Info);
                 }
+            });
+
+            AddCommand("ApplyAmbientLightToSelectedRooms", "Apply current ambient light to selected rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.ApplyAmbientLightToSelectedRooms(args.Window);
+                args.Editor.SendMessage("Ambient light was applied to selected rooms.", PopupType.Info);
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)
@@ -1173,6 +1212,19 @@ namespace TombEditor
                 {
                     logger.Error(exc, "Error while starting Wad Tool.");
                     args.Editor.SendMessage("Error while starting Wad Tool.", PopupType.Error);
+                }
+            });
+
+            AddCommand("StartSoundTool", "Start Sound Tool...", CommandType.Settings, delegate (CommandArgs args)
+            {
+                try
+                {
+                    Process.Start("SoundTool.exe");
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Error while starting Sound Tool.");
+                    args.Editor.SendMessage("Error while starting Sound Tool.", PopupType.Error);
                 }
             });
 
@@ -1589,10 +1641,54 @@ namespace TombEditor
                     EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, false, true);
             });
 
-            AddCommand("ToggleFlyMode", "Toggle Fly Mode", CommandType.General, delegate (CommandArgs args)
+            AddCommand("ResetGeometry", "Reset all geometry", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedRoom != null && args.Editor.SelectedSectors.ValidOrNone)
+                {
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, false, true, false);
+                    EditorActions.FlattenRoomArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Valid ? args.Editor.SelectedSectors.Area : args.Editor.SelectedRoom.LocalArea.Inflate(-1), null, true, true, true, true);
+                }
+            });
+
+            AddCommand("ToggleFlyMode", "Toggle fly mode", CommandType.General, delegate (CommandArgs args)
             {
                 args.Editor.SendMessage("Push ESC to exit fly mode.", PopupType.Info);
                 args.Editor.ToggleFlyMode(!args.Editor.FlyMode);
+            });
+
+            AddCommand("SelectSkyRooms", "Select sky rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectSkyRooms();
+            });
+
+            AddCommand("SelectWaterRooms", "Select water rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectWaterRooms();
+            });
+
+            AddCommand("SelectOutsideRooms", "Select outside rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectOutsideRooms();
+            });
+
+            AddCommand("SelectQuicksandRooms", "Select quicksand rooms", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectQuicksandRooms();
+            });
+
+            AddCommand("SelectRoomsByTags", "Select rooms by tags", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                EditorActions.SelectRoomsByTags(args.Window, args.Editor);
+            });
+
+            AddCommand("SetStaticMeshesColorToRoomLight", "Set room static meshes color to room color", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.SetStaticMeshesColorToRoomAmbientLight();
+            });
+
+            AddCommand("SetStaticMeshesColor", "Set room static meshes color", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.SetStaticMeshesColor(args.Window);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

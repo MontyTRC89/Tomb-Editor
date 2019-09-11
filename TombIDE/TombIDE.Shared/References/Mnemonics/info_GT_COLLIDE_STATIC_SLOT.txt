@@ -1,0 +1,5 @@
+The condition is true when lara touch a static of given static slot kind typed in Parameter field.
+Remarks:
+* Don't confuse the moveable slots with static slots. You find the static slots in the "Statics indices" list of  "Reference" panel
+
+* About the chance to perform a triggergroup when lara touches a specific static it's not necessary a global trigger: just you add in the ocb of that static the value 2048 and then place an heavy trigger in sector under that static. When lara will touch the static the heavy trigger will be performed.

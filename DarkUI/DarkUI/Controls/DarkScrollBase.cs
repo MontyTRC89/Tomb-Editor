@@ -141,11 +141,13 @@ namespace DarkUI.Controls
 
             const int scrollSize = Consts.ScrollBarSize;
 
-            VScrollBar.Location = new Point(ClientSize.Width - scrollSize, 0);
-            VScrollBar.Size = new Size(scrollSize, ClientSize.Height);
+            VScrollBar.Location = new Point(ClientSize.Width - scrollSize - 1, 1);
+            VScrollBar.Size = new Size(scrollSize, ClientSize.Height - 2);
+            VScrollBar.BackColor = Colors.MediumBackground;
 
-            HScrollBar.Location = new Point(0, ClientSize.Height - scrollSize);
-            HScrollBar.Size = new Size(ClientSize.Width, scrollSize);
+            HScrollBar.Location = new Point(1, ClientSize.Height - scrollSize - 1);
+            HScrollBar.Size = new Size(ClientSize.Width - 2, scrollSize);
+            HScrollBar.BackColor = Colors.MediumBackground;
 
             if (DesignMode)
                 return;
@@ -324,19 +326,19 @@ namespace DarkUI.Controls
 
             if (!horizontal)
             {
-                float speed = MouseWheelScrollSpeedV * e.Delta;
+                float speed = MouseWheelScrollSpeedV * -e.Delta;
                 int speedInt = (int)Math.Min(1073741824, Math.Max(-1073741824, speed));
                 if (speedInt == 0)
                     speedInt = speed > 0 ? 1 : -1;
-                VScrollBar.ScrollByPhysical(speedInt);
+                VScrollBar.ScrollBy(speedInt);
             }
             else
             {
-                float speed = MouseWheelScrollSpeedH * e.Delta;
+                float speed = MouseWheelScrollSpeedH * -e.Delta;
                 int speedInt = (int)Math.Min(1073741824, Math.Max(-1073741824, speed));
                 if (speedInt == 0)
                     speedInt = speed > 0 ? 1 : -1;
-                HScrollBar.ScrollByPhysical(speedInt);
+                HScrollBar.ScrollBy(speedInt);
             }
         }
 

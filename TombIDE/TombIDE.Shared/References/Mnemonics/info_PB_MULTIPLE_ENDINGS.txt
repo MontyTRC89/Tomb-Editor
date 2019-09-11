@@ -1,0 +1,17 @@
+Used in Customize=CUST_PARALLEL_BARS.
+By default Lara will perform always a correct jump, indifferently by the moment when she lets go the bar.
+In this way it's not possible to wrong, because the jump is always the same.
+If you use the PB_MULTIPLE_ENDINGS flag the situation changes: now lara could wrong the exiting from turning: falling vertically, handlong or in stand-up position.
+
+Remarks:
+
+* This option is not perfect because the state id change should require a correct, specific, next animation to continue the source animation of turning in precise way, frame for frame, while I tried to link source animation with some default animations like that of headlong diving and fast falling (with lara screaming).
+
+* Theorically you could add your new custom animation and link them to animation 462 state id = 128, whereby the change state id editor of wad merger program.
+If you create a new animation where lara loses the hanging in a different point of the turn, just you create a change state-id where you set the range of frames for 462 animation where you want that lara can let go the bar. Then you set as state id = 129, and the number of your new animation.
+If you perform this attempt it's better don't use the PB_MULTIPLE_ENDINGS value because this flag perform a change of state id in hardcoded mode and this could interfere with your changes of state id.
+Technically the code performs this computes:
+- When detect that lara lets go the Action key: set as next state id = 129
+- This change doesn't happen immediatly but only when the infinite animation 462 find a frame range in state id change correct.
+- By default this happens only between frame 8 and 9 of anim 462, and the next animation will be the animation 463
+You can add new animation starting from some of intermediate position of rotation, and then apply to specific frame range where lara has that starting position.
