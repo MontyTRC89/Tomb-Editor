@@ -173,7 +173,7 @@ namespace TombEditor
                     EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
             });
 
-            AddCommand("SetTextureBlendMode", "Set blending mode", CommandType.Textures, delegate (CommandArgs args)
+            AddCommand("SwitchBlendMode", "Switch blending mode", CommandType.Textures, delegate (CommandArgs args)
             {
                 var texture = args.Editor.SelectedTexture;
                 if (texture.BlendMode == BlendMode.Normal)
@@ -188,6 +188,48 @@ namespace TombEditor
                     texture.BlendMode = BlendMode.Lighten;
                 else if (texture.BlendMode == BlendMode.Lighten)
                     texture.BlendMode = BlendMode.Normal;
+                args.Editor.SelectedTexture = texture;
+            });
+
+            AddCommand("SetBlendModeNormal", "Set blending mode: Normal", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                texture.BlendMode = BlendMode.Normal;
+                args.Editor.SelectedTexture = texture;
+            });
+
+            AddCommand("SetBlendModeAdd", "Set blending mode: Add", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                texture.BlendMode = BlendMode.Additive;
+                args.Editor.SelectedTexture = texture;
+            });
+
+            AddCommand("SetBlendModeSubtract", "Set blending mode: Subtract", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                texture.BlendMode = BlendMode.Subtract;
+                args.Editor.SelectedTexture = texture;
+            });
+
+            AddCommand("SetBlendModeExclude", "Set blending mode: Exclude", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                texture.BlendMode = BlendMode.Exclude;
+                args.Editor.SelectedTexture = texture;
+            });
+
+            AddCommand("SetBlendModeScreen", "Set blending mode: Screen", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                texture.BlendMode = BlendMode.Screen;
+                args.Editor.SelectedTexture = texture;
+            });
+
+            AddCommand("SetBlendModeLighten", "Set blending mode: Lighten", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var texture = args.Editor.SelectedTexture;
+                texture.BlendMode = BlendMode.Lighten;
                 args.Editor.SelectedTexture = texture;
             });
 
