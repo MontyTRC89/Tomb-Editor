@@ -307,50 +307,74 @@ namespace TombEditor
 
             AddCommand("MoveRoomLeft", "Move room left", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(-1, 0, 0), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null) {
+                    foreach(Room r in args.Editor.SelectedRooms)
+                    EditorActions.MoveRooms(new VectorInt3(-1, 0, 0), r.Versions);
+                }
+                    
             });
 
             AddCommand("MoveRoomRight", "Move room right", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(1, 0, 0), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(1, 0, 0), r.Versions);
+                }
             });
 
             AddCommand("MoveRoomForward", "Move room forward", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 0, 1), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(0, 0, 1), r.Versions);
+                }
             });
 
             AddCommand("MoveRoomBack", "Move room back", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 0, -1), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(0, 0, -1), r.Versions);
+                }
             });
 
             AddCommand("MoveRoomUp", "Move room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 1, 0), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(0, 1, 0), r.Versions);
+                }
             });
 
             AddCommand("MoveRoomDown", "Move room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, -1, 0), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(0, -1, 0), r.Versions);
+                }
             });
 
             AddCommand("MoveRoomUp4Clicks", "Move room up (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, 4, 0), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(0, 4, 0), r.Versions);
+                }
             });
 
             AddCommand("MoveRoomDown4Clicks", "Move room down (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedRoom != null)
-                    EditorActions.MoveRooms(new VectorInt3(0, -4, 0), args.Editor.SelectedRoom.Versions);
+                if (args.Editor.SelectedRooms != null)
+                {
+                    foreach (Room r in args.Editor.SelectedRooms)
+                        EditorActions.MoveRooms(new VectorInt3(0, -4, 0), r.Versions);
+                }
             });
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
