@@ -99,7 +99,14 @@ namespace WadTool
             timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(timeline_AnimCommandDoubleClick);
 
             // Initialize the panel
-            var skin = _editor.Wad.Moveables[new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Wad.SuggestedGameVersion, id.TypeId))];
+            WadMoveable skin;
+            var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Wad.SuggestedGameVersion, id.TypeId));
+
+            if (_editor.Wad.Moveables.ContainsKey(skinId))
+                skin = _editor.Wad.Moveables[skinId];
+            else
+                skin = _editor.Wad.Moveables[id];
+            
             panelRendering.InitializeRendering(_editor, _deviceManager, skin);
 
             // Load skeleton in combobox
