@@ -125,7 +125,6 @@ namespace WadTool
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.butAddNewAnimation = new DarkUI.Controls.DarkButton();
             this.panelView = new DarkUI.Controls.DarkSectionPanel();
-            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panelTimeline = new System.Windows.Forms.Panel();
             this.timeline = new TombLib.Controls.AnimationTrackBar();
             this.panelTransport = new System.Windows.Forms.Panel();
@@ -846,8 +845,8 @@ namespace WadTool
             this.tbSearchAnimation.Name = "tbSearchAnimation";
             this.tbSearchAnimation.Size = new System.Drawing.Size(181, 22);
             this.tbSearchAnimation.TabIndex = 123;
-            this.toolTip1.SetToolTip(this.tbSearchAnimation, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
-        "");
+            this.toolTip1.SetToolTip(this.tbSearchAnimation, "Numerical input - filter by state ID.\r\nString input - filter by animation name.\r\n" +
+        "\r\nTokens:\r\ns:[name or ID] - state name or ID\r\na:[name or ID] - anim name or ID");
             this.tbSearchAnimation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchByStateID_KeyDown);
             // 
             // topBar
@@ -1291,7 +1290,6 @@ namespace WadTool
             // 
             // panelView
             // 
-            this.panelView.Controls.Add(this.panelRendering);
             this.panelView.Controls.Add(this.panelTimeline);
             this.panelView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelView.Location = new System.Drawing.Point(244, 4);
@@ -1299,14 +1297,6 @@ namespace WadTool
             this.panelView.SectionHeader = null;
             this.panelView.Size = new System.Drawing.Size(727, 590);
             this.panelView.TabIndex = 10;
-            // 
-            // panelRendering
-            // 
-            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(1, 1);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(725, 550);
-            this.panelRendering.TabIndex = 9;
             // 
             // panelTimeline
             // 
@@ -1951,7 +1941,6 @@ namespace WadTool
         private System.Windows.Forms.Panel panelTools;
         private System.Windows.Forms.Panel panelTimeline;
         private System.Windows.Forms.Panel panelTransport;
-        private Controls.PanelRenderingAnimationEditor panelRendering;
         private AnimationTrackBar timeline;
         private DarkUI.Controls.DarkButton darkButton3;
         private DarkUI.Controls.DarkButton butEditStateChanges;
