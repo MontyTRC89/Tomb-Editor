@@ -89,7 +89,12 @@ namespace TombLib.Utils
         public static bool CurrentControlSupportsInput(Form form, Keys keyData)
         {
             var activeControlType = GetFocusedControl(form)?.GetType().Name;
-            if ((keyData.HasFlag(Keys.Control | Keys.A) || !keyData.HasFlag(Keys.Control)) && !keyData.HasFlag(Keys.Alt) &&
+
+            if ((keyData.HasFlag(Keys.Control | Keys.A) ||
+                 keyData.HasFlag(Keys.Control | Keys.X) ||
+                 keyData.HasFlag(Keys.Control | Keys.C) ||
+                 keyData.HasFlag(Keys.Control | Keys.V) ||
+                (!keyData.HasFlag(Keys.Control)) && !keyData.HasFlag(Keys.Alt)) &&
                 (activeControlType == "DarkTextBox" ||
                  activeControlType == "DarkAutocompleteTextBox" ||
                  activeControlType == "DarkComboBox" ||

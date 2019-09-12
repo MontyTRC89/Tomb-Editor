@@ -69,7 +69,6 @@
             this.tbPlaySoundFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.comboPlaySoundConditions = new DarkUI.Controls.DarkComboBox();
-            this.butApply = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1.SuspendLayout();
             this.darkGroupBox2.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
@@ -117,7 +116,7 @@
             this.comboCommandType.FormattingEnabled = true;
             this.comboCommandType.Items.AddRange(new object[] {
             "Set position",
-            "Set jump distance",
+            "Set jump velocity",
             "Empty hands",
             "Kill entity",
             "Play sound",
@@ -531,11 +530,6 @@
             0,
             0,
             0});
-            this.tbFlipEffectFrame.Minimum = new decimal(new int[] {
-            32768,
-            0,
-            0,
-            -2147483648});
             this.tbFlipEffectFrame.MousewheelSingleIncrement = true;
             this.tbFlipEffectFrame.Name = "tbFlipEffectFrame";
             this.tbFlipEffectFrame.Size = new System.Drawing.Size(73, 22);
@@ -649,11 +643,6 @@
             0,
             0,
             0});
-            this.tbPlaySoundFrame.Minimum = new decimal(new int[] {
-            32768,
-            0,
-            0,
-            -2147483648});
             this.tbPlaySoundFrame.MousewheelSingleIncrement = true;
             this.tbPlaySoundFrame.Name = "tbPlaySoundFrame";
             this.tbPlaySoundFrame.Size = new System.Drawing.Size(73, 22);
@@ -685,17 +674,6 @@
             this.comboPlaySoundConditions.TabIndex = 53;
             this.comboPlaySoundConditions.SelectedIndexChanged += new System.EventHandler(this.comboPlaySoundConditions_SelectedIndexChanged);
             // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(124, 292);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 23);
-            this.butApply.TabIndex = 101;
-            this.butApply.Text = "Apply";
-            this.butApply.Visible = false;
-            // 
             // FormAnimCommandsEditor
             // 
             this.AcceptButton = this.btOk;
@@ -703,7 +681,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(381, 320);
-            this.Controls.Add(this.butApply);
             this.Controls.Add(this.darkGroupBox2);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.btCancel);
@@ -784,7 +761,6 @@
         private DarkUI.Controls.DarkLabel lblLaraFoot;
         private DarkUI.Controls.DarkComboBox comboFlipeffectConditions;
         private DarkUI.Controls.DarkButton butSearchSounds;
-        private DarkUI.Controls.DarkButton butApply;
         private DarkUI.Controls.DarkButton butPlaySound;
     }
 }

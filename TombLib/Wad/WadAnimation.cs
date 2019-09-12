@@ -35,8 +35,15 @@ namespace TombLib.Wad
 
             var animation = (WadAnimation)MemberwiseClone();
             animation.KeyFrames = KeyFrames.ConvertAll(keyFrame => keyFrame.Clone());
-            animation.StateChanges = new List<WadStateChange>(StateChanges);
-            animation.AnimCommands = new List<WadAnimCommand>(AnimCommands);
+
+            animation.AnimCommands = new List<WadAnimCommand>();
+            foreach (var ac in AnimCommands)
+                animation.AnimCommands.Add(ac.Clone());
+
+            animation.StateChanges = new List<WadStateChange>();
+            foreach (var sc in StateChanges)
+                animation.StateChanges.Add(sc.Clone());
+
             return animation;
         }
     }
