@@ -48,7 +48,8 @@
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(121, 300);
+            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOK.Location = new System.Drawing.Point(111, 276);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
@@ -57,8 +58,9 @@
             // 
             // butCancel
             // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(207, 300);
+            this.butCancel.Location = new System.Drawing.Point(197, 276);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
@@ -192,7 +194,7 @@
             // 
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(5, 263);
+            this.lblPreset.Location = new System.Drawing.Point(5, 251);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -201,9 +203,9 @@
             // cmbPresetList
             // 
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(52, 259);
+            this.cmbPresetList.Location = new System.Drawing.Point(52, 247);
             this.cmbPresetList.Name = "cmbPresetList";
-            this.cmbPresetList.Size = new System.Drawing.Size(227, 23);
+            this.cmbPresetList.Size = new System.Drawing.Size(225, 23);
             this.cmbPresetList.TabIndex = 6;
             this.cmbPresetList.SelectedIndexChanged += new System.EventHandler(this.cmbPresetList_SelectedIndexChanged);
             // 
@@ -215,10 +217,10 @@
             this.panelContents.Controls.Add(this.darkGroupBox1);
             this.panelContents.Controls.Add(this.cmbPresetList);
             this.panelContents.Controls.Add(this.lblPreset);
-            this.panelContents.Location = new System.Drawing.Point(8, 8);
+            this.panelContents.Location = new System.Drawing.Point(0, 0);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(283, 286);
+            this.panelContents.Size = new System.Drawing.Size(283, 274);
             this.panelContents.TabIndex = 7;
             // 
             // darkGroupBox4
@@ -306,7 +308,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(294, 329);
+            this.ClientSize = new System.Drawing.Size(283, 304);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);

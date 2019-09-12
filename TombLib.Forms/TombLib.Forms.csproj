@@ -147,6 +147,12 @@
     <Compile Include="Controls\WadTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Forms\AnimationImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AnimationImportDialog.Designer.cs">
+      <DependentUpon>AnimationImportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -215,6 +221,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\WadTreeControl.resx">
       <DependentUpon>WadTreeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AnimationImportDialog.resx">
+      <DependentUpon>AnimationImportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>

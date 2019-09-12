@@ -8,8 +8,9 @@ namespace TombLib.GeometryIO
     {
         public List<IOMesh> Meshes { get; private set; } = new List<IOMesh>();
         public List<IOMaterial> Materials { get; private set; } = new List<IOMaterial>();
+        public List<IOAnimation> Animations { get; private set; } = new List<IOAnimation>();
 
-        // Used only by Tomb Editor for mananging the special case of multiple rooms
+        // Used only by Tomb Editor for managing the special case of multiple rooms
         public bool HasMultipleRooms { get; set; }
 
         public BoundingBox BoundingBox

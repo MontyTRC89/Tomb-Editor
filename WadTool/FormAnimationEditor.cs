@@ -1,6 +1,7 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -1569,28 +1570,29 @@ namespace WadTool
             if (openFileDialogImport.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
-            var animation = WadActions.ImportAnimationFromXml(_editor.Wad, openFileDialogImport.FileName);
+            WadAnimation animation = null;
+
+            if (Path.GetExtension(openFileDialogImport.FileName) == "xml")
+                animation = WadActions.ImportAnimationFromXml(_editor.Tool, openFileDialogImport.FileName);
+            else
+                animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, openFileDialogImport.FileName);
+
             if (animation == null)
-            {
-                popup.ShowError(panelRendering, "Can't import valid animation");
                 return;
-            }
 
             if (animation.KeyFrames[0].Angles.Count != _editor.Moveable.Bones.Count)
             {
-                popup.ShowError(panelRendering, "You can only import an animation with the same number of bones as current moveable");
+                popup.ShowError(panelRendering, "You can only import an animation with the same number of bones as current moveable.");
                 return;
             }
 
-            if (DarkMessageBox.Show(this, "Do you want to overwrite current animation?", "Import animation",
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                _editor.SelectedNode.WadAnimation = animation;
-                _editor.SelectedNode.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
-                SelectAnimation(_editor.SelectedNode);
-                timeline.Value = 0;
-                panelRendering.Invalidate();
-            }
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+
+            _editor.SelectedNode.WadAnimation = animation;
+            _editor.SelectedNode.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
+            SelectAnimation(_editor.SelectedNode);
+            timeline.Value = 0;
+            panelRendering.Invalidate();
         }
 
         private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)

@@ -16,6 +16,7 @@ using TombLib;
 using System.Numerics;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
+using TombLib.GeometryIO.Importers;
 
 namespace WadTool
 {
@@ -647,7 +648,7 @@ namespace WadTool
             }
         }
 
-        public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
+        public static WadAnimation ImportAnimationFromXml(WadToolClass tool, string fileName)
         {
             try
             {
@@ -662,8 +663,75 @@ namespace WadTool
             }
             catch (Exception exc)
             {
+                tool.SendMessage("Unknown error while importing animation! Possible reason: not valid XML format.", PopupType.Error);
                 logger.Warn(exc, "'ImportAnimationFromXml' failed.");
                 return null;
+            }
+        }
+
+
+        public static WadAnimation ImportAnimationFromModel(WadToolClass tool, IWin32Window owner, int nodeCount, string fileName)
+        {
+            IOModel tmpModel = null;
+
+            // Import the model
+            try
+            {
+                var importer = BaseGeometryImporter.CreateForFile(fileName, new IOGeometrySettings(), null);
+                tmpModel = importer.ImportFromFile(fileName);
+
+                // We don't support animation importing from custom-written mqo importer yet...
+                if (importer is MetasequoiaImporter)
+                {
+                    tool.SendMessage("Metasequoia importer isn't currently supported.", PopupType.Error);
+                    return null;
+                }
+
+                // If no animations, return null
+                if (tmpModel.Animations.Count == 0)
+                {
+                    tool.SendMessage("Selected file has no appropriate animations!", PopupType.Error);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                tool.SendMessage("Unknown error while importing animation!", PopupType.Error);
+                logger.Warn(ex, "'ImportAnimationFromModel' failed.");
+                return null;
+            }
+
+            using (var dialog = new AnimationImportDialog(tmpModel.Animations.Select(o => o.Name).ToList()))
+            {
+                dialog.ShowDialog(owner);
+
+                if (dialog.DialogResult == DialogResult.Cancel)
+                    return null;
+                else
+                {
+                    var animToImport = tmpModel.Animations[dialog.AnimationToImport];
+
+                    // Integrity check, number of bones = number of nodes?
+                    if (animToImport.NumNodes != nodeCount)
+                    {
+                        tool.SendMessage("Selected animation has different number of bones!", PopupType.Error);
+                        return null;
+                    }
+
+                    WadAnimation animation = new WadAnimation();
+                    animation.Name = animToImport.Name;
+
+                    foreach (var frame in animToImport.Frames)
+                    {
+                        var keyFrame = new WadKeyFrame();
+                        keyFrame.Offset = frame.Offset;
+                        frame.Angles.ForEach(angle => keyFrame.Angles.Add(new WadKeyFrameRotation() { Rotations = angle }));
+
+                        animation.KeyFrames.Add(keyFrame);
+                    }
+
+                    return animation;
+                }
             }
         }
 
