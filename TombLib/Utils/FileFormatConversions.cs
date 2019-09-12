@@ -218,6 +218,7 @@ namespace TombLib.Utils
                             if (obj is SoundSourceInstance)
                             {
                                 SoundSourceInstance soundSource = obj as SoundSourceInstance;
+
                                 if (soundSource.WadReferencedSoundName != null && soundSource.WadReferencedSoundName != "")
                                 {
                                     if (!conversionList.Select(f => f.OldName).Contains(soundSource.WadReferencedSoundName))
@@ -255,12 +256,23 @@ namespace TombLib.Utils
                                     if (found)
                                         continue;
 
-                                    // In this case we can't do anything, sound is not in catalog for sure and we must 
-                                    // ask to the user
-                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo,
-                                                                         soundSource.EmbeddedSoundInfo.Name);
-                                    row.NewName = Regex.Replace(soundSource.EmbeddedSoundInfo.Name, "[^A-Za-z0-9 _]", "").ToUpper(); 
-                                    row.NewId = lastSoundId++;
+                                    // Let's first try a search in TrCatalog, maybe we are lucky
+                                    // First try to get sound name from TrCatalog
+                                    int newId = TrCatalog.TryGetSoundInfoIdByDescription(version, soundSource.EmbeddedSoundInfo.Name);
+
+                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo, soundSource.EmbeddedSoundInfo.Name);
+                                    if (newId == -1)
+                                    {
+                                        // If sound was not found in catalog, then assign a generic Id and ask to the user
+                                        row.NewName = Regex.Replace(soundSource.EmbeddedSoundInfo.Name, "[^A-Za-z0-9 _]", "").ToUpper();
+                                        row.NewId = lastSoundId++;
+                                    }
+                                    else
+                                    {
+                                        // Otherwise, we are lucky, and we can just assign the correct Id
+                                        row.NewName = TrCatalog.GetOriginalSoundName(version, (uint)newId);
+                                        row.NewId = newId;
+                                    }
 
                                     conversionList.Add(row);
                                 }
@@ -314,7 +326,8 @@ namespace TombLib.Utils
                                 else if (soundSource.EmbeddedSoundInfo != null)
                                 {
                                     // We export embedded sound infos
-                                    newSounds.SoundInfos.Add(soundSource.EmbeddedSoundInfo);
+                                    if (!newSounds.SoundInfos.Contains(soundSource.EmbeddedSoundInfo))
+                                        newSounds.SoundInfos.Add(soundSource.EmbeddedSoundInfo);
 
                                     soundSource.SoundId = -1;
                                     foreach (var row in conversionList)
@@ -371,14 +384,16 @@ namespace TombLib.Utils
                 }
 
                 // Save Xml to file
-                string xmlFileName = Path.GetDirectoryName(dest) + "\\" + Path.GetFileNameWithoutExtension(dest) + ".xml";
-                WadSounds.SaveToXml(xmlFileName, newSounds);
+                if (newSounds.SoundInfos.Count != 0)
+                {
+                    string xmlFileName = Path.GetDirectoryName(dest) + "\\" + Path.GetFileNameWithoutExtension(dest) + ".xml";
+                    WadSounds.SaveToXml(xmlFileName, newSounds);
 
-                // Assign Xml to level settings
-                //level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
-                //    level.Settings.MakeRelative(soundsCatalog, VariableType.LevelDirectory)));
-                level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                    // Assign Xml to level settings
+                    level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
                     level.Settings.MakeRelative(xmlFileName, VariableType.LevelDirectory)));
+                }
+
                 level.Settings.SoundSystem = SoundSystem.Xml;
 
                 // Try to get Xml and SFX files
