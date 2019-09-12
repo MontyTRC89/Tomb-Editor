@@ -1186,12 +1186,9 @@ namespace WadTool
                 if (_editor.SelectedNode?.WadAnimation != null)
                 {
                     // Backup current state if chained playback is about to begin
-                    if (_chainedPlayback)
-                    {
-                        _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
-                        _chainedPlaybackInitialCursorPos = timeline.Value;
-                        _chainedPlaybackInitialSelection = timeline.Selection;
-                    }
+                    _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
+                    _chainedPlaybackInitialCursorPos = timeline.Value;
+                    _chainedPlaybackInitialSelection = timeline.Selection;
 
                     if (_editor.SelectedNode.WadAnimation.KeyFrames.Count > 1)
                         _frameCount = timeline.Value * _editor.SelectedNode.WadAnimation.FrameRate;
@@ -1572,7 +1569,7 @@ namespace WadTool
 
             WadAnimation animation = null;
 
-            if (Path.GetExtension(openFileDialogImport.FileName) == "xml")
+            if (Path.GetExtension(openFileDialogImport.FileName) == ".xml")
                 animation = WadActions.ImportAnimationFromXml(_editor.Tool, openFileDialogImport.FileName);
             else
                 animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, openFileDialogImport.FileName);
@@ -1779,7 +1776,7 @@ namespace WadTool
         private void lstAnimations_Click(object sender, EventArgs e)
         {
             // Update saved state's anim number, in case chained playback is in effect
-            if (_chainedPlayback && _editor.SelectedNode != null && lstAnimations.SelectedItem != null)
+            if (_editor.SelectedNode != null && lstAnimations.SelectedItem != null)
             {
                 _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
                 _chainedPlaybackInitialCursorPos = 0;
