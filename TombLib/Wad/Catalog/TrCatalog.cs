@@ -240,7 +240,7 @@ namespace TombLib.Wad.Catalog
             if (entry.Name == null)
                 foreach (var otherGame in Games.Where(g => g.Key != version))
                 {
-                    entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
+                    entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
                     if (entry.Name != null) break;
                 }
 
