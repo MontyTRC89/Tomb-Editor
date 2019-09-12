@@ -491,8 +491,8 @@
       <anim item="0" id="97" name="CLIMB_ON" />
       <anim item="0" id="98" name="FREE_FALL_TO_LONG" />
       <anim item="0" id="99" name="FALL_CROUCHING_LANDING" />
-      <anim item="0" id="100" name="FREE_FALL_TO_SIDE_LANDING" />
-      <anim item="0" id="101" name="FREE_FALL_TO_SIDE_LANDING_ALTERNATE" />
+      <anim item="0" id="100" name="FREE_FALL_TO_REACH" />
+      <anim item="0" id="101" name="FREE_FALL_TO_REACH_ALTERNATE" />
       <anim item="0" id="102" name="CLIMB_ON_END" />
       <anim item="0" id="103" name="STAND_IDLE" />
       <anim item="0" id="104" name="START_SLIDE_BACKWARD" />
@@ -586,7 +586,7 @@
       <state item="0" id="30" name="SHIMMY_LEFT" />
       <state item="0" id="31" name="SHIMMY_RIGHT" />
       <state item="0" id="32" name="SLIDE_BACK" />
-      <state item="0" id="33" name="ONWATER_STOP" />
+      <state item="0" id="33" name="ONWATER_IDLE" />
       <state item="0" id="34" name="ONWATER_FORWARD" />
       <state item="0" id="35" name="DIVE" />
       <state item="0" id="36" name="PUSHABLE_PUSH" />

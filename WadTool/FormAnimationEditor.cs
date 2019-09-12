@@ -1336,6 +1336,7 @@ namespace WadTool
         private void tbCollisionBoxMaxZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxZ);
 
         private void tbName_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) tbName_Validated(this, e); }
+        private void tbStateId_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) UpdateStateChange(); }
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
@@ -1732,7 +1733,11 @@ namespace WadTool
             }
         }
 
-        private void cmbStateID_SelectedIndexChanged(object sender, EventArgs e) => tbStateId.Text = (string)cmbStateID.SelectedItem;
+        private void cmbStateID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tbStateId.Text = (string)cmbStateID.SelectedItem;
+            UpdateStateChange();
+        }
 
         private void tbStateID_MouseWheel(object sender, MouseEventArgs e)
         {

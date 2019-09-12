@@ -669,12 +669,13 @@ namespace WadTool
             this.tbStateId.Name = "tbStateId";
             this.tbStateId.Size = new System.Drawing.Size(153, 22);
             this.tbStateId.TabIndex = 103;
+            this.tbStateId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbStateId_KeyDown);
             this.tbStateId.Validated += new System.EventHandler(this.tbStateId_Validated);
             // 
             // darkLabel7
             // 
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel7.Location = new System.Drawing.Point(2, 59);
+            this.darkLabel7.Location = new System.Drawing.Point(2, 58);
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(38, 13);
             this.darkLabel7.TabIndex = 102;
