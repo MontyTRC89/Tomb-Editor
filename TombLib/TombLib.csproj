@@ -152,6 +152,8 @@
     <Compile Include="GeometryIO\Exporters\Ply.cs" />
     <Compile Include="GeometryIO\Importers\Assimp.cs" />
     <Compile Include="GeometryIO\Importers\Metasequoia.cs" />
+    <Compile Include="GeometryIO\IOAnimation.cs" />
+    <Compile Include="GeometryIO\IOFrame.cs" />
     <Compile Include="GeometryIO\IOGeometrySettings.cs" />
     <Compile Include="GeometryIO\IOMaterial.cs" />
     <Compile Include="GeometryIO\IOMesh.cs" />

@@ -80,7 +80,7 @@ namespace TombLib.GeometryIO
         protected Texture GetTexture(string baseDirectory, string textureFilePath)
         {
             string absoluteTextureFilePath = Path.Combine(baseDirectory, textureFilePath);
-            return _getTextureCallback(absoluteTextureFilePath);
+            return (_getTextureCallback != null ? _getTextureCallback(absoluteTextureFilePath) : null);
         }
 
         protected Vector3 ApplyAxesTransforms(Vector3 position)

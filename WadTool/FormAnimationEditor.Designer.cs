@@ -1201,12 +1201,12 @@ namespace WadTool
             // 
             // openFileDialogImport
             // 
-            this.openFileDialogImport.Filter = "Wad Tool animation (*.anim)|*.anim";
+            this.openFileDialogImport.Filter = "Wad Tool animation (*.xml)|*.xml|3dsmax TRViewer-compatible animation (*.3ds)|*.3ds";
             this.openFileDialogImport.Title = "Import animation";
             // 
             // saveFileDialogExport
             // 
-            this.saveFileDialogExport.Filter = "Wad Tool animation (*.anim)|*.anim";
+            this.saveFileDialogExport.Filter = "Wad Tool animation (*.xml)|*.xml";
             this.saveFileDialogExport.Title = "Export animation";
             // 
             // openFileDialogPrj2

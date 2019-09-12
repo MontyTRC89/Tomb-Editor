@@ -1,8 +1,10 @@
 ﻿using Assimp;
 using Assimp.Configs;
 using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
 
@@ -92,7 +94,8 @@ namespace TombLib.GeometryIO.Importers
 
                     // Create UV
                     var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
-                    currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
+                    if(faceTexture != null)
+                        currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
                     newMesh.UV.Add(currentUV);
 
                     // Create colors
@@ -136,6 +139,73 @@ namespace TombLib.GeometryIO.Importers
                 }
 
                 newModel.Meshes.Add(newMesh);
+            }
+
+            // Loop through all animations and add appropriate ones
+            if (scene.HasAnimations)
+            {
+                for (int i = 0; i < scene.Animations.Count; i++)
+                {
+                    var anim = scene.Animations[i];
+
+                    // Do some integrity checks
+                    if (!anim.HasNodeAnimations || anim.NodeAnimationChannelCount != scene.MeshCount ||
+                        !anim.NodeAnimationChannels.All(chan => chan.HasRotationKeys && chan.RotationKeyCount == anim.NodeAnimationChannels[0].RotationKeyCount))
+                        continue;
+
+                    // Derive frame count from duration in ticks (TRViewer-compatible).
+                    // If other value is encountered, file is probably non-TRViewer-compatible.
+                    if (anim.DurationInTicks != 0 && anim.DurationInTicks + 1 != anim.NodeAnimationChannels[0].RotationKeyCount)
+                    {
+                        logger.Warn("Animation " + i + " has incorrect duration value and isn't in TRViewer-compatible format.");
+                        continue;
+                    }
+
+                    int frameCount = anim.NodeAnimationChannels[0].RotationKeyCount;
+
+                    IOAnimation ioAnim = new IOAnimation(string.IsNullOrEmpty(anim.Name) ? "Imported animation " + i : anim.Name,
+                                                         anim.NodeAnimationChannelCount);
+
+                    for (int j = 0; j < frameCount; j++)
+                    {
+                        IOFrame currentFrame = new IOFrame();
+
+                        for (int k = 0; k < anim.NodeAnimationChannelCount; k++)
+                        {
+                            var currentNode = anim.NodeAnimationChannels[k];
+
+                            // First animation channel should contain translation info.
+                            if (k == 0)
+                            {
+                                currentFrame.Offset = new Vector3( currentNode.PositionKeys[j].Value.X,
+                                                                   currentNode.PositionKeys[j].Value.Z,
+                                                                   currentNode.PositionKeys[j].Value.Y);
+                            }
+
+                            // Convert quaternions back to rotations.
+                            // This is similar to TRViewer's conversion routine.
+
+                            System.Numerics.Quaternion quat = new System.Numerics.Quaternion(currentNode.RotationKeys[j].Value.X,
+                                                                                             currentNode.RotationKeys[j].Value.Y,
+                                                                                             currentNode.RotationKeys[j].Value.Z,
+                                                                                             currentNode.RotationKeys[j].Value.W);
+                            quat *= System.Numerics.Quaternion.Identity;
+
+                            var eulers = MathC.QuaternionToEuler(quat);
+                            eulers = new Vector3(-eulers.X, -eulers.Z, -eulers.Y);
+
+                            var rotation = new Vector3(eulers.X * 180.0f / (float)Math.PI,
+                                                       eulers.Y * 180.0f / (float)Math.PI,
+                                                       eulers.Z * 180.0f / (float)Math.PI);
+
+                            currentFrame.Angles.Add(rotation);
+                        }
+
+                        ioAnim.Frames.Add(currentFrame);
+                    }
+
+                    newModel.Animations.Add(ioAnim);
+                }
             }
 
             return newModel;
