@@ -245,12 +245,12 @@ namespace TombLib.Wad.Catalog
             Games.TryGetValue(version, out game);
             
             if (game != null)
-                entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
+                entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
 
             if (entry.Name == null)
                 foreach (var otherGame in Games.Where(g => g.Key != version))
                 {
-                    entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
+                    entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
                     if (entry.Name != null) break;
                 }
 

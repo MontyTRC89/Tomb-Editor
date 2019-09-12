@@ -353,14 +353,8 @@ namespace WadTool
             tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
             tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
 
-            var stateName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, node.WadAnimation.StateId);
-
-            if (cmbStateID.Items.Contains(stateName))
-            {
-                cmbStateID.SelectedIndex = cmbStateID.FindStringExact(stateName);
-            }
-            else
-                tbStateId.Text = node.WadAnimation.StateId.ToString();
+            tbStateId.Text = node.WadAnimation.StateId.ToString();
+            UpdateStateChange();               
 
             timeline.Animation = node;
             panelRendering.CurrentKeyFrame = 0;
@@ -815,7 +809,7 @@ namespace WadTool
             Saved = false;
         }
 
-        private void UpdateStateChange(bool forceString = false)
+        private void UpdateStateChange(bool getFromCombo = false)
         {
             if (_editor.SelectedNode == null) return;
 
@@ -824,14 +818,24 @@ namespace WadTool
             ushort newValue = ushort.MaxValue; // Let's hope nobody will ever use state ID 65535...
 
             // ID decoding from textbox is not needed in case textbox field was forced manually (eg from combobox).
-            if (forceString)
+            if (getFromCombo)
                 tbStateId.Text = (string)cmbStateID.SelectedItem;
             
             // Try to identify if there was a string input in textbox.
-            if (forceString || !ushort.TryParse(tbStateId.Text, out newValue))
+            if (getFromCombo || !ushort.TryParse(tbStateId.Text, out newValue))
             {
+                string searchString = tbStateId.Text.Trim();
+                int possibleID = -1;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    possibleID = TrCatalog.TryToGetStateID(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, searchString);
+                    if (possibleID >= 0) break;
+                    // Try to do one more pass with spaces replaced by underlines
+                    searchString = searchString.Replace(' ', '_');
+                }
+
                 // String input. Try to find appropriate name in trcatalog.
-                var possibleID = TrCatalog.TryToGetStateID(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, tbStateId.Text.Trim());
                 if (possibleID >= 0)
                     newValue = (ushort)possibleID; // Name found, use found state ID
                 else
@@ -847,21 +851,11 @@ namespace WadTool
             {
                 var possibleName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, newValue);
 
-                // Just update combobox index, it will take care of the rest, recursively calling this function.
+                // Put name into textbox, if found among state numbers. Otherwise, use raw number.
                 if (cmbStateID.Items.Contains(possibleName))
-                {
-                    var newIndex = cmbStateID.FindStringExact(possibleName);
-
-                    if (decodeFailed || (newIndex == cmbStateID.SelectedIndex && tbStateId.Text != possibleName))
-                        tbStateId.Text = possibleName;
-
-                    cmbStateID.SelectedIndex = newIndex;
-                }
+                    tbStateId.Text = possibleName;
                 else
-                {
-                    cmbStateID.SelectedIndex = -1;
                     tbStateId.Text = newValue.ToString();
-                }
             }
 
             // Add legacy numerical ID as a tooltip
@@ -874,7 +868,6 @@ namespace WadTool
 
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
             _editor.SelectedNode.WadAnimation.StateId = newValue;
-
             Saved = false;
         }
 
