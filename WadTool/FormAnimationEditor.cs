@@ -808,10 +808,20 @@ namespace WadTool
                 if (possibleID >= 0)
                     newValue = (ushort)possibleID;
             }
+            else
+            {
+                // Restore text ID to textbox
+                var possibleName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, newValue);
+                if (cmbStateID.Items.Contains(possibleName))
+                {
+                    cmbStateID.FindStringExact(possibleName);
+                    tbStateId.Text = possibleName;
+                }
+            }
 
             // Don't update if not changed or parse failed
-            if (oldValue == newValue || newValue != ushort.MaxValue)
-                return;
+            if (oldValue == newValue || newValue == ushort.MaxValue)
+            return;
 
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
             _editor.SelectedNode.WadAnimation.StateId = newValue;
