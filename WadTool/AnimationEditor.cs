@@ -38,8 +38,8 @@ namespace WadTool
             WorkingAnimations = new List<AnimationNode>();
             for (int i = 0; i < Moveable.Animations.Count; i++)
             {
-                var animation = Moveable.Animations[i];
-                WorkingAnimations.Add(new AnimationNode(animation.Clone(), Animation.FromWad2(Moveable.Bones, animation), i));
+                var animation = Moveable.Animations[i].Clone(); ;
+                WorkingAnimations.Add(new AnimationNode(animation, Animation.FromWad2(Moveable.Bones, animation), i));
             }
         }
 

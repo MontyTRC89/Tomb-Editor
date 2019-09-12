@@ -21,7 +21,8 @@ namespace WadTool
             None,
             StateID,
             AnimNumber,
-            Name
+            Name,
+            StateName
         }
 
         private enum SoundPreviewType
@@ -56,14 +57,13 @@ namespace WadTool
         private int _currentMaterialIndex;
         private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
 
+        private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
+
         // Chained playback vars
         private bool _chainedPlayback;
         private int _chainedPlaybackInitialAnim;
         private int _chainedPlaybackInitialCursorPos;
         private VectorInt2 _chainedPlaybackInitialSelection;
-
-
-        private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
 
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
@@ -140,10 +140,12 @@ namespace WadTool
                     if (anim != null)
                     {
                         var index = lstAnimations.Items.IndexOf(anim);
+                        var node = (AnimationNode)anim.Tag;
 
                         // Back-up cursor position
                         int cursorPos = -1;
-                        if (e.Animation.DirectXAnimation.KeyFrames.Count == ((AnimationNode)anim.Tag).DirectXAnimation.KeyFrames.Count)
+                        if ((e.Animation.DirectXAnimation.KeyFrames.Count == node.DirectXAnimation.KeyFrames.Count) &&
+                            (e.Animation.WadAnimation.FrameRate == node.WadAnimation.FrameRate))
                             cursorPos = timeline.Value;
 
                         lstAnimations.Items[index].Tag = e.Animation;
@@ -151,7 +153,12 @@ namespace WadTool
                         lstAnimations.SelectItem(index);
 
                         // Restore cursor position
-                        if (cursorPos != -1) timeline.Value = cursorPos;
+                        if (cursorPos != -1)
+                            timeline.Value = cursorPos;
+                        else
+                            timeline.Value = timeline.Minimum;
+
+                        Saved = false;
                     }
                 }
             }
@@ -269,7 +276,8 @@ namespace WadTool
                         if (!int.TryParse(searchString.Substring(tokenEndIndex + 1), out searchNumber) && searchType != SearchType.Name)
                         {
                             finalSearchString = searchString.Substring(tokenEndIndex + 1);
-                            searchType = SearchType.Name;
+                            if (searchType == SearchType.StateID) searchType = SearchType.StateName;
+                            else searchType = SearchType.Name;
                         }
                     }
                 }
@@ -277,11 +285,26 @@ namespace WadTool
                 {
                     if (!int.TryParse(searchString, out searchNumber))
                     {
-                        searchType = SearchType.Name; // If no numerical, always search as by name
+                        // If no numerical, always search as by name
+                        if (searchType == SearchType.StateID) searchType = SearchType.StateName;
+                        else searchType = SearchType.Name;
                         finalSearchString = searchString;
                     }
                     else
                         searchType = SearchType.StateID; // Otherwise prioritize state id
+                }
+            }
+
+            // Scan for state ID by known names which are in combobox by this time
+            if (searchType == SearchType.StateName)
+            {
+                var names = cmbStateID.Items.Cast<string>().ToList();
+                var firstEntry = names.IndexOf(name => name.ToLower().Contains(finalSearchString));
+
+                if (firstEntry >= 0)
+                {
+                    searchNumber = firstEntry;
+                    searchType = SearchType.StateID; // Switch back to state ID search, as we found index.
                 }
             }
 
@@ -325,17 +348,16 @@ namespace WadTool
             nudFramerate.Value = node.WadAnimation.FrameRate;
             nudNextAnim.Value = node.WadAnimation.NextAnimation;
             nudNextFrame.Value = node.WadAnimation.NextFrame;
-            nudVertStartVel.Value = (decimal)node.WadAnimation.StartVelocity;
-            nudVertEndVel.Value = (decimal)node.WadAnimation.EndVelocity;
-            nudLatStartVel.Value = (decimal)node.WadAnimation.StartLateralVelocity;
-            nudLatEndVel.Value = (decimal)node.WadAnimation.EndLateralVelocity;
+            tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
+            tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
+            tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
+            tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
 
             var stateName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, node.WadAnimation.StateId);
 
             if (cmbStateID.Items.Contains(stateName))
             {
-                cmbStateID.FindStringExact(stateName);
-                tbStateId.Text = stateName;
+                cmbStateID.SelectedIndex = cmbStateID.FindStringExact(stateName);
             }
             else
                 tbStateId.Text = node.WadAnimation.StateId.ToString();
@@ -793,35 +815,62 @@ namespace WadTool
             Saved = false;
         }
 
-        private void UpdateStateChange()
+        private void UpdateStateChange(bool forceString = false)
         {
             if (_editor.SelectedNode == null) return;
 
+            bool decodeFailed = false;
             ushort oldValue = _editor.SelectedNode.WadAnimation.StateId;
             ushort newValue = ushort.MaxValue; // Let's hope nobody will ever use state ID 65535...
 
-            // Try to find state ID with similar name in trcatalog
-
-            if (!ushort.TryParse(tbStateId.Text, out newValue))
+            // ID decoding from textbox is not needed in case textbox field was forced manually (eg from combobox).
+            if (forceString)
+                tbStateId.Text = (string)cmbStateID.SelectedItem;
+            
+            // Try to identify if there was a string input in textbox.
+            if (forceString || !ushort.TryParse(tbStateId.Text, out newValue))
             {
+                // String input. Try to find appropriate name in trcatalog.
                 var possibleID = TrCatalog.TryToGetStateID(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, tbStateId.Text.Trim());
                 if (possibleID >= 0)
-                    newValue = (ushort)possibleID;
-            }
-            else
-            {
-                // Restore text ID to textbox
-                var possibleName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, newValue);
-                if (cmbStateID.Items.Contains(possibleName))
+                    newValue = (ushort)possibleID; // Name found, use found state ID
+                else
                 {
-                    cmbStateID.FindStringExact(possibleName);
-                    tbStateId.Text = possibleName;
+                    popup.ShowError(panelRendering, "State ID with given name wasn't found.");
+                    decodeFailed = true;
+                    newValue = oldValue; // Decoding failed, reset state ID to old value
                 }
             }
 
+            // Restore state name to textbox, if possible.
+            if (newValue != ushort.MaxValue)
+            {
+                var possibleName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, newValue);
+
+                // Just update combobox index, it will take care of the rest, recursively calling this function.
+                if (cmbStateID.Items.Contains(possibleName))
+                {
+                    var newIndex = cmbStateID.FindStringExact(possibleName);
+
+                    if (decodeFailed || (newIndex == cmbStateID.SelectedIndex && tbStateId.Text != possibleName))
+                        tbStateId.Text = possibleName;
+
+                    cmbStateID.SelectedIndex = newIndex;
+                }
+                else
+                {
+                    cmbStateID.SelectedIndex = -1;
+                    tbStateId.Text = newValue.ToString();
+                }
+            }
+
+            // Add legacy numerical ID as a tooltip
+            if (!decodeFailed)
+                toolTip1.SetToolTip(tbStateId, "State ID = " + newValue);
+
             // Don't update if not changed or parse failed
             if (oldValue == newValue || newValue == ushort.MaxValue)
-            return;
+                return;
 
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
             _editor.SelectedNode.WadAnimation.StateId = newValue;
@@ -876,16 +925,16 @@ namespace WadTool
                     oldValue = _editor.SelectedNode.WadAnimation.FrameRate;
                     roundToByte = true;
                     break;
-                case "nudVertStartVel":
+                case "tbStartVertVel":
                     oldValue = _editor.SelectedNode.WadAnimation.StartVelocity;
                     break;
-                case "nudVertEndVel":
+                case "tbEndVertVel":
                     oldValue = _editor.SelectedNode.WadAnimation.EndVelocity;
                     break;
-                case "nudLatStartVel":
+                case "tbStartHorVel":
                     oldValue = _editor.SelectedNode.WadAnimation.StartLateralVelocity;
                     break;
-                case "nudLatEndVel":
+                case "tbEndHorVel":
                     oldValue = _editor.SelectedNode.WadAnimation.EndLateralVelocity;
                     break;
             }
@@ -918,16 +967,16 @@ namespace WadTool
                 case "nudFramerate":
                     _editor.SelectedNode.WadAnimation.FrameRate = (byte)result;
                     break;
-                case "nudVertStartVel":
+                case "tbStartVertVel":
                     _editor.SelectedNode.WadAnimation.StartVelocity = result;
                     break;
-                case "nudVertEndVel":
+                case "tbEndVertVel":
                     _editor.SelectedNode.WadAnimation.EndVelocity = result;
                     break;
-                case "nudLatStartVel":
+                case "tbStartHorVel":
                     _editor.SelectedNode.WadAnimation.StartLateralVelocity = result;
                     break;
-                case "nudLatEndVel":
+                case "tbEndHorVel":
                    _editor.SelectedNode.WadAnimation.EndLateralVelocity = result;
                     break;
             }
@@ -1098,22 +1147,19 @@ namespace WadTool
         private void EditAnimCommands(WadAnimCommand cmd = null)
         {
             if (_editor.SelectedNode == null) return;
-
-            using (var form = new FormAnimCommandsEditor(_editor.Tool, _editor.SelectedNode.WadAnimation.AnimCommands, cmd))
+            
+            var existingWindow = Application.OpenForms["FormAnimCommandsEditor"];
+            if (existingWindow == null)
             {
-                if (form.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
-
-                // Add the new state changes
-                _editor.SelectedNode.WadAnimation.AnimCommands.Clear();
-                _editor.SelectedNode.WadAnimation.AnimCommands.AddRange(form.AnimCommands);
-
-                Saved = false;
+                FormAnimCommandsEditor acEditor = new FormAnimCommandsEditor(_editor, _editor.SelectedNode, cmd);
+                acEditor.Show(this);
             }
-
-            timeline.Invalidate();
+            else
+            {
+                existingWindow.Focus();
+                if (cmd != null)
+                    ((FormAnimCommandsEditor)existingWindow).SelectCommand(cmd);
+            }
         }
 
         private void EditStateChanges()
@@ -1284,6 +1330,8 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
+        // Menu controls one-liners
+
         private void addNewAnimationToolStripMenuItem_Click(object sender, EventArgs e) => AddNewAnimation();
         private void deleteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => DeleteAnimation();
         private void insertFrameAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e) => AddNewFrame(panelRendering.CurrentKeyFrame + 1, true);
@@ -1297,11 +1345,15 @@ namespace WadTool
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame, true, false);
         private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
+        private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => ClearFrameBoundingBox(true);
+        private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(true);
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges();
         private void undoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void redoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
+
+        // Toolbox controls one-liners
 
         private void butTbAddAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butTbDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
@@ -1319,6 +1371,8 @@ namespace WadTool
         private void butTbUndo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void butTbRedo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
 
+        // General controls one-liners
+
         private void butAddNewAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
         private void butSearchByStateID_Click(object sender, EventArgs e) => RebuildAnimationsList();
@@ -1330,14 +1384,18 @@ namespace WadTool
         private void butEditAnimCommands_Click(object sender, EventArgs e) => EditAnimCommands();
         private void butEditStateChanges_Click(object sender, EventArgs e) => EditStateChanges();
 
+        // Property controls one-liners
+
+        private void tbName_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) tbName_Validated(this, e); }
+        private void tbStateId_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) UpdateStateChange(); }
         private void tbStateId_Validated(object sender, EventArgs e) => UpdateStateChange();
         private void nudFramerate_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudFramerate);
         private void nudNextAnim_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudNextAnim);
         private void nudNextFrame_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudNextFrame);
-        private void nudVertStartVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudVertStartVel);
-        private void nudVertEndVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudVertEndVel);
-        private void nudLatStartVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudLatStartVel);
-        private void nudLatEndVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(nudLatEndVel);
+        private void tbStartVertVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbStartVertVel);
+        private void tbEndVertVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbEndVertVel);
+        private void tbStartHorVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbStartHorVel);
+        private void tbEndHorVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbEndHorVel);
         private void tbCollisionBoxMinX_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinX);
         private void tbCollisionBoxMinY_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinY);
         private void tbCollisionBoxMinZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinZ);
@@ -1345,8 +1403,18 @@ namespace WadTool
         private void tbCollisionBoxMaxY_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxY);
         private void tbCollisionBoxMaxZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxZ);
 
-        private void tbName_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) tbName_Validated(this, e); }
-        private void tbStateId_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) UpdateStateChange(); }
+        // Timeline & transport one-liners
+
+        private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateStatusLabel();
+        private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame(timeline.Value);
+        private void timeline_AnimCommandDoubleClick(object sender, WadAnimCommand ac) => EditAnimCommands(ac);
+
+        private void butTransportPlay_Click(object sender, EventArgs e) => PlayAnimation();
+        private void butTransportStart_Click(object sender, EventArgs e) => timeline.Value = timeline.Minimum;
+        private void butTransportFrameBack_Click(object sender, EventArgs e) => timeline.Value--;
+        private void butTransportFrameForward_Click(object sender, EventArgs e) => timeline.Value++;
+        private void butTransportEnd_Click(object sender, EventArgs e) => timeline.Value = timeline.Maximum;
+
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
@@ -1554,16 +1622,6 @@ namespace WadTool
             RebuildAnimationsList();
         }
 
-        private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClearFrameBoundingBox(true);
-        }
-
-        private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClearAnimationBoundingBox(true);
-        }
-
         private void formAnimationEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!Saved)
@@ -1628,16 +1686,6 @@ namespace WadTool
             SelectAnimation(node);
         }
 
-        private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateStatusLabel();
-        private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame(timeline.Value);
-        private void timeline_AnimCommandDoubleClick(object sender, WadAnimCommand ac) => EditAnimCommands(ac);
-
-        private void butTransportPlay_Click(object sender, EventArgs e) => PlayAnimation();
-        private void butTransportStart_Click(object sender, EventArgs e) => timeline.Value = timeline.Minimum;
-        private void butTransportFrameBack_Click(object sender, EventArgs e) => timeline.Value--;
-        private void butTransportFrameForward_Click(object sender, EventArgs e) => timeline.Value++;
-        private void butTransportEnd_Click(object sender, EventArgs e) => timeline.Value = timeline.Maximum;
-
         private void butTransportSound_Click(object sender, EventArgs e)
         {
             if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this)) return;
@@ -1674,7 +1722,8 @@ namespace WadTool
 
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Return) RebuildAnimationsList();
+            if (e.KeyCode == Keys.Return)
+                RebuildAnimationsList();
         }
 
         private void butTbInterpolateFrames_Click(object sender, EventArgs e)
@@ -1745,16 +1794,21 @@ namespace WadTool
 
         private void cmbStateID_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tbStateId.Text = (string)cmbStateID.SelectedItem;
-            UpdateStateChange();
+            if (cmbStateID.SelectedIndex != -1)
+                UpdateStateChange(true);
         }
 
         private void tbStateID_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (e.Delta < 0 && cmbStateID.SelectedIndex < cmbStateID.Items.Count)
+            // FIXME: this code is disabled to prevent undo stack flood.
+            // If anybody will discover a way to prevent doing that, I will be glad.
+
+            /*
+            if (e.Delta < 0 && cmbStateID.SelectedIndex < cmbStateID.Items.Count - 1)
                 cmbStateID.SelectedIndex++;
             else if (e.Delta > 0 && cmbStateID.SelectedIndex > 0)
                 cmbStateID.SelectedIndex--;
+            */
         }
 
         private void butSearchStateID_Click(object sender, EventArgs e)
