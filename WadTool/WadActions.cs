@@ -701,38 +701,40 @@ namespace WadTool
                 return null;
             }
 
-            using (var dialog = new AnimationImportDialog(tmpModel.Animations.Select(o => o.Name).ToList()))
-            {
-                dialog.ShowDialog(owner);
+            IOAnimation animToImport;
 
-                if (dialog.DialogResult == DialogResult.Cancel)
-                    return null;
-                else
+            if (tmpModel.Animations.Count > 1)
+                using (var dialog = new AnimationImportDialog(tmpModel.Animations.Select(o => o.Name).ToList()))
                 {
-                    var animToImport = tmpModel.Animations[dialog.AnimationToImport];
-
-                    // Integrity check, number of bones = number of nodes?
-                    if (animToImport.NumNodes != nodeCount)
-                    {
-                        tool.SendMessage("Selected animation has different number of bones!", PopupType.Error);
+                    dialog.ShowDialog(owner);
+                    if (dialog.DialogResult == DialogResult.Cancel)
                         return null;
-                    }
-
-                    WadAnimation animation = new WadAnimation();
-                    animation.Name = animToImport.Name;
-
-                    foreach (var frame in animToImport.Frames)
-                    {
-                        var keyFrame = new WadKeyFrame();
-                        keyFrame.Offset = frame.Offset;
-                        frame.Angles.ForEach(angle => keyFrame.Angles.Add(new WadKeyFrameRotation() { Rotations = angle }));
-
-                        animation.KeyFrames.Add(keyFrame);
-                    }
-
-                    return animation;
+                    else
+                        animToImport = tmpModel.Animations[dialog.AnimationToImport];
                 }
+            else
+                animToImport = tmpModel.Animations[0];
+
+            // Integrity check, number of bones = number of nodes?
+            if (animToImport.NumNodes != nodeCount)
+            {
+                tool.SendMessage("Selected animation has different number of bones!", PopupType.Error);
+                return null;
             }
+
+            WadAnimation animation = new WadAnimation();
+            animation.Name = animToImport.Name;
+
+            foreach (var frame in animToImport.Frames)
+            {
+                var keyFrame = new WadKeyFrame();
+                keyFrame.Offset = frame.Offset;
+                frame.Angles.ForEach(angle => keyFrame.Angles.Add(new WadKeyFrameRotation() { Rotations = angle }));
+
+                animation.KeyFrames.Add(keyFrame);
+            }
+
+            return animation;
         }
 
         public static void EditAnimations(WadToolClass tool, IWin32Window owner)
