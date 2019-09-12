@@ -511,10 +511,10 @@
       <anim item="0" id="117" name="ONWATER_SWIM_FORWARD_TO_IDLE" />
       <anim item="0" id="118" name="ONWATER_IDLE_TO_SWIM" />
       <anim item="0" id="119" name="FREE_FALL_TO_UNDERWATER_ALTERNATE" />
-      <anim item="0" id="120" name="START_OBJECT_MOVING" />
-      <anim item="0" id="121" name="STOP_OBJECT_MOVING" />
-      <anim item="0" id="122" name="OBJECT_PULL" />
-      <anim item="0" id="123" name="OBJECT_PUSH" />
+      <anim item="0" id="120" name="PUSHABLE_GRAB" />
+      <anim item="0" id="121" name="PUSHABLE_RELEASE" />
+      <anim item="0" id="122" name="PUSHABLE_PULL" />
+      <anim item="0" id="123" name="PUSHABLE_PUSH" />
       <anim item="0" id="124" name="UNDERWATER_DEATH" />
       <anim item="0" id="125" name="HURT_FORWARD" />
       <anim item="0" id="126" name="HURT_BACK" />
@@ -530,7 +530,7 @@
       <anim item="0" id="136" name="CLIMB_LEFT" />
       <anim item="0" id="137" name="CLIMB_RIGHT" />
       <anim item="0" id="138" name="STAND_TO_DEATH" />
-      <anim item="0" id="139" name="SQUASH_BOULDER" />
+      <anim item="0" id="139" name="BOULDER_DEATH" />
       <anim item="0" id="140" name="ONWATER_IDLE_TO_SWIM_BACK" />
       <anim item="0" id="141" name="ONWATER_SWIM_BACK" />
       <anim item="0" id="142" name="ONWATER_SWIM_BACK_TO_IDLE" />
@@ -540,7 +540,7 @@
       <anim item="0" id="146" name="ROLL_START" />
       <anim item="0" id="147" name="ROLL_CONTINUE" />
       <anim item="0" id="148" name="ROLL_END" />
-      <anim item="0" id="149" name="SPIKED" />
+      <anim item="0" id="149" name="SPIKE_DEATH" />
       <anim item="0" id="150" name="REACH_TO_THIN_LEDGE" />
       <anim item="0" id="151" name="LANDING_ROLL" />
       <anim item="0" id="152" name="SWANDIVE_TO_UNDERWATER1" />
