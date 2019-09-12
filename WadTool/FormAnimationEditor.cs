@@ -769,7 +769,7 @@ namespace WadTool
 
         private void SplitAnimation()
         {
-            if (_editor.SelectedNode != null)
+            if (_editor.SelectedNode == null)
             {
                 popup.ShowWarning(panelRendering, "No animation to split!");
                 return;
