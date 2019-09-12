@@ -3176,6 +3176,10 @@
       <anim item="0" id="397" name="ROPE_SWING_BACK_END" />
       <anim item="0" id="398" name="ROPE_SWING_BACK_START" />
       <anim item="0" id="399" name="ROPE_SWING_FORWARD_SOFT" />
+      <anim item="0" id="400" name="POUR_WATERSKIN_LOW" />
+      <anim item="0" id="401" name="FILL_WATERSKIN" />
+      <anim item="0" id="402" name="POUR_WATERSKIN_HIGH" />
+      <anim item="0" id="403" name="PRY_DOOR" />
       <anim item="0" id="404" name="ROPE_SWING_FORWARD_HARD" />
       <anim item="0" id="405" name="ROPE_CHANGE_ROPE" />
       <anim item="0" id="406" name="ROPE_SWING_TO_REACH_FRONT" />
