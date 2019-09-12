@@ -196,13 +196,18 @@ namespace TombLib.Wad.Catalog
 
             if (game != null)
                 entry = game.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
-
+            
             if (entry.Name == null)
-                foreach (var otherGame in Games.Where(g => g.Key != version))
+            {
+                var otherGames = Games.Where(g => g.Key != version).ToList();
+                otherGames.Reverse();
+
+                foreach (var otherGame in otherGames)
                 {
                     entry = otherGame.Value.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
                     if (entry.Name != null) break;
                 }
+            }
 
             if (entry.Name == null) return "Animation " + animId;
             else return entry.Name;
@@ -218,11 +223,16 @@ namespace TombLib.Wad.Catalog
                 entry = game.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
 
             if (entry.Name == null)
-                foreach (var otherGame in Games.Where(g => g.Key != version))
+            {
+                var otherGames = Games.Where(g => g.Key != version).ToList();
+                otherGames.Reverse();
+
+                foreach (var otherGame in otherGames)
                 {
                     entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
                     if (entry.Name != null) break;
                 }
+            }
 
             if (entry.Name == null) return "Unknown state " + stateId;
             else return entry.Name;
