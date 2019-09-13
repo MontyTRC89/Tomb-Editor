@@ -320,7 +320,7 @@ namespace WadTool
 
                 using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                 {
-                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    form.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
 
@@ -677,21 +677,29 @@ namespace WadTool
             // Import the model
             try
             {
-                var importer = BaseGeometryImporter.CreateForFile(fileName, new IOGeometrySettings(), null);
-                tmpModel = importer.ImportFromFile(fileName);
-
-                // We don't support animation importing from custom-written mqo importer yet...
-                if (importer is MetasequoiaImporter)
+                var settings = new IOGeometrySettings() { ImportAnimations = true, ImportGeometry = false };
+                using (var form = new GeometryIOSettingsDialog(settings))
                 {
-                    tool.SendMessage("Metasequoia importer isn't currently supported.", PopupType.Error);
-                    return null;
-                }
+                    form.AddPreset(IOSettingsPresets.AnimationSettingsPresets);
+                    if (form.ShowDialog(owner) != DialogResult.OK)
+                        return null;
 
-                // If no animations, return null
-                if (tmpModel.Animations.Count == 0)
-                {
-                    tool.SendMessage("Selected file has no appropriate animations!", PopupType.Error);
-                    return null;
+                    var importer = BaseGeometryImporter.CreateForFile(fileName, settings, null);
+                    tmpModel = importer.ImportFromFile(fileName);
+
+                    // We don't support animation importing from custom-written mqo importer yet...
+                    if (importer is MetasequoiaImporter)
+                    {
+                        tool.SendMessage("Metasequoia importer isn't currently supported.", PopupType.Error);
+                        return null;
+                    }
+
+                    // If no animations, return null
+                    if (tmpModel.Animations.Count == 0)
+                    {
+                        tool.SendMessage("Selected file has no appropriate animations!", PopupType.Error);
+                        return null;
+                    }
                 }
             }
             catch (Exception ex)

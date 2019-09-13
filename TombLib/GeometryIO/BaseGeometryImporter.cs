@@ -144,6 +144,13 @@ namespace TombLib.GeometryIO
             //return new Vector4(color.X / 2.0f, color.Y / 2.0f, color.Z / 2.0f, color.W);
         }
 
+        public static IReadOnlyList<FileFormat> AnimationFileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Filmbox", "fbx"),
+            new FileFormat("Collada", "dae"),
+            new FileFormat("TombEditor XML", "anim")
+        };
+
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
             new FileFormat("Metasequoia", "mqo"),

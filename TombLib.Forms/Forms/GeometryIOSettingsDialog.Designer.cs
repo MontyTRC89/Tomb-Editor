@@ -24,32 +24,36 @@
             this.cbSwapXZ = new DarkUI.Controls.DarkCheckBox();
             this.cbSwapXY = new DarkUI.Controls.DarkCheckBox();
             this.nmScale = new DarkUI.Controls.DarkNumericUpDown();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.lblScale = new DarkUI.Controls.DarkLabel();
             this.cbPremultiplyUV = new DarkUI.Controls.DarkCheckBox();
             this.cbWrapUV = new DarkUI.Controls.DarkCheckBox();
             this.cbFlipUV_V = new DarkUI.Controls.DarkCheckBox();
             this.lblPreset = new DarkUI.Controls.DarkLabel();
             this.cmbPresetList = new DarkUI.Controls.DarkComboBox();
             this.panelContents = new DarkUI.Controls.DarkSectionPanel();
-            this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
+            this.groupAnims = new DarkUI.Controls.DarkGroupBox();
+            this.cbSwapYZTrans = new DarkUI.Controls.DarkCheckBox();
+            this.cbSwapXZTrans = new DarkUI.Controls.DarkCheckBox();
+            this.cbSwapXYTrans = new DarkUI.Controls.DarkCheckBox();
+            this.groupMisc = new DarkUI.Controls.DarkGroupBox();
             this.cbImportBakedLight = new DarkUI.Controls.DarkCheckBox();
-            this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
-            this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
-            this.cbDivide = new DarkUI.Controls.DarkCheckBox();
-            this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.groupTextures = new DarkUI.Controls.DarkGroupBox();
+            this.groupSize = new DarkUI.Controls.DarkGroupBox();
+            this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).BeginInit();
             this.panelContents.SuspendLayout();
-            this.darkGroupBox4.SuspendLayout();
-            this.darkGroupBox3.SuspendLayout();
-            this.darkGroupBox2.SuspendLayout();
-            this.darkGroupBox1.SuspendLayout();
+            this.groupAnims.SuspendLayout();
+            this.groupMisc.SuspendLayout();
+            this.groupTextures.SuspendLayout();
+            this.groupSize.SuspendLayout();
+            this.groupAxis.SuspendLayout();
             this.SuspendLayout();
             // 
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(111, 276);
+            this.butOK.Location = new System.Drawing.Point(129, 283);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
@@ -60,7 +64,7 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(197, 276);
+            this.butCancel.Location = new System.Drawing.Point(215, 283);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
@@ -122,6 +126,8 @@
             // 
             // nmScale
             // 
+            this.nmScale.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nmScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nmScale.DecimalPlaces = 4;
             this.nmScale.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -148,7 +154,7 @@
             262144});
             this.nmScale.MousewheelSingleIncrement = true;
             this.nmScale.Name = "nmScale";
-            this.nmScale.Size = new System.Drawing.Size(97, 22);
+            this.nmScale.Size = new System.Drawing.Size(101, 22);
             this.nmScale.TabIndex = 1;
             this.nmScale.Value = new decimal(new int[] {
             1,
@@ -156,21 +162,21 @@
             0,
             0});
             // 
-            // darkLabel1
+            // lblScale
             // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(5, 23);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(36, 13);
-            this.darkLabel1.TabIndex = 0;
-            this.darkLabel1.Text = "Scale:";
+            this.lblScale.AutoSize = true;
+            this.lblScale.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblScale.Location = new System.Drawing.Point(5, 23);
+            this.lblScale.Name = "lblScale";
+            this.lblScale.Size = new System.Drawing.Size(36, 13);
+            this.lblScale.TabIndex = 0;
+            this.lblScale.Text = "Scale:";
             // 
             // cbPremultiplyUV
             // 
             this.cbPremultiplyUV.Location = new System.Drawing.Point(6, 67);
             this.cbPremultiplyUV.Name = "cbPremultiplyUV";
-            this.cbPremultiplyUV.Size = new System.Drawing.Size(139, 17);
+            this.cbPremultiplyUV.Size = new System.Drawing.Size(130, 17);
             this.cbPremultiplyUV.TabIndex = 3;
             this.cbPremultiplyUV.Text = "Premultiply UV";
             // 
@@ -178,7 +184,7 @@
             // 
             this.cbWrapUV.Location = new System.Drawing.Point(6, 44);
             this.cbWrapUV.Name = "cbWrapUV";
-            this.cbWrapUV.Size = new System.Drawing.Size(139, 17);
+            this.cbWrapUV.Size = new System.Drawing.Size(130, 17);
             this.cbWrapUV.TabIndex = 2;
             this.cbWrapUV.Text = "Wrap UV";
             // 
@@ -186,15 +192,16 @@
             // 
             this.cbFlipUV_V.Location = new System.Drawing.Point(6, 21);
             this.cbFlipUV_V.Name = "cbFlipUV_V";
-            this.cbFlipUV_V.Size = new System.Drawing.Size(139, 17);
+            this.cbFlipUV_V.Size = new System.Drawing.Size(130, 17);
             this.cbFlipUV_V.TabIndex = 1;
             this.cbFlipUV_V.Text = "Invert V coordinate";
             // 
             // lblPreset
             // 
+            this.lblPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(5, 251);
+            this.lblPreset.Location = new System.Drawing.Point(5, 254);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -202,36 +209,78 @@
             // 
             // cmbPresetList
             // 
+            this.cmbPresetList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(52, 247);
+            this.cmbPresetList.Location = new System.Drawing.Point(52, 250);
             this.cmbPresetList.Name = "cmbPresetList";
-            this.cmbPresetList.Size = new System.Drawing.Size(225, 23);
+            this.cmbPresetList.Size = new System.Drawing.Size(243, 23);
             this.cmbPresetList.TabIndex = 6;
             this.cmbPresetList.SelectedIndexChanged += new System.EventHandler(this.cmbPresetList_SelectedIndexChanged);
             // 
             // panelContents
             // 
-            this.panelContents.Controls.Add(this.darkGroupBox4);
-            this.panelContents.Controls.Add(this.darkGroupBox3);
-            this.panelContents.Controls.Add(this.darkGroupBox2);
-            this.panelContents.Controls.Add(this.darkGroupBox1);
+            this.panelContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelContents.Controls.Add(this.groupAnims);
+            this.panelContents.Controls.Add(this.groupMisc);
+            this.panelContents.Controls.Add(this.groupTextures);
+            this.panelContents.Controls.Add(this.groupSize);
+            this.panelContents.Controls.Add(this.groupAxis);
             this.panelContents.Controls.Add(this.cmbPresetList);
             this.panelContents.Controls.Add(this.lblPreset);
             this.panelContents.Location = new System.Drawing.Point(0, 0);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(283, 274);
+            this.panelContents.Size = new System.Drawing.Size(301, 277);
             this.panelContents.TabIndex = 7;
             // 
-            // darkGroupBox4
+            // groupAnims
             // 
-            this.darkGroupBox4.Controls.Add(this.cbImportBakedLight);
-            this.darkGroupBox4.Location = new System.Drawing.Point(6, 192);
-            this.darkGroupBox4.Name = "darkGroupBox4";
-            this.darkGroupBox4.Size = new System.Drawing.Size(271, 49);
-            this.darkGroupBox4.TabIndex = 9;
-            this.darkGroupBox4.TabStop = false;
-            this.darkGroupBox4.Text = "Misc";
+            this.groupAnims.Controls.Add(this.cbSwapYZTrans);
+            this.groupAnims.Controls.Add(this.cbSwapXZTrans);
+            this.groupAnims.Controls.Add(this.cbSwapXYTrans);
+            this.groupAnims.Location = new System.Drawing.Point(140, 157);
+            this.groupAnims.Name = "groupAnims";
+            this.groupAnims.Size = new System.Drawing.Size(155, 88);
+            this.groupAnims.TabIndex = 10;
+            this.groupAnims.TabStop = false;
+            this.groupAnims.Text = "Animations";
+            // 
+            // cbSwapYZTrans
+            // 
+            this.cbSwapYZTrans.Location = new System.Drawing.Point(6, 65);
+            this.cbSwapYZTrans.Name = "cbSwapYZTrans";
+            this.cbSwapYZTrans.Size = new System.Drawing.Size(134, 19);
+            this.cbSwapYZTrans.TabIndex = 7;
+            this.cbSwapYZTrans.Text = "Swap Y / Z translation";
+            // 
+            // cbSwapXZTrans
+            // 
+            this.cbSwapXZTrans.Location = new System.Drawing.Point(6, 43);
+            this.cbSwapXZTrans.Name = "cbSwapXZTrans";
+            this.cbSwapXZTrans.Size = new System.Drawing.Size(134, 19);
+            this.cbSwapXZTrans.TabIndex = 6;
+            this.cbSwapXZTrans.Text = "Swap X / Z translation";
+            // 
+            // cbSwapXYTrans
+            // 
+            this.cbSwapXYTrans.Location = new System.Drawing.Point(6, 21);
+            this.cbSwapXYTrans.Name = "cbSwapXYTrans";
+            this.cbSwapXYTrans.Size = new System.Drawing.Size(134, 19);
+            this.cbSwapXYTrans.TabIndex = 5;
+            this.cbSwapXYTrans.Text = "Swap X / Y translation";
+            // 
+            // groupMisc
+            // 
+            this.groupMisc.Controls.Add(this.cbImportBakedLight);
+            this.groupMisc.Location = new System.Drawing.Point(6, 192);
+            this.groupMisc.Name = "groupMisc";
+            this.groupMisc.Size = new System.Drawing.Size(128, 53);
+            this.groupMisc.TabIndex = 9;
+            this.groupMisc.TabStop = false;
+            this.groupMisc.Text = "Misc";
             // 
             // cbImportBakedLight
             // 
@@ -242,55 +291,44 @@
             this.cbImportBakedLight.TabIndex = 3;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
-            // darkGroupBox3
+            // groupTextures
             // 
-            this.darkGroupBox3.Controls.Add(this.cbPremultiplyUV);
-            this.darkGroupBox3.Controls.Add(this.cbFlipUV_V);
-            this.darkGroupBox3.Controls.Add(this.cbWrapUV);
-            this.darkGroupBox3.Location = new System.Drawing.Point(126, 83);
-            this.darkGroupBox3.Name = "darkGroupBox3";
-            this.darkGroupBox3.Size = new System.Drawing.Size(151, 103);
-            this.darkGroupBox3.TabIndex = 8;
-            this.darkGroupBox3.TabStop = false;
-            this.darkGroupBox3.Text = "Texture mapping";
+            this.groupTextures.Controls.Add(this.cbPremultiplyUV);
+            this.groupTextures.Controls.Add(this.cbFlipUV_V);
+            this.groupTextures.Controls.Add(this.cbWrapUV);
+            this.groupTextures.Location = new System.Drawing.Point(140, 62);
+            this.groupTextures.Name = "groupTextures";
+            this.groupTextures.Size = new System.Drawing.Size(155, 89);
+            this.groupTextures.TabIndex = 8;
+            this.groupTextures.TabStop = false;
+            this.groupTextures.Text = "Texture mapping";
             // 
-            // darkGroupBox2
+            // groupSize
             // 
-            this.darkGroupBox2.Controls.Add(this.cbDivide);
-            this.darkGroupBox2.Controls.Add(this.nmScale);
-            this.darkGroupBox2.Controls.Add(this.darkLabel1);
-            this.darkGroupBox2.Location = new System.Drawing.Point(126, 6);
-            this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(151, 71);
-            this.darkGroupBox2.TabIndex = 8;
-            this.darkGroupBox2.TabStop = false;
-            this.darkGroupBox2.Text = "Size";
+            this.groupSize.Controls.Add(this.nmScale);
+            this.groupSize.Controls.Add(this.lblScale);
+            this.groupSize.Location = new System.Drawing.Point(140, 6);
+            this.groupSize.Name = "groupSize";
+            this.groupSize.Size = new System.Drawing.Size(155, 50);
+            this.groupSize.TabIndex = 8;
+            this.groupSize.TabStop = false;
+            this.groupSize.Text = "Size";
             // 
-            // cbDivide
+            // groupAxis
             // 
-            this.cbDivide.AutoSize = true;
-            this.cbDivide.Location = new System.Drawing.Point(8, 49);
-            this.cbDivide.Name = "cbDivide";
-            this.cbDivide.Size = new System.Drawing.Size(134, 17);
-            this.cbDivide.TabIndex = 2;
-            this.cbDivide.Text = "Divide by scale factor";
-            this.cbDivide.Visible = false;
-            // 
-            // darkGroupBox1
-            // 
-            this.darkGroupBox1.Controls.Add(this.cbInvertFaces);
-            this.darkGroupBox1.Controls.Add(this.cbSwapXY);
-            this.darkGroupBox1.Controls.Add(this.cbFlipZ);
-            this.darkGroupBox1.Controls.Add(this.cbSwapXZ);
-            this.darkGroupBox1.Controls.Add(this.cbFlipY);
-            this.darkGroupBox1.Controls.Add(this.cbSwapYZ);
-            this.darkGroupBox1.Controls.Add(this.cbFlipX);
-            this.darkGroupBox1.Location = new System.Drawing.Point(6, 6);
-            this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(114, 180);
-            this.darkGroupBox1.TabIndex = 8;
-            this.darkGroupBox1.TabStop = false;
-            this.darkGroupBox1.Text = "Axis";
+            this.groupAxis.Controls.Add(this.cbInvertFaces);
+            this.groupAxis.Controls.Add(this.cbSwapXY);
+            this.groupAxis.Controls.Add(this.cbFlipZ);
+            this.groupAxis.Controls.Add(this.cbSwapXZ);
+            this.groupAxis.Controls.Add(this.cbFlipY);
+            this.groupAxis.Controls.Add(this.cbSwapYZ);
+            this.groupAxis.Controls.Add(this.cbFlipX);
+            this.groupAxis.Location = new System.Drawing.Point(6, 6);
+            this.groupAxis.Name = "groupAxis";
+            this.groupAxis.Size = new System.Drawing.Size(128, 180);
+            this.groupAxis.TabIndex = 8;
+            this.groupAxis.TabStop = false;
+            this.groupAxis.Text = "Axis";
             // 
             // cbInvertFaces
             // 
@@ -308,7 +346,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(283, 304);
+            this.ClientSize = new System.Drawing.Size(301, 311);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -324,13 +362,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).EndInit();
             this.panelContents.ResumeLayout(false);
             this.panelContents.PerformLayout();
-            this.darkGroupBox4.ResumeLayout(false);
-            this.darkGroupBox4.PerformLayout();
-            this.darkGroupBox3.ResumeLayout(false);
-            this.darkGroupBox2.ResumeLayout(false);
-            this.darkGroupBox2.PerformLayout();
-            this.darkGroupBox1.ResumeLayout(false);
-            this.darkGroupBox1.PerformLayout();
+            this.groupAnims.ResumeLayout(false);
+            this.groupMisc.ResumeLayout(false);
+            this.groupMisc.PerformLayout();
+            this.groupTextures.ResumeLayout(false);
+            this.groupSize.ResumeLayout(false);
+            this.groupSize.PerformLayout();
+            this.groupAxis.ResumeLayout(false);
+            this.groupAxis.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -346,19 +385,22 @@
         private DarkUI.Controls.DarkCheckBox cbFlipY;
         private DarkUI.Controls.DarkCheckBox cbFlipX;
         private DarkUI.Controls.DarkNumericUpDown nmScale;
-        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkLabel lblScale;
         private DarkUI.Controls.DarkCheckBox cbFlipUV_V;
         private DarkUI.Controls.DarkCheckBox cbWrapUV;
         private DarkUI.Controls.DarkCheckBox cbPremultiplyUV;
         private DarkUI.Controls.DarkLabel lblPreset;
         private DarkUI.Controls.DarkComboBox cmbPresetList;
         private DarkUI.Controls.DarkSectionPanel panelContents;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox3;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
+        private DarkUI.Controls.DarkGroupBox groupTextures;
+        private DarkUI.Controls.DarkGroupBox groupSize;
+        private DarkUI.Controls.DarkGroupBox groupAxis;
         private DarkUI.Controls.DarkCheckBox cbInvertFaces;
-        private DarkUI.Controls.DarkCheckBox cbDivide;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox4;
+        private DarkUI.Controls.DarkGroupBox groupMisc;
         private DarkUI.Controls.DarkCheckBox cbImportBakedLight;
+        private DarkUI.Controls.DarkGroupBox groupAnims;
+        private DarkUI.Controls.DarkCheckBox cbSwapXZTrans;
+        private DarkUI.Controls.DarkCheckBox cbSwapXYTrans;
+        private DarkUI.Controls.DarkCheckBox cbSwapYZTrans;
     }
 }

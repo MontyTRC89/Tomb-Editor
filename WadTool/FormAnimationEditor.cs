@@ -1,12 +1,14 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
+using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -1554,12 +1556,12 @@ namespace WadTool
             if (_editor.SelectedNode == null)
                 return;
 
-            if (saveFileDialogExport.ShowDialog(this) == DialogResult.Cancel)
-                return;
+            string path = LevelFileDialog.BrowseFile(this, "Specify file to save animation",
+                new List<FileFormat>() { new FileFormat("TombEditor XML", "anim") }, true);
 
             var animationToSave = _editor.GetSavedAnimation(_editor.SelectedNode);
 
-            if (!WadActions.ExportAnimationToXml(_editor.Moveable, animationToSave, saveFileDialogExport.FileName))
+            if (!WadActions.ExportAnimationToXml(_editor.Moveable, animationToSave, path))
             {
                 popup.ShowError(panelRendering, "Can't export current animation to XML file");
                 return;
@@ -1571,15 +1573,18 @@ namespace WadTool
             if (_editor.SelectedNode == null)
                 return;
 
-            if (openFileDialogImport.ShowDialog(this) == DialogResult.Cancel)
+            string path = LevelFileDialog.BrowseFile(this, "Select a file with animations", 
+                BaseGeometryImporter.AnimationFileExtensions, false);
+
+            if (string.IsNullOrEmpty(path))
                 return;
 
             WadAnimation animation = null;
 
-            if (Path.GetExtension(openFileDialogImport.FileName) == ".xml")
-                animation = WadActions.ImportAnimationFromXml(_editor.Tool, openFileDialogImport.FileName);
+            if (Path.GetExtension(path) == ".xml")
+                animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
             else
-                animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, openFileDialogImport.FileName);
+                animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
 
             if (animation == null)
                 return;

@@ -47,186 +47,237 @@ namespace TombLib.GeometryIO.Importers
             var newModel = new IOModel();
             var textures = new Dictionary<int, Texture>();
 
-            // Create the list of materials to load
-            for (int i = 0; i < scene.Materials.Count; i++)
+            if (_settings.ImportGeometry)
             {
-                var mat = scene.Materials[i];
-                var material = new IOMaterial(mat.HasName ? mat.Name : "Material_" + i);
-
-                var diffusePath = mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null;
-                if (string.IsNullOrWhiteSpace(diffusePath))
-                    continue;
-
-                textures.Add(i, GetTexture(path, diffusePath));
-
-                // Create the new material
-                material.Texture = textures[i];
-                material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == global::Assimp.BlendMode.Additive;
-                material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
-                newModel.Materials.Add(material);
-            }
-
-            var lastBaseVertex = 0;
-
-            // Loop for each mesh loaded in scene
-            foreach (var mesh in scene.Meshes)
-            {
-                // Import only textured meshes with valid materials
-                Texture faceTexture;
-                if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
+                // Create the list of materials to load
+                for (int i = 0; i < scene.Materials.Count; i++)
                 {
-                    logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which can't be found.");
-                    continue;
-                }
+                    var mat = scene.Materials[i];
+                    var material = new IOMaterial(mat.HasName ? mat.Name : "Material_" + i);
 
-                // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
-                var material = newModel.Materials[mesh.MaterialIndex];
-                var newMesh = new IOMesh(mesh.Name);
-                var newSubmesh = new IOSubmesh(material);
-                newMesh.Submeshes.Add(material, newSubmesh);
-
-                bool hasTexCoords = mesh.HasTextureCoords(0);
-                bool hasColors = mesh.HasVertexColors(0);
-                bool hasNormals = mesh.HasNormals;
-
-                // Source data
-                var positions = mesh.Vertices;
-                var normals = mesh.Normals;
-                var texCoords = mesh.TextureCoordinateChannels[0];
-                var colors = mesh.VertexColorChannels[0];
-
-                for (int i = 0; i < mesh.VertexCount; i++)
-                {
-                    // Create position
-                    var position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z);
-                    position = ApplyAxesTransforms(position);
-                    newMesh.Positions.Add(position);
-
-                    // Create normal
-                    var normal = new Vector3(normals[i].X, normals[i].Y, normals[i].Z);
-                    normal = ApplyAxesTransforms(normal);
-                    newMesh.Normals.Add(normal);
-
-                    // Create UV
-                    var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
-                    if(faceTexture != null)
-                        currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
-                    newMesh.UV.Add(currentUV);
-
-                    // Create colors
-                    if (hasColors)
-                    {
-                        var color = new Vector4(colors[i].R, colors[i].G, colors[i].B, colors[i].A);
-                        newMesh.Colors.Add(color);
-                    }
-                }
-
-                // Add polygons
-                foreach (var face in mesh.Faces)
-                {
-                    if (face.IndexCount == 3)
-                    {
-                        var poly = new IOPolygon(IOPolygonShape.Triangle);
-
-                        poly.Indices.Add(lastBaseVertex + face.Indices[0]);
-                        poly.Indices.Add(lastBaseVertex + face.Indices[1]);
-                        poly.Indices.Add(lastBaseVertex + face.Indices[2]);
-
-                        if (_settings.InvertFaces)
-                            poly.Indices.Reverse();
-
-                        newSubmesh.Polygons.Add(poly);
-                    }
-                    else if (face.IndexCount == 4)
-                    {
-                        var poly = new IOPolygon(IOPolygonShape.Quad);
-
-                        poly.Indices.Add(lastBaseVertex + face.Indices[0]);
-                        poly.Indices.Add(lastBaseVertex + face.Indices[1]);
-                        poly.Indices.Add(lastBaseVertex + face.Indices[2]);
-                        poly.Indices.Add(lastBaseVertex + face.Indices[3]);
-
-                        if (_settings.InvertFaces)
-                            poly.Indices.Reverse();
-
-                        newSubmesh.Polygons.Add(poly);
-                    }
-                }
-
-                newModel.Meshes.Add(newMesh);
-            }
-
-            // Find all mesh nodes to count against animation nodes
-            var meshNameList = CollectMeshNodeNames(scene.RootNode);
-            meshNameList.OrderBy(s => s); // Sort by ascending names, just in case
-
-            // Loop through all animations and add appropriate ones.
-            // Integrity checks: we have anims, scene has meshes, mesh number is equal to unique mesh name count.
-
-            if (scene.HasAnimations && scene.AnimationCount > 0 && 
-                scene.MeshCount > 0 && scene.MeshCount == meshNameList.Count)
-            {
-                for (int i = 0; i < scene.AnimationCount; i++)
-                {
-                    var anim = scene.Animations[i];
-
-                    // Integrity check: support only node animations, filter out empty and non-integer ones.
-                    if (!anim.HasNodeAnimations || anim.DurationInTicks <= 0 || anim.DurationInTicks % 1 != 0)
+                    var diffusePath = mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null;
+                    if (string.IsNullOrWhiteSpace(diffusePath))
                         continue;
 
-                    // Use original name if possible
-                    int frameCount = (int)anim.DurationInTicks + 1;
-                    IOAnimation ioAnim = new IOAnimation(string.IsNullOrEmpty(anim.Name) ? "Imported animation " + i : anim.Name,
-                                                         scene.MeshCount);
+                    textures.Add(i, GetTexture(path, diffusePath));
 
-                    // Precreate frames and set them to identity
-                    for (int j = 0; j < frameCount; j++)
-                        ioAnim.Frames.Add(new IOFrame());
+                    // Create the new material
+                    material.Texture = textures[i];
+                    material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == global::Assimp.BlendMode.Additive;
+                    material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
+                    newModel.Materials.Add(material);
+                }
 
-                    // Precreate rotations and set them to identity
-                    // I am using generic foreach here instead of linq foreach because for some reason it
-                    // returns wrong amount of angles during enumeration with Enumerable.Repeat.
-                    foreach (var frame in ioAnim.Frames)
+                var lastBaseVertex = 0;
+
+                // Loop for each mesh loaded in scene
+                foreach (var mesh in scene.Meshes)
+                {
+                    // Import only textured meshes with valid materials
+                    Texture faceTexture;
+                    if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
                     {
-                        var angleList = Enumerable.Repeat(Vector3.Zero, scene.MeshCount);
-                        frame.Angles.AddRange(angleList);
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which can't be found.");
+                        continue;
                     }
 
-                    // Search through all nodes and put data into corresponding frames.
-                    // It's not clear what should we do in case if multiple nodes refer to same mesh, but sometimes
-                    // it happens, e. g. in case of fbx format. In this case, we'll just add to existing values for now.
+                    // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
+                    var material = newModel.Materials[mesh.MaterialIndex];
+                    var newMesh = new IOMesh(mesh.Name);
+                    var newSubmesh = new IOSubmesh(material);
+                    newMesh.Submeshes.Add(material, newSubmesh);
 
-                    foreach (var chan in anim.NodeAnimationChannels)
+                    bool hasTexCoords = mesh.HasTextureCoords(0);
+                    bool hasColors = mesh.HasVertexColors(0);
+                    bool hasNormals = mesh.HasNormals;
+
+                    // Source data
+                    var positions = mesh.Vertices;
+                    var normals = mesh.Normals;
+                    var texCoords = mesh.TextureCoordinateChannels[0];
+                    var colors = mesh.VertexColorChannels[0];
+
+                    for (int i = 0; i < mesh.VertexCount; i++)
                     {
-                        // Look if this channel belongs to any mesh in list. 
-                        // If so, attribute it to appropriate frame.
-                        var chanIndex = meshNameList.IndexOf(item => chan.NodeName.Contains(item));
+                        // Create position
+                        var position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z);
+                        position = ApplyAxesTransforms(position);
+                        newMesh.Positions.Add(position);
 
-                        // Integrity check: no appropriate mesh found
-                        if (chanIndex < 0)
+                        // Create normal
+                        var normal = new Vector3(normals[i].X, normals[i].Y, normals[i].Z);
+                        normal = ApplyAxesTransforms(normal);
+                        newMesh.Normals.Add(normal);
+
+                        // Create UV
+                        var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
+                        if (faceTexture != null)
+                            currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
+                        newMesh.UV.Add(currentUV);
+
+                        // Create colors
+                        if (hasColors)
+                        {
+                            var color = new Vector4(colors[i].R, colors[i].G, colors[i].B, colors[i].A);
+                            newMesh.Colors.Add(color);
+                        }
+                    }
+
+                    // Add polygons
+                    foreach (var face in mesh.Faces)
+                    {
+                        if (face.IndexCount == 3)
+                        {
+                            var poly = new IOPolygon(IOPolygonShape.Triangle);
+
+                            poly.Indices.Add(lastBaseVertex + face.Indices[0]);
+                            poly.Indices.Add(lastBaseVertex + face.Indices[1]);
+                            poly.Indices.Add(lastBaseVertex + face.Indices[2]);
+
+                            if (_settings.InvertFaces)
+                                poly.Indices.Reverse();
+
+                            newSubmesh.Polygons.Add(poly);
+                        }
+                        else if (face.IndexCount == 4)
+                        {
+                            var poly = new IOPolygon(IOPolygonShape.Quad);
+
+                            poly.Indices.Add(lastBaseVertex + face.Indices[0]);
+                            poly.Indices.Add(lastBaseVertex + face.Indices[1]);
+                            poly.Indices.Add(lastBaseVertex + face.Indices[2]);
+                            poly.Indices.Add(lastBaseVertex + face.Indices[3]);
+
+                            if (_settings.InvertFaces)
+                                poly.Indices.Reverse();
+
+                            newSubmesh.Polygons.Add(poly);
+                        }
+                    }
+
+                    newModel.Meshes.Add(newMesh);
+                }
+            }
+
+            if (_settings.ImportAnimations && 
+                scene.HasAnimations && scene.AnimationCount > 0)
+            {
+                // Find all mesh nodes to count against animation nodes
+                var meshNameList = CollectMeshNodeNames(scene.RootNode);
+                meshNameList.OrderBy(s => s); // Sort by ascending names, just in case
+
+                // Loop through all animations and add appropriate ones.
+                // Integrity check: there should be meshes and mesh count should be equal to unique mesh name count.
+                if (scene.MeshCount <= 0 || scene.MeshCount != meshNameList.Count)
+                    logger.Warn("Actual number of meshes doesn't correspond to mesh list. Animations won't be imported.");
+                else
+                {
+                    for (int i = 0; i < scene.AnimationCount; i++)
+                    {
+                        var anim = scene.Animations[i];
+
+                        // Integrity check: support only time-based node animations
+                        if (!anim.HasNodeAnimations || anim.DurationInTicks <= 0)
+                        {
+                            logger.Warn("Anim " + i + " isn't a valid type of animation for TR formats.");
                             continue;
+                        }
 
-                        // Apply translation only if found channel belongs to root mesh.
-                        if (chanIndex == 0 && chan.HasPositionKeys && chan.PositionKeyCount > 0)
-                            foreach (var key in chan.PositionKeys)
+                        // Guess possible maximum frame and time
+                        var frameCount = 0;
+                        double maximumTime = 0;
+                        foreach (var node in anim.NodeAnimationChannels)
+                        {
+                            if (node.HasPositionKeys)
                             {
-                                // Integrity check: frame shouldn't fall out of keyframe array bounds.
-                                if (key.Time >= 0 && key.Time % 1 == 0 && key.Time < frameCount)
-                                {
-                                    var frameIndex = (int)key.Time;
-                                    ioAnim.Frames[frameIndex].Offset += new Vector3(key.Value.X,
-                                                                                    key.Value.Y,
-                                                                                    key.Value.Z);
-                                }
+                                var maxNodeTime = node.PositionKeys.Max(key => key.Time);
+                                maximumTime = maximumTime >= maxNodeTime ? maximumTime : maxNodeTime;
+                                frameCount = frameCount >= node.PositionKeyCount ? frameCount : node.PositionKeyCount;
+                            }
+                            if (node.HasRotationKeys)
+                            {
+                                var maxNodeTime = node.RotationKeys.Max(key => key.Time);
+                                maximumTime = maximumTime >= maxNodeTime ? maximumTime : maxNodeTime;
+                                frameCount = frameCount >= node.RotationKeyCount ? frameCount : node.RotationKeyCount;
+                            }
+                        }
+
+                        // Calculate time multiplier
+                        var timeMult = (double)(frameCount - 1) / anim.DurationInTicks;
+
+                        // Integrity check: maximum frame time shouldn't excess duration
+                        if (timeMult * maximumTime >= frameCount)
+                        {
+                            logger.Warn("Anim " + i + " has frames outside of time limits and won't be imported.");
+                            continue;
+                        }
+
+                        IOAnimation ioAnim = new IOAnimation(string.IsNullOrEmpty(anim.Name) ? "Imported animation " + i : anim.Name,
+                                                             scene.MeshCount);
+
+                        // Precreate frames and set them to identity
+                        for (int j = 0; j < frameCount; j++)
+                            ioAnim.Frames.Add(new IOFrame());
+
+                        // Precreate rotations and set them to identity
+                        // I am using generic foreach here instead of linq foreach because for some reason it
+                        // returns wrong amount of angles during enumeration with Enumerable.Repeat.
+                        foreach (var frame in ioAnim.Frames)
+                        {
+                            var angleList = Enumerable.Repeat(Vector3.Zero, scene.MeshCount);
+                            frame.Angles.AddRange(angleList);
+                        }
+
+                        // Search through all nodes and put data into corresponding frames.
+                        // It's not clear what should we do in case if multiple nodes refer to same mesh, but sometimes
+                        // it happens, e. g. in case of fbx format. In this case, we'll just add to existing values for now.
+
+                        foreach (var chan in anim.NodeAnimationChannels)
+                        {
+                            // Look if this channel belongs to any mesh in list. 
+                            // If so, attribute it to appropriate frame.
+                            var chanIndex = meshNameList.IndexOf(item => chan.NodeName.Contains(item));
+
+                            // Integrity check: no appropriate mesh found
+                            if (chanIndex < 0)
+                            {
+                                logger.Warn("Anim " + i + " channel " + chan.NodeName + " has no corresponding mesh in meshtree and will be ignored");
+                                continue;
                             }
 
-                        if (chan.HasRotationKeys && chan.RotationKeyCount > 0)
-                            foreach (var key in chan.RotationKeys)
-                            {
-                                // Integrity check: frame shouldn't fall out of keyframe array bounds.
-                                if (key.Time >= 0 && key.Time % 1 == 0 && key.Time < frameCount)
+                            // Apply translation only if found channel belongs to root mesh.
+                            if (chanIndex == 0 && chan.HasPositionKeys && chan.PositionKeyCount > 0)
+                                foreach (var key in chan.PositionKeys)
                                 {
-                                    var frameIndex = (int)key.Time;
+                                    // Integrity check: frame shouldn't fall out of keyframe array bounds.
+                                    var frameIndex = (int)Math.Round(key.Time * timeMult, MidpointRounding.AwayFromZero);
+                                    if (frameIndex >= frameCount)
+                                    {
+                                        logger.Warn("Anim " + i + " channel " + chan.NodeName + " has a key outside of time limits and will be ignored.");
+                                        continue;
+                                    }
+
+                                    float rX = key.Value.X;
+                                    float rY = key.Value.Y;
+                                    float rZ = key.Value.Z;
+
+                                    if (_settings.SwapAnimTranslationXY) { var temp = rX; rX = rY; rY = temp; }
+                                    if (_settings.SwapAnimTranslationXZ) { var temp = rX; rX = rZ; rZ = temp; }
+                                    if (_settings.SwapAnimTranslationYZ) { var temp = rY; rY = rZ; rZ = temp; }
+
+                                    ioAnim.Frames[frameIndex].Offset += new Vector3(rX, rY, rZ);
+                                }
+
+                            if (chan.HasRotationKeys && chan.RotationKeyCount > 0)
+                                foreach (var key in chan.RotationKeys)
+                                {
+                                    // Integrity check: frame shouldn't fall out of keyframe array bounds.
+                                    var frameIndex = (int)Math.Round(key.Time * timeMult, MidpointRounding.AwayFromZero);
+                                    if (frameIndex >= frameCount)
+                                    {
+                                        logger.Warn("Anim " + i + " channel " + chan.NodeName + " has a key outside of time limits and will be ignored.");
+                                        continue;
+                                    }
 
                                     // Convert quaternions back to rotations.
                                     // This is similar to TRViewer's conversion routine.
@@ -242,13 +293,13 @@ namespace TombLib.GeometryIO.Importers
                                     var rotation = new Vector3(eulers.X * 180.0f / (float)Math.PI,
                                                                eulers.Y * 180.0f / (float)Math.PI,
                                                                eulers.Z * 180.0f / (float)Math.PI);
-                                        
+
                                     ioAnim.Frames[frameIndex].Angles[chanIndex] += MathC.NormalizeAngle(rotation);
                                 }
-                            }
-                    }
+                        }
 
-                    newModel.Animations.Add(ioAnim);
+                        newModel.Animations.Add(ioAnim);
+                    }
                 }
             }
 
