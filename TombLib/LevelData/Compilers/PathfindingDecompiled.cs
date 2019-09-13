@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -790,7 +791,8 @@ namespace TombLib.LevelData.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
             }*/
 
-            while(block.FloorPortal != null)
+            while(block.FloorPortal != null &&
+                room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).VisualType != Room.RoomConnectionType.NoPortal)
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
