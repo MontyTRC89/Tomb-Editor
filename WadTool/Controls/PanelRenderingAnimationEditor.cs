@@ -37,7 +37,7 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawVisibilityBox { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawCollisionBox { get; set; }
+        public bool DrawCollisionBox { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGrid { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -267,7 +267,8 @@ namespace WadTool.Controls
                     _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
                 }
 
-                if (Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
+                if (DrawCollisionBox &&
+                    Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
                 {
                     if (_vertexBufferVisibility != null)
                         _vertexBufferVisibility.Dispose();
