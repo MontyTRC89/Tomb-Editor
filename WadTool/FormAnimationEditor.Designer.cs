@@ -115,9 +115,6 @@ namespace WadTool
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.labelRoom = new System.Windows.Forms.ToolStripLabel();
             this.comboRoomList = new DarkUI.Controls.ToolStripDarkComboBox();
-            this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialogPrj2 = new System.Windows.Forms.OpenFileDialog();
             this.lstAnimations = new DarkUI.Controls.DarkListView();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.butShowAll = new DarkUI.Controls.DarkButton();
@@ -1199,21 +1196,6 @@ namespace WadTool
             this.comboRoomList.Size = new System.Drawing.Size(121, 25);
             this.comboRoomList.SelectedIndexChanged += new System.EventHandler(this.comboRoomList_SelectedIndexChanged);
             // 
-            // openFileDialogImport
-            // 
-            this.openFileDialogImport.Filter = "Filmbox (*.fbx)|*.fbx|Wad Tool animation (*.xml)|*.xml|All files (*.*)|*.*";
-            this.openFileDialogImport.Title = "Import animation";
-            // 
-            // saveFileDialogExport
-            // 
-            this.saveFileDialogExport.Filter = "Wad Tool animation (*.xml)|*.xml";
-            this.saveFileDialogExport.Title = "Export animation";
-            // 
-            // openFileDialogPrj2
-            // 
-            this.openFileDialogPrj2.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
-            this.openFileDialogPrj2.Title = "Open Prj2";
-            // 
             // lstAnimations
             // 
             this.lstAnimations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1933,10 +1915,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbReplaceAnimation;
         private System.Windows.Forms.ToolStripButton butTbSplitAnimation;
         private System.Windows.Forms.ToolStripMenuItem splitAnimationToolStripMenuItem;
-        private System.Windows.Forms.OpenFileDialog openFileDialogImport;
-        private System.Windows.Forms.SaveFileDialog saveFileDialogExport;
         private System.Windows.Forms.ToolStripLabel labelRoom;
-        private System.Windows.Forms.OpenFileDialog openFileDialogPrj2;
         private DarkUI.Controls.DarkTextBox tbSearchAnimation;
         private DarkUI.Controls.DarkButton darkButton1;
         private DarkUI.Controls.DarkButton butShowAll;

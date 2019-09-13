@@ -271,7 +271,7 @@ namespace WadTool
 
                 using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                 {
-                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    form.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
                     if (form.ShowDialog(this) != DialogResult.OK)
                         return;
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);

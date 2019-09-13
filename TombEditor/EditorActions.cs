@@ -3650,7 +3650,7 @@ namespace TombEditor
                 {
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
-                        settingsDialog.AddPreset(IOSettingsPresets.SettingsPresets);
+                        settingsDialog.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
                         string resultingExtension = Path.GetExtension(saveFileDialog.FileName).ToLowerInvariant();
 
                         if (resultingExtension.Equals(".mqo"))

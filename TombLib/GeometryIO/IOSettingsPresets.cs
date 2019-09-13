@@ -4,14 +4,15 @@ namespace TombLib.GeometryIO
 {
     public static class IOSettingsPresets
     {
-        public static List<IOGeometrySettingsPreset> SettingsPresets { get; private set; }
+        public static List<IOGeometrySettingsPreset> GeometrySettingsPresets { get; private set; }
+        public static List<IOGeometrySettingsPreset> AnimationSettingsPresets { get; private set; }
 
         static IOSettingsPresets()
         {
-            SettingsPresets = new List<IOGeometrySettingsPreset>();
+            GeometrySettingsPresets = new List<IOGeometrySettingsPreset>();
 
             // Metasequoia
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia MQO Scale 1",
                 Settings = new IOGeometrySettings
@@ -26,7 +27,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia MQO Scale 1024",
                 Settings = new IOGeometrySettings
@@ -41,7 +42,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia MQO Scale 1/1024",
                 Settings = new IOGeometrySettings
@@ -56,7 +57,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia OBJ",
                 Settings = new IOGeometrySettings
@@ -70,7 +71,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia PLY",
                 Settings = new IOGeometrySettings
@@ -85,7 +86,7 @@ namespace TombLib.GeometryIO
             });
 
             // Generic
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Generic OBJ",
                 Settings = new IOGeometrySettings
@@ -100,7 +101,7 @@ namespace TombLib.GeometryIO
             });
 
             // Blender
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Blender OBJ",
                 Settings = new IOGeometrySettings
@@ -114,7 +115,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Blender DAE",
                 Settings = new IOGeometrySettings
@@ -127,7 +128,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Blender PLY",
                 Settings = new IOGeometrySettings
@@ -142,7 +143,7 @@ namespace TombLib.GeometryIO
             });
 
             // 3ds Max
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "3ds Max FBX",
                 Settings = new IOGeometrySettings
@@ -156,7 +157,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            SettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "3ds Max OBJ",
                 Settings = new IOGeometrySettings
@@ -167,6 +168,32 @@ namespace TombLib.GeometryIO
                     InvertFaces = true,
                     PremultiplyUV = true,
                     WrapUV = true
+                }
+            });
+
+            AnimationSettingsPresets = new List<IOGeometrySettingsPreset>();
+
+            // 3dsmax COLLADA
+            AnimationSettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "3dsmax COLLADA",
+                Settings = new IOGeometrySettings
+                {
+                    ImportAnimations = true,
+                    ImportGeometry = false,
+                    SwapAnimTranslationYZ = true
+                }
+            });
+
+            // 3dsmax Filmbox (FBX)
+            AnimationSettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "3dsmax Filmbox (FBX)",
+                Settings = new IOGeometrySettings
+                {
+                    ImportAnimations = true,
+                    ImportGeometry = false,
+                    SwapAnimTranslationXZ = true
                 }
             });
         }

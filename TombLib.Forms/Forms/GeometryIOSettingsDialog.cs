@@ -15,6 +15,7 @@ namespace TombLib.Forms
         public GeometryIOSettingsDialog(IOGeometrySettings inSettings)
         {
             InitializeComponent();
+
             Settings = inSettings;
             UpdateControls(Settings);
             PopulatePresetList();
@@ -107,6 +108,12 @@ namespace TombLib.Forms
 
         private void UpdateControls(IOGeometrySettings settings)
         {
+            groupAnims.Enabled = settings.ImportAnimations;
+            groupAxis.Enabled = settings.ImportGeometry;
+            groupMisc.Enabled = settings.ImportGeometry;
+            groupTextures.Enabled = settings.ImportGeometry;
+            nmScale.Enabled = settings.ImportGeometry;
+
             cbFlipX.Checked = settings.FlipX;
             cbFlipY.Checked = settings.FlipY;
             cbFlipZ.Checked = settings.FlipZ;
@@ -117,9 +124,12 @@ namespace TombLib.Forms
             cbPremultiplyUV.Checked = settings.PremultiplyUV;
             cbWrapUV.Checked = settings.WrapUV;
             nmScale.Value = (decimal)settings.Scale;
-            cbDivide.Checked = settings.DivideByScale;
             cbInvertFaces.Checked = settings.InvertFaces;
             cbImportBakedLight.Checked = settings.UseVertexColor;
+
+            cbSwapXYTrans.Checked = settings.SwapAnimTranslationXY;
+            cbSwapXZTrans.Checked = settings.SwapAnimTranslationXZ;
+            cbSwapYZTrans.Checked = settings.SwapAnimTranslationYZ;
         }
 
         private void UpdateSettings()
@@ -134,9 +144,12 @@ namespace TombLib.Forms
             Settings.PremultiplyUV = cbPremultiplyUV.Checked;
             Settings.WrapUV = cbWrapUV.Checked;
             Settings.Scale = (float)nmScale.Value;
-            Settings.DivideByScale = cbDivide.Checked;
             Settings.InvertFaces = cbInvertFaces.Checked;
             Settings.UseVertexColor = cbImportBakedLight.Checked;
+
+            Settings.SwapAnimTranslationXY = cbSwapXYTrans.Checked;
+            Settings.SwapAnimTranslationXZ = cbSwapXZTrans.Checked;
+            Settings.SwapAnimTranslationYZ = cbSwapYZTrans.Checked;
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -170,8 +183,11 @@ namespace TombLib.Forms
             cbFlipUV_V.CheckedChanged += ModifiedPresetEvent;
             cbPremultiplyUV.CheckedChanged += ModifiedPresetEvent;
             cbWrapUV.CheckedChanged += ModifiedPresetEvent;
-            cbDivide.CheckedChanged += ModifiedPresetEvent;
             nmScale.ValueChanged += ModifiedPresetEvent;
+
+            cbSwapXYTrans.CheckedChanged += ModifiedPresetEvent;
+            cbSwapXZTrans.CheckedChanged += ModifiedPresetEvent;
+            cbSwapYZTrans.CheckedChanged += ModifiedPresetEvent;
         }
 
         private void SuspendControlListening()
@@ -185,8 +201,11 @@ namespace TombLib.Forms
             cbFlipUV_V.CheckedChanged -= ModifiedPresetEvent;
             cbPremultiplyUV.CheckedChanged -= ModifiedPresetEvent;
             cbWrapUV.CheckedChanged -= ModifiedPresetEvent;
-            cbDivide.CheckedChanged -= ModifiedPresetEvent;
             nmScale.ValueChanged -= ModifiedPresetEvent;
+
+            cbSwapXYTrans.CheckedChanged -= ModifiedPresetEvent;
+            cbSwapXZTrans.CheckedChanged -= ModifiedPresetEvent;
+            cbSwapYZTrans.CheckedChanged -= ModifiedPresetEvent;
         }
 
         private void ModifiedPresetEvent(object sender, EventArgs e)
