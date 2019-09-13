@@ -243,10 +243,27 @@ namespace TombLib.LevelData.Compilers
                 case RoomLightEffect.Reflection:
                     newRoom.Flags |= 0x0200;
                     break;
+
                 case RoomLightEffect.None:
                     if (!waterSchemeSet)
                         newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
                     break;
+            }
+
+            // Light interpolation mode
+            var interpMode = room.LightInterpolationMode;
+            if (interpMode == RoomLightInterpolationMode.Default)
+            {
+                switch (room.Type)
+                {
+                    case RoomType.Water:
+                        interpMode = RoomLightInterpolationMode.NoInterpolate;
+                        break;
+
+                    default:
+                        interpMode = RoomLightInterpolationMode.Interpolate;
+                        break;
+                }
             }
 
             // Generate geometry
@@ -645,23 +662,27 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // Still allow movement, if adjoining room has very same properties
                                     if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Movement ||
-                                           portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
-                                           portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                            portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
+                                            portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
                                         allowMovement = false;
                                 }
                             }
 
                             if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
                             {
-                                // Disable glow for portal faces
-                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                // Apply effect on all faces, if room light interp mode is sharp-cut
+                                if (interpMode != RoomLightInterpolationMode.NoInterpolate)
                                 {
-                                    // Still allow glow, if adjoining room has very same properties
-                                    if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Glow ||
-                                           portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
-                                           portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
-                                        allowGlow = false;
+                                    // Disable glow for portal faces
+                                    if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
+                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                    {
+                                        // Still allow glow, if adjoining room has very same properties
+                                        if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Glow ||
+                                               portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
+                                               portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                            allowGlow = false;
+                                    }
                                 }
                             }
                         }
