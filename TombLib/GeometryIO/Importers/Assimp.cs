@@ -20,6 +20,21 @@ namespace TombLib.GeometryIO.Importers
 
         }
 
+        private List<string> CollectMeshNodeNames(Node node, List<string> list = null)
+        {
+            if (list == null)
+                list = new List<string>();
+
+            if (node.HasMeshes && !list.Any(entry => entry.Equals(node.Name)))
+                list.Add(node.Name);
+
+            if (node.HasChildren && node.ChildCount > 0)
+                foreach (var child in node.Children)
+                    CollectMeshNodeNames(child, list);
+
+            return list;
+        }
+
         public override IOModel ImportFromFile(string filename)
         {
             string path = Path.GetDirectoryName(filename);
@@ -141,67 +156,96 @@ namespace TombLib.GeometryIO.Importers
                 newModel.Meshes.Add(newMesh);
             }
 
-            // Loop through all animations and add appropriate ones
-            if (scene.HasAnimations)
+            // Find all mesh nodes to count against animation nodes
+            var meshNameList = CollectMeshNodeNames(scene.RootNode);
+            meshNameList.OrderBy(s => s); // Sort by ascending names, just in case
+
+            // Loop through all animations and add appropriate ones.
+            // Integrity checks: we have anims, scene has meshes, mesh number is equal to unique mesh name count.
+
+            if (scene.HasAnimations && scene.AnimationCount > 0 && 
+                scene.MeshCount > 0 && scene.MeshCount == meshNameList.Count)
             {
-                for (int i = 0; i < scene.Animations.Count; i++)
+                for (int i = 0; i < scene.AnimationCount; i++)
                 {
                     var anim = scene.Animations[i];
 
-                    // Do some integrity checks
-                    if (!anim.HasNodeAnimations || anim.NodeAnimationChannelCount != scene.MeshCount ||
-                        !anim.NodeAnimationChannels.All(chan => chan.HasRotationKeys && chan.RotationKeyCount == anim.NodeAnimationChannels[0].RotationKeyCount))
+                    // Integrity check: support only node animations, filter out empty and non-integer ones.
+                    if (!anim.HasNodeAnimations || anim.DurationInTicks <= 0 || anim.DurationInTicks % 1 != 0)
                         continue;
 
-                    // Derive frame count from duration in ticks (TRViewer-compatible).
-                    // If other value is encountered, file is probably non-TRViewer-compatible.
-                    if (anim.DurationInTicks != 0 && anim.DurationInTicks + 1 != anim.NodeAnimationChannels[0].RotationKeyCount)
+                    // Use original name if possible
+                    int frameCount = (int)anim.DurationInTicks + 1;
+                    IOAnimation ioAnim = new IOAnimation(string.IsNullOrEmpty(anim.Name) ? "Imported animation " + i : anim.Name,
+                                                         scene.MeshCount);
+
+                    // Precreate frames and set them to identity
+                    for (int j = 0; j < frameCount; j++)
+                        ioAnim.Frames.Add(new IOFrame());
+
+                    // Precreate rotations and set them to identity
+                    // I am using generic foreach here instead of linq foreach because for some reason it
+                    // returns wrong amount of angles during enumeration with Enumerable.Repeat.
+                    foreach (var frame in ioAnim.Frames)
                     {
-                        logger.Warn("Animation " + i + " has incorrect duration value and isn't in TRViewer-compatible format.");
-                        continue;
+                        var angleList = Enumerable.Repeat(Vector3.Zero, scene.MeshCount);
+                        frame.Angles.AddRange(angleList);
                     }
 
-                    int frameCount = anim.NodeAnimationChannels[0].RotationKeyCount;
+                    // Search through all nodes and put data into corresponding frames.
+                    // It's not clear what should we do in case if multiple nodes refer to same mesh, but sometimes
+                    // it happens, e. g. in case of fbx format. In this case, we'll just add to existing values for now.
 
-                    IOAnimation ioAnim = new IOAnimation(string.IsNullOrEmpty(anim.Name) ? "Imported animation " + i : anim.Name,
-                                                         anim.NodeAnimationChannelCount);
-
-                    for (int j = 0; j < frameCount; j++)
+                    foreach (var chan in anim.NodeAnimationChannels)
                     {
-                        IOFrame currentFrame = new IOFrame();
+                        // Look if this channel belongs to any mesh in list. 
+                        // If so, attribute it to appropriate frame.
+                        var chanIndex = meshNameList.IndexOf(item => chan.NodeName.Contains(item));
 
-                        for (int k = 0; k < anim.NodeAnimationChannelCount; k++)
-                        {
-                            var currentNode = anim.NodeAnimationChannels[k];
+                        // Integrity check: no appropriate mesh found
+                        if (chanIndex < 0)
+                            continue;
 
-                            // First animation channel should contain translation info.
-                            if (k == 0)
+                        // Apply translation only if found channel belongs to root mesh.
+                        if (chanIndex == 0 && chan.HasPositionKeys && chan.PositionKeyCount > 0)
+                            foreach (var key in chan.PositionKeys)
                             {
-                                currentFrame.Offset = new Vector3( currentNode.PositionKeys[j].Value.X,
-                                                                   currentNode.PositionKeys[j].Value.Z,
-                                                                   currentNode.PositionKeys[j].Value.Y);
+                                // Integrity check: frame shouldn't fall out of keyframe array bounds.
+                                if (key.Time >= 0 && key.Time % 1 == 0 && key.Time < frameCount)
+                                {
+                                    var frameIndex = (int)key.Time;
+                                    ioAnim.Frames[frameIndex].Offset += new Vector3(key.Value.X,
+                                                                                    key.Value.Y,
+                                                                                    key.Value.Z);
+                                }
                             }
 
-                            // Convert quaternions back to rotations.
-                            // This is similar to TRViewer's conversion routine.
+                        if (chan.HasRotationKeys && chan.RotationKeyCount > 0)
+                            foreach (var key in chan.RotationKeys)
+                            {
+                                // Integrity check: frame shouldn't fall out of keyframe array bounds.
+                                if (key.Time >= 0 && key.Time % 1 == 0 && key.Time < frameCount)
+                                {
+                                    var frameIndex = (int)key.Time;
 
-                            System.Numerics.Quaternion quat = new System.Numerics.Quaternion(currentNode.RotationKeys[j].Value.X,
-                                                                                             currentNode.RotationKeys[j].Value.Z,
-                                                                                             currentNode.RotationKeys[j].Value.Y,
-                                                                                            -currentNode.RotationKeys[j].Value.W);
+                                    // Convert quaternions back to rotations.
+                                    // This is similar to TRViewer's conversion routine.
 
-                            quat *= System.Numerics.Quaternion.Identity;
+                                    var quatI = System.Numerics.Quaternion.Identity;
+                                    var quat = new System.Numerics.Quaternion(key.Value.X,
+                                                                              key.Value.Z,
+                                                                              key.Value.Y,
+                                                                             -key.Value.W);
+                                    quatI *= quat;
 
-                            var eulers = MathC.QuaternionToEuler(quat);
-                            var rotation = new Vector3(eulers.X * 180.0f / (float)Math.PI,
-                                                       eulers.Y * 180.0f / (float)Math.PI,
-                                                       eulers.Z * 180.0f / (float)Math.PI);
-
-                            MathC.NormalizeAngle(rotation);
-                            currentFrame.Angles.Add(rotation);
-                        }
-
-                        ioAnim.Frames.Add(currentFrame);
+                                    var eulers = MathC.QuaternionToEuler(quatI);
+                                    var rotation = new Vector3(eulers.X * 180.0f / (float)Math.PI,
+                                                               eulers.Y * 180.0f / (float)Math.PI,
+                                                               eulers.Z * 180.0f / (float)Math.PI);
+                                        
+                                    ioAnim.Frames[frameIndex].Angles[chanIndex] += MathC.NormalizeAngle(rotation);
+                                }
+                            }
                     }
 
                     newModel.Animations.Add(ioAnim);

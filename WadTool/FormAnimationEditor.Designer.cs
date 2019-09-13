@@ -1201,7 +1201,7 @@ namespace WadTool
             // 
             // openFileDialogImport
             // 
-            this.openFileDialogImport.Filter = "TRViewer-compatible 3ds (*.3ds)|*.3ds|Wad Tool animation (*.xml)|*.xml|All files (*.*)|*.*";
+            this.openFileDialogImport.Filter = "Filmbox (*.fbx)|*.fbx|Wad Tool animation (*.xml)|*.xml|All files (*.*)|*.*";
             this.openFileDialogImport.Title = "Import animation";
             // 
             // saveFileDialogExport
