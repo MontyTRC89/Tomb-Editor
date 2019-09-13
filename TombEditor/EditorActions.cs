@@ -1645,9 +1645,9 @@ namespace TombEditor
 
             // Ask for confirmation. No owner = silent mode!
             if (owner != null && DarkMessageBox.Show(owner,
-                    "Do you really want to delete rooms? All objects (including portals) inside rooms will be deleted and " +
+                    "All objects (including portals) inside rooms will be deleted and \n" +
                     "triggers pointing to them will be removed.",
-                    "Delete rooms", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
+                    "Delete rooms?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
                 return;
             }
