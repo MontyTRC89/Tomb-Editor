@@ -186,14 +186,13 @@ namespace TombLib.GeometryIO.Importers
                             // This is similar to TRViewer's conversion routine.
 
                             System.Numerics.Quaternion quat = new System.Numerics.Quaternion(currentNode.RotationKeys[j].Value.X,
-                                                                                             currentNode.RotationKeys[j].Value.Y,
                                                                                              currentNode.RotationKeys[j].Value.Z,
-                                                                                             currentNode.RotationKeys[j].Value.W);
+                                                                                             currentNode.RotationKeys[j].Value.Y,
+                                                                                            -currentNode.RotationKeys[j].Value.W);
+
                             quat *= System.Numerics.Quaternion.Identity;
 
                             var eulers = MathC.QuaternionToEuler(quat);
-                            eulers = new Vector3(-eulers.X, -eulers.Z, -eulers.Y);
-
                             var rotation = new Vector3(eulers.X * 180.0f / (float)Math.PI,
                                                        eulers.Y * 180.0f / (float)Math.PI,
                                                        eulers.Z * 180.0f / (float)Math.PI);
