@@ -188,6 +188,8 @@ namespace WadTool
                 var stackEvent = (WadToolClass.UndoStackChangedEvent)obj;
                 butTbUndo.Enabled = stackEvent.UndoPossible;
                 butTbRedo.Enabled = stackEvent.RedoPossible;
+                undoToolStripMenuItem.Enabled = stackEvent.UndoPossible;
+                redoToolStripMenuItem.Enabled = stackEvent.RedoPossible;
                 Saved = false;
             }
 
