@@ -228,8 +228,11 @@ namespace WadTool
                         comboRoomList.ComboBox.Items.Add(room);
 
                 // Enable sound transport
-                butTransportSound.Enabled = true;
-                butTransportLandWater.Enabled = true;
+                if (_editor.Tool.ReferenceLevel.Settings.SoundSystem == SoundSystem.Xml)
+                {
+                    butTransportSound.Enabled = true;
+                    butTransportLandWater.Enabled = true;
+                }
             }
             else
             {
@@ -1489,7 +1492,8 @@ namespace WadTool
             UpdateStatusLabel();
 
             // Preview sounds
-            if (_previewSounds && _editor.Tool.ReferenceLevel != null)
+            if (_previewSounds && _editor.Tool.ReferenceLevel != null && 
+                _editor.Tool.ReferenceLevel.Settings.SoundSystem == SoundSystem.Xml)
             {
                 // This additional counter is used to randomize material index every 3 seconds of playback
                 _overallPlaybackCount++;
