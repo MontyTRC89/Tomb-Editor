@@ -52,6 +52,13 @@ namespace TombLib
         public static Vector2 RoundToHalf(Vector2 v) => Round(v * 2.0f) / 2.0f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float NormalizeAngle(float a) => a < 0 ? a + 360.0f : a;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 NormalizeAngle(Vector2 v) => new Vector2(NormalizeAngle(v.X), NormalizeAngle(v.Y));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 NormalizeAngle(Vector3 v) => new Vector3(NormalizeAngle(v.X), NormalizeAngle(v.Y), NormalizeAngle(v.Z));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(int value, int min, int max) => value < min ? min : value > max ? max : value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Clamp(double value, double min, double max) => value < min? min : value > max ? max : value;
@@ -231,6 +238,50 @@ namespace TombLib
             double yaw = Math.Atan2(siny, cosy);
 
             return new Vector3((float)pitch, (float)yaw, (float)roll);
+        }
+
+        // Alternative version of quat2euler by EPopov (from TRViewer source)
+        public static Vector3 QuaternionToEulerAlternative(Quaternion Quat)
+        {
+            double fX = Quat.X;
+            double fY = Quat.Y;
+            double fZ = Quat.Z;
+            double fW = Quat.W;
+
+            Vector3 result;
+
+            double fR00 = (double)(1.0d - 2.0d * fY * fY - 2.0d * fZ * fZ);
+            double fR01 = (double)(2.0d * fX * fY + 2.0d * fW * fZ);
+            double fR02 = (double)(2.0d * fX * fZ - 2.0d * fW * fY);
+            double fR10 = (double)(2.0d * fX * fY - 2.0d * fW * fZ);
+            double fR11 = (double)(1.0d - 2.0d * fX * fX - 2.0d * fZ * fZ);
+            double fR12 = (double)(2.0d * fY * fZ + 2.0d * fW * fX);
+            double fR20 = (double)(2.0d * fX * fZ + 2.0d * fW * fY);
+            double fR21 = (double)(2.0d * fY * fZ - 2.0d * fW * fX);
+            double fR22 = (double)(1.0d - 2.0d * fX * fX - 2.0d * fY * fY);
+
+            result.X = -(float)Math.Asin(fR21);
+
+            if (result.X < Math.PI / 2.0)
+            {
+                if (result.X > -Math.PI / 2.0)
+                {
+                    result.Z = (float)Math.Atan2(fR01, fR11);
+                    result.Y = (float)Math.Atan2(fR20, fR22);
+                }
+                else
+                {
+                    result.Z = -(float)Math.Atan2(-fR02, fR00);
+                    result.Y = 0.0f;
+                }
+            }
+            else
+            {
+                result.Z = (float)Math.Atan2(fR02, fR00);
+                result.Y = 0.0f;
+            }
+
+            return result;
         }
 
         public static double Lerp(double value1, double value2, double amount)
