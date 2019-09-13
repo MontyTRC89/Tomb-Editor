@@ -31,6 +31,10 @@
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butSearch = new DarkUI.Controls.DarkButton();
+            this.comboLightEffect = new DarkUI.Controls.DarkComboBox();
+            this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
+            this.comboPortalShade = new DarkUI.Controls.DarkComboBox();
+            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             this.butLocked = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butRoomUp = new DarkUI.Controls.DarkButton();
@@ -39,17 +43,13 @@
             this.butCropRoom = new DarkUI.Controls.DarkButton();
             this.comboFlipMap = new DarkUI.Controls.DarkComboBox();
             this.comboReverberation = new DarkUI.Controls.DarkComboBox();
-            this.comboLightEffect = new DarkUI.Controls.DarkComboBox();
             this.comboRoomType = new DarkUI.Controls.DarkComboBox();
             this.comboRoom = new DarkUI.Controls.DarkComboBox();
             this.butDublicateRoom = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
-            this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.butNewRoom = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.comboPortalShade = new DarkUI.Controls.DarkComboBox();
-            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -206,6 +206,81 @@
             this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
+            // comboLightEffect
+            // 
+            this.comboLightEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboLightEffect.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboLightEffect.Items.AddRange(new object[] {
+            "None",
+            "Default",
+            "Reflection",
+            "Glow",
+            "Move",
+            "Glow & Move",
+            "Mist"});
+            this.comboLightEffect.Location = new System.Drawing.Point(143, 194);
+            this.comboLightEffect.Name = "comboLightEffect";
+            this.comboLightEffect.Size = new System.Drawing.Size(97, 23);
+            this.comboLightEffect.TabIndex = 13;
+            this.toolTip.SetToolTip(this.comboLightEffect, "Light / transform effect on room vertices");
+            this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
+            // 
+            // numLightEffectStrength
+            // 
+            this.numLightEffectStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.numLightEffectStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numLightEffectStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numLightEffectStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numLightEffectStrength.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numLightEffectStrength.Location = new System.Drawing.Point(246, 194);
+            this.numLightEffectStrength.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.numLightEffectStrength.MousewheelSingleIncrement = true;
+            this.numLightEffectStrength.Name = "numLightEffectStrength";
+            this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
+            this.numLightEffectStrength.TabIndex = 14;
+            this.numLightEffectStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip.SetToolTip(this.numLightEffectStrength, "Light / transform effect strength");
+            this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
+            // 
+            // comboPortalShade
+            // 
+            this.comboPortalShade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboPortalShade.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboPortalShade.Items.AddRange(new object[] {
+            "Default",
+            "Smooth",
+            "Sharp"});
+            this.comboPortalShade.Location = new System.Drawing.Point(68, 194);
+            this.comboPortalShade.Name = "comboPortalShade";
+            this.comboPortalShade.Size = new System.Drawing.Size(69, 23);
+            this.comboPortalShade.TabIndex = 113;
+            this.toolTip.SetToolTip(this.comboPortalShade, "Smoothing on room edges");
+            this.comboPortalShade.SelectedIndexChanged += new System.EventHandler(this.comboPortalShade_SelectedIndexChanged);
+            // 
+            // tbRoomTags
+            // 
+            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRoomTags.AutocompleteWords = ((System.Collections.Generic.List<string>)(resources.GetObject("tbRoomTags.AutocompleteWords")));
+            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
+            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
+            this.tbRoomTags.Name = "tbRoomTags";
+            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
+            this.tbRoomTags.TabIndex = 3;
+            this.tbRoomTags.Tag = "SetRoomTags";
+            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
+            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
+            // 
             // butLocked
             // 
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -311,26 +386,6 @@
             this.comboReverberation.TabIndex = 6;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
-            // comboLightEffect
-            // 
-            this.comboLightEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboLightEffect.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboLightEffect.Items.AddRange(new object[] {
-            "None",
-            "Default",
-            "Reflection",
-            "Glow",
-            "Move",
-            "Glow & Move",
-            "Mist"});
-            this.comboLightEffect.Location = new System.Drawing.Point(143, 194);
-            this.comboLightEffect.Name = "comboLightEffect";
-            this.comboLightEffect.Size = new System.Drawing.Size(97, 23);
-            this.comboLightEffect.TabIndex = 13;
-            this.toolTip.SetToolTip(this.comboLightEffect, "Light / transform effect on room vertices");
-            this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
-            // 
             // comboRoomType
             // 
             this.comboRoomType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -385,31 +440,6 @@
             this.butDeleteRoom.TabIndex = 17;
             this.butDeleteRoom.Tag = "DeleteRooms";
             // 
-            // numLightEffectStrength
-            // 
-            this.numLightEffectStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numLightEffectStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numLightEffectStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numLightEffectStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numLightEffectStrength.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numLightEffectStrength.Location = new System.Drawing.Point(246, 194);
-            this.numLightEffectStrength.Maximum = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            this.numLightEffectStrength.MousewheelSingleIncrement = true;
-            this.numLightEffectStrength.Name = "numLightEffectStrength";
-            this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
-            this.numLightEffectStrength.TabIndex = 14;
-            this.numLightEffectStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.toolTip.SetToolTip(this.numLightEffectStrength, "Light / transform effect strength");
-            this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
-            // 
             // darkLabel2
             // 
             this.darkLabel2.AutoSize = true;
@@ -442,35 +472,6 @@
             this.darkLabel1.Size = new System.Drawing.Size(71, 13);
             this.darkLabel1.TabIndex = 112;
             this.darkLabel1.Text = "Portal shade";
-            // 
-            // comboPortalShade
-            // 
-            this.comboPortalShade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboPortalShade.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboPortalShade.Items.AddRange(new object[] {
-            "Default",
-            "Smooth",
-            "Sharp"});
-            this.comboPortalShade.Location = new System.Drawing.Point(68, 194);
-            this.comboPortalShade.Name = "comboPortalShade";
-            this.comboPortalShade.Size = new System.Drawing.Size(69, 23);
-            this.comboPortalShade.TabIndex = 113;
-            this.toolTip.SetToolTip(this.comboPortalShade, "Smoothing on room edges");
-            // 
-            // tbRoomTags
-            // 
-            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRoomTags.AutocompleteWords = ((System.Collections.Generic.List<string>)(resources.GetObject("tbRoomTags.AutocompleteWords")));
-            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
-            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
-            this.tbRoomTags.Name = "tbRoomTags";
-            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
-            this.tbRoomTags.TabIndex = 3;
-            this.tbRoomTags.Tag = "SetRoomTags";
-            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
-            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
             // 
             // RoomOptions
             // 
