@@ -715,6 +715,14 @@ namespace WadTool
             else
                 animToImport = tmpModel.Animations[0];
 
+
+            // Integrity check, for cases when something totally went wrong with assimp
+            if (animToImport == null)
+            {
+                tool.SendMessage("Animation importer encountered serious error. No animation imported.", PopupType.Error);
+                return null;
+            }
+
             // Integrity check, number of bones = number of nodes?
             if (animToImport.NumNodes != nodeCount)
             {
