@@ -88,6 +88,7 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId RoomFlagOutside = ChunkId.FromString("TeOutside");
         /******/public static readonly ChunkId RoomFlagNoLensflare = ChunkId.FromString("TeNoLens");
         /******/public static readonly ChunkId RoomFlagExcludeFromPathFinding = ChunkId.FromString("TeNoPath");
+        /******/public static readonly ChunkId RoomLightInterpolationMode = ChunkId.FromString("TeRoomLightInt");
         /******/public static readonly ChunkId RoomWaterLevel = ChunkId.FromString("TeWater");  // DEPRECATED
         /******/public static readonly ChunkId RoomRainLevel = ChunkId.FromString("TeRain");  // DEPRECATED
         /******/public static readonly ChunkId RoomSnowLevel = ChunkId.FromString("TeSnow");  // DEPRECATED

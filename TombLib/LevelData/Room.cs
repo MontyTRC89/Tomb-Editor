@@ -23,6 +23,11 @@ namespace TombLib.LevelData
         None, Default, Reflection, Glow, Movement, GlowAndMovement, Mist
     }
 
+    public enum RoomLightInterpolationMode : byte
+    {
+        Default, Interpolate, NoInterpolate
+    }
+
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -46,6 +51,8 @@ namespace TombLib.LevelData
         public RoomType Type { get; set; } = RoomType.Normal;
         public byte TypeStrength { get; set; } = 0;
         public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
+        public RoomLightInterpolationMode LightInterpolationMode { get; set; } = RoomLightInterpolationMode.Default;
+
         public byte LightEffectStrength { get; set; } = 0;
 
         public bool FlagCold { get; set; }
