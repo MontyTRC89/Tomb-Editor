@@ -197,6 +197,7 @@ namespace TombLib.GeometryIO.Importers
                                                        eulers.Y * 180.0f / (float)Math.PI,
                                                        eulers.Z * 180.0f / (float)Math.PI);
 
+                            MathC.NormalizeAngle(rotation);
                             currentFrame.Angles.Add(rotation);
                         }
 
