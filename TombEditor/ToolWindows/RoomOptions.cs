@@ -96,6 +96,7 @@ namespace TombEditor.ToolWindows
 
                 panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
 
+                comboPortalShade.SelectedIndex = (int)room.LightInterpolationMode;
                 comboLightEffect.SelectedIndex = (int)room.LightEffect;
                 numLightEffectStrength.Value = room.LightEffectStrength;
 
@@ -278,6 +279,16 @@ namespace TombEditor.ToolWindows
                 return;
 
             _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
+        }
+
+        private void comboPortalShade_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (_editor.SelectedRoom.LightInterpolationMode == (RoomLightInterpolationMode)comboPortalShade.SelectedIndex)
+                return;
+
+            _editor.SelectedRoom.LightInterpolationMode = (RoomLightInterpolationMode)comboPortalShade.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
