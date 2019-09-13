@@ -650,6 +650,8 @@ namespace TombLib.LevelData.IO
                         room.FlagNoLensflare = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagExcludeFromPathFinding)
                         room.FlagExcludeFromPathFinding = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomLightInterpolationMode)
+                        room.LightInterpolationMode = (RoomLightInterpolationMode)chunkIO.ReadChunkInt(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomWaterLevel) // DEPRECATED
                     {
                         var val = chunkIO.ReadChunkByte(chunkSize2);

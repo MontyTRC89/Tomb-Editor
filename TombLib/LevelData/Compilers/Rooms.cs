@@ -1271,11 +1271,19 @@ namespace TombLib.LevelData.Compilers
 
         private void MatchDoorShades(tr_room room, bool flipped)
         {
+            // Do we want to interpolate?
+            if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
+                return;
+
             var rooms = _tempRooms.Values.ToList();
 
             foreach (var p in room.Portals)
             {
                 var otherRoom = rooms[p.AdjoiningRoom];
+
+                // Check if the other room must be interpolated
+                if (otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
+                    continue;
 
                 // Here we must decide if match or not, basing on flipped flag.
                 // In winroomedit.exe, all flipped rooms were swapped with their counterparts,
@@ -1296,7 +1304,13 @@ namespace TombLib.LevelData.Compilers
                         continue;
                 }
 
-                if (!((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1))
+                // If we have a pair of water room and dry room, orginal behaviour of TRLE was to not interpolate,
+                // but now we have flags
+                bool isWaterAndDryPair = ((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1);
+
+                if (!isWaterAndDryPair || (isWaterAndDryPair && 
+                    room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate &&
+                    otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate))
                 {
                     int x1 = p.Vertices[0].X;
                     int y1 = p.Vertices[0].Y;

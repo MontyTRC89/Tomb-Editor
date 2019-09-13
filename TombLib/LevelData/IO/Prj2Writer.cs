@@ -366,6 +366,7 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffect, (int)room.LightEffect);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffectStrength, room.LightEffectStrength);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Reverberation);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightInterpolationMode, (int)room.LightInterpolationMode);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Locked);
                         if (room.AlternateRoom != null && rooms.ContainsKey(room.AlternateRoom))
                             using (var chunkRoomAlternate = chunkIO.WriteChunk(Prj2Chunks.RoomAlternate, LEB128.MaximumSize1Byte))
