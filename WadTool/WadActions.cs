@@ -697,14 +697,14 @@ namespace WadTool
                     // If no animations, return null
                     if (tmpModel.Animations.Count == 0)
                     {
-                        tool.SendMessage("Selected file has no appropriate animations!", PopupType.Error);
+                        tool.SendMessage("Selected file has no supported animations!", PopupType.Error);
                         return null;
                     }
                 }
             }
             catch (Exception ex)
             {
-                tool.SendMessage("Unknown error while importing animation!", PopupType.Error);
+                tool.SendMessage("Unknown error while importing animation. \n" + ex?.Message, PopupType.Error);
                 logger.Warn(ex, "'ImportAnimationFromModel' failed.");
                 return null;
             }

@@ -1581,7 +1581,7 @@ namespace WadTool
 
             WadAnimation animation = null;
 
-            if (Path.GetExtension(path) == ".xml")
+            if (Path.GetExtension(path) == ".anim")
                 animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
             else
                 animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
@@ -1597,10 +1597,20 @@ namespace WadTool
 
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
 
+            // Backup animcommands & state changes
+            var oldCommands = _editor.SelectedNode.WadAnimation.AnimCommands;
+            var oldChanges  = _editor.SelectedNode.WadAnimation.StateChanges;
+
             _editor.SelectedNode.WadAnimation = animation;
+
+            // Restore animcommands & state changes
+            _editor.SelectedNode.WadAnimation.AnimCommands.AddRange(oldCommands);
+            _editor.SelectedNode.WadAnimation.StateChanges.AddRange(oldChanges);
+
             _editor.SelectedNode.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
             SelectAnimation(_editor.SelectedNode);
             timeline.Value = 0;
+            lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.SelectedNode);
             panelRendering.Invalidate();
         }
 
