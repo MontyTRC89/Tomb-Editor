@@ -64,7 +64,7 @@ namespace SoundTool
 
         private void AboutSoundToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var form = new FormAbout(null))
+            using (var form = new FormAbout(Properties.Resources.misc_AboutScreen_800))
                 form.ShowDialog(this);
         }
 
