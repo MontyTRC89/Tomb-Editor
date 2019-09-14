@@ -26,6 +26,12 @@ namespace TombLib.Utils
         public ReferencedWad Wad { get; set; }
     }
 
+    public class DialogDescriptonSoundsCatalogUnloadable : IDialogDescription
+    {
+        public LevelSettings Settings { get; set; }
+        public ReferencedSoundsCatalog Sounds { get; set; }
+    }
+
     public class DialogDescriptonMissingSounds : IDialogDescription
     {
         public string WadBasePath { get; set; }
