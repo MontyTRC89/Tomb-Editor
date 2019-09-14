@@ -10,7 +10,7 @@ namespace TombLib.Wad.Catalog
     {
         private struct Item
         {
-            public string Name { get; set; }
+            public List<string> Names { get; set; }
             public string Description { get; set; }
             public uint SkinId { get; set; }
             public bool AIObject { get; set; }
@@ -82,7 +82,7 @@ namespace TombLib.Wad.Catalog
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
                 return "Unknown #" + id;
-            return game.Moveables[id].Name;
+            return game.Moveables[id].Names.LastOrDefault();
         }
 
         public static uint GetMoveableSkin(WadGameVersion version, uint id)
@@ -116,7 +116,7 @@ namespace TombLib.Wad.Catalog
             Item entry;
             if (!game.Statics.TryGetValue(id, out entry))
                 return "Unknown #" + id;
-            return game.Statics[id].Name;
+            return game.Statics[id].Names.LastOrDefault();
         }
 
         public static uint? GetItemIndex(WadGameVersion version, string name, out bool isMoveable)
@@ -128,15 +128,15 @@ namespace TombLib.Wad.Catalog
                 return null;
             }
 
-            var entry = game.Moveables.FirstOrDefault(item => item.Value.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (entry.Value.Name != null)
+            var entry = game.Moveables.FirstOrDefault(item => item.Value.Names.Any(possibleName => possibleName.Equals(name, StringComparison.InvariantCultureIgnoreCase)));
+            if (entry.Value.Names != null)
             {
                 isMoveable = true;
                 return entry.Key;
             }
 
-            entry = game.Statics.FirstOrDefault(item => item.Value.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (entry.Value.Name != null)
+            entry = game.Statics.FirstOrDefault(item => item.Value.Names.Any(possibleName => possibleName.Equals(name, StringComparison.InvariantCultureIgnoreCase)));
+            if (entry.Value.Names != null)
             {
                 isMoveable = false;
                 return entry.Key;
@@ -174,7 +174,7 @@ namespace TombLib.Wad.Catalog
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
                 return "Unknown #" + id;
-            return game.SpriteSequences[id].Name;
+            return game.SpriteSequences[id].Names.LastOrDefault();
         }
 
         public static bool IsSoundFixedByDefault(WadGameVersion version, uint id)
@@ -260,17 +260,17 @@ namespace TombLib.Wad.Catalog
 
         public static IDictionary<uint, string> GetAllMoveables(WadGameVersion version)
         {
-            return Games[version].Moveables.DicSelect(item => item.Value.Name);
+            return Games[version].Moveables.DicSelect(item => item.Value.Names.LastOrDefault());
         }
 
         public static IDictionary<uint, string> GetAllStatics(WadGameVersion version)
         {
-            return Games[version].Statics.DicSelect(item => item.Value.Name);
+            return Games[version].Statics.DicSelect(item => item.Value.Names.LastOrDefault());
         }
 
         public static IDictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
         {
-            return Games[version].SpriteSequences.DicSelect(item => item.Value.Name);
+            return Games[version].SpriteSequences.DicSelect(item => item.Value.Names.LastOrDefault());
         }
 
         public static IDictionary<uint, string> GetAllSounds(WadGameVersion version)
@@ -345,7 +345,7 @@ namespace TombLib.Wad.Catalog
                             continue;
 
                         uint id = uint.Parse(moveableNode.Attributes["id"].Value);
-                        string name = moveableNode.Attributes["name"].Value;
+                        var names = (moveableNode.Attributes["name"]?.Value ?? "").Split(',');
 
                         var skinId = id;
                         if (moveableNode.Attributes["use_body_from"] != null)
@@ -355,7 +355,7 @@ namespace TombLib.Wad.Catalog
                         if (moveableNode.Attributes["ai"] != null)
                             isAI = short.Parse(moveableNode.Attributes["ai"].Value) > 0;
 
-                        game.Moveables.Add(id, new Item { Name = name, SkinId = skinId, AIObject = isAI });
+                        game.Moveables.Add(id, new Item { Names = new List<string>(names), SkinId = skinId, AIObject = isAI });
                     }
 
                 // Parse statics
@@ -367,8 +367,8 @@ namespace TombLib.Wad.Catalog
                             continue;
 
                         uint id = uint.Parse(staticNode.Attributes["id"].Value);
-                        string name = staticNode.Attributes["name"]?.Value ?? "";
-                        game.Statics.Add(id, new Item { Name = name });
+                        var names = (staticNode.Attributes["name"]?.Value ?? "").Split(',');
+                        game.Statics.Add(id, new Item { Names = new List<string>(names) });
                     }
 
                 // Parse sounds
@@ -395,8 +395,8 @@ namespace TombLib.Wad.Catalog
                             continue;
 
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
-                        string name = spriteSequenceNode.Attributes["name"].Value;
-                        game.SpriteSequences.Add(id, new Item { Name = name });
+                        var names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split(',');
+                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names) });
                     }
 
                 // Parse animations
