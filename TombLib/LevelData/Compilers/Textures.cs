@@ -54,7 +54,7 @@ namespace TombLib.LevelData.Compilers
         private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
         {
             LevelTexture texture = area.Texture as LevelTexture;
-            if (area.TextureIsInvisible || area.TextureIsUnavailable || texture == null)
+            if (area.TextureIsInvisible || area.TextureIsUnavailable || area.TextureIsDegenerate || texture == null)
                 return null;
 
             // Top right position for now
