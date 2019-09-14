@@ -75,8 +75,7 @@ namespace WadTool
                 "../../sounds",
                 "../../sound",
                 "../../sounds/samples",
-                "../../sound/samples",
-                "$(EditorDirectory)/sounds/TR4/samples"
+                "../../sound/samples"
             };
 
         public const string VariableBegin = "$(";

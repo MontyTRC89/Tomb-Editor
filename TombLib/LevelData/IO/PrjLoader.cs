@@ -93,8 +93,8 @@ namespace TombLib.LevelData.IO
         }
 
         public static Level LoadFromPrj(string filename, string soundsPath, 
-                                        IProgressReporter progressReporter, 
-                                        bool remapFlybyBitmask = true, bool adjustUV = false)
+                                        bool remapFlybyBitmask, bool adjustUV,
+                                        IProgressReporter progressReporter)
         {
             var level = new Level();
 
@@ -1254,15 +1254,18 @@ namespace TombLib.LevelData.IO
                 // XML_SOUND_SYSTEM: Read sounds catalog. We need it just for names, because we'll take 
                 // sound infos from SFX/SAM.
                 WadSounds sounds = null;
+                if (File.Exists(soundsPath))
                 {
-                    // If no sounds file was provided, just take the default one
-                    if (soundsPath == "")
-                        soundsPath = "Sounds\\TR4\\Sounds.xml";
-                    if (File.Exists(soundsPath))
+                    try
+                    {
                         sounds = WadSounds.ReadFromFile(soundsPath);
-                    if (sounds != null)
                         level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
-                                                          level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
+                                                              level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
+                    }
+                    catch (Exception exc)
+                    {
+                        logger.Error(exc);
+                    }
                 }
 
                 // Read WAD path
