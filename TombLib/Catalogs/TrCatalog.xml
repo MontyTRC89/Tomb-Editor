@@ -2134,7 +2134,7 @@
       <moveable id="104" name="LARA_DOUBLE" description="Lara Double" />
       <moveable id="105" name="LARA_DOUBLE_MIP" description="Lara Double Mip" />
       <moveable id="106" name="SMALL_SCORPION" description="Small Scorpion" />
-      <moveable id="107" name="LOCUST_EMITTER" description="Locust Emitter" />
+      <moveable id="107" name="FISH,LOCUST_EMITTER" description="Locust Emitter" />
       <moveable id="108" name="GAME_PIECE1" description="Game Piece1" />
       <moveable id="109" name="GAME_PIECE2" description="Game Piece2" />
       <moveable id="110" name="GAME_PIECE3" description="Game Piece3" />
@@ -2533,7 +2533,7 @@
       <moveable id="503" name="UW_PROPULSOR_LARA" description="NG Uw Propulsor Lara" />
       <moveable id="504" name="MINE_CART" description="NG Mine Cart" />
       <moveable id="505" name="MINE_CART_LARA" description="NG Mine Cart Lara" />
-      <moveable id="506" name="NEW_SLOT5" description="NG New Slot5" />
+      <moveable id="506" name="NEW_SLOT5,CLASSIC_ROLLINGBALL" description="NG New Slot5" />
       <moveable id="507" name="NEW_SLOT6" description="NG New Slot6" />
       <moveable id="508" name="NEW_SLOT7" description="NG New Slot7" />
       <moveable id="509" name="NEW_SLOT8" description="NG New Slot8" />
