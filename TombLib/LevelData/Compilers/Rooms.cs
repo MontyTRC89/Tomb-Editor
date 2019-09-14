@@ -875,7 +875,7 @@ namespace TombLib.LevelData.Compilers
                     var aux = new TrSectorAux();
 
                     if (_level.Settings.GameVersion >= GameVersion.TR3)
-                        sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (int)GetTextureSound(room, x, z)));
+                        sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (short)GetTextureSound(room, x, z)));
                     else
                         sector.BoxIndex = 0xffff;
                     sector.FloorDataIndex = 0;
