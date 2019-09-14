@@ -53,7 +53,7 @@
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(141, 291);
+            this.butOK.Location = new System.Drawing.Point(129, 283);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
@@ -64,7 +64,7 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(227, 291);
+            this.butCancel.Location = new System.Drawing.Point(215, 283);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
@@ -201,7 +201,7 @@
             this.lblPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(5, 255);
+            this.lblPreset.Location = new System.Drawing.Point(5, 254);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -212,7 +212,7 @@
             this.cmbPresetList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(52, 251);
+            this.cmbPresetList.Location = new System.Drawing.Point(52, 250);
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(243, 23);
             this.cmbPresetList.TabIndex = 6;
@@ -220,6 +220,9 @@
             // 
             // panelContents
             // 
+            this.panelContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelContents.Controls.Add(this.groupAnims);
             this.panelContents.Controls.Add(this.groupMisc);
             this.panelContents.Controls.Add(this.groupTextures);
@@ -227,10 +230,10 @@
             this.panelContents.Controls.Add(this.groupAxis);
             this.panelContents.Controls.Add(this.cmbPresetList);
             this.panelContents.Controls.Add(this.lblPreset);
-            this.panelContents.Location = new System.Drawing.Point(6, 6);
+            this.panelContents.Location = new System.Drawing.Point(0, 0);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(301, 280);
+            this.panelContents.Size = new System.Drawing.Size(301, 277);
             this.panelContents.TabIndex = 7;
             // 
             // groupAnims
@@ -343,7 +346,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(313, 320);
+            this.ClientSize = new System.Drawing.Size(301, 311);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
