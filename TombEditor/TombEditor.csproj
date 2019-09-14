@@ -69,7 +69,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssimpNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=7c35138f0d61254b, processorArchitecture=MSIL">
-      <HintPath>..\packages\AssimpNet.4.1.0-rc2\lib\net40\AssimpNet.dll</HintPath>
+      <HintPath>..\packages\AssimpNet.4.1.0\lib\net40\AssimpNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -613,14 +613,14 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
-    <Error Condition="!Exists('..\packages\AssimpNet.4.1.0-rc2\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.4.1.0-rc2\build\AssimpNet.targets'))" />
+    <Error Condition="!Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.4.1.0\build\AssimpNet.targets'))" />
   </Target>
   <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\AssimpNet.4.1.0-rc2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.4.1.0-rc2\build\AssimpNet.targets')" />
+  <Import Project="..\packages\AssimpNet.4.1.0\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
