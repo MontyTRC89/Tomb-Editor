@@ -1280,29 +1280,35 @@ namespace TombLib.LevelData.IO
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
 
                         // XML_SOUND_SYSTEM: SFX is a valid catalog source so let's add it (SAM is implicity loaded)
-                        string sfxName = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx";
-                        if (File.Exists(sfxName))
-                        {
-                            sfxName = level.Settings.MakeRelative(sfxName, VariableType.LevelDirectory);
-                            level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings, sfxName));
-                        }
+                        string sfxPath = (newWad.LoadException == null ?
+                            level.Settings.MakeAbsolute(newWad.Path).ToLower().Replace(".wad", ".sfx") :
+                            Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx");
+                        sfxPath = PathC.TryFindFile(
+                            level.Settings.GetVariable(VariableType.LevelDirectory),
+                            sfxPath, 3, 2);
+                        sfxPath = level.Settings.MakeRelative(sfxPath, VariableType.LevelDirectory);
+                        ReferencedSoundsCatalog sfx = new ReferencedSoundsCatalog(level.Settings, sfxPath);
+                        level.Settings.SoundsCatalogs.Add(sfx);
+                        if (sfx.LoadException != null)
+                            progressReporter.RaiseDialog(new DialogDescriptonSoundsCatalogUnloadable { Settings = level.Settings, Sounds = sfx });
 
                         // XML_SOUND_SYSTEM: we actually have a valid WAD loaded, let's change names using the catalog
                         // and mark them automatically for compilation
-                        foreach (var soundInfo in newWad.Wad.Sounds.SoundInfos)
-                        {
-                            if (sounds != null)
+                        if (sfx.Sounds != null)
+                            foreach (var soundInfo in sfx.Sounds.SoundInfos)
                             {
-                                var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
-                                if (catalogInfo != null)
-                                    soundInfo.Name = catalogInfo.Name;
+                                if (sounds != null)
+                                {
+                                    var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
+                                    if (catalogInfo != null)
+                                        soundInfo.Name = catalogInfo.Name;
+                                    else
+                                        soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                                }
                                 else
                                     soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                                level.Settings.SelectedSounds.Add(soundInfo.Id);
                             }
-                            else
-                                soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
-                            level.Settings.SelectedSounds.Add(soundInfo.Id);
-                        }
 
                         progressReporter.ReportProgress(60, "Loaded WAD '" + wadPath + "'");
 

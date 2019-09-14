@@ -64,6 +64,31 @@ namespace TombLib.Forms
                             }
                     });
             }
+            else if (dialogDescription_ is DialogDescriptonSoundsCatalogUnloadable)
+            {
+                var dialogDescription = (DialogDescriptonSoundsCatalogUnloadable)dialogDescription_;
+
+                if (dialogDescription.Sounds.LoadException != null)
+                    owner.InvokeIfNecessary(() =>
+                    {
+                        while (dialogDescription.Sounds.LoadException != null)
+                            switch (MessageBox.Show(owner, "The soudns catalog file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Sounds.Path) +
+                            " could not be loaded: " + (dialogDescription.Sounds.LoadException?.Message ?? "null") + ". \n" +
+                            "Do you want to load a substituting file now?", "Open project",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
+                            {
+                                case DialogResult.Yes:
+                                    dialogDescription.Sounds.SetPath(dialogDescription.Settings,
+                                        LevelFileDialog.BrowseFile(owner, dialogDescription.Settings, dialogDescription.Sounds.Path,
+                                        "Load a sound catalog (*.sfx)", ReferencedSoundsCatalog.FileExtensions, VariableType.LevelDirectory, false));
+                                    break; // Don't unlock, we don't want to have other messages in the meantime.
+                                case DialogResult.No:
+                                    return;
+                                case DialogResult.Cancel:
+                                    throw new OperationCanceledException("Canceled because sounds catalog file was not loadable");
+                            }
+                    });
+            }
             else if (dialogDescription_ is DialogDescriptonMissingSounds)
             {
                 var dialogDescription = (DialogDescriptonMissingSounds)dialogDescription_;
