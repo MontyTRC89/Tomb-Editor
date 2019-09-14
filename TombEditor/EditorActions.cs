@@ -4130,9 +4130,10 @@ namespace TombEditor
 
                 Level newLevel = null;
                 using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
-                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath, progressReporter,
+                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath,
                     formImport.RespectMousepatchOnFlybyHandling,
-                    formImport.UseHalfPixelCorrection)))
+                    formImport.UseHalfPixelCorrection,
+                    progressReporter)))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
