@@ -46,6 +46,7 @@ namespace WadTool
         protected override float RotationX => 0;
         protected override float RotationZ => 0;
         protected override float Scale => 1.0f;
+        protected override GizmoOrientation Orientation => GizmoOrientation.Normal;
 
         protected override float CentreCubeSize => _configuration.GizmoSkeleton_CenterCubeSize;
         protected override float TranslationConeSize => _configuration.GizmoSkeleton_TranslationConeSize;
