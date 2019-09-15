@@ -46,6 +46,8 @@ namespace WadTool
         protected override float ScaleCubeSize => _configuration.Gizmo_ScaleCubeSize;
         protected override float LineThickness => _configuration.Gizmo_LineThickness;
 
+        protected override GizmoOrientation Orientation => GizmoOrientation.Normal;
+
         protected override bool SupportScale => true;
         protected override bool SupportTranslateX => true;
         protected override bool SupportTranslateY => true;

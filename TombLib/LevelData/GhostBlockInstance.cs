@@ -7,7 +7,7 @@ namespace TombLib.LevelData
         public BlockSurface Floor;
         public BlockSurface Ceiling;
 
-        public bool SelectedFloor;
+        public bool SelectedFloor = true;
         public BlockEdge? SelectedCorner { get; set; }
 
         public VectorInt2 Position
