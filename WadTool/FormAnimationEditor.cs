@@ -1118,7 +1118,15 @@ namespace WadTool
 
             InterpolateFrames(start, end, numFrames);
         }
-
+        private void DeleteEveryNFrame(int n)
+        {
+            for(int i = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count-1; i >= 0; i-=n)
+            {
+                _editor.SelectedNode.DirectXAnimation.KeyFrames.RemoveAt(i);
+            }
+            
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+        }
         private void InterpolateAnimation(int numFrames, bool fixAnimCommands, bool updateGUI = true)
         {
             int stepCount = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
@@ -1835,6 +1843,32 @@ namespace WadTool
         {
             var searchPopUp = new PopUpSearch(cmbStateID);
             searchPopUp.Show(this);
+        }
+
+        private void DeleteEveryNthFrameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormInputBox("Delete every nth frame", "Enter number", "2"))
+            {
+                form.Width = 300;
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+
+                    int result = 0;
+                    if (!int.TryParse(form.Result, out result) || result <= 1)
+                    {
+                        popup.ShowError(panelRendering, "You must insert a number greater than 1");
+                        return;
+                    }
+                    DeleteEveryNFrame(result);
+                }
+
+                if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1 < panelRendering.CurrentKeyFrame) {
+                    panelRendering.CurrentKeyFrame = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
+                }
+                SelectAnimation(_editor.SelectedNode);
+                timeline.Highlight();
+            }
         }
     }
 }

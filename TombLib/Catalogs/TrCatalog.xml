@@ -419,9 +419,9 @@
       <anim item="0" id="25" name="LANDING_DEATH" />
       <anim item="0" id="26" name="STAND_TO_GRAB" />
       <anim item="0" id="27" name="STAND_TO_GRAB_CONTINUE" />
-      <anim item="0" id="28" name="HANG_VERTICAL" />
-      <anim item="0" id="29" name="START_HANG_VERTICAL" />
-      <anim item="0" id="30" name="STOP_HANG_VERTICAL" />
+      <anim item="0" id="28" name="UPWARD_JUMP" />
+      <anim item="0" id="29" name="UPWARD_JUMP_TO_HANG" />
+      <anim item="0" id="30" name="UPWARD_JUMP_TO_FREE_FALL" />
       <anim item="0" id="31" name="LANDING_LIGHT" />
       <anim item="0" id="32" name="SMASH_JUMP" />
       <anim item="0" id="33" name="SMASH_JUMP_CONTINUE" />
@@ -3195,7 +3195,7 @@
       <anim item="0" id="416" name="UNDERWATER_DOOR_OPEN" />
       <anim item="0" id="417" name="PUSHABLE_PUSH_TO_STAND" />
       <anim item="0" id="418" name="PUSHABLE_PULL_TO_STAND" />
-      <anim item="0" id="419" name="CROWBAR_USE_ON_WALK" />
+      <anim item="0" id="419" name="CROWBAR_USE_ON_WALL" />
       <anim item="0" id="420" name="CROWBAR_USE_ON_FLOOR" />
       <anim item="0" id="421" name="CRAWL_JUMP_DOWN" />
       <anim item="0" id="422" name="HARP_PLAY" />
