@@ -285,10 +285,10 @@ namespace TombLib.LevelData.Compilers
                         }
                         else
                         { // Sector is not a complete wall
-                            Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType;
-                            Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).TraversableType;
-                            var floorShape = new RoomSectorShape(block.Floor, floorPortalType, block.IsAnyWall);
-                            var ceilingShape = new RoomSectorShape(block.Ceiling, ceilingPortalType, block.IsAnyWall);
+                            Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
+                            Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
+                            var floorShape = new RoomSectorShape(block, true, floorPortalType, block.IsAnyWall);
+                            var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
 
                             // Floor
                             int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
@@ -729,13 +729,24 @@ namespace TombLib.LevelData.Compilers
             public readonly int HeightXpZp;
             public readonly int DiagonalStep;
 
-            public RoomSectorShape(BlockSurface surface, Room.RoomConnectionType portalType, bool wall)
+            public RoomSectorShape(Block block, bool floor, Room.RoomConnectionType portalType, bool wall)
             {
+                var surface = floor ? block.Floor : block.Ceiling;
+
                 HeightXnZn = surface.XnZn;
                 HeightXpZn = surface.XpZn;
                 HeightXnZp = surface.XnZp;
                 HeightXpZp = surface.XpZp;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
+
+                if (block.HasGhostBlock && block.GhostBlock.Valid &&
+                    ((floor && block.GhostBlock.FloorEditable) || (!floor && block.GhostBlock.CeilingEditable)))
+                {
+                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn : block.GhostBlock.Ceiling.XnZn;
+                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn : block.GhostBlock.Ceiling.XpZn;
+                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp : block.GhostBlock.Ceiling.XnZp;
+                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp : block.GhostBlock.Ceiling.XpZp;
+                }
 
                 switch (portalType)
                 {

@@ -996,6 +996,11 @@ namespace TombEditor
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
             });
 
+            AddCommand("AddGhostBlock", "Add ghost block", CommandType.Objects, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new GhostBlockInstance());
+            });
+
             AddCommand("AddSoundSource", "Add sound source", CommandType.Objects, delegate (CommandArgs args)
             {
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
@@ -1417,6 +1422,12 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("DrawGhostBlocks", "Draw ghost blocks", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowGhostBlocks = !args.Editor.Configuration.Rendering3D_ShowGhostBlocks;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DrawOtherObjects", "Draw other objects", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowOtherObjects = !args.Editor.Configuration.Rendering3D_ShowOtherObjects;
@@ -1639,6 +1650,13 @@ namespace TombEditor
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
                 EditorActions.ToggleForceFloorSolid(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("AddGhostBlocksToSelection", "Add ghost blocks to selected area", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.AddGhostBlocks(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
             });
 
             AddCommand("SetRoomOutside", "Set to outside", CommandType.Rooms, delegate (CommandArgs args)

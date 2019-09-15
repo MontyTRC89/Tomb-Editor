@@ -175,6 +175,9 @@ namespace TombEditor.ToolWindows
                 (!settings.Rendering3D_DisablePickingForImportedGeometry && panel3D.DisablePickingForImportedGeometry))
                 if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
 
+            if (!settings.Rendering3D_ShowGhostBlocks && panel3D.ShowGhostBlocks)
+                if (_editor.SelectedObject is GhostBlockInstance) _editor.SelectedObject = null;
+
             if (!settings.Rendering3D_ShowOtherObjects && panel3D.ShowOtherObjects)
                 if (_editor.SelectedObject is LightInstance ||
                     _editor.SelectedObject is CameraInstance ||
@@ -192,6 +195,7 @@ namespace TombEditor.ToolWindows
             panel3D.ShowMoveables = butDrawMoveables.Checked = settings.Rendering3D_ShowMoveables;
             panel3D.ShowStatics = butDrawStatics.Checked = settings.Rendering3D_ShowStatics;
             panel3D.ShowImportedGeometry = butDrawImportedGeometry.Checked = settings.Rendering3D_ShowImportedGeometry;
+            panel3D.ShowGhostBlocks = butDrawGhostBlocks.Checked = settings.Rendering3D_ShowGhostBlocks;
             panel3D.ShowOtherObjects = butDrawOther.Checked = settings.Rendering3D_ShowOtherObjects;
             panel3D.ShowSlideDirections = butDrawSlideDirections.Checked = settings.Rendering3D_ShowSlideDirections;
             panel3D.ShowExtraBlendingModes = butDrawExtraBlendingModes.Checked = settings.Rendering3D_ShowExtraBlendingModes;

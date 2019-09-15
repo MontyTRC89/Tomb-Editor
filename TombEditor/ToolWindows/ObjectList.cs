@@ -37,18 +37,29 @@ namespace TombEditor.ToolWindows
 
                 foreach (var o in _editor.SelectedRoom.Objects)
                     lstObjects.Items.Add(new DarkListItem(o.ToShortString()) { Tag = o });
+
+                foreach (var o in _editor.SelectedRoom.GhostBlocks)
+                    lstObjects.Items.Add(new DarkListItem(o.ToShortString()) { Tag = o });
             }
 
             // Update the object control selection
             if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.SelectedObjectChangedEvent)
             {
-                if (_editor.SelectedObject?.Room == _editor.SelectedRoom && _editor.SelectedObject is PositionBasedObjectInstance)
+                if (_editor.SelectedObject?.Room == _editor.SelectedRoom)
                 {
-                    var o = _editor.SelectedObject as PositionBasedObjectInstance;
-                    var entry = lstObjects.Items.FirstOrDefault(t => t.Tag == o);
-                    if (entry != null) lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                    if (_editor.SelectedObject is PositionBasedObjectInstance)
+                    {
+                        var o = _editor.SelectedObject as PositionBasedObjectInstance;
+                        var entry = lstObjects.Items.FirstOrDefault(t => t.Tag == o);
+                        if (entry != null) lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                    }
+                    else if (_editor.SelectedObject is GhostBlockInstance)
+                    {
+                        var o = _editor.SelectedObject as GhostBlockInstance;
+                        var entry = lstObjects.Items.FirstOrDefault(t => t.Tag == o);
+                        if (entry != null) lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                    }
                 }
-                
             }
         }
 

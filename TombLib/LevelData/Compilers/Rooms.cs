@@ -881,7 +881,7 @@ namespace TombLib.LevelData.Compilers
                     sector.FloorDataIndex = 0;
 
                     // Setup portals
-                    if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
                         sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         aux.Portal = true;
@@ -893,7 +893,7 @@ namespace TombLib.LevelData.Compilers
                         aux.FloorPortal = null;
                     }
 
-                    if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                         sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
                     else
                         sector.RoomAbove = 255;
@@ -1210,8 +1210,8 @@ namespace TombLib.LevelData.Compilers
                 {
                     Block block = room.Blocks[x, z];
                     Room.RoomConnectionInfo roomConnectionInfo = isCeiling ?
-                        room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)) :
-                        room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+                        room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true) :
+                        room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true);
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {

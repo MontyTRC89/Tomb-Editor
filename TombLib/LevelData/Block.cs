@@ -364,6 +364,12 @@ namespace TombLib.LevelData
                     throw new ApplicationException("\"splitType\" in unknown state.");
             }
         }
+
+        public static BlockSurface operator +(BlockSurface first, BlockSurface second) 
+            => new BlockSurface() { XpZp = (short)(first.XpZp + second.XpZp), XpZn = (short)(first.XpZn + second.XpZn), XnZp = (short)(first.XnZp + second.XnZp), XnZn = (short)(first.XnZn + second.XnZn) };
+        public static BlockSurface operator -(BlockSurface first, BlockSurface second)
+            => new BlockSurface() { XpZp = (short)(first.XpZp - second.XpZp), XpZn = (short)(first.XpZn - second.XpZn), XnZp = (short)(first.XnZp - second.XnZp), XnZn = (short)(first.XnZn - second.XnZn) };
+
     }
 
     [Serializable]
@@ -385,6 +391,8 @@ namespace TombLib.LevelData
         public PortalInstance FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public PortalInstance WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public PortalInstance CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
+
+        public GhostBlockInstance GhostBlock { get; internal set; } = null; // If exists, adds invisible geometry to sector.
 
         private Block()
         { }
@@ -423,6 +431,7 @@ namespace TombLib.LevelData
 
         public bool IsAnyWall => Type != BlockType.Floor;
         public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
+        public bool HasGhostBlock => GhostBlock != null;
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
@@ -678,6 +687,10 @@ namespace TombLib.LevelData
                 transformation.TransformValueDiagonalQuad(ref _ed[(int)BlockEdge.XpZp], ref _ed[(int)BlockEdge.XnZp], ref _ed[(int)BlockEdge.XnZn], ref _ed[(int)BlockEdge.XpZn]);
                 if (requiredFloorSplitDirectionIsXEqualsZ != Floor.SplitDirectionIsXEqualsZ)
                     Floor.SplitDirectionToggled = !Floor.SplitDirectionToggled;
+
+                if (HasGhostBlock)
+                    transformation.TransformValueDiagonalQuad(ref GhostBlock.Floor.XpZp, ref GhostBlock.Floor.XnZp, ref GhostBlock.Floor.XnZn, ref GhostBlock.Floor.XpZn);
+
             }
 
             bool oldCeilingSplitDirectionIsXEqualsZReal = Ceiling.SplitDirectionIsXEqualsZWithDiagonalSplit;
@@ -689,6 +702,9 @@ namespace TombLib.LevelData
                 transformation.TransformValueDiagonalQuad(ref _rf[(int)BlockEdge.XpZp], ref _rf[(int)BlockEdge.XnZp], ref _rf[(int)BlockEdge.XnZn], ref _rf[(int)BlockEdge.XpZn]);
                 if (requiredCeilingSplitDirectionIsXEqualsZ != Ceiling.SplitDirectionIsXEqualsZ)
                     Ceiling.SplitDirectionToggled = !Ceiling.SplitDirectionToggled;
+
+                if (HasGhostBlock)
+                    transformation.TransformValueDiagonalQuad(ref GhostBlock.Ceiling.XpZp, ref GhostBlock.Ceiling.XnZp, ref GhostBlock.Ceiling.XnZn, ref GhostBlock.Ceiling.XpZn);
             }
 
             // Rotate applied textures
