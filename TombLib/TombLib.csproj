@@ -175,7 +175,7 @@
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
     <Compile Include="LevelData\CameraInstance.cs" />
-    <Compile Include="LevelData\CollisionOverriderInstance.cs" />
+    <Compile Include="LevelData\GhostBlockInstance.cs" />
     <Compile Include="LevelData\Compilers\FloorData.cs" />
     <Compile Include="LevelData\Compilers\LevelCompiler.cs" />
     <Compile Include="LevelData\Compilers\LevelCompilerClassicTR.cs" />
