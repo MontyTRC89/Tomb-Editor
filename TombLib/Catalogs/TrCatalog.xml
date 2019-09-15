@@ -405,45 +405,45 @@
       <anim item="0" id="11" name="STAND_STILL" />
       <anim item="0" id="12" name="TURN_RIGHT_SLOW" />
       <anim item="0" id="13" name="TURN_LEFT_SLOW" />
-      <anim item="0" id="14" name="LANDING_FORWARD_BOTH" />
-      <anim item="0" id="15" name="LANDING_FORWARD_BOTH_CONTINUE" />
-      <anim item="0" id="16" name="JUMPING_FORWARD_RIGHT" />
-      <anim item="0" id="17" name="START_FLY_FORWARD_RIGHT" />
-      <anim item="0" id="18" name="JUMPING_FORWARD_LEFT" />
-      <anim item="0" id="19" name="START_FLY_FORWARD_LEFT" />
+      <anim item="0" id="14" name="JUMP_FORWARD_LAND_START_UNUSED" />
+      <anim item="0" id="15" name="JUMP_FORWARD_LAND_END_UNUSED" />
+      <anim item="0" id="16" name="RUN_JUMP_RIGHT_START" />
+      <anim item="0" id="17" name="RUN_JUMP_RIGHT_CONTINUE" />
+      <anim item="0" id="18" name="RUN_JUMP_LEFT_START" />
+      <anim item="0" id="19" name="RUN_JUMP_LEFT_CONTINUE" />
       <anim item="0" id="20" name="WALK_FORWARD_START" />
       <anim item="0" id="21" name="WALK_FORWARD_START_CONTINUE" />
-      <anim item="0" id="22" name="START_FREE_FALL" />
-      <anim item="0" id="23" name="FREE_FALL_LONG" />
-      <anim item="0" id="24" name="LANDING_HARD" />
-      <anim item="0" id="25" name="LANDING_DEATH" />
-      <anim item="0" id="26" name="STAND_TO_GRAB" />
-      <anim item="0" id="27" name="STAND_TO_GRAB_CONTINUE" />
-      <anim item="0" id="28" name="UPWARD_JUMP" />
-      <anim item="0" id="29" name="UPWARD_JUMP_TO_HANG" />
-      <anim item="0" id="30" name="UPWARD_JUMP_TO_FREE_FALL" />
-      <anim item="0" id="31" name="LANDING_LIGHT" />
+      <anim item="0" id="22" name="JUMP_FORWARD_TO_FREEFALL" />
+      <anim item="0" id="23" name="FREEFALL" />
+      <anim item="0" id="24" name="FREEFALL_LAND" />
+      <anim item="0" id="25" name="FREEFALL_LAND_DEATH" />
+      <anim item="0" id="26" name="STAND_TO_JUMP_UP" />
+      <anim item="0" id="27" name="STAND_TO_JUMP_UP_CONTINUE" />
+      <anim item="0" id="28" name="JUMP_UP" />
+      <anim item="0" id="29" name="JUMP_UP_TO_HANG_UNUSED" />
+      <anim item="0" id="30" name="JUMP_UP_TO_FREEFALL" />
+      <anim item="0" id="31" name="JUMP_UP_LAND" />
       <anim item="0" id="32" name="SMASH_JUMP" />
       <anim item="0" id="33" name="SMASH_JUMP_CONTINUE" />
-      <anim item="0" id="34" name="FREE_FALL_FORWARD" />
-      <anim item="0" id="35" name="FREE_FALL_MIDDLE" />
-      <anim item="0" id="36" name="FREE_FALL_LONG_NO_HURT" />
-      <anim item="0" id="37" name="HANG_TO_RELEASE" />
-      <anim item="0" id="38" name="STOP_WALK_BACK_RIGHT" />
-      <anim item="0" id="39" name="STOP_WALK_BACK_LEFT" />
+      <anim item="0" id="34" name="FALL_START" />
+      <anim item="0" id="35" name="FALL" />
+      <anim item="0" id="36" name="FALL_TO_FREEFALL" />
+      <anim item="0" id="37" name="HANG_TO_FREEFALL_UNUSED" />
+      <anim item="0" id="38" name="WALK_BACK_END_RIGHT" />
+      <anim item="0" id="39" name="WALK_BACK_END_LEFT" />
       <anim item="0" id="40" name="WALK_BACK" />
-      <anim item="0" id="41" name="START_WALK_BACK" />
+      <anim item="0" id="41" name="WALK_BACK_START" />
       <anim item="0" id="42" name="CLIMB_3CLICK" />
-      <anim item="0" id="43" name="UNKNOWN2" />
-      <anim item="0" id="44" name="ROTATE_RIGHT" />
-      <anim item="0" id="45" name="JUMPING_FORWARD_TO_FREEFALL" />
-      <anim item="0" id="46" name="FLY_FORWARD_TRY_TO_HANG" />
-      <anim item="0" id="47" name="ROLL_ALTERNATE" />
-      <anim item="0" id="48" name="ROLL_END_ALTERNATE" />
-      <anim item="0" id="49" name="FREE_FALL_NO_HURT" />
+      <anim item="0" id="43" name="CLIMB_3CLICK_END_TO_RUN_UNUSED" />
+      <anim item="0" id="44" name="TURN_RIGHT" />
+      <anim item="0" id="45" name="JUMP_FORWARD_TO_FREEFALL_UNUSED" />
+      <anim item="0" id="46" name="REACH_TO_FREEFALL_UNUSED" />
+      <anim item="0" id="47" name="ROLL_ALTERNATE_UNUSED" />
+      <anim item="0" id="48" name="ROLL_END_ALTERNATE_UNUSED" />
+      <anim item="0" id="49" name="JUMP_FORWARD_END_TO_FREEFALL" />
       <anim item="0" id="50" name="CLIMB_2CLICK" />
       <anim item="0" id="51" name="CLIMB_2CLICK_END" />
-      <anim item="0" id="52" name="CLIMB_2CLICK_END_RUNNING" />
+      <anim item="0" id="52" name="CLIMB_2CLICK_END_TO_RUN" />
       <anim item="0" id="53" name="WALL_SMASH_LEFT"/>
       <anim item="0" id="54" name="WALL_SMASH_RIGHT" />
       <anim item="0" id="55" name="RUN_UP_STEP_RIGHT" />
@@ -454,82 +454,82 @@
       <anim item="0" id="60" name="WALK_DOWN_RIGHT" />
       <anim item="0" id="61" name="WALK_DOWN_BACK_LEFT" />
       <anim item="0" id="62" name="WALK_DOWN_BACK_RIGHT" />
-      <anim item="0" id="63" name="PULL_SWITCH_DOWN" />
-      <anim item="0" id="64" name="PULL_SWITCH_UP" />
-      <anim item="0" id="65" name="WALK_LEFT" />
-      <anim item="0" id="66" name="WALK_LEFT_END" />
-      <anim item="0" id="67" name="WALK_RIGHT" />
-      <anim item="0" id="68" name="WALK_RIGHT_END" />
+      <anim item="0" id="63" name="WALLSWITCH_DOWN" />
+      <anim item="0" id="64" name="WALLSWITCH_UP" />
+      <anim item="0" id="65" name="SIDESTEP_LEFT" />
+      <anim item="0" id="66" name="SIDESTEP_LEFT_END" />
+      <anim item="0" id="67" name="SIDESTEP_RIGHT" />
+      <anim item="0" id="68" name="SIDESTEP_RIGHT_END" />
       <anim item="0" id="69" name="ROTATE_LEFT" />
       <anim item="0" id="70" name="SLIDE_FORWARD" />
       <anim item="0" id="71" name="SLIDE_FORWARD_END" />
       <anim item="0" id="72" name="SLIDE_FORWARD_STOP" />
-      <anim item="0" id="73" name="STAND_JUMP_SIDES" />
+      <anim item="0" id="73" name="STAND_TO_JUMP" />
       <anim item="0" id="74" name="JUMP_BACK_START" />
       <anim item="0" id="75" name="JUMP_BACK" />
       <anim item="0" id="76" name="JUMP_FORWARD_START" />
-      <anim item="0" id="77" name="CONTINUE_FLY_FORWARD" />
+      <anim item="0" id="77" name="JUMP_FORWARD" />
       <anim item="0" id="78" name="JUMP_LEFT_START" />
       <anim item="0" id="79" name="JUMP_LEFT" />
       <anim item="0" id="80" name="JUMP_RIGHT_START" />
       <anim item="0" id="81" name="JUMP_RIGHT" />
-      <anim item="0" id="82" name="LANDING_MIDDLE" />
-      <anim item="0" id="83" name="FORWARD_TO_FREE_FALL" />
-      <anim item="0" id="84" name="LEFT_TO_FREE_FALL" />
-      <anim item="0" id="85" name="RIGHT_TO_FREE_FALL" />
+      <anim item="0" id="82" name="LAND" />
+      <anim item="0" id="83" name="JUMP_BACK_TO_FREEFALL" />
+      <anim item="0" id="84" name="JUMP_LEFT_TO_FREEFALL" />
+      <anim item="0" id="85" name="JUMP_RIGHT_TO_FREEFALL" />
       <anim item="0" id="86" name="UNDERWATER_SWIM_FORWARD" />
-      <anim item="0" id="87" name="UNDERWATER_SWIM_STILL" />
-      <anim item="0" id="88" name="RUN_BACK_START" />
-      <anim item="0" id="89" name="RUN_BACK" />
-      <anim item="0" id="90" name="RUN_BACK_END" />
-      <anim item="0" id="91" name="HANG_VERTICAL_START" />
-      <anim item="0" id="92" name="LANDING_FROM_RUN" />
-      <anim item="0" id="93" name="FREE_FALL_BACK" />
-      <anim item="0" id="94" name="REACH_START" />
-      <anim item="0" id="95" name="REACH_STILL" />
-      <anim item="0" id="96" name="HANG_IDLE" />
+      <anim item="0" id="87" name="UNDERWATER_SWIM_FORWARD_DRIFT" />
+      <anim item="0" id="88" name="SMALL_JUMP_BACK_START" />
+      <anim item="0" id="89" name="SMALL_JUMP_BACK" />
+      <anim item="0" id="90" name="SMALL_JUMP_BACK_END" />
+      <anim item="0" id="91" name="JUMP_UP_START" />
+      <anim item="0" id="92" name="LAND_TO_RUN" />
+      <anim item="0" id="93" name="FALL_BACK" />
+      <anim item="0" id="94" name="JUMP_FORWARD_TO_REACH" />
+      <anim item="0" id="95" name="REACH" />
+      <anim item="0" id="96" name="REACH_TO_HANG" />
       <anim item="0" id="97" name="CLIMB_ON" />
-      <anim item="0" id="98" name="FREE_FALL_TO_LONG" />
-      <anim item="0" id="99" name="FALL_CROUCHING_LANDING" />
-      <anim item="0" id="100" name="FREE_FALL_TO_REACH" />
-      <anim item="0" id="101" name="FREE_FALL_TO_REACH_ALTERNATE" />
+      <anim item="0" id="98" name="REACH_TO_FREEFALL" />
+      <anim item="0" id="99" name="FALL_CROUCHING_LANDING_UNUSED" />
+      <anim item="0" id="100" name="FREEFALL_TO_REACH" />
+      <anim item="0" id="101" name="JUMP_FORWARD_START_TO_REACH_ALTERNATE_UNUSED" />
       <anim item="0" id="102" name="CLIMB_ON_END" />
       <anim item="0" id="103" name="STAND_IDLE" />
-      <anim item="0" id="104" name="START_SLIDE_BACKWARD" />
+      <anim item="0" id="104" name="SLIDE_BACKWARD_START" />
       <anim item="0" id="105" name="SLIDE_BACKWARD" />
       <anim item="0" id="106" name="SLIDE_BACKWARD_END" />
       <anim item="0" id="107" name="UNDERWATER_SWIM_TO_IDLE" />
       <anim item="0" id="108" name="UNDERWATER_IDLE" />
       <anim item="0" id="109" name="UNDERWARER_IDLE_TO_SWIM" />
       <anim item="0" id="110" name="ONWATER_IDLE" />
-      <anim item="0" id="111" name="CLIMB_OUT_OF_WATER" />
-      <anim item="0" id="112" name="FREE_FALL_TO_UNDERWATER" />
-      <anim item="0" id="113" name="ONWATER_DIVE_ALTERNATE" />
+      <anim item="0" id="111" name="ONWATER_TO_STANCE_HIGH" />
+      <anim item="0" id="112" name="FREEFALL_TO_UNDERWATER" />
+      <anim item="0" id="113" name="ONWATER_DIVE_ALTERNATE_UNUSED" />
       <anim item="0" id="114" name="UNDERWATER_TO_ONWATER" />
-      <anim item="0" id="115" name="ONWATER_DIVE" />
+      <anim item="0" id="115" name="ONWATER_SWIM_FORWARD_DIVE_UNUSED" />
       <anim item="0" id="116" name="ONWATER_SWIM_FORWARD" />
       <anim item="0" id="117" name="ONWATER_SWIM_FORWARD_TO_IDLE" />
-      <anim item="0" id="118" name="ONWATER_IDLE_TO_SWIM" />
-      <anim item="0" id="119" name="FREE_FALL_TO_UNDERWATER_ALTERNATE" />
+      <anim item="0" id="118" name="ONWATER_IDLE_TO_SWIM_FORWARD" />
+      <anim item="0" id="119" name="ONWATER_DIVE" />
       <anim item="0" id="120" name="PUSHABLE_GRAB" />
       <anim item="0" id="121" name="PUSHABLE_RELEASE" />
       <anim item="0" id="122" name="PUSHABLE_PULL" />
       <anim item="0" id="123" name="PUSHABLE_PUSH" />
       <anim item="0" id="124" name="UNDERWATER_DEATH" />
-      <anim item="0" id="125" name="HURT_FORWARD" />
-      <anim item="0" id="126" name="HURT_BACK" />
-      <anim item="0" id="127" name="HURT_LEFT" />
-      <anim item="0" id="128" name="HURT_RIGHT" />
+      <anim item="0" id="125" name="HIT_FRONT" />
+      <anim item="0" id="126" name="HIT_BACK" />
+      <anim item="0" id="127" name="HIT_LEFT" />
+      <anim item="0" id="128" name="HIT_RIGHT" />
       <anim item="0" id="129" name="UNDERWATER_SWITCH" />
       <anim item="0" id="130" name="UNDERWATER_PICKUP" />
       <anim item="0" id="131" name="USE_KEY" />
       <anim item="0" id="132" name="ONWATER_DEATH" />
-      <anim item="0" id="133" name="RUN_TO_DIE" />
+      <anim item="0" id="133" name="RUN_DEATH" />
       <anim item="0" id="134" name="USE_PUZZLE" />
       <anim item="0" id="135" name="PICKUP" />
       <anim item="0" id="136" name="CLIMB_LEFT" />
       <anim item="0" id="137" name="CLIMB_RIGHT" />
-      <anim item="0" id="138" name="STAND_TO_DEATH" />
+      <anim item="0" id="138" name="STAND_DEATH" />
       <anim item="0" id="139" name="BOULDER_DEATH" />
       <anim item="0" id="140" name="ONWATER_IDLE_TO_SWIM_BACK" />
       <anim item="0" id="141" name="ONWATER_SWIM_BACK" />
@@ -542,15 +542,15 @@
       <anim item="0" id="148" name="ROLL_END" />
       <anim item="0" id="149" name="SPIKE_DEATH" />
       <anim item="0" id="150" name="REACH_TO_THIN_LEDGE" />
-      <anim item="0" id="151" name="LANDING_ROLL" />
-      <anim item="0" id="152" name="SWANDIVE_TO_UNDERWATER1" />
-      <anim item="0" id="153" name="FREE_FALL_SWANDIVE" />
-      <anim item="0" id="154" name="SWANDIVE_TO_UNDERWATER2" />
+      <anim item="0" id="151" name="SWANDIVE_ROLL" />
+      <anim item="0" id="152" name="SWANDIVE_TO_UNDERWATER" />
+      <anim item="0" id="153" name="FREEFALL_SWANDIVE" />
+      <anim item="0" id="154" name="FREEFALL_SWANDIVE_TO_UNDERWATER" />
       <anim item="0" id="155" name="SWANDIVE_TO_DEATH" />
       <anim item="0" id="156" name="SWANDIVE_LEFT" />
       <anim item="0" id="157" name="SWANDIVE_RIGHT" />
       <anim item="0" id="158" name="SWANDIVE_START" />
-      <anim item="0" id="159" name="CLIMB_ON2" />
+      <anim item="0" id="159" name="CLIMB_ON_HANDSTAND" />
     </animations>
     <states>
       <state item="0" id="0" name="WALK_FORWARD" />
@@ -1213,35 +1213,35 @@
       <anim item="0" id="171" name="LADDER_LEFT" />
       <anim item="0" id="172" name="LADDER_HANG" />
       <anim item="0" id="173" name="LADDER_HANG_TO_IDLE" />
-      <anim item="0" id="174" name="LADDER_TO_STAND" />
+      <anim item="0" id="174" name="LADDER_CLIMB_ON" />
       <anim item="0" id="175" name="UNKNOWN" />
-      <anim item="0" id="176" name="ONWATER_TO_WADE_SHALLOW" />
+      <anim item="0" id="176" name="ONWATER_TO_WADE_SHALLOW_UNUSED" />
       <anim item="0" id="177" name="WADE" />
       <anim item="0" id="178" name="RUN_TO_WADE_LEFT" />
       <anim item="0" id="179" name="RUN_TO_WADE_RIGHT" />
       <anim item="0" id="180" name="WADE_TO_RUN_LEFT" />
       <anim item="0" id="181" name="WADE_TO_RUN_RIGHT" />
       <anim item="0" id="182" name="LADDER_BACKFLIP_START" />
-      <anim item="0" id="183" name="LADDER_BACKFLIP_END" />
+      <anim item="0" id="183" name="LADDER_BACKFLIP_CONTINUE" />
       <anim item="0" id="184" name="WADE_TO_STAND_RIGHT" />
       <anim item="0" id="185" name="WADE_TO_STAND_LEFT" />
       <anim item="0" id="186" name="STAND_TO_WADE" />
-      <anim item="0" id="187" name="LADDER_UP_HANDS" />
-      <anim item="0" id="188" name="LADDER_DOWN_HANDS" />
+      <anim item="0" id="187" name="LADDER_UP_HANGING" />
+      <anim item="0" id="188" name="LADDER_DOWN_HANGING" />
       <anim item="0" id="189" name="FLARE_THROW" />
-      <anim item="0" id="190" name="ONWATER_TO_WADE_DEEP" />
-      <anim item="0" id="191" name="ONWATER_TO_LAND_LOW" />
-      <anim item="0" id="192" name="UNDERWATER_TO_WADE" />
+      <anim item="0" id="190" name="ONWATER_TO_WADE" />
+      <anim item="0" id="191" name="ONWATER_TO_STANCE_MEDIUM" />
+      <anim item="0" id="192" name="ONWATER_TO_STANCE_LOW" />
       <anim item="0" id="193" name="ONWATER_TO_WADE" />
-      <anim item="0" id="194" name="LADDER_TO_HANDS_DOWN" />
+      <anim item="0" id="194" name="LADDER_TO_HANG_DOWN" />
       <anim item="0" id="195" name="SWITCH_SMALL_DOWN" />
       <anim item="0" id="196" name="SWITCH_SMALL_UP" />
       <anim item="0" id="197" name="BUTTON_PUSH" />
       <anim item="0" id="198" name="UNDERWATER_SWIM_TO_STILL_HUDDLE" />
       <anim item="0" id="199" name="UNDERWATER_SWIM_TO_STILL_SPRAWL" />
       <anim item="0" id="200" name="UNDERWATER_SWIM_TO_STILL_MEDIUM" />
-      <anim item="0" id="201" name="LADDER_TO_HANDS_RIGHT" />
-      <anim item="0" id="202" name="LADDER_TO_HANDS_LEFT" />
+      <anim item="0" id="201" name="LADDER_TO_HANG_RIGHT" />
+      <anim item="0" id="202" name="LADDER_TO_HANG_LEFT" />
       <anim item="0" id="203" name="UNDERWATER_ROLL_START" />
       <anim item="0" id="204" name="FLARE_PICKUP" />
       <anim item="0" id="205" name="UNDERWATER_ROLL_END" />
@@ -1907,20 +1907,20 @@
       <anim item="0" id="215" name="ZIPLINE_RIDE" />
       <anim item="0" id="216" name="ZIPLINE_FALL" />
       <anim item="0" id="217" name="STAND_TO_CROUCH" />
-      <anim item="0" id="218" name="CROUCH_ROLL_FORWARD_START" />
-      <anim item="0" id="219" name="CROUCH_ROLL_FORWARD_CONTINUE" />
-      <anim item="0" id="220" name="CROUCH_ROLL_FORWARD_END" />
+      <anim item="0" id="218" name="CROUCH_ROLL_FORWARD_START_UNUSED" />
+      <anim item="0" id="219" name="CROUCH_ROLL_FORWARD_CONTINUE_UNUSED" />
+      <anim item="0" id="220" name="CROUCH_ROLL_FORWARD_END_UNUSED" />
       <anim item="0" id="221" name="CROUCH_TO_STAND" />
       <anim item="0" id="222" name="CROUCH_IDLE" />
       <anim item="0" id="223" name="SPRINT" />
       <anim item="0" id="224" name="RUN_TO_SPRINT_LEFT" />
       <anim item="0" id="225" name="RUN_TO_SPRINT_RIGHT" />
       <anim item="0" id="226" name="SPRINT_SLIDE_STAND_RIGHT" />
-      <anim item="0" id="227" name="SPRINT_SLIDE_STAND_RIGHT_BETA" />
+      <anim item="0" id="227" name="SPRINT_SLIDE_STAND_RIGHT_END_ALTERNATE_UNUSED" />
       <anim item="0" id="228" name="SPRINT_SLIDE_STAND_LEFT" />
-      <anim item="0" id="229" name="SPRINT_SLIDE_STAND_LEFT_BETA" />
+      <anim item="0" id="229" name="SPRINT_SLIDE_STAND_LEFT_END_ALTERNATE_UNUSED" />
       <anim item="0" id="230" name="SPRINT_TO_ROLL_LEFT" />
-      <anim item="0" id="231" name="SPRINT_TO_ROLL_LEFT_BETA" />
+      <anim item="0" id="231" name="SPRINT_TO_ROLL_LEFT_BETA_UNUSED" />
       <anim item="0" id="232" name="SPRINT_ROLL_LEFT_TO_RUN" />
       <anim item="0" id="233" name="MONKEY_GRAB" />
       <anim item="0" id="234" name="MONKEY_IDLE" />
@@ -1934,19 +1934,19 @@
       <anim item="0" id="242" name="SPRINT_TO_ROLL_ALTERNATE_END" />
       <anim item="0" id="243" name="SPRINT_TO_RUN_LEFT" />
       <anim item="0" id="244" name="SPRINT_TO_RUN_RIGHT" />
-      <anim item="0" id="245" name="CROUCH_PREPARE" />
+      <anim item="0" id="245" name="STAND_TO_CROUCH_END" />
       <anim item="0" id="246" name="SLIDE_FORWARD_TO_RUN" />
-      <anim item="0" id="247" name="CROUCH_ROLL_FORWARD_START_ALTERNATE" />
-      <anim item="0" id="248" name="JUMP_FORWARD_START_TO_GRAB" />
-      <anim item="0" id="249" name="JUMP_FORWARD_END_TO_GRAB" />
+      <anim item="0" id="247" name="CROUCH_ROLL_FORWARD_START_ALTERNATE_UNUSED" />
+      <anim item="0" id="248" name="JUMP_FORWARD_START_TO_GRAB_EARLY" />
+      <anim item="0" id="249" name="JUMP_FORWARD_START_TO_GRAB_LATE" />
       <anim item="0" id="250" name="RUN_TO_GRAB_RIGHT" />
       <anim item="0" id="251" name="RUN_TO_GRAB_LEFT" />
       <anim item="0" id="252" name="MONKEY_IDLE_TO_FORWARD_RIGHT" />
-      <anim item="0" id="253" name="MONKEY_STRAFE_LEFT" />
-      <anim item="0" id="254" name="MONKEY_STRAFE_LEFT_END" />
-      <anim item="0" id="255" name="MONKEY_STRAFE_RIGHT" />
-      <anim item="0" id="256" name="MONKEY_STRAFE_RIGHT_END" />
-      <anim item="0" id="257" name="MONKEY_TURN_AROUND" />
+      <anim item="0" id="253" name="MONKEY_SHIMMY_LEFT" />
+      <anim item="0" id="254" name="MONKEY_SHIMMY_LEFT_END" />
+      <anim item="0" id="255" name="MONKEY_SHIMMY_RIGHT" />
+      <anim item="0" id="256" name="MONKEY_SHIMMY_RIGHT_END" />
+      <anim item="0" id="257" name="MONKEY_TURN_AROUND_UNUSED" />
       <anim item="0" id="258" name="CROUCH_TO_CRAWL_START" />
       <anim item="0" id="259" name="CRAWL_TO_CROUCH_START" />
       <anim item="0" id="260" name="CRAWL_FORWARD" />
@@ -1954,7 +1954,7 @@
       <anim item="0" id="262" name="CRAWL_FORWARD_TO_IDLE_START_RIGHT" />
       <anim item="0" id="263" name="CRAWL_IDLE" />
       <anim item="0" id="264" name="CROUCH_TO_CRAWL_END" />
-      <anim item="0" id="265" name="CROUCH_IDLE_SMASH" />
+      <anim item="0" id="265" name="CRAWL_TO_CROUCH_END_UNUSED" />
       <anim item="0" id="266" name="CRAWL_FORWARD_TO_IDLE_END_RIGHT" />
       <anim item="0" id="267" name="CRAWL_FORWARD_TO_IDLE_START_LEFT" />
       <anim item="0" id="268" name="CRAWL_FORWARD_TO_IDLE_END_LEFT" />
@@ -1963,13 +1963,13 @@
       <anim item="0" id="271" name="MONKEY_TURN_LEFT" />
       <anim item="0" id="272" name="MONKEY_TURN_RIGHT" />
       <anim item="0" id="273" name="CROUCH_TO_CRAWL_CONTINUE" />
-      <anim item="0" id="274" name="CRAWL_TO_CROUCH_END" />
+      <anim item="0" id="274" name="CRAWL_TO_CROUCH_CONTINUE" />
       <anim item="0" id="275" name="CRAWL_IDLE_TO_BACKWARD" />
       <anim item="0" id="276" name="CRAWL_BACKWARD" />
-      <anim item="0" id="277" name="CRAWL_BACKWARD_TO_IDLE_START_RIGHT" />
-      <anim item="0" id="278" name="CRAWL_BACKWARD_TO_IDLE_END_RIGHT" />
-      <anim item="0" id="279" name="CRAWL_BACKWARD_TO_IDLE_START_LEFT" />
-      <anim item="0" id="280" name="CRAWL_BACKWARD_TO_IDLE_END_LEFT" />
+      <anim item="0" id="277" name="CRAWL_BACKWARD_TO_IDLE_RIGHT_START" />
+      <anim item="0" id="278" name="CRAWL_BACKWARD_TO_IDLE_RIGHT_END" />
+      <anim item="0" id="279" name="CRAWL_BACKWARD_TO_IDLE_LEFT_START" />
+      <anim item="0" id="280" name="CRAWL_BACKWARD_TO_IDLE_LEFT_END" />
       <anim item="0" id="281" name="CRAWL_TURN_LEFT_END" />
       <anim item="0" id="282" name="CRAWL_TURN_RIGHT_END" />
       <anim item="0" id="283" name="MONKEY_TURN_LEFT_EARLY_END" />
@@ -1981,18 +1981,18 @@
       <anim item="0" id="289" name="CRAWL_TO_HANG_START" />
       <anim item="0" id="290" name="CRAWL_TO_HANG_CONTINUE" />
       <anim item="0" id="291" name="CROUCH_PICKUP" />
-      <anim item="0" id="292" name="CRAWL_PICKUP" />
-      <anim item="0" id="293" name="CROUCH_SMASH_FORWARD" />
-      <anim item="0" id="294" name="CROUCH_SMASH_BACKWARD" />
-      <anim item="0" id="295" name="CROUCH_SMASH_RIGHT" />
-      <anim item="0" id="296" name="CROUCH_SMASH_LEFT" />
-      <anim item="0" id="297" name="CRAWL_SMASH_FORWARD" />
-      <anim item="0" id="298" name="CRAWL_SMASH_BACKWARD" />
-      <anim item="0" id="299" name="CRAWL_SMASH_RIGHT" />
-      <anim item="0" id="300" name="CRAWL_SMASH_LEFT" />
+      <anim item="0" id="292" name="CRAWL_PICKUP_UNUSED" />
+      <anim item="0" id="293" name="CROUCH_HIT_FRONT" />
+      <anim item="0" id="294" name="CROUCH_HIT_BACK" />
+      <anim item="0" id="295" name="CROUCH_HIT_RIGHT" />
+      <anim item="0" id="296" name="CROUCH_HIT_LEFT" />
+      <anim item="0" id="297" name="CRAWL_HIT_FRONT_UNUSED" />
+      <anim item="0" id="298" name="CRAWL_HIT_BACK_UNUSED" />
+      <anim item="0" id="299" name="CRAWL_HIT_RIGHT_UNUSED" />
+      <anim item="0" id="300" name="CRAWL_HIT_LEFT_UNUSED" />
       <anim item="0" id="301" name="CRAWL_DEATH" />
       <anim item="0" id="302" name="CRAWL_TO_HANG_END" />
-      <anim item="0" id="303" name="CROUCH_ABORT" />
+      <anim item="0" id="303" name="STAND_TO_CROUCH_ABORT_UNUSED" />
       <anim item="0" id="304" name="RUN_TO_CROUCH_LEFT_START" />
       <anim item="0" id="305" name="RUN_TO_CROUCH_RIGHT_START" />
       <anim item="0" id="306" name="RUN_TO_CROUCH_LEFT_END" />
@@ -3095,8 +3095,8 @@
       <anim item="0" id="316" name="GIANT_BUTTON_PUSH" />
       <anim item="0" id="317" name="FLOOR_TRAPDOOR_OPEN" />
       <anim item="0" id="318" name="CEILING_TRAPDOOR_OPEN" />
-      <anim item="0" id="319" name="ROUND_HANDLE_GRAB_CLOCKWISE" />
-      <anim item="0" id="320" name="ROUND_HANDLE_GRAB_COUNTERCLOCKWISE" />
+      <anim item="0" id="319" name="TURNSWITCH_GRAB_LEFT" />
+      <anim item="0" id="320" name="TURNSWITCH_GRAB_RIGHT" />
       <anim item="0" id="321" name="COGWHEEL_PULL" />
       <anim item="0" id="322" name="COGWHEEL_GRAB" />
       <anim item="0" id="323" name="COGWHEEL_UNGRAB" />
@@ -3107,84 +3107,84 @@
       <anim item="0" id="328" name="POLE_IDLE" />
       <anim item="0" id="329" name="POLE_CLIMB_UP" />
       <anim item="0" id="330" name="POLE_FALL" />
-      <anim item="0" id="331" name="JUMP_FORWARD_TO_POLE_GRAB" />
+      <anim item="0" id="331" name="REACH_TO_POLE_GRAB" />
       <anim item="0" id="332" name="POLE_TURN_LEFT_START" />
       <anim item="0" id="333" name="POLE_TURN_RIGHT_START" />
       <anim item="0" id="334" name="POLE_IDLE_TO_CLIMB_DOWN" />
       <anim item="0" id="335" name="POLE_CLIMB_DOWN" />
       <anim item="0" id="336" name="POLE_CLIMB_DOWN_TO_IDLE" />
       <anim item="0" id="337" name="JUMP_UP_TO_POLE_GRAB" />
-      <anim item="0" id="338" name="POLE_CLIMB_UP_INBETWEEN" />
+      <anim item="0" id="338" name="POLE_CLIMB_UP_END" />
       <anim item="0" id="339" name="PULLEY_GRAB" />
       <anim item="0" id="340" name="PULLEY_PULL" />
       <anim item="0" id="341" name="PULLEY_UNGRAB" />
       <anim item="0" id="342" name="POLE_GRAB_TO_STAND" />
-      <anim item="0" id="343" name="UNKNOWN" />
+      <anim item="0" id="343" name="POLE_TURN_LEFT_CONTINUE_UNUSED" />
       <anim item="0" id="344" name="POLE_TURN_LEFT_END" />
-      <anim item="0" id="345" name="UNKNOWN" />
+      <anim item="0" id="345" name="POLE_TURN_RIGHT_CONTINUE_UNUSED" />
       <anim item="0" id="346" name="POLE_TURN_RIGHT_END" />
-      <anim item="0" id="347" name="ROUND_HANDLE_PUSH_RIGHT_START" />
-      <anim item="0" id="348" name="ROUND_HANDLE_PUSH_RIGHT_CONTINUE" />
-      <anim item="0" id="349" name="ROUND_HANDLE_PUSH_RIGHT_END" />
-      <anim item="0" id="350" name="ROUND_HANDLE_PUSH_LEFT_START" />
-      <anim item="0" id="351" name="ROUND_HANDLE_PUSH_LEFT_CONTINUE" />
-      <anim item="0" id="352" name="ROUND_HANDLE_PUSH_LEFT_END" />
+      <anim item="0" id="347" name="TURNSWITCH_PUSH_RIGHT_START" />
+      <anim item="0" id="348" name="TURNSWITCH_PUSH_RIGHT_CONTINUE" />
+      <anim item="0" id="349" name="TURNSWITCH_PUSH_RIGHT_END" />
+      <anim item="0" id="350" name="TURNSWITCH_PUSH_LEFT_START" />
+      <anim item="0" id="351" name="TURNSWITCH_PUSH_LEFT_CONTINUE" />
+      <anim item="0" id="352" name="TURNSWITCH_PUSH_LEFT_END" />
       <anim item="0" id="353" name="CROUCH_TURN_LEFT" />
       <anim item="0" id="354" name="CROUCH_TURN_RIGHT" />
-      <anim item="0" id="355" name="HANG_AROUND_LEFT_OUTER_START" />
-      <anim item="0" id="356" name="HANG_AROUND_LEFT_OUTER_END" />
-      <anim item="0" id="357" name="HANG_AROUND_RIGHT_OUTER_START" />
-      <anim item="0" id="358" name="HANG_AROUND_RIGHT_OUTER_END" />
-      <anim item="0" id="359" name="HANG_AROUND_LEFT_INNER_START" />
-      <anim item="0" id="360" name="HANG_AROUND_LEFT_INNER_END" />
-      <anim item="0" id="361" name="HANG_AROUND_RIGHT_INNER_START" />
-      <anim item="0" id="362" name="HANG_AROUND_RIGHT_INNER_END" />
-      <anim item="0" id="363" name="LADDER_AROUND_LEFT_OUTER_START" />
-      <anim item="0" id="364" name="LADDER_AROUND_LEFT_OUTER_END" />
-      <anim item="0" id="365" name="LADDER_AROUND_RIGHT_OUTER_START" />
-      <anim item="0" id="366" name="LADDER_AROUND_RIGHT_OUTER_END" />
-      <anim item="0" id="367" name="LADDER_AROUND_LEFT_INNER_START" />
-      <anim item="0" id="368" name="LADDER_AROUND_LEFT_INNER_END" />
-      <anim item="0" id="369" name="LADDER_AROUND_RIGHT_INNER_START" />
-      <anim item="0" id="370" name="LADDER_AROUND_RIGHT_INNER_END" />
-      <anim item="0" id="371" name="MONKEY_TO_ROPE_START" />
+      <anim item="0" id="355" name="HANG_CORNER_LEFT_OUTER_START" />
+      <anim item="0" id="356" name="HANG_CORNER_LEFT_OUTER_END" />
+      <anim item="0" id="357" name="HANG_CORNER_RIGHT_OUTER_START" />
+      <anim item="0" id="358" name="HANG_CORNER_RIGHT_OUTER_END" />
+      <anim item="0" id="359" name="HANG_CORNER_LEFT_INNER_START" />
+      <anim item="0" id="360" name="HANG_CORNER_LEFT_INNER_END" />
+      <anim item="0" id="361" name="HANG_CORNER_RIGHT_INNER_START" />
+      <anim item="0" id="362" name="HANG_CORNER_RIGHT_INNER_END" />
+      <anim item="0" id="363" name="LADDER_CORNER_LEFT_OUTER_START" />
+      <anim item="0" id="364" name="LADDER_CORNER_LEFT_OUTER_END" />
+      <anim item="0" id="365" name="LADDER_CORNER_RIGHT_OUTER_START" />
+      <anim item="0" id="366" name="LADDER_CORNER_RIGHT_OUTER_END" />
+      <anim item="0" id="367" name="LADDER_CORNER_LEFT_INNER_START" />
+      <anim item="0" id="368" name="LADDER_CORNER_LEFT_INNER_END" />
+      <anim item="0" id="369" name="LADDER_CORNER_RIGHT_INNER_START" />
+      <anim item="0" id="370" name="LADDER_CORNER_RIGHT_INNER_END" />
+      <anim item="0" id="371" name="JUMP_UP_TO_ROPE_START" />
       <anim item="0" id="372" name="TRAIN_DEATH" />
-      <anim item="0" id="373" name="MONKEY_TO_ROPE_END" />
+      <anim item="0" id="373" name="JUMP_UP_TO_ROPE_END" />
       <anim item="0" id="374" name="ROPE_IDLE" />
       <anim item="0" id="375" name="ROPE_DOWN_START" />
       <anim item="0" id="376" name="ROPE_UP" />
-      <anim item="0" id="377" name="ROPE_IDLE_TO_SWING_SOFT" />
-      <anim item="0" id="378" name="ROPE_GRAB_TO_FALL" />
+      <anim item="0" id="377" name="ROPE_IDLE_TO_ROPE_HANG_UNUSED" />
+      <anim item="0" id="378" name="ROPE_GRAB_TO_FALL_UNUSED" />
       <anim item="0" id="379" name="ROPE_JUMP_TO_GRAB" />
-      <anim item="0" id="380" name="ROPE_IDLE_TO_BACKFLIP" />
-      <anim item="0" id="381" name="ROPE_SWING_TO_FALL_SEMIFRONT" />
-      <anim item="0" id="382" name="ROPE_SWING_TO_FALL_MIDDLE" />
-      <anim item="0" id="383" name="ROPE_SWING_TO_FALL_BACK" />
-      <anim item="0" id="384" name="ROPE_GRAB_STILL" />
-      <anim item="0" id="385" name="ROPE_GRAB_TO_SWING" />
+      <anim item="0" id="380" name="ROPE_IDLE_TO_BACKFLIP_UNUSED" />
+      <anim item="0" id="381" name="ROPE_SWING_TO_FALL_SEMIFRONT_UNUSED" />
+      <anim item="0" id="382" name="ROPE_SWING_TO_FALL_MIDDL_UNUSED" />
+      <anim item="0" id="383" name="ROPE_SWING_TO_FALL_BACK_UNUSED" />
+      <anim item="0" id="384" name="ROPE_DOWN" />
+      <anim item="0" id="385" name="ROPE_DOWN_END" />
       <anim item="0" id="386" name="ROPE_SWING_TO_REACH" />
-      <anim item="0" id="387" name="ROPE_SWING_TO_PUSH" />
-      <anim item="0" id="388" name="ROPE_IDLE_TO_SWING_SEMIMIDDLE" />
-      <anim item="0" id="389" name="ROPE_IDLE_TO_SWING_HALFMIDDLE" />
-      <anim item="0" id="390" name="ROPE_SWING_TO_FALL_FRONT" />
-      <anim item="0" id="391" name="ROPE_GRAB_TO_FALL_ALTERNATE" />
+      <anim item="0" id="387" name="ROPE_IDLE_TO_SWING" />
+      <anim item="0" id="388" name="ROPE_IDLE_TO_SWING_SEMIMIDDLE_UNUSED" />
+      <anim item="0" id="389" name="ROPE_IDLE_TO_SWING_HALFMIDDLE_UNUSED" />
+      <anim item="0" id="390" name="ROPE_SWING_TO_FALL_FRONT_UNUSED" />
+      <anim item="0" id="391" name="ROPE_GRAB_TO_FALL_ALTERNATE_UNUSED" />
       <anim item="0" id="392" name="ROPE_TURN_LEFT" />
       <anim item="0" id="393" name="ROPE_TURN_RIGHT" />
-      <anim item="0" id="394" name="ROPE_SWING_FORWARD_SEMIHARD" />
-      <anim item="0" id="395" name="ROPE_LADDER_TO_HANDS_DOWN_ALTERNATE" />
-      <anim item="0" id="396" name="ROPE_SWING_BACK_CONTINUE" />
-      <anim item="0" id="397" name="ROPE_SWING_BACK_END" />
-      <anim item="0" id="398" name="ROPE_SWING_BACK_START" />
-      <anim item="0" id="399" name="ROPE_SWING_FORWARD_SOFT" />
+      <anim item="0" id="394" name="ROPE_SWING" />
+      <anim item="0" id="395" name="LADDER_TO_HANDS_DOWN_ALTERNATE_UNUSED" />
+      <anim item="0" id="396" name="ROPE_SWING_BACK_CONTINUE_UNUSED" />
+      <anim item="0" id="397" name="ROPE_SWING_BACK_END_UNUSED" />
+      <anim item="0" id="398" name="ROPE_SWING_BACK_START_UNUSED" />
+      <anim item="0" id="399" name="ROPE_SWING_FORWARD_SOFT_UNUSED" />
       <anim item="0" id="400" name="POUR_WATERSKIN_LOW" />
       <anim item="0" id="401" name="FILL_WATERSKIN" />
       <anim item="0" id="402" name="POUR_WATERSKIN_HIGH" />
       <anim item="0" id="403" name="PRY_DOOR" />
-      <anim item="0" id="404" name="ROPE_SWING_FORWARD_HARD" />
-      <anim item="0" id="405" name="ROPE_CHANGE_ROPE" />
+      <anim item="0" id="404" name="ROPE_SWING_FORWARD_HARD_UNUSED" />
+      <anim item="0" id="405" name="ROPE_CHANGE_ROPE_UNUSED" />
       <anim item="0" id="406" name="ROPE_SWING_TO_REACH_FRONT" />
       <anim item="0" id="407" name="ROPE_SWING_TO_REACH_MIDDLE" />
-      <anim item="0" id="408" name="ROPE_SWING_BLOCK" />
+      <anim item="0" id="408" name="ROPE_SWING_BLOCK_UNUSED" />
       <anim item="0" id="409" name="ROPE_SWING_TO_REACH_SEMIMIDDLE" />
       <anim item="0" id="410" name="ROPE_SWING_TO_REACH_HANG_FRONT" />
       <anim item="0" id="411" name="ROPE_SWING_TO_REACH_FRONT2" />
@@ -3209,14 +3209,14 @@
       <anim item="0" id="430" name="TORCH_LIGHT_4" />
       <anim item="0" id="431" name="TORCH_LIGHT_5" />
       <anim item="0" id="432" name="DETONATOR_USE" />
-      <anim item="0" id="433" name="CORRECT_POSITION_FRONT" />
-      <anim item="0" id="434" name="CORRECT_POSITION_LEFT" />
-      <anim item="0" id="435" name="CORRECT_POSITION_RIGHT" />
-      <anim item="0" id="436" name="CROWBAR_USE_ON_FLOOR_FAIL" />
+      <anim item="0" id="433" name="CORRECT_POSITION_FRONT_UNUSED" />
+      <anim item="0" id="434" name="CORRECT_POSITION_LEFT_UNUSED" />
+      <anim item="0" id="435" name="CORRECT_POSITION_RIGHT_UNUSED" />
+      <anim item="0" id="436" name="CROWBAR_USE_ON_FLOOR_FAIL_UNUSED" />
       <anim item="0" id="437" name="DEATH_MAGIC" />
       <anim item="0" id="438" name="DEATH_BLOWUP" />
       <anim item="0" id="439" name="PICKUP_SARCOPHAGUS" />
-      <anim item="0" id="440" name="DRAG" />
+      <anim item="0" id="440" name="DRAG_BODY" />
       <anim item="0" id="441" name="BINOCULARS" />
       <anim item="0" id="442" name="DEATH_BIG_SCORPION" />
       <anim item="0" id="443" name="DEATH_SETH" />
