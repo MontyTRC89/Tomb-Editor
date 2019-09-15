@@ -170,6 +170,7 @@ namespace WadTool
         }
 
         protected override float Scale => 1.0f;
+        protected override GizmoOrientation Orientation => GizmoOrientation.Normal;
 
         protected override float CentreCubeSize => _configuration.GizmoAnimationEditor_CenterCubeSize;
         protected override float TranslationConeSize => _configuration.GizmoAnimationEditor_TranslationConeSize;
