@@ -1053,6 +1053,9 @@ namespace TombLib.LevelData.IO
                     instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw);
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
                 }
                 else if (id3 == Prj2Chunks.ObjectTrigger)
                 {

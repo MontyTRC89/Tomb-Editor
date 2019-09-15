@@ -1910,13 +1910,14 @@ namespace TombEditor.Controls
                     if (!instance.Editable) continue;
 
                     var selected = _editor.SelectedObject == instance;
-
                     var baseColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
-                    var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.7f);
+                    var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.9f);
                     var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
 
-                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                     _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
+                    _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                    _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
 
                     _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
                     _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
@@ -1957,8 +1958,6 @@ namespace TombEditor.Controls
                     }
                     else // Default non-selected cube
                     {
-                        _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                         effect.Parameters["ModelViewProjection"].SetValue((instance.CenterMatrix(true) * viewProjection).ToSharpDX());
                         effect.Parameters["Color"].SetValue(normalColor);
                         effect.Techniques[0].Passes[0].Apply();
@@ -1971,8 +1970,8 @@ namespace TombEditor.Controls
                         SolidVertex[] vtxs = new SolidVertex[72];
 
                         // Derive base block colours
-                        var p1c = new Vector4(baseColor.To3() * 0.6f, selected ? 0.8f : 0.5f);
-                        var p2c = new Vector4(baseColor.To3() * 0.4f, selected ? 0.6f : 0.5f);
+                        var p1c = new Vector4(baseColor.To3() * (selected ? 0.8f : 0.4f), selected ? 0.7f : 0.5f);
+                        var p2c = new Vector4(baseColor.To3() * (selected ? 0.5f : 0.2f), selected ? 0.7f : 0.5f);
 
                         // Fill it up
                         for (int f = 0, c = 0; f < 2; f++)
@@ -2013,16 +2012,16 @@ namespace TombEditor.Controls
                         }
 
                         _ghostBlockVertexBuffer.SetData(vtxs);
-
-                        _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                         _legacyDevice.SetVertexBuffer(_ghostBlockVertexBuffer);
                         _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _ghostBlockVertexBuffer));
+
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                         effect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
                         effect.Parameters["Color"].SetValue(Vector4.One);
                         effect.CurrentTechnique.Passes[0].Apply();
                         _legacyDevice.Draw(PrimitiveType.TriangleList, 72);
-
+                        
+                        // Bring back old vb or forthcoming code may crash
                         _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
                         _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
                         _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
