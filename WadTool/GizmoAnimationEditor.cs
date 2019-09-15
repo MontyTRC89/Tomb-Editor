@@ -125,7 +125,7 @@ namespace WadTool
                     if (animation == null || _control.SelectedMesh == null)
                         return Vector3.Zero;
                     var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-                    var centre = model.Meshes[meshIndex].BoundingBox.Center;
+                    var centre = new Vector3(0, 0, 0);
                     return MathC.HomogenousTransform(centre, model.AnimationTransforms[meshIndex]);
                 }
                 else
