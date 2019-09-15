@@ -51,7 +51,7 @@ namespace TombLib.Controls
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
         private int XtoMinMax(int x, int max, bool interpolate = true) => (int)Math.Round((double)(Minimum + (max - Minimum) * x) / (double)(picSlider.ClientSize.Width - picSlider.Padding.Horizontal), interpolate ? MidpointRounding.ToEven : MidpointRounding.AwayFromZero);
-        private int XtoRealFrameNumber(int x) => XtoMinMax(x, realFrameCount - 1, false);
+        private int XtoRealFrameNumber(int x) => Math.Max(XtoMinMax(x, realFrameCount - 1, false), 0);
         private int XtoValue(int x) => XtoMinMax(x, Maximum, false);
         private int ValueToX(int value) => Maximum - Minimum == 0 ? 0 : (int)Math.Round((double)((picSlider.ClientSize.Width - picSlider.Padding.Horizontal) * (value - Minimum)) / (double)(Maximum - Minimum), MidpointRounding.ToEven);
 
@@ -266,6 +266,7 @@ namespace TombLib.Controls
         private void picSlider_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int targetFrame = XtoRealFrameNumber(e.X);
+            if (targetFrame < 0) targetFrame = 0;
 
             // Try to find animcommand under cursor
             foreach (WadAnimCommand ac in Animation.WadAnimation.AnimCommands)
