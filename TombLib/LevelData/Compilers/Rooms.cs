@@ -21,8 +21,9 @@ namespace TombLib.LevelData.Compilers
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
-
         private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
+        private Dictionary<VectorInt3, ushort> _vertexColors;
+
         private void BuildRooms()
         {
             ReportProgress(15, "Building rooms");
@@ -85,6 +86,7 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
+            _vertexColors = new Dictionary<VectorInt3, ushort>();
             var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
@@ -92,6 +94,20 @@ namespace TombLib.LevelData.Compilers
                     var room = rooms[i];
                     MatchDoorShades(room, (flipped == 1));
                 }
+
+            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
+            {
+                for (int i = 0; i < trRoom.Vertices.Count; i++)
+                {
+                    var v = trRoom.Vertices[i];
+                    var absolutePosition = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z);
+                    if (_vertexColors.ContainsKey(absolutePosition))
+                    {
+                        v.Lighting2 = _vertexColors[absolutePosition];
+                        trRoom.Vertices[i] = v;
+                    }
+                }
+            });
 
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
@@ -1362,6 +1378,8 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < room.Vertices.Count; i++)
                     {
                         var v1 = room.Vertices[i];
+                        var absolutePosition = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z);
+                        var isPresentInLookup = _vertexColors.ContainsKey(absolutePosition);
 
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
                             if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
@@ -1372,126 +1390,27 @@ namespace TombLib.LevelData.Compilers
                                     int otherZ = v1.Position.Z + room.Info.Z - otherRoom.Info.Z;
 
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
-                                    {
-                                        var v2 = otherRoom.Vertices[j];
+                                    { 
+                                           var v2 = otherRoom.Vertices[j];
+
+                                        ushort refColor = (isPresentInLookup ? _vertexColors[absolutePosition] : v1.Lighting2);
 
                                         if (otherX == v2.Position.X && otherY == v2.Position.Y && otherZ == v2.Position.Z)
                                         {
-                                            var newColor = (ushort)((((v2.Lighting2 & 0x1f) + (v1.Lighting2 & 0x1f)) >> 1) |
-                                                                    32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((v1.Lighting2 >> 5) & 0x1f)) >> 1) |
-                                                                        32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((v1.Lighting2 >> 10) & 0x1f)) >> 1)));
+                                            var newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
+                                                                    32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
+                                                                        32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
 
-                                            v1.Lighting2 = newColor;
-                                            v2.Lighting2 = newColor;
-
-                                            room.Vertices[i] = v1;
-                                            otherRoom.Vertices[j] = v2;
+                                            if (!isPresentInLookup)
+                                                _vertexColors.Add(absolutePosition, newColor);
+                                            else
+                                                _vertexColors[absolutePosition] = newColor;
                                         }
                                     }
                                 }
                     }
                 }
             }
-        }
-
-        private void MatchPortalVertexColors()
-        {
-            // Match vertex colors on portal
-            // Operate on final vertices here because:
-            //   - We don't want to change the lighting of rooms on output
-            //   - Geometry objects should also be make use of this.
-
-            // Build lookup
-            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>(new ReferenceEqualityComparer<Room>());
-            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
-            {
-                var vertexLookup = new Dictionary<tr_vertex, ushort>();
-                var vertices = trRoom.Vertices;
-                for (int i = 0; i < vertices.Count; ++i)
-                {
-                    tr_room_vertex vertex = vertices[i];
-
-                    // Imported geometry can be (wrongly) placed outside room's boundaries so we need this check
-                    if (vertex.Position.X < 0 || vertex.Position.Z < 0 ||
-                        vertex.Position.X >= trRoom.NumXSectors * 1024.0f ||
-                        vertex.Position.Z >= trRoom.NumZSectors * 1024.0f)
-                        continue;
-
-                    if (!vertexLookup.ContainsKey(vertex.Position))
-                        vertexLookup.Add(vertex.Position, vertex.Lighting2);
-                }
-                lock (vertexColorLookups)
-                    vertexColorLookups.Add(trRoom.OriginalRoom, vertexLookup);
-            });
-
-            // Match portals in each room ...
-            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
-            {
-                Vector3 roomWorldPos = trRoom.OriginalRoom.WorldPos;
-
-                // Altough the usage pattern is superficially more suited for Set/Dictionary,
-                // a List is used here since it will only have a few entries at max and linear search most 
-                // likely beats everything else at that.
-                List<Room> roomsSharedByVertex = new List<Room>();
-                var vertices = trRoom.Vertices;
-                for (int i = 0; i < vertices.Count; ++i)
-                {
-                    tr_room_vertex vertex = vertices[i];
-                    Vector3 worldPos = new Vector3(vertex.Position.X + roomWorldPos.X, -vertex.Position.Y, vertex.Position.Z + roomWorldPos.Z);
-
-                    // Find connected rooms that might share this vertex
-                    roomsSharedByVertex.Clear();
-                    FindConnectedRooms(roomsSharedByVertex, trRoom.OriginalRoom, worldPos, true);
-                    if (roomsSharedByVertex.Count == 0)
-                        continue;
-
-                    int R = (vertex.Lighting2 >> 10) & 0x1F;
-                    int G = (vertex.Lighting2 >> 5) & 0x1F;
-                    int B = vertex.Lighting2 & 0x1F;
-                    int Count = 1;
-
-                    foreach (Room connectedRoom in roomsSharedByVertex)
-                    {
-                        if (connectedRoom == trRoom.OriginalRoom)
-                            continue;
-
-                        // Find position in room local coordinates
-                        Vector3 connectedRoomWorldPos = connectedRoom.WorldPos;
-                        Vector3 trVertexPos = new Vector3(worldPos.X - connectedRoomWorldPos.X, -worldPos.Y, worldPos.Z - connectedRoomWorldPos.Z);
-                        float maxCoordinate = Math.Max(
-                            Math.Abs(trVertexPos.X),
-                            Math.Max(
-                                Math.Abs(trVertexPos.Y),
-                                Math.Abs(trVertexPos.Z)));
-                        if (maxCoordinate > short.MaxValue)
-                            continue;
-
-                        var connectedRoomLocalPosUint = new tr_vertex((short)trVertexPos.X, (short)trVertexPos.Y, (short)trVertexPos.Z);
-
-                        // Lookup vertex
-                        Dictionary<tr_vertex, ushort> connectedRoomColorLookup;
-                        if (!vertexColorLookups.TryGetValue(connectedRoom, out connectedRoomColorLookup))
-                            continue;
-                        ushort lighting;
-                        if (!connectedRoomColorLookup.TryGetValue(connectedRoomLocalPosUint, out lighting))
-                            continue;
-
-                        // Accumulate color for average
-                        R += (lighting >> 10) & 0x1F;
-                        G += (lighting >> 5) & 0x1F;
-                        B += lighting & 0x1F;
-                        ++Count;
-                    }
-
-                    // Set color
-                    if (Count > 1)
-                    {
-                        Vector3 averageColor = new Vector3(R, G, B) * (1.0f / 16.0f / Count);
-                        vertex.Lighting2 = PackColorTo16Bit(averageColor);
-                        vertices[i] = vertex;
-                    }
-                }
-            });
         }
 
         private static void FindConnectedRooms(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos, bool checkFloorCeiling)
