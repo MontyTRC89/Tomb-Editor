@@ -43,6 +43,11 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PlaceObject(targetRoom, targetBlock, new SoundSourceInstance());
             }));
 
+            Items.Add(new ToolStripMenuItem("Add ghost block", Properties.Resources.objects_geometry_override_16, (o, e) =>
+            {
+                EditorActions.PlaceObject(targetRoom, targetBlock, new GhostBlockInstance());
+            }));
+
             Items.Add(new ToolStripMenuItem("Add imported geometry", Properties.Resources.objects_custom_geometry, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new ImportedGeometryInstance());

@@ -54,7 +54,9 @@ namespace WadTool
         protected override float LineThickness => _configuration.GizmoSkeleton_LineThickness;
 
         protected override bool SupportScale => false;
-        protected override bool SupportTranslate => true;
+        protected override bool SupportTranslateX => true;
+        protected override bool SupportTranslateY => true;
+        protected override bool SupportTranslateZ => true;
         protected override bool SupportRotationY => false;
         protected override bool SupportRotationX => false;
         protected override bool SupportRotationZ => false;

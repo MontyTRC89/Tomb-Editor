@@ -315,7 +315,10 @@ namespace TombLib.LevelData
         public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z)*new Vector3(1024.0f,256.0f,1024.0f),
                                                                new Vector3(Position.X + NumXSectors - 1, Position.Y + GetHighestCorner(), Position.Z + NumZSectors - 1) * new Vector3(1024.0f, 256.0f, 1024.0f));
         public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
+
         public bool CoordinateInvalid(int x, int z) => x < 0 || z < 0 || x >= NumXSectors || z >= NumZSectors;
+        public bool CoordinateInvalid(VectorInt2 coord) => CoordinateInvalid(coord.X, coord.Y);
+
         public IEnumerable<Room> Versions
         {
             get
@@ -357,6 +360,18 @@ namespace TombLib.LevelData
             }
         }
 
+        public IEnumerable<GhostBlockInstance> GhostBlocks
+        {
+            get
+            { // No LINQ because it is really slow.
+                var ghosts = new HashSet<GhostBlockInstance>();
+                foreach (var block in Blocks)
+                    if(block.HasGhostBlock)
+                        ghosts.Add(block.GhostBlock);
+                return ghosts;
+            }
+        }
+
         public IEnumerable<SectorBasedObjectInstance> SectorObjects
         {
             get
@@ -364,6 +379,8 @@ namespace TombLib.LevelData
                 foreach (var instance in Portals)
                     yield return instance;
                 foreach (var instance in Triggers)
+                    yield return instance;
+                foreach (var instance in GhostBlocks)
                     yield return instance;
             }
         }
@@ -377,6 +394,8 @@ namespace TombLib.LevelData
                 foreach (var instance in Portals)
                     yield return instance;
                 foreach (var instance in Triggers)
+                    yield return instance;
+                foreach (var instance in GhostBlocks)
                     yield return instance;
                 foreach (var instance in _objects)
                     yield return instance;
@@ -433,7 +452,7 @@ namespace TombLib.LevelData
             if (result.Block?.FloorPortal == null)
                 return result;
             // We must also check if floor portal is solid or not
-            if (!result.Block.FloorPortal.IsTraversable || GetFloorRoomConnectionInfo(pos).TraversableType != RoomConnectionType.FullPortal)
+            if (!result.Block.FloorPortal.IsTraversable || GetFloorRoomConnectionInfo(pos, true).TraversableType != RoomConnectionType.FullPortal)
                 return result;
 
             Room adjoiningRoom = result.Block.FloorPortal.AdjoiningRoom;
@@ -956,6 +975,13 @@ namespace TombLib.LevelData
         {
             if (instance is PositionBasedObjectInstance)
                 _objects.Add((PositionBasedObjectInstance)instance);
+            else if (instance is GhostBlockInstance)
+            {
+                var ghost = instance as GhostBlockInstance;
+                if (!CoordinateInvalid(ghost.Position))
+                    Blocks[ghost.Position.X, ghost.Position.Y].GhostBlock = ghost;
+            }
+
             try
             {
                 instance.AddToRoom(level, this);
@@ -963,7 +989,15 @@ namespace TombLib.LevelData
             catch
             { // If we fail, remove the object from the list
                 if (instance is PositionBasedObjectInstance)
+                {
                     _objects.Remove((PositionBasedObjectInstance)instance);
+                }
+                else if (instance is GhostBlockInstance)
+                {
+                    var ghost = instance as GhostBlockInstance;
+                    if (!CoordinateInvalid(ghost.Position))
+                        Blocks[ghost.Position.X, ghost.Position.Y].GhostBlock = null;
+                }
                 throw;
             }
 
@@ -974,7 +1008,16 @@ namespace TombLib.LevelData
         {
             instance.RemoveFromRoom(level, this);
             if (instance is PositionBasedObjectInstance)
+            {
                 _objects.Remove((PositionBasedObjectInstance)instance);
+            }
+            else if (instance is GhostBlockInstance)
+            {
+                var ghost = instance as GhostBlockInstance;
+                if (!CoordinateInvalid(ghost.Position))
+                    Blocks[ghost.Position.X, ghost.Position.Y].GhostBlock = null;
+            }
+
             return instance;
         }
 
@@ -1207,7 +1250,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public static RoomConnectionType CalculateRoomConnectionTypeWithoutAlternates(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
+        public static RoomConnectionType CalculateRoomConnectionTypeWithoutAlternates(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove, bool includeGhostBlock = false)
         {
             // Evaluate force floor solid
             if (blockAbove.ForceFloorSolid)
@@ -1226,8 +1269,13 @@ namespace TombLib.LevelData
             // Gather split data
             bool belowSplitXEqualsZ = blockBelow.Ceiling.SplitDirectionIsXEqualsZWithDiagonalSplit;
             bool aboveSplitXEqualsZ = blockAbove.Floor.SplitDirectionIsXEqualsZWithDiagonalSplit;
-            bool belowIsQuad = blockBelow.Ceiling.IsQuad;
-            bool aboveIsQuad = blockAbove.Floor.IsQuad;
+
+            // Take possible ghost blocks into account
+            var realBlockBelowCeiling = (includeGhostBlock && blockBelow.HasGhostBlock) ? blockBelow.Ceiling + blockBelow.GhostBlock.Ceiling : blockBelow.Ceiling;
+            var realBlockAboveFloor   = (includeGhostBlock && blockAbove.HasGhostBlock) ? blockAbove.Floor + blockAbove.GhostBlock.Floor : blockAbove.Floor;
+
+            bool belowIsQuad = realBlockBelowCeiling.IsQuad;
+            bool aboveIsQuad = realBlockAboveFloor.IsQuad;
 
             // Check where the geometry matches to create a portal
             if (belowIsQuad || aboveIsQuad || belowSplitXEqualsZ == aboveSplitXEqualsZ)
@@ -1235,10 +1283,10 @@ namespace TombLib.LevelData
                 DiagonalSplit diagonalSplit = aboveDiagonalSplit != DiagonalSplit.None ? aboveDiagonalSplit : belowDiagonalSplit;
                 bool splitXEqualsZ = belowIsQuad ? aboveSplitXEqualsZ : belowSplitXEqualsZ;
 
-                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XnZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XnZn);
-                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XpZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XpZn);
-                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XnZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XnZp);
-                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XpZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XpZp);
+                bool matchesAtXnYn = roomBelow.Position.Y + realBlockBelowCeiling.GetActualMax(BlockEdge.XnZn) == roomAbove.Position.Y + realBlockAboveFloor.GetActualMin(BlockEdge.XnZn);
+                bool matchesAtXpYn = roomBelow.Position.Y + realBlockBelowCeiling.GetActualMax(BlockEdge.XpZn) == roomAbove.Position.Y + realBlockAboveFloor.GetActualMin(BlockEdge.XpZn);
+                bool matchesAtXnYp = roomBelow.Position.Y + realBlockBelowCeiling.GetActualMax(BlockEdge.XnZp) == roomAbove.Position.Y + realBlockAboveFloor.GetActualMin(BlockEdge.XnZp);
+                bool matchesAtXpYp = roomBelow.Position.Y + realBlockBelowCeiling.GetActualMax(BlockEdge.XpZp) == roomAbove.Position.Y + realBlockAboveFloor.GetActualMin(BlockEdge.XpZp);
 
                 if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
                     return RoomConnectionType.FullPortal;
@@ -1260,18 +1308,18 @@ namespace TombLib.LevelData
             return RoomConnectionType.NoPortal;
         }
 
-        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, VectorInt2 posBelow, VectorInt2 posAbove, bool lookingFromAbove)
+        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, VectorInt2 posBelow, VectorInt2 posAbove, bool lookingFromAbove, bool includeGhostBlock = false)
         {
             // Checkout all possible alternate room combinations and combine the results
             RoomConnectionType result = RoomConnectionType.FullPortal;
             foreach (var roomPair in GetPossibleAlternateRoomPairs(roomBelow, roomAbove, lookingFromAbove))
                 result = Combine(result,
                     CalculateRoomConnectionTypeWithoutAlternates(roomPair.Key, roomPair.Value,
-                        roomPair.Key.GetBlock(posBelow), roomPair.Value.GetBlock(posAbove)));
+                        roomPair.Key.GetBlock(posBelow), roomPair.Value.GetBlock(posAbove), includeGhostBlock));
             return result;
         }
 
-        public RoomConnectionInfo GetFloorRoomConnectionInfo(VectorInt2 pos)
+        public RoomConnectionInfo GetFloorRoomConnectionInfo(VectorInt2 pos, bool includeGhostBlock = false)
         {
             Block block = GetBlock(pos);
             if (block.FloorPortal != null)
@@ -1280,12 +1328,12 @@ namespace TombLib.LevelData
                 VectorInt2 adjoiningPos = pos + (SectorPos - adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningPos);
                 if (adjoiningBlock?.CeilingPortal != null)
-                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningPos, pos, true));
+                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningPos, pos, true, includeGhostBlock));
             }
             return new RoomConnectionInfo();
         }
 
-        public RoomConnectionInfo GetCeilingRoomConnectionInfo(VectorInt2 pos)
+        public RoomConnectionInfo GetCeilingRoomConnectionInfo(VectorInt2 pos, bool includeGhostBlock = false)
         {
             Block block = GetBlock(pos);
             if (block.CeilingPortal != null)
@@ -1294,7 +1342,7 @@ namespace TombLib.LevelData
                 VectorInt2 adjoiningPos = pos + (SectorPos - adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningPos);
                 if (adjoiningBlock?.FloorPortal != null)
-                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, pos, adjoiningPos, false));
+                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, pos, adjoiningPos, false, includeGhostBlock));
             }
             return new RoomConnectionInfo();
         }

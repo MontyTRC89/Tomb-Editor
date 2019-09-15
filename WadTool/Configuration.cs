@@ -38,7 +38,6 @@ namespace WadTool
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 
-
         public float Gizmo_Size { get; set; } = 1536.0f;
         public float Gizmo_TranslationConeSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;

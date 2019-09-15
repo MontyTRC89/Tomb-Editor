@@ -1037,6 +1037,23 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectGhostBlock)
+                {
+                    int x = LEB128.ReadInt(chunkIO.Raw);
+                    int y = LEB128.ReadInt(chunkIO.Raw);
+
+                    var instance = new GhostBlockInstance();
+                    instance.Position = new VectorInt2(x, y);
+
+                    instance.Floor.XnZn   = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XnZp   = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XpZn   = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XpZp   = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw);
+                }
                 else if (id3 == Prj2Chunks.ObjectTrigger)
                 {
                     var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));

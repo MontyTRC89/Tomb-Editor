@@ -105,7 +105,7 @@ namespace TombLib.LevelData
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
 
-        public string ToShortString()
+        public virtual string ToShortString()
         {
             var shortName = GetType().GetMethod("ShortName");
 

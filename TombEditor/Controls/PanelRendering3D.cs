@@ -50,6 +50,8 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowImportedGeometry { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowGhostBlocks { get; set; } = true;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowLightMeshes { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowOtherObjects { get; set; } = true;
@@ -98,12 +100,15 @@ namespace TombEditor.Controls
         private GeometricPrimitive _linesCube;
         private GeometricPrimitive _littleCube;
         private GeometricPrimitive _littleSphere;
+        private bool _drawHeightLine;
+        private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
+        private Buffer<SolidVertex> _flybyPathVertexBuffer;
+        private Buffer<SolidVertex> _ghostBlockVertexBuffer;
+        private bool _drawFlybyPath;
+
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
-        private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
-        private bool _drawHeightLine;
-        private Buffer<SolidVertex> _flybyPathVertexBuffer;
-        private bool _drawFlybyPath;
+        private const float _largeSphereRadius = 192.0f;
 
         // Rendering state
         private RenderingStateBuffer _renderingStateBuffer;
@@ -227,6 +232,9 @@ namespace TombEditor.Controls
             {
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
                 _wadRenderer = new WadRenderer(_legacyDevice, true);
+
+                // Initialize vertex buffers
+                _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 72);
 
                 // Maybe I could use this as bounding box, scaling it properly before drawing
                 _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);
@@ -679,6 +687,8 @@ namespace TombEditor.Controls
                 {
                     if (_editor.SelectedObject is PositionBasedObjectInstance)
                         _editor.UndoManager.PushObjectTransformed((PositionBasedObjectInstance)_editor.SelectedObject);
+                    else if (_editor.SelectedObject is GhostBlockInstance)
+                        _editor.UndoManager.PushGhostBlockTransformed((GhostBlockInstance)_editor.SelectedObject);
 
                     // Set gizmo axis
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
@@ -1192,6 +1202,9 @@ namespace TombEditor.Controls
                         }
                     }
 
+                    if (_gizmoEnabled && _editor.SelectedObject is GhostBlockInstance)
+                        _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
+
                     break;
 
                 case MouseButtons.Right:
@@ -1631,6 +1644,56 @@ namespace TombEditor.Controls
                         }
                     }
 
+                if (ShowGhostBlocks)
+                    foreach (var ghost in room.GhostBlocks)
+                    {
+                        if (!ghost.Editable) continue;
+
+                        if (_editor.SelectedObject == ghost)
+                        {
+                            for (int f = 0; f < 2; f++)
+                            {
+                                bool floor = f == 0;
+                                var pos = ghost.ControlPositions(floor);
+
+                                if (( floor && !ghost.FloorEditable) ||
+                                    (!floor && !ghost.CeilingEditable))
+                                    continue;
+
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    BoundingBox nodeBox = new BoundingBox(
+                                        pos[i] - new Vector3(_littleCubeRadius),
+                                        pos[i] + new Vector3(_littleCubeRadius));
+
+                                    if (Collision.RayIntersectsBox(ray, nodeBox, out distance) && (result == null || distance < result.Distance))
+                                    {
+                                        ghost.SelectedFloor = floor;
+                                        switch (i)
+                                        {
+                                            case 0: ghost.SelectedCorner = BlockEdge.XnZp; break;
+                                            case 1: ghost.SelectedCorner = BlockEdge.XpZp; break;
+                                            case 2: ghost.SelectedCorner = BlockEdge.XpZn; break;
+                                            case 3: ghost.SelectedCorner = BlockEdge.XnZn; break;
+                                        }
+
+                                        result = new PickingResultObject(distance, ghost);
+                                    }
+                                }
+                            }
+                        }
+
+                        BoundingBox box = new BoundingBox(
+                            ghost.Center(true) - new Vector3(_littleCubeRadius),
+                            ghost.Center(true) + new Vector3(_littleCubeRadius));
+
+                        if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                        {
+                            result = new PickingResultObject(distance, ghost);
+                            ghost.SelectedCorner = null;
+                        }
+                    }
+
                 // Check room geometry
                 var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
                 if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
@@ -1837,6 +1900,136 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
+        private void DrawGhostBlocks(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
+        {
+            Effect effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.GhostBlocks)
+                {
+                    if (!instance.Editable) continue;
+
+                    var selected = _editor.SelectedObject == instance;
+
+                    var baseColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
+                    var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.7f);
+                    var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
+
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                    _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
+
+                    _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+                    _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
+
+                    if (selected)  // Draw corner cubes (prioritize over block!)
+                    {
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.CenterMatrix(instance.SelectedFloor) * viewProjection,
+                            instance.InfoMessage()));
+
+                        // Corner cubes
+                        for (int f = 0; f < 2; f++)
+                        {
+                            bool floor = f == 0;
+                            if ((floor && !instance.FloorEditable) || (!floor && !instance.CeilingEditable))
+                                continue; // Don't draw cubes if not editable
+
+                            for (int i = 0; i < 4; i++)
+                            {
+                                if (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == i && instance.SelectedFloor == floor)
+                                {
+                                    _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                                    effect.Parameters["Color"].SetValue(selectColor);
+                                }
+                                else
+                                {
+                                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                                    effect.Parameters["Color"].SetValue(selectColor);
+                                }
+
+                                effect.Parameters["ModelViewProjection"].SetValue((instance.ControlMatrixes(floor)[i] * viewProjection).ToSharpDX());
+                                effect.Techniques[0].Passes[0].Apply();
+                                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                            }
+                        }
+                    }
+                    else // Default non-selected cube
+                    {
+                        _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                        effect.Parameters["ModelViewProjection"].SetValue((instance.CenterMatrix(true) * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(normalColor);
+                        effect.Techniques[0].Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    }
+
+                    // Draw 3D ghost block
+                    {
+                        // Create a vertex array
+                        SolidVertex[] vtxs = new SolidVertex[72];
+
+                        // Derive base block colours
+                        var p1c = new Vector4(baseColor.To3() * 0.6f, selected ? 0.8f : 0.5f);
+                        var p2c = new Vector4(baseColor.To3() * 0.4f, selected ? 0.6f : 0.5f);
+
+                        // Fill it up
+                        for (int f = 0, c = 0; f < 2; f++)
+                        {
+                            bool floor = f == 0;
+                            if ((floor && !instance.FloorEditable) || (!floor && !instance.CeilingEditable))
+                                continue; // Don't draw block if not editable
+
+                            bool toggled = floor ? instance.FloorSplitToggled : instance.CeilingSplitToggled;
+                            var vPos = instance.ControlPositions(floor, false);
+                            var vOrg = instance.ControlPositions(floor, true);
+
+                            // Draw walls
+                            vtxs[c].Position = vOrg[0]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vPos[0]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vOrg[3]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = vOrg[3]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vPos[0]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vPos[3]; vtxs[c].Color = p2c; c++;
+                            vtxs[c].Position = vOrg[2]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vOrg[3]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vPos[3]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = vOrg[2]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vPos[3]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vPos[2]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = vOrg[1]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vOrg[2]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vPos[2]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = vOrg[1]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vPos[2]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vPos[1]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = vOrg[0]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vOrg[1]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vPos[0]; vtxs[c].Color = p2c; c++;
+                            vtxs[c].Position = vOrg[1]; vtxs[c].Color = p1c; c++; vtxs[c].Position = vPos[1]; vtxs[c].Color = p2c; c++; vtxs[c].Position = vPos[0]; vtxs[c].Color = p2c; c++;
+
+                            // Equality flags to further hide nonexistent triangle
+                            bool[] equal = new bool[3];
+
+                            // Triangle 1
+                            int ch = 0;
+                            ch = (toggled ? 3 : 0); equal[0] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch]; vtxs[c].Color = p1c; c++;
+                            ch = (toggled ? 0 : 1); equal[1] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch]; vtxs[c].Color = p1c; c++;
+                            ch = (toggled ? 1 : 2); equal[2] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch]; vtxs[c].Color = p1c; c++;
+                            if (equal[0] && equal[1] && equal[2]) vtxs[c - 1].Color = vtxs[c - 2].Color = vtxs[c - 3].Color = Vector4.Zero;
+
+                            // Triangle 2
+                            ch = (toggled ? 1 : 2); equal[0] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch]; vtxs[c].Color = p2c; c++;
+                            ch = (toggled ? 2 : 3); equal[1] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch]; vtxs[c].Color = p2c; c++;
+                            ch = (toggled ? 3 : 0); equal[2] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch]; vtxs[c].Color = p2c; c++;
+                            if (equal[0] && equal[1] && equal[2]) vtxs[c - 1].Color = vtxs[c - 2].Color = vtxs[c - 3].Color = Vector4.Zero;
+                        }
+
+                        _ghostBlockVertexBuffer.SetData(vtxs);
+
+                        _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                        _legacyDevice.SetVertexBuffer(_ghostBlockVertexBuffer);
+                        _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _ghostBlockVertexBuffer));
+                        effect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(Vector4.One);
+                        effect.CurrentTechnique.Passes[0].Apply();
+                        _legacyDevice.Draw(PrimitiveType.TriangleList, 72);
+
+                        _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+                        _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+                        _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
+                    }
+                }
+        }
+
         private void DrawObjects(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
             Effect effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
@@ -1921,7 +2114,7 @@ namespace TombEditor.Controls
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * viewProjection,
-                            "Sink[ID = " + (instance.ScriptId?.ToString() ?? " < None > ") + "]" +
+                            "Sink [ID = " + (instance.ScriptId?.ToString() ?? " < None > ") + "]" +
                                 "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -1963,6 +2156,9 @@ namespace TombEditor.Controls
                     effect.Techniques[0].Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
+
+
+            
 
             if (_editor.SelectedRoom != null)
             {
@@ -2643,6 +2839,10 @@ namespace TombEditor.Controls
                 if (DisablePickingForImportedGeometry)
                     _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
+
+            // Draw ghost blocks
+            if (ShowGhostBlocks)
+                DrawGhostBlocks(viewProjection, roomsToDraw, textToDraw);
 
             if (ShowOtherObjects)
             {

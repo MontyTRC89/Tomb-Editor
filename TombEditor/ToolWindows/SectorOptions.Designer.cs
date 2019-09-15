@@ -18,6 +18,7 @@
             this.components = new System.ComponentModel.Container();
             this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
             this.panelRight = new System.Windows.Forms.Panel();
+            this.butAddGhostBlock = new DarkUI.Controls.DarkButton();
             this.butCeiling = new DarkUI.Controls.DarkButton();
             this.butClimbPositiveZ = new DarkUI.Controls.DarkButton();
             this.butClimbPositiveX = new DarkUI.Controls.DarkButton();
@@ -52,11 +53,12 @@
             this.panel2DGrid.Location = new System.Drawing.Point(2, 0);
             this.panel2DGrid.Name = "panel2DGrid";
             this.panel2DGrid.Room = null;
-            this.panel2DGrid.Size = new System.Drawing.Size(224, 225);
+            this.panel2DGrid.Size = new System.Drawing.Size(224, 223);
             this.panel2DGrid.TabIndex = 103;
             // 
             // panelRight
             // 
+            this.panelRight.Controls.Add(this.butAddGhostBlock);
             this.panelRight.Controls.Add(this.butCeiling);
             this.panelRight.Controls.Add(this.butClimbPositiveZ);
             this.panelRight.Controls.Add(this.butClimbPositiveX);
@@ -76,8 +78,18 @@
             this.panelRight.Location = new System.Drawing.Point(226, 0);
             this.panelRight.Name = "panelRight";
             this.panelRight.Padding = new System.Windows.Forms.Padding(2);
-            this.panelRight.Size = new System.Drawing.Size(58, 225);
+            this.panelRight.Size = new System.Drawing.Size(58, 223);
             this.panelRight.TabIndex = 109;
+            // 
+            // butAddGhostBlock
+            // 
+            this.butAddGhostBlock.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butAddGhostBlock.Image = global::TombEditor.Properties.Resources.objects_geometry_override_16;
+            this.butAddGhostBlock.Location = new System.Drawing.Point(3, 197);
+            this.butAddGhostBlock.Name = "butAddGhostBlock";
+            this.butAddGhostBlock.Size = new System.Drawing.Size(24, 24);
+            this.butAddGhostBlock.TabIndex = 15;
+            this.butAddGhostBlock.Tag = "AddGhostBlocksToSelection";
             // 
             // butCeiling
             // 
@@ -86,7 +98,7 @@
             this.butCeiling.BackColorUseGeneric = false;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
             this.butCeiling.Image = global::TombEditor.Properties.Resources.sectortype_Roof_16;
-            this.butCeiling.Location = new System.Drawing.Point(32, 2);
+            this.butCeiling.Location = new System.Drawing.Point(32, 1);
             this.butCeiling.Name = "butCeiling";
             this.butCeiling.Size = new System.Drawing.Size(24, 24);
             this.butCeiling.TabIndex = 1;
@@ -97,7 +109,7 @@
             // 
             this.butClimbPositiveZ.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.sectortype_ClimbNorth_16;
-            this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 142);
+            this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 141);
             this.butClimbPositiveZ.Name = "butClimbPositiveZ";
             this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
             this.butClimbPositiveZ.TabIndex = 10;
@@ -108,7 +120,7 @@
             // 
             this.butClimbPositiveX.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.sectortype_ClimbEast_16;
-            this.butClimbPositiveX.Location = new System.Drawing.Point(32, 170);
+            this.butClimbPositiveX.Location = new System.Drawing.Point(32, 169);
             this.butClimbPositiveX.Name = "butClimbPositiveX";
             this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
             this.butClimbPositiveX.TabIndex = 13;
@@ -119,7 +131,7 @@
             // 
             this.butClimbNegativeZ.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.sectortype_ClimbSouth_1_16;
-            this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 142);
+            this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 141);
             this.butClimbNegativeZ.Name = "butClimbNegativeZ";
             this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
             this.butClimbNegativeZ.TabIndex = 11;
@@ -130,7 +142,7 @@
             // 
             this.butClimbNegativeX.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.sectortype_ClimbWest_16;
-            this.butClimbNegativeX.Location = new System.Drawing.Point(3, 170);
+            this.butClimbNegativeX.Location = new System.Drawing.Point(3, 169);
             this.butClimbNegativeX.Name = "butClimbNegativeX";
             this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
             this.butClimbNegativeX.TabIndex = 12;
@@ -144,7 +156,7 @@
             this.butNotWalkableBox.BackColorUseGeneric = false;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
             this.butNotWalkableBox.Image = global::TombEditor.Properties.Resources.sectortype_NotWalkable_16;
-            this.butNotWalkableBox.Location = new System.Drawing.Point(32, 30);
+            this.butNotWalkableBox.Location = new System.Drawing.Point(32, 29);
             this.butNotWalkableBox.Name = "butNotWalkableBox";
             this.butNotWalkableBox.Size = new System.Drawing.Size(24, 24);
             this.butNotWalkableBox.TabIndex = 3;
@@ -158,7 +170,7 @@
             this.butPortal.BackColorUseGeneric = false;
             this.butPortal.ForeColor = System.Drawing.Color.White;
             this.butPortal.Image = global::TombEditor.Properties.Resources.sectortype_Portal__16;
-            this.butPortal.Location = new System.Drawing.Point(3, 86);
+            this.butPortal.Location = new System.Drawing.Point(3, 85);
             this.butPortal.Name = "butPortal";
             this.butPortal.Size = new System.Drawing.Size(24, 24);
             this.butPortal.TabIndex = 6;
@@ -169,7 +181,7 @@
             // 
             this.butFlagTriggerTriggerer.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butFlagTriggerTriggerer.Image = global::TombEditor.Properties.Resources.sectortype_TriggerTriggerer_16;
-            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 114);
+            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 113);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
             this.butFlagTriggerTriggerer.TabIndex = 9;
@@ -183,7 +195,7 @@
             this.butDeath.BackColorUseGeneric = false;
             this.butDeath.ForeColor = System.Drawing.Color.White;
             this.butDeath.Image = global::TombEditor.Properties.Resources.sectortype_Death_16;
-            this.butDeath.Location = new System.Drawing.Point(32, 58);
+            this.butDeath.Location = new System.Drawing.Point(32, 57);
             this.butDeath.Name = "butDeath";
             this.butDeath.Size = new System.Drawing.Size(24, 24);
             this.butDeath.TabIndex = 5;
@@ -194,9 +206,9 @@
             // 
             this.butForceSolidFloor.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butForceSolidFloor.Image = global::TombEditor.Properties.Resources.sectortype_ForceSolidFloor_16_copy;
-            this.butForceSolidFloor.Location = new System.Drawing.Point(3, 198);
+            this.butForceSolidFloor.Location = new System.Drawing.Point(32, 197);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
-            this.butForceSolidFloor.Size = new System.Drawing.Size(53, 25);
+            this.butForceSolidFloor.Size = new System.Drawing.Size(24, 24);
             this.butForceSolidFloor.TabIndex = 14;
             this.butForceSolidFloor.Tag = "ToggleForceFloorSolid";
             this.butForceSolidFloor.MouseEnter += new System.EventHandler(this.but_MouseEnter);
@@ -208,7 +220,7 @@
             this.butMonkey.BackColorUseGeneric = false;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
             this.butMonkey.Image = global::TombEditor.Properties.Resources.sectortype_Monkey_16;
-            this.butMonkey.Location = new System.Drawing.Point(3, 58);
+            this.butMonkey.Location = new System.Drawing.Point(3, 57);
             this.butMonkey.Name = "butMonkey";
             this.butMonkey.Size = new System.Drawing.Size(24, 24);
             this.butMonkey.TabIndex = 4;
@@ -219,7 +231,7 @@
             // 
             this.butFlagBeetle.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butFlagBeetle.Image = global::TombEditor.Properties.Resources.sectortype_Beetle_16;
-            this.butFlagBeetle.Location = new System.Drawing.Point(3, 114);
+            this.butFlagBeetle.Location = new System.Drawing.Point(3, 113);
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
             this.butFlagBeetle.TabIndex = 8;
@@ -233,7 +245,7 @@
             this.butBox.BackColorUseGeneric = false;
             this.butBox.ForeColor = System.Drawing.Color.White;
             this.butBox.Image = global::TombEditor.Properties.Resources.sectortype_Box_16;
-            this.butBox.Location = new System.Drawing.Point(3, 30);
+            this.butBox.Location = new System.Drawing.Point(3, 29);
             this.butBox.Name = "butBox";
             this.butBox.Size = new System.Drawing.Size(24, 24);
             this.butBox.TabIndex = 2;
@@ -247,7 +259,7 @@
             this.butFloor.BackColorUseGeneric = false;
             this.butFloor.ForeColor = System.Drawing.Color.White;
             this.butFloor.Image = global::TombEditor.Properties.Resources.sectortype_Floor_1_16;
-            this.butFloor.Location = new System.Drawing.Point(3, 2);
+            this.butFloor.Location = new System.Drawing.Point(3, 1);
             this.butFloor.Name = "butFloor";
             this.butFloor.Size = new System.Drawing.Size(24, 24);
             this.butFloor.TabIndex = 0;
@@ -261,7 +273,7 @@
             this.butWall.BackColorUseGeneric = false;
             this.butWall.ForeColor = System.Drawing.Color.White;
             this.butWall.Image = global::TombEditor.Properties.Resources.sectortype_Wall_1_16;
-            this.butWall.Location = new System.Drawing.Point(32, 86);
+            this.butWall.Location = new System.Drawing.Point(32, 85);
             this.butWall.Name = "butWall";
             this.butWall.Size = new System.Drawing.Size(24, 24);
             this.butWall.TabIndex = 7;
@@ -276,14 +288,14 @@
             this.panel2DGrid_sub.Location = new System.Drawing.Point(0, 25);
             this.panel2DGrid_sub.Name = "panel2DGrid_sub";
             this.panel2DGrid_sub.Padding = new System.Windows.Forms.Padding(2, 0, 0, 4);
-            this.panel2DGrid_sub.Size = new System.Drawing.Size(284, 229);
+            this.panel2DGrid_sub.Size = new System.Drawing.Size(284, 227);
             this.panel2DGrid_sub.TabIndex = 111;
             // 
             // panelBottom
             // 
             this.panelBottom.Controls.Add(this.tableLayoutPanel1);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(0, 254);
+            this.panelBottom.Location = new System.Drawing.Point(0, 252);
             this.panelBottom.Margin = new System.Windows.Forms.Padding(0);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(284, 26);
@@ -364,10 +376,10 @@
             this.Controls.Add(this.panelBottom);
             this.DockText = "Sector Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 280);
+            this.MinimumSize = new System.Drawing.Size(284, 278);
             this.Name = "SectorOptions";
             this.SerializationKey = "SectorOptions";
-            this.Size = new System.Drawing.Size(284, 280);
+            this.Size = new System.Drawing.Size(284, 278);
             this.panelRight.ResumeLayout(false);
             this.panel2DGrid_sub.ResumeLayout(false);
             this.panelBottom.ResumeLayout(false);
@@ -401,5 +413,6 @@
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private DarkUI.Controls.DarkButton butAddGhostBlock;
     }
 }

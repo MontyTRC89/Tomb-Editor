@@ -501,6 +501,22 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write((byte)instance.Direction);
                             chunkIO.Raw.Write((byte)instance.Opacity);
                         }
+                    else if (o is GhostBlockInstance)
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock, LEB128.MaximumSize2Byte))
+                        {
+                            var instance = (GhostBlockInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            LEB128.Write(chunkIO.Raw, instance.Area.X0);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Y0);
+                            LEB128.Write(chunkIO.Raw, instance.Floor.XnZn);
+                            LEB128.Write(chunkIO.Raw, instance.Floor.XnZp);
+                            LEB128.Write(chunkIO.Raw, instance.Floor.XpZn);
+                            LEB128.Write(chunkIO.Raw, instance.Floor.XpZp);
+                            LEB128.Write(chunkIO.Raw, instance.Ceiling.XnZn);
+                            LEB128.Write(chunkIO.Raw, instance.Ceiling.XnZp);
+                            LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZn);
+                            LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
+                        }
                     else if (o is TriggerInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))
                         {

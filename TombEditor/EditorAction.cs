@@ -11,22 +11,22 @@ namespace TombEditor
 
     public interface IEditorActionPlace : IEditorAction
     {
-        PositionBasedObjectInstance CreateInstance(Level level, Room room);
+        ObjectInstance CreateInstance(Level level, Room room);
         bool ShouldBeActive { get; }
     }
 
     public class EditorActionPlace : IEditorActionPlace
     {
         public bool Repeat { get; }
-        private readonly Func<Level, Room, PositionBasedObjectInstance> _createObjectInstance;
+        private readonly Func<Level, Room, ObjectInstance> _createObjectInstance;
 
-        public EditorActionPlace(bool repeat, Func<Level, Room, PositionBasedObjectInstance> createObjectInstance)
+        public EditorActionPlace(bool repeat, Func<Level, Room, ObjectInstance> createObjectInstance)
         {
             Repeat = repeat;
             _createObjectInstance = createObjectInstance;
         }
 
-        public PositionBasedObjectInstance CreateInstance(Level level, Room room) => _createObjectInstance(level, room);
+        public ObjectInstance CreateInstance(Level level, Room room) => _createObjectInstance(level, room);
         public bool ShouldBeActive => Repeat;
     }
 

@@ -169,6 +169,64 @@ namespace TombEditor
         }
     }
 
+    public class AddRemoveGhostBlockUndoInstance : EditorUndoRedoInstance
+    {
+        private GhostBlockInstance UndoObject;
+        private bool Created;
+
+        public AddRemoveGhostBlockUndoInstance(EditorUndoManager parent, GhostBlockInstance obj, bool created) : base(parent, obj.Room)
+        {
+            Created = created;
+            UndoObject = obj;
+
+            Valid = () => UndoObject != null && ((Created && UndoObject.Room != null) ||
+                        (!Created && Room.ExistsInLevel)) && !Room.CoordinateInvalid(UndoObject.Position);
+
+            UndoAction = () =>
+            {
+                if (Created)
+                    EditorActions.DeleteObjectWithoutUpdate(UndoObject);
+                else
+                {
+                    var backupPos = obj.Position; // Preserve original position and reassign it after placement
+                    EditorActions.PlaceGhostBlockWithoutUpdate(Room, obj.Position, UndoObject);
+                }
+            };
+
+            RedoInstance = () =>
+            {
+                var result = new AddRemoveGhostBlockUndoInstance(Parent, UndoObject, !Created);
+                result.Room = Room; // Relink parent room
+                return result;
+            };
+        }
+    }
+
+    public class TransformGhostBlockUndoInstance : EditorUndoRedoInstance
+    {
+        private GhostBlockInstance UndoObject;
+        private BlockSurface Floor;
+        private BlockSurface Ceiling;
+
+        public TransformGhostBlockUndoInstance(EditorUndoManager parent, GhostBlockInstance obj) : base(parent, obj.Room)
+        {
+            UndoObject = obj;
+            Floor = obj.Floor;
+            Ceiling = obj.Ceiling;
+
+            Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel &&
+                          !Room.CoordinateInvalid(UndoObject.Position);
+
+            UndoAction = () =>
+            {
+                UndoObject.Floor = Floor;
+                UndoObject.Ceiling = Ceiling;
+                Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
+            };
+            RedoInstance = () => new TransformGhostBlockUndoInstance(Parent, UndoObject);
+        }
+    }
+
     public class GeometryUndoInstance : EditorUndoRedoInstance
     {
         private RectangleInt2 Area;
@@ -227,5 +285,9 @@ namespace TombEditor
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
         public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
+        public void PushGhostBlockCreated(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, true));
+        public void PushGhostBlockCreated(List<GhostBlockInstance> objs) => Push(objs.Select(obj => (new AddRemoveGhostBlockUndoInstance(this, obj, true)) as UndoRedoInstance).ToList());
+        public void PushGhostBlockDeleted(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, false));
+        public void PushGhostBlockTransformed(GhostBlockInstance obj) => Push(new TransformGhostBlockUndoInstance(this, obj));
     }
 }

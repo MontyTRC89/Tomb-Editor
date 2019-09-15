@@ -469,7 +469,7 @@ namespace TombEditor
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
-                    if (!room.Blocks[x, z].Floor.IsQuad && room.Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None)
+                    if (room.Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None)
                         room.Blocks[x, z].Floor.SplitDirectionToggled = !room.Blocks[x, z].Floor.SplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -481,7 +481,7 @@ namespace TombEditor
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
-                    if (!room.Blocks[x, z].Ceiling.IsQuad && room.Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
+                    if (room.Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
                         room.Blocks[x, z].Ceiling.SplitDirectionToggled = !room.Blocks[x, z].Ceiling.SplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -554,6 +554,35 @@ namespace TombEditor
 
             //if (_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
             //    _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
+        }
+
+        public static void AddGhostBlocks(Room room, RectangleInt2 area)
+        {
+            var ghostList = new List<GhostBlockInstance>();
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    if (!room.Blocks[x, z].HasGhostBlock && !room.Blocks[x, z].IsAnyWall)
+                    {
+                        var ghost = new GhostBlockInstance() { Position = new VectorInt2(x, z) };
+                        room.AddObject(_editor.Level, ghost);
+                        _editor.ObjectChange(ghost, ObjectChangeType.Add);
+                        ghostList.Add(ghost);
+                    }
+                }
+
+            if(ghostList.Count == 0)
+            {
+                _editor.SendMessage("No collision overrides were added. You already have it in specified area.", PopupType.Warning);
+                return;
+            }
+
+            
+            _editor.RoomSectorPropertiesChange(room);
+
+            // Undo
+            _editor.UndoManager.PushGhostBlockCreated(ghostList);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -801,6 +830,8 @@ namespace TombEditor
 
             if (instance is PositionBasedObjectInstance)
                 _editor.UndoManager.PushObjectDeleted((PositionBasedObjectInstance)instance);
+            else if (instance is GhostBlockInstance)
+                _editor.UndoManager.PushGhostBlockDeleted((GhostBlockInstance)instance);
 
             DeleteObjectWithoutUpdate(instance);
         }
@@ -1594,14 +1625,23 @@ namespace TombEditor
             }
         }
 
-        public static void PlaceObject(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
+        public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
-            PlaceObjectWithoutUpdate(room, pos, instance);
-            _editor.UndoManager.PushObjectCreated(instance);
+            if (instance is PositionBasedObjectInstance)
+            {
+                var posInstance = (PositionBasedObjectInstance)instance;
 
-            AllocateScriptIds(instance);
+                PlaceObjectWithoutUpdate(room, pos, posInstance);
+                _editor.UndoManager.PushObjectCreated(posInstance);
+                AllocateScriptIds(posInstance);
+            }
+            else if (instance is GhostBlockInstance)
+            {
+                var ghost = (GhostBlockInstance)instance;
+                PlaceGhostBlockWithoutUpdate(room, pos, ghost);
+                _editor.UndoManager.PushGhostBlockCreated(ghost);
+            }
         }
-
 
         public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
@@ -1615,7 +1655,20 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
-        
+
+        public static void PlaceGhostBlockWithoutUpdate(Room room, VectorInt2 pos, GhostBlockInstance instance)
+        {
+            Block block = room.GetBlock(pos);
+            if (block == null || block.HasGhostBlock)
+                return;
+
+            instance.Position = pos;
+
+            room.AddObject(_editor.Level, instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Add);
+            _editor.RoomSectorPropertiesChange(room);
+        }
+
         public static void MakeNewRoom(int index)
         {
             Room newRoom = new Room(_editor.Level,

@@ -178,7 +178,7 @@ namespace WadTool
         protected override float LineThickness => _configuration.GizmoAnimationEditor_LineThickness;
 
         protected override bool SupportScale => false;
-        protected override bool SupportTranslate
+        protected override bool SupportTranslateX
         {
             get
             {
@@ -187,6 +187,8 @@ namespace WadTool
                         _control.Model.Meshes.IndexOf(_control.SelectedMesh) == 0);
             }
         }
+        protected override bool SupportTranslateY => SupportRotationX;
+        protected override bool SupportTranslateZ => SupportRotationX;
         protected override bool SupportRotationY => true;
         protected override bool SupportRotationX => true;
         protected override bool SupportRotationZ => true;
