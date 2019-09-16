@@ -1644,8 +1644,10 @@ namespace TombEditor
             else if (instance is GhostBlockInstance)
             {
                 var ghost = (GhostBlockInstance)instance;
-                if (PlaceGhostBlockWithoutUpdate(room, pos, ghost));
+                if (PlaceGhostBlockWithoutUpdate(room, pos, ghost))
                     _editor.UndoManager.PushGhostBlockCreated(ghost);
+                else
+                    _editor.SendMessage("You can't place two ghost blocks in one sector.", PopupType.Info);
             }
         }
 
@@ -1665,7 +1667,7 @@ namespace TombEditor
         public static bool PlaceGhostBlockWithoutUpdate(Room room, VectorInt2 pos, GhostBlockInstance instance)
         {
             Block block = room.GetBlock(pos);
-            if (block == null || block.HasGhostBlock)
+            if (block.HasGhostBlock)
                 return false;
 
             instance.SectorPosition = pos;
