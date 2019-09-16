@@ -1043,7 +1043,7 @@ namespace TombLib.LevelData.IO
                     int y = LEB128.ReadInt(chunkIO.Raw);
 
                     var instance = new GhostBlockInstance();
-                    instance.Position = new VectorInt2(x, y);
+                    instance.SectorPosition = new VectorInt2(x, y);
 
                     instance.Floor.XnZn   = LEB128.ReadShort(chunkIO.Raw);
                     instance.Floor.XnZp   = LEB128.ReadShort(chunkIO.Raw);

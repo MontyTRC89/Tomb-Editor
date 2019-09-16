@@ -3,9 +3,9 @@ using TombLib.LevelData;
 
 namespace TombEditor.Controls.ContextMenus
 {
-    class PositionBasedObjectContextMenu : BaseContextMenu
+    class MaterialObjectContextMenu : BaseContextMenu
     {
-        public PositionBasedObjectContextMenu(Editor editor, IWin32Window owner, PositionBasedObjectInstance targetObject)
+        public MaterialObjectContextMenu(Editor editor, IWin32Window owner, ObjectInstance targetObject)
             : base(editor, owner)
         {
             if (targetObject is IHasScriptID)
@@ -17,10 +17,13 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripSeparator());
             }
 
-            Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
-            {
-                EditorActions.EditObject(targetObject, this);
-            }) { Enabled = !(targetObject is LightInstance) });
+            if (!(targetObject is LightInstance || targetObject is GhostBlockInstance))
+            { 
+                Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
+                {
+                    EditorActions.EditObject(targetObject, this);
+                }) { Enabled = !(targetObject is LightInstance) });
+            }
 
             Items.Add(new ToolStripMenuItem("Copy", Properties.Resources.general_copy_link_16, (o, e) =>
             {
@@ -52,12 +55,12 @@ namespace TombEditor.Controls.ContextMenus
                 }));
             }
 
-            if (targetObject.Room != _editor.SelectedRoom)
+            if (targetObject is PositionBasedObjectInstance && targetObject.Room != _editor.SelectedRoom)
             {
                 Items.Add(new ToolStripSeparator());
                 Items.Add(new ToolStripMenuItem("Move object to current room", null, (o, e) =>
                 {
-                    EditorActions.MoveObjectToOtherRoom(targetObject, _editor.SelectedRoom);
+                    EditorActions.MoveObjectToOtherRoom((PositionBasedObjectInstance)targetObject, _editor.SelectedRoom);
                 }));
             }
 

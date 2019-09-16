@@ -1218,8 +1218,8 @@ namespace TombEditor.Controls
                         if (newPicking is PickingResultObject)
                         {
                             ObjectInstance target = ((PickingResultObject)newPicking).ObjectInstance;
-                            if (target is PositionBasedObjectInstance)
-                                _currentContextMenu = new PositionBasedObjectContextMenu(_editor, this, (PositionBasedObjectInstance)target);
+                            if (target is IMaterial)
+                                _currentContextMenu = new MaterialObjectContextMenu(_editor, this, target);
                         }
                         else if (newPicking is PickingResultBlock)
                         {

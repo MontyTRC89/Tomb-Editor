@@ -565,7 +565,7 @@ namespace TombEditor
                 {
                     if (!room.Blocks[x, z].HasGhostBlock && !room.Blocks[x, z].IsAnyWall)
                     {
-                        var ghost = new GhostBlockInstance() { Position = new VectorInt2(x, z) };
+                        var ghost = new GhostBlockInstance() { SectorPosition = new VectorInt2(x, z) };
                         room.AddObject(_editor.Level, ghost);
                         _editor.ObjectChange(ghost, ObjectChangeType.Add);
                         ghostList.Add(ghost);
@@ -799,25 +799,28 @@ namespace TombEditor
                 _editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
             else
             {
-                PositionBasedObjectInstance instance = data.MergeGetSingleObject(_editor);
+                ObjectInstance instance = data.MergeGetSingleObject(_editor);
 
-                // HACK: fix imported geometry reference
-                if (instance is ImportedGeometryInstance)
+                if (instance is IMaterial)
                 {
-                    var imported = instance as ImportedGeometryInstance;
-                    var pastedPath = _editor.Level.Settings.MakeAbsolute(imported.Model.Info.Path);
-                    foreach (var model in _editor.Level.Settings.ImportedGeometries)
+                    // HACK: fix imported geometry reference
+                    if (instance is ImportedGeometryInstance)
                     {
-                        var currentPath = _editor.Level.Settings.MakeAbsolute(model.Info.Path);
-                        if (currentPath == pastedPath)
+                        var imported = instance as ImportedGeometryInstance;
+                        var pastedPath = _editor.Level.Settings.MakeAbsolute(imported.Model.Info.Path);
+                        foreach (var model in _editor.Level.Settings.ImportedGeometries)
                         {
-                            imported.Model = model;
-                            break;
+                            var currentPath = _editor.Level.Settings.MakeAbsolute(model.Info.Path);
+                            if (currentPath == pastedPath)
+                            {
+                                imported.Model = model;
+                                break;
+                            }
                         }
                     }
-                }
 
-                PlaceObject(room, pos, instance);
+                    PlaceObject(room, pos, instance);
+                }
             }
         }
 
@@ -1627,6 +1630,9 @@ namespace TombEditor
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
+            if (!(instance is IMaterial))
+                return;
+
             if (instance is PositionBasedObjectInstance)
             {
                 var posInstance = (PositionBasedObjectInstance)instance;
@@ -1638,8 +1644,8 @@ namespace TombEditor
             else if (instance is GhostBlockInstance)
             {
                 var ghost = (GhostBlockInstance)instance;
-                PlaceGhostBlockWithoutUpdate(room, pos, ghost);
-                _editor.UndoManager.PushGhostBlockCreated(ghost);
+                if (PlaceGhostBlockWithoutUpdate(room, pos, ghost));
+                    _editor.UndoManager.PushGhostBlockCreated(ghost);
             }
         }
 
@@ -1656,17 +1662,19 @@ namespace TombEditor
             _editor.SelectedObject = instance;
         }
 
-        public static void PlaceGhostBlockWithoutUpdate(Room room, VectorInt2 pos, GhostBlockInstance instance)
+        public static bool PlaceGhostBlockWithoutUpdate(Room room, VectorInt2 pos, GhostBlockInstance instance)
         {
             Block block = room.GetBlock(pos);
             if (block == null || block.HasGhostBlock)
-                return;
+                return false;
 
-            instance.Position = pos;
+            instance.SectorPosition = pos;
 
             room.AddObject(_editor.Level, instance);
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
+
+            return true;
         }
 
         public static void MakeNewRoom(int index)
@@ -3450,9 +3458,9 @@ namespace TombEditor
 
         public static void TryCopyObject(ObjectInstance instance, IWin32Window owner)
         {
-            if (!(instance is PositionBasedObjectInstance))
+            if (!(instance is IMaterial))
             {
-                _editor.SendMessage("No object selected. \nYou have to select position-based object before you can cut or copy it.", PopupType.Info);
+                _editor.SendMessage("No object selected. \nYou have to select object before you can cut or copy it.", PopupType.Info);
                 return;
             }
 
@@ -3475,7 +3483,7 @@ namespace TombEditor
 
         public static void TryStampObject(ObjectInstance instance, IWin32Window owner)
         {
-            if (!(instance is PositionBasedObjectInstance))
+            if (!(instance is IMaterial))
             {
                 _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
@@ -3490,7 +3498,7 @@ namespace TombEditor
                 EditorActions.BookmarkObject(instance);
             }
 
-            _editor.Action = new EditorActionPlace(true, (level, room) => (PositionBasedObjectInstance)instance.Clone());
+            _editor.Action = new EditorActionPlace(true, (level, room) => instance.Clone());
         }
 
         public static void TryPasteSectors(SectorsClipboardData data, IWin32Window owner)

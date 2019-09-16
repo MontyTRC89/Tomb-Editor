@@ -978,8 +978,8 @@ namespace TombLib.LevelData
             else if (instance is GhostBlockInstance)
             {
                 var ghost = instance as GhostBlockInstance;
-                if (!CoordinateInvalid(ghost.Position))
-                    Blocks[ghost.Position.X, ghost.Position.Y].GhostBlock = ghost;
+                if (!CoordinateInvalid(ghost.SectorPosition))
+                    Blocks[ghost.SectorPosition.X, ghost.SectorPosition.Y].GhostBlock = ghost;
             }
 
             try
@@ -995,8 +995,8 @@ namespace TombLib.LevelData
                 else if (instance is GhostBlockInstance)
                 {
                     var ghost = instance as GhostBlockInstance;
-                    if (!CoordinateInvalid(ghost.Position))
-                        Blocks[ghost.Position.X, ghost.Position.Y].GhostBlock = null;
+                    if (!CoordinateInvalid(ghost.SectorPosition))
+                        Blocks[ghost.SectorPosition.X, ghost.SectorPosition.Y].GhostBlock = null;
                 }
                 throw;
             }
@@ -1014,8 +1014,8 @@ namespace TombLib.LevelData
             else if (instance is GhostBlockInstance)
             {
                 var ghost = instance as GhostBlockInstance;
-                if (!CoordinateInvalid(ghost.Position))
-                    Blocks[ghost.Position.X, ghost.Position.Y].GhostBlock = null;
+                if (!CoordinateInvalid(ghost.SectorPosition))
+                    Blocks[ghost.SectorPosition.X, ghost.SectorPosition.Y].GhostBlock = null;
             }
 
             return instance;

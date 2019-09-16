@@ -2,7 +2,7 @@
 
 namespace TombLib.LevelData
 {
-    public class GhostBlockInstance : SectorBasedObjectInstance
+    public class GhostBlockInstance : SectorBasedObjectInstance, IMaterial
     {
         public BlockSurface Floor;
         public BlockSurface Ceiling;
@@ -10,7 +10,7 @@ namespace TombLib.LevelData
         public bool SelectedFloor = true;
         public BlockEdge? SelectedCorner { get; set; }
 
-        public VectorInt2 Position
+        public VectorInt2 SectorPosition
         {
             get { return new VectorInt2(Area.X0, Area.Y0); }
             set { Area = new RectangleInt2(value.X, value.Y, value.X, value.Y); }
@@ -35,7 +35,7 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             string text = "Ghost block in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                          "on sector [" + Position.X + ", " + Position.Y + "] ";
+                          "on sector [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
             return text;
         }
 
@@ -74,7 +74,7 @@ namespace TombLib.LevelData
         {
             var result = new Vector3[4];
 
-            var localCenter = new Vector3(Position.X * 1024.0f + 512.0f, 0, Position.Y * 1024.0f + 512.0f);
+            var localCenter = new Vector3(SectorPosition.X * 1024.0f + 512.0f, 0, SectorPosition.Y * 1024.0f + 512.0f);
             var type = floor ? BlockVertical.Floor : BlockVertical.Ceiling;
 
             var hXnZn = (Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn)) * 256.0f + (floor ? -margin : margin);

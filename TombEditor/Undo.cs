@@ -180,7 +180,7 @@ namespace TombEditor
             UndoObject = obj;
 
             Valid = () => UndoObject != null && ((Created && UndoObject.Room != null) ||
-                        (!Created && Room.ExistsInLevel)) && !Room.CoordinateInvalid(UndoObject.Position);
+                        (!Created && Room.ExistsInLevel)) && !Room.CoordinateInvalid(UndoObject.SectorPosition);
 
             UndoAction = () =>
             {
@@ -188,8 +188,8 @@ namespace TombEditor
                     EditorActions.DeleteObjectWithoutUpdate(UndoObject);
                 else
                 {
-                    var backupPos = obj.Position; // Preserve original position and reassign it after placement
-                    EditorActions.PlaceGhostBlockWithoutUpdate(Room, obj.Position, UndoObject);
+                    var backupPos = obj.SectorPosition; // Preserve original position and reassign it after placement
+                    EditorActions.PlaceGhostBlockWithoutUpdate(Room, obj.SectorPosition, UndoObject);
                 }
             };
 
@@ -215,7 +215,7 @@ namespace TombEditor
             Ceiling = obj.Ceiling;
 
             Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel &&
-                          !Room.CoordinateInvalid(UndoObject.Position);
+                          !Room.CoordinateInvalid(UndoObject.SectorPosition);
 
             UndoAction = () =>
             {
