@@ -185,7 +185,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
-    <Compile Include="Controls\ContextMenus\PositionBasedObjectContextMenu.cs">
+    <Compile Include="Controls\ContextMenus\MaterialObjectContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ImportedGeometryManager.cs">

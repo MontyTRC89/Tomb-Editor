@@ -14,6 +14,11 @@ namespace TombLib.LevelData
         None
     }
 
+    public interface IMaterial
+    {
+        VectorInt2 SectorPosition { get; set; }
+    }
+
     public interface IScaleable
     {
         float Scale { get; set; }
@@ -200,11 +205,14 @@ namespace TombLib.LevelData
         }
     }
 
-    public abstract class PositionBasedObjectInstance : ObjectInstance
+    public abstract class PositionBasedObjectInstance : ObjectInstance, IMaterial
     {
         public Vector3 Position { get; set; }
 
-        public VectorInt2 SectorPosition => new VectorInt2((int)(Position.X / 1024.0f), (int)(Position.Z / 1024.0f));
+        public VectorInt2 SectorPosition
+        {
+            get { return new VectorInt2((int)(Position.X / 1024.0f), (int)(Position.Z / 1024.0f)); }
+            set { Position = new Vector3(value.X * 1024.0f, Position.Y, value.Y * 1024.0f);} }
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {

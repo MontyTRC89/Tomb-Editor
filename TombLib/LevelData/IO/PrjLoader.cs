@@ -440,19 +440,28 @@ namespace TombLib.LevelData.IO
 
                                 ushort? triggerTimer, triggerExtra;
                                 NG.NgParameterInfo.DecodeNGRealTimer(triggerTargetTypeEnum, triggerTypeEnum, triggerItemNumber, triggerRealTimer, out triggerTimer, out triggerExtra);
+                                
 
-                                var trigger = new TriggerInstance(GetArea(room, 1, objPosX, objPosZ, objSizeX, objSizeZ))
+                                // Identify NG fake collision triggers and ditch them
+
+                                if (isNg && triggerTargetTypeEnum == TriggerTargetType.FlipEffect &&
+                                    triggerItemNumber >= 310 && triggerItemNumber <= 330)
+                                    progressReporter.ReportWarn("Found and filtered out fake NG collision trigger (F" + triggerItemNumber + ") in room " + room + ". Use ghost blocks instead.");
+                                else
                                 {
-                                    TriggerType = triggerTypeEnum,
-                                    TargetType = triggerTargetTypeEnum,
-                                    CodeBits = (byte)((~triggerFlags >> 1) & 0x1f),
-                                    OneShot = (triggerFlags & 0x0001) != 0,
-                                    Target = new TriggerParameterUshort(triggerItemNumber),
-                                    Timer = triggerTimer == null ? null : new TriggerParameterUshort(triggerTimer.Value),
-                                    Extra = triggerExtra == null ? null : new TriggerParameterUshort(triggerExtra.Value)
-                                };
+                                    var trigger = new TriggerInstance(GetArea(room, 1, objPosX, objPosZ, objSizeX, objSizeZ))
+                                    {
+                                        TriggerType = triggerTypeEnum,
+                                        TargetType = triggerTargetTypeEnum,
+                                        CodeBits = (byte)((~triggerFlags >> 1) & 0x1f),
+                                        OneShot = (triggerFlags & 0x0001) != 0,
+                                        Target = new TriggerParameterUshort(triggerItemNumber),
+                                        Timer = triggerTimer == null ? null : new TriggerParameterUshort(triggerTimer.Value),
+                                        Extra = triggerExtra == null ? null : new TriggerParameterUshort(triggerExtra.Value)
+                                    };
 
-                                room.AddObject(level, trigger);
+                                    room.AddObject(level, trigger);
+                                }
                                 break;
 
                             default:
