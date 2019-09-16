@@ -669,13 +669,16 @@ namespace TombEditor
         // Select rooms
         public void SelectRooms(IEnumerable<Room> newRooms)
         {
-            if (newRooms.FirstOrDefault() != null)
+            if (newRooms?.FirstOrDefault() != null)
                 SelectedRooms = newRooms.ToList();
         }
 
         // Select rooms and center the camera
         public void SelectRoomsAndResetCamera(IEnumerable<Room> newRooms)
         {
+            if (newRooms == null)
+                return;
+
             Room oldRoom = SelectedRoom;
             SelectRooms(newRooms);
             Room newRoom = SelectedRoom;
