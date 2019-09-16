@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Forms
 {
@@ -1383,5 +1384,67 @@ namespace TombEditor.Forms
         private void butFilterSounds_Click(object sender, EventArgs e) => PopulateSoundInfoList(tbFilterSounds.Text);
         private void butSelectAllSounds_Click(object sender, EventArgs e) => ToggleSelectionForAllSounds(true);
         private void butDeselectAllSounds_Click(object sender, EventArgs e) => ToggleSelectionForAllSounds(false);
+
+        private void ButAutodetectSoundsAndAssign_Click(object sender, EventArgs e)
+        {
+            _levelSettings.SelectedSounds.Clear();
+
+            AssignHardcodedSounds();
+
+            foreach (var catalogRef in _levelSettings.SoundsCatalogs)
+                if (catalogRef.LoadException == null)
+                    AssignCatalogSounds(catalogRef);
+
+            AssignSoundSourcesSounds();
+
+            PopulateSoundInfoList(tbFilterSounds.Text);
+        }
+
+        private void AssignHardcodedSounds()
+        {
+            var referenceSounds = TrCatalog.GetAllFixedByDefaultSounds(_levelSettings.WadGameVersion);
+            foreach (int id in referenceSounds.Keys.ToList())
+                if (!_levelSettings.SelectedSounds.Contains(id))
+                    _levelSettings.SelectedSounds.Add(id);
+        }
+
+        private void AssignCatalogSounds(ReferencedSoundsCatalog catalog)
+        {
+            foreach (var soundInfo in catalog.Sounds.SoundInfos)
+                if (!_levelSettings.SelectedSounds.Contains(soundInfo.Id))
+                    _levelSettings.SelectedSounds.Add(soundInfo.Id);
+        }
+
+        private void AssignSoundSourcesSounds()
+        {
+            foreach (var room in _editor.Level.Rooms)
+                if (room != null)
+                    foreach (var instance in room.Objects)
+                        if (instance is SoundSourceInstance)
+                        {
+                            var soundSource = instance as SoundSourceInstance;
+                            if (!_levelSettings.SelectedSounds.Contains(soundSource.SoundId))
+                                _levelSettings.SelectedSounds.Add(soundSource.SoundId);
+                        }
+        }
+
+        private void ButAssignHardcodedSounds_Click(object sender, EventArgs e)
+        {
+            AssignHardcodedSounds();
+            PopulateSoundInfoList(tbFilterSounds.Text);
+        }
+
+        private void ButAssignSoundsFromSelectedCatalogs_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in soundsCatalogsDataGridView.SelectedRows)
+                AssignCatalogSounds(_soundsCatalogsDataGridViewDataSource[row.Index].Sounds);
+            PopulateSoundInfoList(tbFilterSounds.Text);
+        }
+
+        private void ButAssignFromSoundSources_Click(object sender, EventArgs e)
+        {
+            AssignSoundSourcesSounds();
+            PopulateSoundInfoList(tbFilterSounds.Text);
+        }
     }
 }
