@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Tr4Wad;
 using TombLib.Wad.TrLevels;
