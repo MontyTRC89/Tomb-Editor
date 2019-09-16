@@ -1202,7 +1202,54 @@ namespace TombEditor.Forms
                 if (!string.IsNullOrEmpty(filter) && soundInfo.Name.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) < 0)
                     continue;
 
-                selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id, soundInfo.Name, soundInfo.SoundCatalog);
+                string soundMapAreaDescription = "TR4";
+                int originalId = soundInfo.Id;
+                if (_levelSettings.GameVersion == GameVersion.TRNG)
+                {
+                    if (soundInfo.Id < 370)
+                    {
+                        soundMapAreaDescription = "TR4";
+                        originalId = soundInfo.Id;
+                    }
+                    else if (soundInfo.Id >= 370 && soundInfo.Id < 500)
+                    {
+                        soundMapAreaDescription = "NgReserved";
+                        originalId = soundInfo.Id - 370;
+                    }
+                    else if (soundInfo.Id >= 500 && soundInfo.Id < 525)
+                    {
+                        soundMapAreaDescription = "CustEnv";
+                        originalId = soundInfo.Id - 500;
+                    }
+                    else if (soundInfo.Id >= 525 && soundInfo.Id < 602)
+                    {
+                        soundMapAreaDescription = "CustAnims";
+                        originalId = soundInfo.Id - 525;
+                    }
+                    else if (soundInfo.Id >= 602 && soundInfo.Id < 858)
+                    {
+                        soundMapAreaDescription = "TR1";
+                        originalId = soundInfo.Id - 602;
+                    }
+                    else if (soundInfo.Id >= 858 && soundInfo.Id < 1228)
+                    {
+                        soundMapAreaDescription = "TR2";
+                        originalId = soundInfo.Id - 858;
+                    }
+                    else if (soundInfo.Id >= 1228 && soundInfo.Id < 1598)
+                    {
+                        soundMapAreaDescription = "TR3";
+                        originalId = soundInfo.Id - 1228;
+                    }
+                    else if (soundInfo.Id >= 1598)
+                    {
+                        soundMapAreaDescription = "TR5";
+                        originalId = soundInfo.Id - 1598;
+                    }
+                }
+
+                selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id, 
+                    soundInfo.Name, soundInfo.SoundCatalog, soundMapAreaDescription, originalId);
                 selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1]);
             }
 
