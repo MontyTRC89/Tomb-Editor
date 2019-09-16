@@ -59,7 +59,7 @@ namespace TombEditor.Controls
             public HashSet<Room> _roomSelectionCache;
             public HashSet<Room> GetRoomSelection(Panel2DMap parent)
             {
-                if (_roomSelectionCache == null)
+                if (_roomSelectionCache == null && _area.Size.Length() > 0.5f)
                     _roomSelectionCache = new HashSet<Room>(
                         WinFormsUtils.BoolCombine(parent._editor.SelectedRooms,
                         parent._editor.Level.Rooms.Where(room => room != null)
@@ -845,12 +845,12 @@ namespace TombEditor.Controls
         {
             IEnumerable<Room> roomList = _editor.Level.GetVerticallyAscendingRoomList(room =>
             {
-                float roomLocalX = pos.X - room.SectorPos.X;
-                float roomLocalZ = pos.Y - room.SectorPos.Y;
+                int roomLocalX = (int)pos.X - room.SectorPos.X;
+                int roomLocalZ = (int)pos.Y - room.SectorPos.Y;
                 if (roomLocalX < 1 || roomLocalZ < 1 || roomLocalX >= room.NumXSectors - 1 || roomLocalZ >= room.NumZSectors - 1)
                     return false;
 
-                if (room.Blocks[(int)roomLocalX, (int)roomLocalZ].IsAnyWall)
+                if (room.Blocks[roomLocalX, roomLocalZ].IsAnyWall)
                     return false;
 
                 // Check if the room fits the depth bar criterion
