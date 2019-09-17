@@ -74,10 +74,6 @@ namespace WadTool
         // Helpers
         private static string GetAnimLabel(int index, AnimationNode anim) => "(" + anim.Index + ") " + anim.WadAnimation.Name;
 
-        // Last opened files
-        private static string _lastImportFile;
-        private static string _lastExportFile;
-
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
             InitializeComponent();
@@ -1216,11 +1212,6 @@ namespace WadTool
 
             string path = LevelFileDialog.BrowseFile(this, "Select a file with animations",
                 BaseGeometryImporter.AnimationFileExtensions, false);
-
-            if (string.IsNullOrEmpty(path))
-                return;
-            else
-                _lastImportFile = path;
 
             WadAnimation animation = null;
 
