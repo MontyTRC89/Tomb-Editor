@@ -109,6 +109,12 @@
   <ItemGroup>
     <Compile Include="AnimationEditor.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Controls\AnimCommandEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AnimCommandEditor.Designer.cs">
+      <DependentUpon>AnimCommandEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -130,70 +136,76 @@
     <Compile Include="Controls\PanelRenderingStaticEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FormAnimationEditor.cs">
+    <Compile Include="Forms\FormAnimationEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAnimationEditor.Designer.cs">
+    <Compile Include="Forms\FormAnimationEditor.Designer.cs">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMesh.cs">
+    <Compile Include="Forms\FormMesh.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMesh.Designer.cs">
+    <Compile Include="Forms\FormMesh.Designer.cs">
       <DependentUpon>FormMesh.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormNewWad2.cs">
+    <Compile Include="Forms\FormNewWad2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormNewWad2.Designer.cs">
+    <Compile Include="Forms\FormNewWad2.Designer.cs">
       <DependentUpon>FormNewWad2.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSelectSlot.cs">
+    <Compile Include="Forms\FormReplaceAnimCommands.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSelectSlot.Designer.cs">
+    <Compile Include="Forms\FormReplaceAnimCommands.Designer.cs">
+      <DependentUpon>FormReplaceAnimCommands.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormSelectSlot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSelectSlot.Designer.cs">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSkeletonEditor.cs">
+    <Compile Include="Forms\FormSkeletonEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSkeletonEditor.Designer.cs">
+    <Compile Include="Forms\FormSkeletonEditor.Designer.cs">
       <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSpriteSequenceEditor.cs">
+    <Compile Include="Forms\FormSpriteSequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSpriteSequenceEditor.Designer.cs">
+    <Compile Include="Forms\FormSpriteSequenceEditor.Designer.cs">
       <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormStartupHelp.cs">
+    <Compile Include="Forms\FormStartupHelp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormStartupHelp.Designer.cs">
+    <Compile Include="Forms\FormStartupHelp.Designer.cs">
       <DependentUpon>FormStartupHelp.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAnimCommandsEditor.cs">
+    <Compile Include="Forms\FormAnimCommandsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAnimCommandsEditor.Designer.cs">
+    <Compile Include="Forms\FormAnimCommandsEditor.Designer.cs">
       <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormStateChangesEditor.cs">
+    <Compile Include="Forms\FormStateChangesEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormStateChangesEditor.Designer.cs">
+    <Compile Include="Forms\FormStateChangesEditor.Designer.cs">
       <DependentUpon>FormStateChangesEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormStaticEditor.cs">
+    <Compile Include="Forms\FormStaticEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormStaticEditor.Designer.cs">
+    <Compile Include="Forms\FormStaticEditor.Designer.cs">
       <DependentUpon>FormStaticEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="GizmoAnimationEditor.cs" />
@@ -211,37 +223,43 @@
     <Compile Include="WadActions.cs" />
     <Compile Include="WadMeshBoneNode.cs" />
     <Compile Include="WadToolClass.cs" />
-    <EmbeddedResource Include="FormAnimationEditor.resx">
+    <EmbeddedResource Include="Controls\AnimCommandEditor.resx">
+      <DependentUpon>AnimCommandEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormAnimationEditor.resx">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMesh.resx">
+    <EmbeddedResource Include="Forms\FormMesh.resx">
       <DependentUpon>FormMesh.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormNewWad2.resx">
+    <EmbeddedResource Include="Forms\FormNewWad2.resx">
       <DependentUpon>FormNewWad2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSelectSlot.resx">
+    <EmbeddedResource Include="Forms\FormReplaceAnimCommands.resx">
+      <DependentUpon>FormReplaceAnimCommands.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSelectSlot.resx">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSkeletonEditor.resx">
+    <EmbeddedResource Include="Forms\FormSkeletonEditor.resx">
       <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSpriteSequenceEditor.resx">
+    <EmbeddedResource Include="Forms\FormSpriteSequenceEditor.resx">
       <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormStartupHelp.resx">
+    <EmbeddedResource Include="Forms\FormStartupHelp.resx">
       <DependentUpon>FormStartupHelp.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAnimCommandsEditor.resx">
+    <EmbeddedResource Include="Forms\FormAnimCommandsEditor.resx">
       <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormStateChangesEditor.resx">
+    <EmbeddedResource Include="Forms\FormStateChangesEditor.resx">
       <DependentUpon>FormStateChangesEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormStaticEditor.resx">
+    <EmbeddedResource Include="Forms\FormStaticEditor.resx">
       <DependentUpon>FormStaticEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -503,6 +521,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icons_transport\transport-chain-enabled-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_Find-and-replace-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

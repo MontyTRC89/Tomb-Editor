@@ -92,6 +92,9 @@ namespace WadTool.Controls
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
+                return;
+
             base.InitializeRendering(deviceManager.Device);
             _tool = tool;
 

@@ -15,13 +15,13 @@ namespace WadTool
     {
         private readonly Configuration _configuration;
         private readonly PanelRenderingAnimationEditor _control;
-        private readonly WadToolClass _tool;
+        private readonly AnimationEditor _editor;
 
         public GizmoAnimationEditor(AnimationEditor editor, GraphicsDevice device,
                                     Effect effect, PanelRenderingAnimationEditor control)
             : base(device, effect)
         {
-            _tool = editor.Tool;
+            _editor = editor;
             _configuration = editor.Tool.Configuration;
             _control = control;
         }
@@ -36,17 +36,20 @@ namespace WadTool
             if (_control != null)
             {
                 var model = _control.Model;
-                var animation = _control.Animation;
+                var animation = _editor.CurrentAnim;
                 if (animation == null || _control.SelectedMesh == null)
                     return;
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-                var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
-                var rotationVector = keyframe.Rotations[meshIndex];
-                float delta = newAngle - rotationVector.X;
-                keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, delta);
-                keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
 
-                _control.Model.BuildAnimationPose(keyframe);
+                foreach (var keyframe in _editor.ActiveFrames)
+                {
+                    var rotationVector = keyframe.Rotations[meshIndex];
+                    float delta = newAngle - rotationVector.X;
+                    keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, delta);
+                    keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
+
+                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+                }
                 _control.Invalidate();
             }
         }
@@ -56,17 +59,20 @@ namespace WadTool
             if (_control != null)
             {
                 var model = _control.Model;
-                var animation = _control.Animation;
+                var animation = _editor.CurrentAnim;
                 if (animation == null || _control.SelectedMesh == null)
                     return;
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-                var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
-                var rotationVector = keyframe.Rotations[meshIndex];
-                float delta = newAngle - rotationVector.Y;
-                keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, delta);
-                keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
 
-                _control.Model.BuildAnimationPose(keyframe);
+                foreach (var keyframe in _editor.ActiveFrames)
+                {
+                    var rotationVector = keyframe.Rotations[meshIndex];
+                    float delta = newAngle - rotationVector.Y;
+                    keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, delta);
+                    keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
+
+                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+                }
                 _control.Invalidate();
             }
         }
@@ -76,17 +82,20 @@ namespace WadTool
             if (_control != null)
             {
                 var model = _control.Model;
-                var animation = _control.Animation;
+                var animation = _editor.CurrentAnim;
                 if (animation == null || _control.SelectedMesh == null)
                     return;
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-                var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
-                var rotationVector = keyframe.Rotations[meshIndex];
-                float delta = newAngle - rotationVector.Z;
-                keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitZ, delta);
-                keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
 
-                _control.Model.BuildAnimationPose(keyframe);
+                foreach (var keyframe in _editor.ActiveFrames)
+                {
+                    var rotationVector = keyframe.Rotations[meshIndex];
+                    float delta = newAngle - rotationVector.Z;
+                    keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitZ, delta);
+                    keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
+
+                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+                }
                 _control.Invalidate();
             }
         }
@@ -98,18 +107,22 @@ namespace WadTool
             if (_control != null)
             {
                 var model = _control.Model;
-                var animation = _control.Animation;
+                var animation = _editor.CurrentAnim;
                 if (animation == null || _control.SelectedMesh == null)
                     return;
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
                 if (meshIndex != 0)
                     return;
-                var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
-                var translationVector = keyframe.Translations[meshIndex];
-                translationVector += delta;
-                keyframe.Translations[meshIndex] = translationVector;
-                keyframe.TranslationsMatrices[meshIndex] = Matrix4x4.CreateTranslation(translationVector);
-                _control.Model.BuildAnimationPose(keyframe);
+
+                foreach (var keyframe in _editor.ActiveFrames)
+                {
+                    var translationVector = keyframe.Translations[meshIndex];
+                    translationVector += delta;
+                    keyframe.Translations[meshIndex] = translationVector;
+                    keyframe.TranslationsMatrices[meshIndex] = Matrix4x4.CreateTranslation(translationVector);
+
+                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+                }
                 _control.Invalidate();
             }
         }
@@ -121,7 +134,7 @@ namespace WadTool
                 if (_control != null)
                 {
                     var model = _control.Model;
-                    var animation = _control.Animation;
+                    var animation = _editor.CurrentAnim;
                     if (animation == null || _control.SelectedMesh == null)
                         return Vector3.Zero;
                     var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
@@ -137,11 +150,11 @@ namespace WadTool
         {
             get
             {
-                if (_control == null || _control.Animation == null || _control.SelectedMesh == null ||
-                    _control.CurrentKeyFrame >= _control.Animation.DirectXAnimation.KeyFrames.Count)
+                if (_control == null || _editor.CurrentAnim == null || _control.SelectedMesh == null ||
+                    _editor.CurrentFrameIndex >= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count)
                     return 0;
                 var meshIndex = _control.Model.Meshes.IndexOf(_control.SelectedMesh);
-                return _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame].Rotations[meshIndex].Y;
+                return _editor.CurrentKeyFrame.Rotations[meshIndex].Y;
             }
         }
 
@@ -149,11 +162,11 @@ namespace WadTool
         {
             get
             {
-                if (_control == null || _control.Animation == null || _control.SelectedMesh == null ||
-                    _control.CurrentKeyFrame >= _control.Animation.DirectXAnimation.KeyFrames.Count)
+                if (_control == null || _editor.CurrentAnim == null || _control.SelectedMesh == null ||
+                    _editor.CurrentFrameIndex >= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count)
                     return 0;
                 var meshIndex = _control.Model.Meshes.IndexOf(_control.SelectedMesh);
-                return _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame].Rotations[meshIndex].X;
+                return _editor.CurrentKeyFrame.Rotations[meshIndex].X;
             }
         }
 
@@ -161,11 +174,11 @@ namespace WadTool
         {
             get
             {
-                if (_control == null || _control.Animation == null || _control.SelectedMesh == null ||
-                    _control.CurrentKeyFrame >= _control.Animation.DirectXAnimation.KeyFrames.Count)
+                if (_control == null || _editor.CurrentAnim == null || _control.SelectedMesh == null ||
+                    _editor.CurrentFrameIndex >= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count)
                     return 0;
                 var meshIndex = _control.Model.Meshes.IndexOf(_control.SelectedMesh);
-                return _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame].Rotations[meshIndex].Z;
+                return _editor.CurrentKeyFrame.Rotations[meshIndex].Z;
             }
         }
 

@@ -73,7 +73,11 @@ namespace WadTool
 
         // Helpers
         private static string GetAnimLabel(int index, AnimationNode anim) => "(" + anim.Index + ") " + anim.WadAnimation.Name;
-       
+
+        // Last opened files
+        private static string _lastImportFile;
+        private static string _lastExportFile;
+
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
             InitializeComponent();
@@ -108,7 +112,7 @@ namespace WadTool
                 skin = _editor.Wad.Moveables[skinId];
             else
                 skin = _editor.Wad.Moveables[id];
-            
+
             panelRendering.InitializeRendering(_editor, _deviceManager, skin);
 
             // Load skeleton in combobox
@@ -119,9 +123,9 @@ namespace WadTool
 
             RebuildAnimationsList();
 
-            if (_editor.WorkingAnimations.Count != 0)
+            if (_editor.Animations.Count != 0)
             {
-                SelectAnimation(_editor.WorkingAnimations[0]);
+                SelectAnimation(_editor.Animations[0]);
                 SelectFrame(0);
             }
 
@@ -182,7 +186,7 @@ namespace WadTool
             {
                 UpdateReferenceLevelControls();
             }
-            
+
             if (obj is WadToolClass.UndoStackChangedEvent)
             {
                 var stackEvent = (WadToolClass.UndoStackChangedEvent)obj;
@@ -324,12 +328,12 @@ namespace WadTool
             }
 
             // Filter regarding request
-            for (int i = 0; i < _editor.WorkingAnimations.Count; i++)
+            for (int i = 0; i < _editor.Animations.Count; i++)
             {
-                switch(searchType)
+                switch (searchType)
                 {
                     case SearchType.StateID:
-                        if (searchNumber >= 0 && _editor.WorkingAnimations[i].WadAnimation.StateId != searchNumber)
+                        if (searchNumber >= 0 && _editor.Animations[i].WadAnimation.StateId != searchNumber)
                             continue;
                         break;
                     case SearchType.AnimNumber:
@@ -337,15 +341,15 @@ namespace WadTool
                             continue;
                         break;
                     case SearchType.Name:
-                        if (!_editor.WorkingAnimations[i].WadAnimation.Name.ToLower().Contains(finalSearchString))
+                        if (!_editor.Animations[i].WadAnimation.Name.ToLower().Contains(finalSearchString))
                             continue;
                         break;
                     default:
                         break;
                 }
 
-                var item = new DarkListItem(GetAnimLabel(index++, _editor.WorkingAnimations[i]));
-                item.Tag = _editor.WorkingAnimations[i];
+                var item = new DarkListItem(GetAnimLabel(index++, _editor.Animations[i]));
+                item.Tag = _editor.Animations[i];
                 lstAnimations.Items.Add(item);
             }
 
@@ -357,7 +361,7 @@ namespace WadTool
 
         private void SelectAnimation(AnimationNode node)
         {
-            _editor.SelectedNode = node;
+            _editor.CurrentAnim = node;
 
             tbName.Text = node.WadAnimation.Name;
             nudFramerate.Value = node.WadAnimation.FrameRate;
@@ -369,16 +373,14 @@ namespace WadTool
             tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
 
             tbStateId.Text = node.WadAnimation.StateId.ToString();
-            UpdateStateChange();               
+            UpdateStateChange();
 
             timeline.Animation = node;
-            panelRendering.CurrentKeyFrame = 0;
             panelRendering.SelectedMesh = null;
-            panelRendering.Animation = node;
 
             if (node.DirectXAnimation.KeyFrames.Count > 0)
                 panelRendering.Model.BuildAnimationPose(node.DirectXAnimation.KeyFrames[0]);
-            
+
             OnKeyframesListChanged();
             timeline.Value = 0;
             timeline.ResetSelection();
@@ -387,15 +389,23 @@ namespace WadTool
 
         }
 
+        private void UpdateSelection()
+        {
+            _editor.Selection = timeline.Selection;
+            UpdateStatusLabel();
+        }
+
         private void SelectFrame(int frameIndex)
         {
             if (!_editor.ValidAnimationAndFrames) return;
 
-            if (frameIndex >= _editor.SelectedNode.DirectXAnimation.KeyFrames.Count)
-                frameIndex = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
-            var keyFrame = _editor.SelectedNode.DirectXAnimation.KeyFrames[frameIndex];
+            if (frameIndex >= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count)
+                frameIndex = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
+
+            _editor.CurrentFrameIndex = frameIndex;
+
+            var keyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex];
             panelRendering.Model.BuildAnimationPose(keyFrame);
-            panelRendering.CurrentKeyFrame = frameIndex;
             panelRendering.Invalidate();
 
             // Update GUI
@@ -413,9 +423,9 @@ namespace WadTool
         {
             if (_editor.ValidAnimationAndFrames)
             {
-                _frameCount = timeline.Value * _editor.SelectedNode.WadAnimation.FrameRate;
+                _frameCount = timeline.Value * _editor.CurrentAnim.WadAnimation.FrameRate;
                 timeline.Minimum = 0;
-                timeline.Maximum = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
+                timeline.Maximum = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
                 UpdateStatusLabel();
             }
             else
@@ -425,10 +435,10 @@ namespace WadTool
         private void CalculateAnimationBoundingBox(bool clear = false)
         {
             if (!_editor.ValidAnimationAndFrames) return;
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
-            int startFrame = panelRendering.CurrentKeyFrame;
-            for (int i = 0; i < _editor.SelectedNode.DirectXAnimation.KeyFrames.Count; i++)
+            int startFrame = timeline.Value;
+            for (int i = 0; i < _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count; i++)
             {
                 timeline.Value = i;
                 CalculateKeyframeBoundingBox(i, false, clear);
@@ -440,7 +450,7 @@ namespace WadTool
         {
             if (!_editor.ValidAnimationAndFrames) return;
 
-            if (confirm && (DarkMessageBox.Show(this, "Do you really want to delete the collision box for each frame of animation '" + _editor.SelectedNode.WadAnimation.Name + "'?",
+            if (confirm && (DarkMessageBox.Show(this, "Do you really want to delete the collision box for each frame of animation '" + _editor.CurrentAnim.WadAnimation.Name + "'?",
                            "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No))
                 return;
 
@@ -450,10 +460,10 @@ namespace WadTool
         private void CalculateKeyframeBoundingBox(int index, bool undo, bool clear)
         {
             if (!_editor.ValidAnimationAndFrames) return;
-            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
-            var keyFrame = _editor.SelectedNode.DirectXAnimation.KeyFrames[index];
-                
+            var keyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[index];
+
             if (clear)
                 keyFrame.BoundingBox = new BoundingBox();
             else
@@ -479,14 +489,14 @@ namespace WadTool
                                         "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No))
                 return;
 
-            CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame, true, true);
+            CalculateKeyframeBoundingBox(timeline.Value, true, true);
         }
 
         private void AddNewAnimation()
         {
             var wadAnimation = new WadAnimation();
             wadAnimation.FrameRate = 1;
-            wadAnimation.Name = "New Animation " + _editor.WorkingAnimations.Count;
+            wadAnimation.Name = "New Animation " + _editor.Animations.Count;
 
             var keyFrame = new WadKeyFrame();
             foreach (var bone in _editor.Moveable.Bones)
@@ -494,12 +504,12 @@ namespace WadTool
             wadAnimation.KeyFrames.Add(keyFrame);
 
             var dxAnimation = Animation.FromWad2(_editor.Moveable.Bones, wadAnimation);
-            var node = new AnimationNode(wadAnimation, dxAnimation, _editor.WorkingAnimations.Count);
+            var node = new AnimationNode(wadAnimation, dxAnimation, _editor.Animations.Count);
 
-            var item = new DarkListItem(GetAnimLabel(_editor.WorkingAnimations.Count, node));
+            var item = new DarkListItem(GetAnimLabel(_editor.Animations.Count, node));
             item.Tag = node;
 
-            _editor.WorkingAnimations.Add(node);
+            _editor.Animations.Add(node);
             lstAnimations.Items.Add(item);
             lstAnimations.SelectItem(lstAnimations.Items.Count - 1);
             lstAnimations.EnsureVisible();
@@ -511,22 +521,22 @@ namespace WadTool
 
         private void DeleteAnimation()
         {
-            if (_editor.SelectedNode == null) return;
+            if (_editor.CurrentAnim == null) return;
 
-            if (DarkMessageBox.Show(this, "Do you really want to delete '" + _editor.SelectedNode.WadAnimation.Name + "'?",
+            if (DarkMessageBox.Show(this, "Do you really want to delete '" + _editor.CurrentAnim.WadAnimation.Name + "'?",
                                     "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            int currentIndex = _editor.WorkingAnimations.IndexOf(_editor.SelectedNode);
+            int currentIndex = _editor.Animations.IndexOf(_editor.CurrentAnim);
 
             // Update all references
-            for (int i = 0; i < _editor.WorkingAnimations.Count; i++)
+            for (int i = 0; i < _editor.Animations.Count; i++)
             {
                 // Ignore the animation I'm deleting
                 if (i == currentIndex)
                     continue;
 
-                var animation = _editor.WorkingAnimations[i];
+                var animation = _editor.Animations[i];
 
                 // Update NextAnimation
                 if (animation.WadAnimation.NextAnimation > currentIndex)
@@ -540,7 +550,7 @@ namespace WadTool
             }
 
             // Remove the animation
-            _editor.WorkingAnimations.Remove(_editor.SelectedNode);
+            _editor.Animations.Remove(_editor.CurrentAnim);
 
             // Update GUI
             lstAnimations.Items.RemoveAt(lstAnimations.SelectedIndices[0]);
@@ -552,12 +562,12 @@ namespace WadTool
                 {
                     lstAnimations.SelectItem(0);
                     lstAnimations.EnsureVisible();
-                    SelectAnimation(_editor.WorkingAnimations[0]);
+                    SelectAnimation(_editor.Animations[0]);
                 }
             }
             else
             {
-                _editor.SelectedNode = null;
+                _editor.CurrentAnim = null;
                 timeline.Animation = null;
             }
 
@@ -569,8 +579,8 @@ namespace WadTool
 
         private void AddNewFrame(int index, bool undo)
         {
-            if (_editor.SelectedNode == null) return;
-            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            if (_editor.CurrentAnim == null) return;
+            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             var keyFrame = new KeyFrame();
             foreach (var bone in _editor.Moveable.Bones)
@@ -581,23 +591,23 @@ namespace WadTool
                 keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
             }
 
-            if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count == 0)
+            if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0)
                 index = 0;
 
-            _editor.SelectedNode.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
             OnKeyframesListChanged();
             Saved = false;
         }
 
         private void InsertMultipleFrames()
         {
-            if (_editor.SelectedNode == null) return;
+            if (_editor.CurrentAnim == null) return;
 
             using (var form = new FormInputBox("Add frames", "How many frames to add?", "1"))
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
                     int framesCount = 0;
                     if (!int.TryParse(form.Result, out framesCount) || framesCount <= 0)
@@ -608,7 +618,7 @@ namespace WadTool
 
                     // Add frames
                     for (int i = 0; i < framesCount; i++)
-                        AddNewFrame(panelRendering.CurrentKeyFrame + 1, false);
+                        AddNewFrame(timeline.Value + 1, false);
                 }
             }
         }
@@ -619,11 +629,11 @@ namespace WadTool
 
             if (owner != null &&
                 DarkMessageBox.Show(this, "Do you really want to delete frame" +
-                (timeline.SelectionSize == 1 ? " " + panelRendering.CurrentKeyFrame : "s " + timeline.Selection.X + "-" + timeline.Selection.Y) + "?",
+                (timeline.SelectionSize == 1 ? " " + timeline.Value : "s " + timeline.Selection.X + "-" + timeline.Selection.Y) + "?",
                                     "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             int selectionStart = timeline.Selection.X; // Save last index
             int selectionEnd = timeline.Selection.Y;
@@ -632,15 +642,15 @@ namespace WadTool
             int cursorPos = (timeline.Value < timeline.Selection.X || timeline.Value > timeline.Selection.Y) ? timeline.Value : -1;
 
             // Remove the frames
-            _editor.SelectedNode.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
-            
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
+
             Saved = false;
             if (!updateGUI) return;
 
             // Update GUI
             timeline.ResetSelection();
             OnKeyframesListChanged();
-            if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count != 0)
+            if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count != 0)
             {
                 int insertEnd = selectionStart + _editor.ClipboardKeyFrames.Count - 1;
 
@@ -676,7 +686,7 @@ namespace WadTool
 
             _editor.ClipboardKeyFrames.Clear();
             for (int i = timeline.Selection.X; i <= timeline.Selection.Y; i++)
-                _editor.ClipboardKeyFrames.Add(_editor.SelectedNode.DirectXAnimation.KeyFrames[i].Clone());
+                _editor.ClipboardKeyFrames.Add(_editor.CurrentAnim.DirectXAnimation.KeyFrames[i].Clone());
 
             if (updateGUI)
                 timeline.Highlight(timeline.Selection.X, timeline.Selection.Y);
@@ -684,14 +694,14 @@ namespace WadTool
 
         private void PasteFrames()
         {
-            if (_editor.SelectedNode == null) return;
+            if (_editor.CurrentAnim == null) return;
             if (_editor.ClipboardKeyFrames == null || _editor.ClipboardKeyFrames.Count <= 0)
             {
                 popup.ShowWarning(panelRendering, "Nothing to paste!");
                 return;
             }
 
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             int startIndex = timeline.SelectionIsEmpty ? timeline.Value : timeline.Selection.X; // Save last index
             int endIndex = timeline.SelectionIsEmpty ? timeline.Value : timeline.Selection.Y;
@@ -703,7 +713,7 @@ namespace WadTool
             if (!timeline.SelectionIsEmpty)
                 DeleteFrames(null, false, false);
 
-            _editor.SelectedNode.DirectXAnimation.KeyFrames.InsertRange(startIndex, _editor.ClipboardKeyFrames);
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames.InsertRange(startIndex, _editor.ClipboardKeyFrames);
             OnKeyframesListChanged();
 
             int insertEnd = startIndex + _editor.ClipboardKeyFrames.Count - 1;
@@ -724,118 +734,118 @@ namespace WadTool
 
         private void CutAnimation()
         {
-            if (_editor.SelectedNode == null)
+            if (_editor.CurrentAnim == null)
             {
                 popup.ShowWarning(panelRendering, "No animation to cut!");
                 return;
             }
 
-            _editor.ClipboardNode = _editor.SelectedNode;
+            _editor.ClipboardNode = _editor.CurrentAnim;
             DeleteAnimation();
         }
 
         private void CopyAnimation()
         {
-            if (_editor.SelectedNode == null)
+            if (_editor.CurrentAnim == null)
             {
                 popup.ShowWarning(panelRendering, "No animation to copy!");
                 return;
             }
 
-            _editor.ClipboardNode =_editor.SelectedNode.Clone();
+            _editor.ClipboardNode = _editor.CurrentAnim.Clone();
         }
 
         private void PasteAnimation()
         {
-            if (_editor.ClipboardNode == null || _editor.SelectedNode == null)
+            if (_editor.ClipboardNode == null || _editor.CurrentAnim == null)
             {
                 popup.ShowWarning(panelRendering, "No animation to paste!");
                 return;
             }
 
-            int animationIndex = _editor.WorkingAnimations.IndexOf(_editor.SelectedNode) + 1;
-            _editor.WorkingAnimations.Insert(animationIndex, _editor.ClipboardNode);
+            int animationIndex = _editor.Animations.IndexOf(_editor.CurrentAnim) + 1;
+            _editor.Animations.Insert(animationIndex, _editor.ClipboardNode);
             _editor.ClipboardNode.DirectXAnimation.Name += " - Copy";
             _editor.ClipboardNode.WadAnimation.Name += " - Copy";
             RebuildAnimationsList();
-            SelectAnimation(_editor.WorkingAnimations[animationIndex]);
+            SelectAnimation(_editor.Animations[animationIndex]);
             Saved = false;
         }
 
         private void ReplaceAnimation()
         {
-            if (_editor.ClipboardNode == null || _editor.SelectedNode == null)
+            if (_editor.ClipboardNode == null || _editor.CurrentAnim == null)
             {
                 popup.ShowWarning(panelRendering, "No animation to replace!");
                 return;
             }
 
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
-            int animationIndex = _editor.WorkingAnimations.IndexOf(_editor.SelectedNode);
-            _editor.WorkingAnimations[animationIndex] = _editor.ClipboardNode;
+            int animationIndex = _editor.Animations.IndexOf(_editor.CurrentAnim);
+            _editor.Animations[animationIndex] = _editor.ClipboardNode;
             _editor.ClipboardNode.DirectXAnimation.Name += " - Copy";
             _editor.ClipboardNode.WadAnimation.Name += " - Copy";
             RebuildAnimationsList();
-            SelectAnimation(_editor.WorkingAnimations[animationIndex]);
+            SelectAnimation(_editor.Animations[animationIndex]);
             Saved = false;
         }
 
         private void SplitAnimation()
         {
-            if (_editor.SelectedNode == null)
+            if (_editor.CurrentAnim == null)
             {
                 popup.ShowWarning(panelRendering, "No animation to split!");
                 return;
             }
 
             // I need at least 1 frame in the middle
-            if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count < 3)
+            if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 3)
             {
                 popup.ShowError(panelRendering, "You must have at least 3 frames for splitting the animation");
                 return;
             }
 
             // Check if we have selected the first or the last frame
-            int numFrames = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count;
-            if (panelRendering.CurrentKeyFrame == 0 || panelRendering.CurrentKeyFrame == numFrames - 1)
+            int numFrames = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+            if (timeline.Value == 0 || timeline.Value == numFrames - 1)
             {
                 popup.ShowError(panelRendering, "You can't set the first or the last frame for splitting the animation");
                 return;
             }
-            var newWadAnimation = _editor.SelectedNode.WadAnimation.Clone();
-            var newDirectXAnimation = _editor.SelectedNode.DirectXAnimation.Clone();
+            var newWadAnimation = _editor.CurrentAnim.WadAnimation.Clone();
+            var newDirectXAnimation = _editor.CurrentAnim.DirectXAnimation.Clone();
 
-            int numFrames1 = panelRendering.CurrentKeyFrame;
+            int numFrames1 = timeline.Value;
             int numFrames2 = numFrames - numFrames1;
 
             // Remove frames from the two animations
-            _editor.SelectedNode.DirectXAnimation.KeyFrames.RemoveRange(panelRendering.CurrentKeyFrame + 1, numFrames2 - 1);
-            newDirectXAnimation.KeyFrames.RemoveRange(0, panelRendering.CurrentKeyFrame);
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(timeline.Value + 1, numFrames2 - 1);
+            newDirectXAnimation.KeyFrames.RemoveRange(0, timeline.Value);
 
             // Add the new animation at the bottom of the list
             newWadAnimation.Name += " - splitted";
-            _editor.WorkingAnimations.Add(new AnimationNode(newWadAnimation, newDirectXAnimation, _editor.WorkingAnimations.Count));
+            _editor.Animations.Add(new AnimationNode(newWadAnimation, newDirectXAnimation, _editor.Animations.Count));
 
             // Update the GUI
             RebuildAnimationsList();
-            SelectAnimation(_editor.SelectedNode);
+            SelectAnimation(_editor.CurrentAnim);
 
             Saved = false;
         }
 
         private void UpdateStateChange(bool getFromCombo = false)
         {
-            if (_editor.SelectedNode == null) return;
+            if (_editor.CurrentAnim == null) return;
 
             bool decodeFailed = false;
-            ushort oldValue = _editor.SelectedNode.WadAnimation.StateId;
+            ushort oldValue = _editor.CurrentAnim.WadAnimation.StateId;
             ushort newValue = ushort.MaxValue; // Let's hope nobody will ever use state ID 65535...
 
             // ID decoding from textbox is not needed in case textbox field was forced manually (eg from combobox).
             if (getFromCombo)
                 tbStateId.Text = (string)cmbStateID.SelectedItem;
-            
+
             // Try to identify if there was a string input in textbox.
             if (getFromCombo || !ushort.TryParse(tbStateId.Text, out newValue))
             {
@@ -881,8 +891,8 @@ namespace WadTool
             if (oldValue == newValue || newValue == ushort.MaxValue)
                 return;
 
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
-            _editor.SelectedNode.WadAnimation.StateId = newValue;
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+            _editor.CurrentAnim.WadAnimation.StateId = newValue;
             Saved = false;
         }
 
@@ -902,7 +912,7 @@ namespace WadTool
 
         private void UpdateAnimationParameter(Control control)
         {
-            if (_editor.SelectedNode == null) return;
+            if (_editor.CurrentAnim == null) return;
 
             float result = 0;
             if (control is DarkTextBox)
@@ -922,28 +932,28 @@ namespace WadTool
             switch (control.Name)
             {
                 case "nudNextAnim":
-                    oldValue = _editor.SelectedNode.WadAnimation.NextAnimation;
+                    oldValue = _editor.CurrentAnim.WadAnimation.NextAnimation;
                     roundToShort = true;
                     break;
                 case "nudNextFrame":
-                    oldValue = _editor.SelectedNode.WadAnimation.NextFrame;
+                    oldValue = _editor.CurrentAnim.WadAnimation.NextFrame;
                     roundToShort = true;
                     break;
                 case "nudFramerate":
-                    oldValue = _editor.SelectedNode.WadAnimation.FrameRate;
+                    oldValue = _editor.CurrentAnim.WadAnimation.FrameRate;
                     roundToByte = true;
                     break;
                 case "tbStartVertVel":
-                    oldValue = _editor.SelectedNode.WadAnimation.StartVelocity;
+                    oldValue = _editor.CurrentAnim.WadAnimation.StartVelocity;
                     break;
                 case "tbEndVertVel":
-                    oldValue = _editor.SelectedNode.WadAnimation.EndVelocity;
+                    oldValue = _editor.CurrentAnim.WadAnimation.EndVelocity;
                     break;
                 case "tbStartHorVel":
-                    oldValue = _editor.SelectedNode.WadAnimation.StartLateralVelocity;
+                    oldValue = _editor.CurrentAnim.WadAnimation.StartLateralVelocity;
                     break;
                 case "tbEndHorVel":
-                    oldValue = _editor.SelectedNode.WadAnimation.EndLateralVelocity;
+                    oldValue = _editor.CurrentAnim.WadAnimation.EndLateralVelocity;
                     break;
             }
 
@@ -961,31 +971,31 @@ namespace WadTool
             if (oldValue == result)
                 return;
 
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             // Update actual values
             switch (control.Name)
             {
                 case "nudNextAnim":
-                    _editor.SelectedNode.WadAnimation.NextAnimation = (ushort)result;
+                    _editor.CurrentAnim.WadAnimation.NextAnimation = (ushort)result;
                     break;
                 case "nudNextFrame":
-                    _editor.SelectedNode.WadAnimation.NextFrame = (ushort)result;
+                    _editor.CurrentAnim.WadAnimation.NextFrame = (ushort)result;
                     break;
                 case "nudFramerate":
-                    _editor.SelectedNode.WadAnimation.FrameRate = (byte)result;
+                    _editor.CurrentAnim.WadAnimation.FrameRate = (byte)result;
                     break;
                 case "tbStartVertVel":
-                    _editor.SelectedNode.WadAnimation.StartVelocity = result;
+                    _editor.CurrentAnim.WadAnimation.StartVelocity = result;
                     break;
                 case "tbEndVertVel":
-                    _editor.SelectedNode.WadAnimation.EndVelocity = result;
+                    _editor.CurrentAnim.WadAnimation.EndVelocity = result;
                     break;
                 case "tbStartHorVel":
-                    _editor.SelectedNode.WadAnimation.StartLateralVelocity = result;
+                    _editor.CurrentAnim.WadAnimation.StartLateralVelocity = result;
                     break;
                 case "tbEndHorVel":
-                   _editor.SelectedNode.WadAnimation.EndLateralVelocity = result;
+                    _editor.CurrentAnim.WadAnimation.EndLateralVelocity = result;
                     break;
             }
 
@@ -1000,12 +1010,12 @@ namespace WadTool
             if (!short.TryParse(tbCollisionBoxMaxZ.Text, out result))
                 return;
 
-            if (_editor.SelectedNode != null && _editor.SelectedNode.DirectXAnimation.KeyFrames.Count != 0)
+            if (_editor.ValidAnimationAndFrames)
             {
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
-                var bb = _editor.SelectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox;
+                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+                var bb = _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox;
 
-                switch(textbox.Name)
+                switch (textbox.Name)
                 {
                     case "tbCollisionBoxMinX":
                         bb.Minimum = new Vector3(result, bb.Minimum.Y, bb.Minimum.Z);
@@ -1027,7 +1037,7 @@ namespace WadTool
                         break;
                 }
 
-                _editor.SelectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
+                _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox = bb;
                 panelRendering.Invalidate();
                 Saved = false;
             }
@@ -1035,13 +1045,13 @@ namespace WadTool
 
         private void InterpolateFrames(int frameIndex1, int frameIndex2, int numFrames, bool updateGUI = true)
         {
-            var frame1 = _editor.SelectedNode.DirectXAnimation.KeyFrames[frameIndex1];
-            var frame2 = _editor.SelectedNode.DirectXAnimation.KeyFrames[frameIndex2];
+            var frame1 = _editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex1];
+            var frame2 = _editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex2];
 
             // Cut existing frames between 1 and 2
 
             if (frameIndex2 - frameIndex1 > 1)
-                _editor.SelectedNode.DirectXAnimation.KeyFrames.RemoveRange(frameIndex1 + 1, frameIndex2 - frameIndex1 - 1);
+                _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(frameIndex1 + 1, frameIndex2 - frameIndex1 - 1);
 
             // Now calculate how many frames I must insert
             for (int i = 0; i < numFrames; i++)
@@ -1054,7 +1064,7 @@ namespace WadTool
                     keyFrame.Translations.Add(frame1.Translations[0] + bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(frame1.Translations[0] + bone.Translation));
                 }
-                _editor.SelectedNode.DirectXAnimation.KeyFrames.Insert(frameIndex1 + 1 + i, keyFrame);
+                _editor.CurrentAnim.DirectXAnimation.KeyFrames.Insert(frameIndex1 + 1 + i, keyFrame);
             }
 
             // Slerp factor
@@ -1063,7 +1073,7 @@ namespace WadTool
             // Now I have the right number of frames and I can do slerp
             for (int i = 0; i < numFrames; i++)
             {
-                var keyframe = _editor.SelectedNode.DirectXAnimation.KeyFrames[frameIndex1 + i + 1];
+                var keyframe = _editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex1 + i + 1];
 
                 // Lerp translation of root bone
                 keyframe.Translations[0] = Vector3.Lerp(frame1.Translations[0], frame2.Translations[0], k * (i + 1));
@@ -1111,7 +1121,7 @@ namespace WadTool
                 return;
             }
 
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             int start = timeline.Selection.X;
             int end = (timeline.SelectionSize == 1 && timeline.Selection.Y == timeline.Maximum) ? timeline.Minimum : timeline.Selection.Y;
@@ -1120,21 +1130,21 @@ namespace WadTool
         }
         private void DeleteEveryNFrame(int n)
         {
-            for(int i = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count-1; i >= 0; i-=n)
+            for (int i = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1; i >= 0; i -= n)
             {
-                _editor.SelectedNode.DirectXAnimation.KeyFrames.RemoveAt(i);
+                _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveAt(i);
             }
-            
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
         }
         private void InterpolateAnimation(int numFrames, bool fixAnimCommands, bool updateGUI = true)
         {
-            int stepCount = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
+            int stepCount = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
             if (stepCount <= 0) return;
 
             if (numFrames <= 0) return;
 
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             for (int i = 0; i < stepCount; i++)
             {
@@ -1142,9 +1152,9 @@ namespace WadTool
                 InterpolateFrames(startFrame, startFrame + 1, numFrames, false);
             }
 
-            if (fixAnimCommands && _editor.SelectedNode.WadAnimation.AnimCommands.Count > 0)
+            if (fixAnimCommands && _editor.CurrentAnim.WadAnimation.AnimCommands.Count > 0)
             {
-                foreach (var ac in _editor.SelectedNode.WadAnimation.AnimCommands)
+                foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
                 {
                     if (ac.Type >= WadAnimCommandType.PlaySound)
                         ac.Parameter1 *= (short)(numFrames + 1);
@@ -1155,19 +1165,19 @@ namespace WadTool
 
             if (updateGUI)
             {
-                SelectAnimation(_editor.SelectedNode);
+                SelectAnimation(_editor.CurrentAnim);
                 timeline.Highlight();
             }
         }
 
         private void EditAnimCommands(WadAnimCommand cmd = null)
         {
-            if (_editor.SelectedNode == null) return;
-            
+            if (_editor.CurrentAnim == null) return;
+
             var existingWindow = Application.OpenForms["FormAnimCommandsEditor"];
             if (existingWindow == null)
             {
-                FormAnimCommandsEditor acEditor = new FormAnimCommandsEditor(_editor, _editor.SelectedNode, cmd);
+                FormAnimCommandsEditor acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim, cmd);
                 acEditor.Show(this);
             }
             else
@@ -1180,23 +1190,71 @@ namespace WadTool
 
         private void EditStateChanges()
         {
-            if (_editor.SelectedNode == null) return;
+            if (_editor.CurrentAnim == null) return;
 
-            using (var form = new FormStateChangesEditor(_editor.SelectedNode.WadAnimation.StateChanges))
+            using (var form = new FormStateChangesEditor(_editor.CurrentAnim.WadAnimation.StateChanges))
             {
                 if (form.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
                 // Add the new state changes
-                _editor.SelectedNode.WadAnimation.StateChanges.Clear();
-                _editor.SelectedNode.WadAnimation.StateChanges.AddRange(form.StateChanges);
+                _editor.CurrentAnim.WadAnimation.StateChanges.Clear();
+                _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(form.StateChanges);
 
                 Saved = false;
             }
 
             timeline.Invalidate();
+        }
+
+        private void ImportAnimations()
+        {
+            if (_editor.CurrentAnim == null)
+                return;
+
+            string path = LevelFileDialog.BrowseFile(this, "Select a file with animations",
+                BaseGeometryImporter.AnimationFileExtensions, false);
+
+            if (string.IsNullOrEmpty(path))
+                return;
+            else
+                _lastImportFile = path;
+
+            WadAnimation animation = null;
+
+            if (Path.GetExtension(path) == ".anim")
+                animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
+            else
+                animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
+
+            if (animation == null)
+                return;
+
+            if (animation.KeyFrames[0].Angles.Count != _editor.Moveable.Bones.Count)
+            {
+                popup.ShowError(panelRendering, "You can only import an animation with the same number of bones as current moveable.");
+                return;
+            }
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+            // Backup animcommands & state changes
+            var oldCommands = _editor.CurrentAnim.WadAnimation.AnimCommands;
+            var oldChanges = _editor.CurrentAnim.WadAnimation.StateChanges;
+
+            _editor.CurrentAnim.WadAnimation = animation;
+
+            // Restore animcommands & state changes
+            _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(oldCommands);
+            _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);
+
+            _editor.CurrentAnim.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
+            SelectAnimation(_editor.CurrentAnim);
+            timeline.Value = 0;
+            lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.CurrentAnim);
+            panelRendering.Invalidate();
         }
 
         private void PlayAnimation()
@@ -1205,15 +1263,15 @@ namespace WadTool
 
             if (_timerPlayAnimation.Enabled)
             {
-                if (_editor.SelectedNode?.WadAnimation != null)
+                if (_editor.CurrentAnim?.WadAnimation != null)
                 {
                     // Backup current state if chained playback is about to begin
-                    _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
+                    _chainedPlaybackInitialAnim = _editor.CurrentAnim.Index;
                     _chainedPlaybackInitialCursorPos = timeline.Value;
                     _chainedPlaybackInitialSelection = timeline.Selection;
 
-                    if (_editor.SelectedNode.WadAnimation.KeyFrames.Count > 1)
-                        _frameCount = timeline.Value * _editor.SelectedNode.WadAnimation.FrameRate;
+                    if (_editor.CurrentAnim.WadAnimation.KeyFrames.Count > 1)
+                        _frameCount = timeline.Value * _editor.CurrentAnim.WadAnimation.FrameRate;
                 }
 
                 butTransportPlay.Image = Properties.Resources.transport_stop_24;
@@ -1225,12 +1283,12 @@ namespace WadTool
                 // FIXME: Make it an option!
                 if (_chainedPlayback)
                 {
-                    var origNode = _editor.WorkingAnimations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
+                    var origNode = _editor.Animations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
 
                     if (origNode != null)
                     {
                         // Only try to update UI if we've switched to different anim
-                        if (origNode != _editor.SelectedNode)
+                        if (origNode != _editor.CurrentAnim)
                         {
                             SelectAnimation(origNode);
 
@@ -1266,8 +1324,8 @@ namespace WadTool
         private void UpdateStatusLabel()
         {
             string newLabel =
-                "Frame: " + (_frameCount) + " / " + (_editor.SelectedNode.WadAnimation.FrameRate * (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1)) + "   " +
-                "Keyframe: " + timeline.Value + " / " + (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1);
+                "Frame: " + (_frameCount) + " / " + (_editor.CurrentAnim.WadAnimation.FrameRate * (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1)) + "   " +
+                "Keyframe: " + timeline.Value + " / " + (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1);
 
             if (!timeline.SelectionIsEmpty)
             {
@@ -1287,11 +1345,11 @@ namespace WadTool
             {
                 if (prompt) popup.ShowError(panelRendering, "No frames selected. Please select at least 1 frame.");
             }
-            else if (_editor.SelectedNode == null)
+            else if (_editor.CurrentAnim == null)
             {
                 if (prompt) popup.ShowError(panelRendering, "No animation selected. Select animation to work with.");
             }
-            else if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count == 0)
+            else if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0)
             {
                 if (prompt) popup.ShowError(panelRendering, "Current animation contains no frames.");
             }
@@ -1323,12 +1381,12 @@ namespace WadTool
         {
             string newName = tbName.Text.Trim();
 
-            if (_editor.SelectedNode != null && !string.IsNullOrEmpty(newName) && newName != _editor.SelectedNode.WadAnimation.Name)
+            if (_editor.CurrentAnim != null && !string.IsNullOrEmpty(newName) && newName != _editor.CurrentAnim.WadAnimation.Name)
             {
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
-                _editor.SelectedNode.WadAnimation.Name = newName;
-                lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.SelectedNode);
+                _editor.CurrentAnim.WadAnimation.Name = newName;
+                lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.CurrentAnim);
                 Saved = false;
             }
         }
@@ -1347,7 +1405,7 @@ namespace WadTool
 
         private void addNewAnimationToolStripMenuItem_Click(object sender, EventArgs e) => AddNewAnimation();
         private void deleteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => DeleteAnimation();
-        private void insertFrameAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e) => AddNewFrame(panelRendering.CurrentKeyFrame + 1, true);
+        private void insertFrameAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e) => AddNewFrame(timeline.Value + 1, true);
         private void cutFramesToolStripMenuItem_Click(object sender, EventArgs e) => CutFrames();
         private void copyFramesToolStripMenuItem_Click(object sender, EventArgs e) => CopyFrames();
         private void pasteFramesToolStripMenuItem_Click(object sender, EventArgs e) => PasteFrames();
@@ -1356,12 +1414,13 @@ namespace WadTool
         private void copyAnimationToolStripMenuItem_Click(object sender, EventArgs e) => CopyAnimation();
         private void pasteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => PasteAnimation();
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
-        private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame, true, false);
+        private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => ClearFrameBoundingBox(true);
         private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(true);
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges();
+        private void importToolStripMenuItem_Click(object sender, EventArgs e) => ImportAnimations();
         private void undoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void redoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
@@ -1370,7 +1429,7 @@ namespace WadTool
 
         private void butTbAddAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butTbDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
-        private void butTbAddFrame_Click(object sender, EventArgs e) => AddNewFrame(panelRendering.CurrentKeyFrame + 1, true);
+        private void butTbAddFrame_Click(object sender, EventArgs e) => AddNewFrame(timeline.Value + 1, true);
         private void butTbCutFrame_Click(object sender, EventArgs e) => CutFrames();
         private void butTbCopyFrame_Click(object sender, EventArgs e) => CopyFrames();
         private void butTbPasteFrame_Click(object sender, EventArgs e) => PasteFrames();
@@ -1383,13 +1442,14 @@ namespace WadTool
         private void butTbSaveChanges_Click(object sender, EventArgs e) => SaveChanges();
         private void butTbUndo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void butTbRedo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
+        private void butTbImport_Click(object sender, EventArgs e) => ImportAnimations();
 
         // General controls one-liners
 
         private void butAddNewAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
         private void butSearchByStateID_Click(object sender, EventArgs e) => RebuildAnimationsList();
-        private void butCalculateBoundingBoxForCurrentFrame_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame, true, false);
+        private void butCalculateBoundingBoxForCurrentFrame_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void butCalculateAnimCollision_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
         private void butClearCollisionBox_Click(object sender, EventArgs e) => ClearFrameBoundingBox(false);
         private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(false);
@@ -1418,7 +1478,7 @@ namespace WadTool
 
         // Timeline & transport one-liners
 
-        private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateStatusLabel();
+        private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateSelection();
         private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame(timeline.Value);
         private void timeline_AnimCommandDoubleClick(object sender, WadAnimCommand ac) => EditAnimCommands(ac);
 
@@ -1431,10 +1491,10 @@ namespace WadTool
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
-            if (_editor.SelectedNode?.WadAnimation == null || _editor.SelectedNode.DirectXAnimation.KeyFrames.Count < 1)
+            if (_editor.CurrentAnim?.WadAnimation == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 1)
                 return;
 
-            int realFrameNumber = _editor.SelectedNode.WadAnimation.FrameRate * (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
+            int realFrameNumber = _editor.CurrentAnim.WadAnimation.FrameRate * (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1) + 1;
 
             _frameCount++;
 
@@ -1443,15 +1503,15 @@ namespace WadTool
                 // Chain playback handling
                 if (_chainedPlayback)
                 {
-                    var nextIndex = _editor.SelectedNode.WadAnimation.NextAnimation;
-                    var nextFrame = _editor.SelectedNode.WadAnimation.NextFrame;
-                    var nextNode  = _editor.WorkingAnimations.FirstOrDefault(item => item.Index == nextIndex);
+                    var nextIndex = _editor.CurrentAnim.WadAnimation.NextAnimation;
+                    var nextFrame = _editor.CurrentAnim.WadAnimation.NextFrame;
+                    var nextNode  = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
 
                     if (nextNode != null)
                     {
                         // Only try to update UI if next anim is different
 
-                        if (nextNode != _editor.SelectedNode)
+                        if (nextNode != _editor.CurrentAnim)
                         {
                             SelectAnimation(nextNode);
 
@@ -1484,12 +1544,12 @@ namespace WadTool
                     _frameCount = 0;
             }
 
-            bool isKeyFrame = (_frameCount % (_editor.SelectedNode.WadAnimation.FrameRate == 0 ? 1 : _editor.SelectedNode.WadAnimation.FrameRate) == 0);
+            bool isKeyFrame = (_frameCount % (_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate) == 0);
 
             // Update animation
             if (isKeyFrame)
             {
-                int newFrameNumber = _frameCount / _editor.SelectedNode.WadAnimation.FrameRate;
+                int newFrameNumber = _frameCount / _editor.CurrentAnim.WadAnimation.FrameRate;
 
                 if (newFrameNumber > timeline.Maximum)
                     timeline.Value = 0;
@@ -1522,7 +1582,7 @@ namespace WadTool
                     }
                 }
 
-                foreach (var ac in _editor.SelectedNode.WadAnimation.AnimCommands)
+                foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
                 {
                     int idToPlay = -1;
 
@@ -1567,65 +1627,19 @@ namespace WadTool
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_editor.SelectedNode == null)
+            if (_editor.CurrentAnim == null)
                 return;
 
             string path = LevelFileDialog.BrowseFile(this, "Specify file to save animation",
                 new List<FileFormat>() { new FileFormat("TombEditor XML", "anim") }, true);
 
-            var animationToSave = _editor.GetSavedAnimation(_editor.SelectedNode);
+            var animationToSave = _editor.GetSavedAnimation(_editor.CurrentAnim);
 
             if (!WadActions.ExportAnimationToXml(_editor.Moveable, animationToSave, path))
             {
                 popup.ShowError(panelRendering, "Can't export current animation to XML file");
                 return;
             }
-        }
-
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedNode == null)
-                return;
-
-            string path = LevelFileDialog.BrowseFile(this, "Select a file with animations", 
-                BaseGeometryImporter.AnimationFileExtensions, false);
-
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            WadAnimation animation = null;
-
-            if (Path.GetExtension(path) == ".anim")
-                animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
-            else
-                animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
-
-            if (animation == null)
-                return;
-
-            if (animation.KeyFrames[0].Angles.Count != _editor.Moveable.Bones.Count)
-            {
-                popup.ShowError(panelRendering, "You can only import an animation with the same number of bones as current moveable.");
-                return;
-            }
-
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
-
-            // Backup animcommands & state changes
-            var oldCommands = _editor.SelectedNode.WadAnimation.AnimCommands;
-            var oldChanges  = _editor.SelectedNode.WadAnimation.StateChanges;
-
-            _editor.SelectedNode.WadAnimation = animation;
-
-            // Restore animcommands & state changes
-            _editor.SelectedNode.WadAnimation.AnimCommands.AddRange(oldCommands);
-            _editor.SelectedNode.WadAnimation.StateChanges.AddRange(oldChanges);
-
-            _editor.SelectedNode.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
-            SelectAnimation(_editor.SelectedNode);
-            timeline.Value = 0;
-            lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.SelectedNode);
-            panelRendering.Invalidate();
         }
 
         private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)
@@ -1768,7 +1782,7 @@ namespace WadTool
                 form.Width = 300;
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
                     int result = 0;
                     if (!int.TryParse(form.Result, out result) || result <= 1)
@@ -1784,18 +1798,18 @@ namespace WadTool
 
         private void resampleAnimationToKeyframesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_editor.SelectedNode.WadAnimation.FrameRate < 2)
+            if (_editor.CurrentAnim.WadAnimation.FrameRate < 2)
             {
                 popup.ShowError(panelRendering, "Animation is already at framerate 1. You need other framerate to resample.");
                 return;
             }
             
-            InterpolateAnimation(_editor.SelectedNode.WadAnimation.FrameRate - 1, false, false);
-            _editor.SelectedNode.WadAnimation.FrameRate = 1;
+            InterpolateAnimation(_editor.CurrentAnim.WadAnimation.FrameRate - 1, false, false);
+            _editor.CurrentAnim.WadAnimation.FrameRate = 1;
 
             Saved = false;
 
-            SelectAnimation(_editor.SelectedNode);
+            SelectAnimation(_editor.CurrentAnim);
             timeline.Highlight();
         }
 
@@ -1812,9 +1826,9 @@ namespace WadTool
         private void lstAnimations_Click(object sender, EventArgs e)
         {
             // Update saved state's anim number, in case chained playback is in effect
-            if (_editor.SelectedNode != null && lstAnimations.SelectedItem != null)
+            if (_editor.CurrentAnim != null && lstAnimations.SelectedItem != null)
             {
-                _chainedPlaybackInitialAnim = _editor.SelectedNode.Index;
+                _chainedPlaybackInitialAnim = _editor.CurrentAnim.Index;
                 _chainedPlaybackInitialCursorPos = 0;
                 _chainedPlaybackInitialSelection = new VectorInt2();
             }
@@ -1852,7 +1866,7 @@ namespace WadTool
                 form.Width = 300;
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+                    _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
                     int result = 0;
                     if (!int.TryParse(form.Result, out result) || result <= 1)
@@ -1863,12 +1877,18 @@ namespace WadTool
                     DeleteEveryNFrame(result);
                 }
 
-                if (_editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1 < panelRendering.CurrentKeyFrame) {
-                    panelRendering.CurrentKeyFrame = _editor.SelectedNode.DirectXAnimation.KeyFrames.Count - 1;
+                if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1 < timeline.Value) {
+                    timeline.Value = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
                 }
-                SelectAnimation(_editor.SelectedNode);
+                SelectAnimation(_editor.CurrentAnim);
                 timeline.Highlight();
             }
+        }
+
+        private void findReplaceAnimcommandsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormReplaceAnimCommands(_editor))
+                form.ShowDialog(this);
         }
     }
 }
