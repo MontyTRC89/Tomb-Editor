@@ -144,7 +144,7 @@
             this.butLoadModel.Name = "butLoadModel";
             this.butLoadModel.Size = new System.Drawing.Size(137, 23);
             this.butLoadModel.TabIndex = 80;
-            this.butLoadModel.Text = "Load model";
+            this.butLoadModel.Text = "Replace model";
             this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butLoadModel.Click += new System.EventHandler(this.butLoadModel_Click);
             // 
@@ -179,7 +179,7 @@
             this.butAddFromFile.Name = "butAddFromFile";
             this.butAddFromFile.Size = new System.Drawing.Size(137, 23);
             this.butAddFromFile.TabIndex = 86;
-            this.butAddFromFile.Text = "Add from file";
+            this.butAddFromFile.Text = "Add bone";
             this.butAddFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddFromFile.Click += new System.EventHandler(this.butAddFromFile_Click);
             // 
@@ -203,7 +203,7 @@
             this.butReplaceFromFile.Name = "butReplaceFromFile";
             this.butReplaceFromFile.Size = new System.Drawing.Size(137, 23);
             this.butReplaceFromFile.TabIndex = 89;
-            this.butReplaceFromFile.Text = "Replace from file";
+            this.butReplaceFromFile.Text = "Replace bone";
             this.butReplaceFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butReplaceFromFile.Click += new System.EventHandler(this.butReplaceFromFile_Click);
             // 

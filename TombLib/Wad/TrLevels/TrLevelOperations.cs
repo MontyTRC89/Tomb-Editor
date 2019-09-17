@@ -367,7 +367,7 @@ namespace TombLib.Wad.TrLevels
 
             // Build the skeleton
             var root = new WadBone();
-            root.Name = "bone_root";
+            root.Name = "bone_0_root";
             root.Parent = null;
             root.Translation = Vector3.Zero;
             root.Mesh = newMeshes[0];

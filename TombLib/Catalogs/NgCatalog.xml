@@ -24,34 +24,7 @@
     <Subtrigger K="8" V="OldFlip. Swap crowbar with empty hand on Lara's right hand" />
     <Subtrigger K="10" V="OldFlip. Will play the &lt;&amp;&gt;sound effect number.">
       <Timer>
-        <FixedEnumeration>
-          <Enum K="0" V="Sound for little beetle" />
-          <Enum K="1" V="Elevator or cableway" />
-          <Enum K="2" V="Electric motor" />
-          <Enum K="3" V="Vibrating only while lara is walking." />
-          <Enum K="4" V="Helicopter" />
-          <Enum K="5" V="Strong electric motor (like a drill)" />
-          <Enum K="6" V="Electric motor (acute) like chain pulley" />
-          <Enum K="7" V="Electric motor (more acut than aboves)" />
-          <Enum K="8" V="Electric motor (more near (high volume) than aboves)" />
-          <Enum K="9" V="Electric motor (more far, low volume)" />
-          <Enum K="10" V="Exchange of shots, whistling of shots (cool)" />
-          <Enum K="11" V="Motor in neutral (car)" />
-          <Enum K="18" V="Chains or a fall of pebbles" />
-          <Enum K="19" V="Low buzzing" />
-          <Enum K="24" V="Sea surf" />
-          <Enum K="26" V="Like effect 5" />
-          <Enum K="28" V="Like buzz of eltricity" />
-          <Enum K="29" V="Metal sound, chaotic" />
-          <Enum K="30" V="Despairing scream. (Cool)" />
-          <Enum K="31" V="Short scream of lara when she touchs enemies (ugly)" />
-          <Enum K="32" V="Like effect 11" />
-          <Enum K="33" V="Landslip" />
-          <Enum K="34" V="Like above but more acute" />
-          <Enum K="35" V="Thunders (cool)" />
-          <Enum K="36" V="Like effect 1" />
-          <Enum K="39" V="Ticking of clock work." />
-        </FixedEnumeration>
+        <AnyNumber />
       </Timer>
     </Subtrigger>
     <Subtrigger K="11" V="OldFlip. Will play an explosion sound effect." />
