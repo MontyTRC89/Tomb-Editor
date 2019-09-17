@@ -35,6 +35,10 @@ namespace WadTool
             _editor = editor;
             tbPlaySoundFrame.Enabled = !disableFrameControls;
             tbFlipEffectFrame.Enabled = !disableFrameControls;
+
+            butPlaySound.Enabled = (_editor.Tool.ReferenceLevel != null &&
+                _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Count > 0);
+
             ReloadSounds();
         }
 

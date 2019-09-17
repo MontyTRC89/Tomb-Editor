@@ -1879,7 +1879,10 @@ namespace WadTool
         private void findReplaceAnimcommandsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var form = new FormReplaceAnimCommands(_editor))
+            {
                 form.ShowDialog(this);
+                if (form.EditingWasDone) Saved = false;
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using TombLib.Graphics;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace WadTool
@@ -47,5 +49,6 @@ namespace WadTool
         }
 
         public void PushAnimationChanged(AnimationEditor editor, AnimationNode anim) => Push(new AnimationUndoInstance(editor, anim));
+        public void PushAnimationChanged(AnimationEditor editor, List<AnimationNode> anims) => Push(anims.Select(anim => (new AnimationUndoInstance(editor, anim)) as UndoRedoInstance).ToList());
     }
 }
