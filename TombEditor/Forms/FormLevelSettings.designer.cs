@@ -103,6 +103,7 @@
             this.skyTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
+            this.butAssignFromWads = new DarkUI.Controls.DarkButton();
             this.butRemoveMissing = new DarkUI.Controls.DarkButton();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
@@ -1130,6 +1131,7 @@
             // tabSoundsCatalogs
             // 
             this.tabSoundsCatalogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabSoundsCatalogs.Controls.Add(this.butAssignFromWads);
             this.tabSoundsCatalogs.Controls.Add(this.butRemoveMissing);
             this.tabSoundsCatalogs.Controls.Add(this.darkLabel20);
             this.tabSoundsCatalogs.Controls.Add(this.labelSoundsCatalogsStatistics);
@@ -1152,6 +1154,17 @@
             this.tabSoundsCatalogs.Size = new System.Drawing.Size(700, 505);
             this.tabSoundsCatalogs.TabIndex = 8;
             this.tabSoundsCatalogs.Text = "Sound Infos";
+            // 
+            // butAssignFromWads
+            // 
+            this.butAssignFromWads.Location = new System.Drawing.Point(440, 245);
+            this.butAssignFromWads.Name = "butAssignFromWads";
+            this.butAssignFromWads.Size = new System.Drawing.Size(72, 22);
+            this.butAssignFromWads.TabIndex = 115;
+            this.butAssignFromWads.Text = "From wads";
+            this.butAssignFromWads.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select hardcoded sounds");
+            this.butAssignFromWads.Click += new System.EventHandler(this.butAssignFromWads_Click);
             // 
             // butRemoveMissing
             // 
@@ -1198,10 +1211,9 @@
             // 
             // butAssignFromSoundSources
             // 
-            this.butAssignFromSoundSources.Image = global::TombEditor.Properties.Resources.objects_speaker_16;
-            this.butAssignFromSoundSources.Location = new System.Drawing.Point(361, 245);
+            this.butAssignFromSoundSources.Location = new System.Drawing.Point(318, 245);
             this.butAssignFromSoundSources.Name = "butAssignFromSoundSources";
-            this.butAssignFromSoundSources.Size = new System.Drawing.Size(132, 22);
+            this.butAssignFromSoundSources.Size = new System.Drawing.Size(116, 22);
             this.butAssignFromSoundSources.TabIndex = 113;
             this.butAssignFromSoundSources.Text = "From sound sources";
             this.butAssignFromSoundSources.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1219,10 +1231,9 @@
             // 
             // butAssignSoundsFromSelectedCatalogs
             // 
-            this.butAssignSoundsFromSelectedCatalogs.Image = global::TombEditor.Properties.Resources.actions_compile_16;
-            this.butAssignSoundsFromSelectedCatalogs.Location = new System.Drawing.Point(205, 245);
+            this.butAssignSoundsFromSelectedCatalogs.Location = new System.Drawing.Point(181, 245);
             this.butAssignSoundsFromSelectedCatalogs.Name = "butAssignSoundsFromSelectedCatalogs";
-            this.butAssignSoundsFromSelectedCatalogs.Size = new System.Drawing.Size(150, 22);
+            this.butAssignSoundsFromSelectedCatalogs.Size = new System.Drawing.Size(131, 22);
             this.butAssignSoundsFromSelectedCatalogs.TabIndex = 112;
             this.butAssignSoundsFromSelectedCatalogs.Text = "From selected catalogs";
             this.butAssignSoundsFromSelectedCatalogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1231,10 +1242,9 @@
             // 
             // butAssignHardcodedSounds
             // 
-            this.butAssignHardcodedSounds.Image = global::TombEditor.Properties.Resources.general_Lock_16;
             this.butAssignHardcodedSounds.Location = new System.Drawing.Point(105, 245);
             this.butAssignHardcodedSounds.Name = "butAssignHardcodedSounds";
-            this.butAssignHardcodedSounds.Size = new System.Drawing.Size(94, 22);
+            this.butAssignHardcodedSounds.Size = new System.Drawing.Size(70, 22);
             this.butAssignHardcodedSounds.TabIndex = 111;
             this.butAssignHardcodedSounds.Text = "Hardcoded";
             this.butAssignHardcodedSounds.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1253,15 +1263,16 @@
             this.butAutodetectSoundsAndAssign.Text = "Autodetect";
             this.butAutodetectSoundsAndAssign.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.pathToolTip.SetToolTip(this.butAutodetectSoundsAndAssign, "Find and select all sounds used in a level.\r\nThis includes hardcoded sounds, soun" +
-        "ds used in animations, sound sources and flipeffect sounds.");
+        "ds used in animations, sound sources and flipeffect sounds.\r\nScripted sounds are" +
+        " not included.");
             this.butAutodetectSoundsAndAssign.Click += new System.EventHandler(this.ButAutodetectSoundsAndAssign_Click);
             // 
             // butDeselectAllSounds
             // 
             this.butDeselectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeselectAllSounds.Location = new System.Drawing.Point(606, 245);
+            this.butDeselectAllSounds.Location = new System.Drawing.Point(617, 245);
             this.butDeselectAllSounds.Name = "butDeselectAllSounds";
-            this.butDeselectAllSounds.Size = new System.Drawing.Size(91, 22);
+            this.butDeselectAllSounds.Size = new System.Drawing.Size(80, 22);
             this.butDeselectAllSounds.TabIndex = 108;
             this.butDeselectAllSounds.Text = "Deselect all";
             this.pathToolTip.SetToolTip(this.butDeselectAllSounds, "Deselect all sounds");
@@ -1270,9 +1281,9 @@
             // butSelectAllSounds
             // 
             this.butSelectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectAllSounds.Location = new System.Drawing.Point(509, 245);
+            this.butSelectAllSounds.Location = new System.Drawing.Point(531, 245);
             this.butSelectAllSounds.Name = "butSelectAllSounds";
-            this.butSelectAllSounds.Size = new System.Drawing.Size(91, 22);
+            this.butSelectAllSounds.Size = new System.Drawing.Size(80, 22);
             this.butSelectAllSounds.TabIndex = 107;
             this.butSelectAllSounds.Text = "Select all";
             this.pathToolTip.SetToolTip(this.butSelectAllSounds, "Select all available sounds");
@@ -2054,5 +2065,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsGameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsOriginalIdColumn;
+        private DarkUI.Controls.DarkButton butAssignFromWads;
     }
 }
