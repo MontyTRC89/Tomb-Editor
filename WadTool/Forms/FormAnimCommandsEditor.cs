@@ -15,9 +15,7 @@ namespace WadTool
         private readonly AnimationNode _animation;
         private readonly List<WadAnimCommand> _oldAnimCommands = new List<WadAnimCommand>();
         public IEnumerable<WadAnimCommand> AnimCommands => lstCommands.Items.Select(item => item.Tag).OfType<WadAnimCommand>();
-
-        private bool _currentlyDoingCommandSelection = false;
-
+        
         public FormAnimCommandsEditor(AnimationEditor editor, AnimationNode animation, WadAnimCommand startupCommand = null)
         {
             InitializeComponent();
