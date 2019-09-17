@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
@@ -22,6 +23,9 @@ namespace WadTool
         private WadMeshBoneNode _lastBone = null;
         private Dictionary<WadMeshBoneNode, DarkTreeNode> _nodesDictionary;
         private Point _startPoint;
+
+        // Info
+        private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormSkeletonEditor(WadToolClass tool, DeviceManager manager, Wad2 wad, WadMoveableId moveableId)
         {
@@ -45,6 +49,9 @@ namespace WadTool
                 boneNode.GlobalTransform = Matrix4x4.Identity;
                 _bones.Add(boneNode);
             }
+
+            // Sort bones by name
+            _bones.OrderBy(bone => bone.Name);
 
             treeSkeleton.Nodes.AddRange(LoadSkeleton());
             ExpandSkeleton();
@@ -255,50 +262,11 @@ namespace WadTool
             return bone;
         }
 
-        private void butDeleteBone_Click(object sender, EventArgs e)
-        {
-            DeleteBone();
-        }
+        private void butDeleteBone_Click(object sender, EventArgs e) => DeleteBone();
 
-        private void butRenameBone_Click(object sender, EventArgs e)
-        {
-            RenameBone();
-        }
+        private void butRenameBone_Click(object sender, EventArgs e) => RenameBone();
 
-        private void butLoadModel_Click(object sender, EventArgs e)
-        {
-            using (FileDialog dialog = new OpenFileDialog())
-            {
-                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
-                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
-                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-
-                    var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
-                    {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    theNode.WadMesh = mesh;
-                    theNode.WadMesh.CalculateNormals();
-
-                    // Now cause the moveable to reload
-                    _moveable.Version = DataVersion.GetNext();
-                }
-            }
-        }
+        private void butLoadModel_Click(object sender, EventArgs e) => ReplaceAllBonesFromFile();
 
         private void InsertNewBone(WadMesh mesh, WadMeshBoneNode parentNode)
         {
@@ -558,6 +526,58 @@ namespace WadTool
                     }
 
                     ReplaceExistingBone(mesh, theNode);
+                }
+            }
+        }
+
+        private void ReplaceAllBonesFromFile()
+        {
+            var boneCount = _bones.Count;
+
+            using (FileDialog dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
+                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
+                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
+                dialog.Title = "Select a 3D file that you want to see imported.";
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                        return;
+
+                    var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, false);
+                    if (meshes == null || meshes.Count == 0)
+                    {
+                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
+                                            "is one of the supported formats and that the meshes are textured",
+                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    int meshCount;
+                    if (meshes.Count > _bones.Count)
+                    {
+                        meshCount = _bones.Count;
+                        popup.ShowError(panelRendering, "Mesh count is higher in imported model. Only first " + _bones.Count + " will be imported.");
+                    }
+                    else if (meshes.Count < _bones.Count)
+                    {
+                        meshCount = meshes.Count;
+                        popup.ShowError(panelRendering, "Mesh count is lower in imported model. Only meshes up to " + _bones.Count + " will be replaced.");
+                    }
+                    else
+                        meshCount = _bones.Count;
+
+                    // Synchronize meshes and bones by name
+                    meshes.OrderBy(mesh => mesh.Name);
+
+                    for (int i = 0; i < meshCount; i++)
+                        ReplaceExistingBone(meshes[i], _bones[i]);
+
                 }
             }
         }

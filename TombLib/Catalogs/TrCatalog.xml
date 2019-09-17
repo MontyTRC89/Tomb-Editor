@@ -2744,7 +2744,7 @@
       <sound id="24" name="LARA_KNEES_SHUFFLE" description="Lara knees shuffle" />
       <sound id="25" name="PUSH_SPX_SWITCH" description="Push spx switch" />
       <sound id="26" name="LARA_CLIMB3" description="Lara climb3" />
-      <sound id="27" name="Don't_Use_This_Space" description="Unused 1" />
+      <sound id="27" name="UNUSED_LARA_BODYSLAM" description="Unused 1" />
       <sound id="28" name="LARA_SHIMMY2" description="Lara shimmy2" />
       <sound id="29" name="LARA_JUMP" description="Lara jump" />
       <sound id="30" name="LARA_FALL" fixed_by_default="true" description="Lara fall" />
@@ -2827,12 +2827,12 @@
       <sound id="107" name="EARTHQUAKE_LOOP" fixed_by_default="true" description="Earthquake loop" />
       <sound id="108" name="MENU_ROTATE" fixed_by_default="true" description="Menu rotate" />
       <sound id="109" name="MENU_SELECT" fixed_by_default="true" description="Menu select" />
-      <sound id="110" name="Menu_Empty" fixed_by_default="true" description="Menu empty 1" />
+      <sound id="110" name="UNUSED_MENU_GAMEBOY" fixed_by_default="true" description="Menu empty 1" />
       <sound id="111" name="MENU_CHOOSE" fixed_by_default="true" description="Menu choose" />
       <sound id="112" name="TICK_TOCK" fixed_by_default="true" description="Tick tock" />
-      <sound id="113" name="Menu_Empty" fixed_by_default="true" description="Menu empty 2" />
+      <sound id="113" name="UNUSED_MENU_STOPWATCH" fixed_by_default="true" description="Menu empty 2" />
       <sound id="114" name="MENU_COMBINE" fixed_by_default="true" description="Menu combine" />
-      <sound id="115" name="Menu_Empty" fixed_by_default="true" description="Menu empty 3" />
+      <sound id="115" name="UNUSED_MENU_PASSPORT" fixed_by_default="true" description="Menu empty 3" />
       <sound id="116" name="MENU_MEDI" fixed_by_default="true" description="Menu medi" />
       <sound id="117" name="LARA_CLIMB_WALLS_NOISE" description="Lara climb walls noise" />
       <sound id="118" name="WATER_LOOP" description="Water loop" />
@@ -2880,7 +2880,7 @@
       <sound id="160" name="LAUNCHER_2" description="Launcher 2" />
       <sound id="161" name="TRAPDOOR_OPEN" description="Trapdoor open" />
       <sound id="162" name="TRAPDOOR_CLOSE" description="Trapdoor close" />
-      <sound id="163" name="Empty" description="Empty 1" />
+      <sound id="163" name="UNUSED_RESERVOIR_FLUSH" description="Empty 1" />
       <sound id="164" name="BABOON_STAND_WAIT" description="Baboon stand wait" />
       <sound id="165" name="BABOON_ATTACK_LOW" description="Baboon attack low" />
       <sound id="166" name="BABOON_ATTACK_JUMP" description="Baboon attack jump" />
@@ -2902,8 +2902,8 @@
       <sound id="182" name="THUNDER_RUMBLE" fixed_by_default="true" description="Thunder rumble" />
       <sound id="183" name="THUNDER_CRACK" fixed_by_default="true" description="Thunder crack" />
       <sound id="184" name="WRAITH_WHISPERS" fixed_by_default="true" description="Wraith whispers" />
-      <sound id="185" name="Empty" description="Empty 2" />
-      <sound id="186" name="Empty" description="Empty 3" />
+      <sound id="185" name="UNUSED_VULTURE_GLIDE" description="Empty 2" />
+      <sound id="186" name="UNUSED_SCUBA_DIVER_FLIPPER" description="Empty 3" />
       <sound id="187" name="SKEL_FOOTSTEPS" description="Skel footsteps" />
       <sound id="188" name="SKEL_ATTACK" description="Skel attack" />
       <sound id="189" name="GENERIC_SWORD_SWOOSH" description="Generic sword swoosh" />
@@ -2916,7 +2916,7 @@
       <sound id="196" name="JEEP_DOOR_CLOSE" description="Jeep door close" />
       <sound id="197" name="ELEC_ARCING_LOOP" fixed_by_default="true" description="Elec arcing loop" />
       <sound id="198" name="ELEC_ONE_SHOT" fixed_by_default="true" description="Elec one shot" />
-      <sound id="199" name="Empty" description="Empty 4" />
+      <sound id="199" name="UNUSED_BOAT_SLOW_DOWN" description="Empty 4" />
       <sound id="200" name="LIBRARY_COG_LOOP" description="Library cog loop" />
       <sound id="201" name="JEEP_SIDE_IMPACT" description="Jeep side impact" />
       <sound id="202" name="JEEP_FRONT_IMPACT" description="Jeep front impact" />
@@ -2956,7 +2956,7 @@
       <sound id="236" name="SMALL_CREATURE_FEET" description="Small creature feet" />
       <sound id="237" name="SAS_GADGIE_DIE" description="Sas gadgie die" />
       <sound id="238" name="WATER_FLUSHES" fixed_by_default="true" description="Water flushes" />
-      <sound id="239" name="GUID_ZIPPO" description="Guid zippo" />
+      <sound id="239" name="GUID_ZIPPO" description="Guide zippo" />
       <sound id="240" name="LEAP_SWITCH" description="Leap switch" />
       <sound id="241" name="OLD_SWITCH" description="Old switch" />
       <sound id="242" name="DEMIGODS_FEET" description="Demigods feet" />
@@ -2987,7 +2987,7 @@
       <sound id="267" name="SAS_MG_FIRE" description="Sas mg fire" />
       <sound id="268" name="HAMMER_HEAD_WADE" description="Hammer head wade" />
       <sound id="269" name="SMALL_SWITCH" description="Small switch" />
-      <sound id="270" name="Empty" description="Empty 5" />
+      <sound id="270" name="UNUSED_CLAW_MUTE_FOOTSTEPS" description="Empty 5" />
       <sound id="271" name="SIREN_WING_FLAP" description="Siren wing flap" />
       <sound id="272" name="SIREN_NOIZES" description="Siren noizes" />
       <sound id="273" name="SIREN_ATTACK" description="Siren attack" />

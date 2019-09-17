@@ -269,7 +269,7 @@ namespace TombEditor.Forms
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(793, 533) + (Size - ClientSize);
-            
+
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
@@ -385,14 +385,14 @@ namespace TombEditor.Forms
                 bool added = false;
                 foreach (var entry in _levelSettings.AutoStaticMeshMerges)
                 {
-                    if(entry.meshId.Equals( staticMesh.Value.Id.TypeId))
+                    if (entry.meshId.Equals(staticMesh.Value.Id.TypeId))
                     {
                         _staticMeshMergeGridViewDataSource.Add(entry);
                         added = true;
                     }
                 }
-                if(!added)
-                _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId,false,false,_levelSettings));
+                if (!added)
+                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false, _levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
 
@@ -423,7 +423,7 @@ namespace TombEditor.Forms
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
-            
+
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathTxt.Enabled = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -461,7 +461,7 @@ namespace TombEditor.Forms
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
             gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) && !string.IsNullOrEmpty(Path.GetExtension(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
- 
+
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
@@ -566,6 +566,12 @@ namespace TombEditor.Forms
 
             bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
+
+            if (selectedSoundsDataGridView.Columns.Count >= 6)
+            {
+                selectedSoundsDataGridView.Columns[4].Visible = currentVersionToCheck;
+                selectedSoundsDataGridView.Columns[5].Visible = currentVersionToCheck;
+            }
 
             currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5 || _levelSettings.GameVersion == GameVersion.TR5Main);
             GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
@@ -1177,7 +1183,7 @@ namespace TombEditor.Forms
 
         private void numPadding_ValueChanged(object sender, EventArgs e)
         {
-             _levelSettings.TexturePadding = (int)numPadding.Value;
+            _levelSettings.TexturePadding = (int)numPadding.Value;
             UpdateDialog();
         }
 
@@ -1194,8 +1200,9 @@ namespace TombEditor.Forms
         }
 
         // Re-populates list of sounds, taking filtering into consideration.
-        private void PopulateSoundInfoList(string filter = null)
+        private void PopulateSoundInfoList()
         {
+            var filter = tbFilterSounds.Text;
             selectedSoundsDataGridView.Rows.Clear();
 
             foreach (var soundInfo in _levelSettings.GlobalSoundMap)
@@ -1203,59 +1210,89 @@ namespace TombEditor.Forms
                 if (!string.IsNullOrEmpty(filter) && soundInfo.Name.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) < 0)
                     continue;
 
-                string soundMapAreaDescription = "TR4";
-                int originalId = soundInfo.Id;
-                if (_levelSettings.GameVersion == GameVersion.TRNG)
-                {
-                    if (soundInfo.Id < 370)
-                    {
-                        soundMapAreaDescription = "TR4";
-                        originalId = soundInfo.Id;
-                    }
-                    else if (soundInfo.Id >= 370 && soundInfo.Id < 500)
-                    {
-                        soundMapAreaDescription = "NgReserved";
-                        originalId = soundInfo.Id - 370;
-                    }
-                    else if (soundInfo.Id >= 500 && soundInfo.Id < 525)
-                    {
-                        soundMapAreaDescription = "CustEnv";
-                        originalId = soundInfo.Id - 500;
-                    }
-                    else if (soundInfo.Id >= 525 && soundInfo.Id < 602)
-                    {
-                        soundMapAreaDescription = "CustAnims";
-                        originalId = soundInfo.Id - 525;
-                    }
-                    else if (soundInfo.Id >= 602 && soundInfo.Id < 858)
-                    {
-                        soundMapAreaDescription = "TR1";
-                        originalId = soundInfo.Id - 602;
-                    }
-                    else if (soundInfo.Id >= 858 && soundInfo.Id < 1228)
-                    {
-                        soundMapAreaDescription = "TR2";
-                        originalId = soundInfo.Id - 858;
-                    }
-                    else if (soundInfo.Id >= 1228 && soundInfo.Id < 1598)
-                    {
-                        soundMapAreaDescription = "TR3";
-                        originalId = soundInfo.Id - 1228;
-                    }
-                    else if (soundInfo.Id >= 1598)
-                    {
-                        soundMapAreaDescription = "TR5";
-                        originalId = soundInfo.Id - 1598;
-                    }
-                }
+                int originalId;
+                string areaDesc = GetNGDescriptionAndOriginalID(soundInfo.Id, out originalId);
 
-                selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id, 
-                    soundInfo.Name, soundInfo.SoundCatalog, soundMapAreaDescription, originalId);
+                selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id,
+                    soundInfo.Name, soundInfo.SoundCatalog, areaDesc, originalId);
                 selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1]);
             }
 
+            var missingList = GetListOfMissingSounds();
+            butRemoveMissing.Enabled = (missingList.Count > 0);
+
+            for (int i = 0; i < missingList.Count; i++)
+            {
+                var originalName = TrCatalog.GetOriginalSoundName(_editor.Level.Settings.WadGameVersion, (uint)missingList[i]);
+
+                if (!string.IsNullOrEmpty(filter) && originalName.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) < 0)
+                    continue;
+
+                int originalId;
+                string areaDesc = GetNGDescriptionAndOriginalID(missingList[i], out originalId);
+
+                selectedSoundsDataGridView.Rows.Add(true, missingList[i], originalName, "[ Not present in any of loaded catalogs ]", areaDesc, originalId);
+                selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1], true);
+            }
+
+            selectedSoundsDataGridView.Sort(selectedSoundsDataGridView.Columns[1], ListSortDirection.Ascending);
             UpdateSoundStatistics();
         }
+
+        private List<int> GetListOfMissingSounds() => _levelSettings.SelectedSounds.Where(item => !_levelSettings.GlobalSoundMap.Any(entry => entry.Id == item)).ToList();
+
+        private string GetNGDescriptionAndOriginalID(int id, out int originalId)
+        {
+            string result = "";
+            originalId = id;
+
+            if (_levelSettings.GameVersion == GameVersion.TRNG)
+            {
+                if (id < 370)
+                {
+                    result = "TR4";
+                    originalId = id;
+                }
+                else if (id >= 370 && id < 500)
+                {
+                    result = "NgReserved";
+                    originalId = id - 370;
+                }
+                else if (id >= 500 && id < 525)
+                {
+                    result = "CustEnv";
+                    originalId = id - 500;
+                }
+                else if (id >= 525 && id < 602)
+                {
+                    result = "CustAnims";
+                    originalId = id - 525;
+                }
+                else if (id >= 602 && id < 858)
+                {
+                    result = "TR1";
+                    originalId = id - 602;
+                }
+                else if (id >= 858 && id < 1228)
+                {
+                    result = "TR2";
+                    originalId = id - 858;
+                }
+                else if (id >= 1228 && id < 1598)
+                {
+                    result = "TR3";
+                    originalId = id - 1228;
+                }
+                else if (id >= 1598)
+                {
+                    result = "TR5";
+                    originalId = id - 1598;
+                }
+            }
+
+            return result;
+        }
+            
 
         // Same as above, plus visually reset filter textbox.
         private void PopulateSoundInfoListAndResetFilter()
@@ -1267,8 +1304,6 @@ namespace TombEditor.Forms
         // Select all sounds from desired sound info list.
         private void AssignAllSounds(WadSounds sounds)
         {
-            ToggleSelectionForAllSounds(false);
-
             foreach (var sound in sounds.SoundInfos)
                 if (!_levelSettings.SelectedSounds.Contains(sound.Id))
                     _levelSettings.SelectedSounds.Add(sound.Id);
@@ -1306,8 +1341,10 @@ namespace TombEditor.Forms
         // Updates statistics in the bottom of the page.
         private void UpdateSoundStatistics()
         {
+            var missingSoundsCount = GetListOfMissingSounds().Count;
             labelSoundsCatalogsStatistics.Text = "Total sounds: " + _levelSettings.GlobalSoundMap.Count + 
-                                                 " | Selected sounds: " + _levelSettings.SelectedSounds.Count;
+                                                 " | Selected sounds: " + _levelSettings.SelectedSounds.Count +
+                                                 (missingSoundsCount == 0 ? "" : " | Missing sounds: " + missingSoundsCount);
         }
 
         private void selectedSoundsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) => selectedSoundsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
@@ -1323,10 +1360,12 @@ namespace TombEditor.Forms
             }
         }
 
-        private void selectedSoundsDataGridView_HighlightRow(DataGridViewRow row)
+        private void selectedSoundsDataGridView_HighlightRow(DataGridViewRow row, bool missing = false)
         {
             bool selected = (bool)row.Cells[0].Value;
-            if (selected)
+            if (missing)
+                row.DefaultCellStyle.BackColor = _columnMessageWrongColor;
+            else if (selected)
                 row.DefaultCellStyle.BackColor = Color.DarkGreen;
             else
                 row.DefaultCellStyle.BackColor = selectedSoundsDataGridView.BackColor;
@@ -1383,7 +1422,7 @@ namespace TombEditor.Forms
         private void soundsCatalogsDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => PopulateSoundInfoListAndResetFilter();
         private void soundsCatalogsDataGridView_Sorted(object sender, EventArgs e) => PopulateSoundInfoListAndResetFilter();
 
-        private void butFilterSounds_Click(object sender, EventArgs e) => PopulateSoundInfoList(tbFilterSounds.Text);
+        private void butFilterSounds_Click(object sender, EventArgs e) => PopulateSoundInfoList();
         private void butSelectAllSounds_Click(object sender, EventArgs e) => ToggleSelectionForAllSounds(true);
         private void butDeselectAllSounds_Click(object sender, EventArgs e) => ToggleSelectionForAllSounds(false);
 
@@ -1392,14 +1431,11 @@ namespace TombEditor.Forms
             _levelSettings.SelectedSounds.Clear();
 
             AssignHardcodedSounds();
-
-            foreach (var catalogRef in _levelSettings.SoundsCatalogs)
-                if (catalogRef.LoadException == null)
-                    AssignCatalogSounds(catalogRef);
-
+            AssignWadSounds();
+            AssignTriggerSounds();
             AssignSoundSourcesSounds();
 
-            PopulateSoundInfoList(tbFilterSounds.Text);
+            PopulateSoundInfoList();
         }
 
         private void AssignHardcodedSounds()
@@ -1430,23 +1466,97 @@ namespace TombEditor.Forms
                         }
         }
 
+        private void AssignWadSounds()
+        {
+            foreach (var wad in _editor.Level.Settings.Wads)
+                foreach (var item in wad.Wad.Moveables)
+                    foreach (var anim in item.Value.Animations)
+                        foreach (var cmd in anim.AnimCommands)
+                            if (cmd.Type == WadAnimCommandType.PlaySound)
+                                if (!_levelSettings.SelectedSounds.Contains(cmd.Parameter2 & 0x3FFF))
+                                    _levelSettings.SelectedSounds.Add(cmd.Parameter2 & 0x3FFF);
+        }
+
+        private void AssignTriggerSounds()
+        {
+            bool isTR4 = _editor.Level.Settings.GameVersion == GameVersion.TR4 ||
+                         _editor.Level.Settings.GameVersion == GameVersion.TRNG;
+
+            foreach (var room in _editor.Level.Rooms)
+                if (room != null)
+                    foreach (var trigger in room?.Triggers)
+                        if (trigger.TargetType == TriggerTargetType.FlipEffect &&
+                            trigger.Target is TriggerParameterUshort)
+                        {
+                            int foundId = -1;
+                            var feNum = ((TriggerParameterUshort)trigger.Target).Key;
+
+                            switch (feNum)
+                            {
+                                case 2: // FLOOD_FX, broken in TR5 onwards
+                                    if (isTR4) foundId = 238;
+                                    break;
+
+                                case 3: // LARA_BUBBLES
+                                    foundId = 37;
+                                    break;
+
+                                case 11: // EXPLOSION_FX
+                                    foundId = 105;
+                                    break;
+
+                                case 10:  // TIMERFIELD_FX
+                                case 70:  // NG (legacy 0-255)
+                                case 168: // NG extended soundmap
+                                    foundId = ((TriggerParameterUshort)trigger.Timer).Key;
+                                    break;
+
+                                case 71: // NG (legacy 256-370)
+                                    foundId = ((TriggerParameterUshort)trigger.Timer).Key + 256;
+                                    break;
+                            }
+
+                            if (foundId != -1 && !_levelSettings.SelectedSounds.Contains(foundId))
+                                _levelSettings.SelectedSounds.Add(foundId);
+
+                        }
+            }
+
         private void ButAssignHardcodedSounds_Click(object sender, EventArgs e)
         {
             AssignHardcodedSounds();
-            PopulateSoundInfoList(tbFilterSounds.Text);
+            PopulateSoundInfoList();
         }
 
         private void ButAssignSoundsFromSelectedCatalogs_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in soundsCatalogsDataGridView.SelectedRows)
                 AssignCatalogSounds(_soundsCatalogsDataGridViewDataSource[row.Index].Sounds);
-            PopulateSoundInfoList(tbFilterSounds.Text);
+            PopulateSoundInfoList();
         }
 
         private void ButAssignFromSoundSources_Click(object sender, EventArgs e)
         {
             AssignSoundSourcesSounds();
-            PopulateSoundInfoList(tbFilterSounds.Text);
+            PopulateSoundInfoList();
+        }
+
+        private void tbFilterSounds_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                PopulateSoundInfoList();
+        }
+
+        private void butRemoveMissing_Click(object sender, EventArgs e)
+        {
+            _levelSettings.SelectedSounds = _levelSettings.SelectedSounds.Except(GetListOfMissingSounds()).ToList();
+            PopulateSoundInfoList();
+        }
+
+        private void butAssignFromWads_Click(object sender, EventArgs e)
+        {
+            AssignWadSounds();
+            PopulateSoundInfoList();
         }
     }
 }

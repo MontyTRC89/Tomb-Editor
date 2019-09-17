@@ -61,6 +61,7 @@
             this.tbFlipEffectFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.tbFlipEffect = new DarkUI.Controls.DarkNumericUpDown();
             this.tabPlaySound = new System.Windows.Forms.TabPage();
+            this.nudSoundId = new DarkUI.Controls.DarkNumericUpDown();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
             this.butSearchSounds = new DarkUI.Controls.DarkButton();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
@@ -84,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffectFrame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffect)).BeginInit();
             this.tabPlaySound.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoundId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).BeginInit();
             this.SuspendLayout();
             // 
@@ -565,6 +567,7 @@
             // tabPlaySound
             // 
             this.tabPlaySound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPlaySound.Controls.Add(this.nudSoundId);
             this.tabPlaySound.Controls.Add(this.butPlaySound);
             this.tabPlaySound.Controls.Add(this.butSearchSounds);
             this.tabPlaySound.Controls.Add(this.darkLabel11);
@@ -580,8 +583,32 @@
             this.tabPlaySound.TabIndex = 3;
             this.tabPlaySound.Text = "playSound";
             // 
+            // nudSoundId
+            // 
+            this.nudSoundId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudSoundId.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudSoundId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.nudSoundId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudSoundId.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudSoundId.Location = new System.Drawing.Point(258, 53);
+            this.nudSoundId.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudSoundId.MousewheelSingleIncrement = true;
+            this.nudSoundId.Name = "nudSoundId";
+            this.nudSoundId.Size = new System.Drawing.Size(56, 23);
+            this.nudSoundId.TabIndex = 105;
+            this.nudSoundId.ValueChanged += new System.EventHandler(this.nudSoundId_ValueChanged);
+            // 
             // butPlaySound
             // 
+            this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlaySound.Image = global::WadTool.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(320, 53);
             this.butPlaySound.Name = "butPlaySound";
@@ -591,8 +618,9 @@
             // 
             // butSearchSounds
             // 
+            this.butSearchSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearchSounds.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butSearchSounds.Location = new System.Drawing.Point(291, 53);
+            this.butSearchSounds.Location = new System.Drawing.Point(229, 53);
             this.butSearchSounds.Name = "butSearchSounds";
             this.butSearchSounds.Size = new System.Drawing.Size(23, 23);
             this.butSearchSounds.TabIndex = 103;
@@ -624,7 +652,7 @@
             this.comboSound.FormattingEnabled = true;
             this.comboSound.Location = new System.Drawing.Point(53, 53);
             this.comboSound.Name = "comboSound";
-            this.comboSound.Size = new System.Drawing.Size(239, 23);
+            this.comboSound.Size = new System.Drawing.Size(177, 23);
             this.comboSound.TabIndex = 100;
             this.comboSound.SelectedIndexChanged += new System.EventHandler(this.comboSound_SelectedIndexChanged);
             // 
@@ -715,6 +743,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffect)).EndInit();
             this.tabPlaySound.ResumeLayout(false);
             this.tabPlaySound.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoundId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).EndInit();
             this.ResumeLayout(false);
 
@@ -762,5 +791,6 @@
         private DarkUI.Controls.DarkComboBox comboFlipeffectConditions;
         private DarkUI.Controls.DarkButton butSearchSounds;
         private DarkUI.Controls.DarkButton butPlaySound;
+        private DarkUI.Controls.DarkNumericUpDown nudSoundId;
     }
 }
