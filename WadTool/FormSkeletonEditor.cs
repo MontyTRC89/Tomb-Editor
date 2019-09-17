@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
@@ -48,6 +49,9 @@ namespace WadTool
                 boneNode.GlobalTransform = Matrix4x4.Identity;
                 _bones.Add(boneNode);
             }
+
+            // Sort bones by name
+            _bones.OrderBy(bone => bone.Name);
 
             treeSkeleton.Nodes.AddRange(LoadSkeleton());
             ExpandSkeleton();
@@ -567,6 +571,9 @@ namespace WadTool
                     }
                     else
                         meshCount = _bones.Count;
+
+                    // Synchronize meshes and bones by name
+                    meshes.OrderBy(mesh => mesh.Name);
 
                     for (int i = 0; i < meshCount; i++)
                         ReplaceExistingBone(meshes[i], _bones[i]);

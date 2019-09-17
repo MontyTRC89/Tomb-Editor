@@ -229,7 +229,7 @@ namespace TombLib.Wad
                             area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
 
                             poly.Texture = area;
-                            poly.ShineStrength = (byte)tmpSubmesh.Value.Material.Shininess;
+                            poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
 
                             mesh.Polys.Add(poly);
                         }
@@ -249,7 +249,7 @@ namespace TombLib.Wad
                             area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
 
                             poly.Texture = area;
-                            poly.ShineStrength = (byte)tmpSubmesh.Value.Material.Shininess;
+                            poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
 
                             mesh.Polys.Add(poly);
                         }
@@ -269,8 +269,6 @@ namespace TombLib.Wad
                     lastBaseVertex = mesh.VerticesPositions.Count;
             }
 
-
-            meshList.OrderBy(item => item.Name); // Just in case...
             return meshList;
         }
 
