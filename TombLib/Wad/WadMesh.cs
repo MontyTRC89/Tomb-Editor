@@ -169,7 +169,15 @@ namespace TombLib.Wad
                 Vector3.Distance(boundingBox.Minimum, boundingBox.Maximum) * 0.5f);
         }
 
-        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings) => ImportFromExternalModel(fileName, settings, true).First();
+        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
+        {
+            var list = ImportFromExternalModel(fileName, settings, true);
+            if (list != null && list.Count > 0)
+                return list.First();
+            else
+                return null;
+        }
+
         public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne)
         {
             IOModel tmpModel = null;
