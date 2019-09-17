@@ -1371,6 +1371,8 @@ namespace TombEditor.Forms
                 if (result != null)
                 {
                     _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
+                    _levelSettings.SoundsCatalogs.Clear();
+                    _levelSettings.SoundsCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(s => s.Sounds));
                     PopulateSoundInfoListAndResetFilter();
                 }
             }
