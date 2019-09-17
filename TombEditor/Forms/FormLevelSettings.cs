@@ -1550,5 +1550,11 @@ namespace TombEditor.Forms
             _levelSettings.SelectedSounds = _levelSettings.SelectedSounds.Except(GetListOfMissingSounds()).ToList();
             PopulateSoundInfoList();
         }
+
+        private void butAssignFromWads_Click(object sender, EventArgs e)
+        {
+            AssignWadSounds();
+            PopulateSoundInfoList();
+        }
     }
 }
