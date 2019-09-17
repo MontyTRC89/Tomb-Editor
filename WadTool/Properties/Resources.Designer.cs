@@ -373,6 +373,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_Find_and_replace_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Find_and_replace_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_Import_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Import-16", resourceCulture);
