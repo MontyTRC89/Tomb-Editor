@@ -24,16 +24,17 @@ namespace WadTool
             aceReplace.Command = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
         }
 
-        private void Search()
+        private void Search(bool updateBackupCommand = true)
         {
             dgvResults.Rows.Clear();
 
             // Store flipeffect settings in case user later changes them
-            _backupCommand = aceFind.Command.Clone(); 
+            if (updateBackupCommand)
+                _backupCommand = aceFind.Command.Clone(); 
 
             foreach (var anim in _editor.Animations)
                 foreach (var ac in anim.WadAnimation.AnimCommands)
-                    if (WadAnimCommand.DistinctiveEquals(ac, aceFind.Command, false))
+                    if (WadAnimCommand.DistinctiveEquals(ac, _backupCommand, false))
                     {
                         string result = "Animation: (" + anim.Index + ") " + anim.WadAnimation.Name + ", command: " + ac;
                         dgvResults.Rows.Add(false, result);
@@ -81,14 +82,14 @@ namespace WadTool
                             if (ac.FrameBased)
                                 preparedCommand.Parameter1 = ac.Parameter1;
 
-                            ac = preparedCommand;
+                            _editor.Animations[i].WadAnimation.AnimCommands[j] = preparedCommand;
                         }
                         count++;
                     }
                 }
 
             // Run one more extra pass to show deselected results
-            Search();
+            Search(false);
         }
     }
 }

@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.aceFind = new WadTool.AnimCommandEditor();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
-            this.aceReplace = new WadTool.AnimCommandEditor();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.dgvResults = new DarkUI.Controls.DarkDataGridView();
             this.Column1 = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
@@ -41,19 +39,12 @@
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butSelectAll = new DarkUI.Controls.DarkButton();
             this.butDeselectAll = new DarkUI.Controls.DarkButton();
+            this.aceReplace = new WadTool.AnimCommandEditor();
+            this.aceFind = new WadTool.AnimCommandEditor();
             this.darkGroupBox1.SuspendLayout();
             this.darkGroupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
             this.SuspendLayout();
-            // 
-            // aceFind
-            // 
-            this.aceFind.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.aceFind.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.aceFind.Location = new System.Drawing.Point(6, 21);
-            this.aceFind.Name = "aceFind";
-            this.aceFind.Size = new System.Drawing.Size(370, 134);
-            this.aceFind.TabIndex = 2;
             // 
             // darkGroupBox1
             // 
@@ -74,15 +65,6 @@
             this.darkGroupBox2.TabIndex = 6;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "Replace with:";
-            // 
-            // aceReplace
-            // 
-            this.aceReplace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.aceReplace.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.aceReplace.Location = new System.Drawing.Point(6, 21);
-            this.aceReplace.Name = "aceReplace";
-            this.aceReplace.Size = new System.Drawing.Size(370, 134);
-            this.aceReplace.TabIndex = 2;
             // 
             // darkLabel1
             // 
@@ -183,6 +165,24 @@
             this.butDeselectAll.Text = "Deselect all";
             this.butDeselectAll.Click += new System.EventHandler(this.butDeselectAll_Click);
             // 
+            // aceReplace
+            // 
+            this.aceReplace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.aceReplace.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.aceReplace.Location = new System.Drawing.Point(6, 21);
+            this.aceReplace.Name = "aceReplace";
+            this.aceReplace.Size = new System.Drawing.Size(370, 134);
+            this.aceReplace.TabIndex = 2;
+            // 
+            // aceFind
+            // 
+            this.aceFind.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.aceFind.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.aceFind.Location = new System.Drawing.Point(6, 21);
+            this.aceFind.Name = "aceFind";
+            this.aceFind.Size = new System.Drawing.Size(370, 134);
+            this.aceFind.TabIndex = 2;
+            // 
             // FormReplaceAnimCommands
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,6 +204,8 @@
             this.Name = "FormReplaceAnimCommands";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Find & replace anim commands";
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox2.ResumeLayout(false);
