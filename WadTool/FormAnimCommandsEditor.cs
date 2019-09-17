@@ -17,8 +17,8 @@ namespace WadTool
         private readonly AnimationNode _animation;
         private readonly List<WadAnimCommand> _oldAnimCommands = new List<WadAnimCommand>();
         public IEnumerable<WadAnimCommand> AnimCommands => lstCommands.Items.Select(item => item.Tag).OfType<WadAnimCommand>();
+
         private bool _currentlyDoingCommandSelection = false;
-        private List<int> _sounds;
 
         private WadAnimCommand _selectedCommand => lstCommands.Items.Count == 0 || lstCommands.SelectedIndices.Count == 0 ? null : lstCommands.Items[lstCommands.SelectedIndices[0]]?.Tag as WadAnimCommand;
 
@@ -112,7 +112,7 @@ namespace WadTool
                         commandControls.SelectedTab = tabPlaySound;
 
                         tbPlaySoundFrame.Value = cmd.Parameter1;
-                        comboSound.SelectedIndex = _sounds.IndexOf(cmd.Parameter2 & 0x3FFF);
+                        nudSoundId.Value = cmd.Parameter2 & 0x3FFF;
 
                         switch (cmd.Parameter2 & 0xC000)
                         {
@@ -191,13 +191,12 @@ namespace WadTool
 
         private void ReloadSounds()
         {
-            _sounds = new List<int>();
             comboSound.Items.Clear();
             foreach (var sound in TrCatalog.GetAllSounds(_editor.Tool.DestinationWad.SuggestedGameVersion))
-            {
-                _sounds.Add((int)sound.Key);
                 comboSound.Items.Add(sound.Key.ToString().PadLeft(4, '0') + ": " + sound.Value);
-            }
+
+            comboSound.Items.Add("Custom sound ID");
+            
             comboSound.SelectedIndex = 0;
         }
 
@@ -363,10 +362,8 @@ namespace WadTool
             if (_selectedCommand == null || _selectedCommand.Type != WadAnimCommandType.PlaySound)
                 return;
 
-            _selectedCommand.Parameter2 &= unchecked((short)~0x3FFF);
-            _selectedCommand.Parameter2 |= (short)(_sounds[comboSound.SelectedIndex]);
-            UpdateSelectedItemText();
-            ApplyChanges(false);
+            if (comboSound.SelectedIndex < comboSound.Items.Count - 2)
+                nudSoundId.Value = comboSound.SelectedIndex;
         }
 
         private void FormAnimCommandsEditor_KeyDown(object sender, KeyEventArgs e)
@@ -401,6 +398,20 @@ namespace WadTool
                 {
                     // FIXME: do something!
                 }
+        }
+
+        private void nudSoundId_ValueChanged(object sender, EventArgs e)
+        {
+            _selectedCommand.Parameter2 &= unchecked((short)~0x3FFF);
+            _selectedCommand.Parameter2 |= (short)nudSoundId.Value;
+
+            if (nudSoundId.Value < comboSound.Items.Count - 2)
+                comboSound.SelectedIndex = (int)nudSoundId.Value;
+            else
+                comboSound.SelectedIndex = comboSound.Items.Count - 1;
+
+            UpdateSelectedItemText();
+            ApplyChanges(false);
         }
     }
 }
