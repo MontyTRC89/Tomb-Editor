@@ -2744,7 +2744,7 @@
       <sound id="24" name="LARA_KNEES_SHUFFLE" description="Lara knees shuffle" />
       <sound id="25" name="PUSH_SPX_SWITCH" description="Push spx switch" />
       <sound id="26" name="LARA_CLIMB3" description="Lara climb3" />
-      <sound id="27" name="UNUSED_LARA_BODYSLAM" description="Unused 1" />
+      <sound id="27" name="LARA_BODYSLAM" description="Unused 1" />
       <sound id="28" name="LARA_SHIMMY2" description="Lara shimmy2" />
       <sound id="29" name="LARA_JUMP" description="Lara jump" />
       <sound id="30" name="LARA_FALL" fixed_by_default="true" description="Lara fall" />
