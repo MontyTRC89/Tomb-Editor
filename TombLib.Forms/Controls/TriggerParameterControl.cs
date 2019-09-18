@@ -104,7 +104,6 @@ namespace TombLib.Controls
             if (_currentlyChanging || !combo.Visible)
                 return;
             Parameter = (ITriggerParameter)combo.SelectedItem;
-            View(Parameter);
         }
 
         private void numericUpDown_ValueChanged(object sender, EventArgs e)
