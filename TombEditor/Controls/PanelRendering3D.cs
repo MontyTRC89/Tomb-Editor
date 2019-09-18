@@ -1656,10 +1656,6 @@ namespace TombEditor.Controls
                                 bool floor = f == 0;
                                 var pos = ghost.ControlPositions(floor);
 
-                                if (( floor && !ghost.FloorEditable) ||
-                                    (!floor && !ghost.CeilingEditable))
-                                    continue;
-
                                 for (int i = 0; i < 4; i++)
                                 {
                                     BoundingBox nodeBox = new BoundingBox(
@@ -1934,9 +1930,6 @@ namespace TombEditor.Controls
                         for (int f = 0; f < 2; f++)
                         {
                             bool floor = f == 0;
-                            if ((floor && !instance.FloorEditable) || (!floor && !instance.CeilingEditable))
-                                continue; // Don't draw cubes if not editable
-
                             for (int i = 0; i < 4; i++)
                             {
                                 if (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == i && instance.SelectedFloor == floor)
@@ -1977,9 +1970,6 @@ namespace TombEditor.Controls
                         for (int f = 0, c = 0; f < 2; f++)
                         {
                             bool floor = f == 0;
-                            if ((floor && !instance.FloorEditable) || (!floor && !instance.CeilingEditable))
-                                continue; // Don't draw block if not editable
-
                             bool toggled = floor ? instance.FloorSplitToggled : instance.CeilingSplitToggled;
                             var vPos = instance.ControlPositions(floor, false);
                             var vOrg = instance.ControlPositions(floor, true);
