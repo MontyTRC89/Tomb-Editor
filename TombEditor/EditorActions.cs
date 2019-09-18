@@ -801,7 +801,7 @@ namespace TombEditor
             {
                 ObjectInstance instance = data.MergeGetSingleObject(_editor);
 
-                if (instance is IMaterial)
+                if (instance is ISpatial)
                 {
                     // HACK: fix imported geometry reference
                     if (instance is ImportedGeometryInstance)
@@ -1630,7 +1630,7 @@ namespace TombEditor
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
-            if (!(instance is IMaterial))
+            if (!(instance is ISpatial))
                 return;
 
             if (instance is PositionBasedObjectInstance)
@@ -3460,7 +3460,7 @@ namespace TombEditor
 
         public static void TryCopyObject(ObjectInstance instance, IWin32Window owner)
         {
-            if (!(instance is IMaterial))
+            if (!(instance is ISpatial))
             {
                 _editor.SendMessage("No object selected. \nYou have to select object before you can cut or copy it.", PopupType.Info);
                 return;
@@ -3485,7 +3485,7 @@ namespace TombEditor
 
         public static void TryStampObject(ObjectInstance instance, IWin32Window owner)
         {
-            if (!(instance is IMaterial))
+            if (!(instance is ISpatial))
             {
                 _editor.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;

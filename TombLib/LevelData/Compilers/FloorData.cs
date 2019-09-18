@@ -739,8 +739,7 @@ namespace TombLib.LevelData.Compilers
                 HeightXpZp = surface.XpZp;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
-                if (block.HasGhostBlock && block.GhostBlock.Valid &&
-                    ((floor && block.GhostBlock.FloorEditable) || (!floor && block.GhostBlock.CeilingEditable)))
+                if (block.HasGhostBlock && block.GhostBlock.Valid)
                 {
                     HeightXnZn += floor ? block.GhostBlock.Floor.XnZn : block.GhostBlock.Ceiling.XnZn;
                     HeightXpZn += floor ? block.GhostBlock.Floor.XpZn : block.GhostBlock.Ceiling.XpZn;
