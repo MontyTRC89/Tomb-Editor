@@ -184,7 +184,7 @@ namespace TombLib.LevelData.Compilers
                     else
                     {
                         lightingEffect |= 0x02;
-                        lightingEffect |= (ushort)(poly.ShineStrength << 2);
+                        lightingEffect |= (ushort)(Math.Min((byte)63, poly.ShineStrength) << 2);
                     }
                 }
 

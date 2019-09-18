@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -10,8 +11,10 @@ namespace WadTool
 {
     public class AnimationEditor
     {
-        public List<AnimationNode> WorkingAnimations;
-        public AnimationNode SelectedNode;
+        public List<AnimationNode> Animations;
+        public AnimationNode CurrentAnim;
+        public int CurrentFrameIndex;
+        public VectorInt2 Selection;
 
         public WadToolClass Tool { get; private set; }
         public Wad2 Wad { get; private set; }
@@ -24,6 +27,22 @@ namespace WadTool
         // General state
         public bool Saved;
 
+        // Helpers
+        public bool SelectionIsEmpty => Selection.X == -1 || Selection.Y == -1;
+        public bool ValidAnimationAndFrames => CurrentAnim != null && CurrentAnim.DirectXAnimation.KeyFrames.Count > 0;
+        public KeyFrame CurrentKeyFrame => CurrentAnim.DirectXAnimation.KeyFrames[CurrentFrameIndex];
+
+        public List<KeyFrame> ActiveFrames
+        {
+            get
+            {
+                if (SelectionIsEmpty)
+                    return new List<KeyFrame>() { CurrentKeyFrame };
+                else
+                    return CurrentAnim.DirectXAnimation.KeyFrames.GetRange(Selection.X, Selection.Y + 1);
+            }
+        }
+
         public AnimationEditor(WadToolClass tool, Wad2 wad, WadMoveableId idToEdit)
         {
             Tool = tool;
@@ -35,15 +54,13 @@ namespace WadTool
             // All changes to keyframes will be instead stored directly in the renderer's Animation class.
             // While saving, WadAnimation and Animation will be combined and original animations will be overwritten.
 
-            WorkingAnimations = new List<AnimationNode>();
+            Animations = new List<AnimationNode>();
             for (int i = 0; i < Moveable.Animations.Count; i++)
             {
                 var animation = Moveable.Animations[i].Clone(); ;
-                WorkingAnimations.Add(new AnimationNode(animation, Animation.FromWad2(Moveable.Bones, animation), i));
+                Animations.Add(new AnimationNode(animation, Animation.FromWad2(Moveable.Bones, animation), i));
             }
         }
-
-        public bool ValidAnimationAndFrames => SelectedNode != null && SelectedNode.DirectXAnimation.KeyFrames.Count > 0;
 
         public WadAnimation GetSavedAnimation(AnimationNode animation)
         {
@@ -91,11 +108,14 @@ namespace WadTool
             Moveable.Animations.Clear();
 
             // Combine WadAnimation and Animation classes
-            foreach (var animation in WorkingAnimations)
+            foreach (var animation in Animations)
                 Moveable.Animations.Add(GetSavedAnimation(animation));
 
             Moveable.Version = DataVersion.GetNext();
             return true;
         }
+
+        public void ReplaceAnimCommands(WadAnimCommand oldCommand, WadAnimCommand newCommand) => 
+            Animations.ForEach(a => a.WadAnimation.AnimCommands.ForEach(ac => { if (ac == oldCommand) ac = newCommand.Clone(); }));
     }
 }

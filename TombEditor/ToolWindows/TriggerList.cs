@@ -57,8 +57,21 @@ namespace TombEditor.ToolWindows
                 }
             }
 
-            // Update the trigger control selection
+            // Update any modified trigger from area
+            if (obj is Editor.ObjectChangedEvent)
+            {
+                var changedObject = ((Editor.ObjectChangedEvent)obj).Object;
 
+                if (changedObject.Room == _editor.SelectedRoom &&
+                    changedObject is TriggerInstance)
+                {
+                    var item = lstTriggers.Items.FirstOrDefault(l => l.Tag == changedObject);
+                    if (item != null)
+                        item.Text = changedObject.ToShortString();
+                }
+            }
+
+            // Update the trigger control selection
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent)

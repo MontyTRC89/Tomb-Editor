@@ -65,6 +65,7 @@ namespace TombLib.GeometryIO.Importers
                     material.Texture = textures[i];
                     material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == global::Assimp.BlendMode.Additive;
                     material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
+                    material.Shininess = mat.HasShininess ? (int)mat.Shininess : 0;
                     newModel.Materials.Add(material);
                 }
 
@@ -77,7 +78,7 @@ namespace TombLib.GeometryIO.Importers
                     Texture faceTexture;
                     if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
                     {
-                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which can't be found.");
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which is unsupported or can't be found.");
                         continue;
                     }
 

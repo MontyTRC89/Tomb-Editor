@@ -12,6 +12,7 @@ namespace WadTool
 {
     public class WadMeshBoneNode
     {
+        public string Name { get; set; }
         public WadMesh WadMesh { get; set; }
         public WadBone Bone { get; set; }
         public WadMeshBoneNode Parent { get; set; }
@@ -31,6 +32,7 @@ namespace WadTool
 
         public WadMeshBoneNode(WadMeshBoneNode parent, WadMesh wadMesh, WadBone bone)
         {
+            Name = bone.Name;
             WadMesh = wadMesh;
             Bone = bone;
             GlobalTransform = Matrix4x4.Identity;
