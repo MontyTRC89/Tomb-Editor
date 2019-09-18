@@ -791,8 +791,8 @@ namespace TombLib.LevelData.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
             }*/
 
-            while(block.FloorPortal != null &&
-                room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).VisualType != Room.RoomConnectionType.NoPortal)
+            var connInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom));
+            while (block.FloorPortal != null && connInfo.TraversableType != Room.RoomConnectionType.NoPortal)
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
@@ -812,6 +812,7 @@ namespace TombLib.LevelData.Compilers
                 zInRoom = z - posZblocks;
 
                 block = room.Blocks[xInRoom, zInRoom];
+                connInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom));
             }
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
