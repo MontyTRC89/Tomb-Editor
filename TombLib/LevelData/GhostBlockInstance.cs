@@ -2,7 +2,7 @@
 
 namespace TombLib.LevelData
 {
-    public class GhostBlockInstance : SectorBasedObjectInstance, IMaterial
+    public class GhostBlockInstance : SectorBasedObjectInstance, ISpatial
     {
         public BlockSurface Floor;
         public BlockSurface Ceiling;
@@ -22,11 +22,7 @@ namespace TombLib.LevelData
         public bool FloorSplitToggled => Block.Floor.SplitDirectionIsXEqualsZ;
         public bool CeilingSplitToggled => Block.Ceiling.SplitDirectionIsXEqualsZ;
 
-        // FIXME: Disable diagonal steps for now, but we should make it work later...
-        public bool FloorEditable => Block.Floor.DiagonalSplit == DiagonalSplit.None;
-        public bool CeilingEditable => Block.Ceiling.DiagonalSplit == DiagonalSplit.None;
-
-        public bool Editable => !Block.IsAnyWall && (FloorEditable || CeilingEditable);
+        public bool Editable => !Block.IsAnyWall;
         public bool Valid => Editable && (Floor.XnZn != 0   || Floor.XpZn != 0   || Floor.XnZp != 0   || Floor.XpZp != 0  ||
                                           Ceiling.XnZn != 0 || Ceiling.XpZn != 0 || Ceiling.XnZp != 0 || Ceiling.XpZp != 0);
 

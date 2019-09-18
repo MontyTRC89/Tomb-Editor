@@ -1218,7 +1218,7 @@ namespace TombEditor.Controls
                         if (newPicking is PickingResultObject)
                         {
                             ObjectInstance target = ((PickingResultObject)newPicking).ObjectInstance;
-                            if (target is IMaterial)
+                            if (target is ISpatial)
                                 _currentContextMenu = new MaterialObjectContextMenu(_editor, this, target);
                         }
                         else if (newPicking is PickingResultBlock)

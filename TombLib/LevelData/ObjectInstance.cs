@@ -14,7 +14,7 @@ namespace TombLib.LevelData
         None
     }
 
-    public interface IMaterial
+    public interface ISpatial
     {
         VectorInt2 SectorPosition { get; set; }
     }
@@ -205,7 +205,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public abstract class PositionBasedObjectInstance : ObjectInstance, IMaterial
+    public abstract class PositionBasedObjectInstance : ObjectInstance, ISpatial
     {
         public Vector3 Position { get; set; }
 
