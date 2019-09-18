@@ -81,6 +81,7 @@ namespace WadTool
 
             int count = 0;
             int animCount = 0;
+            int actionCount = 0;
             bool alreadyFound = false;
 
             for (int i = 0; i < _editor.Animations.Count; i++)
@@ -116,6 +117,7 @@ namespace WadTool
 
                                 _editor.Animations[i].WadAnimation.AnimCommands[j] = preparedCommand;
                             }
+                            actionCount++; // Increase counter for statistics
                         }
                         count++;
                     }
@@ -132,9 +134,9 @@ namespace WadTool
             EditingWasDone = true;
 
             if (delete)
-                statusLabel.Text = "Deleted " + count + " animcommands in " + animCount + " animations.";
+                statusLabel.Text = "Deleted " + actionCount + " animcommands in " + animCount + " animations.";
             else
-                statusLabel.Text = "Replacement finished. Made " + count + " replacements in " + animCount + " animations.";
+                statusLabel.Text = "Replacement finished. Made " + actionCount + " replacements in " + animCount + " animations.";
 
             // Run one more extra pass to show deselected results
             Search(false);
