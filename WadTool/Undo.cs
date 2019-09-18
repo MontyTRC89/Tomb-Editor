@@ -1,5 +1,6 @@
-﻿using TombLib.Graphics;
-using TombLib.LevelData;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace WadTool
@@ -9,7 +10,7 @@ namespace WadTool
         public AnimationEditor Parent { get; internal set; }
         protected int AnimCount;
 
-        protected AnimationEditorUndoRedoInstance(AnimationEditor parent) { Parent = parent; AnimCount = Parent.WorkingAnimations.Count; }
+        protected AnimationEditorUndoRedoInstance(AnimationEditor parent) { Parent = parent; AnimCount = Parent.Animations.Count; }
     }
 
     public class AnimationUndoInstance : AnimationEditorUndoRedoInstance
@@ -20,18 +21,18 @@ namespace WadTool
         {
             Animation = anim.Clone();
 
-            Valid = () => Parent.WorkingAnimations.Count == AnimCount &&
+            Valid = () => Parent.Animations.Count == AnimCount &&
                           Animation.DirectXAnimation != null &&
                           Animation.WadAnimation != null && 
                           Animation.Index >= 0;
 
             UndoAction = () =>
             {
-                Parent.WorkingAnimations[Animation.Index] = Animation;
+                Parent.Animations[Animation.Index] = Animation;
                 Parent.Tool.AnimationEditorAnimationChanged(Animation);
             };
 
-            RedoInstance = () => new AnimationUndoInstance(Parent, Parent.WorkingAnimations[Animation.Index]);
+            RedoInstance = () => new AnimationUndoInstance(Parent, Parent.Animations[Animation.Index]);
         }
     }
 
@@ -48,5 +49,6 @@ namespace WadTool
         }
 
         public void PushAnimationChanged(AnimationEditor editor, AnimationNode anim) => Push(new AnimationUndoInstance(editor, anim));
+        public void PushAnimationChanged(AnimationEditor editor, List<AnimationNode> anims) => Push(anims.Select(anim => (new AnimationUndoInstance(editor, anim)) as UndoRedoInstance).ToList());
     }
 }

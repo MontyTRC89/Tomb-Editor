@@ -11,6 +11,8 @@ namespace TombLib.Wad
         public short Parameter3 { get; set; }
 
         public bool FrameBased => Type >= WadAnimCommandType.PlaySound;
+        public bool PositionBased => Type == WadAnimCommandType.SetPosition;
+        public bool VelocityBased => Type == WadAnimCommandType.SetJumpDistance;
 
         // Only for old Wad2 importing
         public WadSoundInfo SoundInfoObsolete { get; set; }
@@ -50,5 +52,41 @@ namespace TombLib.Wad
 
         public WadAnimCommand Clone() => (WadAnimCommand)MemberwiseClone();
         object ICloneable.Clone() => Clone();
+
+        public static bool DistinctiveEquals(WadAnimCommand first, WadAnimCommand second, bool considerFrames)
+        {
+            if (ReferenceEquals(first, null) != ReferenceEquals(second, null))
+                return false;
+            else if ((ReferenceEquals(first, null) == true) && (ReferenceEquals(second, null) == true))
+                return true;
+
+            if (first.Type != second.Type) return false;
+
+            if (first.FrameBased)
+            {
+                return ((!considerFrames || first.Parameter1 == second.Parameter1) &&
+                                            first.Parameter2 == second.Parameter2);
+            }
+            else if (first.VelocityBased)
+            {
+                return (first.Parameter1 == second.Parameter1 &&
+                        first.Parameter2 == second.Parameter2);
+            }
+            else if (first.PositionBased)
+            {
+                return (first.Parameter1 == second.Parameter1 &&
+                        first.Parameter2 == second.Parameter2 &&
+                        first.Parameter3 == second.Parameter3);
+            }
+            else
+                return true; // Equal or unknown command
+        }
+
+        public static bool operator ==(WadAnimCommand first, WadAnimCommand second) => DistinctiveEquals(first, second, true);
+        public static bool operator !=(WadAnimCommand first, WadAnimCommand second) => !(first == second);
+
+        public bool Equals(WadAnimCommand other) => this == other;
+        public override bool Equals(object other) => other is WadAnimCommand && this == (WadAnimCommand)other;
+        public override int GetHashCode() => ("t" + Type + "p1" + Parameter1 + "p2" + Parameter2 + "p3" + Parameter3).GetHashCode();
     }
 }

@@ -171,7 +171,18 @@ namespace TombLib.Wad
 
         public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
         {
+            var list = ImportFromExternalModel(fileName, settings, true);
+            if (list != null && list.Count > 0)
+                return list.First();
+            else
+                return null;
+        }
+
+        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne)
+        {
             IOModel tmpModel = null;
+            var meshList = new List<WadMesh>();
+
             bool calculateNormals = false;
 
             // Import the model
@@ -191,11 +202,20 @@ namespace TombLib.Wad
             }
 
             // Create a new mesh (all meshes from model will be joined)
-            var mesh = new WadMesh();
-            mesh.Name = "ImportedMesh";
+            WadMesh mesh = null;
             var lastBaseVertex = 0;
-            foreach (var tmpMesh in tmpModel.Meshes)
+            for (int i = 0; i < tmpModel.Meshes.Count; i++)
             {
+                var tmpMesh = tmpModel.Meshes[i];
+
+                if (mesh == null || !mergeIntoOne)
+                {
+                    mesh = new WadMesh();
+                    mesh.Name = string.IsNullOrEmpty(tmpMesh.Name) ? "ImportedMesh" + i : tmpMesh.Name;
+
+                    if (mergeIntoOne) lastBaseVertex = 0; // Reset if we're doing multi-mesh import
+                }
+
                 mesh.VerticesPositions.AddRange(tmpMesh.Positions);
                 foreach (var tmpSubmesh in tmpMesh.Submeshes)
                     foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
@@ -214,7 +234,10 @@ namespace TombLib.Wad
                             area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
                             area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
                             area.Texture = tmpSubmesh.Value.Material.Texture;
+                            area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
+
                             poly.Texture = area;
+                            poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
 
                             mesh.Polys.Add(poly);
                         }
@@ -231,20 +254,30 @@ namespace TombLib.Wad
                             area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
                             area.TexCoord3 = area.TexCoord2;
                             area.Texture = tmpSubmesh.Value.Material.Texture;
+                            area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
+
                             poly.Texture = area;
+                            poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
 
                             mesh.Polys.Add(poly);
                         }
                     }
 
-                lastBaseVertex = mesh.VerticesPositions.Count;
+
+                if (!mergeIntoOne || i == tmpModel.Meshes.Count - 1)
+                {
+                    mesh.BoundingBox = mesh.CalculateBoundingBox();
+                    mesh.BoundingSphere = mesh.CalculateBoundingSphere();
+                    if (mesh.VerticesNormals.Count == 0 || calculateNormals) mesh.CalculateNormals(); //MQO files rarely have normals
+
+                    lastBaseVertex = 0;
+                    meshList.Add(mesh);
+                }
+                else
+                    lastBaseVertex = mesh.VerticesPositions.Count;
             }
 
-            mesh.BoundingBox = mesh.CalculateBoundingBox();
-            mesh.BoundingSphere = mesh.CalculateBoundingSphere();
-            if (mesh.VerticesNormals.Count == 0 || calculateNormals) mesh.CalculateNormals(); //MQO files rarely have normals
-            
-            return mesh;
+            return meshList;
         }
 
         public static bool operator ==(WadMesh first, WadMesh second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);

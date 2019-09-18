@@ -23,17 +23,9 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AnimationNode Animation { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimatedModel Model { get { return _model; } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimatedModel Skin { get { return _skinModel; } }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int CurrentKeyFrame { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool PlayAnimation { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public float CurrentTime { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawVisibilityBox { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -82,6 +74,9 @@ namespace WadTool.Controls
 
         public void InitializeRendering(AnimationEditor editor, DeviceManager deviceManager, WadMoveable skin)
         {
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
+                return;
+
             base.InitializeRendering(deviceManager.Device, false);
 
             _editor = editor;
@@ -213,7 +208,7 @@ namespace WadTool.Controls
 
                 // Build animation transforms
                 var matrices = new List<Matrix4x4>();
-                if (Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
+                if (_editor.ValidAnimationAndFrames)
                 {
                     for (var b = 0; b < _model.Meshes.Count; b++)
                         matrices.Add(_model.AnimationTransforms[b]);
@@ -253,7 +248,7 @@ namespace WadTool.Controls
                     if (_vertexBufferVisibility != null)
                         _vertexBufferVisibility.Dispose();
                     int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
-                    var world = (Animation != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]);
+                    var world = (_editor.CurrentAnim != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]);
                     _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Skin.Meshes[meshIndex].BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
@@ -267,12 +262,11 @@ namespace WadTool.Controls
                     _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
                 }
 
-                if (DrawCollisionBox &&
-                    Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
+                if (DrawCollisionBox && _editor.ValidAnimationAndFrames)
                 {
                     if (_vertexBufferVisibility != null)
                         _vertexBufferVisibility.Dispose();
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].BoundingBox);
+                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(_editor.CurrentKeyFrame.BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -307,15 +301,15 @@ namespace WadTool.Controls
                 _gizmo.Draw(viewProjection);
             }
 
-            if (Animation != null)
+            if (_editor.CurrentAnim != null)
             {
                 ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
-                string debugMessage = "Frame: " + (CurrentKeyFrame + 1) + "/" + Animation.DirectXAnimation.KeyFrames.Count;
+                string debugMessage = "Frame: " + (_editor.CurrentFrameIndex + 1) + "/" + _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
                 if (SelectedMesh != null)
                 {
                     debugMessage += "\nMesh: " + SelectedMesh.Name;
                     debugMessage += "\nBone: " + _model.Bones[_model.Meshes.IndexOf(SelectedMesh)].Name;
-                    debugMessage += "\nRotation: " + Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].Rotations[Model.Meshes.IndexOf(SelectedMesh)];
+                    debugMessage += "\nRotation: " + _editor.CurrentKeyFrame.Rotations[Model.Meshes.IndexOf(SelectedMesh)];
                 }
                 SwapChain.RenderText(new Text
                 {
@@ -353,7 +347,7 @@ namespace WadTool.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                if (Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
+                if (_editor.ValidAnimationAndFrames)
                 {
                     // Try to do gizmo picking
                     if (DrawGizmo)
@@ -361,7 +355,7 @@ namespace WadTool.Controls
                         var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
                         if (result != null)
                         {
-                            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.SelectedNode);
+                            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
                             _gizmo.ActivateGizmo(result);
                             _editor.Tool.AnimationEditorGizmoPicked();
                             Invalidate();
@@ -449,7 +443,7 @@ namespace WadTool.Controls
 
             // Transform view ray to object space space
             Matrix4x4 inverseObjectMatrix;
-            if (!Matrix4x4.Invert((Animation != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]), out inverseObjectMatrix))
+            if (!Matrix4x4.Invert((_editor.CurrentAnim != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]), out inverseObjectMatrix))
                 return false;
             Vector3 transformedRayPos = MathC.HomogenousTransform(ray.Position, inverseObjectMatrix);
             Vector3 transformedRayDestination = MathC.HomogenousTransform(ray.Position + ray.Direction, inverseObjectMatrix);

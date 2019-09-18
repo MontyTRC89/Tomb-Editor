@@ -1,13 +1,13 @@
 ﻿namespace WadTool
 {
-    partial class FormAnimCommandsEditor
+    partial class AnimCommandEditor
     {
-        /// <summary>
+        /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
+        /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -20,26 +20,16 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            this.btCancel = new DarkUI.Controls.DarkButton();
-            this.btOk = new DarkUI.Controls.DarkButton();
-            this.comboCommandType = new DarkUI.Controls.DarkComboBox();
-            this.butAddEffect = new DarkUI.Controls.DarkButton();
-            this.butDeleteEffect = new DarkUI.Controls.DarkButton();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-            this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
-            this.lstCommands = new DarkUI.Controls.DarkListView();
-            this.butCommandDown = new DarkUI.Controls.DarkButton();
-            this.butCommandUp = new DarkUI.Controls.DarkButton();
-            this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.comboCommandType = new DarkUI.Controls.DarkComboBox();
             this.commandControls = new TombLib.Controls.DarkTabbedContainer();
             this.tabSetPosition = new System.Windows.Forms.TabPage();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -61,6 +51,7 @@
             this.tbFlipEffectFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.tbFlipEffect = new DarkUI.Controls.DarkNumericUpDown();
             this.tabPlaySound = new System.Windows.Forms.TabPage();
+            this.nudSoundId = new DarkUI.Controls.DarkNumericUpDown();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
             this.butSearchSounds = new DarkUI.Controls.DarkButton();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
@@ -69,9 +60,6 @@
             this.tbPlaySoundFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.comboPlaySoundConditions = new DarkUI.Controls.DarkComboBox();
-            this.darkGroupBox1.SuspendLayout();
-            this.darkGroupBox2.SuspendLayout();
-            this.darkSectionPanel1.SuspendLayout();
             this.commandControls.SuspendLayout();
             this.tabSetPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosX)).BeginInit();
@@ -84,29 +72,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffectFrame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffect)).BeginInit();
             this.tabPlaySound.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoundId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).BeginInit();
             this.SuspendLayout();
             // 
-            // btCancel
+            // darkLabel8
             // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(296, 292);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(80, 23);
-            this.btCancel.TabIndex = 50;
-            this.btCancel.Text = "Cancel";
-            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-            // 
-            // btOk
-            // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOk.Location = new System.Drawing.Point(210, 292);
-            this.btOk.Name = "btOk";
-            this.btOk.Size = new System.Drawing.Size(80, 23);
-            this.btOk.TabIndex = 51;
-            this.btOk.Text = "OK";
-            this.btOk.Click += new System.EventHandler(this.btOk_Click);
+            this.darkLabel8.AutoSize = true;
+            this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel8.Location = new System.Drawing.Point(3, 6);
+            this.darkLabel8.Name = "darkLabel8";
+            this.darkLabel8.Size = new System.Drawing.Size(33, 13);
+            this.darkLabel8.TabIndex = 1;
+            this.darkLabel8.Text = "Type:";
             // 
             // comboCommandType
             // 
@@ -121,126 +99,25 @@
             "Kill entity",
             "Play sound",
             "Flipeffect"});
-            this.comboCommandType.Location = new System.Drawing.Point(45, 7);
+            this.comboCommandType.Location = new System.Drawing.Point(44, 3);
             this.comboCommandType.Name = "comboCommandType";
-            this.comboCommandType.Size = new System.Drawing.Size(320, 23);
+            this.comboCommandType.Size = new System.Drawing.Size(326, 23);
             this.comboCommandType.TabIndex = 53;
             this.comboCommandType.SelectedIndexChanged += new System.EventHandler(this.comboCommandType_SelectedIndexChanged);
             // 
-            // butAddEffect
-            // 
-            this.butAddEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddEffect.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddEffect.Location = new System.Drawing.Point(341, 6);
-            this.butAddEffect.Name = "butAddEffect";
-            this.butAddEffect.Size = new System.Drawing.Size(24, 24);
-            this.butAddEffect.TabIndex = 95;
-            this.butAddEffect.Click += new System.EventHandler(this.butAddEffect_Click);
-            // 
-            // butDeleteEffect
-            // 
-            this.butDeleteEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeleteEffect.Image = global::WadTool.Properties.Resources.trash_161;
-            this.butDeleteEffect.Location = new System.Drawing.Point(341, 36);
-            this.butDeleteEffect.Name = "butDeleteEffect";
-            this.butDeleteEffect.Size = new System.Drawing.Size(24, 24);
-            this.butDeleteEffect.TabIndex = 94;
-            this.butDeleteEffect.Click += new System.EventHandler(this.butDeleteEffect_Click);
-            // 
-            // darkLabel8
-            // 
-            this.darkLabel8.AutoSize = true;
-            this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel8.Location = new System.Drawing.Point(6, 10);
-            this.darkLabel8.Name = "darkLabel8";
-            this.darkLabel8.Size = new System.Drawing.Size(33, 13);
-            this.darkLabel8.TabIndex = 1;
-            this.darkLabel8.Text = "Type:";
-            // 
-            // darkGroupBox1
-            // 
-            this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkGroupBox1.Controls.Add(this.lstCommands);
-            this.darkGroupBox1.Controls.Add(this.butCommandDown);
-            this.darkGroupBox1.Controls.Add(this.butCommandUp);
-            this.darkGroupBox1.Controls.Add(this.butAddEffect);
-            this.darkGroupBox1.Controls.Add(this.butDeleteEffect);
-            this.darkGroupBox1.Location = new System.Drawing.Point(5, 5);
-            this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(371, 134);
-            this.darkGroupBox1.TabIndex = 99;
-            this.darkGroupBox1.TabStop = false;
-            // 
-            // lstCommands
-            // 
-            this.lstCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstCommands.Location = new System.Drawing.Point(6, 7);
-            this.lstCommands.Name = "lstCommands";
-            this.lstCommands.Size = new System.Drawing.Size(329, 121);
-            this.lstCommands.TabIndex = 98;
-            this.lstCommands.Text = "darkListView1";
-            this.lstCommands.SelectedIndicesChanged += new System.EventHandler(this.lstCommands_SelectedIndicesChanged);
-            // 
-            // butCommandDown
-            // 
-            this.butCommandDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCommandDown.Image = global::WadTool.Properties.Resources.general_ArrowDown_16;
-            this.butCommandDown.Location = new System.Drawing.Point(341, 104);
-            this.butCommandDown.Name = "butCommandDown";
-            this.butCommandDown.Size = new System.Drawing.Size(24, 24);
-            this.butCommandDown.TabIndex = 97;
-            this.butCommandDown.Click += new System.EventHandler(this.butCommandDown_Click);
-            // 
-            // butCommandUp
-            // 
-            this.butCommandUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCommandUp.Image = global::WadTool.Properties.Resources.general_ArrowUp_16;
-            this.butCommandUp.Location = new System.Drawing.Point(341, 76);
-            this.butCommandUp.Name = "butCommandUp";
-            this.butCommandUp.Size = new System.Drawing.Size(24, 24);
-            this.butCommandUp.TabIndex = 96;
-            this.butCommandUp.Click += new System.EventHandler(this.butCommandUp_Click);
-            // 
-            // darkGroupBox2
-            // 
-            this.darkGroupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkGroupBox2.Controls.Add(this.darkSectionPanel1);
-            this.darkGroupBox2.Controls.Add(this.darkLabel8);
-            this.darkGroupBox2.Controls.Add(this.comboCommandType);
-            this.darkGroupBox2.Location = new System.Drawing.Point(5, 143);
-            this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(371, 143);
-            this.darkGroupBox2.TabIndex = 100;
-            this.darkGroupBox2.TabStop = false;
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkSectionPanel1.Controls.Add(this.commandControls);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(6, 36);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(359, 101);
-            this.darkSectionPanel1.TabIndex = 54;
-            // 
             // commandControls
             // 
+            this.commandControls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.commandControls.Controls.Add(this.tabSetPosition);
             this.commandControls.Controls.Add(this.tabSetJumpDistance);
             this.commandControls.Controls.Add(this.tabFlipeffect);
             this.commandControls.Controls.Add(this.tabPlaySound);
-            this.commandControls.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.commandControls.Location = new System.Drawing.Point(1, 1);
+            this.commandControls.Location = new System.Drawing.Point(0, 30);
             this.commandControls.Name = "commandControls";
             this.commandControls.SelectedIndex = 0;
-            this.commandControls.Size = new System.Drawing.Size(357, 99);
+            this.commandControls.Size = new System.Drawing.Size(370, 127);
             this.commandControls.TabIndex = 0;
             this.commandControls.Visible = false;
             // 
@@ -256,7 +133,7 @@
             this.tabSetPosition.Location = new System.Drawing.Point(4, 22);
             this.tabSetPosition.Name = "tabSetPosition";
             this.tabSetPosition.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSetPosition.Size = new System.Drawing.Size(349, 73);
+            this.tabSetPosition.Size = new System.Drawing.Size(362, 101);
             this.tabSetPosition.TabIndex = 0;
             this.tabSetPosition.Text = "setPosition";
             // 
@@ -295,6 +172,7 @@
             this.tbPosX.Size = new System.Drawing.Size(73, 22);
             this.tbPosX.TabIndex = 0;
             this.tbPosX.ValueChanged += new System.EventHandler(this.tbPosX_ValueChanged);
+            this.tbPosX.Click += new System.EventHandler(this.tbPosX_ValueChanged);
             // 
             // tbPosZ
             // 
@@ -321,6 +199,7 @@
             this.tbPosZ.Size = new System.Drawing.Size(73, 22);
             this.tbPosZ.TabIndex = 4;
             this.tbPosZ.ValueChanged += new System.EventHandler(this.tbPosZ_ValueChanged);
+            this.tbPosZ.Click += new System.EventHandler(this.tbPosZ_ValueChanged);
             // 
             // darkLabel1
             // 
@@ -367,6 +246,7 @@
             this.tbPosY.Size = new System.Drawing.Size(73, 22);
             this.tbPosY.TabIndex = 2;
             this.tbPosY.ValueChanged += new System.EventHandler(this.tbPosY_ValueChanged);
+            this.tbPosY.Click += new System.EventHandler(this.tbPosY_ValueChanged);
             // 
             // tabSetJumpDistance
             // 
@@ -378,7 +258,7 @@
             this.tabSetJumpDistance.Location = new System.Drawing.Point(4, 22);
             this.tabSetJumpDistance.Name = "tabSetJumpDistance";
             this.tabSetJumpDistance.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSetJumpDistance.Size = new System.Drawing.Size(349, 73);
+            this.tabSetJumpDistance.Size = new System.Drawing.Size(362, 101);
             this.tabSetJumpDistance.TabIndex = 1;
             this.tabSetJumpDistance.Text = "setJumpDistance";
             // 
@@ -466,7 +346,7 @@
             this.tabFlipeffect.Location = new System.Drawing.Point(4, 22);
             this.tabFlipeffect.Name = "tabFlipeffect";
             this.tabFlipeffect.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFlipeffect.Size = new System.Drawing.Size(349, 73);
+            this.tabFlipeffect.Size = new System.Drawing.Size(362, 101);
             this.tabFlipeffect.TabIndex = 2;
             this.tabFlipeffect.Text = "flipeffect";
             // 
@@ -491,7 +371,7 @@
             "Lara\'s right foot"});
             this.comboFlipeffectConditions.Location = new System.Drawing.Point(167, 24);
             this.comboFlipeffectConditions.Name = "comboFlipeffectConditions";
-            this.comboFlipeffectConditions.Size = new System.Drawing.Size(176, 23);
+            this.comboFlipeffectConditions.Size = new System.Drawing.Size(189, 23);
             this.comboFlipeffectConditions.TabIndex = 103;
             this.comboFlipeffectConditions.SelectedIndexChanged += new System.EventHandler(this.comboFlipeffectConditions_SelectedIndexChanged);
             // 
@@ -518,6 +398,7 @@
             // tbFlipEffectFrame
             // 
             this.tbFlipEffectFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbFlipEffectFrame.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbFlipEffectFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbFlipEffectFrame.IncrementAlternate = new decimal(new int[] {
             10,
@@ -532,13 +413,14 @@
             0});
             this.tbFlipEffectFrame.MousewheelSingleIncrement = true;
             this.tbFlipEffectFrame.Name = "tbFlipEffectFrame";
-            this.tbFlipEffectFrame.Size = new System.Drawing.Size(73, 22);
+            this.tbFlipEffectFrame.Size = new System.Drawing.Size(73, 23);
             this.tbFlipEffectFrame.TabIndex = 0;
             this.tbFlipEffectFrame.ValueChanged += new System.EventHandler(this.tbFlipEffectFrame_ValueChanged);
             // 
             // tbFlipEffect
             // 
             this.tbFlipEffect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbFlipEffect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbFlipEffect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbFlipEffect.IncrementAlternate = new decimal(new int[] {
             10,
@@ -558,13 +440,14 @@
             -2147483648});
             this.tbFlipEffect.MousewheelSingleIncrement = true;
             this.tbFlipEffect.Name = "tbFlipEffect";
-            this.tbFlipEffect.Size = new System.Drawing.Size(73, 22);
+            this.tbFlipEffect.Size = new System.Drawing.Size(73, 23);
             this.tbFlipEffect.TabIndex = 2;
             this.tbFlipEffect.ValueChanged += new System.EventHandler(this.tbFlipEffect_ValueChanged);
             // 
             // tabPlaySound
             // 
             this.tabPlaySound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPlaySound.Controls.Add(this.nudSoundId);
             this.tabPlaySound.Controls.Add(this.butPlaySound);
             this.tabPlaySound.Controls.Add(this.butSearchSounds);
             this.tabPlaySound.Controls.Add(this.darkLabel11);
@@ -576,14 +459,39 @@
             this.tabPlaySound.Location = new System.Drawing.Point(4, 22);
             this.tabPlaySound.Name = "tabPlaySound";
             this.tabPlaySound.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPlaySound.Size = new System.Drawing.Size(349, 73);
+            this.tabPlaySound.Size = new System.Drawing.Size(362, 101);
             this.tabPlaySound.TabIndex = 3;
             this.tabPlaySound.Text = "playSound";
             // 
+            // nudSoundId
+            // 
+            this.nudSoundId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudSoundId.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudSoundId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.nudSoundId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudSoundId.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudSoundId.Location = new System.Drawing.Point(268, 53);
+            this.nudSoundId.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudSoundId.MousewheelSingleIncrement = true;
+            this.nudSoundId.Name = "nudSoundId";
+            this.nudSoundId.Size = new System.Drawing.Size(59, 23);
+            this.nudSoundId.TabIndex = 105;
+            this.nudSoundId.ValueChanged += new System.EventHandler(this.nudSoundId_ValueChanged);
+            this.nudSoundId.Click += new System.EventHandler(this.nudSoundId_ValueChanged);
+            // 
             // butPlaySound
             // 
+            this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlaySound.Image = global::WadTool.Properties.Resources.actions_play_16;
-            this.butPlaySound.Location = new System.Drawing.Point(320, 53);
+            this.butPlaySound.Location = new System.Drawing.Point(333, 53);
             this.butPlaySound.Name = "butPlaySound";
             this.butPlaySound.Size = new System.Drawing.Size(23, 23);
             this.butPlaySound.TabIndex = 104;
@@ -591,8 +499,9 @@
             // 
             // butSearchSounds
             // 
+            this.butSearchSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearchSounds.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butSearchSounds.Location = new System.Drawing.Point(291, 53);
+            this.butSearchSounds.Location = new System.Drawing.Point(239, 53);
             this.butSearchSounds.Name = "butSearchSounds";
             this.butSearchSounds.Size = new System.Drawing.Size(23, 23);
             this.butSearchSounds.TabIndex = 103;
@@ -624,13 +533,14 @@
             this.comboSound.FormattingEnabled = true;
             this.comboSound.Location = new System.Drawing.Point(53, 53);
             this.comboSound.Name = "comboSound";
-            this.comboSound.Size = new System.Drawing.Size(239, 23);
+            this.comboSound.Size = new System.Drawing.Size(187, 23);
             this.comboSound.TabIndex = 100;
             this.comboSound.SelectedIndexChanged += new System.EventHandler(this.comboSound_SelectedIndexChanged);
             // 
             // tbPlaySoundFrame
             // 
             this.tbPlaySoundFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbPlaySoundFrame.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbPlaySoundFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbPlaySoundFrame.IncrementAlternate = new decimal(new int[] {
             10,
@@ -645,7 +555,7 @@
             0});
             this.tbPlaySoundFrame.MousewheelSingleIncrement = true;
             this.tbPlaySoundFrame.Name = "tbPlaySoundFrame";
-            this.tbPlaySoundFrame.Size = new System.Drawing.Size(73, 22);
+            this.tbPlaySoundFrame.Size = new System.Drawing.Size(73, 23);
             this.tbPlaySoundFrame.TabIndex = 0;
             this.tbPlaySoundFrame.ValueChanged += new System.EventHandler(this.tbPlaySoundFrame_ValueChanged);
             // 
@@ -670,35 +580,21 @@
             "Only in the water"});
             this.comboPlaySoundConditions.Location = new System.Drawing.Point(88, 24);
             this.comboPlaySoundConditions.Name = "comboPlaySoundConditions";
-            this.comboPlaySoundConditions.Size = new System.Drawing.Size(255, 23);
+            this.comboPlaySoundConditions.Size = new System.Drawing.Size(268, 23);
             this.comboPlaySoundConditions.TabIndex = 53;
             this.comboPlaySoundConditions.SelectedIndexChanged += new System.EventHandler(this.comboPlaySoundConditions_SelectedIndexChanged);
             // 
-            // FormAnimCommandsEditor
+            // AnimCommandEditor
             // 
-            this.AcceptButton = this.btOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btCancel;
-            this.ClientSize = new System.Drawing.Size(381, 320);
-            this.Controls.Add(this.darkGroupBox2);
-            this.Controls.Add(this.darkGroupBox1);
-            this.Controls.Add(this.btCancel);
-            this.Controls.Add(this.btOk);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(397, 358);
-            this.Name = "FormAnimCommandsEditor";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Anim commands editor";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAnimCommandsEditor_KeyDown);
-            this.darkGroupBox1.ResumeLayout(false);
-            this.darkGroupBox2.ResumeLayout(false);
-            this.darkGroupBox2.PerformLayout();
-            this.darkSectionPanel1.ResumeLayout(false);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.Controls.Add(this.commandControls);
+            this.Controls.Add(this.darkLabel8);
+            this.Controls.Add(this.comboCommandType);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Name = "AnimCommandEditor";
+            this.Size = new System.Drawing.Size(370, 157);
             this.commandControls.ResumeLayout(false);
             this.tabSetPosition.ResumeLayout(false);
             this.tabSetPosition.PerformLayout();
@@ -715,52 +611,45 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbFlipEffect)).EndInit();
             this.tabPlaySound.ResumeLayout(false);
             this.tabPlaySound.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoundId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private DarkUI.Controls.DarkButton btCancel;
-        private DarkUI.Controls.DarkButton btOk;
-        private DarkUI.Controls.DarkComboBox comboCommandType;
-        private DarkUI.Controls.DarkLabel darkLabel3;
-        private DarkUI.Controls.DarkNumericUpDown tbPosZ;
-        private DarkUI.Controls.DarkLabel darkLabel2;
-        private DarkUI.Controls.DarkNumericUpDown tbPosY;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkNumericUpDown tbPosX;
-        private DarkUI.Controls.DarkLabel darkLabel5;
-        private DarkUI.Controls.DarkNumericUpDown tbVertical;
-        private DarkUI.Controls.DarkLabel darkLabel6;
-        private DarkUI.Controls.DarkNumericUpDown tbHorizontal;
-        private DarkUI.Controls.DarkNumericUpDown tbFlipEffect;
-        private DarkUI.Controls.DarkNumericUpDown tbFlipEffectFrame;
-        private DarkUI.Controls.DarkLabel darkLabel9;
-        private DarkUI.Controls.DarkNumericUpDown tbPlaySoundFrame;
-        private DarkUI.Controls.DarkButton butAddEffect;
-        private DarkUI.Controls.DarkButton butDeleteEffect;
         private DarkUI.Controls.DarkLabel darkLabel8;
-        private DarkUI.Controls.DarkComboBox comboPlaySoundConditions;
-        private DarkUI.Controls.DarkComboBox comboSound;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox1;
-        private DarkUI.Controls.DarkButton butCommandDown;
-        private DarkUI.Controls.DarkButton butCommandUp;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
+        private DarkUI.Controls.DarkComboBox comboCommandType;
         private TombLib.Controls.DarkTabbedContainer commandControls;
         private System.Windows.Forms.TabPage tabSetPosition;
+        private DarkUI.Controls.DarkLabel darkLabel3;
+        private DarkUI.Controls.DarkNumericUpDown tbPosX;
+        private DarkUI.Controls.DarkNumericUpDown tbPosZ;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkNumericUpDown tbPosY;
         private System.Windows.Forms.TabPage tabSetJumpDistance;
+        private DarkUI.Controls.DarkLabel darkLabel5;
+        private DarkUI.Controls.DarkLabel darkLabel6;
+        private DarkUI.Controls.DarkNumericUpDown tbVertical;
+        private DarkUI.Controls.DarkNumericUpDown tbHorizontal;
         private System.Windows.Forms.TabPage tabFlipeffect;
-        private System.Windows.Forms.TabPage tabPlaySound;
-        private DarkUI.Controls.DarkLabel darkLabel10;
-        private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkLabel darkLabel7;
-        private DarkUI.Controls.DarkLabel darkLabel11;
-        private DarkUI.Controls.DarkListView lstCommands;
         private DarkUI.Controls.DarkLabel lblLaraFoot;
         private DarkUI.Controls.DarkComboBox comboFlipeffectConditions;
-        private DarkUI.Controls.DarkButton butSearchSounds;
+        private DarkUI.Controls.DarkLabel darkLabel4;
+        private DarkUI.Controls.DarkLabel darkLabel7;
+        private DarkUI.Controls.DarkNumericUpDown tbFlipEffectFrame;
+        private DarkUI.Controls.DarkNumericUpDown tbFlipEffect;
+        private System.Windows.Forms.TabPage tabPlaySound;
+        private DarkUI.Controls.DarkNumericUpDown nudSoundId;
         private DarkUI.Controls.DarkButton butPlaySound;
+        private DarkUI.Controls.DarkButton butSearchSounds;
+        private DarkUI.Controls.DarkLabel darkLabel11;
+        private DarkUI.Controls.DarkLabel darkLabel10;
+        private DarkUI.Controls.DarkComboBox comboSound;
+        private DarkUI.Controls.DarkNumericUpDown tbPlaySoundFrame;
+        private DarkUI.Controls.DarkLabel darkLabel9;
+        private DarkUI.Controls.DarkComboBox comboPlaySoundConditions;
     }
 }
