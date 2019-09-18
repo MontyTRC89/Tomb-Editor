@@ -66,11 +66,24 @@ namespace TombEditor.Forms
             cbBit4.Checked = (_trigger.CodeBits & (1 << 3)) != 0;
             cbBit5.Checked = (_trigger.CodeBits & (1 << 4)) != 0;
             cbOneShot.Checked = _trigger.OneShot;
+
             paramTriggerType.Parameter = new TriggerParameterUshort((ushort)_trigger.TriggerType);
             paramTargetType.Parameter = new TriggerParameterUshort((ushort)_trigger.TargetType);
-            paramTarget.Parameter = _trigger.Target;
-            paramTimer.Parameter = _trigger.Timer;
+
+            // HACK: Change order of population based on target type.
+            if (_trigger.TriggerType == TriggerType.ConditionNg)
+            {
+                paramTimer.Parameter = _trigger.Timer;
+                paramTarget.Parameter = _trigger.Target;
+            }
+            else
+            {
+                paramTarget.Parameter = _trigger.Target;
+                paramTimer.Parameter = _trigger.Timer;
+            }
+
             paramExtra.Parameter = _trigger.Extra;
+
             tbLuaScript.Code = _trigger.LuaScript;
         }
 
@@ -79,18 +92,31 @@ namespace TombEditor.Forms
             // This is needed to prevent recursive UpdateDialog call.
             if (_dialogIsUpdating)
                 return;
+
             _dialogIsUpdating = true;
 
             paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
             paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, TriggerType).ToParameterRange();
-            paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
-            paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
+            
+            bool isLuaScript = TargetType == TriggerTargetType.LuaScript;
+            bool isConditionNg = TriggerType == TriggerType.ConditionNg;
+
+            // HACK: Change order of population based on target type.
+
+            if (isConditionNg)
+            {
+                paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
+                paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
+            }
+            else
+            {
+                paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
+                paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
+            }
+
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
 
             _dialogIsUpdating = false;
-
-            bool isLuaScript   = TargetType  == TriggerTargetType.LuaScript;
-            bool isConditionNg = TriggerType == TriggerType.ConditionNg;
             
             tbLuaScript.Enabled =  isLuaScript;
             paramTarget.Enabled = !isLuaScript;
