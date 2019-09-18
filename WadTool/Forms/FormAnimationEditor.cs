@@ -1882,6 +1882,7 @@ namespace WadTool
             {
                 form.ShowDialog(this);
                 if (form.EditingWasDone) Saved = false;
+                timeline.Invalidate(); // FIXME: To update current timeline. Use an event instead later.
             }
         }
     }

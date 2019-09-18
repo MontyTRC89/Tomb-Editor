@@ -1483,7 +1483,7 @@ namespace WadTool
             this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportChained.Name = "butTransportChained";
             this.butTransportChained.Size = new System.Drawing.Size(28, 35);
-            this.butTransportChained.ToolTipText = "Chained playback";
+            this.butTransportChained.ToolTipText = "Chain playback";
             this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
             // 
             // butTransportSound
