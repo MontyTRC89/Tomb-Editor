@@ -111,7 +111,7 @@ namespace TombLib.Wad
             wad.AllLoadedSoundInfos = soundInfos;
 
             // Force wad to be xml wad in case there's no sound infos at all
-            if (wad.SoundSystem != SoundSystem.Xml && wad.AllLoadedSoundInfos.Count == 0)
+            if (wad.SoundSystem != SoundSystem.Xml && wad.AllLoadedSoundInfos?.Count == 0)
                 wad.SoundSystem = SoundSystem.Xml;
 
             return wad;
