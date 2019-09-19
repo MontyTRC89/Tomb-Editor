@@ -33,6 +33,9 @@
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
             this.aceReplace = new WadTool.AnimCommandEditor();
             this.dgvResults = new DarkUI.Controls.DarkDataGridView();
+            this.colReplaceFlag = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colAnimNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.butFind = new DarkUI.Controls.DarkButton();
             this.butReplace = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
@@ -40,9 +43,6 @@
             this.butDeselectAll = new DarkUI.Controls.DarkButton();
             this.butDelete = new DarkUI.Controls.DarkButton();
             this.statusLabel = new DarkUI.Controls.DarkLabel();
-            this.Column1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.animNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkGroupBox1.SuspendLayout();
             this.darkGroupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
@@ -98,9 +98,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvResults.ColumnHeadersHeight = 17;
             this.dgvResults.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.animNumber,
-            this.Column2});
+            this.colReplaceFlag,
+            this.colAnimNumber,
+            this.colDescription});
             this.dgvResults.Location = new System.Drawing.Point(12, 213);
             this.dgvResults.MultiSelect = false;
             this.dgvResults.Name = "dgvResults";
@@ -108,6 +108,31 @@
             this.dgvResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvResults.Size = new System.Drawing.Size(772, 168);
             this.dgvResults.TabIndex = 9;
+            this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
+            this.dgvResults.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
+            this.dgvResults.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellValueChanged);
+            // 
+            // colReplaceFlag
+            // 
+            this.colReplaceFlag.HeaderText = "Replace";
+            this.colReplaceFlag.Name = "colReplaceFlag";
+            this.colReplaceFlag.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colReplaceFlag.Width = 60;
+            // 
+            // colAnimNumber
+            // 
+            this.colAnimNumber.HeaderText = "Anim #";
+            this.colAnimNumber.Name = "colAnimNumber";
+            this.colAnimNumber.ReadOnly = true;
+            this.colAnimNumber.Width = 50;
+            // 
+            // colDescription
+            // 
+            this.colDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colDescription.HeaderText = "Description";
+            this.colDescription.Name = "colDescription";
+            this.colDescription.ReadOnly = true;
+            this.colDescription.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // butFind
             // 
@@ -178,28 +203,6 @@
             this.statusLabel.TabIndex = 16;
             this.statusLabel.Text = "  ";
             // 
-            // Column1
-            // 
-            this.Column1.HeaderText = " Replace";
-            this.Column1.Name = "Column1";
-            this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column1.Width = 60;
-            // 
-            // animNumber
-            // 
-            this.animNumber.HeaderText = "Anim #";
-            this.animNumber.Name = "animNumber";
-            this.animNumber.ReadOnly = true;
-            this.animNumber.Width = 50;
-            // 
-            // Column2
-            // 
-            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column2.HeaderText = "Description";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
             // FormReplaceAnimCommands
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -246,8 +249,8 @@
         private DarkUI.Controls.DarkButton butDeselectAll;
         private DarkUI.Controls.DarkButton butDelete;
         private DarkUI.Controls.DarkLabel statusLabel;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn animNumber;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colReplaceFlag;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colAnimNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDescription;
     }
 }

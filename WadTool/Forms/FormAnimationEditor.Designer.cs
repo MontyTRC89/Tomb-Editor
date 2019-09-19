@@ -48,6 +48,7 @@ namespace WadTool
             this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertnFramesAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteEveryNthFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +58,6 @@ namespace WadTool
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteEveryNthFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -497,6 +497,15 @@ namespace WadTool
             this.deleteFrameToolStripMenuItem.Text = "Delete frame";
             this.deleteFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteFramesToolStripMenuItem_Click);
             // 
+            // deleteEveryNthFrameToolStripMenuItem
+            // 
+            this.deleteEveryNthFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteEveryNthFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteEveryNthFrameToolStripMenuItem.Name = "deleteEveryNthFrameToolStripMenuItem";
+            this.deleteEveryNthFrameToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.deleteEveryNthFrameToolStripMenuItem.Text = "Delete every (n)th frame";
+            this.deleteEveryNthFrameToolStripMenuItem.Click += new System.EventHandler(this.DeleteEveryNthFrameToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -578,15 +587,6 @@ namespace WadTool
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Delete collision box for current frame";
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click);
-            // 
-            // deleteEveryNthFrameToolStripMenuItem
-            // 
-            this.deleteEveryNthFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.deleteEveryNthFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.deleteEveryNthFrameToolStripMenuItem.Name = "deleteEveryNthFrameToolStripMenuItem";
-            this.deleteEveryNthFrameToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.deleteEveryNthFrameToolStripMenuItem.Text = "Delete every (n)th frame";
-            this.deleteEveryNthFrameToolStripMenuItem.Click += new System.EventHandler(this.DeleteEveryNthFrameToolStripMenuItem_Click);
             // 
             // renderingToolStripMenuItem
             // 
@@ -1936,7 +1936,6 @@ namespace WadTool
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.topMenu;
-            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(767, 598);
             this.Name = "FormAnimationEditor";
             this.ShowIcon = false;
