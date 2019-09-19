@@ -222,7 +222,9 @@ namespace TombEditor.Controls
                 Swap.Do(ref selectedTexture.TexCoord0, ref selectedTexture.TexCoord2);
 
             selectedTexture.Texture = VisibleTexture;
-            SelectedTexture = selectedTexture;
+
+            if (selectedTexture.TriangleArea != 0 || selectedTexture.QuadArea != 0)
+                SelectedTexture = selectedTexture;
         }
 
         private void MoveTimerTick(object sender, EventArgs e)
