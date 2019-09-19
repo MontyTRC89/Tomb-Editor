@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -32,10 +31,18 @@ namespace WadTool
         private void UpdateUI()
         {
             bool searchDone = (dgvResults.Rows.Count != 0);
+            bool allowActions = false;
+
             butDeselectAll.Enabled = searchDone;
             butSelectAll.Enabled = searchDone;
-            butReplace.Enabled = searchDone;
-            butDelete.Enabled = searchDone;
+
+            if (searchDone)
+                for (int i = 0; i < dgvResults.Rows.Count; i++)
+                    if ((bool)dgvResults.Rows[i].Cells[0].Value == true)
+                    { allowActions = true; break; }
+
+            butReplace.Enabled = allowActions;
+            butDelete.Enabled = allowActions;
         }
 
         private void SelectOrDeselectAll(bool select)
@@ -153,6 +160,16 @@ namespace WadTool
 
             // Run one more extra pass to show deselected results
             Search(false);
+        }
+
+
+        private void dgvResults_CellContentClick(object sender, DataGridViewCellEventArgs e) => dgvResults.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        private void dgvResults_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            if (dgvResults.Columns[e.ColumnIndex].Name == colReplaceFlag.Name)
+                UpdateUI();
         }
 
         private void butSelectAll_Click(object sender, EventArgs e) => SelectOrDeselectAll(true);
