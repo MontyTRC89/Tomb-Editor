@@ -41,6 +41,7 @@
             this.butDelete = new DarkUI.Controls.DarkButton();
             this.statusLabel = new DarkUI.Controls.DarkLabel();
             this.Column1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.animNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkGroupBox1.SuspendLayout();
             this.darkGroupBox2.SuspendLayout();
@@ -98,6 +99,7 @@
             this.dgvResults.ColumnHeadersHeight = 17;
             this.dgvResults.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
+            this.animNumber,
             this.Column2});
             this.dgvResults.Location = new System.Drawing.Point(12, 213);
             this.dgvResults.MultiSelect = false;
@@ -183,10 +185,17 @@
             this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Column1.Width = 60;
             // 
+            // animNumber
+            // 
+            this.animNumber.HeaderText = "Anim #";
+            this.animNumber.Name = "animNumber";
+            this.animNumber.ReadOnly = true;
+            this.animNumber.Width = 50;
+            // 
             // Column2
             // 
             this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column2.HeaderText = "Information";
+            this.Column2.HeaderText = "Description";
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
             this.Column2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -238,6 +247,7 @@
         private DarkUI.Controls.DarkButton butDelete;
         private DarkUI.Controls.DarkLabel statusLabel;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn animNumber;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
     }
 }

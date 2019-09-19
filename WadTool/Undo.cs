@@ -24,12 +24,13 @@ namespace WadTool
             Valid = () => Parent.Animations.Count == AnimCount &&
                           Animation.DirectXAnimation != null &&
                           Animation.WadAnimation != null && 
-                          Animation.Index >= 0;
+                          Animation.Index >= 0 &&
+                          Animation.Index < Parent.Animations.Count;
 
             UndoAction = () =>
             {
                 Parent.Animations[Animation.Index] = Animation;
-                Parent.Tool.AnimationEditorAnimationChanged(Animation);
+                Parent.Tool.AnimationEditorAnimationChanged(Animation, true);
             };
 
             RedoInstance = () => new AnimationUndoInstance(Parent, Parent.Animations[Animation.Index]);
