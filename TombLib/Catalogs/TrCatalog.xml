@@ -436,11 +436,11 @@
       <anim item="0" id="42" name="CLIMB_3CLICK" />
       <anim item="0" id="43" name="CLIMB_3CLICK_END_TO_RUN_UNUSED" />
       <anim item="0" id="44" name="TURN_RIGHT" />
-      <anim item="0" id="45" name="JUMP_FORWARD_TO_FREEFALL_UNUSED" />
+      <anim item="0" id="45" name="JUMP_FORWARD_TO_FREEFALL" />
       <anim item="0" id="46" name="REACH_TO_FREEFALL_UNUSED" />
       <anim item="0" id="47" name="ROLL_ALTERNATE_UNUSED" />
       <anim item="0" id="48" name="ROLL_END_ALTERNATE_UNUSED" />
-      <anim item="0" id="49" name="JUMP_FORWARD_END_TO_FREEFALL" />
+      <anim item="0" id="49" name="JUMP_FORWARD_END_TO_FREEFALL_UNUSED" />
       <anim item="0" id="50" name="CLIMB_2CLICK" />
       <anim item="0" id="51" name="CLIMB_2CLICK_END" />
       <anim item="0" id="52" name="CLIMB_2CLICK_END_TO_RUN" />
