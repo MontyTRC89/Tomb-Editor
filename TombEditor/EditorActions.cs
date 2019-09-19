@@ -4186,7 +4186,7 @@ namespace TombEditor
                     return;
             }
 
-            using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrection))
+            using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport))
             {
                 if (formImport.ShowDialog() != DialogResult.OK)
                     return;

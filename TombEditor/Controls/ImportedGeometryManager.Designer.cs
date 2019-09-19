@@ -35,14 +35,14 @@
             this.searchButtonColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.scaleColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.errorMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.swapXYColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.swapXZColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.swapYZColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.flipXColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.flipYColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.flipZColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.flipUV_Vcolumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.invertFacesColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.swapXYColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.swapXZColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.swapYZColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.flipXColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.flipYColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.flipZColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.flipUV_Vcolumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.invertFacesColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             //
@@ -213,13 +213,13 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn searchButtonColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn scaleColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn errorMessageColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn swapXYColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn swapXZColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn swapYZColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipXColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipYColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipZColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipUV_Vcolumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn invertFacesColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn swapXYColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn swapXZColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn swapYZColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn flipXColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn flipYColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn flipZColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn flipUV_Vcolumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn invertFacesColumn;
     }
 }

@@ -268,7 +268,7 @@ namespace TombEditor.Forms
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(793, 533) + (Size - ClientSize);
+            MinimumSize = new Size(910, 510) + (Size - ClientSize);
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);

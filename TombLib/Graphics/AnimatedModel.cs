@@ -100,7 +100,7 @@ namespace TombLib.Graphics
 
         private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, KeyFrame frame1, KeyFrame frame2, float k)
         {
-            Matrix4x4 rotation = Matrix4x4.CreateFromQuaternion(Quaternion.Slerp(frame1.Quaternions[0], frame2.Quaternions[0], k));
+            Matrix4x4 rotation = Matrix4x4.CreateFromQuaternion(Quaternion.Slerp(frame1.Quaternions[node.Index], frame2.Quaternions[node.Index], k));
 
             AnimationTransforms[node.Index] = rotation * node.Transform * parentTransform;
 
