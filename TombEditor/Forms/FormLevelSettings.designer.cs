@@ -392,8 +392,8 @@
             this.tabbedContainer.Controls.Add(this.tabSkyAndFont);
             this.tabbedContainer.Controls.Add(this.tabSoundsCatalogs);
             this.tabbedContainer.Controls.Add(this.tabSamples);
-            this.tabbedContainer.Controls.Add(this.tabPaths);
             this.tabbedContainer.Controls.Add(this.tabMisc);
+            this.tabbedContainer.Controls.Add(this.tabPaths);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
@@ -1855,7 +1855,6 @@
             this.Controls.Add(this.optionsList);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FormLevelSettings";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

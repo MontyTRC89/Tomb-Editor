@@ -455,7 +455,7 @@
             this.darkCheckBox22.Name = "darkCheckBox22";
             this.darkCheckBox22.Size = new System.Drawing.Size(169, 17);
             this.darkCheckBox22.TabIndex = 7;
-            this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrection";
+            this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrectionOnPrjImport";
             this.darkCheckBox22.Text = "Use half-pixel UV correction";
             // 
             // darkCheckBox2

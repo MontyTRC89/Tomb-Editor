@@ -189,9 +189,6 @@ namespace TombEditor.Controls
             if (selectionPrecision.Precision == 0.0f)
                 return texCoord;
 
-            if(_editor.Configuration.Editor_UseHalfPixelCorrection)
-                texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
-
             texCoord /= selectionPrecision.Precision;
             if (selectionPrecision.Precision >= 32.0f && rectangularSelection)
             {
@@ -202,9 +199,6 @@ namespace TombEditor.Controls
             else
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
             texCoord *= selectionPrecision.Precision;
-
-            if (_editor.Configuration.Editor_UseHalfPixelCorrection)
-                texCoord += new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
 
             return texCoord;
         }
@@ -676,13 +670,6 @@ namespace TombEditor.Controls
             {
                 if (!(VisibleTexture?.IsAvailable ?? false))
                     return;
-
-                float adjustmentFactor = _editor.Configuration.Editor_UseHalfPixelCorrection ? 0.5f : 0.0f;
-
-                value.TexCoord0 = Vector2.Max(Vector2.Min(value.TexCoord0, VisibleTexture.Image.Size - new Vector2(adjustmentFactor)), new Vector2(adjustmentFactor));
-                value.TexCoord1 = Vector2.Max(Vector2.Min(value.TexCoord1, VisibleTexture.Image.Size - new Vector2(adjustmentFactor)), new Vector2(adjustmentFactor));
-                value.TexCoord2 = Vector2.Max(Vector2.Min(value.TexCoord2, VisibleTexture.Image.Size - new Vector2(adjustmentFactor)), new Vector2(adjustmentFactor));
-                value.TexCoord3 = Vector2.Max(Vector2.Min(value.TexCoord3, VisibleTexture.Image.Size - new Vector2(adjustmentFactor)), new Vector2(adjustmentFactor));
                 
                 if (_selectedTexture == value)
                     return;
