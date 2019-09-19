@@ -397,7 +397,7 @@
       <anim item="0" id="3" name="END_WALK_LEFT" />
       <anim item="0" id="4" name="WALK_TO_RUN_RIGHT" />
       <anim item="0" id="5" name="WALK_TO_RUN_LEFT" />
-      <anim item="0" id="6" name="STAND_TO_RUN" />
+      <anim item="0" id="6" name="RUN_START" />
       <anim item="0" id="7" name="RUN_TO_WALK_RIGHT" />
       <anim item="0" id="8" name="RUN_TO_STAND_LEFT" />
       <anim item="0" id="9" name="RUN_TO_WALK_LEFT" />
@@ -527,8 +527,8 @@
       <anim item="0" id="133" name="RUN_DEATH" />
       <anim item="0" id="134" name="USE_PUZZLE" />
       <anim item="0" id="135" name="PICKUP" />
-      <anim item="0" id="136" name="CLIMB_LEFT" />
-      <anim item="0" id="137" name="CLIMB_RIGHT" />
+      <anim item="0" id="136" name="SHIMMY_LEFT" />
+      <anim item="0" id="137" name="SHIMMY_RIGHT" />
       <anim item="0" id="138" name="STAND_DEATH" />
       <anim item="0" id="139" name="BOULDER_DEATH" />
       <anim item="0" id="140" name="ONWATER_IDLE_TO_SWIM_BACK" />
