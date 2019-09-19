@@ -39,11 +39,11 @@ namespace WadTool
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
+            this.findReplaceAnimcommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calculateBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resampleAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resampleAnimationToKeyframesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findReplaceAnimcommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertnFramesAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -163,6 +163,7 @@ namespace WadTool
             this.panelTools = new System.Windows.Forms.Panel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -388,6 +389,16 @@ namespace WadTool
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
             this.toolStripMenuItem7.Size = new System.Drawing.Size(223, 6);
             // 
+            // findReplaceAnimcommandsToolStripMenuItem
+            // 
+            this.findReplaceAnimcommandsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.findReplaceAnimcommandsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.findReplaceAnimcommandsToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Find_and_replace_16;
+            this.findReplaceAnimcommandsToolStripMenuItem.Name = "findReplaceAnimcommandsToolStripMenuItem";
+            this.findReplaceAnimcommandsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.findReplaceAnimcommandsToolStripMenuItem.Text = "Find && replace animcommands...";
+            this.findReplaceAnimcommandsToolStripMenuItem.Click += new System.EventHandler(this.findReplaceAnimcommandsToolStripMenuItem_Click);
+            // 
             // calculateBoundingBoxForAllFramesToolStripMenuItem
             // 
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -424,16 +435,6 @@ namespace WadTool
             this.resampleAnimationToKeyframesToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.resampleAnimationToKeyframesToolStripMenuItem.Text = "Resample animation to framerate";
             this.resampleAnimationToKeyframesToolStripMenuItem.Click += new System.EventHandler(this.resampleAnimationToKeyframesToolStripMenuItem_Click);
-            // 
-            // findReplaceAnimcommandsToolStripMenuItem
-            // 
-            this.findReplaceAnimcommandsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.findReplaceAnimcommandsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.findReplaceAnimcommandsToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Find_and_replace_16;
-            this.findReplaceAnimcommandsToolStripMenuItem.Name = "findReplaceAnimcommandsToolStripMenuItem";
-            this.findReplaceAnimcommandsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.findReplaceAnimcommandsToolStripMenuItem.Text = "Find && replace animcommands...";
-            this.findReplaceAnimcommandsToolStripMenuItem.Click += new System.EventHandler(this.findReplaceAnimcommandsToolStripMenuItem_Click);
             // 
             // frameToolStripMenuItem
             // 
@@ -581,9 +582,10 @@ namespace WadTool
             // 
             this.renderingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.renderingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.drawGridToolStripMenuItem,
             this.drawGizmoToolStripMenuItem,
-            this.drawCollisionBoxToolStripMenuItem});
+            this.drawGridToolStripMenuItem,
+            this.drawCollisionBoxToolStripMenuItem,
+            this.smoothAnimationsToolStripMenuItem});
             this.renderingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.renderingToolStripMenuItem.Name = "renderingToolStripMenuItem";
             this.renderingToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
@@ -1815,6 +1817,18 @@ namespace WadTool
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(28, 35);
             // 
+            // smoothAnimationsToolStripMenuItem
+            // 
+            this.smoothAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.smoothAnimationsToolStripMenuItem.Checked = true;
+            this.smoothAnimationsToolStripMenuItem.CheckOnClick = true;
+            this.smoothAnimationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.smoothAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.smoothAnimationsToolStripMenuItem.Name = "smoothAnimationsToolStripMenuItem";
+            this.smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
+            this.smoothAnimationsToolStripMenuItem.Click += new System.EventHandler(this.smoothAnimationsToolStripMenuItem_Click);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2016,5 +2030,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem deleteEveryNthFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findReplaceAnimcommandsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butTbImport;
+        private System.Windows.Forms.ToolStripMenuItem smoothAnimationsToolStripMenuItem;
     }
 }

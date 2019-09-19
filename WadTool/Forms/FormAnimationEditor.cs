@@ -55,6 +55,7 @@ namespace WadTool
         // Player
         private Timer _timerPlayAnimation;
         private int _frameCount;
+        private bool _smooth = true;
         private bool _previewSounds;
         private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
         private int _currentMaterialIndex;
@@ -120,10 +121,7 @@ namespace WadTool
             RebuildAnimationsList();
 
             if (_editor.Animations.Count != 0)
-            {
                 SelectAnimation(_editor.Animations[0]);
-                SelectFrame(0);
-            }
 
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -391,9 +389,11 @@ namespace WadTool
             UpdateStatusLabel();
         }
 
-        private void SelectFrame(int frameIndex)
+        private void SelectFrame(float k = -1)
         {
             if (!_editor.ValidAnimationAndFrames) return;
+
+            int frameIndex = timeline.Value;
 
             if (frameIndex >= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count)
                 frameIndex = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
@@ -401,11 +401,23 @@ namespace WadTool
             _editor.CurrentFrameIndex = frameIndex;
 
             var keyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex];
-            panelRendering.Model.BuildAnimationPose(keyFrame);
-            panelRendering.Invalidate();
 
-            // Update GUI
-            OnKeyframesListChanged();
+            if (k > 0)
+            {
+                var nextIndex = (frameIndex < _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1) ?
+                                          frameIndex + 1 :
+                                          0;
+                k = Math.Min(k, 1);
+                KeyFrame nextKeyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[nextIndex];
+                panelRendering.Model.BuildAnimationPose(keyFrame, nextKeyFrame, k);
+                panelRendering.Invalidate();
+            }
+            else
+            {
+                panelRendering.Model.BuildAnimationPose(keyFrame);
+                panelRendering.Invalidate();
+                OnKeyframesListChanged();
+            }
 
             tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
             tbCollisionBoxMinY.Text = keyFrame.BoundingBox.Minimum.Y.ToString();
@@ -1470,7 +1482,7 @@ namespace WadTool
         // Timeline & transport one-liners
 
         private void timeline_SelectionChanged(object sender, EventArgs e) => UpdateSelection();
-        private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame(timeline.Value);
+        private void timeline_ValueChanged(object sender, EventArgs e) => SelectFrame();
         private void timeline_AnimCommandDoubleClick(object sender, WadAnimCommand ac) => EditAnimCommands(ac);
 
         private void butTransportPlay_Click(object sender, EventArgs e) => PlayAnimation();
@@ -1534,7 +1546,7 @@ namespace WadTool
                 else
                     _frameCount = 0;
             }
-
+            
             bool isKeyFrame = (_frameCount % (_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate) == 0);
 
             // Update animation
@@ -1546,6 +1558,12 @@ namespace WadTool
                     timeline.Value = 0;
                 else
                     timeline.Value = newFrameNumber;
+            }
+            else if(_smooth)
+            {
+                float k = (float)_frameCount / (float)(_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate);
+                k = k - (float)Math.Floor(k);
+                SelectFrame(k);
             }
 
             UpdateStatusLabel();
@@ -1884,6 +1902,11 @@ namespace WadTool
                 if (form.EditingWasDone) Saved = false;
                 timeline.Invalidate(); // FIXME: To update current timeline. Use an event instead later.
             }
+        }
+
+        private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _smooth = !_smooth;
         }
     }
 }

@@ -63,8 +63,8 @@
             this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.textureFileDataGridViewSizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.tabObjects = new System.Windows.Forms.TabPage();
             this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
@@ -119,7 +119,7 @@
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.dataGridViewCheckBoxColumn1 = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -210,14 +210,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -2009,8 +2009,8 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn textureFileDataGridViewShowColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewMessageColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewSizeColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewPathColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewSearchColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewShowColumn;
@@ -2060,7 +2060,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsGameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsOriginalIdColumn;
         private DarkUI.Controls.DarkButton butAssignFromWads;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
