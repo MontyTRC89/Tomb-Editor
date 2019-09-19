@@ -30,7 +30,15 @@ namespace WadTool
         // Helpers
         public bool SelectionIsEmpty => Selection.X == -1 || Selection.Y == -1;
         public bool ValidAnimationAndFrames => CurrentAnim != null && CurrentAnim.DirectXAnimation.KeyFrames.Count > 0;
-        public KeyFrame CurrentKeyFrame => CurrentAnim.DirectXAnimation.KeyFrames[CurrentFrameIndex];
+        public KeyFrame CurrentKeyFrame
+        {
+            get
+            {
+                if (CurrentFrameIndex >= CurrentAnim.DirectXAnimation.KeyFrames.Count)
+                    CurrentFrameIndex = 0;
+                return CurrentAnim.DirectXAnimation.KeyFrames[CurrentFrameIndex];
+            }
+        }
 
         public List<KeyFrame> ActiveFrames
         {
