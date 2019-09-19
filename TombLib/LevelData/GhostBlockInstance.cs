@@ -22,9 +22,7 @@ namespace TombLib.LevelData
         public bool FloorSplitToggled => Block.Floor.SplitDirectionIsXEqualsZ;
         public bool CeilingSplitToggled => Block.Ceiling.SplitDirectionIsXEqualsZ;
 
-        public bool Editable => !Block.IsAnyWall && Block.Floor.DiagonalSplit == DiagonalSplit.None
-                                                 && Block.Ceiling.DiagonalSplit == DiagonalSplit.None;
-
+        public bool Editable => !Block.IsAnyWall;
         public bool Valid => Editable && (Floor.XnZn != 0   || Floor.XpZn != 0   || Floor.XnZp != 0   || Floor.XpZp != 0  ||
                                           Ceiling.XnZn != 0 || Ceiling.XpZn != 0 || Ceiling.XnZp != 0 || Ceiling.XpZp != 0);
 
