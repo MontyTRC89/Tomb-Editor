@@ -50,10 +50,10 @@ namespace TombLib.Controls
         private int marginWidth => picSlider.ClientSize.Width - picSlider.Padding.Horizontal - 1;
         private float frameStep => realFrameCount <= 1 ? marginWidth : (float)marginWidth / (float)(realFrameCount - 1);
 
-        private int XtoMinMax(int x, int max, bool interpolate = true) => (int)Math.Round((double)(Minimum + (max - Minimum) * x) / (double)(picSlider.ClientSize.Width - picSlider.Padding.Horizontal), interpolate ? MidpointRounding.ToEven : MidpointRounding.AwayFromZero);
+        private int XtoMinMax(int x, int max, bool interpolate = true) => (int)Math.Round((double)(Minimum + (max - Minimum) * x) / (picSlider.ClientSize.Width - picSlider.Padding.Horizontal), interpolate ? MidpointRounding.ToEven : MidpointRounding.AwayFromZero);
         private int XtoRealFrameNumber(int x) => Math.Max(XtoMinMax(x, realFrameCount - 1, false), 0);
         private int XtoValue(int x) => XtoMinMax(x, Maximum, false);
-        private int ValueToX(int value) => Maximum - Minimum == 0 ? 0 : (int)Math.Round((double)((picSlider.ClientSize.Width - picSlider.Padding.Horizontal) * (value - Minimum)) / (double)(Maximum - Minimum), MidpointRounding.ToEven);
+        private int ValueToX(int value) => Maximum - Minimum == 0 ? 0 : (int)Math.Round((double)((picSlider.ClientSize.Width - picSlider.Padding.Horizontal) * (value - Minimum)) / (Maximum - Minimum), MidpointRounding.ToEven);
 
         private int _minimum;
         public int Minimum
@@ -139,6 +139,8 @@ namespace TombLib.Controls
                 picSlider.Invalidate();
             }
         }
+        public int SelectionStartFrameIndex => Animation.WadAnimation.FrameRate * SelectionStart;
+        public int SelectionEndFrameIndex => Animation.WadAnimation.FrameRate * SelectionEnd;
 
         public VectorInt2 Selection => SelectionIsEmpty ? new VectorInt2(-1, -1) : new VectorInt2(Math.Min(SelectionStart, SelectionEnd), Math.Max(SelectionStart, SelectionEnd));
         public bool SelectionIsEmpty => SelectionEnd == -1 && SelectionStart == -1;
@@ -179,6 +181,7 @@ namespace TombLib.Controls
                 picSlider.Invalidate();
             }
         }
+        public int FrameIndex => Animation.WadAnimation.FrameRate * Value;
 
         public void ValueLoopInc() { if (Value < Maximum) Value++; else Value = 0; }
         public void ValueLoopDec() { if (Value > Minimum) Value--; else Value = Maximum; }
@@ -261,6 +264,9 @@ namespace TombLib.Controls
             }
             else if (e.Button == MouseButtons.Left)
                 Value = XtoValue(e.X);
+
+            // Invoke parent event
+            OnMouseDown(e);
         }
 
         private void picSlider_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -347,7 +353,7 @@ namespace TombLib.Controls
                         picSlider.ClientSize.Height / _stateChangeMarkerThicknessDivider - picSlider.Padding.Bottom - 2));
                 }
 
-            int halfCursorWidth = _cursorWidth / 2;
+            int halfCursorWidth = (int)Math.Round(_cursorWidth / 2.0f);
 
             // Shift the cursor at start/stop positions to prevent clipping
             int addShift = -halfCursorWidth;
@@ -365,7 +371,7 @@ namespace TombLib.Controls
 
                 if ((passes == 0 && !SelectionIsEmpty) || (passes == 1 && _highlightTimer.Enabled))
                 {
-                    int width = size == 0 ? _cursorWidth : size + halfCursorWidth;
+                    int width = size == 0 ? _cursorWidth : size + _cursorWidth;
                     Rectangle rect = new Rectangle(realX + picSlider.Padding.Left - halfCursorWidth, picSlider.Padding.Top, width, picSlider.ClientSize.Height - picSlider.Padding.Bottom); ;
 
                     if (size == 0)
@@ -378,6 +384,10 @@ namespace TombLib.Controls
                         if (x == Minimum)
                         {
                             rect.X += halfCursorWidth;
+                            rect.Width -= halfCursorWidth;
+                        }
+                        if (y == Maximum)
+                        {
                             rect.Width -= halfCursorWidth;
                         }
                     }
@@ -402,7 +412,7 @@ namespace TombLib.Controls
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
-                    int  currX = (int)Math.Round(frameStep * i, MidpointRounding.ToEven) + picSlider.Padding.Left;
+                    int  currX = (int)Math.Round(frameStep * i, MidpointRounding.AwayFromZero) + picSlider.Padding.Left;
                     bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
@@ -427,16 +437,30 @@ namespace TombLib.Controls
                                 }
                         }
 
-                        e.Graphics.SmoothingMode = SmoothingMode.Default;
+                        // Draw frame lines.
+                        // Determine if labels are overlapping and decide on drawing
+                        var drawStepWidth = _keyFrameBorderPen.Width * 2;
+                        bool drawCurrentLine = true;
 
-                        // Draw dividers
-                        var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
-                        if (isKeyFrame)
-                            e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw keyframe
-                        else
-                            e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
+                        if (frameStep < drawStepWidth)
+                        {
+                            int period = (int)Math.Round(drawStepWidth / frameStep, MidpointRounding.AwayFromZero);
+                            if (i % period != 0) drawCurrentLine = false;
+                        }
 
-                        e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+                        if (drawCurrentLine)
+                        {
+                            e.Graphics.SmoothingMode = SmoothingMode.Default;
+
+                            var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
+                            if (isKeyFrame)
+                                e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw keyframe
+                            else
+                                e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
+
+                            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+                        }
+
                     }
 
                     // Draw cursor on 2nd pass's first occurence (only for real animations, not for single-frame ones)

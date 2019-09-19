@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Graphics;
 using TombLib.Wad;
 
 namespace WadTool
 {
     public partial class FormStateChangesEditor : DarkUI.Forms.DarkForm
     {
+        private readonly AnimationEditor _editor;
+        private AnimationNode _animation;
+        private bool _createdNew = false;
+
         private class WadStateChangeRow
         {
             public ushort StateId { get; set; }
@@ -35,19 +36,78 @@ namespace WadTool
 
         public List<WadStateChange> StateChanges { get; private set; }
 
-        public FormStateChangesEditor(List<WadStateChange> stateChanges)
+        public FormStateChangesEditor(AnimationEditor editor, AnimationNode animation, WadStateChange newStateChange = null)
         {
             InitializeComponent();
 
-            var rows = new List<WadStateChangeRow>();
-            foreach (var sc in stateChanges)
-                foreach (var d in sc.Dispatches)
-                    rows.Add(new WadStateChangeRow(sc.StateId, d.InFrame, d.OutFrame, d.NextAnimation, d.NextFrame));
+            _editor = editor;
 
-            dgvStateChanges.DataSource = new BindingList<WadStateChangeRow>(new List<WadStateChangeRow>(rows));
             dgvControls.CreateNewRow = newObject;
             dgvControls.DataGridView = dgvStateChanges;
             dgvControls.Enabled = true;
+
+            Initialize(animation, newStateChange);
+            _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
+        }
+
+        private void Initialize(AnimationNode animation, WadStateChange newStateChange)
+        {
+            _animation = animation;
+
+            dgvStateChanges.Rows.Clear();
+
+            var rows = new List<WadStateChangeRow>();
+            foreach (var sc in _animation.WadAnimation.StateChanges)
+                foreach (var d in sc.Dispatches)
+                    rows.Add(new WadStateChangeRow(sc.StateId, d.InFrame, d.OutFrame, d.NextAnimation, d.NextFrame));
+
+            if (newStateChange != null && newStateChange.Dispatches.Count == 1)
+            {
+                rows.Add(new WadStateChangeRow(newStateChange.StateId,
+                                               newStateChange.Dispatches[0].InFrame,
+                                               newStateChange.Dispatches[0].OutFrame,
+                                               newStateChange.Dispatches[0].NextAnimation,
+                                               newStateChange.Dispatches[0].NextFrame));
+                _createdNew = true;
+            }
+
+            dgvStateChanges.DataSource = new BindingList<WadStateChangeRow>(new List<WadStateChangeRow>(rows));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.Tool.EditorEventRaised -= Tool_EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
+        private void Tool_EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
+            {
+                var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
+                if (e != null && e.Animation != _animation)
+                    Initialize(e.Animation, null);
+            }
+
+            if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)
+            {
+                var e = obj as WadToolClass.AnimationEditorAnimationChangedEvent;
+                if (e != null && e.Animation == _animation)
+                    Initialize(e.Animation, null);
+            }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            if(_createdNew)
+            {
+                dgvStateChanges.ClearSelection();
+                dgvStateChanges.Rows[dgvStateChanges.Rows.Count - 2].Selected = true;
+                dgvStateChanges.FirstDisplayedScrollingRowIndex = dgvStateChanges.SelectedRows[0].Index;
+            }
         }
 
         private object newObject()
@@ -58,7 +118,7 @@ namespace WadTool
         private void btOk_Click(object sender, EventArgs e)
         {
             // Update data
-            StateChanges= new List<WadStateChange>();
+            StateChanges = new List<WadStateChange>();
             var tempDictionary = new Dictionary<int, WadStateChange>();
             foreach (var row in (IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource)
             {
@@ -71,17 +131,21 @@ namespace WadTool
             }
             StateChanges.AddRange(tempDictionary.Values.ToList());
 
+            // Undo
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _animation);
+
+            // Add the new state changes
+            _animation.WadAnimation.StateChanges.Clear();
+            _animation.WadAnimation.StateChanges.AddRange(StateChanges);
+
+            // Update state in parent window
+            _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
+
             // Close
-            DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void btCancel_Click(object sender, EventArgs e)
-        {
-            // Close
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
+        private void btCancel_Click(object sender, EventArgs e) => Close();
 
         private void dgvStateChanges_CellFormattingSafe(object sender, DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventArgs e)
         {
