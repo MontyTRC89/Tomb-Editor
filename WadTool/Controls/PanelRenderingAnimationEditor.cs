@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -202,7 +203,6 @@ namespace WadTool.Controls
                 var skin = (_skinModel != null ? _skinModel : _model);
                 var effect = _deviceManager.___LegacyEffects["Model"];
 
-                effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
@@ -228,6 +228,11 @@ namespace WadTool.Controls
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    if (SelectedMesh == _model.Meshes[i])
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+                    else
+                    effect.Parameters["Color"].SetValue(Vector4.One);
 
                     effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
 
