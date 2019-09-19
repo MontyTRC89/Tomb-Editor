@@ -158,13 +158,17 @@ namespace WadTool
 
                         lstAnimations.Items[index].Tag = e.Animation;
                         lstAnimations.Items[index].Text = GetAnimLabel(((AnimationNode)anim.Tag).Index, ((AnimationNode)anim.Tag));
-                        lstAnimations.SelectItem(index);
 
-                        // Restore cursor position
-                        if (cursorPos != -1)
-                            timeline.Value = cursorPos;
-                        else
-                            timeline.Value = timeline.Minimum;
+                        if (e.Focus)
+                        {
+                            lstAnimations.SelectItem(index);
+
+                            // Restore cursor position
+                            if (cursorPos != -1)
+                                timeline.Value = cursorPos;
+                            else
+                                timeline.Value = timeline.Minimum;
+                        }
 
                         Saved = false;
                     }
@@ -380,6 +384,8 @@ namespace WadTool
             timeline.ResetSelection();
 
             panelRendering.Invalidate();
+
+            _editor.Tool.AnimationEditorCurrentAnimationChanged(_editor.CurrentAnim);
 
         }
 
@@ -1185,7 +1191,7 @@ namespace WadTool
             var existingWindow = Application.OpenForms["FormAnimCommandsEditor"];
             if (existingWindow == null)
             {
-                FormAnimCommandsEditor acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim, cmd);
+                var acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim, cmd);
                 acEditor.Show(this);
             }
             else
@@ -1196,25 +1202,18 @@ namespace WadTool
             }
         }
 
-        private void EditStateChanges()
+        private void EditStateChanges(WadStateChange sch = null)
         {
             if (_editor.CurrentAnim == null) return;
 
-            using (var form = new FormStateChangesEditor(_editor.CurrentAnim.WadAnimation.StateChanges))
+            var existingWindow = Application.OpenForms["FormStateChangesEditor"];
+            if (existingWindow == null)
             {
-                if (form.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-
-                // Add the new state changes
-                _editor.CurrentAnim.WadAnimation.StateChanges.Clear();
-                _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(form.StateChanges);
-
-                Saved = false;
+                var scEditor = new FormStateChangesEditor(_editor, _editor.CurrentAnim, sch);
+                scEditor.Show(this);
             }
-
-            timeline.Invalidate();
+            else
+                existingWindow.Focus();
         }
 
         private void ImportAnimations()
@@ -1786,7 +1785,7 @@ namespace WadTool
 
         private void resampleAnimationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var form = new FormInputBox("Resample animation", "Enter resample multiplier (speed)", "1"))
+            using (var form = new FormInputBox("Resample animation", "Enter resample multiplier (speed)", "2"))
             {
                 form.Width = 300;
                 if (form.ShowDialog(this) == DialogResult.OK)
@@ -1907,6 +1906,41 @@ namespace WadTool
         private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _smooth = !_smooth;
+        }
+
+        private void timeline_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                cmTimelineContextMenu.Show(Cursor.Position, ToolStripDropDownDirection.AboveRight);
+        }
+
+        private void cmMarkInMenuItem_Click(object sender, EventArgs e) => timeline.SelectionStart = timeline.Value;
+        private void cmMarkOutMenuItem_Click(object sender, EventArgs e) => timeline.SelectionEnd = timeline.Value;
+        private void cnClearSelectionMenuItem_Click(object sender, EventArgs e) => timeline.ResetSelection();
+        private void cmCreateAnimCommandMenuItem_Click(object sender, EventArgs e) => EditAnimCommands(new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)timeline.FrameIndex });
+
+        private void cmTranslateRotateMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmCreateStateChangeMenuItem_Click(object sender, EventArgs e)
+        {
+            WadStateChange sch = null;
+
+            if (!timeline.SelectionIsEmpty)
+            {
+                sch = new WadStateChange();
+                sch.Dispatches.Add(new WadAnimDispatch()
+                {
+                    InFrame = (ushort)timeline.SelectionStartFrameIndex,
+                    OutFrame = (ushort)timeline.SelectionEndFrameIndex,
+                    NextAnimation = 0,
+                    NextFrame = 0
+                });
+            }
+
+            EditStateChanges(sch);
         }
     }
 }

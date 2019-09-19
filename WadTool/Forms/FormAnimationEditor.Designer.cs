@@ -59,9 +59,10 @@ namespace WadTool
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteEveryNthFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
@@ -163,7 +164,15 @@ namespace WadTool
             this.panelTools = new System.Windows.Forms.Panel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            this.smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
+            this.cmTimelineContextMenu = new DarkUI.Controls.DarkContextMenu();
+            this.cmMarkInMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmMarkOutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cnClearSelectionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmTranslateRotateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -179,6 +188,7 @@ namespace WadTool
             this.darkSectionPanel6.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelTools.SuspendLayout();
+            this.cmTimelineContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // topMenu
@@ -443,6 +453,7 @@ namespace WadTool
             this.insertFrameAfterCurrentOneToolStripMenuItem,
             this.insertnFramesAfterCurrentOneToolStripMenuItem,
             this.deleteFrameToolStripMenuItem,
+            this.deleteEveryNthFrameToolStripMenuItem,
             this.toolStripMenuItem4,
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
@@ -451,8 +462,7 @@ namespace WadTool
             this.interpolateFramesToolStripMenuItem,
             this.toolStripMenuItem6,
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem,
-            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem,
-            this.deleteEveryNthFrameToolStripMenuItem});
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem});
             this.frameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.frameToolStripMenuItem.Name = "frameToolStripMenuItem";
             this.frameToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
@@ -575,7 +585,7 @@ namespace WadTool
             this.deleteEveryNthFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteEveryNthFrameToolStripMenuItem.Name = "deleteEveryNthFrameToolStripMenuItem";
             this.deleteEveryNthFrameToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.deleteEveryNthFrameToolStripMenuItem.Text = "Delete every nth frame";
+            this.deleteEveryNthFrameToolStripMenuItem.Text = "Delete every (n)th frame";
             this.deleteEveryNthFrameToolStripMenuItem.Click += new System.EventHandler(this.DeleteEveryNthFrameToolStripMenuItem_Click);
             // 
             // renderingToolStripMenuItem
@@ -591,18 +601,6 @@ namespace WadTool
             this.renderingToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.renderingToolStripMenuItem.Text = "Rendering";
             // 
-            // drawGridToolStripMenuItem
-            // 
-            this.drawGridToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.drawGridToolStripMenuItem.Checked = true;
-            this.drawGridToolStripMenuItem.CheckOnClick = true;
-            this.drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
-            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.drawGridToolStripMenuItem.Text = "Draw grid";
-            this.drawGridToolStripMenuItem.Click += new System.EventHandler(this.drawGridToolStripMenuItem_Click);
-            // 
             // drawGizmoToolStripMenuItem
             // 
             this.drawGizmoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -611,9 +609,21 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGizmoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
-            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.drawGizmoToolStripMenuItem.Text = "Draw gizmo";
             this.drawGizmoToolStripMenuItem.Click += new System.EventHandler(this.drawGizmoToolStripMenuItem_Click);
+            // 
+            // drawGridToolStripMenuItem
+            // 
+            this.drawGridToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.drawGridToolStripMenuItem.Checked = true;
+            this.drawGridToolStripMenuItem.CheckOnClick = true;
+            this.drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
+            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.drawGridToolStripMenuItem.Text = "Draw grid";
+            this.drawGridToolStripMenuItem.Click += new System.EventHandler(this.drawGridToolStripMenuItem_Click);
             // 
             // drawCollisionBoxToolStripMenuItem
             // 
@@ -623,9 +633,21 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawCollisionBoxToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
-            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
+            // 
+            // smoothAnimationsToolStripMenuItem
+            // 
+            this.smoothAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.smoothAnimationsToolStripMenuItem.Checked = true;
+            this.smoothAnimationsToolStripMenuItem.CheckOnClick = true;
+            this.smoothAnimationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.smoothAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.smoothAnimationsToolStripMenuItem.Name = "smoothAnimationsToolStripMenuItem";
+            this.smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
+            this.smoothAnimationsToolStripMenuItem.Click += new System.EventHandler(this.smoothAnimationsToolStripMenuItem_Click);
             // 
             // darkStatusStrip1
             // 
@@ -1358,6 +1380,7 @@ namespace WadTool
             this.timeline.Value = 0;
             this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
             this.timeline.SelectionChanged += new System.EventHandler(this.timeline_SelectionChanged);
+            this.timeline.MouseDown += new System.Windows.Forms.MouseEventHandler(this.timeline_MouseDown);
             // 
             // panelTransport
             // 
@@ -1817,17 +1840,89 @@ namespace WadTool
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(28, 35);
             // 
-            // smoothAnimationsToolStripMenuItem
+            // darkContextMenu1
             // 
-            this.smoothAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.smoothAnimationsToolStripMenuItem.Checked = true;
-            this.smoothAnimationsToolStripMenuItem.CheckOnClick = true;
-            this.smoothAnimationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.smoothAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.smoothAnimationsToolStripMenuItem.Name = "smoothAnimationsToolStripMenuItem";
-            this.smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
-            this.smoothAnimationsToolStripMenuItem.Click += new System.EventHandler(this.smoothAnimationsToolStripMenuItem_Click);
+            this.darkContextMenu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkContextMenu1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkContextMenu1.Name = "darkContextMenu1";
+            this.darkContextMenu1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // cmTimelineContextMenu
+            // 
+            this.cmTimelineContextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmTimelineContextMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmTimelineContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmMarkInMenuItem,
+            this.cmMarkOutMenuItem,
+            this.cnClearSelectionMenuItem,
+            this.toolStripSeparator8,
+            this.cmTranslateRotateMenuItem,
+            this.cmCreateAnimCommandMenuItem,
+            this.cmCreateStateChangeMenuItem});
+            this.cmTimelineContextMenu.Name = "cmTimelineContextMenu";
+            this.cmTimelineContextMenu.Size = new System.Drawing.Size(178, 143);
+            // 
+            // cmMarkInMenuItem
+            // 
+            this.cmMarkInMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmMarkInMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmMarkInMenuItem.Name = "cmMarkInMenuItem";
+            this.cmMarkInMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.cmMarkInMenuItem.Text = "Mark in";
+            this.cmMarkInMenuItem.Click += new System.EventHandler(this.cmMarkInMenuItem_Click);
+            // 
+            // cmMarkOutMenuItem
+            // 
+            this.cmMarkOutMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmMarkOutMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmMarkOutMenuItem.Name = "cmMarkOutMenuItem";
+            this.cmMarkOutMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.cmMarkOutMenuItem.Text = "Mark out";
+            this.cmMarkOutMenuItem.Click += new System.EventHandler(this.cmMarkOutMenuItem_Click);
+            // 
+            // cnClearSelectionMenuItem
+            // 
+            this.cnClearSelectionMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cnClearSelectionMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cnClearSelectionMenuItem.Name = "cnClearSelectionMenuItem";
+            this.cnClearSelectionMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.cnClearSelectionMenuItem.Text = "Clear selection";
+            this.cnClearSelectionMenuItem.Click += new System.EventHandler(this.cnClearSelectionMenuItem_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator8.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(174, 6);
+            // 
+            // cmTranslateRotateMenuItem
+            // 
+            this.cmTranslateRotateMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmTranslateRotateMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmTranslateRotateMenuItem.Name = "cmTranslateRotateMenuItem";
+            this.cmTranslateRotateMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.cmTranslateRotateMenuItem.Text = "Translate / rotate...";
+            this.cmTranslateRotateMenuItem.Click += new System.EventHandler(this.cmTranslateRotateMenuItem_Click);
+            // 
+            // cmCreateAnimCommandMenuItem
+            // 
+            this.cmCreateAnimCommandMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmCreateAnimCommandMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmCreateAnimCommandMenuItem.Name = "cmCreateAnimCommandMenuItem";
+            this.cmCreateAnimCommandMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.cmCreateAnimCommandMenuItem.Text = "Create anim command...";
+            this.cmCreateAnimCommandMenuItem.Click += new System.EventHandler(this.cmCreateAnimCommandMenuItem_Click);
+            // 
+            // cmCreateStateChangeMenuItem
+            // 
+            this.cmCreateStateChangeMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cmCreateStateChangeMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cmCreateStateChangeMenuItem.Name = "cmCreateStateChangeMenuItem";
+            this.cmCreateStateChangeMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.cmCreateStateChangeMenuItem.Text = "Create state change...";
+            this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
             // FormAnimationEditor
             // 
@@ -1871,6 +1966,7 @@ namespace WadTool
             this.darkSectionPanel6.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.panelTools.ResumeLayout(false);
+            this.cmTimelineContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2031,5 +2127,14 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem findReplaceAnimcommandsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butTbImport;
         private System.Windows.Forms.ToolStripMenuItem smoothAnimationsToolStripMenuItem;
+        private DarkUI.Controls.DarkContextMenu darkContextMenu1;
+        private DarkUI.Controls.DarkContextMenu cmTimelineContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem cmMarkInMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cmMarkOutMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cnClearSelectionMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem cmTranslateRotateMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cmCreateAnimCommandMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cmCreateStateChangeMenuItem;
     }
 }
