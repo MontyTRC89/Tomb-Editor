@@ -20,9 +20,7 @@ namespace TombLib.Wad.Tr4Wad
         {
             logger.Info("Converting TR4 WAD to Wad2");
 
-            var wad = new Wad2();
-            wad.SuggestedGameVersion = WadGameVersion.TR4_TRNG;
-            wad.SoundSystem = SoundSystem.Xml;
+            var wad = new Wad2() { SoundSystem = SoundSystem.Xml, SuggestedGameVersion = WadGameVersion.TR4_TRNG };
 
             // Convert all textures
             Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);

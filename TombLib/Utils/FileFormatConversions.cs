@@ -54,7 +54,7 @@ namespace TombLib.Utils
                     return true;
 
                 // Now collect all sound infos from obsolete lists and build a new list
-                var soundInfos = wad.AllLoadesSoundInfos.Values.ToList();
+                var soundInfos = wad.AllLoadedSoundInfos.Values.ToList();
 
                 // Loop through each sound info and try to get the classic Id from TrCatalog.xml
                 var conversionList = new List<SoundInfoConversionRow>();

@@ -18,8 +18,8 @@ namespace TombLib.Wad.TrLevels
 
         public static Wad2 ConvertTrLevel(TrLevel oldLevel)
         {
-            var wad = new Wad2();
-            wad.SuggestedGameVersion = TrLevel.GetWadGameVersion(oldLevel.Version);
+            // FIXME: URGENT! Level files are imported as old dynamic wad2s!
+            var wad = new Wad2() { SuggestedGameVersion = TrLevel.GetWadGameVersion(oldLevel.Version) } ;
 
             logger.Info("Converting TR level to WAD2");
 

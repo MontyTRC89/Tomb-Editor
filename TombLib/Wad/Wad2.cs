@@ -36,7 +36,7 @@ namespace TombLib.Wad
         public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfosObsolete { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
         // DEPRECATED
         public SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo> AdditionalSoundInfosObsolete { get; set; } = new SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo>();
-        public Dictionary<long, WadSoundInfo> AllLoadesSoundInfos { get; set; } = new Dictionary<long, WadSoundInfo>();
+        public Dictionary<long, WadSoundInfo> AllLoadedSoundInfos { get; set; } = new Dictionary<long, WadSoundInfo>();
 
         public WadSounds Sounds { get; set; }
         public string FileName { get; set; }

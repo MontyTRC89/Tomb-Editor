@@ -34,9 +34,13 @@ namespace TombEditor
 
         public int Editor_UndoDepth { get; set; } = 20;
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
-        public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
-        public bool Editor_UseHalfPixelCorrection { get; set; } = false;
         public bool Editor_OpenLastProjectOnStartup { get; set; } = false;
+
+
+        // PRJ import settings
+
+        public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
+        public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
 
         // Item preview options
 
