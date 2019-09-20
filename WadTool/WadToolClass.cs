@@ -222,15 +222,31 @@ namespace WadTool
         public class AnimationEditorAnimationChangedEvent : IEditorEvent
         {
             public AnimationNode Animation { get; set; }
+            public bool Focus { get; set; }
 
-            public AnimationEditorAnimationChangedEvent(AnimationNode anim)
+            public AnimationEditorAnimationChangedEvent(AnimationNode anim, bool focus)
+            {
+                Animation = anim;
+                Focus = focus;
+            }
+        }
+        public void AnimationEditorAnimationChanged(AnimationNode anim, bool focus)
+        {
+            RaiseEvent(new AnimationEditorAnimationChangedEvent(anim, focus));
+        }
+
+        public class AnimationEditorCurrentAnimationChangedEvent : IEditorEvent
+        {
+            public AnimationNode Animation { get; set; }
+
+            public AnimationEditorCurrentAnimationChangedEvent(AnimationNode anim)
             {
                 Animation = anim;
             }
         }
-        public void AnimationEditorAnimationChanged(AnimationNode anim)
+        public void AnimationEditorCurrentAnimationChanged(AnimationNode anim)
         {
-            RaiseEvent(new AnimationEditorAnimationChangedEvent(anim));
+            RaiseEvent(new AnimationEditorCurrentAnimationChangedEvent(anim));
         }
 
         // Send message
@@ -269,7 +285,7 @@ namespace WadTool
         public WadToolClass(Configuration configuration)
         {
             Configuration = configuration;
-            UndoManager = new WadToolUndoManager(this, 20);
+            UndoManager = new WadToolUndoManager(this, configuration.AnimationEditor_UndoDepth);
         }
 
         public void Dispose()

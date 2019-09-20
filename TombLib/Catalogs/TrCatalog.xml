@@ -397,7 +397,7 @@
       <anim item="0" id="3" name="END_WALK_LEFT" />
       <anim item="0" id="4" name="WALK_TO_RUN_RIGHT" />
       <anim item="0" id="5" name="WALK_TO_RUN_LEFT" />
-      <anim item="0" id="6" name="STAND_TO_RUN" />
+      <anim item="0" id="6" name="RUN_START" />
       <anim item="0" id="7" name="RUN_TO_WALK_RIGHT" />
       <anim item="0" id="8" name="RUN_TO_STAND_LEFT" />
       <anim item="0" id="9" name="RUN_TO_WALK_LEFT" />
@@ -436,11 +436,11 @@
       <anim item="0" id="42" name="CLIMB_3CLICK" />
       <anim item="0" id="43" name="CLIMB_3CLICK_END_TO_RUN_UNUSED" />
       <anim item="0" id="44" name="TURN_RIGHT" />
-      <anim item="0" id="45" name="JUMP_FORWARD_TO_FREEFALL_UNUSED" />
+      <anim item="0" id="45" name="JUMP_FORWARD_TO_FREEFALL" />
       <anim item="0" id="46" name="REACH_TO_FREEFALL_UNUSED" />
       <anim item="0" id="47" name="ROLL_ALTERNATE_UNUSED" />
       <anim item="0" id="48" name="ROLL_END_ALTERNATE_UNUSED" />
-      <anim item="0" id="49" name="JUMP_FORWARD_END_TO_FREEFALL" />
+      <anim item="0" id="49" name="JUMP_FORWARD_END_TO_FREEFALL_UNUSED" />
       <anim item="0" id="50" name="CLIMB_2CLICK" />
       <anim item="0" id="51" name="CLIMB_2CLICK_END" />
       <anim item="0" id="52" name="CLIMB_2CLICK_END_TO_RUN" />
@@ -527,8 +527,8 @@
       <anim item="0" id="133" name="RUN_DEATH" />
       <anim item="0" id="134" name="USE_PUZZLE" />
       <anim item="0" id="135" name="PICKUP" />
-      <anim item="0" id="136" name="CLIMB_LEFT" />
-      <anim item="0" id="137" name="CLIMB_RIGHT" />
+      <anim item="0" id="136" name="SHIMMY_LEFT" />
+      <anim item="0" id="137" name="SHIMMY_RIGHT" />
       <anim item="0" id="138" name="STAND_DEATH" />
       <anim item="0" id="139" name="BOULDER_DEATH" />
       <anim item="0" id="140" name="ONWATER_IDLE_TO_SWIM_BACK" />

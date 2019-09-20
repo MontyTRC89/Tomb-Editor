@@ -50,7 +50,12 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<WadMeshBoneNode> Skeleton { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ObjectMesh SelectedMesh { get; set; }
+        public ObjectMesh SelectedMesh
+        {
+            get { return _selectedMesh; }
+            set { _selectedMesh = value; Invalidate(); }
+        }
+        private ObjectMesh _selectedMesh;
 
         // General state
         private AnimationEditor _editor;
@@ -78,7 +83,7 @@ namespace WadTool.Controls
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
 
-            base.InitializeRendering(deviceManager.Device, false);
+            base.InitializeRendering(deviceManager.Device, editor.Tool.Configuration.RenderingItem_Antialias);
 
             _editor = editor;
             _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
@@ -306,7 +311,7 @@ namespace WadTool.Controls
                 _gizmo.Draw(viewProjection);
             }
 
-            if (_editor.CurrentAnim != null)
+            if (_editor.CurrentAnim != null && _editor.Tool.Configuration.RenderingItem_ShowDebugInfo)
             {
                 ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
                 string debugMessage = "Frame: " + (_editor.CurrentFrameIndex + 1) + "/" + _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
@@ -330,7 +335,9 @@ namespace WadTool.Controls
         {
             // Make this control able to receive scroll and key board events...
             base.OnMouseEnter(e);
-            Focus();
+
+            if (Form.ActiveForm == FindForm())
+                Focus();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -384,8 +391,11 @@ namespace WadTool.Controls
                         }
                     }
 
-                    SelectedMesh = foundMesh;
-                    _editor.Tool.AnimationEditorMeshSelected(Model, SelectedMesh);
+                    if (SelectedMesh != foundMesh)
+                    {
+                        SelectedMesh = foundMesh;
+                        _editor.Tool.AnimationEditorMeshSelected(Model, SelectedMesh);
+                    }
                 }
                 else
                 {
@@ -426,7 +436,7 @@ namespace WadTool.Controls
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
                     Camera.Zoom(-deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
                 else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(deltaX * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
                                   -deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);

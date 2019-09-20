@@ -50,11 +50,11 @@ namespace WadTool
         protected override float RotationZ => 0;
         protected override float Scale => _control != null && _control.SelectedLight != null ? _control.SelectedLight.Radius : 0.0f;
 
-        protected override float CentreCubeSize => _configuration.Gizmo_CenterCubeSize;
-        protected override float TranslationConeSize => _configuration.Gizmo_TranslationConeSize;
-        protected override float Size => _configuration.Gizmo_Size;
-        protected override float ScaleCubeSize => _configuration.Gizmo_ScaleCubeSize;
-        protected override float LineThickness => _configuration.Gizmo_LineThickness;
+        protected override float CentreCubeSize => _configuration.GizmoStatic_CenterCubeSize;
+        protected override float TranslationConeSize => _configuration.GizmoStatic_TranslationConeSize;
+        protected override float Size => _configuration.GizmoStatic_Size;
+        protected override float ScaleCubeSize => _configuration.GizmoStatic_ScaleCubeSize;
+        protected override float LineThickness => _configuration.GizmoStatic_LineThickness;
 
         protected override GizmoOrientation Orientation => GizmoOrientation.Normal;
 

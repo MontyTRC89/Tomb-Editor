@@ -236,7 +236,7 @@
             this.butAssignFromWads.TabIndex = 115;
             this.butAssignFromWads.Text = "From wads";
             this.butAssignFromWads.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select hardcoded sounds");
+            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select sounds from wads");
             this.butAssignFromWads.Click += new System.EventHandler(this.butAssignFromWads_Click);
             // 
             // butRemoveMissing
@@ -247,7 +247,7 @@
             this.butRemoveMissing.Size = new System.Drawing.Size(91, 22);
             this.butRemoveMissing.TabIndex = 114;
             this.butRemoveMissing.Text = "Hide missing";
-            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Select all available sounds");
+            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren't present in any of the catalogs");
             this.butRemoveMissing.Click += new System.EventHandler(this.butRemoveMissing_Click);
             // 
             // butAssignFromSoundSources

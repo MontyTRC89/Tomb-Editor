@@ -7,19 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -29,15 +16,15 @@
         private void InitializeComponent()
         {
             this.dgvStateChanges = new DarkUI.Controls.DarkDataGridView();
-            this.btCancel = new DarkUI.Controls.DarkButton();
-            this.btOk = new DarkUI.Controls.DarkButton();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             this.columnStateId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnLowFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnHighFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextAnimation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btCancel = new DarkUI.Controls.DarkButton();
+            this.btOk = new DarkUI.Controls.DarkButton();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -64,51 +51,6 @@
             this.dgvStateChanges.RowTemplate.Height = 16;
             this.dgvStateChanges.Size = new System.Drawing.Size(525, 209);
             this.dgvStateChanges.TabIndex = 48;
-            // 
-            // btCancel
-            // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.Location = new System.Drawing.Point(407, 231);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(81, 23);
-            this.btCancel.TabIndex = 50;
-            this.btCancel.Text = "Cancel";
-            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-            // 
-            // btOk
-            // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOk.Location = new System.Drawing.Point(494, 231);
-            this.btOk.Name = "btOk";
-            this.btOk.Size = new System.Drawing.Size(81, 23);
-            this.btOk.TabIndex = 51;
-            this.btOk.Text = "OK";
-            this.btOk.Click += new System.EventHandler(this.btOk_Click);
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkSectionPanel1.Controls.Add(this.dgvStateChanges);
-            this.darkSectionPanel1.Controls.Add(this.dgvControls);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(5, 5);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(570, 221);
-            this.darkSectionPanel1.TabIndex = 52;
-            // 
-            // dgvControls
-            // 
-            this.dgvControls.AlwaysInsertAtZero = false;
-            this.dgvControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvControls.Enabled = false;
-            this.dgvControls.Location = new System.Drawing.Point(537, 6);
-            this.dgvControls.MinimumSize = new System.Drawing.Size(24, 24);
-            this.dgvControls.Name = "dgvControls";
-            this.dgvControls.Size = new System.Drawing.Size(27, 209);
-            this.dgvControls.TabIndex = 49;
             // 
             // columnStateId
             // 
@@ -141,10 +83,58 @@
             this.columnNextFrame.HeaderText = "Next frame";
             this.columnNextFrame.Name = "columnNextFrame";
             // 
+            // btCancel
+            // 
+            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btCancel.Location = new System.Drawing.Point(494, 232);
+            this.btCancel.Name = "btCancel";
+            this.btCancel.Size = new System.Drawing.Size(81, 23);
+            this.btCancel.TabIndex = 50;
+            this.btCancel.Text = "Cancel";
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            // 
+            // btOk
+            // 
+            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Location = new System.Drawing.Point(407, 232);
+            this.btOk.Name = "btOk";
+            this.btOk.Size = new System.Drawing.Size(81, 23);
+            this.btOk.TabIndex = 51;
+            this.btOk.Text = "OK";
+            this.btOk.Click += new System.EventHandler(this.btOk_Click);
+            // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkSectionPanel1.Controls.Add(this.dgvStateChanges);
+            this.darkSectionPanel1.Controls.Add(this.dgvControls);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(5, 5);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(570, 221);
+            this.darkSectionPanel1.TabIndex = 52;
+            // 
+            // dgvControls
+            // 
+            this.dgvControls.AlwaysInsertAtZero = false;
+            this.dgvControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvControls.Enabled = false;
+            this.dgvControls.Location = new System.Drawing.Point(537, 6);
+            this.dgvControls.MinimumSize = new System.Drawing.Size(24, 24);
+            this.dgvControls.Name = "dgvControls";
+            this.dgvControls.Size = new System.Drawing.Size(27, 209);
+            this.dgvControls.TabIndex = 49;
+            // 
             // FormStateChangesEditor
             // 
+            this.AcceptButton = this.btOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(580, 260);
             this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.btCancel);
