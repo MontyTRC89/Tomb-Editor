@@ -201,8 +201,8 @@ namespace WadTool
                         _control.Model.Meshes.IndexOf(_control.SelectedMesh) == 0);
             }
         }
-        protected override bool SupportTranslateY => SupportRotationX;
-        protected override bool SupportTranslateZ => SupportRotationX;
+        protected override bool SupportTranslateY => SupportTranslateX;
+        protected override bool SupportTranslateZ => SupportTranslateX;
         protected override bool SupportRotationY => true;
         protected override bool SupportRotationX => true;
         protected override bool SupportRotationZ => true;

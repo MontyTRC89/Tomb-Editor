@@ -1280,10 +1280,7 @@ namespace WadTool
             }
             else
             {
-                // Restore state of editor prior to chained playback. If user manually toggled
-                // chained mode off during playback, state won't restore. This is intended.
-                // FIXME: Make it an option!
-                if (_chainedPlayback)
+                if (_editor.Tool.Configuration.AnimationEditor_RewindAfterChainPlayback)
                 {
                     var origNode = _editor.Animations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
 
