@@ -314,7 +314,7 @@ namespace TombLib.Graphics
             }
 
             // Check for rotation
-            float pickRadius = LineThickness / 2 + 55.0f;
+            float pickRadius = LineThickness / 2 + (Size * 0.045f);
 
             if (SupportRotationZ)
             {

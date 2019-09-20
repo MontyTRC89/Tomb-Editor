@@ -284,6 +284,11 @@ namespace TombLib
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float RadToDeg(float r) => r * (180.0f / (float)Math.PI);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DegToRad(float r) => (float)Math.PI * r / 180.0f;
+
         public static double Lerp(double value1, double value2, double amount)
             => value1 * (1 - amount) + value2 * amount;
 

@@ -403,7 +403,7 @@ namespace WadTool
             // 
             this.findReplaceAnimcommandsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.findReplaceAnimcommandsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.findReplaceAnimcommandsToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Find_and_replace_16;
+            this.findReplaceAnimcommandsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("findReplaceAnimcommandsToolStripMenuItem.Image")));
             this.findReplaceAnimcommandsToolStripMenuItem.Name = "findReplaceAnimcommandsToolStripMenuItem";
             this.findReplaceAnimcommandsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.findReplaceAnimcommandsToolStripMenuItem.Text = "Find && replace animcommands...";
@@ -946,7 +946,7 @@ namespace WadTool
             this.butTbSaveAllChanges.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbSaveAllChanges.Enabled = false;
             this.butTbSaveAllChanges.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbSaveAllChanges.Image = global::WadTool.Properties.Resources.general_Save_16;
+            this.butTbSaveAllChanges.Image = ((System.Drawing.Image)(resources.GetObject("butTbSaveAllChanges.Image")));
             this.butTbSaveAllChanges.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbSaveAllChanges.Name = "butTbSaveAllChanges";
             this.butTbSaveAllChanges.Size = new System.Drawing.Size(23, 25);
@@ -999,7 +999,7 @@ namespace WadTool
             this.butTbAddAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbAddAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbAddAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAddAnimation.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butTbAddAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbAddAnimation.Image")));
             this.butTbAddAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbAddAnimation.Name = "butTbAddAnimation";
             this.butTbAddAnimation.Size = new System.Drawing.Size(23, 25);
@@ -1012,7 +1012,7 @@ namespace WadTool
             this.butTbImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbImport.Image = global::WadTool.Properties.Resources.general_Import_16;
+            this.butTbImport.Image = ((System.Drawing.Image)(resources.GetObject("butTbImport.Image")));
             this.butTbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbImport.Name = "butTbImport";
             this.butTbImport.Size = new System.Drawing.Size(23, 25);
@@ -1037,7 +1037,7 @@ namespace WadTool
             this.butTbCutAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbCutAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbCutAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCutAnimation.Image = global::WadTool.Properties.Resources.actions_cut_16;
+            this.butTbCutAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbCutAnimation.Image")));
             this.butTbCutAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbCutAnimation.Name = "butTbCutAnimation";
             this.butTbCutAnimation.Size = new System.Drawing.Size(23, 25);
@@ -1118,7 +1118,7 @@ namespace WadTool
             this.butTbAddFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbAddFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbAddFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAddFrame.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butTbAddFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbAddFrame.Image")));
             this.butTbAddFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbAddFrame.Name = "butTbAddFrame";
             this.butTbAddFrame.Size = new System.Drawing.Size(23, 25);
@@ -1144,7 +1144,7 @@ namespace WadTool
             this.butTbCutFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTbCutFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbCutFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCutFrame.Image = global::WadTool.Properties.Resources.actions_cut_16;
+            this.butTbCutFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbCutFrame.Image")));
             this.butTbCutFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbCutFrame.Name = "butTbCutFrame";
             this.butTbCutFrame.Size = new System.Drawing.Size(23, 25);
@@ -1314,7 +1314,7 @@ namespace WadTool
             // darkButton1
             // 
             this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkButton1.Image = global::WadTool.Properties.Resources.general_filter_16;
+            this.darkButton1.Image = ((System.Drawing.Image)(resources.GetObject("darkButton1.Image")));
             this.darkButton1.Location = new System.Drawing.Point(188, 28);
             this.darkButton1.Name = "darkButton1";
             this.darkButton1.Size = new System.Drawing.Size(22, 22);
@@ -1326,7 +1326,7 @@ namespace WadTool
             // butAddNewAnimation
             // 
             this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddNewAnimation.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butAddNewAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butAddNewAnimation.Image")));
             this.butAddNewAnimation.Location = new System.Drawing.Point(185, 186);
             this.butAddNewAnimation.Name = "butAddNewAnimation";
             this.butAddNewAnimation.Size = new System.Drawing.Size(23, 24);
@@ -1352,6 +1352,7 @@ namespace WadTool
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.Size = new System.Drawing.Size(725, 550);
             this.panelRendering.TabIndex = 9;
+            this.panelRendering.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDoubleClick);
             // 
             // panelTimeline
             // 
@@ -1430,7 +1431,7 @@ namespace WadTool
             this.butTransportStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportStart.Image = global::WadTool.Properties.Resources.transport_start_24;
+            this.butTransportStart.Image = ((System.Drawing.Image)(resources.GetObject("butTransportStart.Image")));
             this.butTransportStart.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportStart.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportStart.Name = "butTransportStart";
@@ -1443,7 +1444,7 @@ namespace WadTool
             this.butTransportFrameBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportFrameBack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportFrameBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportFrameBack.Image = global::WadTool.Properties.Resources.transport_frame_back_24;
+            this.butTransportFrameBack.Image = ((System.Drawing.Image)(resources.GetObject("butTransportFrameBack.Image")));
             this.butTransportFrameBack.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportFrameBack.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportFrameBack.Name = "butTransportFrameBack";
@@ -1456,7 +1457,7 @@ namespace WadTool
             this.butTransportPlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportPlay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportPlay.Image = global::WadTool.Properties.Resources.transport_play_24;
+            this.butTransportPlay.Image = ((System.Drawing.Image)(resources.GetObject("butTransportPlay.Image")));
             this.butTransportPlay.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportPlay.Name = "butTransportPlay";
@@ -1469,7 +1470,7 @@ namespace WadTool
             this.butTransportFrameForward.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportFrameForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportFrameForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportFrameForward.Image = global::WadTool.Properties.Resources.transport_frame_forward_24;
+            this.butTransportFrameForward.Image = ((System.Drawing.Image)(resources.GetObject("butTransportFrameForward.Image")));
             this.butTransportFrameForward.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportFrameForward.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportFrameForward.Name = "butTransportFrameForward";
@@ -1482,7 +1483,7 @@ namespace WadTool
             this.butTransportEnd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportEnd.Image = global::WadTool.Properties.Resources.transport_end_24;
+            this.butTransportEnd.Image = ((System.Drawing.Image)(resources.GetObject("butTransportEnd.Image")));
             this.butTransportEnd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportEnd.Name = "butTransportEnd";
@@ -1503,7 +1504,7 @@ namespace WadTool
             this.butTransportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportChained.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportChained.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportChained.Image = global::WadTool.Properties.Resources.transport_chain_disabled_24;
+            this.butTransportChained.Image = ((System.Drawing.Image)(resources.GetObject("butTransportChained.Image")));
             this.butTransportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportChained.Name = "butTransportChained";
@@ -1516,7 +1517,7 @@ namespace WadTool
             this.butTransportSound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTransportSound.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportSound.Image = global::WadTool.Properties.Resources.transport_mute_24;
+            this.butTransportSound.Image = ((System.Drawing.Image)(resources.GetObject("butTransportSound.Image")));
             this.butTransportSound.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportSound.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportSound.Name = "butTransportSound";
@@ -1530,7 +1531,7 @@ namespace WadTool
             this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTransportLandWater.DoubleClickEnabled = true;
             this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
+            this.butTransportLandWater.Image = ((System.Drawing.Image)(resources.GetObject("butTransportLandWater.Image")));
             this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportLandWater.Name = "butTransportLandWater";
@@ -1682,7 +1683,7 @@ namespace WadTool
             // 
             // butSearchStateID
             // 
-            this.butSearchStateID.Image = global::WadTool.Properties.Resources.general_search_16;
+            this.butSearchStateID.Image = ((System.Drawing.Image)(resources.GetObject("butSearchStateID.Image")));
             this.butSearchStateID.Location = new System.Drawing.Point(212, 56);
             this.butSearchStateID.Name = "butSearchStateID";
             this.butSearchStateID.Size = new System.Drawing.Size(23, 23);
@@ -1787,7 +1788,7 @@ namespace WadTool
             // 
             // butCalculateAnimCollision
             // 
-            this.butCalculateAnimCollision.Image = global::WadTool.Properties.Resources.actions_refresh_16;
+            this.butCalculateAnimCollision.Image = ((System.Drawing.Image)(resources.GetObject("butCalculateAnimCollision.Image")));
             this.butCalculateAnimCollision.Location = new System.Drawing.Point(185, 110);
             this.butCalculateAnimCollision.Name = "butCalculateAnimCollision";
             this.butCalculateAnimCollision.Size = new System.Drawing.Size(23, 23);
@@ -1797,7 +1798,7 @@ namespace WadTool
             // 
             // butCalculateCollisionBox
             // 
-            this.butCalculateCollisionBox.Image = global::WadTool.Properties.Resources.actions_refresh_16;
+            this.butCalculateCollisionBox.Image = ((System.Drawing.Image)(resources.GetObject("butCalculateCollisionBox.Image")));
             this.butCalculateCollisionBox.Location = new System.Drawing.Point(44, 110);
             this.butCalculateCollisionBox.Name = "butCalculateCollisionBox";
             this.butCalculateCollisionBox.Size = new System.Drawing.Size(23, 23);
@@ -1860,7 +1861,7 @@ namespace WadTool
             this.cmCreateAnimCommandMenuItem,
             this.cmCreateStateChangeMenuItem});
             this.cmTimelineContextMenu.Name = "cmTimelineContextMenu";
-            this.cmTimelineContextMenu.Size = new System.Drawing.Size(178, 143);
+            this.cmTimelineContextMenu.Size = new System.Drawing.Size(178, 165);
             // 
             // cmMarkInMenuItem
             // 
