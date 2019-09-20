@@ -142,6 +142,12 @@
     <Compile Include="Forms\FormAnimationEditor.Designer.cs">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormAnimTransformPopUp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormAnimTransformPopUp.Designer.cs">
+      <DependentUpon>FormAnimTransformPopUp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,6 +165,12 @@
     </Compile>
     <Compile Include="Forms\FormNewWad2.Designer.cs">
       <DependentUpon>FormNewWad2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormOptions.Designer.cs">
+      <DependentUpon>FormOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormReplaceAnimCommands.cs">
       <SubType>Form</SubType>
@@ -229,6 +241,9 @@
     <EmbeddedResource Include="Forms\FormAnimationEditor.resx">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormAnimTransformPopUp.resx">
+      <DependentUpon>FormAnimTransformPopUp.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -237,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormNewWad2.resx">
       <DependentUpon>FormNewWad2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormOptions.resx">
+      <DependentUpon>FormOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormReplaceAnimCommands.resx">
       <DependentUpon>FormReplaceAnimCommands.cs</DependentUpon>

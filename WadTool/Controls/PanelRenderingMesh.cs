@@ -40,7 +40,7 @@ namespace WadTool.Controls
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
 
-            base.InitializeRendering(deviceManager.Device);
+            base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
 
             // Legacy rendering

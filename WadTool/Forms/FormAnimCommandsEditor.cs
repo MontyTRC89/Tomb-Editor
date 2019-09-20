@@ -12,7 +12,7 @@ namespace WadTool
     public partial class FormAnimCommandsEditor : DarkForm
     {
         private readonly AnimationEditor _editor;
-        private readonly AnimationNode _animation;
+        private AnimationNode _animation;
         private readonly List<WadAnimCommand> _oldAnimCommands = new List<WadAnimCommand>();
         public IEnumerable<WadAnimCommand> AnimCommands => lstCommands.Items.Select(item => item.Tag).OfType<WadAnimCommand>();
         
@@ -21,7 +21,15 @@ namespace WadTool
             InitializeComponent();
             animCommandEditor.Initialize(editor);
             _editor = editor;
+            Initialize(animation, startupCommand);
+            _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
+        }
+
+        private void Initialize(AnimationNode animation, WadAnimCommand startupCommand)
+        {
             _animation = animation;
+            _oldAnimCommands.Clear();
+            lstCommands.Items.Clear();
 
             // Backup existing animcommands and populate list
             foreach (var cmd in _animation.WadAnimation.AnimCommands)
@@ -40,6 +48,32 @@ namespace WadTool
             else if (lstCommands.Items.Count > 0)
                 SelectCommand((WadAnimCommand)lstCommands.Items.First().Tag);
 
+            if (Visible && lstCommands.SelectedIndices.Count > 0)
+                lstCommands.EnsureVisible();  // This code oly works when control is already visible
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.Tool.EditorEventRaised -= Tool_EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
+        private void Tool_EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
+            {
+                var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
+                if (e != null && e.Animation != _animation)
+                    Initialize(e.Animation, null);
+            }
+
+            if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)
+            {
+                var e = obj as WadToolClass.AnimationEditorAnimationChangedEvent;
+                if (e != null && e.Animation == _animation)
+                    Initialize(e.Animation, null);
+            }
         }
 
         protected override void OnShown(EventArgs e)
@@ -97,14 +131,14 @@ namespace WadTool
         private void ApplyChanges(bool undo = true)
         {
             if (undo)
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _animation);
 
-            // Add the new state changes
-            _editor.CurrentAnim.WadAnimation.AnimCommands.Clear();
-            _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(AnimCommands);
+            // Add new commands
+            _animation.WadAnimation.AnimCommands.Clear();
+            _animation.WadAnimation.AnimCommands.AddRange(AnimCommands);
 
             // Update state in parent window
-            _editor.Tool.AnimationEditorAnimationChanged(_editor.CurrentAnim);
+            _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
         }
 
         // Only actual data is updating, not UI, so it shouldn't be used for in-window undo.
@@ -115,7 +149,7 @@ namespace WadTool
             _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(_oldAnimCommands);
 
             // Update state in parent window
-            _editor.Tool.AnimationEditorAnimationChanged(_editor.CurrentAnim);
+            _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
         }
 
         public void UpdateSelectedItemText() => lstCommands.Items[lstCommands.SelectedIndices[0]].Text = lstCommands.Items[lstCommands.SelectedIndices[0]].Tag.ToString();
@@ -140,7 +174,6 @@ namespace WadTool
 
         private void btCancel_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
             Close();
         }
 
