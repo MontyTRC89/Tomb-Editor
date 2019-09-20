@@ -348,7 +348,7 @@ namespace TombEditor.Controls
                 obj is Editor.LoadedImportedGeometriesChangedEvent)
             {
                 if (_editor.Mode != EditorMode.Map2D)
-                    Invalidate();
+                    Update();
             }
 
             // Update cursor
