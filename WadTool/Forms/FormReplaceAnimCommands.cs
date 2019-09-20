@@ -10,7 +10,7 @@ namespace WadTool
 {
     public partial class FormReplaceAnimCommands : DarkForm
     {
-        private AnimationEditor _editor;
+        private readonly AnimationEditor _editor;
         private WadAnimCommand _backupCommand;
 
         public bool EditingWasDone { get; private set; }

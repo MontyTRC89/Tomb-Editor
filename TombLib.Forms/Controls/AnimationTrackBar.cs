@@ -238,7 +238,12 @@ namespace TombLib.Controls
 
 
         private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
-        private void picSlider_MouseEnter(object sender, EventArgs e) => picSlider.Focus();
+
+        private void picSlider_MouseEnter(object sender, EventArgs e)
+        {
+            if (Form.ActiveForm == FindForm())
+                picSlider.Focus();
+        }
 
         private void picSlider_MouseUp(object sender, MouseEventArgs e)
         {

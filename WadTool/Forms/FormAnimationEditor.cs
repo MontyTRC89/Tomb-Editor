@@ -1216,6 +1216,17 @@ namespace WadTool
                 existingWindow.Focus();
         }
 
+        private void EditTransform()
+        {
+            if (panelRendering.SelectedMesh != null)
+            {
+                var form = new FormAnimTransformPopUp(_editor, panelRendering, Cursor.Position);
+                form.Show();
+            }
+            else
+                popup.ShowInfo(panelRendering, "Please select a bone to transform.");
+        }
+
         private void ImportAnimations()
         {
             if (_editor.CurrentAnim == null)
@@ -1702,7 +1713,7 @@ namespace WadTool
 
             switch (keyData)
             {
-                case Keys.Escape: timeline.ResetSelection(); break;
+                case Keys.Escape: panelRendering.SelectedMesh = null; timeline.ResetSelection(); break;
                 case Keys.Left: timeline.ValueLoopDec(); break;
                 case Keys.Right: timeline.ValueLoopInc(); break;
                 case Keys.Up: timeline.Value = timeline.Minimum; break;
@@ -1911,15 +1922,12 @@ namespace WadTool
                 cmTimelineContextMenu.Show(Cursor.Position, ToolStripDropDownDirection.AboveRight);
         }
 
+        private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e) => EditTransform();
+        private void cmTranslateRotateMenuItem_Click(object sender, EventArgs e) => EditTransform();
         private void cmMarkInMenuItem_Click(object sender, EventArgs e) => timeline.SelectionStart = timeline.Value;
         private void cmMarkOutMenuItem_Click(object sender, EventArgs e) => timeline.SelectionEnd = timeline.Value;
         private void cnClearSelectionMenuItem_Click(object sender, EventArgs e) => timeline.ResetSelection();
         private void cmCreateAnimCommandMenuItem_Click(object sender, EventArgs e) => EditAnimCommands(new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)timeline.FrameIndex });
-
-        private void cmTranslateRotateMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void cmCreateStateChangeMenuItem_Click(object sender, EventArgs e)
         {
@@ -1939,5 +1947,6 @@ namespace WadTool
 
             EditStateChanges(sch);
         }
+
     }
 }
