@@ -1928,7 +1928,11 @@ namespace WadTool
                 cmTimelineContextMenu.Show(Cursor.Position, ToolStripDropDownDirection.AboveRight);
         }
 
-        private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e) => EditTransform();
+        private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                EditTransform();
+        }
         private void cmTranslateRotateMenuItem_Click(object sender, EventArgs e) => EditTransform();
         private void cmMarkInMenuItem_Click(object sender, EventArgs e) => timeline.SelectionStart = timeline.Value;
         private void cmMarkOutMenuItem_Click(object sender, EventArgs e) => timeline.SelectionEnd = timeline.Value;
