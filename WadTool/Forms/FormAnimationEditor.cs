@@ -1237,6 +1237,9 @@ namespace WadTool
 
             WadAnimation animation = null;
 
+            if (path == null)
+                return;
+
             if (Path.GetExtension(path) == ".anim")
                 animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
             else
@@ -1648,6 +1651,9 @@ namespace WadTool
 
             string path = LevelFileDialog.BrowseFile(this, "Specify file to save animation",
                 new List<FileFormat>() { new FileFormat("TombEditor XML", "anim") }, true);
+            
+            if (path == null)
+                return;
 
             var animationToSave = _editor.GetSavedAnimation(_editor.CurrentAnim);
 
