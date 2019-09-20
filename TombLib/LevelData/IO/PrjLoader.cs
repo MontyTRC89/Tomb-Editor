@@ -439,11 +439,9 @@ namespace TombLib.LevelData.IO
                                     triggerTargetTypeEnum = TriggerTargetType.ParameterNg;
 
                                 ushort? triggerTimer, triggerExtra;
-                                NG.NgParameterInfo.DecodeNGRealTimer(triggerTargetTypeEnum, triggerTypeEnum, triggerItemNumber, triggerRealTimer, out triggerTimer, out triggerExtra);
+                                NG.NgParameterInfo.DecodeNGRealTimer(triggerTargetTypeEnum, triggerTypeEnum, triggerItemNumber, triggerRealTimer, triggerFlags, out triggerTimer, out triggerExtra);
                                 
-
                                 // Identify NG fake collision triggers and ditch them
-
                                 if (isNg && triggerTargetTypeEnum == TriggerTargetType.FlipEffect &&
                                     triggerItemNumber >= 310 && triggerItemNumber <= 330)
                                     progressReporter.ReportWarn("Found and filtered out fake NG collision trigger (F" + triggerItemNumber + ") in room " + room + ". Use ghost blocks instead.");

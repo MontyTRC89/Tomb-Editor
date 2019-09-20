@@ -245,7 +245,7 @@ namespace TombLib.NG
             }
         }
 
-        public static void DecodeNGRealTimer(TriggerTargetType targetType, TriggerType triggerType, ushort target, ushort realTimer, out ushort? timer, out ushort? extra)
+        public static void DecodeNGRealTimer(TriggerTargetType targetType, TriggerType triggerType, ushort target, ushort realTimer, short triggerFlags, out ushort? timer, out ushort? extra)
         {
             switch (triggerType)
             {
@@ -255,7 +255,7 @@ namespace TombLib.NG
                     if (conditionTrigger != null && conditionTrigger.Extra.IsEmpty)
                         extra = null;
                     else
-                        extra = (ushort)(realTimer >> 8);
+                        extra = (ushort)(~(triggerFlags >> 1) & 0x1f); //   (realTimer >> 8);
                     return;
 
                 default:

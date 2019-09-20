@@ -1067,14 +1067,18 @@ namespace TombLib.LevelData.IO
                     long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
 
                     ushort realTimer = unchecked((ushort)LEB128.ReadShort(chunkIO.Raw));
+                   
+                    instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
+                    instance.OneShot = chunkIO.Raw.ReadBoolean();
+
+                    // NB: it seems that this structure is abandoned now
                     ushort? timer, extra;
                     NG.NgParameterInfo.DecodeNGRealTimer(instance.TargetType, instance.TriggerType,
-                        unchecked((ushort)targetObjectId), realTimer, out timer, out extra);
+                        unchecked((ushort)targetObjectId), realTimer, instance.CodeBits, out timer, out extra);
                     instance.Timer = timer == null ? null : new TriggerParameterUshort(timer.Value);
                     instance.Extra = timer == null ? null : new TriggerParameterUshort(extra.Value);
 
-                    instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
-                    instance.OneShot = chunkIO.Raw.ReadBoolean();
+
                     objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, targetObj => instance.Target = targetObj));
 
                     addObject(instance);
