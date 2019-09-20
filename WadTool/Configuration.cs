@@ -31,18 +31,22 @@ namespace WadTool
         public bool Log_WriteToFile { get; set; } = true;
         public int Log_ArchiveN { get; set; } = 0;
 
+        public int AnimationEditor_UndoDepth { get; set; } = 30;
+        public bool AnimationEditor_RewindAfterChainPlayback { get; set; } = true;
+
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
-        public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
-        public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
+        public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 800.0f;
+        public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 1500.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
+        public bool RenderingItem_Antialias { get; set; } = false;
         public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 
-        public float Gizmo_Size { get; set; } = 1536.0f;
-        public float Gizmo_TranslationConeSize { get; set; } = 220.0f;
-        public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
-        public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
-        public float Gizmo_LineThickness { get; set; } = 45.0f;
+        public float GizmoStatic_Size { get; set; } = 1536.0f;
+        public float GizmoStatic_TranslationConeSize { get; set; } = 220.0f;
+        public float GizmoStatic_CenterCubeSize { get; set; } = 128.0f;
+        public float GizmoStatic_ScaleCubeSize { get; set; } = 128.0f;
+        public float GizmoStatic_LineThickness { get; set; } = 45.0f;
 
         public float GizmoSkeleton_Size { get; set; } = 512.0f;
         public float GizmoSkeleton_TranslationConeSize { get; set; } = 110.0f;

@@ -285,7 +285,7 @@ namespace WadTool
         public WadToolClass(Configuration configuration)
         {
             Configuration = configuration;
-            UndoManager = new WadToolUndoManager(this, 20);
+            UndoManager = new WadToolUndoManager(this, configuration.AnimationEditor_UndoDepth);
         }
 
         public void Dispose()

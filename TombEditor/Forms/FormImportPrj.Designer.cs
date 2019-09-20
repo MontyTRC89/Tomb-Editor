@@ -101,7 +101,7 @@
             // 
             // darkLabel3
             // 
-            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel3.ForeColor = System.Drawing.Color.Silver;
             this.darkLabel3.Location = new System.Drawing.Point(6, 47);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(440, 31);
@@ -124,7 +124,7 @@
             // 
             // darkLabel1
             // 
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.ForeColor = System.Drawing.Color.Silver;
             this.darkLabel1.Location = new System.Drawing.Point(6, 98);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(440, 33);
@@ -144,7 +144,7 @@
             // 
             // darkLabel2
             // 
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.ForeColor = System.Drawing.Color.Silver;
             this.darkLabel2.Location = new System.Drawing.Point(6, 41);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(440, 33);

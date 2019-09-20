@@ -132,7 +132,7 @@ namespace TombLib.Controls
                 }
 
                 _selectionEnd = value;
-                if (_selectionEnd == -1) _selectionEnd = value;
+                if (_selectionStart == -1) _selectionStart = value;
                 else if (_selectionStart > _selectionEnd) _selectionStart = _selectionEnd;
 
                 SelectionChanged?.Invoke(this, new EventArgs());

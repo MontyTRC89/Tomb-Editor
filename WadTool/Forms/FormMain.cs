@@ -29,7 +29,7 @@ namespace WadTool
             _tool = tool;
 
             panel3D.Configuration = tool.Configuration;
-            panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device);
+            panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());
@@ -461,6 +461,17 @@ namespace WadTool
         private void closeReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.UnloadReferenceLevel(_tool);
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormOptions form = new FormOptions(_tool))
+                form.ShowDialog(this);
+
+            // FIXME: Later, when WT bloats up, move this to events
+
+            _tool.UndoManager.Resize(_tool.Configuration.AnimationEditor_UndoDepth);
+            panel3D.Invalidate();
         }
     }
 }

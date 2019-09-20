@@ -78,7 +78,7 @@ namespace WadTool.Controls
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
 
-            base.InitializeRendering(deviceManager.Device, false);
+            base.InitializeRendering(deviceManager.Device, editor.Tool.Configuration.RenderingItem_Antialias);
 
             _editor = editor;
             _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
@@ -426,7 +426,7 @@ namespace WadTool.Controls
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
                     Camera.Zoom(-deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
                 else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(deltaX * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
                                   -deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
