@@ -119,23 +119,12 @@
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabSamples = new System.Windows.Forms.TabPage();
             this.soundDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.tabPaths = new System.Windows.Forms.TabPage();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabMisc = new System.Windows.Forms.TabPage();
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
@@ -159,12 +148,22 @@
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
-            this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.tabPaths = new System.Windows.Forms.TabPage();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colSoundID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -192,8 +191,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.selectedSoundsDataGridView)).BeginInit();
             this.tabSamples.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
-            this.tabPaths.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.tabMisc.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
             this.panelTr5LaraType.SuspendLayout();
@@ -201,6 +198,8 @@
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
+            this.tabPaths.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -210,14 +209,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -247,7 +246,7 @@
             this.butRemoveMissing.Size = new System.Drawing.Size(91, 22);
             this.butRemoveMissing.TabIndex = 114;
             this.butRemoveMissing.Text = "Hide missing";
-            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren't present in any of the catalogs");
+            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren\'t present in any of the catalogs");
             this.butRemoveMissing.Click += new System.EventHandler(this.butRemoveMissing_Click);
             // 
             // butAssignFromSoundSources
@@ -1361,8 +1360,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.selectedSoundsDataGridView.ColumnHeadersHeight = 17;
             this.selectedSoundsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewCheckBoxColumn1,
-            this.dataGridViewTextBoxColumn1,
+            this.colSoundsEnabled,
+            this.colSoundID,
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewTextBoxColumn4,
@@ -1376,50 +1375,6 @@
             this.selectedSoundsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellContentClick);
             this.selectedSoundsDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellContentClick);
             this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
-            // 
-            // dataGridViewCheckBoxColumn1
-            // 
-            this.dataGridViewCheckBoxColumn1.HeaderText = "Include";
-            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
-            this.dataGridViewCheckBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewCheckBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewCheckBoxColumn1.Width = 60;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.HeaderText = "ID";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 40;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.HeaderText = "Name";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.Width = 200;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn3.HeaderText = "From catalog";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "Range";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.ToolTipText = "Range name of TRNG extended soundmap";
-            this.dataGridViewTextBoxColumn4.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.HeaderText = "Orig. ID";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
-            this.dataGridViewTextBoxColumn5.Width = 80;
             // 
             // tabSamples
             // 
@@ -1493,65 +1448,6 @@
             this.darkLabel10.TabIndex = 1;
             this.darkLabel10.Text = "Locations from which sound samples will be loaded.\r\nEach required sample will be " +
     "searched in folders in top to bottom order. If not found, sound is not played.";
-            // 
-            // tabPaths
-            // 
-            this.tabPaths.BackColor = System.Drawing.Color.Transparent;
-            this.tabPaths.Controls.Add(this.darkLabel1);
-            this.tabPaths.Controls.Add(this.pathVariablesDataGridView);
-            this.tabPaths.Location = new System.Drawing.Point(4, 22);
-            this.tabPaths.Name = "tabPaths";
-            this.tabPaths.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPaths.Size = new System.Drawing.Size(700, 505);
-            this.tabPaths.TabIndex = 5;
-            this.tabPaths.Text = "Path Placeholders";
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(694, 12);
-            this.darkLabel1.TabIndex = 1;
-            this.darkLabel1.Text = "Available dynamic place holders that can be used inside paths: ";
-            // 
-            // pathVariablesDataGridView
-            // 
-            this.pathVariablesDataGridView.AllowUserToAddRows = false;
-            this.pathVariablesDataGridView.AllowUserToDeleteRows = false;
-            this.pathVariablesDataGridView.AllowUserToDragDropRows = false;
-            this.pathVariablesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pathVariablesDataGridView.ColumnHeadersHeight = 17;
-            this.pathVariablesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.pathVariablesDataGridViewNameColumn,
-            this.pathVariablesDataGridViewValueColumn});
-            this.pathVariablesDataGridView.Location = new System.Drawing.Point(6, 23);
-            this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
-            this.pathVariablesDataGridView.RowHeadersWidth = 41;
-            this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.pathVariablesDataGridView.Size = new System.Drawing.Size(691, 463);
-            this.pathVariablesDataGridView.TabIndex = 2;
-            this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
-            // 
-            // pathVariablesDataGridViewNameColumn
-            // 
-            this.pathVariablesDataGridViewNameColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
-            this.pathVariablesDataGridViewNameColumn.HeaderText = "Placeholder";
-            this.pathVariablesDataGridViewNameColumn.MinimumWidth = 50;
-            this.pathVariablesDataGridViewNameColumn.Name = "pathVariablesDataGridViewNameColumn";
-            this.pathVariablesDataGridViewNameColumn.ReadOnly = true;
-            this.pathVariablesDataGridViewNameColumn.Width = 120;
-            // 
-            // pathVariablesDataGridViewValueColumn
-            // 
-            this.pathVariablesDataGridViewValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.pathVariablesDataGridViewValueColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
-            this.pathVariablesDataGridViewValueColumn.HeaderText = "Current Value";
-            this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
-            this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
             // tabMisc
             // 
@@ -1798,13 +1694,64 @@
             this.darkLabel12.TabIndex = 101;
             this.darkLabel12.Text = "Texture tile padding:";
             // 
-            // colSoundsEnabled
+            // tabPaths
             // 
-            this.colSoundsEnabled.HeaderText = "Select";
-            this.colSoundsEnabled.Name = "colSoundsEnabled";
-            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.colSoundsEnabled.Width = 60;
+            this.tabPaths.BackColor = System.Drawing.Color.Transparent;
+            this.tabPaths.Controls.Add(this.darkLabel1);
+            this.tabPaths.Controls.Add(this.pathVariablesDataGridView);
+            this.tabPaths.Location = new System.Drawing.Point(4, 22);
+            this.tabPaths.Name = "tabPaths";
+            this.tabPaths.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPaths.Size = new System.Drawing.Size(700, 505);
+            this.tabPaths.TabIndex = 5;
+            this.tabPaths.Text = "Path Placeholders";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(694, 12);
+            this.darkLabel1.TabIndex = 1;
+            this.darkLabel1.Text = "Available dynamic place holders that can be used inside paths: ";
+            // 
+            // pathVariablesDataGridView
+            // 
+            this.pathVariablesDataGridView.AllowUserToAddRows = false;
+            this.pathVariablesDataGridView.AllowUserToDeleteRows = false;
+            this.pathVariablesDataGridView.AllowUserToDragDropRows = false;
+            this.pathVariablesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pathVariablesDataGridView.ColumnHeadersHeight = 17;
+            this.pathVariablesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.pathVariablesDataGridViewNameColumn,
+            this.pathVariablesDataGridViewValueColumn});
+            this.pathVariablesDataGridView.Location = new System.Drawing.Point(6, 23);
+            this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
+            this.pathVariablesDataGridView.RowHeadersWidth = 41;
+            this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.pathVariablesDataGridView.Size = new System.Drawing.Size(691, 463);
+            this.pathVariablesDataGridView.TabIndex = 2;
+            this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
+            // 
+            // pathVariablesDataGridViewNameColumn
+            // 
+            this.pathVariablesDataGridViewNameColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
+            this.pathVariablesDataGridViewNameColumn.HeaderText = "Placeholder";
+            this.pathVariablesDataGridViewNameColumn.MinimumWidth = 50;
+            this.pathVariablesDataGridViewNameColumn.Name = "pathVariablesDataGridViewNameColumn";
+            this.pathVariablesDataGridViewNameColumn.ReadOnly = true;
+            this.pathVariablesDataGridViewNameColumn.Width = 120;
+            // 
+            // pathVariablesDataGridViewValueColumn
+            // 
+            this.pathVariablesDataGridViewValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.pathVariablesDataGridViewValueColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
+            this.pathVariablesDataGridViewValueColumn.HeaderText = "Current Value";
+            this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
+            this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
             // colSoundsId
             // 
@@ -1841,6 +1788,50 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
+            // 
+            // colSoundsEnabled
+            // 
+            this.colSoundsEnabled.HeaderText = "Include";
+            this.colSoundsEnabled.Name = "colSoundsEnabled";
+            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colSoundsEnabled.Width = 60;
+            // 
+            // colSoundID
+            // 
+            this.colSoundID.HeaderText = "ID";
+            this.colSoundID.Name = "colSoundID";
+            this.colSoundID.ReadOnly = true;
+            this.colSoundID.Width = 40;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.HeaderText = "Name";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.Width = 200;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn3.HeaderText = "From catalog";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.HeaderText = "Range";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.ToolTipText = "Range name of TRNG extended soundmap";
+            this.dataGridViewTextBoxColumn4.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.HeaderText = "Orig. ID";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            this.dataGridViewTextBoxColumn5.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
+            this.dataGridViewTextBoxColumn5.Width = 80;
             // 
             // FormLevelSettings
             // 
@@ -1900,8 +1891,6 @@
             this.tabSamples.ResumeLayout(false);
             this.tabSamples.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
-            this.tabPaths.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.tabMisc.ResumeLayout(false);
             this.panelTr5Weather.ResumeLayout(false);
             this.panelTr5LaraType.ResumeLayout(false);
@@ -1912,6 +1901,8 @@
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
+            this.tabPaths.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2052,7 +2043,6 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogsSoundCountColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn colSoundsEnabled;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundsName;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsCatalogColumn;
@@ -2060,7 +2050,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsOriginalIdColumn;
         private DarkUI.Controls.DarkButton butAssignFromWads;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colSoundsEnabled;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoundID;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
