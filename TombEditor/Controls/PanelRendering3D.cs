@@ -336,13 +336,10 @@ namespace TombEditor.Controls
             // Update drawing
 
             if (_editor.Mode != EditorMode.Map2D)
-                if (obj is IEditorObjectChangedEvent ||
-                obj is Editor.SelectedObjectChangedEvent)
-                {
-                    Update();
-                }
-                else if
-                    (obj is IEditorRoomChangedEvent ||
+                if
+                    (obj is IEditorObjectChangedEvent ||
+                    obj is Editor.SelectedObjectChangedEvent ||
+                    obj is IEditorRoomChangedEvent ||
                     obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
                     obj is Editor.ConfigurationChangedEvent ||
                     obj is Editor.SelectedSectorsChangedEvent ||
@@ -352,9 +349,7 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
                     obj is Editor.LoadedImportedGeometriesChangedEvent)
-                {
                     Refresh();
-                }
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
             {
