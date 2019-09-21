@@ -1402,7 +1402,8 @@ namespace TombLib.LevelData.Compilers
                                                                         32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
 
                                             if (!isPresentInLookup)
-                                                _vertexColors.Add(absolutePosition, newColor);
+                                                //_vertexColors.Add(absolutePosition, newColor); //Dirty Hack!!!
+                                                _vertexColors.TryAdd(absolutePosition, newColor);
                                             else
                                                 _vertexColors[absolutePosition] = newColor;
                                         }
