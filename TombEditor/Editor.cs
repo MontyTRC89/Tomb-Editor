@@ -730,6 +730,9 @@ namespace TombEditor
             if (wadsChanged)
                 LoadedWadsChange(false);
 
+            if (soundsChanged)
+                LoadedSoundsCatalogsChange(false);
+
             if (animatedTexturesChanged)
                 AnimatedTexturesChange();
 

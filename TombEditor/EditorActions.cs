@@ -3429,6 +3429,14 @@ namespace TombEditor
             _editor.LoadedWadsChange();
         }
 
+        public static void ReloadSounds(IWin32Window owner)
+        {
+            var dialogHandler = new GraphicalDialogHandler(owner);
+            foreach (var catalog in _editor.Level.Settings.SoundsCatalogs)
+                catalog.Reload(_editor.Level.Settings, dialogHandler);
+            _editor.LoadedSoundsCatalogsChange();
+        }
+
         public static bool EnsureNoOutsidePortalsInSelecton(IWin32Window owner)
         {
             return Room.RemoveOutsidePortals(_editor.Level, _editor.SelectedRooms, list =>
