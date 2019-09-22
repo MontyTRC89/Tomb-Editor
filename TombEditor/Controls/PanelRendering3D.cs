@@ -349,7 +349,7 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
                     obj is Editor.LoadedImportedGeometriesChangedEvent)
-                    Refresh();
+                    Invalidate(false);
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
             {
