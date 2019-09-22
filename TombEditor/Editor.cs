@@ -102,6 +102,7 @@ namespace TombEditor
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
                 ResetCamera(true);
                 LoadedWadsChange(false);
+                LoadedSoundsCatalogsChange(false);
                 LoadedTexturesChange(null, false);
                 LoadedImportedGeometriesChange(false);
                 LevelFileNameChange();
@@ -426,6 +427,12 @@ namespace TombEditor
             RaiseEvent(new LoadedWadsChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
+        public class LoadedSoundsCatalogsChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedSoundsCatalogsChange(bool updateLevelSettingsFileWatcher = true)
+        {
+            RaiseEvent(new LoadedSoundsCatalogsChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
+        }
+
         // This is invoked if the loaded textures changed for the level.
         public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public LevelTexture NewToSelect { get; set; } = null; public bool UpdateLevelSettingsFileWatcher { get; set; } }
         public void LoadedTexturesChange(LevelTexture newToSelect = null, bool updateLevelSettingsFileWatcher = true)
@@ -730,7 +737,7 @@ namespace TombEditor
                 LevelFileNameChange();
 
             // Update file watchers
-            if (importedGeometryChanged || texturesChanged || wadsChanged)
+            if (importedGeometryChanged || texturesChanged || wadsChanged || soundsChanged)
                 _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
         }
 
@@ -786,6 +793,7 @@ namespace TombEditor
                         _levelSettingsWatcher = new LevelSettingsWatcher(
                             (sender, e) => LoadedTexturesChange(null, false),
                             (sender, e) => LoadedWadsChange(false),
+                            (sender, e) => LoadedSoundsCatalogsChange(false),
                             (sender, e) => LoadedImportedGeometriesChange(true),
                             (sender, e) => LoadedImportedGeometriesChange(false),
                             SynchronizationContext);

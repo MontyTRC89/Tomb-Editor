@@ -19,6 +19,7 @@ namespace TombEditor
 
         public EventHandler<ChangedEventArgs<LevelTexture>> TextureChanged { get; }
         public EventHandler<ChangedEventArgs<ReferencedWad>> WadChanged { get; }
+        public EventHandler<ChangedEventArgs<ReferencedSoundsCatalog>> SoundsCatalogChanged { get; }
         public EventHandler<ChangedEventArgs<ImportedGeometry>> ImportedGeometryChanged { get; }
         public EventHandler<ChangedEventArgs<ImportedGeometryTexture>> ImportedGeometryTexturesChanged { get; }
         public SynchronizationContext SynchronizationContext { get; }
@@ -26,12 +27,14 @@ namespace TombEditor
         public LevelSettingsWatcher(
             EventHandler<ChangedEventArgs<LevelTexture>> textureChanged,
             EventHandler<ChangedEventArgs<ReferencedWad>> wadChanged,
+            EventHandler<ChangedEventArgs<ReferencedSoundsCatalog>> soundsCatalogChanged,
             EventHandler<ChangedEventArgs<ImportedGeometry>> importedGeometryChanged,
             EventHandler<ChangedEventArgs<ImportedGeometryTexture>> ImportedGeometryTexturesChanged,
             SynchronizationContext synchronizationContext = null)
         {
             TextureChanged = textureChanged;
             WadChanged = wadChanged;
+            SoundsCatalogChanged = soundsCatalogChanged;
             ImportedGeometryChanged = importedGeometryChanged;
             SynchronizationContext = synchronizationContext ?? new NullSynchronizationContext();
         }
@@ -162,11 +165,37 @@ namespace TombEditor
                 listOfWatchedObjs.Add(new WatchedTexture { Parent = this, Texture = texture });
             foreach (ReferencedWad wad in settings.Wads)
                 listOfWatchedObjs.Add(new WatchedWad { Parent = this, Wad = wad });
+            foreach (ReferencedSoundsCatalog catalog in settings.SoundsCatalogs)
+                listOfWatchedObjs.Add(new WatchedSoundCatalog { Parent = this, SoundsCatalog = catalog });
             foreach (ImportedGeometry importedGeometry in settings.ImportedGeometries)
                 listOfWatchedObjs.Add(new WatchedImportedGeometry { Parent = this, ImportedGeometry = importedGeometry });
             foreach (ImportedGeometryTexture importedGeometryTexture in settings.ImportedGeometries.SelectMany(geometry => geometry.Textures).Distinct())
                 listOfWatchedObjs.Add(new WatchedImportedGeometryTexture { Parent = this, ImportedGeometryTexture = importedGeometryTexture });
             _watcher.UpdateAllFiles(listOfWatchedObjs, () => _settings.SetTarget(settings));
+        }
+
+        private class WatchedSoundCatalog : FileSystemWatcherManager.WatchedObj
+        {
+            public LevelSettingsWatcher Parent;
+            public ReferencedSoundsCatalog SoundsCatalog;
+            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(SoundsCatalog.Path) };
+            public override IEnumerable<string> Directories => Parent.Settings?.OldWadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
+            public override string Name => PathC.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(SoundsCatalog.Path));
+            public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => SoundsCatalog.Equals((other as WatchedSoundCatalog)?.SoundsCatalog);
+            public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
+            {
+                LevelSettings settings = Parent.Settings;
+                if (settings == null)
+                    return;
+
+                ReferencedSoundsCatalog newCatalog = SoundsCatalog.Clone();
+                newCatalog.Reload(settings);
+                Parent.SynchronizationContext.Post(unused =>
+                {
+                    SoundsCatalog.Assign(newCatalog);
+                    Parent?.SoundsCatalogChanged(null, new ChangedEventArgs<ReferencedSoundsCatalog> { Object = newCatalog });
+                }, null);
+            }
         }
 
         public void RestartReloading() => _watcher.RestartReloading();
