@@ -536,7 +536,7 @@
       <anim item="0" id="142" name="ONWATER_SWIM_BACK_TO_IDLE" />
       <anim item="0" id="143" name="ONWATER_SWIM_LEFT" />
       <anim item="0" id="144" name="ONWATER_SWIM_RIGHT" />
-      <anim item="0" id="145" name="JUMP_TO_DEATH" />
+      <anim item="0" id="145" name="DEATH_JUMP" />
       <anim item="0" id="146" name="ROLL_START" />
       <anim item="0" id="147" name="ROLL_CONTINUE" />
       <anim item="0" id="148" name="ROLL_END" />
@@ -546,7 +546,7 @@
       <anim item="0" id="152" name="SWANDIVE_TO_UNDERWATER" />
       <anim item="0" id="153" name="FREEFALL_SWANDIVE" />
       <anim item="0" id="154" name="FREEFALL_SWANDIVE_TO_UNDERWATER" />
-      <anim item="0" id="155" name="SWANDIVE_TO_DEATH" />
+      <anim item="0" id="155" name="SWANDIVE_DEATH" />
       <anim item="0" id="156" name="SWANDIVE_LEFT" />
       <anim item="0" id="157" name="SWANDIVE_RIGHT" />
       <anim item="0" id="158" name="SWANDIVE_START" />
@@ -1231,8 +1231,8 @@
       <anim item="0" id="189" name="FLARE_THROW" />
       <anim item="0" id="190" name="ONWATER_TO_WADE" />
       <anim item="0" id="191" name="ONWATER_TO_STANCE_MEDIUM" />
-      <anim item="0" id="192" name="ONWATER_TO_STANCE_LOW" />
-      <anim item="0" id="193" name="ONWATER_TO_WADE" />
+      <anim item="0" id="192" name="UNDERWATER_TO_STANCE" />
+      <anim item="0" id="193" name="ONWATER_TO_WADE_LOW" />
       <anim item="0" id="194" name="LADDER_TO_HANG_DOWN" />
       <anim item="0" id="195" name="SWITCH_SMALL_DOWN" />
       <anim item="0" id="196" name="SWITCH_SMALL_UP" />
@@ -1246,13 +1246,13 @@
       <anim item="0" id="204" name="FLARE_PICKUP" />
       <anim item="0" id="205" name="UNDERWATER_ROLL_END" />
       <anim item="0" id="206" name="UNDERWATER_FLARE_PICKUP" />
-      <anim item="0" id="207" name="RUNNING_JUMP_ROLL_START" />
+      <anim item="0" id="207" name="RUN_JUMP_ROLL_START" />
       <anim item="0" id="208" name="SOMERSAULT" />
-      <anim item="0" id="209" name="RUNNING_JUMP_ROLL_END" />
-      <anim item="0" id="210" name="STANDING_JUMP_ROLL_START" />
-      <anim item="0" id="211" name="STANDING_JUMP_ROLL_END" />
-      <anim item="0" id="212" name="BACKWARDS_JUMP_ROLL_START" />
-      <anim item="0" id="213" name="BACKWARDS_JUMP_ROLL_END" />
+      <anim item="0" id="209" name="RUN_JUMP_ROLL_END" />
+      <anim item="0" id="210" name="JUMP_FORWARD_ROLL_START" />
+      <anim item="0" id="211" name="JUMP_FORWARD_ROLL_END" />
+      <anim item="0" id="212" name="JUMP_BACK_ROLL_START" />
+      <anim item="0" id="213" name="JUMP_BACK_ROLL_END" />
       <anim item="0" id="214" name="KICK" />
       <anim item="0" id="215" name="ZIPLINE_GRAB" />
       <anim item="0" id="216" name="ZIPLINE_RIDE" />
@@ -1929,9 +1929,9 @@
       <anim item="0" id="237" name="MONKEY_STOP_LEFT" />
       <anim item="0" id="238" name="MONKEY_STOP_RIGHT" />
       <anim item="0" id="239" name="MONKEY_IDLE_TO_FORWARD_LEFT" />
-      <anim item="0" id="240" name="SPRINT_TO_ROLL_ALTERNATE_START" />
-      <anim item="0" id="241" name="SPRINT_TO_ROLL_ALTERNATE_CONTINUE" />
-      <anim item="0" id="242" name="SPRINT_TO_ROLL_ALTERNATE_END" />
+      <anim item="0" id="240" name="SPRINT_TO_ROLL_ALTERNATE_START_UNUSED" />
+      <anim item="0" id="241" name="SPRINT_TO_ROLL_ALTERNATE_CONTINUE_UNUSED" />
+      <anim item="0" id="242" name="SPRINT_TO_ROLL_ALTERNATE_END_UNUSED" />
       <anim item="0" id="243" name="SPRINT_TO_RUN_LEFT" />
       <anim item="0" id="244" name="SPRINT_TO_RUN_RIGHT" />
       <anim item="0" id="245" name="STAND_TO_CROUCH_END" />
@@ -1970,8 +1970,8 @@
       <anim item="0" id="278" name="CRAWL_BACKWARD_TO_IDLE_RIGHT_END" />
       <anim item="0" id="279" name="CRAWL_BACKWARD_TO_IDLE_LEFT_START" />
       <anim item="0" id="280" name="CRAWL_BACKWARD_TO_IDLE_LEFT_END" />
-      <anim item="0" id="281" name="CRAWL_TURN_LEFT_END" />
-      <anim item="0" id="282" name="CRAWL_TURN_RIGHT_END" />
+      <anim item="0" id="281" name="CRAWL_TURN_LEFT_EARLY_END" />
+      <anim item="0" id="282" name="CRAWL_TURN_RIGHT_EARLY_END" />
       <anim item="0" id="283" name="MONKEY_TURN_LEFT_EARLY_END" />
       <anim item="0" id="284" name="MONKEY_TURN_LEFT_LATE_END" />
       <anim item="0" id="285" name="MONKEY_TURN_RIGHT_EARLY_END" />
