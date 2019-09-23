@@ -241,6 +241,9 @@ namespace TombEditor.Forms
                 removeWadsToolStripMenuItem.Enabled =
                     reloadWadsToolStripMenuItem.Enabled = _editor.Level.Settings.Wads.Count > 0;
 
+            if (obj is Editor.LoadedSoundsCatalogsChangedEvent)
+                reloadSoundsToolStripMenuItem.Enabled = _editor.Level.Settings.SoundsCatalogs.Count > 0;
+
             // Update object bookmarks
             if (obj is Editor.BookmarkedObjectChanged)
             {

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using static TombEditor.Editor;
 
 namespace TombEditor.Forms
 {
@@ -398,6 +399,16 @@ namespace TombEditor.Forms
 
             // Initialize controls
             UpdateDialog();
+
+            _editor.EditorEventRaised += EditorEventRaised;
+        }
+
+        private void EditorEventRaised(IEditorEvent evt)
+        {
+            if (evt is LoadedSoundsCatalogsChangedEvent)
+            {
+                PopulateSoundInfoList();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -408,6 +419,7 @@ namespace TombEditor.Forms
                 _previewTexture?.Dispose();
                 _texturePreviewCache?.Dispose();
                 components?.Dispose();
+                _editor.EditorEventRaised -= EditorEventRaised;
             }
             base.Dispose(disposing);
         }
@@ -1417,6 +1429,12 @@ namespace TombEditor.Forms
             }
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)
                 AssignAllSounds(soundsCatalog.Sounds);
+            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogReloadButton.Name)
+            {
+                _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds.Reload(_levelSettings);
+                soundsCatalogsDataGridView.InvalidateRow(e.RowIndex);
+                PopulateSoundInfoListAndResetFilter();
+            }
         }
 
         private void soundsCatalogsDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => PopulateSoundInfoListAndResetFilter();
