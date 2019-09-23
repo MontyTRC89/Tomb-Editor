@@ -46,7 +46,7 @@ namespace TombLib.Wad
             Name = "UNKNOWN_SOUND";
             Volume = 1;
             RangeInSectors = 8;
-            Chance = 1;
+            Chance = 0;
             PitchFactor = 1;
             DisablePanning = false;
             RandomizePitch = false;
