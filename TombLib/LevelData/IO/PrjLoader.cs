@@ -126,6 +126,12 @@ namespace TombLib.LevelData.IO
                 progressReporter.ReportProgress(1, "PRJ is a " + (isNg ? "n NGLE" : "TRLE") + " project");
 
                 // Version
+                reader.BaseStream.Seek(8, SeekOrigin.Begin);
+                var bigTexture = reader.ReadByte();
+                bool isBigTexturePrj = bigTexture == 0x32 ? true : false;
+
+                progressReporter.ReportProgress(2, "PRJ is a " + (isBigTexturePrj ? "big textures" : "normal textures") + " project");
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
                 reader.ReadBytes(12);
 
                 // Number of rooms
@@ -1538,12 +1544,36 @@ namespace TombLib.LevelData.IO
                 }
 
                 // Read foot step sounds
-                texture.ResizeFootStepSounds(4, 64);
-                for (int i = 0; i < 256; i++)
-                {
-                    TextureFootStepSound FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
-                    texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
+                texture.ResizeFootStepSounds(4,64);
+                if (isBigTexturePrj) {
+                    for (int i = 0; i < 256;)
+                    {
+                        TextureFootStepSound FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                        texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
+                        texture.SetFootStepSound((i + 1) % 4, i / 4, FootStepSound);
+                        texture.SetFootStepSound(i % 4, ((i) / 4) + 1, FootStepSound);
+                        texture.SetFootStepSound((i+1) % 4, ((i) / 4) + 1, FootStepSound);
+                        //go to next 128x128 texture
+                        i += 2;
+                        
+                        FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                        texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
+                        texture.SetFootStepSound((i + 1) % 4, i / 4, FootStepSound);
+                        texture.SetFootStepSound(i % 4, ((i) / 4) + 1, FootStepSound);
+                        texture.SetFootStepSound((i + 1) % 4, ((i) / 4)+1, FootStepSound);
+                        //go to next 128x128 texture (6 64px textures forward)
+                        i += 6;
+                    }
                 }
+                else
+                {
+                    for (int i = 0; i < 256; i++)
+                    {
+                        TextureFootStepSound FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                        texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
+                    }
+                }
+                
 
                 // Try to parse bump mapping and recognize *.prj TRNG's
                 if (reader.BaseStream.Length - reader.BaseStream.Position < 256)
