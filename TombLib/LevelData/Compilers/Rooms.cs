@@ -619,6 +619,23 @@ namespace TombLib.LevelData.Compilers
                         var xv = trVertex.Position.X / 1024;
                         var zv = trVertex.Position.Z / 1024;
 
+                        var otherRoomLightEffect = portal.AdjoiningRoom.LightEffect;
+                        if (otherRoomLightEffect == RoomLightEffect.Default)
+                        {
+                            switch (portal.AdjoiningRoom.Type)
+                            {
+                                case RoomType.Water:
+                                    otherRoomLightEffect = RoomLightEffect.Glow;
+                                    break;
+                                case RoomType.Quicksand:
+                                    otherRoomLightEffect = RoomLightEffect.Movement;
+                                    break;
+                                default:
+                                    otherRoomLightEffect = RoomLightEffect.None;
+                                    break;
+                            }
+                        }
+
                         // Check for imported geometry out of room bounds
                         if (xv > 0 && zv > 0 && xv < room.NumXSectors && zv < room.NumZSectors)
                         {
@@ -677,8 +694,8 @@ namespace TombLib.LevelData.Compilers
                                     portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                 {
                                     // Still allow movement, if adjoining room has very same properties
-                                    if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Movement ||
-                                            portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
+                                    if (!((otherRoomLightEffect == RoomLightEffect.Movement ||
+                                            otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
                                             portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
                                         allowMovement = false;
                                 }
@@ -694,8 +711,8 @@ namespace TombLib.LevelData.Compilers
                                     portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                     {
                                         // Still allow glow, if adjoining room has very same properties
-                                        if (!((portal.AdjoiningRoom.LightEffect == RoomLightEffect.Glow ||
-                                               portal.AdjoiningRoom.LightEffect == RoomLightEffect.GlowAndMovement) &&
+                                        if (!((otherRoomLightEffect == RoomLightEffect.Glow ||
+                                               otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
                                                portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
                                             allowGlow = false;
                                     }
