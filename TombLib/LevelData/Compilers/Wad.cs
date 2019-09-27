@@ -328,12 +328,12 @@ namespace TombLib.LevelData.Compilers
                     if (oldAnimation.KeyFrames.Count != 0 && oldAnimation.FrameRate != 0)
                     {
                         acceleration = (int)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
-                                                       ((oldAnimation.KeyFrames.Count + 1) * oldAnimation.FrameRate) * 65536.0f);
+                                                       ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
                         lateralAcceleration = (int)Math.Round((oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
-                                                              ((oldAnimation.KeyFrames.Count + 1) * oldAnimation.FrameRate) * 65536.0f);
+                                                              ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
                     }
-                    speed = (int)Math.Round(oldAnimation.EndVelocity * 65536.0f);
-                    lateralSpeed = (int)Math.Round(oldAnimation.EndLateralVelocity * 65536.0f);
+                    speed = (int)Math.Round(oldAnimation.StartVelocity * 65536.0f);
+                    lateralSpeed = (int)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
 
                     // Setup the final animation
                     if (j == 0)
