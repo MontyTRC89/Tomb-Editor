@@ -820,14 +820,14 @@ namespace TombLib.Wad
                         if (!foundNewVelocitiesChunk)
                         {
                             float acceleration = animation.Acceleration / 65536.0f;
-                            animation.EndVelocity = animation.Speed / 65536.0f;
-                            animation.StartVelocity = animation.EndVelocity - acceleration *
-                                                      (animation.KeyFrames.Count + 1) * animation.FrameRate;
+                            animation.StartVelocity = animation.Speed / 65536.0f;
+                            animation.EndVelocity = animation.StartVelocity + acceleration *
+                                                        (animation.KeyFrames.Count - 1) * animation.FrameRate;
 
                             float lateralAcceleration = animation.LateralAcceleration / 65536.0f;
-                            animation.EndLateralVelocity = animation.LateralSpeed / 65536.0f;
-                            animation.StartLateralVelocity = animation.EndLateralVelocity - lateralAcceleration *
-                                                             (animation.KeyFrames.Count + 1) * animation.FrameRate;
+                            animation.StartLateralVelocity = animation.LateralSpeed / 65536.0f;
+                            animation.EndLateralVelocity = animation.StartLateralVelocity + lateralAcceleration *
+                                                                (animation.KeyFrames.Count - 1) * animation.FrameRate;
                         }
 
                         mov.Animations.Add(animation);

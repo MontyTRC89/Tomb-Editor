@@ -566,17 +566,17 @@ namespace TombLib.Wad.TrLevels
 
                 // New velocities
                 float acceleration = oldAnimation.Accel / 65536.0f;
-                newAnimation.EndVelocity = oldAnimation.Speed / 65536.0f;
+                newAnimation.StartVelocity = oldAnimation.Speed / 65536.0f;
 
                 float lateralAcceleration = oldAnimation.AccelLateral / 65536.0f;
-                newAnimation.EndLateralVelocity = oldAnimation.SpeedLateral / 65536.0f;
+                newAnimation.StartLateralVelocity = oldAnimation.SpeedLateral / 65536.0f;
 
                 if (newAnimation.KeyFrames.Count != 0 && newAnimation.FrameRate != 0)
                 {
-                    newAnimation.StartVelocity = newAnimation.EndVelocity - acceleration *
-                                                 (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
-                    newAnimation.StartLateralVelocity = newAnimation.EndLateralVelocity - lateralAcceleration *
-                                                        (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
+                    newAnimation.EndVelocity = newAnimation.StartVelocity + acceleration *
+                                                 (newAnimation.KeyFrames.Count - 1) * newAnimation.FrameRate;
+                    newAnimation.EndLateralVelocity = newAnimation.StartLateralVelocity + lateralAcceleration *
+                                                        (newAnimation.KeyFrames.Count - 1) * newAnimation.FrameRate;
                 }
 
                 newMoveable.Animations.Add(newAnimation);

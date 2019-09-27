@@ -412,17 +412,17 @@ namespace TombLib.Wad.Tr4Wad
 
                 // New velocities
                 float acceleration = newAnimation.Acceleration / 65536.0f;
-                newAnimation.EndVelocity = newAnimation.Speed / 65536.0f;
+                newAnimation.StartVelocity = newAnimation.Speed / 65536.0f;
 
                 float lateralAcceleration = newAnimation.LateralAcceleration / 65536.0f;
-                newAnimation.EndLateralVelocity = newAnimation.LateralSpeed / 65536.0f;
+                newAnimation.StartLateralVelocity = newAnimation.LateralSpeed / 65536.0f;
 
                 if (newAnimation.KeyFrames.Count != 0 && newAnimation.FrameRate != 0)
                 {
-                    newAnimation.StartVelocity = newAnimation.EndVelocity - acceleration *
-                                                 (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
-                    newAnimation.StartLateralVelocity = newAnimation.EndLateralVelocity - lateralAcceleration *
-                                                        (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
+                    newAnimation.EndVelocity = newAnimation.StartVelocity + acceleration *
+                                                    (newAnimation.KeyFrames.Count - 1) * newAnimation.FrameRate;
+                    newAnimation.EndLateralVelocity = newAnimation.StartLateralVelocity + lateralAcceleration *
+                                                        (newAnimation.KeyFrames.Count - 1) * newAnimation.FrameRate;
                 }
 
                 // Deduce real maximum frame number, based on interpolation and keyframes.
