@@ -2,17 +2,21 @@ using DarkUI.Controls;
 using DarkUI.Forms;
 using FastColoredTextBoxNS;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.Scripting;
+using TombIDE.Shared.Scripting.Syntaxes;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Script;
@@ -350,34 +354,22 @@ namespace TombIDE.ScriptEditor
 			// Reset the timer
 			inputTimer.Stop();
 			inputTimer.Start();
-
-			Regex regex = new Regex(@"\ACustomize\s*?=.*,", RegexOptions.IgnoreCase);
-			string currentLine = _textBox.GetLineText(_textBox.Selection.Start.iLine);
-
-			if (regex.IsMatch(currentLine))
-			{
-				string firstMnemonic = currentLine.Split('=')[1].Replace(',', ' ').Trim();
-
-				foreach (PluginMnemonic pluginMnemonic in KeyWords.PluginMnemonics)
-				{
-					if (pluginMnemonic.Flag.ToLower() == firstMnemonic.ToLower())
-					{
-						try
-						{
-							string syntaxText = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
-							textBox_Syntax.Text = syntaxText;
-
-							break;
-						}
-						catch { }
-					}
-				}
-			}
 		}
 
 		private void Editor_UndoRedoState_Changed(object sender, EventArgs e) => UpdateUndoRedoSaveStates();
 		private void Editor_ZoomChanged(object sender, EventArgs e) => DoStatusCounting();
-		private void Editor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
+
+		private void Editor_SelectionChanged(object sender, EventArgs e)
+		{
+			DoStatusCounting();
+
+			try
+			{
+				HandleSyntaxHints();
+			}
+			catch { }
+		}
+
 		private void Editor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
 
 		private void sectionPanel_Files_Resize(object sender, EventArgs e) => AdjustFileListButtons();
@@ -572,6 +564,8 @@ namespace TombIDE.ScriptEditor
 
 		private void ToggleStatusStrip(bool state)
 		{
+			textBox_Syntax.Visible = state;
+
 			menuItem_StatusStrip.Checked = state;
 			statusStrip.Visible = state;
 			_ide.Configuration.View_ShowStatusStrip = state;
@@ -1202,6 +1196,199 @@ namespace TombIDE.ScriptEditor
 		}
 
 		#endregion FileList
+
+		#region Syntax Hints
+
+		private void HandleSyntaxHints()
+		{
+			int currentLineNumber = _textBox.Selection.Start.iLine;
+			string lineText = _textBox.GetLineText(currentLineNumber);
+
+			string command = string.Empty;
+
+			if (lineText.Contains("="))
+				command = lineText.Split('=')[0].Trim();
+			else if (lineText.Trim().StartsWith("#"))
+				command = lineText.Split(' ')[0].Trim();
+
+			if (command.ToLower() == "level")
+				command = GetCorrectLevelCommand(currentLineNumber);
+			else if (command.ToLower() == "cut")
+				command = GetCorrectCutCommand(currentLineNumber);
+			else if (command.ToLower() == "fmv")
+				command = GetCorrectFMVCommand(currentLineNumber);
+
+			if (command == null)
+				return;
+
+			string content = string.Empty;
+
+			if (Regex.IsMatch(lineText, @"Customize\s*?=.*?,", RegexOptions.IgnoreCase))
+			{
+				string custKey = lineText.Split('=')[1].Split(',')[0].Trim();
+
+				// Get resources from CustSyntaxes.resx
+				ResourceManager custSyntaxResource = new ResourceManager(typeof(CustSyntaxes));
+				ResourceSet custResourceSet = custSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+				foreach (DictionaryEntry entry in custResourceSet)
+				{
+					if (custKey.ToLower() == entry.Key.ToString().ToLower())
+					{
+						content = entry.Value.ToString();
+						break;
+					}
+				}
+
+				if (string.IsNullOrEmpty(content))
+				{
+					for (int i = 0; i < KeyWords.PluginMnemonics.Length; i++)
+					{
+						PluginMnemonic pluginMnemonic = KeyWords.PluginMnemonics[i];
+
+						if (pluginMnemonic.Flag.ToLower() == custKey.ToLower())
+						{
+							content = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
+							break;
+						}
+					}
+				}
+			}
+			else if (Regex.IsMatch(lineText, @"Parameters\s*?=.*?,", RegexOptions.IgnoreCase))
+			{
+				string paramKey = lineText.Split('=')[1].Split(',')[0].Trim();
+
+				// Get resources from ParamSyntaxes.resx
+				ResourceManager custSyntaxResource = new ResourceManager(typeof(ParamSyntaxes));
+				ResourceSet custResourceSet = custSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+				foreach (DictionaryEntry entry in custResourceSet)
+				{
+					if (paramKey.ToLower() == entry.Key.ToString().ToLower())
+					{
+						content = entry.Value.ToString();
+						break;
+					}
+				}
+
+				if (string.IsNullOrEmpty(content))
+				{
+					for (int i = 0; i < KeyWords.PluginMnemonics.Length; i++)
+					{
+						PluginMnemonic pluginMnemonic = KeyWords.PluginMnemonics[i];
+
+						if (pluginMnemonic.Flag.ToLower() == paramKey.ToLower())
+						{
+							content = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// Get resources from OldCommandSyntaxes.resx
+				ResourceManager oldCommandSyntaxResource = new ResourceManager(typeof(OldCommandSyntaxes));
+				ResourceSet oldCommandResourceSet = oldCommandSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+				// Get resources from NewCommandSyntaxes.resx
+				ResourceManager newCommandSyntaxResource = new ResourceManager(typeof(NewCommandSyntaxes));
+				ResourceSet newCommandResourceSet = newCommandSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+				List<DictionaryEntry> entries = new List<DictionaryEntry>();
+				entries.AddRange(oldCommandResourceSet.Cast<DictionaryEntry>().ToList());
+				entries.AddRange(newCommandResourceSet.Cast<DictionaryEntry>().ToList());
+
+				foreach (DictionaryEntry entry in entries)
+				{
+					if (command.ToLower() == entry.Key.ToString().ToLower())
+					{
+						content = entry.Value.ToString();
+						break;
+					}
+				}
+			}
+
+			textBox_Syntax.Text = content;
+		}
+
+		private string GetCorrectLevelCommand(int lineNumber)
+		{
+			string section = GetCurrentSectionName(lineNumber);
+
+			if (section == null)
+				return "LevelLevel";
+
+			switch (section.ToLower())
+			{
+				case "psxextensions":
+					return "LevelPSX";
+
+				case "pcextensions":
+					return "LevelPC";
+
+				case "title":
+					return "LevelLevel";
+
+				case "level":
+					return "LevelLevel";
+			}
+
+			return null;
+		}
+
+		private string GetCorrectCutCommand(int lineNumber)
+		{
+			string section = GetCurrentSectionName(lineNumber);
+
+			if (section == null)
+				return null;
+
+			switch (section.ToLower())
+			{
+				case "psxextensions":
+					return "CutPSX";
+
+				case "pcextensions":
+					return "CutPC";
+			}
+
+			return null;
+		}
+
+		private string GetCorrectFMVCommand(int lineNumber)
+		{
+			string section = GetCurrentSectionName(lineNumber);
+
+			if (section == null)
+				return null;
+
+			switch (section.ToLower())
+			{
+				case "psxextensions":
+					return "FMVPSX";
+
+				case "pcextensions":
+					return "FMVPC";
+			}
+
+			return null;
+		}
+
+		private string GetCurrentSectionName(int lineNumber)
+		{
+			for (int i = lineNumber - 1; i > 0; i--)
+			{
+				string currentLineText = _textBox.GetLineText(lineNumber);
+
+				if (currentLineText.Trim().StartsWith("["))
+					return currentLineText.Split('[')[1].Split(']')[0].Trim();
+			}
+
+			return null;
+		}
+
+		#endregion Syntax Hints
 
 		#region Tabs
 

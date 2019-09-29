@@ -11,8 +11,13 @@ namespace TombIDE.Shared.Scripting
 	{
 		#region Public variables
 
-		public static List<string> MnemonicConstants { get; internal set; }
-		public static List<PluginMnemonic> PluginMnemonics { get; internal set; }
+		public static string[] MnemonicConstants { get; internal set; }
+		public static PluginMnemonic[] PluginMnemonics { get; internal set; }
+
+		/// <summary>
+		/// All mnemonic flags combined into one array.
+		/// </summary>
+		public static string[] AllMnemonics { get; internal set; }
 
 		public static List<string> Sections
 		{
@@ -205,11 +210,19 @@ namespace TombIDE.Shared.Scripting
 
 		public static void SetupConstants()
 		{
-			SetupMnemonicConstants();
-			SetupPluginMnemonics();
+			MnemonicConstants = GetMnemonicConstants();
+			PluginMnemonics = GetPluginMnemonics();
+
+			List<string> allMnemonics = new List<string>();
+			allMnemonics.AddRange(MnemonicConstants);
+
+			foreach (PluginMnemonic pluginMnemonic in PluginMnemonics)
+				allMnemonics.Add(pluginMnemonic.Flag);
+
+			AllMnemonics = allMnemonics.ToArray();
 		}
 
-		private static void SetupMnemonicConstants()
+		private static string[] GetMnemonicConstants()
 		{
 			List<string> mnemonicConstants = new List<string>();
 
@@ -230,15 +243,14 @@ namespace TombIDE.Shared.Scripting
 					}
 				}
 
-				MnemonicConstants = mnemonicConstants;
+				return mnemonicConstants.ToArray();
 			}
-			catch (Exception)
-			{
-				// Mhm
-			}
+			catch (Exception) { } // Yes
+
+			return null;
 		}
 
-		private static void SetupPluginMnemonics()
+		private static PluginMnemonic[] GetPluginMnemonics()
 		{
 			List<PluginMnemonic> pluginMnemonics = new List<PluginMnemonic>();
 
@@ -252,10 +264,10 @@ namespace TombIDE.Shared.Scripting
 
 					foreach (string line in lines)
 					{
-						if (line.ToLower().StartsWith("<start_constants>"))
+						if (line.StartsWith("<start_constants>", StringComparison.OrdinalIgnoreCase))
 							continue;
 
-						if (line.ToLower().StartsWith("<end>"))
+						if (line.StartsWith("<end>", StringComparison.OrdinalIgnoreCase))
 							break;
 
 						if (!string.IsNullOrWhiteSpace(line) && line.Contains(":"))
@@ -287,20 +299,16 @@ namespace TombIDE.Shared.Scripting
 
 								pluginMnemonics.Add(mnemonic);
 							}
-							catch (Exception)
-							{
-								// Yes
-							}
+							catch (Exception) { } // Mhm
 						}
 					}
 				}
 
-				PluginMnemonics = pluginMnemonics;
+				return pluginMnemonics.ToArray();
 			}
-			catch (Exception)
-			{
-				// https://youtu.be/T9NjXekZ8kA
-			}
+			catch (Exception) { } // https://youtu.be/T9NjXekZ8kA
+
+			return null;
 		}
 
 		#endregion Methods
