@@ -1780,6 +1780,11 @@ namespace TombEditor
                 EditorActions.SetStaticMeshesColor(args.Window);
             });
 
+            AddCommand("MakeQuickItemGroup", "Make quick Itemgroup", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.MakeQuickItemGroup(args.Window,args.Editor);
+            });
+
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
