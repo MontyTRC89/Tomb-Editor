@@ -961,6 +961,7 @@ namespace TombLib.LevelData.Compilers
                     {
                         sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
                         sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
+                        if (sector.Floor < sector.Ceiling) sector.Floor = sector.Ceiling;
                     }
                     else
                     {

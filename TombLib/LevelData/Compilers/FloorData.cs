@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TombLib.NG;
+using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -190,7 +191,7 @@ namespace TombLib.LevelData.Compilers
                             // Check if this is a wall
                             if (!block.IsAnyWall)
                                 continue;
-
+                            
                             // Check if ceiling is traversable or not (now I check only for walls inside rooms)
                             if (x != 0 && z != 0 && x != room.NumXSectors - 1 && z != room.NumZSectors - 1)
                             {
@@ -206,7 +207,12 @@ namespace TombLib.LevelData.Compilers
                                             continue;
                                     }
                                     else
-                                        continue;
+                                    {
+                                        Room adjoiningRoom = portal.AdjoiningRoom;
+                                        VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
+                                        if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
+                                            continue;
+                                    };
                                 }
                             }
 
