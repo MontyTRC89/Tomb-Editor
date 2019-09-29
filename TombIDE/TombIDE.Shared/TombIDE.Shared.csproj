@@ -70,6 +70,26 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\KeyWords.cs" />
+    <Compile Include="Scripting\Syntaxes\CustSyntaxes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CustSyntaxes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripting\Syntaxes\NewCommandSyntaxes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NewCommandSyntaxes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripting\Syntaxes\OldCommandSyntaxes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OldCommandSyntaxes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripting\Syntaxes\ParamSyntaxes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ParamSyntaxes.resx</DependentUpon>
+    </Compile>
     <Compile Include="SharedMethods.cs" />
     <Compile Include="IDE.cs" />
     <Compile Include="Scripting\SyntaxTidying.cs" />
@@ -101,6 +121,22 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormLoading.resx">
       <DependentUpon>FormLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripting\Syntaxes\CustSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CustSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripting\Syntaxes\NewCommandSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>NewCommandSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripting\Syntaxes\OldCommandSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>OldCommandSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripting\Syntaxes\ParamSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParamSyntaxes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Scripting\ToolTips\CommandToolTips.resx">
       <Generator>ResXFileCodeGenerator</Generator>
