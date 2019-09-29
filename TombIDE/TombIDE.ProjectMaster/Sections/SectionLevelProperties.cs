@@ -44,7 +44,7 @@ namespace TombIDE.ProjectMaster
 				string exeFileName = Path.GetFileName(programPath).ToLower();
 
 				// Exclude these programs from the list
-				if (exeFileName == "tombeditor.exe" || exeFileName == "wadtool.exe" || exeFileName == "tombide.exe"
+				if (exeFileName == "tombeditor.exe" || exeFileName == "wadtool.exe" || exeFileName == "soundtool.exe" || exeFileName == "tombide.exe"
 					|| exeFileName == "ng_center.exe" || exeFileName == "tomb4.exe" || exeFileName == "pctomb5.exe")
 					continue;
 
