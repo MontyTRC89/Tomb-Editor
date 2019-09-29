@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +23,7 @@ using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -4479,5 +4481,40 @@ namespace TombEditor
             }
             
         }
+
+        public static void MakeQuickItemGroup(IWin32Window owner,Editor editor)
+        {
+            using (FormQuickItemgroup form = new FormQuickItemgroup(editor.Level.Settings, editor)) {
+                if(form.ShowDialog(owner) == DialogResult.OK)
+                {
+                    ConcurrentBag<ItemInstance> objects = new ConcurrentBag<ItemInstance>();
+                    Parallel.ForEach(editor.Level.Rooms.Where((Room r) => { return r != null;}), (Room r) => {
+                        foreach(var item in r.Objects.OfType<ItemInstance>())
+                        {
+                            if (item is StaticInstance)
+                            {
+                                if(form.selectedValue is WadStaticId)
+                                    if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.selectedValue))
+                                        objects.Add(item);
+                            }
+                            else
+                            {
+                                if (form.selectedValue is WadMoveableId)
+                                    if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.selectedValue))
+                                        objects.Add(item);
+                            }
+                        }
+                    });
+                    //Create ItemGroup string
+                    string scriptString = string.Format(";Itemgroup of type {0}\n",form.selectedValue.ToString(editor.Level.Settings.WadGameVersion));
+                    scriptString += "ItemGroup= 1";
+                    foreach (ItemInstance item in objects)
+                        scriptString +=  "," + item.ScriptId;
+                    Clipboard.SetText(scriptString,TextDataFormat.Text);
+                    editor.SendMessage("Itemgroup copied into clipboard");
+                }
+            } ;
+        }
+
     }
 }
