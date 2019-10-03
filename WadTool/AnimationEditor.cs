@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
@@ -9,6 +10,14 @@ using TombLib.Wad;
 
 namespace WadTool
 {
+    public enum AnimTransformMode
+    {
+        Simple,     // Brutally overwrite all properties for all frames
+        Linear,     // Do simple linear interpolation, a-la WadMerger
+        Smooth,     // Smootherstep interpolation
+        Symmetric   // Nifty symmetric smoothstep interpolation
+    }
+
     public class AnimationEditor
     {
         public List<AnimationNode> Animations;
@@ -26,6 +35,16 @@ namespace WadTool
 
         // General state
         public bool Saved;
+        public bool MadeChanges = false;
+
+        // Editing state
+        public AnimTransformMode TransformMode;
+
+        // Internal state, used for transform functions
+        private List<Vector3> _backupRot;
+        private List<Vector3> _backupPos;
+        private Vector3 _initialPos;
+        private Vector3 _initialRot;
 
         // Helpers
         public bool SelectionIsEmpty => Selection.X == -1 || Selection.Y == -1;
@@ -34,6 +53,9 @@ namespace WadTool
         {
             get
             {
+                if (CurrentAnim == null)
+                    return null;
+
                 if (CurrentFrameIndex >= CurrentAnim.DirectXAnimation.KeyFrames.Count)
                     CurrentFrameIndex = 0;
                 return CurrentAnim.DirectXAnimation.KeyFrames[CurrentFrameIndex];
@@ -47,7 +69,7 @@ namespace WadTool
                 if (SelectionIsEmpty)
                     return new List<KeyFrame>() { CurrentKeyFrame };
                 else
-                    return CurrentAnim.DirectXAnimation.KeyFrames.GetRange(Selection.X, Selection.Y + 1);
+                    return CurrentAnim.DirectXAnimation.KeyFrames.GetRange(Selection.X, Selection.Y - Selection.X + 1);
             }
         }
 
@@ -121,6 +143,92 @@ namespace WadTool
 
             Moveable.Version = DataVersion.GetNext();
             return true;
+        }
+
+        public void UpdateTransform(int meshIndex, Vector3 newRot, Vector3 newPos)
+        {
+            // Backup everything and push undo on first occurence of editing
+            if (!MadeChanges)
+            {
+                _initialPos = CurrentKeyFrame.Translations[0];
+                _initialRot = CurrentKeyFrame.Rotations[meshIndex];
+
+                _backupPos = new List<Vector3>();
+                _backupRot = new List<Vector3>();
+                ActiveFrames.ForEach(f => { _backupRot.Add(f.Rotations[meshIndex]); _backupPos.Add(f.Translations[0]); });
+
+                Tool.UndoManager.PushAnimationChanged(this, CurrentAnim);
+                MadeChanges = true;
+            }
+
+            // Calculate deltas for other frames processing
+            var deltaPos = newPos - _initialPos;
+            var deltaRot = newRot - _initialRot;
+
+            // Calculate evolution
+            float currentStep = 0;
+            float frameCount = CurrentFrameIndex - Selection.X;
+
+            // Define animation properties
+            bool evolve = TransformMode != AnimTransformMode.Simple && ActiveFrames.Count > 1;
+            bool smooth = TransformMode != AnimTransformMode.Linear && evolve;
+            bool loop   = TransformMode == AnimTransformMode.Symmetric;
+
+            int index = 0;
+            foreach (var keyframe in ActiveFrames)
+            {
+                float midFrame = loop ? frameCount / 2.0f : frameCount;
+                float bias = Math.Abs(currentStep - midFrame) / midFrame;
+                if (!loop) bias = Math.Abs(bias - 1.0f);
+
+                // Single-pass smoothstep doesn't look organic on fast animations, hence we're using 2-pass smootherstep here.
+                float weight = smooth ? (float)MathC.SmoothStep(0, 1, MathC.SmoothStep(0, 1, bias)) : bias;
+
+                // Apply deltas to backed-up transforms
+                var currPos = _backupPos[index] + deltaPos;
+                var currRot = _backupRot[index] + deltaRot;
+
+                var translationVector = currPos;
+
+                if (evolve)
+                    translationVector = Vector3.Lerp(_backupPos[index], translationVector, weight);
+
+                // Foolproof stuff in case user hardly messes with transform during playback...
+                if (float.IsNaN(translationVector.X)) translationVector.X = 0;
+                if (float.IsNaN(translationVector.Y)) translationVector.Y = 0;
+                if (float.IsNaN(translationVector.Z)) translationVector.Z = 0;
+
+                keyframe.Translations[0] = translationVector;
+                keyframe.TranslationsMatrices[0] = Matrix4x4.CreateTranslation(translationVector);
+
+                var rotVector = currRot;
+                Quaternion finalQuat;
+                if (evolve)
+                {
+                    // Calculate source and destination quats and decide on direction based on dot product.
+                    var srcQuat = Quaternion.CreateFromYawPitchRoll(_backupRot[index].Y, _backupRot[index].X, _backupRot[index].Z);
+                    var destQuat = Quaternion.CreateFromYawPitchRoll(currRot.Y, currRot.X, currRot.Z);
+                    if (Quaternion.Dot(srcQuat, destQuat) < 0) Quaternion.Negate(srcQuat);
+                    finalQuat = Quaternion.Lerp(srcQuat, destQuat, weight);
+                }
+                else
+                    finalQuat = Quaternion.CreateFromYawPitchRoll(rotVector.Y, rotVector.X, rotVector.Z);
+
+                // We're not converting quat to rotations because we have to check-up for NaNs
+                var rotationVector = MathC.QuaternionToEuler(finalQuat);
+
+                // Foolproof stuff in case user hardly messes with transform during playback...
+                if (float.IsNaN(rotationVector.X)) rotationVector.X = 0;
+                if (float.IsNaN(rotationVector.Y)) rotationVector.Y = 0;
+                if (float.IsNaN(rotationVector.Z)) rotationVector.Z = 0;
+
+                // NaNs filtered out, now we can put actual data.
+                keyframe.Quaternions[meshIndex] = Quaternion.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
+                keyframe.Rotations[meshIndex] = rotationVector;
+
+                index++;
+                currentStep++; if (currentStep > frameCount) currentStep = frameCount;
+            }
         }
 
         public void ReplaceAnimCommands(WadAnimCommand oldCommand, WadAnimCommand newCommand) => 

@@ -26,35 +26,12 @@ namespace WadTool
             _control = control;
         }
 
-        protected override void GizmoMove(Vector3 newPos)
-        {
+        protected override void GizmoMove(Vector3 newPos) { } // Absorb event
+        protected override void GizmoRotateX(float newAngle) => GizmoRotate(GizmoMode.RotateX, newAngle);
+        protected override void GizmoRotateY(float newAngle) => GizmoRotate(GizmoMode.RotateY, newAngle);
+        protected override void GizmoRotateZ(float newAngle) => GizmoRotate(GizmoMode.RotateZ, newAngle);
 
-        }
-
-        protected override void GizmoRotateX(float newAngle)
-        {
-            if (_control != null)
-            {
-                var model = _control.Model;
-                var animation = _editor.CurrentAnim;
-                if (animation == null || _control.SelectedMesh == null)
-                    return;
-                var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-
-                foreach (var keyframe in _editor.ActiveFrames)
-                {
-                    var rotationVector = keyframe.Rotations[meshIndex];
-                    float delta = newAngle - rotationVector.X;
-                    keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, delta);
-                    keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
-
-                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
-                }
-                _control.Invalidate();
-            }
-        }
-
-        protected override void GizmoRotateY(float newAngle)
+        private void GizmoRotate(GizmoMode mode, float newAngle)
         {
             if (_control != null)
             {
@@ -62,40 +39,23 @@ namespace WadTool
                 var animation = _editor.CurrentAnim;
                 if (animation == null || _control.SelectedMesh == null)
                     return;
+
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
+                var rotationVector = _editor.CurrentKeyFrame.Rotations[meshIndex];
+                var delta = 0f;
+                var axis = Vector3.Zero;
 
-                foreach (var keyframe in _editor.ActiveFrames)
+                switch (mode)
                 {
-                    var rotationVector = keyframe.Rotations[meshIndex];
-                    float delta = newAngle - rotationVector.Y;
-                    keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, delta);
-                    keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
-
-                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+                    case GizmoMode.RotateX: delta = newAngle - rotationVector.X; axis = Vector3.UnitX; break;
+                    case GizmoMode.RotateY: delta = newAngle - rotationVector.Y; axis = Vector3.UnitY; break;
+                    case GizmoMode.RotateZ: delta = newAngle - rotationVector.Z; axis = Vector3.UnitZ; break;
                 }
-                _control.Invalidate();
-            }
-        }
 
-        protected override void GizmoRotateZ(float newAngle)
-        {
-            if (_control != null)
-            {
-                var model = _control.Model;
-                var animation = _editor.CurrentAnim;
-                if (animation == null || _control.SelectedMesh == null)
-                    return;
-                var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
+                var quat = _editor.CurrentKeyFrame.Quaternions[meshIndex] * Quaternion.CreateFromAxisAngle(axis, delta);
+                _editor.UpdateTransform(meshIndex, MathC.QuaternionToEuler(quat), _editor.CurrentKeyFrame.Translations[0]);
 
-                foreach (var keyframe in _editor.ActiveFrames)
-                {
-                    var rotationVector = keyframe.Rotations[meshIndex];
-                    float delta = newAngle - rotationVector.Z;
-                    keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitZ, delta);
-                    keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
-
-                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
-                }
+                _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
                 _control.Invalidate();
             }
         }
@@ -110,19 +70,13 @@ namespace WadTool
                 var animation = _editor.CurrentAnim;
                 if (animation == null || _control.SelectedMesh == null)
                     return;
+
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-                if (meshIndex != 0)
-                    return;
+                var translationVector = _editor.CurrentKeyFrame.Translations[meshIndex];
+                translationVector += delta;
+                _editor.UpdateTransform(meshIndex, _editor.CurrentKeyFrame.Rotations[meshIndex], translationVector);
 
-                foreach (var keyframe in _editor.ActiveFrames)
-                {
-                    var translationVector = keyframe.Translations[meshIndex];
-                    translationVector += delta;
-                    keyframe.Translations[meshIndex] = translationVector;
-                    keyframe.TranslationsMatrices[meshIndex] = Matrix4x4.CreateTranslation(translationVector);
-
-                    _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
-                }
+                _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
                 _control.Invalidate();
             }
         }
