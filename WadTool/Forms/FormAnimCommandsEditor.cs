@@ -173,7 +173,6 @@ namespace WadTool
         private void butAddEffect_Click(object sender, EventArgs e)
         {
             var newCmd = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
-            lstCommands.Items.Add(new DarkListItem(newCmd.ToString()) { Tag = newCmd });
             SelectCommand(newCmd);
             ApplyChanges(false);
         }
