@@ -141,6 +141,13 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
+        public void Fill(ColorC color)
+        {
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    SetPixel(x, y, color);
+        }
+
         public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int [,] kernel)
         {
             ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);

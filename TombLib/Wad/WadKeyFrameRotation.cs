@@ -18,57 +18,74 @@ namespace TombLib.Wad
 
         public static WadKeyFrameRotation FromTrAngle(ref int index, List<short> frameData, bool isTr1, bool isTr4Or5)
         {
-            short rot0 = frameData[index++];
-            int frameMode = isTr1 ? 0 : (rot0 & 0xc000);
-            switch (frameMode)
+            if (isTr1)
             {
-                case 0: // Always if TR1
-                    int rot1 = frameData[index++];
-                    int rotX = ((rot0 & 0x3ff0) >> 4);
-                    int rotY = (((rot1 & 0xfc00) >> 10) | ((rot0 & 0xf) << 6) & 0x3ff);
-                    int rotZ = ((rot1) & 0x3ff);
+                int rot1 = frameData[index++];
+                int rot0 = frameData[index++];
 
-                    return new WadKeyFrameRotation
-                    {
-                        Rotations = new Vector3(-rotX, rotY, -rotZ) * (360.0f / 1024.0f)
-                    };
-                case 0x4000:
-                    if (isTr4Or5)
-                        return new WadKeyFrameRotation
-                        {
-                            Rotations = new Vector3(-(rot0 & 0xfff), 0, 0) * (360.0f / 4096.0f)
-                        };
-                    else
-                        return new WadKeyFrameRotation
-                        {
-                            Rotations = new Vector3(-(rot0 & 0x3ff), 0, 0) * (360.0f / 1024.0f)
-                        };
+                int rotX = ((rot0 & 0x3FF0) >> 4);
+                int rotY = ((rot0 & 0x000F) << 6) | ((rot1 & 0xFC00) >> 10);
+                int rotZ = ((rot1) & 0x03FF);
 
-                case 0x8000:
-                    if (isTr4Or5)
-                        return new WadKeyFrameRotation
-                        {
-                            Rotations = new Vector3(0, (rot0 & 0xfff), 0) * (360.0f / 4096.0f)
-                        };
-                    else
-                        return new WadKeyFrameRotation
-                        {
-                            Rotations = new Vector3(0, (rot0 & 0x3ff), 0) * (360.0f / 1024.0f)
-                        };
+                return new WadKeyFrameRotation
+                {
+                    Rotations = new Vector3(-rotX, rotY, -rotZ) * (360.0f / 1024.0f)
+                };
+            }
+            else
+            {
+                short rot0 = frameData[index++];
+                int frameMode = rot0 & 0xC000;
+                switch (frameMode)
+                {
+                    case 0:
+                        int rot1 = frameData[index++];
+                        int rotX = ((rot0 & 0x3FF0) >> 4);
+                        int rotY = (((rot1 & 0xFC00) >> 10) | ((rot0 & 0x000F) << 6) & 0x03FF);
+                        int rotZ = ((rot1) & 0x03FF);
 
-                case 0xc000:
-                    if (isTr4Or5)
                         return new WadKeyFrameRotation
                         {
-                            Rotations = new Vector3(0, 0, -(rot0 & 0xfff)) * (360.0f / 4096.0f)
+                            Rotations = new Vector3(-rotX, rotY, -rotZ) * (360.0f / 1024.0f)
                         };
-                    else
-                        return new WadKeyFrameRotation
-                        {
-                            Rotations = new Vector3(0, 0, -(rot0 & 0x3ff)) * (360.0f / 1024.0f)
-                        };
-                default:
-                    throw new InvalidOperationException();
+                    case 0x4000:
+                        if (isTr4Or5)
+                            return new WadKeyFrameRotation
+                            {
+                                Rotations = new Vector3(-(rot0 & 0xfff), 0, 0) * (360.0f / 4096.0f)
+                            };
+                        else
+                            return new WadKeyFrameRotation
+                            {
+                                Rotations = new Vector3(-(rot0 & 0x3ff), 0, 0) * (360.0f / 1024.0f)
+                            };
+
+                    case 0x8000:
+                        if (isTr4Or5)
+                            return new WadKeyFrameRotation
+                            {
+                                Rotations = new Vector3(0, (rot0 & 0xfff), 0) * (360.0f / 4096.0f)
+                            };
+                        else
+                            return new WadKeyFrameRotation
+                            {
+                                Rotations = new Vector3(0, (rot0 & 0x3ff), 0) * (360.0f / 1024.0f)
+                            };
+
+                    case 0xc000:
+                        if (isTr4Or5)
+                            return new WadKeyFrameRotation
+                            {
+                                Rotations = new Vector3(0, 0, -(rot0 & 0xfff)) * (360.0f / 4096.0f)
+                            };
+                        else
+                            return new WadKeyFrameRotation
+                            {
+                                Rotations = new Vector3(0, 0, -(rot0 & 0x3ff)) * (360.0f / 1024.0f)
+                            };
+                    default:
+                        throw new InvalidOperationException();
+                }
             }
         }
 
