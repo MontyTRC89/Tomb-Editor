@@ -1414,6 +1414,7 @@ namespace WadTool
             else
                 panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboBoneList.ComboBox.SelectedIndex - 1];
 
+            UpdateTransformUI();
             panelRendering.Invalidate();
         }
 
