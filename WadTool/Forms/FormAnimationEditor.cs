@@ -69,6 +69,9 @@ namespace WadTool
         private int _chainedPlaybackInitialCursorPos;
         private VectorInt2 _chainedPlaybackInitialSelection;
 
+        // Live update flag, used when transform is updated during playback or scrubbling
+        private bool _allowUpdate = true;
+
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
 
@@ -123,6 +126,9 @@ namespace WadTool
             if (_editor.Animations.Count != 0)
                 SelectAnimation(_editor.Animations[0]);
 
+            // Update UI which is dependent on initial anim state
+            UpdateTransformUI();
+
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Saved = true;
@@ -130,6 +136,17 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
+
+            if (obj is WadToolClass.UndoStackChangedEvent ||
+                obj is WadToolClass.AnimationEditorMeshSelectedEvent ||
+                obj is WadToolClass.AnimationEditorGizmoPickedEvent ||
+                obj is WadToolClass.AnimationEditorAnimationChangedEvent ||
+                obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
+            {
+                _editor.MadeChanges = false;
+                UpdateTransformUI();
+            }
+
             if (obj is WadToolClass.AnimationEditorMeshSelectedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorMeshSelectedEvent;
@@ -359,6 +376,9 @@ namespace WadTool
 
         private void SelectAnimation(AnimationNode node)
         {
+            bool sameAnimSameSize = _editor.CurrentAnim != null && _editor.CurrentAnim.Index == node.Index && 
+                _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == node.DirectXAnimation.KeyFrames.Count;
+
             _editor.CurrentAnim = node;
 
             tbName.Text = node.WadAnimation.Name;
@@ -374,19 +394,23 @@ namespace WadTool
             UpdateStateChange();
 
             timeline.Animation = node;
-            panelRendering.SelectedMesh = null;
-
-            if (node.DirectXAnimation.KeyFrames.Count > 0)
-                panelRendering.Model.BuildAnimationPose(node.DirectXAnimation.KeyFrames[0]);
 
             OnKeyframesListChanged();
-            timeline.Value = 0;
-            timeline.ResetSelection();
+
+            // Preserve selection if anim is under same index and have same amount of frames
+            if (!sameAnimSameSize)
+            {
+                timeline.Value = 0;
+                timeline.ResetSelection();
+                panelRendering.SelectedMesh = null;
+            }
+
+            if (node.DirectXAnimation.KeyFrames.Count > 0)
+                panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
 
             panelRendering.Invalidate();
 
             _editor.Tool.AnimationEditorCurrentAnimationChanged(_editor.CurrentAnim);
-
         }
 
         private void UpdateSelection()
@@ -423,14 +447,27 @@ namespace WadTool
                 panelRendering.Model.BuildAnimationPose(keyFrame);
                 panelRendering.Invalidate();
                 OnKeyframesListChanged();
+                UpdateTransformUI();
             }
+        }
 
-            tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
-            tbCollisionBoxMinY.Text = keyFrame.BoundingBox.Minimum.Y.ToString();
-            tbCollisionBoxMinZ.Text = keyFrame.BoundingBox.Minimum.Z.ToString();
-            tbCollisionBoxMaxX.Text = keyFrame.BoundingBox.Maximum.X.ToString();
-            tbCollisionBoxMaxY.Text = keyFrame.BoundingBox.Maximum.Y.ToString();
-            tbCollisionBoxMaxZ.Text = keyFrame.BoundingBox.Maximum.Z.ToString();
+        private void UpdateTransformUI()
+        {
+            if (_editor.CurrentKeyFrame == null)
+                return;
+
+            _allowUpdate = false;
+
+            var meshIndex = panelRendering.SelectedMesh == null ? 0 : panelRendering.Model.Meshes.IndexOf(panelRendering.SelectedMesh);
+            nudRotX.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].X);
+            nudRotY.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Y);
+            nudRotZ.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Z);
+            nudTransX.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].X;
+            nudTransY.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].Y;
+            nudTransZ.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].Z;
+            if (cmbTransformMode.SelectedIndex == -1) cmbTransformMode.SelectedIndex = 0;
+
+            _allowUpdate = true;
         }
 
         private void OnKeyframesListChanged()
@@ -484,14 +521,6 @@ namespace WadTool
                 keyFrame.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
 
             panelRendering.Invalidate();
-
-            tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
-            tbCollisionBoxMinY.Text = keyFrame.BoundingBox.Minimum.Y.ToString();
-            tbCollisionBoxMinZ.Text = keyFrame.BoundingBox.Minimum.Z.ToString();
-            tbCollisionBoxMaxX.Text = keyFrame.BoundingBox.Maximum.X.ToString();
-            tbCollisionBoxMaxY.Text = keyFrame.BoundingBox.Maximum.Y.ToString();
-            tbCollisionBoxMaxZ.Text = keyFrame.BoundingBox.Maximum.Z.ToString();
-
             Saved = false;
         }
 
@@ -504,6 +533,20 @@ namespace WadTool
                 return;
 
             CalculateKeyframeBoundingBox(timeline.Value, true, true);
+        }
+
+        public void UpdateTransform()
+        {
+            if (!_allowUpdate) return;
+
+            var meshIndex = panelRendering.SelectedMesh == null ? 0 : panelRendering.Model.Meshes.IndexOf(panelRendering.SelectedMesh);
+
+            _editor.UpdateTransform(meshIndex,
+                new Vector3(MathC.DegToRad((float)nudRotX.Value), MathC.DegToRad((float)nudRotY.Value), MathC.DegToRad((float)nudRotZ.Value)),
+                new Vector3((float)nudTransX.Value, (float)nudTransY.Value, (float)nudTransZ.Value));
+
+            panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+            panelRendering.Invalidate();
         }
 
         private void AddNewAnimation()
@@ -596,17 +639,22 @@ namespace WadTool
             if (_editor.CurrentAnim == null) return;
             if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
-            var keyFrame = new KeyFrame();
-            foreach (var bone in _editor.Moveable.Bones)
-            {
-                keyFrame.Rotations.Add(Vector3.Zero);
-                keyFrame.Quaternions.Add(Quaternion.Identity);
-                keyFrame.Translations.Add(bone.Translation);
-                keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
-            }
+            KeyFrame keyFrame;
 
             if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0)
+            {
                 index = 0;
+                keyFrame = new KeyFrame();
+                foreach (var bone in _editor.Moveable.Bones)
+                {
+                    keyFrame.Rotations.Add(Vector3.Zero);
+                    keyFrame.Quaternions.Add(Quaternion.Identity);
+                    keyFrame.Translations.Add(bone.Translation);
+                    keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
+                }
+            }
+            else
+                keyFrame = _editor.CurrentKeyFrame.Clone();
 
             _editor.CurrentAnim.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
             OnKeyframesListChanged();
@@ -1018,45 +1066,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void ValidateCollisionBox(DarkTextBox textbox)
-        {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMaxZ.Text, out result))
-                return;
-
-            if (_editor.ValidAnimationAndFrames)
-            {
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-                var bb = _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox;
-
-                switch (textbox.Name)
-                {
-                    case "tbCollisionBoxMinX":
-                        bb.Minimum = new Vector3(result, bb.Minimum.Y, bb.Minimum.Z);
-                        break;
-                    case "tbCollisionBoxMinY":
-                        bb.Minimum = new Vector3(bb.Minimum.X, result, bb.Minimum.Z);
-                        break;
-                    case "tbCollisionBoxMinZ":
-                        bb.Minimum = new Vector3(bb.Minimum.X, bb.Minimum.Y, result);
-                        break;
-                    case "tbCollisionBoxMaxX":
-                        bb.Maximum = new Vector3(result, bb.Maximum.Y, bb.Maximum.Z);
-                        break;
-                    case "tbCollisionBoxMaxY":
-                        bb.Maximum = new Vector3(bb.Maximum.X, result, bb.Maximum.Z);
-                        break;
-                    case "tbCollisionBoxMaxZ":
-                        bb.Maximum = new Vector3(bb.Maximum.X, bb.Maximum.Y, result);
-                        break;
-                }
-
-                _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox = bb;
-                panelRendering.Invalidate();
-                Saved = false;
-            }
-        }
-
         private void InterpolateFrames(int frameIndex1, int frameIndex2, int numFrames, bool updateGUI = true)
         {
             var frame1 = _editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex1];
@@ -1214,17 +1223,6 @@ namespace WadTool
             }
             else
                 existingWindow.Focus();
-        }
-
-        private void EditTransform()
-        {
-            if (panelRendering.SelectedMesh != null)
-            {
-                var form = new FormAnimTransformPopUp(_editor, panelRendering, Cursor.Position);
-                form.Show();
-            }
-            else
-                popup.ShowInfo(panelRendering, "Please select a bone to transform.");
         }
 
         private void ImportAnimations()
@@ -1456,15 +1454,14 @@ namespace WadTool
         private void butTbUndo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void butTbRedo_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
         private void butTbImport_Click(object sender, EventArgs e) => ImportAnimations();
+        private void butTbResetCamera_Click(object sender, EventArgs e) => panelRendering.ResetCamera();
 
         // General controls one-liners
 
         private void butAddNewAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
         private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
         private void butSearchByStateID_Click(object sender, EventArgs e) => RebuildAnimationsList();
-        private void butCalculateBoundingBoxForCurrentFrame_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void butCalculateAnimCollision_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
-        private void butClearCollisionBox_Click(object sender, EventArgs e) => ClearFrameBoundingBox(false);
         private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(false);
         private void insertFramesAfterCurrentToolStripMenuItem_Click(object sender, EventArgs e) => InsertMultipleFrames();
         private void butEditAnimCommands_Click(object sender, EventArgs e) => EditAnimCommands();
@@ -1482,12 +1479,6 @@ namespace WadTool
         private void tbEndVertVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbEndVertVel);
         private void tbStartHorVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbStartHorVel);
         private void tbEndHorVel_Validated(object sender, EventArgs e) => UpdateAnimationParameter(tbEndHorVel);
-        private void tbCollisionBoxMinX_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinX);
-        private void tbCollisionBoxMinY_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinY);
-        private void tbCollisionBoxMinZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMinZ);
-        private void tbCollisionBoxMaxX_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxX);
-        private void tbCollisionBoxMaxY_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxY);
-        private void tbCollisionBoxMaxZ_Validated(object sender, EventArgs e) => ValidateCollisionBox(tbCollisionBoxMaxZ);
 
         // Timeline & transport one-liners
 
@@ -1501,6 +1492,20 @@ namespace WadTool
         private void butTransportFrameForward_Click(object sender, EventArgs e) => timeline.Value++;
         private void butTransportEnd_Click(object sender, EventArgs e) => timeline.Value = timeline.Maximum;
 
+        // Transform one-liners
+
+        private void nudRotX_ValueChanged(object sender, EventArgs e) => UpdateTransform();
+        private void nudRotY_ValueChanged(object sender, EventArgs e) => UpdateTransform();
+        private void nudRotZ_ValueChanged(object sender, EventArgs e) => UpdateTransform();
+        private void nudRotX_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
+        private void nudRotY_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
+        private void nudRotZ_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
+        private void nudTransX_ValueChanged(object sender, EventArgs e) => UpdateTransform();
+        private void nudTransY_ValueChanged(object sender, EventArgs e) => UpdateTransform();
+        private void nudTransZ_ValueChanged(object sender, EventArgs e) => UpdateTransform();
+        private void nudTransX_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
+        private void nudTransY_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
+        private void nudTransZ_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
@@ -1930,13 +1935,26 @@ namespace WadTool
 
         private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-                EditTransform();
+            if (e.Button == MouseButtons.Right)
+                panelRendering.ResetCamera();
         }
-        private void cmTranslateRotateMenuItem_Click(object sender, EventArgs e) => EditTransform();
+
+        private void panelRendering_MouseEnter(object sender, EventArgs e)
+        {
+            // Reset editing state so undo can be engaged
+            _editor.MadeChanges = false;
+        }
+
+        private void panelRendering_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                UpdateTransformUI();
+        }
+
         private void cmMarkInMenuItem_Click(object sender, EventArgs e) => timeline.SelectionStart = timeline.Value;
         private void cmMarkOutMenuItem_Click(object sender, EventArgs e) => timeline.SelectionEnd = timeline.Value;
         private void cnClearSelectionMenuItem_Click(object sender, EventArgs e) => timeline.ResetSelection();
+        private void cmSelectAllMenuItem_Click(object sender, EventArgs e) => timeline.SelectAll();
         private void cmCreateAnimCommandMenuItem_Click(object sender, EventArgs e) => EditAnimCommands(new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)timeline.FrameIndex });
 
         private void cmCreateStateChangeMenuItem_Click(object sender, EventArgs e)
@@ -1958,5 +1976,28 @@ namespace WadTool
             EditStateChanges(sch);
         }
 
+        private void cmbTransformMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.TransformMode = (AnimTransformMode)cmbTransformMode.SelectedIndex;
+
+            switch (_editor.TransformMode)
+            {
+                case AnimTransformMode.Linear:
+                    picTransformPreview.Image = Properties.Resources.transform_linear;
+                    break;
+                case AnimTransformMode.Smooth:
+                    picTransformPreview.Image = Properties.Resources.transform_smooth;
+                    break;
+                case AnimTransformMode.Symmetric:
+                    picTransformPreview.Image = Properties.Resources.transform_symmetric;
+                    break;
+                default:
+                    picTransformPreview.Image = Properties.Resources.transform_simple;
+                    break;
+            }
+
+            if (_allowUpdate && _editor.MadeChanges)
+                UpdateTransform();
+        }
     }
 }

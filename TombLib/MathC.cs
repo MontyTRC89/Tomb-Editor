@@ -50,9 +50,9 @@ namespace TombLib
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 RoundToHalf(Vector2 v) => Round(v * 2.0f) / 2.0f;
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float NormalizeAngle(float a) => a < 0 ? a + 360.0f : a;
+        public static float NormalizeAngle(float a) => a < 0 ? (a % 360.0f) + 360.0f : (a >= 360.0f ? a % 360.0f : a);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 NormalizeAngle(Vector2 v) => new Vector2(NormalizeAngle(v.X), NormalizeAngle(v.Y));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -292,6 +292,11 @@ namespace TombLib
         public static double Lerp(double value1, double value2, double amount)
             => value1 * (1 - amount) + value2 * amount;
 
+        public static Vector3 SmoothStep(Vector3 value1, Vector3 value2, double amount) =>
+            new Vector3((float)SmoothStep(value1.X, value2.X, amount),
+                        (float)SmoothStep(value1.Y, value2.Y, amount),
+                        (float)SmoothStep(value1.Z, value2.Z, amount));
+
         // Code taken from XnaGeometry library, Copyright В© 2006 The Mono.Xna Team (MIT License)
         public static double SmoothStep(double value1, double value2, double amount)
         {
@@ -303,7 +308,7 @@ namespace TombLib
         // Code taken from XnaGeometry library, Copyright В© 2006 The Mono.Xna Team (MIT License)
         public static double Hermite(double value1, double tangent1, double value2, double tangent2, double amount)
         {
-            // All transformed to double not to lose precission
+            // All transformed to double not to lose precision
             // Otherwise, for high numbers of param:amount the result is NaN instead of Infinity
             double v1 = value1, v2 = value2, t1 = tangent1, t2 = tangent2, s = amount, result;
             double sCubed = s * s * s;

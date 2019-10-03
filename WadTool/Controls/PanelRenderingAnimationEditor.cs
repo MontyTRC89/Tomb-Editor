@@ -22,7 +22,7 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
+        public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimatedModel Model { get { return _model; } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -84,6 +84,7 @@ namespace WadTool.Controls
                 return;
 
             base.InitializeRendering(deviceManager.Device, editor.Tool.Configuration.RenderingItem_Antialias);
+            ResetCamera();
 
             _editor = editor;
             _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
@@ -118,6 +119,12 @@ namespace WadTool.Controls
                 _gizmo = new GizmoAnimationEditor(editor, _device, _deviceManager.___LegacyEffects["Solid"], this);
                 _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             }
+        }
+
+        public void ResetCamera()
+        {
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
+            Invalidate();
         }
 
         protected override void Dispose(bool disposing)
@@ -367,7 +374,6 @@ namespace WadTool.Controls
                         var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
                         if (result != null)
                         {
-                            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
                             _gizmo.ActivateGizmo(result);
                             _editor.Tool.AnimationEditorGizmoPicked();
                             Invalidate();

@@ -52,7 +52,7 @@
             this.cbSlots.FormattingEnabled = true;
             this.cbSlots.Location = new System.Drawing.Point(12, 35);
             this.cbSlots.Name = "cbSlots";
-            this.cbSlots.Size = new System.Drawing.Size(268, 21);
+            this.cbSlots.Size = new System.Drawing.Size(268, 23);
             this.cbSlots.TabIndex = 1;
             // 
             // butCancel
@@ -85,7 +85,13 @@
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.cbSlots);
             this.Controls.Add(this.darkLabel1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "FormQuickItemgroup";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Make quick itemgroup";
             this.ResumeLayout(false);
 

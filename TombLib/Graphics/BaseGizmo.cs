@@ -13,7 +13,7 @@ namespace TombLib.Graphics
         UpsideDown
     }
 
-    internal enum GizmoMode : byte
+    public enum GizmoMode : byte
     {
         None,
         TranslateX,
