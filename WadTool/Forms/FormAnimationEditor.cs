@@ -402,7 +402,7 @@ namespace WadTool
             {
                 timeline.Value = 0;
                 timeline.ResetSelection();
-                panelRendering.SelectedMesh = null;
+                comboBoneList.ComboBox.SelectedIndex = 0;
             }
 
             if (node.DirectXAnimation.KeyFrames.Count > 0)
@@ -1729,7 +1729,7 @@ namespace WadTool
 
             switch (keyData)
             {
-                case Keys.Escape: panelRendering.SelectedMesh = null; timeline.ResetSelection(); break;
+                case Keys.Escape: comboBoneList.ComboBox.SelectedIndex = 0; timeline.ResetSelection(); break;
                 case Keys.Left: timeline.ValueLoopDec(); break;
                 case Keys.Right: timeline.ValueLoopInc(); break;
                 case Keys.Up: timeline.Value = timeline.Minimum; break;
