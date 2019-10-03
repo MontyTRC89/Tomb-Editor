@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Controls;
@@ -13,7 +14,10 @@ namespace TombLib.Controls
         private bool _isAdded;
         private String _formerValue = String.Empty;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<String> AutocompleteWords { get; set; } = new List<string>();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<String> SelectedWords
         {
             get
@@ -40,13 +44,15 @@ namespace TombLib.Controls
         {
             if (!_isAdded)
             {
-                Parent.Controls.Add(_listBox);
+                FindForm().Controls.Add(_listBox);
                 _isAdded = true;
             }
 
             var textPosition = GetPositionFromCharIndex(SelectionStart > 0 ? SelectionStart - 1 : 0);
-            _listBox.Left = Left + textPosition.X;
-            _listBox.Top = Top + Height + textPosition.Y;
+            var position = FindForm().PointToClient(this.Parent.PointToScreen(this.Location));
+
+            _listBox.Left = position.X + textPosition.X;
+            _listBox.Top = position.Y + Height + textPosition.Y;
             _listBox.Visible = true;
             _listBox.BringToFront();
         }

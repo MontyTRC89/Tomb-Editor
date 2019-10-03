@@ -459,6 +459,7 @@ namespace WadTool
             _allowUpdate = false;
 
             var meshIndex = panelRendering.SelectedMesh == null ? 0 : panelRendering.Model.Meshes.IndexOf(panelRendering.SelectedMesh);
+            panelTransform.SectionHeader = "Transform (Bone " + meshIndex + ")";
             nudRotX.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].X);
             nudRotY.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Y);
             nudRotZ.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Z);
@@ -961,6 +962,7 @@ namespace WadTool
         private void PopulateComboStateID()
         {
             cmbStateID.Items.Clear();
+            tbStateId.AutocompleteWords.Clear();
 
             for (uint i = 0; i < 256; i++) // Max state value in TR5 was 137 but just in case...
             {
@@ -968,7 +970,10 @@ namespace WadTool
                 if (name.Contains("Unknown"))
                     continue;
                 else
+                {
                     cmbStateID.Items.Add(name);
+                    tbStateId.AutocompleteWords.Add(name);
+                }
             }
         }
 
