@@ -41,8 +41,8 @@ namespace WadTool
         public AnimTransformMode TransformMode;
 
         // Internal state, used for transform functions
-        private List<Vector3> _backupRot;
-        private List<Vector3> _backupPos;
+        private List<Vector3> _backupRot = new List<Vector3>();
+        private List<Vector3> _backupPos = new List<Vector3>();
         private Vector3 _initialPos;
         private Vector3 _initialRot;
 
@@ -53,7 +53,7 @@ namespace WadTool
         {
             get
             {
-                if (CurrentAnim == null)
+                if (CurrentAnim == null || CurrentAnim.DirectXAnimation.KeyFrames.Count <= 0)
                     return null;
 
                 if (CurrentFrameIndex >= CurrentAnim.DirectXAnimation.KeyFrames.Count)
@@ -153,8 +153,9 @@ namespace WadTool
                 _initialPos = CurrentKeyFrame.Translations[0];
                 _initialRot = CurrentKeyFrame.Rotations[meshIndex];
 
-                _backupPos = new List<Vector3>();
-                _backupRot = new List<Vector3>();
+                _backupPos.Clear();
+                _backupRot.Clear();
+
                 ActiveFrames.ForEach(f => { _backupRot.Add(f.Rotations[meshIndex]); _backupPos.Add(f.Translations[0]); });
 
                 Tool.UndoManager.PushAnimationChanged(this, CurrentAnim);

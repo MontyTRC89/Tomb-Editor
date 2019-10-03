@@ -769,8 +769,9 @@ namespace WadTool
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(231, 22);
             this.tbName.TabIndex = 95;
+            this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
             this.tbName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbName_KeyDown);
-            this.tbName.Validated += new System.EventHandler(this.tbName_Validated);
+            this.tbName.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // darkLabel3
             // 
@@ -1502,7 +1503,8 @@ namespace WadTool
             this.tbEndHorVel.Name = "tbEndHorVel";
             this.tbEndHorVel.Size = new System.Drawing.Size(64, 22);
             this.tbEndHorVel.TabIndex = 132;
-            this.tbEndHorVel.Validated += new System.EventHandler(this.tbEndHorVel_Validated);
+            this.tbEndHorVel.TextChanged += new System.EventHandler(this.tbEndHorVel_ValueChanged);
+            this.tbEndHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // tbStartHorVel
             // 
@@ -1511,7 +1513,8 @@ namespace WadTool
             this.tbStartHorVel.Name = "tbStartHorVel";
             this.tbStartHorVel.Size = new System.Drawing.Size(64, 22);
             this.tbStartHorVel.TabIndex = 131;
-            this.tbStartHorVel.Validated += new System.EventHandler(this.tbStartHorVel_Validated);
+            this.tbStartHorVel.TextChanged += new System.EventHandler(this.tbStartHorVel_ValueChanged);
+            this.tbStartHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // tbEndVertVel
             // 
@@ -1520,7 +1523,8 @@ namespace WadTool
             this.tbEndVertVel.Name = "tbEndVertVel";
             this.tbEndVertVel.Size = new System.Drawing.Size(64, 22);
             this.tbEndVertVel.TabIndex = 130;
-            this.tbEndVertVel.Validated += new System.EventHandler(this.tbEndVertVel_Validated);
+            this.tbEndVertVel.TextChanged += new System.EventHandler(this.tbEndVertVel_ValueChanged);
+            this.tbEndVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // butClearAnimCollision
             // 
@@ -1539,7 +1543,8 @@ namespace WadTool
             this.tbStartVertVel.Name = "tbStartVertVel";
             this.tbStartVertVel.Size = new System.Drawing.Size(64, 22);
             this.tbStartVertVel.TabIndex = 97;
-            this.tbStartVertVel.Validated += new System.EventHandler(this.tbStartVertVel_Validated);
+            this.tbStartVertVel.TextChanged += new System.EventHandler(this.tbStartVertVel_ValueChanged);
+            this.tbStartVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // butCalculateAnimCollision
             // 
@@ -1570,7 +1575,8 @@ namespace WadTool
             this.nudNextFrame.Name = "nudNextFrame";
             this.nudNextFrame.Size = new System.Drawing.Size(64, 22);
             this.nudNextFrame.TabIndex = 128;
-            this.nudNextFrame.Validated += new System.EventHandler(this.nudNextFrame_Validated);
+            this.nudNextFrame.ValueChanged += new System.EventHandler(this.nudNextFrame_ValueChanged);
+            this.nudNextFrame.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // nudNextAnim
             // 
@@ -1591,7 +1597,8 @@ namespace WadTool
             this.nudNextAnim.Name = "nudNextAnim";
             this.nudNextAnim.Size = new System.Drawing.Size(64, 22);
             this.nudNextAnim.TabIndex = 127;
-            this.nudNextAnim.Validated += new System.EventHandler(this.nudNextAnim_Validated);
+            this.nudNextAnim.ValueChanged += new System.EventHandler(this.nudNextAnim_ValueChanged);
+            this.nudNextAnim.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // nudFramerate
             // 
@@ -1622,7 +1629,8 @@ namespace WadTool
             0,
             0,
             0});
-            this.nudFramerate.Validated += new System.EventHandler(this.nudFramerate_Validated);
+            this.nudFramerate.ValueChanged += new System.EventHandler(this.nudFramerate_ValueChanged);
+            this.nudFramerate.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // butSearchStateID
             // 
