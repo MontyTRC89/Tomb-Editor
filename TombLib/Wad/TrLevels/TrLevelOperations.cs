@@ -61,39 +61,22 @@ namespace TombLib.Wad.TrLevels
             var objectTextures = new TextureArea[oldLevel.ObjectTextures.Count];
             ImageC tiles = ImageC.FromByteArray(oldLevel.TextureMap32, 256, oldLevel.TextureMap32.Length / 1024);
              tiles.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-            
+
             // for (int i = 0; i < oldLevel.ObjectTextures.Count; ++i)
             Parallel.For(0, oldLevel.ObjectTextures.Count, i =>
             {
                 var oldTexture = oldLevel.ObjectTextures[i];
 
                 int textureTileIndex = oldTexture.TileAndFlags & 0x7fff;
-                // We can't use this bit in TR2...
-                bool isTriangle = (oldTexture.TileAndFlags & 0x8000) != 0;
-                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2)
+                bool isTriangle = (oldTexture.TileAndFlags & 0x8000) != 0; // Exists only in TR4+
+
+                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
                     isTriangle = (oldTexture.Vertices[3].X == 0) && (oldTexture.Vertices[3].Y == 0);
 
                 // Calculate UV coordinates...
                 Vector2[] coords = new Vector2[isTriangle ? 3 : 4];
-                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                {
-                    // In old TR games there are no new flags
-                    // Perhaps there is a better way that will support subpixel addressing
-                    // but according to the fileformat documentation
-                    // it should work on original TR games https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_object_textures
-
-                    for (int j = 0; j < coords.Length; ++j)
-                        coords[j] = new Vector2(
-                            ((oldTexture.Vertices[j].X & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].X >> 8),
-                            ((oldTexture.Vertices[j].Y & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].Y >> 8));
-                }
-                else
-                {   
-                    // In new TR games we can use new flags
-
-                    for (int j = 0; j < coords.Length; ++j)
-                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + (isTriangle ? TextureExtensions.CompensationTris : TextureExtensions.CompensationQuads)[(oldTexture.NewFlags & 0x7), j];
-                }
+                for (int j = 0; j < coords.Length; ++j)
+                    coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256.0f);
 
                 // Find the corners of the texture
                 Vector2 min = coords[0], max = coords[0];
@@ -102,9 +85,9 @@ namespace TombLib.Wad.TrLevels
                     min = Vector2.Min(min, coords[j]);
                     max = Vector2.Max(max, coords[j]);
                 }
-                const float margin = 0.49f;
-                VectorInt2 start = VectorInt2.FromFloor(min - new Vector2(margin));
-                VectorInt2 end = VectorInt2.FromCeiling(max + new Vector2(margin));
+
+                VectorInt2 start = VectorInt2.FromFloor(min);
+                VectorInt2 end = VectorInt2.FromCeiling(max);
                 start = VectorInt2.Min(VectorInt2.Max(start, new VectorInt2()), new VectorInt2(256, 256));
                 end = VectorInt2.Min(VectorInt2.Max(end, new VectorInt2()), new VectorInt2(256, 256));
 
@@ -201,7 +184,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = oldPoly.Index3;
-                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture & 0xff);
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture, false);
                 poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
@@ -214,7 +197,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = 0;
-                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture & 0xff);
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture, true);
                 poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
@@ -226,22 +209,32 @@ namespace TombLib.Wad.TrLevels
             return mesh;
         }
 
-        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, int palette8)
+        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, bool isTriangle)
         {
-            tr_color color = oldLevel.Palette8[palette8];
-            ColorC color2 = new ColorC(color.Red, color.Green, color.Blue, 255);
-            var image = ImageC.CreateNew(2, 2);
-            image.SetPixel(0, 0, color2);
-            image.SetPixel(1, 0, color2);
-            image.SetPixel(0, 1, color2);
-            image.SetPixel(1, 1, color2);
+            ColorC color;
+
+            var sixteenBitIndex = paletteIndex >> 8;
+            if (oldLevel.Palette16.Count > 0 && oldLevel.Palette16.Count == oldLevel.Palette8.Count && sixteenBitIndex < oldLevel.Palette16.Count)
+            {
+                var trColor = oldLevel.Palette16[sixteenBitIndex];
+                color = new ColorC(trColor.Red, trColor.Green, trColor.Blue, 255);
+            }
+            else
+            {
+                var trColor = oldLevel.Palette8[paletteIndex & 0xFF];
+                color = new ColorC((byte)(trColor.Red * 4), (byte)(trColor.Green * 4), (byte)(trColor.Blue * 4), 255);
+            }
+
+            const int dummyTextureSize = 4;
+            var image = ImageC.CreateNew(dummyTextureSize, dummyTextureSize);
+            image.Fill(color);
 
             TextureArea textureArea = new TextureArea();
             textureArea.Texture = new WadTexture(image);
-            textureArea.TexCoord0 = new Vector2(0.5f, 0.5f);
-            textureArea.TexCoord1 = new Vector2(1.5f, 0.5f);
-            textureArea.TexCoord2 = new Vector2(1.5f, 1.5f);
-            textureArea.TexCoord3 = new Vector2(0.5f, 1.5f);
+            textureArea.TexCoord0 = new Vector2(0, 0);
+            textureArea.TexCoord1 = new Vector2(dummyTextureSize, 0);
+            textureArea.TexCoord2 = new Vector2(dummyTextureSize, dummyTextureSize);
+            textureArea.TexCoord3 = new Vector2(0, dummyTextureSize);
             textureArea.BlendMode = BlendMode.Normal;
             textureArea.DoubleSided = false;
             return textureArea;
@@ -510,7 +503,7 @@ namespace TombLib.Wad.TrLevels
                 if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = 0;
+                        numFrames = oldLevel.Version == TrVersion.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
                     else
                         numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
@@ -518,7 +511,7 @@ namespace TombLib.Wad.TrLevels
                 {
                     if (oldAnimation.FrameSize == 0)
                     {
-                        numFrames = 0;
+                        numFrames = oldLevel.Version == TrVersion.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
                     }
                     else
                     {

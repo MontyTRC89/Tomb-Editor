@@ -524,7 +524,7 @@ namespace TombLib.Wad.Tr4Wad
             return staticMesh;
         }
 
-        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> textures, bool adjustUV = false)
+        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> textures)
         {
             TextureArea textureArea = new TextureArea();
             textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
@@ -539,14 +539,10 @@ namespace TombLib.Wad.Tr4Wad
 
             wad_object_texture texture = oldWad.Textures[textureId];
 
-            // For now, 0.5px alignment is disabled, because we now use padding
-            // which prevents border bleeding (yet to solve in renderer).
-            float alignUV = adjustUV ? 0.5f : 0.0f;
-
-            Vector2 nw = new Vector2(alignUV, alignUV);
-            Vector2 ne = new Vector2(texture.Width + (1.0f - alignUV), alignUV);
-            Vector2 se = new Vector2(texture.Width + (1.0f - alignUV), texture.Height + (1.0f - alignUV));
-            Vector2 sw = new Vector2(alignUV, texture.Height + (1.0f - alignUV));
+            Vector2 nw = new Vector2(0, 0);
+            Vector2 ne = new Vector2(texture.Width + 1.0f, 0);
+            Vector2 se = new Vector2(texture.Width + 1.0f, texture.Height + 1.0f);
+            Vector2 sw = new Vector2(0, texture.Height + 1.0f);
 
             if (poly.Shape == 9)
             {
