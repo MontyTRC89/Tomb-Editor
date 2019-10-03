@@ -136,7 +136,6 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
-
             if (obj is WadToolClass.UndoStackChangedEvent ||
                 obj is WadToolClass.AnimationEditorMeshSelectedEvent ||
                 obj is WadToolClass.AnimationEditorGizmoPickedEvent ||
@@ -145,6 +144,12 @@ namespace WadTool
             {
                 _editor.MadeChanges = false;
                 UpdateTransformUI();
+            }
+
+            if (obj is WadToolClass.AnimationEditorAnimationChangedEvent ||
+                obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
+            {
+                timeline.Invalidate();
             }
 
             if (obj is WadToolClass.AnimationEditorMeshSelectedEvent)
@@ -1234,6 +1239,8 @@ namespace WadTool
                 if (cmd != null)
                     ((FormAnimCommandsEditor)existingWindow).SelectCommand(cmd);
             }
+
+            _editor.Tool.AnimationEditorAnimationChanged(_editor.CurrentAnim, false);
         }
 
         private void EditStateChanges(WadStateChange sch = null)
