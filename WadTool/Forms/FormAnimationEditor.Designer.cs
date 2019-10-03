@@ -69,7 +69,7 @@ namespace WadTool
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkLabel24 = new DarkUI.Controls.DarkLabel();
             this.darkLabel25 = new DarkUI.Controls.DarkLabel();
-            this.tbStateId = new DarkUI.Controls.DarkTextBox();
+            this.tbStateId = new TombLib.Controls.DarkAutocompleteTextBox();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
@@ -147,7 +147,7 @@ namespace WadTool
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelTools = new System.Windows.Forms.Panel();
-            this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelTransform = new DarkUI.Controls.DarkSectionPanel();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.picTransformPreview = new System.Windows.Forms.PictureBox();
             this.cmbTransformMode = new DarkUI.Controls.DarkComboBox();
@@ -190,7 +190,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).BeginInit();
             this.panelMain.SuspendLayout();
             this.panelTools.SuspendLayout();
-            this.darkSectionPanel2.SuspendLayout();
+            this.panelTransform.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransY)).BeginInit();
@@ -718,6 +718,7 @@ namespace WadTool
             // 
             // tbStateId
             // 
+            this.tbStateId.AutocompleteWords = ((System.Collections.Generic.List<string>)(resources.GetObject("tbStateId.AutocompleteWords")));
             this.tbStateId.Location = new System.Drawing.Point(44, 56);
             this.tbStateId.Name = "tbStateId";
             this.tbStateId.Size = new System.Drawing.Size(193, 22);
@@ -1675,7 +1676,7 @@ namespace WadTool
             // 
             this.panelTools.Controls.Add(this.darkSectionPanel1);
             this.panelTools.Controls.Add(this.darkSectionPanel4);
-            this.panelTools.Controls.Add(this.darkSectionPanel2);
+            this.panelTools.Controls.Add(this.panelTransform);
             this.panelTools.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelTools.Location = new System.Drawing.Point(4, 4);
             this.panelTools.MaximumSize = new System.Drawing.Size(280, 10000);
@@ -1684,31 +1685,31 @@ namespace WadTool
             this.panelTools.Size = new System.Drawing.Size(280, 590);
             this.panelTools.TabIndex = 0;
             // 
-            // darkSectionPanel2
+            // panelTransform
             // 
-            this.darkSectionPanel2.Controls.Add(this.darkLabel8);
-            this.darkSectionPanel2.Controls.Add(this.picTransformPreview);
-            this.darkSectionPanel2.Controls.Add(this.cmbTransformMode);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel29);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel28);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel21);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel26);
-            this.darkSectionPanel2.Controls.Add(this.nudTransX);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel27);
-            this.darkSectionPanel2.Controls.Add(this.nudTransY);
-            this.darkSectionPanel2.Controls.Add(this.nudTransZ);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel1);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel18);
-            this.darkSectionPanel2.Controls.Add(this.nudRotX);
-            this.darkSectionPanel2.Controls.Add(this.darkLabel19);
-            this.darkSectionPanel2.Controls.Add(this.nudRotY);
-            this.darkSectionPanel2.Controls.Add(this.nudRotZ);
-            this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkSectionPanel2.Location = new System.Drawing.Point(0, 478);
-            this.darkSectionPanel2.Name = "darkSectionPanel2";
-            this.darkSectionPanel2.SectionHeader = "Transform";
-            this.darkSectionPanel2.Size = new System.Drawing.Size(280, 112);
-            this.darkSectionPanel2.TabIndex = 130;
+            this.panelTransform.Controls.Add(this.darkLabel8);
+            this.panelTransform.Controls.Add(this.picTransformPreview);
+            this.panelTransform.Controls.Add(this.cmbTransformMode);
+            this.panelTransform.Controls.Add(this.darkLabel29);
+            this.panelTransform.Controls.Add(this.darkLabel28);
+            this.panelTransform.Controls.Add(this.darkLabel21);
+            this.panelTransform.Controls.Add(this.darkLabel26);
+            this.panelTransform.Controls.Add(this.nudTransX);
+            this.panelTransform.Controls.Add(this.darkLabel27);
+            this.panelTransform.Controls.Add(this.nudTransY);
+            this.panelTransform.Controls.Add(this.nudTransZ);
+            this.panelTransform.Controls.Add(this.darkLabel1);
+            this.panelTransform.Controls.Add(this.darkLabel18);
+            this.panelTransform.Controls.Add(this.nudRotX);
+            this.panelTransform.Controls.Add(this.darkLabel19);
+            this.panelTransform.Controls.Add(this.nudRotY);
+            this.panelTransform.Controls.Add(this.nudRotZ);
+            this.panelTransform.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelTransform.Location = new System.Drawing.Point(0, 478);
+            this.panelTransform.Name = "panelTransform";
+            this.panelTransform.SectionHeader = "Transform";
+            this.panelTransform.Size = new System.Drawing.Size(280, 112);
+            this.panelTransform.TabIndex = 130;
             // 
             // darkLabel8
             // 
@@ -2131,8 +2132,8 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).EndInit();
             this.panelMain.ResumeLayout(false);
             this.panelTools.ResumeLayout(false);
-            this.darkSectionPanel2.ResumeLayout(false);
-            this.darkSectionPanel2.PerformLayout();
+            this.panelTransform.ResumeLayout(false);
+            this.panelTransform.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransY)).EndInit();
@@ -2181,7 +2182,7 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel4;
         private DarkUI.Controls.DarkTextBox tbName;
         private DarkUI.Controls.DarkLabel darkLabel3;
-        private DarkUI.Controls.DarkTextBox tbStateId;
+        private TombLib.Controls.DarkAutocompleteTextBox tbStateId;
         private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkLabel darkLabel6;
         private DarkUI.Controls.DarkLabel darkLabel5;
@@ -2293,7 +2294,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem cmCreateAnimCommandMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cmCreateStateChangeMenuItem;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
+        private DarkUI.Controls.DarkSectionPanel panelTransform;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkNumericUpDown nudRotX;
