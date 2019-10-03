@@ -718,7 +718,6 @@ namespace WadTool
             // 
             // tbStateId
             // 
-            this.tbStateId.AutocompleteWords = ((System.Collections.Generic.List<string>)(resources.GetObject("tbStateId.AutocompleteWords")));
             this.tbStateId.Location = new System.Drawing.Point(44, 56);
             this.tbStateId.Name = "tbStateId";
             this.tbStateId.Size = new System.Drawing.Size(193, 22);
