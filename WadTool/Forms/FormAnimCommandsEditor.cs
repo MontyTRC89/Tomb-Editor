@@ -11,6 +11,8 @@ namespace WadTool
 {
     public partial class FormAnimCommandsEditor : DarkForm
     {
+        private bool _closing;
+
         private readonly AnimationEditor _editor;
         private AnimationNode _animation;
         private readonly List<WadAnimCommand> _oldAnimCommands = new List<WadAnimCommand>();
@@ -21,20 +23,20 @@ namespace WadTool
             InitializeComponent();
             animCommandEditor.Initialize(editor);
             _editor = editor;
-            Initialize(animation, startupCommand);
+            Initialize(animation, startupCommand, true);
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
         }
 
-        private void Initialize(AnimationNode animation, WadAnimCommand startupCommand)
+        private void Initialize(AnimationNode animation, WadAnimCommand startupCommand, bool genBackup = false)
         {
             _animation = animation;
-            _oldAnimCommands.Clear();
+            if (genBackup) _oldAnimCommands.Clear();
             lstCommands.Items.Clear();
 
             // Backup existing animcommands and populate list
             foreach (var cmd in _animation.WadAnimation.AnimCommands)
             {
-                _oldAnimCommands.Add(cmd.Clone());
+                if (genBackup) _oldAnimCommands.Add(cmd.Clone());
                 lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd });
             }
 
@@ -42,7 +44,10 @@ namespace WadTool
             if (startupCommand != null)
             {
                 if (!_animation.WadAnimation.AnimCommands.Contains(startupCommand))
+                {
+                    _animation.WadAnimation.AnimCommands.Add(startupCommand);
                     lstCommands.Items.Add(new DarkListItem(startupCommand.ToString()) { Tag = startupCommand.Clone() });
+                }
                 SelectCommand(startupCommand);
             }
             else if (lstCommands.Items.Count > 0)
@@ -61,6 +66,8 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
+            if (_closing) return;
+
             if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
@@ -71,7 +78,7 @@ namespace WadTool
             if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorAnimationChangedEvent;
-                if (e != null && e.Animation == _animation)
+                if (e != null && e.Animation == _animation && e.Focus)
                     Initialize(e.Animation, null);
             }
         }
@@ -85,6 +92,11 @@ namespace WadTool
 
         public void SelectCommand(WadAnimCommand cmd, bool selectInTree = true)
         {
+            if (!_animation.WadAnimation.AnimCommands.Contains(cmd))
+            {
+                _animation.WadAnimation.AnimCommands.Add(cmd);
+                lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd });
+            }
             animCommandEditor.Command = cmd;
 
             if (selectInTree)
@@ -180,6 +192,7 @@ namespace WadTool
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
+            _closing = true;
 
             if (DialogResult == DialogResult.OK) ApplyChanges();
             else DiscardChanges();
