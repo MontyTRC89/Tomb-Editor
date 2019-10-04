@@ -713,7 +713,7 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // Disable glow for portal faces
                                     if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                        portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                     {
                                         // Still allow glow, if adjoining room has very same properties
                                         if (!((otherRoomLightEffect == RoomLightEffect.Glow ||
@@ -1369,8 +1369,8 @@ namespace TombLib.LevelData.Compilers
                 bool isWaterAndDryPair = ((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1);
 
                 if (!isWaterAndDryPair || (isWaterAndDryPair && 
-                    room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate &&
-                    otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate))
+                    (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate ||
+                     otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate)))
                 {
                     int x1 = p.Vertices[0].X;
                     int y1 = p.Vertices[0].Y;

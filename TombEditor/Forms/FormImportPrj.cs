@@ -55,5 +55,11 @@ namespace TombEditor.Forms
             if (result != null)
                 tbTxtPath.Text = result;
         }
+
+        // Make life easier and allow clicking on labels
+        private void darkLabel2_MouseEnter(object sender, EventArgs e) => cbRespectMousepatch.Focus();
+        private void darkLabel1_MouseEnter(object sender, EventArgs e) => cbUseHalfPixelCorrection.Focus();
+        private void darkLabel2_Click(object sender, EventArgs e) => cbRespectMousepatch.Checked = !cbRespectMousepatch.Checked;
+        private void darkLabel1_Click(object sender, EventArgs e) => cbUseHalfPixelCorrection.Checked = !cbUseHalfPixelCorrection.Checked;
     }
 }
