@@ -643,18 +643,23 @@ namespace TombLib.LevelData.Compilers
                             var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
                             var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
                             var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
+                            
+                            bool isTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                       connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                       connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                       connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
 
-                            bool fullTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
-                                                         connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
-                                                         connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
-                                                         connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
-
+                            bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn ||
+                                                    connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp ||
+                                                    connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn ||
+                                                    connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp;
+                                                       
                             // A bit complex but working code for water surface movement.
                             // Works better than winroomedit as it takes adjacent portals into account.
                             if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
                             {
                                 // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
-                                if (fullTraversablePortal &&
+                                if ((isTraversablePortal || isOppositeCorner) &&
                                     connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
                                     !room.Blocks[xv, zv].IsAnyWall &&
                                     connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
@@ -668,7 +673,7 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
 
-                            if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && fullTraversablePortal)
+                            if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && isTraversablePortal)
                             {
                                 // Assign mist, if set, for vertices inside portal
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
