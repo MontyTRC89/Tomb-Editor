@@ -1661,9 +1661,9 @@ namespace WadTool
             // 
             // butEditStateChanges
             // 
-            this.butEditStateChanges.Location = new System.Drawing.Point(5, 169);
+            this.butEditStateChanges.Location = new System.Drawing.Point(4, 169);
             this.butEditStateChanges.Name = "butEditStateChanges";
-            this.butEditStateChanges.Size = new System.Drawing.Size(132, 23);
+            this.butEditStateChanges.Size = new System.Drawing.Size(133, 23);
             this.butEditStateChanges.TabIndex = 122;
             this.butEditStateChanges.Text = "State changes...";
             this.butEditStateChanges.Click += new System.EventHandler(this.butEditStateChanges_Click);
