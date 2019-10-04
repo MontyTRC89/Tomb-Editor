@@ -246,7 +246,7 @@ namespace TombLib.Controls
         {
             base.OnMouseMove(e);
 
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
                 // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                 float deltaX = (e.X - _lastX) / Height;
@@ -255,13 +255,18 @@ namespace TombLib.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Zoom(-deltaY * NavigationSpeedMouseZoom);
-                else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
+                if (e.Button == MouseButtons.Right)
+                {
+                    if ((ModifierKeys & Keys.Control) == Keys.Control)
+                        Camera.Zoom(-deltaY * NavigationSpeedMouseZoom);
+                    else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
+                        Camera.Rotate(deltaX * NavigationSpeedMouseRotate,
+                                     -deltaY * NavigationSpeedMouseRotate);
+                }
+                if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
+                     e.Button == MouseButtons.Middle)
                     Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * NavigationSpeedMouseTranslate);
-                else
-                    Camera.Rotate(deltaX * NavigationSpeedMouseRotate,
-                                  -deltaY * NavigationSpeedMouseRotate);
+
                 Invalidate();
             }
         }
