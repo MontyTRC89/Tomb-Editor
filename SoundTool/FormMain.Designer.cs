@@ -187,10 +187,10 @@
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelStatus});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 576);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 452);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 32);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 23);
             this.darkStatusStrip1.TabIndex = 74;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -214,7 +214,7 @@
             this.dgvSoundInfos.Location = new System.Drawing.Point(10, 56);
             this.dgvSoundInfos.Name = "dgvSoundInfos";
             this.dgvSoundInfos.RowHeadersWidth = 41;
-            this.dgvSoundInfos.Size = new System.Drawing.Size(266, 512);
+            this.dgvSoundInfos.Size = new System.Drawing.Size(266, 386);
             this.dgvSoundInfos.TabIndex = 78;
             this.dgvSoundInfos.Click += new System.EventHandler(this.DgvSoundInfos_Click);
             // 
@@ -241,7 +241,7 @@
             this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
             this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
             this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(483, 499);
+            this.soundInfoEditor.Size = new System.Drawing.Size(483, 373);
             this.soundInfoEditor.TabIndex = 77;
             this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.SoundInfoEditor_SoundInfoChanged);
             // 
@@ -275,7 +275,7 @@
             this.darkGroupBox1.Controls.Add(this.soundInfoEditor);
             this.darkGroupBox1.Location = new System.Drawing.Point(282, 55);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(495, 513);
+            this.darkGroupBox1.Size = new System.Drawing.Size(495, 387);
             this.darkGroupBox1.TabIndex = 96;
             this.darkGroupBox1.TabStop = false;
             // 
@@ -283,13 +283,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 608);
+            this.ClientSize = new System.Drawing.Size(786, 475);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.butAddNewSoundInfo);
             this.Controls.Add(this.butDeleteSoundInfo);
             this.Controls.Add(this.dgvSoundInfos);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.darkMenuStrip1;
