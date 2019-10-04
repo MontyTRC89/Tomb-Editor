@@ -1616,13 +1616,15 @@ namespace WadTool
             {
                 int newFrameNumber = (int)Math.Round((double)(_frameCount / _editor.CurrentAnim.WadAnimation.FrameRate));
 
-                if (newFrameNumber >= timeline.Maximum)
-                {
+                if (newFrameNumber > timeline.Maximum)
                     timeline.Value = 0;
-                    panelRendering.GridPosition = Vector3.Zero;
-                }
                 else
                     timeline.Value = newFrameNumber;
+
+                // Reset grid position if animation isn't looped
+                if (!_chainedPlayback && newFrameNumber == timeline.Maximum &&
+                    _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
+                    panelRendering.GridPosition = Vector3.Zero;
             }
             else if(_smooth)
             {
@@ -1947,12 +1949,15 @@ namespace WadTool
 
         private void lstAnimations_Click(object sender, EventArgs e)
         {
-            // Update saved state's anim number, in case chained playback is in effect
             if (_editor.CurrentAnim != null && lstAnimations.SelectedItem != null)
             {
+                // Update saved state's anim number, in case chained playback is in effect
                 _chainedPlaybackInitialAnim = _editor.CurrentAnim.Index;
                 _chainedPlaybackInitialCursorPos = 0;
                 _chainedPlaybackInitialSelection = new VectorInt2();
+
+                // Reset grid position
+                panelRendering.GridPosition = Vector3.Zero;
             }
         }
 
