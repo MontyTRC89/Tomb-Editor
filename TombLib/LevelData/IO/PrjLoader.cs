@@ -123,7 +123,7 @@ namespace TombLib.LevelData.IO
                 if (ngFooter == 0x454C474E)
                     isNg = true;
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                progressReporter.ReportProgress(1, "PRJ is a " + (isNg ? "NGLE" : "TRLE") + " project");
+                progressReporter.ReportProgress(1, "PRJ is a" + (isNg ? "n NGLE" : " TRLE") + " project");
 
                 // Version
                 reader.BaseStream.Seek(8, SeekOrigin.Begin);

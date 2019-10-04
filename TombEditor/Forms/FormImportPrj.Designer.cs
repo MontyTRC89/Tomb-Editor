@@ -131,6 +131,8 @@
             this.darkLabel1.TabIndex = 13;
             this.darkLabel1.Text = "Legacy texture cropping to prevent border bleeding. Use only if you are about to " +
     "turn off advanced texture padding in Level settings.";
+            this.darkLabel1.Click += new System.EventHandler(this.darkLabel1_Click);
+            this.darkLabel1.MouseEnter += new System.EventHandler(this.darkLabel1_MouseEnter);
             // 
             // cbUseHalfPixelCorrection
             // 
@@ -151,6 +153,8 @@
             this.darkLabel2.TabIndex = 11;
             this.darkLabel2.Text = "If you\'ve used a patch which increased maximum amount of flyby sequences in winro" +
     "omedit, use this option, otherwise flyby indices will be corrupted.";
+            this.darkLabel2.Click += new System.EventHandler(this.darkLabel2_Click);
+            this.darkLabel2.MouseEnter += new System.EventHandler(this.darkLabel2_MouseEnter);
             // 
             // cbRespectMousepatch
             // 
