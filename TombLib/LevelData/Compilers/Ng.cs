@@ -234,7 +234,7 @@ namespace TombLib.LevelData.Compilers
         private void WriteNgChunkLevelFlags(BinaryWriter writer)
         {
             int flags = 0x01;
-            if (_level.Settings.GameVersion == GameVersion.TRNG)
+            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
                 flags |= 0x02;
             var buffer = new byte[] { 0x04, 0x00, 0x0D, 0x80 };
             writer.Write(buffer);

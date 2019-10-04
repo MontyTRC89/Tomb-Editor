@@ -1,12 +1,10 @@
 ﻿using NLog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -18,8 +16,7 @@ namespace TombLib.Wad.TrLevels
 
         public static Wad2 ConvertTrLevel(TrLevel oldLevel)
         {
-            // FIXME: URGENT! Level files are imported as old dynamic wad2s!
-            var wad = new Wad2() { SuggestedGameVersion = TrLevel.GetWadGameVersion(oldLevel.Version), SoundSystem = SoundSystem.Xml } ;
+            var wad = new Wad2() { GameVersion = oldLevel.Version, SoundSystem = SoundSystem.Xml } ;
 
             logger.Info("Converting TR level to WAD2");
 
@@ -70,7 +67,7 @@ namespace TombLib.Wad.TrLevels
                 int textureTileIndex = oldTexture.TileAndFlags & 0x7fff;
                 bool isTriangle = (oldTexture.TileAndFlags & 0x8000) != 0; // Exists only in TR4+
 
-                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                if (oldLevel.Version == TRVersion.Game.TR1 || oldLevel.Version == TRVersion.Game.TR2 || oldLevel.Version == TRVersion.Game.TR3)
                     isTriangle = (oldTexture.Vertices[3].X == 0) && (oldTexture.Vertices[3].Y == 0);
 
                 // Calculate UV coordinates...
@@ -256,9 +253,9 @@ namespace TombLib.Wad.TrLevels
 
                     int spriteX, spriteY, spriteWidth, spriteHeight;
 
-                    if (oldLevel.Version == TrVersion.TR1 ||
-                        oldLevel.Version == TrVersion.TR2 ||
-                        oldLevel.Version == TrVersion.TR3)
+                    if (oldLevel.Version == TRVersion.Game.TR1 ||
+                        oldLevel.Version == TRVersion.Game.TR2 ||
+                        oldLevel.Version == TRVersion.Game.TR3)
                     {
                         spriteX = oldSpriteTexture.X;
                         spriteY = oldSpriteTexture.Y;
@@ -293,7 +290,7 @@ namespace TombLib.Wad.TrLevels
                                            "_Sample_" +
                                            i.ToString().PadLeft(4, '0') +
                                            ".wav",
-                                           WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TrVersion.TR4));
+                                           WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TRVersion.Game.TR4));
             });
 
             // Convert sound details
@@ -308,7 +305,7 @@ namespace TombLib.Wad.TrLevels
 
                 // Fill the new sound info
                 var newInfo = new WadSoundInfo(i);
-                newInfo.Name = TrCatalog.GetOriginalSoundName(TrLevel.GetWadGameVersion(oldLevel.Version), (uint)i);
+                newInfo.Name = TrCatalog.GetOriginalSoundName(oldLevel.Version, (uint)i);
                 newInfo.Volume = (int)Math.Round(oldInfo.Volume / 100.0f * 255.0f);
                 newInfo.RangeInSectors = oldInfo.Range;
                 newInfo.Chance = (int)Math.Round(oldInfo.Chance / 100.0f * 255.0f);
@@ -324,7 +321,7 @@ namespace TombLib.Wad.TrLevels
                 {
                     int soundIndexIndex = j + oldInfo.Sample;
                     int sampleIndex;
-                    if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                    if (oldLevel.Version == TRVersion.Game.TR2 || oldLevel.Version == TRVersion.Game.TR3)
                         sampleIndex = (int)oldLevel.SamplesIndices[soundIndexIndex];
                     else
                         sampleIndex = soundIndexIndex;
@@ -416,7 +413,7 @@ namespace TombLib.Wad.TrLevels
                 newAnimation.NextFrame = oldAnimation.NextFrame;
                 newAnimation.StateId = oldAnimation.StateID;
                 newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
-                newAnimation.Name = TrCatalog.GetAnimationName((WadGameVersion)oldLevel.Version, oldMoveable.ObjectID, (uint)j);
+                newAnimation.Name = TrCatalog.GetAnimationName(oldLevel.Version, oldMoveable.ObjectID, (uint)j);
 
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
@@ -503,7 +500,7 @@ namespace TombLib.Wad.TrLevels
                 if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version == TrVersion.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
                     else
                         numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
@@ -511,7 +508,7 @@ namespace TombLib.Wad.TrLevels
                 {
                     if (oldAnimation.FrameSize == 0)
                     {
-                        numFrames = oldLevel.Version == TrVersion.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
                     }
                     else
                     {
@@ -540,14 +537,14 @@ namespace TombLib.Wad.TrLevels
                     frames += 3;
 
                     // TR1 has also the number of angles to follow
-                    if (oldLevel.Version == TrVersion.TR1)
+                    if (oldLevel.Version == TRVersion.Game.TR1)
                         frames++;
 
                     for (int n = 0; n < oldMoveable.NumMeshes; n++)
                         frame.Angles.Add(
                             WadKeyFrameRotation.FromTrAngle(ref frames, oldLevel.Frames,
-                                oldLevel.Version == TrVersion.TR1,
-                                oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5));
+                                oldLevel.Version == TRVersion.Game.TR1,
+                                oldLevel.Version == TRVersion.Game.TR4 || oldLevel.Version == TRVersion.Game.TR5));
 
                     if ((frames - startOfFrame) < oldAnimation.FrameSize)
                         frames += ((int)oldAnimation.FrameSize - (frames - startOfFrame));

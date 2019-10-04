@@ -430,7 +430,7 @@ namespace WadTool.Controls
             if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
                 Invalidate();
 
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
                 // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                 float deltaX = (e.X - _lastX) / Height;
@@ -439,13 +439,18 @@ namespace WadTool.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Zoom(-deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
+                if (e.Button == MouseButtons.Right)
+                {
+                    if ((ModifierKeys & Keys.Control) == Keys.Control)
+                        Camera.Zoom(-deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                    else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
+                        Camera.Rotate(deltaX * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
+                                     -deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                }
+                if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
+                     e.Button == MouseButtons.Middle)
                     Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-                else
-                    Camera.Rotate(deltaX * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                  -deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+
                 Invalidate();
             }
         }

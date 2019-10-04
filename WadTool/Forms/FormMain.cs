@@ -6,9 +6,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.Graphics;
+using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
-using TombLib.Utils;
 using System.IO;
 
 namespace WadTool
@@ -52,8 +52,11 @@ namespace WadTool
             if (obj is InitEvent)
             {
                 // At startup initialise a new Wad2
-                //_tool.DestinationWad = new Wad2 { SuggestedGameVersion = WadGameVersion.TR4_TRNG };
-                //_tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
+                if (_tool.Configuration.Tool_MakeEmptyWadAtStartup)
+                {
+                    _tool.DestinationWad = new Wad2 { GameVersion = TRVersion.Game.TR4 };
+                    _tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
+                }
             }
 
             if (obj is WadToolClass.MessageEvent)
@@ -119,7 +122,7 @@ namespace WadTool
 
                     // Display the object (or set it to Lara's skin instead if it's Lara)
                     if (mainSelection.Value.Id is WadMoveableId)
-                        panel3D.CurrentObject = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.SuggestedGameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
+                        panel3D.CurrentObject = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.GameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
                     else
                         panel3D.CurrentObject = wad.TryGet(mainSelection.Value.Id);
 

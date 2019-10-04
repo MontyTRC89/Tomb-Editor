@@ -3,30 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using TombLib.Wad;
+using TombLib.LevelData;
 
 namespace SoundTool
 {
     public class SoundsCatalog
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
+        private static readonly Dictionary<TRVersion.Game, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<TRVersion.Game, SortedDictionary<ushort, SoundCatalogInfo>>();
 
         public static void LoadAllCatalogsFromXml(string path)
         {
-            //LoadCatalog(path, WadGameVersion.TR1);
-            LoadCatalogFromXml(path + "\\TR2\\Sounds.xml", WadGameVersion.TR2);
-            LoadCatalogFromXml(path + "\\TR3\\Sounds.xml", WadGameVersion.TR3);
-            LoadCatalogFromXml(path + "\\TR4\\Sounds.xml", WadGameVersion.TR4_TRNG);
-            LoadCatalogFromXml(path + "\\TR5\\Sounds.xml", WadGameVersion.TR5);
+            //LoadCatalog(path, TRVersion.Game.TR1);
+            LoadCatalogFromXml(path + "\\TR2\\Sounds.xml", TRVersion.Game.TR2);
+            LoadCatalogFromXml(path + "\\TR3\\Sounds.xml", TRVersion.Game.TR3);
+            LoadCatalogFromXml(path + "\\TR4\\Sounds.xml", TRVersion.Game.TR4);
+            LoadCatalogFromXml(path + "\\TR5\\Sounds.xml", TRVersion.Game.TR5);
         }
 
-        public static bool LoadCatalogFromXml(string fileName, WadGameVersion version)
+        public static bool LoadCatalogFromXml(string fileName, TRVersion.Game version)
         {
             var catalog = LoadCatalogFromXml(fileName);
             if (catalog == null)
                 return false;
-            _catalog[version] = catalog;
+            _catalog[version.Native()] = catalog;
             return true;
         }
 
@@ -97,9 +97,9 @@ namespace SoundTool
             return dictionary;
         }
 
-        public static bool SaveToXml(string fileName, WadGameVersion version)
+        public static bool SaveToXml(string fileName, TRVersion.Game version)
         {
-            return SaveToXml(fileName, _catalog[version]);
+            return SaveToXml(fileName, _catalog[version.Native()]);
         }
 
         internal static bool SaveToXml(string fileName, SortedDictionary<ushort, SoundCatalogInfo> catalog)
@@ -155,37 +155,37 @@ namespace SoundTool
             return true;
         }
 
-        public static SoundCatalogInfo GetSound(WadGameVersion version, uint id)
+        public static SoundCatalogInfo GetSound(TRVersion.Game version, uint id)
         {
-            if (!_catalog.ContainsKey(version))
+            if (!_catalog.ContainsKey(version.Native()))
                 return null;
-            if (!_catalog[version].ContainsKey((ushort)id))
+            if (!_catalog[version.Native()].ContainsKey((ushort)id))
                 return null;
-            return _catalog[version][(ushort)id];
+            return _catalog[version.Native()][(ushort)id];
         }
 
-        public static int GetSoundMapSize(WadGameVersion version, bool isNg)
+        public static int GetSoundMapSize(TRVersion.Game version, bool isNg)
         {
-            switch (version)
+            switch (version.Native())
             {
-                case WadGameVersion.TR1:
+                case TRVersion.Game.TR1:
                     return 256;
-                case WadGameVersion.TR2:
-                case WadGameVersion.TR3:
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
                     return 370;
-                case WadGameVersion.TR4_TRNG:
+                case TRVersion.Game.TR4:
                     return isNg ? 4096 : 370;
                 default:
                     return 450;
             }
         }
 
-        public static SortedDictionary<ushort, SoundCatalogInfo> GetAllSounds(WadGameVersion version)
+        public static SortedDictionary<ushort, SoundCatalogInfo> GetAllSounds(TRVersion.Game version)
         {
             return _catalog[version];
         }
 
-        public static bool LoadCatalogFromTxt(string fileName, WadGameVersion version)
+        public static bool LoadCatalogFromTxt(string fileName, TRVersion.Game version)
         {
             var catalog = LoadCatalogFromTxt(fileName);
             if (catalog == null)

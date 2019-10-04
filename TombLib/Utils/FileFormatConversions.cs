@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Forms;
@@ -63,18 +61,18 @@ namespace TombLib.Utils
                     var row = new SoundInfoConversionRow(soundInfo, soundInfo.Name);
 
                     // If user has changed name, result will be -1 and the user will need to manually set the new sound id
-                    row.NewId = TrCatalog.TryGetSoundInfoIdByDescription(wad.SuggestedGameVersion, soundInfo.Name);
+                    row.NewId = TrCatalog.TryGetSoundInfoIdByDescription(wad.GameVersion, soundInfo.Name);
                     if (row.NewId != -1)
                     {
                         row.SaveToXml = true;
-                        row.NewName = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, (uint)row.NewId);
+                        row.NewName = TrCatalog.GetOriginalSoundName(wad.GameVersion, (uint)row.NewId);
                     }
 
                     conversionList.Add(row);
                 }
 
                 // Now we'll show a dialog with all conversion rows and the user will need to make some choices
-                using (var form = new Wad2SoundsConversionDialog(wad.SuggestedGameVersion, conversionList))
+                using (var form = new Wad2SoundsConversionDialog(wad.GameVersion, conversionList))
                 {
                     if (form.ShowDialog() == DialogResult.Cancel)
                         return false;
@@ -182,26 +180,7 @@ namespace TombLib.Utils
                     return true;
 
                 // Infer the wad version from level version
-                WadGameVersion version = WadGameVersion.TR4_TRNG;
-                switch (level.Settings.GameVersion)
-                {
-                    case GameVersion.TR2:
-                        version = WadGameVersion.TR2;
-                        break;
-                    case GameVersion.TR3:
-                        version = WadGameVersion.TR3;
-                        break;
-                    case GameVersion.TR4:
-                    case GameVersion.TRNG:
-                        version = WadGameVersion.TR4_TRNG;
-                        break;
-                    case GameVersion.TR5:
-                        version = WadGameVersion.TR5;
-                        break;
-                    case GameVersion.TR5Main:
-                        version = WadGameVersion.TR5Main;
-                        break;
-                }
+                TRVersion.Game version = level.Settings.GameVersion.Native();
 
                 // Collect all sounds to remap
                 var conversionList = new List<SoundInfoConversionRow>();

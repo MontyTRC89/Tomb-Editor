@@ -31,6 +31,8 @@ namespace WadTool
         public bool Log_WriteToFile { get; set; } = true;
         public int Log_ArchiveN { get; set; } = 0;
 
+        public bool Tool_MakeEmptyWadAtStartup { get; set; } = false;
+
         public int AnimationEditor_UndoDepth { get; set; } = 30;
         public bool AnimationEditor_RewindAfterChainPlayback { get; set; } = true;
 

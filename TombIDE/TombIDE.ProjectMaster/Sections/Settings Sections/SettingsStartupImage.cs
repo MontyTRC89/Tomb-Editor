@@ -116,9 +116,9 @@ namespace TombIDE.ProjectMaster
 			{
 				string imageFilePath = string.Empty;
 
-				if (_ide.Project.GameVersion == GameVersion.TR4 || _ide.Project.GameVersion == GameVersion.TRNG)
+				if (_ide.Project.GameVersion.Native() == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
 					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "load.bmp");
-				else if (_ide.Project.GameVersion == GameVersion.TR5Main)
+				else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
 					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "load.bmp");
 
 				ReplaceImage(imageFilePath);

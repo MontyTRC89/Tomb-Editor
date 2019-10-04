@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Controls;
+using TombLib.LevelData;
 using TombLib.Wad;
 using System.Drawing;
 
@@ -40,7 +41,7 @@ namespace TombLib.Controls
             tree.SelectedNodes.CollectionChanged += (s, e) => { if (!_changing) SelectedWadObjectIdsChanged?.Invoke(this, EventArgs.Empty); };
 
             // Populate game version
-            foreach (WadGameVersion gameVersion in Enum.GetValues(typeof(WadGameVersion)))
+            foreach (var gameVersion in TRVersion.NativeVersions)
                 suggestedGameVersionComboBox.Items.Add(gameVersion);
         }
 
@@ -60,8 +61,8 @@ namespace TombLib.Controls
             // Update game version control
             if (wadLoaded)
             {
-                if (!Wad.SuggestedGameVersion.Equals(suggestedGameVersionComboBox.SelectedItem))
-                    suggestedGameVersionComboBox.SelectedItem = Wad.SuggestedGameVersion;
+                if (!Wad.GameVersion.Equals(suggestedGameVersionComboBox.SelectedItem))
+                    suggestedGameVersionComboBox.SelectedItem = Wad.GameVersion;
             }
             else
                 suggestedGameVersionComboBox.SelectedItem = null;
@@ -76,15 +77,15 @@ namespace TombLib.Controls
 
                     {
                         var mainNode = AddOrReuseChild(nodes, "Moveables");
-                        UpdateList(mainNode, _wad.Moveables.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
+                        UpdateList(mainNode, _wad.Moveables.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
                     }
                     {
                         var mainNode = AddOrReuseChild(nodes, "Statics");
-                        UpdateList(mainNode, _wad.Statics.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
+                        UpdateList(mainNode, _wad.Statics.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
                     }
                     {
                         var mainNode = AddOrReuseChild(nodes, "Sprite sequences");
-                        UpdateList(mainNode, _wad.SpriteSequences.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
+                        UpdateList(mainNode, _wad.SpriteSequences.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
                     }
 
                     tree.Nodes.AddRange(nodes);
@@ -201,7 +202,7 @@ namespace TombLib.Controls
             object selection = suggestedGameVersionComboBox.SelectedItem;
             if (selection == null)
                 return;
-            Wad.SuggestedGameVersion = (WadGameVersion)selection;
+            Wad.GameVersion = (TRVersion.Game)selection;
             UpdateContent();
         }
 

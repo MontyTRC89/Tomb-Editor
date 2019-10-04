@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TombLib.NG;
-using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -63,7 +62,7 @@ namespace TombLib.LevelData.Compilers
             var floorDataDictionary = new Dictionary<FloordataSequence, ushort>();
 
             // Prepare LUA triggers eventually
-            if (_level.Settings.GameVersion == GameVersion.TR5Main)
+            if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 PrepareLuaTriggers();
 
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
@@ -374,7 +373,7 @@ namespace TombLib.LevelData.Compilers
             BuildFloorDataCollision(ceilingShape, floorShape.Min, true, outFloorData, ref lastFloorDataFunction, room, pos);
 
             // If sector is Climbable
-            if (_level.Settings.GameVersion >= GameVersion.TR2 &&
+            if (_level.Settings.GameVersion >= TRVersion.Game.TR2 &&
                 (block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
             {
                 ushort climb = 0x06;
@@ -399,7 +398,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // If sector is Monkey
-            if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
                 (block.Flags & BlockFlags.Monkey) != BlockFlags.None)
             {
                 lastFloorDataFunction = outFloorData.Count;
@@ -407,7 +406,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // If sector is Beetle
-            if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
                 (block.Flags & BlockFlags.Beetle) != BlockFlags.None)
             {
                 lastFloorDataFunction = outFloorData.Count;
@@ -415,7 +414,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // If sector is Trigger triggerer
-            if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
                 (block.Flags & BlockFlags.TriggerTriggerer) != BlockFlags.None)
             {
                 lastFloorDataFunction = outFloorData.Count;
@@ -501,19 +500,19 @@ namespace TombLib.LevelData.Compilers
 
                     // Do some warnings in case user switches targets and some incompatible triggers are left behind
 
-                    if(_level.Settings.GameVersion != GameVersion.TRNG && found.TriggerType == TriggerType.ConditionNg)
+                    if(_level.Settings.GameVersion != TRVersion.Game.TRNG && found.TriggerType == TriggerType.ConditionNg)
                         _progressReporter.ReportWarn("Level uses 'Condition' trigger type, which is not supported in this game engine.");
 
-                    if(_level.Settings.GameVersion == GameVersion.TRNG && found.TriggerType == TriggerType.Monkey)
+                    if(_level.Settings.GameVersion == TRVersion.Game.TRNG && found.TriggerType == TriggerType.Monkey)
                         _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
 
-                    if ((_level.Settings.GameVersion != GameVersion.TR5 && _level.Settings.GameVersion != GameVersion.TR5Main) &&
+                    if ((_level.Settings.GameVersion != TRVersion.Game.TR5 && _level.Settings.GameVersion != TRVersion.Game.TR5Main) &&
                         (found.TriggerType > TriggerType.ConditionNg && found.TriggerType < TriggerType.Monkey))
                         _progressReporter.ReportWarn("Level uses trigger type '" + found.TriggerType + "', which is not supported in this game engine.");
 
 
                     ushort triggerSetup;
-                    if (_level.Settings.GameVersion == GameVersion.TRNG)
+                    if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
                     {
                         // NG flipeffects store timer and extra in additional ushort
                         if (found.TargetType == TriggerTargetType.FlipEffect && (found.Target as TriggerParameterUshort)?.Key > 46)
@@ -601,7 +600,7 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger2);
 
                             // TRNG stores flipeffect timer as an extra ushort
-                            if (_level.Settings.GameVersion == GameVersion.TRNG)
+                            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
                             {
                                 trigger3 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger3);
@@ -615,7 +614,7 @@ namespace TombLib.LevelData.Compilers
                             break;
                         case TriggerTargetType.ActionNg:
                             // Trigger for action
-                            if (_level.Settings.GameVersion == GameVersion.TRNG)
+                            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
                             {
                                 trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
                                 outFloorData.Add(trigger2);
@@ -866,7 +865,7 @@ namespace TombLib.LevelData.Compilers
 
         private void BuildFloorDataCollision(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, List<ushort> outFloorData, ref int lastFloorDataFunction, Room reportRoom, VectorInt2 reportPos)
         {
-            if (shape.IsSplit && _level.Settings.GameVersion >= GameVersion.TR3)
+            if (shape.IsSplit && _level.Settings.GameVersion >= TRVersion.Game.TR3)
             { // Build a triangulated slope
                 int bisectingIndex = shape.SplitDirectionIsXEqualsZ ? 1 : 0;
                 int portalIndex;

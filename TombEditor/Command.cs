@@ -1782,7 +1782,7 @@ namespace TombEditor
 
             AddCommand("MakeQuickItemGroup", "Make quick Itemgroup", CommandType.Objects, delegate (CommandArgs args)
             {
-                EditorActions.MakeQuickItemGroup(args.Window,args.Editor);
+                EditorActions.MakeQuickItemGroup(args.Window);
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

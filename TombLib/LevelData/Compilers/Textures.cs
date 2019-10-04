@@ -81,11 +81,11 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(96, "Building font & sky textures");
 
-            var image = ImageC.CreateNew(256, _level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main ? 768 : 512);
+            var image = ImageC.CreateNew(256, _level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 768 : 512);
             int toY = 0;
 
             // Read extra textures
-            if (_level.Settings.GameVersion == GameVersion.TR5)
+            if (_level.Settings.GameVersion == TRVersion.Game.TR5)
             {
                 string extraFileName = _level.Settings.MakeAbsolute(_level.Settings.Tr5ExtraSpritesFilePath);
                 if (!string.IsNullOrEmpty(extraFileName) && !File.Exists(extraFileName))
@@ -159,7 +159,7 @@ namespace TombLib.LevelData.Compilers
                     var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Texture.Hash]);
                     var newTexture = new tr_sprite_texture();
 
-                    if (_level.Settings.GameVersion <= GameVersion.TR3)
+                    if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                     {
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;

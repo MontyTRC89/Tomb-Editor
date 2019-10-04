@@ -6,7 +6,6 @@ using TombLib.NG;
 using TombLib.Utils;
 using TombLib.LevelData;
 using System.Xml.Linq;
-using System.Text;
 
 namespace NgXmlBuilder
 {

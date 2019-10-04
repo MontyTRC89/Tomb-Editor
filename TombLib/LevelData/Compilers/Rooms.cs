@@ -173,9 +173,9 @@ namespace TombLib.LevelData.Compilers
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            if (_level.Settings.GameVersion == GameVersion.TR2)
+            if (_level.Settings.GameVersion == TRVersion.Game.TR2)
                 newRoom.AmbientIntensity = 0xFFF; // TODO: correct ambient light
-            else if (_level.Settings.GameVersion == GameVersion.TR3)
+            else if (_level.Settings.GameVersion == TRVersion.Game.TR3)
                 newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
@@ -550,7 +550,7 @@ namespace TombLib.LevelData.Compilers
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                             {
                                 int numPolygons = roomQuads.Count + roomTriangles.Count;
-                                if (_level.Settings.GameVersion != GameVersion.TR5Main && numPolygons > 3000)
+                                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 3000)
                                 {
                                     throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
                                 }
@@ -773,7 +773,7 @@ namespace TombLib.LevelData.Compilers
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Intensity1 = PackColorTo16Bit(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X)),
-                    Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main ? 0x0001 : instance.Ocb)
+                    Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 0x0001 : instance.Ocb)
                 });
             }
 
@@ -821,7 +821,7 @@ namespace TombLib.LevelData.Compilers
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
                 // If target game is <= TR4 then ignore all special lights and fog bulbs
-                if (_level.Settings.GameVersion < GameVersion.TR4 &&
+                if (_level.Settings.GameVersion < TRVersion.Game.TR4 &&
                       (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
                     continue;
 
@@ -907,7 +907,7 @@ namespace TombLib.LevelData.Compilers
                     var sector = new tr_room_sector();
                     var aux = new TrSectorAux();
 
-                    if (_level.Settings.GameVersion >= GameVersion.TR3)
+                    if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
                         sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (short)GetTextureSound(room, x, z)));
                     else
                         sector.BoxIndex = 0xffff;

@@ -39,6 +39,7 @@
             this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel61 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown6 = new DarkUI.Controls.DarkNumericUpDown();
             this.panelColorSelector0 = new System.Windows.Forms.Panel();
@@ -99,7 +100,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
+            this.darkCheckBox3 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -214,21 +215,22 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel1.Size = new System.Drawing.Size(364, 384);
+            this.panel1.Size = new System.Drawing.Size(364, 423);
             this.panel1.TabIndex = 9;
             // 
             // darkGroupBox1
             // 
+            this.darkGroupBox1.Controls.Add(this.darkCheckBox3);
             this.darkGroupBox1.Controls.Add(this.darkNumericUpDown1);
             this.darkGroupBox1.Controls.Add(this.cbEnableLogging);
             this.darkGroupBox1.Controls.Add(this.darkLabel1);
             this.darkGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox1.Location = new System.Drawing.Point(3, 318);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(358, 77);
+            this.darkGroupBox1.Size = new System.Drawing.Size(358, 99);
             this.darkGroupBox1.TabIndex = 6;
             this.darkGroupBox1.TabStop = false;
-            this.darkGroupBox1.Text = "Logging";
+            this.darkGroupBox1.Text = "System";
             // 
             // darkNumericUpDown1
             // 
@@ -239,7 +241,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown1.Location = new System.Drawing.Point(254, 48);
+            this.darkNumericUpDown1.Location = new System.Drawing.Point(254, 71);
             this.darkNumericUpDown1.MousewheelSingleIncrement = true;
             this.darkNumericUpDown1.Name = "darkNumericUpDown1";
             this.darkNumericUpDown1.Size = new System.Drawing.Size(64, 22);
@@ -249,7 +251,7 @@
             // cbEnableLogging
             // 
             this.cbEnableLogging.AutoSize = true;
-            this.cbEnableLogging.Location = new System.Drawing.Point(6, 21);
+            this.cbEnableLogging.Location = new System.Drawing.Point(6, 44);
             this.cbEnableLogging.Name = "cbEnableLogging";
             this.cbEnableLogging.Size = new System.Drawing.Size(105, 17);
             this.cbEnableLogging.TabIndex = 2;
@@ -260,7 +262,7 @@
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 50);
+            this.darkLabel1.Location = new System.Drawing.Point(3, 73);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(187, 13);
             this.darkLabel1.TabIndex = 0;
@@ -289,6 +291,16 @@
             this.darkGroupBox3.TabIndex = 11;
             this.darkGroupBox3.TabStop = false;
             this.darkGroupBox3.Text = "3D window";
+            // 
+            // darkCheckBox2
+            // 
+            this.darkCheckBox2.AutoSize = true;
+            this.darkCheckBox2.Location = new System.Drawing.Point(6, 44);
+            this.darkCheckBox2.Name = "darkCheckBox2";
+            this.darkCheckBox2.Size = new System.Drawing.Size(156, 17);
+            this.darkCheckBox2.TabIndex = 33;
+            this.darkCheckBox2.Tag = "RenderingItem_ShowDebugInfo";
+            this.darkCheckBox2.Text = "Show debug information";
             // 
             // darkLabel61
             // 
@@ -1180,15 +1192,15 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkCheckBox2
+            // darkCheckBox3
             // 
-            this.darkCheckBox2.AutoSize = true;
-            this.darkCheckBox2.Location = new System.Drawing.Point(6, 44);
-            this.darkCheckBox2.Name = "darkCheckBox2";
-            this.darkCheckBox2.Size = new System.Drawing.Size(156, 17);
-            this.darkCheckBox2.TabIndex = 33;
-            this.darkCheckBox2.Tag = "RenderingItem_ShowDebugInfo";
-            this.darkCheckBox2.Text = "Show debug information";
+            this.darkCheckBox3.AutoSize = true;
+            this.darkCheckBox3.Location = new System.Drawing.Point(6, 21);
+            this.darkCheckBox3.Name = "darkCheckBox3";
+            this.darkCheckBox3.Size = new System.Drawing.Size(232, 17);
+            this.darkCheckBox3.TabIndex = 4;
+            this.darkCheckBox3.Tag = "Tool_MakeEmptyWadAtStartup";
+            this.darkCheckBox3.Text = "Make empty destination wad at start-up";
             // 
             // FormOptions
             // 
@@ -1330,5 +1342,6 @@
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkCheckBox darkCheckBox1;
         private DarkUI.Controls.DarkCheckBox darkCheckBox2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox3;
     }
 }

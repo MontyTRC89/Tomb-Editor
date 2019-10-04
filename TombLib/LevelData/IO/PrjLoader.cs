@@ -1319,10 +1319,10 @@ namespace TombLib.LevelData.IO
                                     if (catalogInfo != null)
                                         soundInfo.Name = catalogInfo.Name;
                                     else
-                                        soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                                        soundInfo.Name = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, (uint)soundInfo.Id);
                                 }
                                 else
-                                    soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)soundInfo.Id);
+                                    soundInfo.Name = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, (uint)soundInfo.Id);
                                 level.Settings.SelectedSounds.Add(soundInfo.Id);
                             }
 
@@ -1384,7 +1384,7 @@ namespace TombLib.LevelData.IO
                             slotName = "Unknown " + currentObj.WadObjectId;
 
                         bool isMoveable;
-                        var index = TrCatalog.GetItemIndex(WadGameVersion.TR4_TRNG, slotName, out isMoveable);
+                        var index = TrCatalog.GetItemIndex(TRVersion.Game.TR4, slotName, out isMoveable);
 
                         if (index == null)
                         {
@@ -1595,7 +1595,7 @@ namespace TombLib.LevelData.IO
 
                     if (reader.BaseStream.Length - reader.BaseStream.Position < 2)
                     { // No header of any sorts
-                        level.Settings.GameVersion = GameVersion.TR4;
+                        level.Settings.GameVersion = TRVersion.Game.TR4;
                         progressReporter.ReportInfo("No header of any sorts found. The *.prj file ends at " + offsetString);
                     }
                     else
@@ -1603,7 +1603,7 @@ namespace TombLib.LevelData.IO
                         ushort binaryIdentifier = reader.ReadUInt16();
                         if (binaryIdentifier == 0x474E)
                         { // NG header
-                            level.Settings.GameVersion = GameVersion.TRNG;
+                            level.Settings.GameVersion = TRVersion.Game.TRNG;
                             progressReporter.ReportInfo("NG header found at " + offsetString);
 
                             // Parse NG chunks
@@ -1664,7 +1664,7 @@ namespace TombLib.LevelData.IO
                         }
                         else
                         { // Unknown header
-                            level.Settings.GameVersion = GameVersion.TR4;
+                            level.Settings.GameVersion = TRVersion.Game.TR4;
                             progressReporter.ReportInfo("Unknown header 0x" + binaryIdentifier.ToString("x") + " found at " + offsetString);
                         }
                     }

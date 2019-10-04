@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -11,16 +12,16 @@ namespace WadTool
     public partial class FormSelectSlot : DarkForm
     {
         public Type TypeClass { get; }
-        public WadGameVersion GameVersion { get; }
+        public TRVersion.Game GameVersion { get; }
         public IWadObjectId NewId { get; set; }
 
-        public FormSelectSlot(IWadObjectId currentId, WadGameVersion gameVersion)
+        public FormSelectSlot(IWadObjectId currentId, TRVersion.Game gameVersion)
         {
             InitializeComponent();
 
             NewId = currentId;
             TypeClass = currentId.GetType();
-            GameVersion = gameVersion;
+            GameVersion = gameVersion.Native();
 
             if (TypeClass == typeof(WadMoveableId))
                 chosenId.Value = ((WadMoveableId)currentId).TypeId;

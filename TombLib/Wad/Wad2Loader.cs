@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using TombLib.IO;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -68,9 +66,9 @@ namespace TombLib.Wad
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (id == Wad2Chunks.SuggestedGameVersion)
+                if (id == Wad2Chunks.GameVersion)
                 {
-                    wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
+                    wad.GameVersion = (TRVersion.Game)chunkIO.ReadChunkLong(chunkSize);
                     return true;
                 }
                 else if (id == Wad2Chunks.SoundSystem)
@@ -101,7 +99,7 @@ namespace TombLib.Wad
 
             if (obsolete)
                 foreach (KeyValuePair<long, WadSoundInfo> soundInfo in soundInfos)
-                    if (TrCatalog.IsSoundFixedByDefault(WadGameVersion.TR4_TRNG, checked((uint)soundInfo.Key)))
+                    if (TrCatalog.IsSoundFixedByDefault(TRVersion.Game.TR4, checked((uint)soundInfo.Key)))
                     {
                         var Id = new WadFixedSoundInfoId(checked((uint)soundInfo.Key));
                         wad.FixedSoundInfosObsolete.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfo.Value });
@@ -250,10 +248,10 @@ namespace TombLib.Wad
             tempSoundInfo.PitchFactor = (int)Math.Round((pitch - 1.0f) * 100.0f);
 
             // Try to get the old ID
-            tempSoundInfo.Id = TrCatalog.TryGetSoundInfoIdByDescription(wad.SuggestedGameVersion, tempSoundInfo.Name);
+            tempSoundInfo.Id = TrCatalog.TryGetSoundInfoIdByDescription(wad.GameVersion, tempSoundInfo.Name);
 
             if (string.IsNullOrWhiteSpace(tempSoundInfo.Name))
-                tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, unchecked((uint)tempIndex));
+                tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.GameVersion, unchecked((uint)tempIndex));
 
             index = tempIndex;
             soundInfo = tempSoundInfo;

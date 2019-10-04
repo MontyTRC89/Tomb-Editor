@@ -12,7 +12,6 @@ using TombLib.GeometryIO;
 using TombLib.Graphics;
 using System.Xml;
 using System.Xml.Serialization;
-using TombLib;
 using System.Numerics;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
@@ -162,7 +161,7 @@ namespace WadTool
                 if (form.ShowDialog(owner) == DialogResult.Cancel)
                     return;
 
-                tool.DestinationWad = new Wad2 { SuggestedGameVersion = form.Version, SoundSystem = SoundSystem.Xml };
+                tool.DestinationWad = new Wad2 { GameVersion = form.Version, SoundSystem = SoundSystem.Xml };
             }
         }
 
@@ -195,7 +194,7 @@ namespace WadTool
             }
 
             // Ask for the new slot
-            using (var form = new FormSelectSlot(wadObject.Id, wad.SuggestedGameVersion))
+            using (var form = new FormSelectSlot(wadObject.Id, wad.GameVersion))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
@@ -203,7 +202,7 @@ namespace WadTool
                     return;
                 if (wad.Contains(form.NewId))
                 {
-                    tool.SendMessage("The slot " + form.NewId.ToString(wad.SuggestedGameVersion) + " is already occupied.", PopupType.Error);
+                    tool.SendMessage("The slot " + form.NewId.ToString(wad.GameVersion) + " is already occupied.", PopupType.Error);
                     return;
                 }
                 wad.AssignNewId(wadObject.Id, form.NewId);
@@ -376,7 +375,7 @@ namespace WadTool
 
                     if (askConfirm)
                     {
-                        result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad." +
+                        result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.GameVersion) + " is already occupied in the destination wad." +
                                                          "Do you want to replace it (Yes) or to select another Id (No)?",
                                                          "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     }
@@ -392,7 +391,7 @@ namespace WadTool
                         return false;
                     else if (result == DialogResult.No)
                     {
-                        using (var form = new FormSelectSlot(newIds[i], destinationWad.SuggestedGameVersion))
+                        using (var form = new FormSelectSlot(newIds[i], destinationWad.GameVersion))
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
                                 return false;
@@ -495,13 +494,13 @@ namespace WadTool
                 return;
             }
 
-            using (var form = new FormSelectSlot(initialWadObject.Id, destinationWad.SuggestedGameVersion))
+            using (var form = new FormSelectSlot(initialWadObject.Id, destinationWad.GameVersion))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
                 if (destinationWad.Contains(form.NewId))
                 {
-                    tool.SendMessage("The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", PopupType.Error);
+                    tool.SendMessage("The slot " + form.NewId.ToString(destinationWad.GameVersion) + " is already occupied.", PopupType.Error);
                     return;
                 }
 

@@ -1,15 +1,5 @@
 ﻿namespace TombLib.Wad
 {
-    public enum WadGameVersion : long
-    {
-        TR1 = 1,
-        TR2 = 2,
-        TR3 = 3,
-        TR4_TRNG = 4,
-        TR5 = 5,
-        TR5Main = 18
-    }
-
     public enum SoundSystem : long
     {
         Dynamic = 0,

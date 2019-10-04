@@ -44,9 +44,9 @@ namespace TombLib.Wad
              {
                  chunkIO.ReadChunks((id, chunkSize) =>
                  {
-                     if (id == Wad2Chunks.SuggestedGameVersion)
+                     if (id == Wad2Chunks.GameVersion)
                      {
-                         wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
+                         wad.GameVersion = (TRVersion.Game)chunkIO.ReadChunkLong(chunkSize);
                          return true;
                      }
                      if (LoadTextures(chunkIO, id, wad, ref textures))

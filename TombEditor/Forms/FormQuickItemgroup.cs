@@ -15,9 +15,8 @@ namespace TombEditor.Forms
         private readonly List<IWadObjectId> dropDownValues;
         private readonly Editor _editor;
         public IWadObjectId selectedValue;
-        public FormQuickItemgroup(LevelSettings settings,Editor _editor)
+        public FormQuickItemgroup(Editor _editor)
         {
-            
             InitializeComponent();
             this._editor = _editor;
             dropDownValues = new List<IWadObjectId>();
@@ -51,10 +50,10 @@ namespace TombEditor.Forms
 
         private void cbSlots_Format(object sender, ListControlConvertEventArgs e)
         {
-            WadGameVersion? gameVersion = _editor?.Level?.Settings?.WadGameVersion;
+            TRVersion.Game? gameVersion = _editor?.Level?.Settings?.GameVersion;
             IWadObjectId listItem = e.ListItem as IWadObjectId;
             if (gameVersion != null && listItem != null)
-                e.Value = listItem.ToString(_editor.Level.Settings.WadGameVersion);
+                e.Value = listItem.ToString(_editor.Level.Settings.GameVersion);
         }
     }
 }

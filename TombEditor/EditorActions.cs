@@ -23,7 +23,6 @@ using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -533,7 +532,7 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.Target = @object;
             }
-            else if (@object is StaticInstance && _editor.Level.Settings.GameVersion == GameVersion.TRNG)
+            else if (@object is StaticInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;
                 trigger.Target = new TriggerParameterUshort(160);
@@ -736,7 +735,7 @@ namespace TombEditor
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now
-                if (_editor.Level.Settings.GameVersion != GameVersion.TRNG)
+                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
                     return;
 
                 using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
@@ -1618,13 +1617,13 @@ namespace TombEditor
         private static void AllocateScriptIds(PositionBasedObjectInstance instance)
         {
             if (instance is IHasScriptID &&
-                (_editor.Level.Settings.GameVersion == GameVersion.TR4 ||
-                 _editor.Level.Settings.GameVersion == GameVersion.TRNG))
+                (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
+                 _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG))
             {
                 (instance as IHasScriptID).AllocateNewScriptId();
             }
 
-            if (instance is ItemInstance && _editor.Level.Settings.GameVersion == GameVersion.TR5Main)
+            if (instance is ItemInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
             {
                 (instance as ItemInstance).LuaId = _editor.Level.AllocNewLuaId();
             }
@@ -4482,13 +4481,20 @@ namespace TombEditor
             
         }
 
-        public static void MakeQuickItemGroup(IWin32Window owner,Editor editor)
+        public static void MakeQuickItemGroup(IWin32Window owner)
         {
-            using (FormQuickItemgroup form = new FormQuickItemgroup(editor.Level.Settings, editor)) {
+            // FIXME: Hide all related UI elements for non-TRNG targets?
+            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
+            {
+                _editor.SendMessage("Itemgroup is TRNG-only feature.", PopupType.Info);
+                return;
+            }
+
+            using (FormQuickItemgroup form = new FormQuickItemgroup(_editor)) {
                 if(form.ShowDialog(owner) == DialogResult.OK)
                 {
                     ConcurrentBag<ItemInstance> objects = new ConcurrentBag<ItemInstance>();
-                    Parallel.ForEach(editor.Level.Rooms.Where((Room r) => { return r != null;}), (Room r) => {
+                    Parallel.ForEach(_editor.Level.Rooms.Where((Room r) => { return r != null;}), (Room r) => {
                         foreach(var item in r.Objects.OfType<ItemInstance>())
                         {
                             if (item is StaticInstance)
@@ -4505,13 +4511,14 @@ namespace TombEditor
                             }
                         }
                     });
-                    //Create ItemGroup string
-                    string scriptString = string.Format(";Itemgroup of type {0}\n",form.selectedValue.ToString(editor.Level.Settings.WadGameVersion));
+
+                    // Create ItemGroup string
+                    string scriptString = string.Format(";Itemgroup of type {0}\n", form.selectedValue.ToString(_editor.Level.Settings.GameVersion));
                     scriptString += "ItemGroup= 1";
                     foreach (ItemInstance item in objects)
                         scriptString +=  "," + item.ScriptId;
-                    Clipboard.SetText(scriptString,TextDataFormat.Text);
-                    editor.SendMessage("Itemgroup copied into clipboard");
+                    Clipboard.SetText(scriptString, TextDataFormat.Text);
+                    _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
                 }
             } ;
         }

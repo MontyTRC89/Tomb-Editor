@@ -1,15 +1,15 @@
 ﻿using System;
-using TombLib.Utils;
+using TombLib.LevelData;
 
 namespace TombLib.Wad
 {
     public interface IWadObjectId : IComparable
     {
-        string ToString(WadGameVersion gameVersion);
+        string ToString(TRVersion.Game gameVersion);
     }
     public interface IWadObject
     {
         IWadObjectId Id { get; }
-        string ToString(WadGameVersion gameVersion);
+        string ToString(TRVersion.Game gameVersion);
     }
 }

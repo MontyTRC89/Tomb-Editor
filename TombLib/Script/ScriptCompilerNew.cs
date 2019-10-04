@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TombLib.LevelData;
 
 namespace TombLib.Script
@@ -13,7 +11,7 @@ namespace TombLib.Script
     {
         private string _srcPath;
         private string _dstPath;
-        private GameVersion _version;
+        private TRVersion.Game _version;
 
         private List<LevelScript> _levels;
         private List<string> _languageFiles;
@@ -34,7 +32,7 @@ namespace TombLib.Script
         private int _inputTimeout;
         private byte _security;
 
-        public ScriptCompilerNew(GameVersion version)
+        public ScriptCompilerNew(TRVersion.Game version)
         {
             _version = version;
         }
@@ -488,7 +486,7 @@ namespace TombLib.Script
             return 0;
         }
 
-        private byte[] BuildRawScriptData(LevelScript level, GameVersion version)
+        private byte[] BuildRawScriptData(LevelScript level, TRVersion.Game version)
         {
             using (var ms = new MemoryStream())
             {
@@ -562,12 +560,12 @@ namespace TombLib.Script
                             writer.Write((byte)0x84);
                             writer.Write((byte)entry.Parameters[0]);
                         }
-                        else if (version == GameVersion.TR5 && entry.Command.Name == "GiveItem")
+                        else if (version == TRVersion.Game.TR5 && entry.Command.Name == "GiveItem")
                         {
                             writer.Write((byte)0xD9);
                             writer.Write((byte)entry.Parameters[0]);
                         }
-                        else if (version == GameVersion.TR5 && entry.Command.Name == "LoseItem")
+                        else if (version == TRVersion.Game.TR5 && entry.Command.Name == "LoseItem")
                         {
                             writer.Write((byte)0xDA);
                             writer.Write((byte)entry.Parameters[0]);

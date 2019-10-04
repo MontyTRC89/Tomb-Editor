@@ -45,7 +45,7 @@ namespace WadTool
                 _saved = value;
                 butTbSaveAllChanges.Enabled = !_saved;
                 saveChangesToolStripMenuItem.Enabled = !_saved;
-                Text = "Animation editor - " + _editor.Moveable.Id.ToString(_editor.Wad.SuggestedGameVersion) + (!_saved ? "*" : "");
+                Text = "Animation editor - " + _editor.Moveable.Id.ToString(_editor.Wad.GameVersion) + (!_saved ? "*" : "");
             }
         }
 
@@ -106,7 +106,7 @@ namespace WadTool
 
             // Initialize the panel
             WadMoveable skin;
-            var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Wad.SuggestedGameVersion, id.TypeId));
+            var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Wad.GameVersion, id.TypeId));
 
             if (_editor.Wad.Moveables.ContainsKey(skinId))
                 skin = _editor.Wad.Moveables[skinId];
@@ -931,7 +931,7 @@ namespace WadTool
 
                 for (int i = 0; i < 2; i++)
                 {
-                    possibleID = TrCatalog.TryToGetStateID(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, searchString);
+                    possibleID = TrCatalog.TryToGetStateID(_editor.Wad.GameVersion, _editor.Moveable.Id.TypeId, searchString);
                     if (possibleID >= 0) break;
                     // Try to do one more pass with spaces replaced by underlines
                     searchString = searchString.Replace(' ', '_');
@@ -951,7 +951,7 @@ namespace WadTool
             // Restore state name to textbox, if possible.
             if (newValue != ushort.MaxValue)
             {
-                var possibleName = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, newValue);
+                var possibleName = TrCatalog.GetStateName(_editor.Wad.GameVersion, _editor.Moveable.Id.TypeId, newValue);
 
                 // Put name into textbox, if found among state numbers. Otherwise, use raw number.
                 if (cmbStateID.Items.Contains(possibleName))
@@ -985,7 +985,7 @@ namespace WadTool
 
             for (uint i = 0; i < 256; i++) // Max state value in TR5 was 137 but just in case...
             {
-                string name = TrCatalog.GetStateName(_editor.Wad.SuggestedGameVersion, _editor.Moveable.Id.TypeId, i);
+                string name = TrCatalog.GetStateName(_editor.Wad.GameVersion, _editor.Moveable.Id.TypeId, i);
                 if (name.Contains("Unknown"))
                     continue;
                 else

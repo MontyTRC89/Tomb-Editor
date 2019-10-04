@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -26,12 +27,12 @@ namespace TombLib.Wad
         public override bool Equals(object other) => other is WadStaticId && this == (WadStaticId)other;
         public override int GetHashCode() => unchecked((int)TypeId);
 
-        public string ToString(WadGameVersion gameVersion)
+        public string ToString(TRVersion.Game gameVersion)
         {
             return "(" + TypeId + ") " + TrCatalog.GetStaticName(gameVersion, TypeId);
         }
-        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
-        public string ShortName(WadGameVersion gameVersion) => TrCatalog.GetStaticName(gameVersion, TypeId);
+        public override string ToString() => "Uncertain game version - " + ToString(TRVersion.Game.TR4);
+        public string ShortName(TRVersion.Game gameVersion) => TrCatalog.GetStaticName(gameVersion, TypeId);
     }
 
     public class WadStatic : IWadObject, ICloneable
@@ -53,7 +54,7 @@ namespace TombLib.Wad
         public WadMeshLightingType LightingType { get; set; } = WadMeshLightingType.PrecalculatedGrayShades;
         public short AmbientLight { get; set; } = 128;
 
-        public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
+        public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());
         public override string ToString() => Id.ToString();
 
         public WadStatic Clone()

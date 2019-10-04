@@ -37,7 +37,7 @@ namespace TombEditor
         public bool Editor_OpenLastProjectOnStartup { get; set; } = false;
 
 
-        // PRJ import settings
+        // PRJ import defaults
 
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;

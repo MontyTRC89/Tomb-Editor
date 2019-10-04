@@ -214,7 +214,7 @@ namespace TombIDE
 						throw new ArgumentException("A project with the same name already exists on the list.");
 				}
 
-				GameVersion gameVersion = GetGameVersion(textBox_ExePath.Text);
+				TRVersion.Game gameVersion = GetGameVersion(textBox_ExePath.Text);
 
 				string launcherFilePath = textBox_LauncherPath.Text;
 
@@ -257,7 +257,7 @@ namespace TombIDE
 				Project importedProject = new Project
 				{
 					Name = projectName,
-					GameVersion = gameVersion,
+                    GameVersion = gameVersion,
 					LaunchFilePath = launcherFilePath,
 					ProjectPath = projectPath,
 					EnginePath = enginePath,
@@ -335,23 +335,23 @@ namespace TombIDE
 				return gameExeDirectory;
 		}
 
-		private GameVersion GetGameVersion(string exeFilePath)
+		private TRVersion.Game GetGameVersion(string exeFilePath)
 		{
-			GameVersion gameVersion = 0;
+			TRVersion.Game gameVersion = 0;
 
 			switch (Path.GetFileName(exeFilePath).ToLower())
 			{
 				case "tomb4.exe":
-					gameVersion = GameVersion.TR4;
+					gameVersion = TRVersion.Game.TR4;
 					break;
 
 				case "pctomb5.exe":
-					gameVersion = GameVersion.TR5Main;
+					gameVersion = TRVersion.Game.TR5Main;
 					break;
 			}
 
-			if (gameVersion == GameVersion.TR4 && File.Exists(Path.Combine(Path.GetDirectoryName(exeFilePath), "tomb_nextgeneration.dll")))
-				gameVersion = GameVersion.TRNG;
+			if (gameVersion == TRVersion.Game.TR4 && File.Exists(Path.Combine(Path.GetDirectoryName(exeFilePath), "tomb_nextgeneration.dll")))
+				gameVersion = TRVersion.Game.TRNG;
 
 			return gameVersion;
 		}

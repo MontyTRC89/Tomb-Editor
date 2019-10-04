@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib.LevelData;
-using TombLib.Utils;        // FIXME OLD
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {

@@ -318,7 +318,7 @@ namespace TombLib.NG
                     return level.Settings.WadGetAllMoveables().Select(p => 
                         new TriggerParameterUshort(
                             checked((ushort)p.Key.TypeId), 
-                            p.Value.ToString(level.Settings.WadGameVersion)));
+                            p.Value.ToString(level.Settings.GameVersion.Native())));
 
                 case NgParameterKind.StaticsSlots:
                     if (level?.Settings == null)
@@ -326,7 +326,7 @@ namespace TombLib.NG
                     return level.Settings.WadGetAllStatics().Select(p => 
                         new TriggerParameterUshort(
                             checked((ushort)p.Key.TypeId), 
-                            p.Value.ToString(level.Settings.WadGameVersion)));
+                            p.Value.ToString(level.Settings.GameVersion.Native())));
 
                 case NgParameterKind.LaraStartPosOcb:
                     return level.Rooms.Where(room => room != null)

@@ -141,7 +141,7 @@ namespace WadTool
         private void ReloadSounds()
         {
             comboSound.Items.Clear();
-            foreach (var sound in TrCatalog.GetAllSounds(_editor.Tool.DestinationWad.SuggestedGameVersion))
+            foreach (var sound in TrCatalog.GetAllSounds(_editor.Tool.DestinationWad.GameVersion))
                 comboSound.Items.Add(sound.Key.ToString().PadLeft(4, '0') + ": " + sound.Value);
 
             comboSound.Items.Add("Custom sound ID");

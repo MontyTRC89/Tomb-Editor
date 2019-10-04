@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.Wad.Catalog
@@ -39,7 +40,7 @@ namespace TombLib.Wad.Catalog
 
         private class Game
         {
-            internal WadGameVersion Version { get; private set; }
+            internal TRVersion.Game Version { get; private set; }
             internal SortedList<uint, Item> Moveables { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, Item> SpriteSequences { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, Item> Statics { get; private set; } = new SortedList<uint, Item>();
@@ -47,37 +48,37 @@ namespace TombLib.Wad.Catalog
             internal List<ItemAnimation> Animations { get; private set; } = new List<ItemAnimation>();
             internal List<ItemState> States { get; private set; } = new List<ItemState>();
 
-            public Game(WadGameVersion version)
+            public Game(TRVersion.Game version)
             {
                 Version = version;
             }
         }
 
-        private static readonly Dictionary<WadGameVersion, Game> Games = new Dictionary<WadGameVersion, Game>();
+        private static readonly Dictionary<TRVersion.Game, Game> Games = new Dictionary<TRVersion.Game, Game>();
 
-        public static int PredictSoundMapSize(WadGameVersion wadVersion, bool IsNg, int numDemoData)
+        public static int PredictSoundMapSize(TRVersion.Game version, bool IsNg, int numDemoData)
         {
-            switch (wadVersion)
+            switch (version.Native())
             {
-                case WadGameVersion.TR1:
+                case TRVersion.Game.TR1:
                     return 256;
-                case WadGameVersion.TR2:
-                case WadGameVersion.TR3:
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
                     return 370;
-                case WadGameVersion.TR4_TRNG:
+                case TRVersion.Game.TR4:
                     return IsNg && numDemoData != 0 ? numDemoData : 370;
-                case WadGameVersion.TR5:
-                case WadGameVersion.TR5Main:
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TR5Main:
                     return 450;
                 default:
                     throw new ArgumentOutOfRangeException("Unknown game version.");
             }
         }
 
-        public static string GetMoveableName(WadGameVersion version, uint id)
+        public static string GetMoveableName(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return "Unknown #" + id;
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
@@ -85,10 +86,10 @@ namespace TombLib.Wad.Catalog
             return game.Moveables[id].Names.LastOrDefault();
         }
 
-        public static uint GetMoveableSkin(WadGameVersion version, uint id)
+        public static uint GetMoveableSkin(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return id;
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
@@ -96,10 +97,10 @@ namespace TombLib.Wad.Catalog
             return game.Moveables[id].SkinId;
         }
 
-        public static bool IsMoveableAI(WadGameVersion version, uint id)
+        public static bool IsMoveableAI(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return false;
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
@@ -108,10 +109,10 @@ namespace TombLib.Wad.Catalog
             return entry.AIObject;
         }
 
-        public static string GetStaticName(WadGameVersion version, uint id)
+        public static string GetStaticName(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return "Unknown #" + id;
             Item entry;
             if (!game.Statics.TryGetValue(id, out entry))
@@ -119,10 +120,10 @@ namespace TombLib.Wad.Catalog
             return game.Statics[id].Names.LastOrDefault();
         }
 
-        public static uint? GetItemIndex(WadGameVersion version, string name, out bool isMoveable)
+        public static uint? GetItemIndex(TRVersion.Game version, string name, out bool isMoveable)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
             {
                 isMoveable = false;
                 return null;
@@ -146,10 +147,10 @@ namespace TombLib.Wad.Catalog
             return null;
         }
 
-        public static string GetOriginalSoundName(WadGameVersion version, uint id)
+        public static string GetOriginalSoundName(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return "UNKNOWN_SOUND_" + id;
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
@@ -157,19 +158,19 @@ namespace TombLib.Wad.Catalog
             return game.Sounds[id].Name;
         }
 
-        public static int TryGetSoundInfoIdByDescription(WadGameVersion version, string name)
+        public static int TryGetSoundInfoIdByDescription(TRVersion.Game version, string name)
         {
-            var sounds = Games[version].Sounds;
+            var sounds = Games[version.Native()].Sounds;
             foreach (var pair in sounds)
                 if (pair.Value.Description == name)
                     return (int)pair.Key;
             return -1;
         }
 
-        public static string GetSpriteSequenceName(WadGameVersion version, uint id)
+        public static string GetSpriteSequenceName(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return "Unknown #" + id;
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
@@ -177,10 +178,10 @@ namespace TombLib.Wad.Catalog
             return game.SpriteSequences[id].Names.LastOrDefault();
         }
 
-        public static bool IsSoundFixedByDefault(WadGameVersion version, uint id)
+        public static bool IsSoundFixedByDefault(TRVersion.Game version, uint id)
         {
             Game game;
-            if (!Games.TryGetValue(version, out game))
+            if (!Games.TryGetValue(version.Native(), out game))
                 return false;
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
@@ -188,18 +189,18 @@ namespace TombLib.Wad.Catalog
             return game.Sounds[id].FixedByDefault;
         }
 
-        public static string GetAnimationName(WadGameVersion version, uint objectId, uint animId)
+        public static string GetAnimationName(TRVersion.Game version, uint objectId, uint animId)
         {
             Game game;
             ItemAnimation entry = new ItemAnimation();
-            Games.TryGetValue(version, out game);
+            Games.TryGetValue(version.Native(), out game);
 
             if (game != null)
                 entry = game.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
             
             if (entry.Name == null)
             {
-                var otherGames = Games.Where(g => g.Key != version).ToList();
+                var otherGames = Games.Where(g => g.Key != version.Native()).ToList();
                 otherGames.Reverse();
 
                 foreach (var otherGame in otherGames)
@@ -213,18 +214,18 @@ namespace TombLib.Wad.Catalog
             else return entry.Name;
         }
 
-        public static string GetStateName(WadGameVersion version, uint objectId, uint stateId)
+        public static string GetStateName(TRVersion.Game version, uint objectId, uint stateId)
         {
             Game game;
             ItemState entry = new ItemState();
-            Games.TryGetValue(version, out game);
+            Games.TryGetValue(version.Native(), out game);
 
             if (game != null)
                 entry = game.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
 
             if (entry.Name == null)
             {
-                var otherGames = Games.Where(g => g.Key != version).ToList();
+                var otherGames = Games.Where(g => g.Key != version.Native()).ToList();
                 otherGames.Reverse();
 
                 foreach (var otherGame in otherGames)
@@ -238,17 +239,17 @@ namespace TombLib.Wad.Catalog
             else return entry.Name;
         }
 
-        public static int TryToGetStateID(WadGameVersion version, uint objectId, string stateName)
+        public static int TryToGetStateID(TRVersion.Game version, uint objectId, string stateName)
         {
             Game game;
             ItemState entry = new ItemState();
-            Games.TryGetValue(version, out game);
+            Games.TryGetValue(version.Native(), out game);
             
             if (game != null)
                 entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
 
             if (entry.Name == null)
-                foreach (var otherGame in Games.Where(g => g.Key != version))
+                foreach (var otherGame in Games.Where(g => g.Key != version.Native()))
                 {
                     entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
                     if (entry.Name != null) break;
@@ -258,48 +259,50 @@ namespace TombLib.Wad.Catalog
             else return (int)entry.State;
         }
 
-        public static IDictionary<uint, string> GetAllMoveables(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllMoveables(TRVersion.Game version)
         {
-            return Games[version].Moveables.DicSelect(item => item.Value.Names.LastOrDefault());
+            return Games[version.Native()].Moveables.DicSelect(item => item.Value.Names.LastOrDefault());
         }
 
-        public static IDictionary<uint, string> GetAllStatics(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllStatics(TRVersion.Game version)
         {
-            return Games[version].Statics.DicSelect(item => item.Value.Names.LastOrDefault());
+            return Games[version.Native()].Statics.DicSelect(item => item.Value.Names.LastOrDefault());
         }
 
-        public static IDictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllSpriteSequences(TRVersion.Game version)
         {
-            return Games[version].SpriteSequences.DicSelect(item => item.Value.Names.LastOrDefault());
+            return Games[version.Native()].SpriteSequences.DicSelect(item => item.Value.Names.LastOrDefault());
         }
 
-        public static IDictionary<uint, string> GetAllSounds(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllSounds(TRVersion.Game version)
         {
-            return Games[version].Sounds.DicSelect(item => item.Value.Name);
+            return Games[version.Native()].Sounds.DicSelect(item => item.Value.Name);
         }
 
-        public static IDictionary<uint, string> GetAllFixedByDefaultSounds(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllFixedByDefaultSounds(TRVersion.Game version)
         {
-            return Games[version].Sounds
+            return Games[version.Native()].Sounds
                 .DicWhere(sound => sound.Value.FixedByDefault)
                 .DicSelect(item => item.Value.Name);
         }
 
-        public static string GetVersionString(WadGameVersion version)
+        public static string GetVersionString(TRVersion.Game version)
         {
             switch (version)
             {
-                case WadGameVersion.TR1:
+                case TRVersion.Game.TR1:
                     return "Tomb Raider";
-                case WadGameVersion.TR2:
+                case TRVersion.Game.TR2:
                     return "Tomb Raider 2";
-                case WadGameVersion.TR3:
+                case TRVersion.Game.TR3:
                     return "Tomb Raider 3";
-                case WadGameVersion.TR4_TRNG:
+                case TRVersion.Game.TR4:
                     return "Tomb Raider 4";
-                case WadGameVersion.TR5:
+                case TRVersion.Game.TRNG:
+                    return "TRNG";
+                case TRVersion.Game.TR5:
                     return "Tomb Raider 5";
-                case WadGameVersion.TR5Main:
+                case TRVersion.Game.TR5Main:
                     return "TR5Main";
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -318,19 +321,19 @@ namespace TombLib.Wad.Catalog
                     continue;
 
                 var stringVersion = gameNode.Attributes["id"].Value;
-                WadGameVersion version;
+                TRVersion.Game version;
                 if (stringVersion == "TR1")
-                    version = WadGameVersion.TR1;
+                    version = TRVersion.Game.TR1;
                 else if (stringVersion == "TR2")
-                    version = WadGameVersion.TR2;
+                    version = TRVersion.Game.TR2;
                 else if (stringVersion == "TR3")
-                    version = WadGameVersion.TR3;
+                    version = TRVersion.Game.TR3;
                 else if (stringVersion == "TR4")
-                    version = WadGameVersion.TR4_TRNG;
+                    version = TRVersion.Game.TR4;
                 else if (stringVersion == "TR5")
-                    version = WadGameVersion.TR5;
+                    version = TRVersion.Game.TR5;
                 else if (stringVersion == "TR5Main")
-                    version = WadGameVersion.TR5Main;
+                    version = TRVersion.Game.TR5Main;
                 else
                     continue;
 

@@ -31,7 +31,7 @@ namespace WadTool
             _currentPath = Wad.FileName;
 
             // Load data
-            Text = "Sprite sequence '" + spriteSequence.Id.ToString(Wad.SuggestedGameVersion) + "'";
+            Text = "Sprite sequence '" + spriteSequence.Id.ToString(Wad.GameVersion) + "'";
             dataGridView.DataSource = new BindingList<WadSprite>(new List<WadSprite>(spriteSequence.Sprites));
             dataGridViewControls.CreateNewRow = newObject;
             dataGridViewControls.DataGridView = dataGridView;
