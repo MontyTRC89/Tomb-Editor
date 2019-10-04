@@ -12,10 +12,11 @@ namespace WadTool
 {
     public enum AnimTransformMode
     {
-        Simple,     // Brutally overwrite all properties for all frames
-        Linear,     // Do simple linear interpolation, a-la WadMerger
-        Smooth,     // Smootherstep interpolation
-        Symmetric   // Nifty symmetric smoothstep interpolation
+        Simple,         // Brutally overwrite all properties for all frames
+        Smooth,         // Smootherstep interpolation
+        Linear,         // Do simple linear interpolation, a-la WadMerger
+        Symmetric,      // Nifty symmetric smoothstep interpolation
+        SymmetricLinear // Linear symmetric interpolation
     }
 
     public class AnimationEditor
@@ -168,8 +169,8 @@ namespace WadTool
 
             // Define animation properties
             bool evolve = TransformMode != AnimTransformMode.Simple && ActiveFrames.Count > 1;
-            bool smooth = TransformMode != AnimTransformMode.Linear && evolve;
-            bool loop   = TransformMode == AnimTransformMode.Symmetric;
+            bool smooth = TransformMode != AnimTransformMode.Linear && TransformMode != AnimTransformMode.SymmetricLinear;
+            bool loop   = TransformMode == AnimTransformMode.Symmetric || TransformMode == AnimTransformMode.SymmetricLinear;
 
             // Calculate evolution
             float currentStep = 0;

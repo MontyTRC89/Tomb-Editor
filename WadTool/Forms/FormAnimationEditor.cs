@@ -2018,14 +2018,17 @@ namespace WadTool
 
             switch (_editor.TransformMode)
             {
-                case AnimTransformMode.Linear:
-                    picTransformPreview.Image = Properties.Resources.transform_linear;
-                    break;
                 case AnimTransformMode.Smooth:
                     picTransformPreview.Image = Properties.Resources.transform_smooth;
                     break;
+                case AnimTransformMode.Linear:
+                    picTransformPreview.Image = Properties.Resources.transform_linear;
+                    break;
                 case AnimTransformMode.Symmetric:
                     picTransformPreview.Image = Properties.Resources.transform_symmetric;
+                    break;
+                case AnimTransformMode.SymmetricLinear:
+                    picTransformPreview.Image = Properties.Resources.transform_symmetric_linear;
                     break;
                 default:
                     picTransformPreview.Image = Properties.Resources.transform_simple;
