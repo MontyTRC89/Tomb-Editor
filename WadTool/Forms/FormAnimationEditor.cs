@@ -56,6 +56,7 @@ namespace WadTool
         private Timer _timerPlayAnimation;
         private int _frameCount;
         private bool _smooth = true;
+        private bool _scrollGrid = true;
         private bool _previewSounds;
         private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
         private int _currentMaterialIndex;
@@ -412,6 +413,10 @@ namespace WadTool
 
             if (node.DirectXAnimation.KeyFrames.Count > 0)
                 panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+
+            // Continue scrolling the grid if we're in chain playback mode
+            if (!(_chainedPlayback && _timerPlayAnimation.Enabled))
+                panelRendering.GridPosition = Vector3.Zero;
 
             panelRendering.Invalidate();
 
@@ -1355,6 +1360,10 @@ namespace WadTool
 
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
             }
+            
+            // Reset grid position and refresh view
+            panelRendering.GridPosition = Vector3.Zero;
+            panelRendering.Invalidate();
         }
 
         private void SaveChanges()
@@ -1471,6 +1480,8 @@ namespace WadTool
         private void undoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void redoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
+        private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => _smooth = !_smooth;
+        private void scrollGridToolStripMenuItem_Click(object sender, EventArgs e) => _scrollGrid = !_scrollGrid;
 
         // Toolbox controls one-liners
 
@@ -1605,8 +1616,11 @@ namespace WadTool
             {
                 int newFrameNumber = (int)Math.Round((double)(_frameCount / _editor.CurrentAnim.WadAnimation.FrameRate));
 
-                if (newFrameNumber > timeline.Maximum)
+                if (newFrameNumber >= timeline.Maximum)
+                {
                     timeline.Value = 0;
+                    panelRendering.GridPosition = Vector3.Zero;
+                }
                 else
                     timeline.Value = newFrameNumber;
             }
@@ -1615,6 +1629,51 @@ namespace WadTool
                 float k = (float)_frameCount / (float)(_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate);
                 k = k - (float)Math.Floor(k);
                 SelectFrame(k);
+            }
+
+            // Scroll the grid
+            if (_scrollGrid)
+            {
+                Vector3 startVel = new Vector3(_editor.CurrentAnim.WadAnimation.StartLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.StartVelocity);
+                Vector3 endVel = new Vector3(_editor.CurrentAnim.WadAnimation.EndLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.EndVelocity);
+
+                // HACK: Due to Core Design's programming habits, we need to force speed direction for certain states.
+
+                if (_editor.Moveable.Id.TypeId == 0)
+                {
+                    switch (_editor.CurrentAnim.WadAnimation.StateId)
+                    {
+                        case 5:  // RUN_BACK
+                        case 16: // WALK_BACK
+                        case 23: // ROLL_BACK
+                        case 25: // JUMP_BACK
+                        case 32: // SLIDE_BACK
+                            startVel.Z = -startVel.Z;
+                            endVel.Z = -endVel.Z;
+                            break;
+
+                        case 21: // WALK_RIGHT
+                        case 26: // JUMP_RIGHT
+                        case 31: // SHIMMY_RIGHT
+                        case 60: // LADDER_RIGHT
+                        case 78: // MONKEY_LEFT
+                            startVel = new Vector3(startVel.Z, 0, startVel.X);
+                            endVel = new Vector3(endVel.Z, 0, endVel.X);
+                            break;
+
+                        case 22: // WALK_LEFT
+                        case 27: // JUMP_LEFT
+                        case 30: // SHIMMY_LEFT
+                        case 58: // LADDER_LEFT
+                        case 77: // MONKEY_LEFT
+                            startVel = new Vector3(-startVel.Z, 0, -startVel.X);
+                            endVel   = new Vector3(-endVel.Z, 0, -endVel.X);
+                            break;
+                    }
+                }
+
+                var shiftX = Vector3.Lerp(startVel, endVel, (float)_frameCount / (float)realFrameNumber);
+                panelRendering.GridPosition += shiftX;
             }
 
             UpdateStatusLabel();
@@ -1956,11 +2015,6 @@ namespace WadTool
                 if (form.EditingWasDone) Saved = false;
                 timeline.Invalidate(); // FIXME: To update current timeline. Use an event instead later.
             }
-        }
-
-        private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _smooth = !_smooth;
         }
 
         private void timeline_MouseDown(object sender, MouseEventArgs e)

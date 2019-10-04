@@ -46,6 +46,17 @@ namespace WadTool.Controls
         public Room Room { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Vector3 RoomPosition { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Vector3 GridPosition
+        {
+            get { return _gridPosition; }
+            set
+            {
+                if (value == _gridPosition) return;
+                _gridPosition = new Vector3(value.X % 4096.0f, value.Y % 4096.0f, value.Z % 4096.0f);
+            }
+        }
+        private Vector3 _gridPosition;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<WadMeshBoneNode> Skeleton { get; set; }
@@ -304,7 +315,8 @@ namespace WadTool.Controls
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
                 _device.SetIndexBuffer(_plane.IndexBuffer, true);
 
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                var shift = Matrix4x4.CreateTranslation(new Vector3(-GridPosition.X, 0, -GridPosition.Z));
+                solidEffect.Parameters["ModelViewProjection"].SetValue((shift * viewProjection).ToSharpDX());
                 solidEffect.Parameters["Color"].SetValue(Vector4.One);
                 solidEffect.Techniques[0].Passes[0].Apply();
 
