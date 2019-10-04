@@ -15,6 +15,7 @@ namespace TombLib.Wad.Catalog
             public string Description { get; set; }
             public uint SkinId { get; set; }
             public bool AIObject { get; set; }
+            public bool Shatterable { get; set; }
         }
 
         private struct ItemSound
@@ -118,6 +119,18 @@ namespace TombLib.Wad.Catalog
             if (!game.Statics.TryGetValue(id, out entry))
                 return "Unknown #" + id;
             return game.Statics[id].Names.LastOrDefault();
+        }
+
+        public static bool IsStaticShatterable(TRVersion.Game version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version.Native(), out game))
+                return false;
+            Item entry;
+            if (!game.Statics.TryGetValue(id, out entry))
+                return false;
+
+            return entry.Shatterable;
         }
 
         public static uint? GetItemIndex(TRVersion.Game version, string name, out bool isMoveable)
@@ -354,9 +367,7 @@ namespace TombLib.Wad.Catalog
                         if (moveableNode.Attributes["use_body_from"] != null)
                             skinId = uint.Parse(moveableNode.Attributes["use_body_from"].Value);
 
-                        bool isAI = false;
-                        if (moveableNode.Attributes["ai"] != null)
-                            isAI = short.Parse(moveableNode.Attributes["ai"].Value) > 0;
+                        bool isAI = bool.Parse(moveableNode.Attributes["ai"]?.Value ?? "false");
 
                         game.Moveables.Add(id, new Item { Names = new List<string>(names), SkinId = skinId, AIObject = isAI });
                     }
@@ -371,7 +382,8 @@ namespace TombLib.Wad.Catalog
 
                         uint id = uint.Parse(staticNode.Attributes["id"].Value);
                         var names = (staticNode.Attributes["name"]?.Value ?? "").Split(',');
-                        game.Statics.Add(id, new Item { Names = new List<string>(names) });
+                        bool shatter = bool.Parse(staticNode.Attributes["shatter"]?.Value ?? "false");
+                        game.Statics.Add(id, new Item { Names = new List<string>(names), Shatterable = shatter });
                     }
 
                 // Parse sounds
