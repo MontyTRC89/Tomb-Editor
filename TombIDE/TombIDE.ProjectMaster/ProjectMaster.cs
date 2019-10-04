@@ -44,7 +44,7 @@ namespace TombIDE.ProjectMaster
 			section_ProjectInfo.Initialize(_ide);
 			section_PluginList.Initialize(_ide);
 
-			if (_ide.Project.GameVersion == GameVersion.TR4)
+			if (_ide.Project.GameVersion == TRVersion.Game.TR4)
 			{
 				button_ShowPlugins.Enabled = false;
 				button_ShowPlugins.Visible = false;

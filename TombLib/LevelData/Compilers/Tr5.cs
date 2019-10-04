@@ -247,7 +247,7 @@ namespace TombLib.LevelData.Compilers
 
         private void AddNecessaryTr5Items()
         {
-            if (_level.Settings.GameVersion != GameVersion.TR5)
+            if (_level.Settings.GameVersion != TRVersion.Game.TR5)
                 return;
             // Special case for TR5, it makes trouble if 434, 446 is not present.
             // Level 1 needs a moveable of type 434, level 10 needs a moveable of type 446.

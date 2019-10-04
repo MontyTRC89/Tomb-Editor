@@ -1,6 +1,5 @@
 ﻿using System;
-using TombLib.Utils;
-using TombLib.Wad.Catalog;
+using TombLib.LevelData;
 
 namespace TombLib.Wad
 {
@@ -25,7 +24,7 @@ namespace TombLib.Wad
         public override bool Equals(object other) => other is WadAdditionalSoundInfoId && this == (WadAdditionalSoundInfoId)other;
         public override int GetHashCode() => Name.GetHashCode();
 
-        public string ToString(WadGameVersion gameVersion) => Name;
+        public string ToString(TRVersion.Game gameVersion) => Name;
         public override string ToString() => Name;
     }
 
@@ -55,7 +54,7 @@ namespace TombLib.Wad
             Id = id;
         }
 
-        public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
+        public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());
         public override string ToString() => Id.ToString();
         IWadObjectId IWadObject.Id => Id;
     }

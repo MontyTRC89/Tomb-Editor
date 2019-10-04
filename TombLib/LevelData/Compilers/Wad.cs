@@ -203,7 +203,7 @@ namespace TombLib.LevelData.Compilers
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
                         poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12;
+                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 10 : 12;
                 }
                 else
                 {
@@ -214,11 +214,11 @@ namespace TombLib.LevelData.Compilers
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
                         poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10;
+                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
                 }
             }
 
-            if (_level.Settings.GameVersion <= GameVersion.TR3)
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                 currentMeshSize += 4; // Num colored quads and triangles
 
             if (currentMeshSize % 4 != 0)
@@ -281,10 +281,10 @@ namespace TombLib.LevelData.Compilers
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
                                 false,
-                                _level.Settings.GameVersion == GameVersion.TR4 ||
-                                _level.Settings.GameVersion == GameVersion.TRNG ||
-                                _level.Settings.GameVersion == GameVersion.TR5 ||
-                                _level.Settings.GameVersion == GameVersion.TR5Main);
+                                _level.Settings.GameVersion == TRVersion.Game.TR4 ||
+                                _level.Settings.GameVersion == TRVersion.Game.TRNG ||
+                                _level.Settings.GameVersion == TRVersion.Game.TR5 ||
+                                _level.Settings.GameVersion == TRVersion.Game.TR5Main);
                     }
 
                     // Figure out padding of the frames
@@ -442,7 +442,7 @@ namespace TombLib.LevelData.Compilers
 
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
                     var wadMesh = oldMoveable.Meshes[i];
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId,i, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), oldMoveable.Id.IsOptics(_level.Settings.WadGameVersion));
+                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId,i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
                 var meshTrees = new List<tr_meshtree>();
@@ -525,7 +525,7 @@ namespace TombLib.LevelData.Compilers
                     ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
                 } else
                 {
-                    _progressReporter.ReportInfo("Creating Dummy Mesh for automatically Merged Mesh :" + oldStaticMesh.ToString(_level.Settings.WadGameVersion));
+                    _progressReporter.ReportInfo("Creating Dummy Mesh for automatically Merged Mesh :" + oldStaticMesh.ToString(_level.Settings.GameVersion));
                     CreateDummyWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
                 }
                 _staticMeshes.Add(newStaticMesh);
@@ -682,7 +682,7 @@ namespace TombLib.LevelData.Compilers
             // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
             // There is no other way of guessing it except looking if there is a specific object in any of wads.
 
-            if (_level.Settings.GameVersion == GameVersion.TRNG)
+            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
             {
                 Action<int, int, int> AddRemappedNGSound = delegate (int moveableTypeToCheck, int originalId, int remappedId)
                 {
@@ -716,16 +716,16 @@ namespace TombLib.LevelData.Compilers
             // Step 2: create the sound map
             switch (_level.Settings.GameVersion)
             {
-                case GameVersion.TRNG:
+                case TRVersion.Game.TRNG:
                     _soundMapSize = 2048;
                     break;
-                case GameVersion.TR2:
-                case GameVersion.TR3:
-                case GameVersion.TR4:
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
+                case TRVersion.Game.TR4:
                     _soundMapSize = 370;
                     break;
-                case GameVersion.TR5:
-                case GameVersion.TR5Main:
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TR5Main:
                     _soundMapSize = 450;
                     break;
 
@@ -786,7 +786,7 @@ namespace TombLib.LevelData.Compilers
         private void WriteSoundMetadata(BinaryWriter writer)
         {
             // In TRNG NumDemoData is used as sound map size
-            writer.Write((ushort)(_level.Settings.GameVersion == GameVersion.TRNG ? _soundMapSize : 0));
+            writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ? _soundMapSize : 0));
 
             using (var ms = new MemoryStream())
             {
@@ -819,7 +819,7 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
-                        if (_level.Settings.GameVersion == GameVersion.TR2)
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR2)
                         {
                             var newSoundDetail = new tr_sound_details();
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
@@ -855,7 +855,7 @@ namespace TombLib.LevelData.Compilers
         private void WriteSoundData(BinaryWriter writer)
         {
             writer.Write((uint)_finalSamplesList.Count); // Write sample count
-            if (_level.Settings.GameVersion == GameVersion.TR5 || _level.Settings.GameVersion == GameVersion.TR5Main)
+            if (_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main)
             { // We have to compress the samples first
               // TR5 uses compressed MS-ADPCM samples
                 byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
@@ -923,7 +923,7 @@ namespace TombLib.LevelData.Compilers
 
             newMesh.TexturedQuads = new tr_face4[numQuads];
             newMesh.TexturedTriangles = new tr_face3[numTriangles];
-            if (_level.Settings.GameVersion <= GameVersion.TR3)
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                 currentMeshSize += 4; // Num colored quads and triangles
 
             if (currentMeshSize % 4 != 0)

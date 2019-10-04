@@ -185,24 +185,24 @@ namespace TombIDE
 
 		private Project CreateNewProject(string projectName, string projectPath, string enginePath, string scriptPath, string levelsPath)
 		{
-			GameVersion gameVersion = 0;
+			TRVersion.Game gameVersion = 0;
 
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					gameVersion = GameVersion.TR4;
+					gameVersion = TRVersion.Game.TR4;
 					break;
 
 				case 2:
-					gameVersion = GameVersion.TRNG;
+					gameVersion = TRVersion.Game.TRNG;
 					break;
 
 				case 3:
-					gameVersion = GameVersion.TRNG;
+					gameVersion = TRVersion.Game.TRNG;
 					break;
 
 				case 4:
-					gameVersion = GameVersion.TR5Main;
+					gameVersion = TRVersion.Game.TR5Main;
 					break;
 			}
 
@@ -245,9 +245,9 @@ namespace TombIDE
 
 			string sharedArchivePath = string.Empty;
 
-			if (project.GameVersion == GameVersion.TR4 || project.GameVersion == GameVersion.TRNG)
+			if (project.GameVersion == TRVersion.Game.TR4 || project.GameVersion == TRVersion.Game.TRNG)
 				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Shared.zip");
-			else if (project.GameVersion == GameVersion.TR5Main)
+			else if (project.GameVersion == TRVersion.Game.TR5Main)
 				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Shared.zip");
 
 			// Extract the engine base into the ProjectPath folder

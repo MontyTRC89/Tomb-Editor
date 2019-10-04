@@ -27,7 +27,7 @@ namespace TombLib.Wad
     public class Wad2
     {
         public SoundSystem SoundSystem { get; set; }
-        public WadGameVersion SuggestedGameVersion { get; set; } = WadGameVersion.TR4_TRNG;
+        public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
@@ -196,10 +196,10 @@ namespace TombLib.Wad
         public void AssignNewId(IWadObjectId oldId, IWadObjectId newId)
         {
             if (Contains(newId))
-                throw new ArgumentException("Id " + newId.ToString(SuggestedGameVersion) + " exists already.");
+                throw new ArgumentException("Id " + newId.ToString(GameVersion) + " already exists.");
             IWadObject @object = TryGet(oldId);
             if (@object == null)
-                throw new KeyNotFoundException("Id " + newId.ToString(SuggestedGameVersion) + " not found.");
+                throw new KeyNotFoundException("Id " + newId.ToString(GameVersion) + " not found.");
             Remove(oldId);
             Add(newId, @object);
         }

@@ -8,6 +8,7 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
+using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -40,7 +41,7 @@ namespace TombEditor.Forms
                 control.Click += scriptExportPanel_Click;
             scriptExportPanel.Click += scriptExportPanel_Click;
 
-            if (_level.Settings.GameVersion != GameVersion.TR5Main)
+            if (_level.Settings.GameVersion != TRVersion.Game.TR5Main)
             {
                 panelLuaScript.Visible = false;
                 MaximizeBox = false;
@@ -219,8 +220,8 @@ namespace TombEditor.Forms
 
         private void UpdateExportToTrigger()
         {
-            scriptExportPanel.Visible = _level.Settings.GameVersion == GameVersion.TRNG;
-            if (_level.Settings.GameVersion != GameVersion.TRNG)
+            scriptExportPanel.Visible = _level.Settings.GameVersion == TRVersion.Game.TRNG;
+            if (_level.Settings.GameVersion != TRVersion.Game.TRNG)
                 return;
 
             try

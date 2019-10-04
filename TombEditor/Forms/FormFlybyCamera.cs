@@ -54,7 +54,7 @@ namespace TombEditor.Forms
             numRotationX.Value = (decimal)_flyByCamera.RotationX;
             numRotationY.Value = (decimal)_flyByCamera.RotationY;
 
-            if(_editor.Level.Settings.GameVersion >= GameVersion.TR5)
+            if(_editor.Level.Settings.GameVersion >= TRVersion.Game.TR5)
             {
                 cbBit1.Text = "Vignette";
                 cbBit4.Text = "Hide Lara";
@@ -62,7 +62,7 @@ namespace TombEditor.Forms
                 cbBit13.Text = "Make fade-out";
             }
 
-            if (_editor.Level.Settings.GameVersion == GameVersion.TR5Main)
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
             {
                 Width = 960;
                 tbLuaScript.Enabled = true;
@@ -105,7 +105,7 @@ namespace TombEditor.Forms
             _flyByCamera.RotationX = (float)numRotationX.Value;
             _flyByCamera.RotationY = (float)numRotationY.Value;
 
-            if (_editor.Level.Settings.GameVersion == GameVersion.TR5Main)
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
             {
                 _flyByCamera.LuaScript = tbLuaScript.Code;
             }

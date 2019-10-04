@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -27,26 +28,26 @@ namespace TombLib.Wad
         public override bool Equals(object other) => other is WadMoveableId && this == (WadMoveableId)other;
         public override int GetHashCode() => unchecked((int)TypeId);
 
-        public string ToString(WadGameVersion gameVersion)
+        public string ToString(TRVersion.Game gameVersion)
         {
             return "(" + TypeId + ") " + TrCatalog.GetMoveableName(gameVersion, TypeId);
         }
-        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
-        public string ShortName(WadGameVersion gameVersion) => TrCatalog.GetMoveableName(gameVersion, TypeId);
+        public override string ToString() => "Uncertain game version - " + ToString(TRVersion.Game.TR4);
+        public string ShortName(TRVersion.Game gameVersion) => TrCatalog.GetMoveableName(gameVersion, TypeId);
 
         public static WadMoveableId Lara = new WadMoveableId(0);
         public static WadMoveableId LaraSkin = new WadMoveableId(8);
         public static WadMoveableId SkyBox = new WadMoveableId(459);
 
-        public bool IsWaterfall(WadGameVersion gameVersion)
+        public bool IsWaterfall(TRVersion.Game gameVersion)
         {
-            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 423 && TypeId <= 425) ||
-                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 410 && TypeId <= 415);
+            return (gameVersion.Native() == TRVersion.Game.TR4 && TypeId >= 423 && TypeId <= 425) ||
+                   (gameVersion.Native() >= TRVersion.Game.TR5 && TypeId >= 410 && TypeId <= 415);
         }
-        public bool IsOptics(WadGameVersion gameVersion)
+        public bool IsOptics(TRVersion.Game gameVersion)
         {
-            return (gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 461 && TypeId <= 462) ||
-                   (gameVersion >= WadGameVersion.TR5 && TypeId >= 456 && TypeId <= 457);
+            return (gameVersion.Native() == TRVersion.Game.TR4 && TypeId >= 461 && TypeId <= 462) ||
+                   (gameVersion.Native() >= TRVersion.Game.TR5 && TypeId >= 456 && TypeId <= 457);
         }
     }
 
@@ -64,7 +65,7 @@ namespace TombLib.Wad
             Id = id;
         }
 
-        public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
+        public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());
         public override string ToString() => Id.ToString();
         IWadObjectId IWadObject.Id => Id;
 

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
 using TombLib.Wad;
-using DarkUI.Controls;
 using DarkUI.Forms;
-using System.IO;
-using System.Media;
 using TombLib.Utils;
 using TombLib.LevelData;
 using TombLib.Forms;
-using TombLib.Wad.Catalog;
 
 namespace SoundTool
 {

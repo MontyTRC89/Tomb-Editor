@@ -34,7 +34,7 @@ namespace TombLib.LevelData
     {
         public string StaticMesh
         {
-            get { return parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.WadGameVersion); }
+            get { return parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.GameVersion); }
         }
 
         private LevelSettings parent;
@@ -100,41 +100,6 @@ namespace TombLib.LevelData
         }
     }
 
-    /// <summary>
-    /// Note: This enumeration can *always* legally be in a state not yet listed here. We should always handle *default* in switch.
-    /// </summary>
-    public enum GameVersion : long
-    {
-        //TR1 = 1,
-        TR2 = 2,
-        TR3 = 3,
-        TR4 = 4,
-        TR5 = 5,
-        TRNG = 16,
-        TR5Main = 18
-    }
-
-    /// <summary>
-    /// Only for TR5
-    /// </summary>
-    public enum Tr5LaraType : byte
-    {
-        Normal = 0,
-        Catsuit = 3,
-        Divesuit = 4,
-        Invisible = 6
-    }
-
-    /// <summary>
-    /// Only for TR5
-    /// </summary>
-    public enum Tr5WeatherType : byte
-    {
-        Normal = 0,
-        Rain = 1,
-        Snow = 2
-    }
-
     public class LevelSettings : ICloneable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -198,7 +163,7 @@ namespace TombLib.LevelData
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
         public bool GameEnableQuickStartFeature { get; set; } = true;
-        public GameVersion GameVersion { get; set; } = GameVersion.TR4;
+        public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
@@ -268,7 +233,7 @@ namespace TombLib.LevelData
                     result = GameVersion.ToString();
                     break;
                 case VariableType.SoundEngineVersion:
-                    result = (GameVersion == GameVersion.TRNG ? GameVersion.TR4 : GameVersion).ToString();
+                    result = (GameVersion.Native()).ToString();
                     break;
                 default:
                     throw new ArgumentException();
@@ -307,29 +272,6 @@ namespace TombLib.LevelData
             } while (true);
 
             return path;
-        }
-
-        public WadGameVersion WadGameVersion
-        {
-            get
-            {
-                switch (GameVersion)
-                {
-                    case GameVersion.TR2:
-                        return Wad.WadGameVersion.TR2;
-                    case GameVersion.TR3:
-                        return Wad.WadGameVersion.TR3;
-                    case GameVersion.TR4:
-                    case GameVersion.TRNG:
-                        return Wad.WadGameVersion.TR4_TRNG;
-                    case GameVersion.TR5:
-                        return Wad.WadGameVersion.TR5;
-                    case GameVersion.TR5Main:
-                        return Wad.WadGameVersion.TR5Main;
-                    default:
-                        throw new NotSupportedException("Not supported game version.");
-                }
-            }
         }
 
         public string MakeAbsolute(string path, params VariableType[] excluded)
@@ -542,18 +484,6 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Editor sounds catalog", "xml")
         };
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsXmlFiles = new[] { new FileFormat("XML file", "xml") };
-
-        public static WadGameVersion WadGameVersionFromGameVersion(GameVersion v)
-        {
-            switch (v)
-            {
-                case GameVersion.TR4: return WadGameVersion.TR4_TRNG;
-                case GameVersion.TRNG: return WadGameVersion.TR4_TRNG;
-                case GameVersion.TR5: return WadGameVersion.TR5;
-                case GameVersion.TR5Main: return WadGameVersion.TR5Main;
-                default: return WadGameVersion.TR4_TRNG;
-            }
-        }
 
         public WadSoundInfo WadTryGetSoundInfo(int id)
         {

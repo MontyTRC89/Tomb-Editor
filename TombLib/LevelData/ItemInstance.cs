@@ -50,30 +50,30 @@ namespace TombLib.LevelData
         public bool IsStatic { get; }
         public WadMoveableId MoveableId { get; }
         public WadStaticId StaticId { get; }
-        private readonly WadGameVersion _wadGameVersion;
+        private readonly TRVersion.Game _gameVersion;
 
-        public ItemType(WadStaticId staticId, WadGameVersion wadGameVersion = WadGameVersion.TR4_TRNG)
+        public ItemType(WadStaticId staticId, TRVersion.Game gameVersion = TRVersion.Game.TR4)
         {
             IsStatic = true;
             MoveableId = new WadMoveableId();
-            _wadGameVersion = wadGameVersion;
+            _gameVersion = gameVersion.Native();
             StaticId = staticId;
         }
 
-        public ItemType(WadMoveableId moveableId, WadGameVersion wadGameVersion = WadGameVersion.TR4_TRNG)
+        public ItemType(WadMoveableId moveableId, TRVersion.Game gameVersion = TRVersion.Game.TR4)
         {
             IsStatic = false;
             MoveableId = moveableId;
-            _wadGameVersion = wadGameVersion;
+            _gameVersion = gameVersion.Native();
             StaticId = new WadStaticId();
         }
 
         public ItemType(WadStaticId staticId, LevelSettings levelSettings) // wad can be null
-            : this(staticId, levelSettings?.WadGameVersion ?? WadGameVersion.TR4_TRNG)
+            : this(staticId, levelSettings?.GameVersion ?? TRVersion.Game.TR4)
         { }
 
         public ItemType(WadMoveableId moveableId, LevelSettings levelSettings) // wad can be null
-            : this(moveableId, levelSettings?.WadGameVersion ?? WadGameVersion.TR4_TRNG)
+            : this(moveableId, levelSettings?.GameVersion ?? TRVersion.Game.TR4)
         { }
 
         public static bool operator ==(ItemType first, ItemType second)
@@ -97,17 +97,17 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             if (IsStatic)
-                return StaticId.ToString(_wadGameVersion);
+                return StaticId.ToString(_gameVersion);
             else
-                return MoveableId.ToString(_wadGameVersion);
+                return MoveableId.ToString(_gameVersion);
         }
 
         public string ShortName()
         {
             if (IsStatic)
-                return StaticId.ShortName(_wadGameVersion);
+                return StaticId.ShortName(_gameVersion);
             else
-                return MoveableId.ShortName(_wadGameVersion);
+                return MoveableId.ShortName(_gameVersion);
         }
     }
 

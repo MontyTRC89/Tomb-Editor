@@ -166,21 +166,20 @@ namespace WadTool
             var deltaPos = newPos - _initialPos;
             var deltaRot = newRot - _initialRot;
 
-            // Calculate evolution
-            float currentStep = 0;
-            float frameCount = CurrentFrameIndex - Selection.X;
-
             // Define animation properties
             bool evolve = TransformMode != AnimTransformMode.Simple && ActiveFrames.Count > 1;
             bool smooth = TransformMode != AnimTransformMode.Linear && evolve;
             bool loop   = TransformMode == AnimTransformMode.Symmetric;
 
+            // Calculate evolution
+            float currentStep = 0;
+            float frameCount = loop ? Selection.Y - Selection.X : CurrentFrameIndex - Selection.X;
+
             int index = 0;
             foreach (var keyframe in ActiveFrames)
             {
-                float midFrame = loop ? frameCount / 2.0f : frameCount;
-                float bias = Math.Abs(currentStep - midFrame) / midFrame;
-                if (!loop) bias = Math.Abs(bias - 1.0f);
+                float midFrame = loop ? CurrentFrameIndex : frameCount;
+                float bias = (currentStep <= midFrame) ? currentStep / midFrame : (frameCount - currentStep) / (frameCount - midFrame);
 
                 // Single-pass smoothstep doesn't look organic on fast animations, hence we're using 2-pass smootherstep here.
                 float weight = smooth ? (float)MathC.SmoothStep(0, 1, MathC.SmoothStep(0, 1, bias)) : bias;

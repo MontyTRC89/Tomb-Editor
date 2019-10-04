@@ -150,7 +150,8 @@ namespace WadTool
                     }
                 }
             }
-            //_tool.ConfigurationChange();
+
+            config?.SaveTry();
         }
 
         private void butApply_Click(object sender, EventArgs e) => WriteConfigFromControls();

@@ -372,7 +372,7 @@ namespace TombLib.LevelData.Compilers.Util
             public BlendMode BlendMode;
             public BumpMappingLevel BumpLevel;
 
-            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, GameVersion version, float maxTextureSize)
+            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, TRVersion.Game version, float maxTextureSize)
             {
                 BlendMode = child.BlendMode;
                 BumpLevel = parent.BumpLevel();
@@ -387,7 +387,7 @@ namespace TombLib.LevelData.Compilers.Util
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
                     // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
-                    if (version >= GameVersion.TR4)
+                    if (version >= TRVersion.Game.TR4)
                         coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
 
                     // Clamp coordinates that are possibly out of bounds
@@ -418,7 +418,7 @@ namespace TombLib.LevelData.Compilers.Util
             Padding = (ushort)level.Settings.TexturePadding;
             _progressReporter = progressReporter;
 
-            if(level.Settings.GameVersion == GameVersion.TR5Main)
+            if(level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 MaxTileSize = 256; // Change later...
             else
                 MaxTileSize = 256;
@@ -1095,7 +1095,7 @@ namespace TombLib.LevelData.Compilers.Util
             BumpPages = BuildTextureMap(ref bumpedTextures, NumBumpPages, true);
         }
 
-        public void BuildTextureInfos(GameVersion version)
+        public void BuildTextureInfos(TRVersion.Game version)
         {
             float maxSize = (float)MaxTileSize - (1.0f / 255.0f);
 
@@ -1151,7 +1151,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Tile and flags
                 ushort tile = (ushort)texture.Tile;
-                if (texture.IsForTriangle && level.Settings.GameVersion > GameVersion.TR2) tile |= 0x8000;
+                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR2) tile |= 0x8000;
 
                 // Blend mode
                 ushort attribute = (ushort)texture.BlendMode;
@@ -1161,7 +1161,7 @@ namespace TombLib.LevelData.Compilers.Util
                 writer.Write(tile);
 
                 // New flags from >= TR4
-                if (level.Settings.GameVersion >= GameVersion.TR4)
+                if (level.Settings.GameVersion >= TRVersion.Game.TR4)
                 {
                     // Built-in TR4-5 mapping correction is not used. Dummy mapping type is used
                     // together with compensation coordinate distortion.
@@ -1190,7 +1190,7 @@ namespace TombLib.LevelData.Compilers.Util
                     }
                 }
 
-                if (level.Settings.GameVersion >= GameVersion.TR4)
+                if (level.Settings.GameVersion >= TRVersion.Game.TR4)
                 {
                     var rect = texture.GetRect();
                     writer.Write((int)0);
@@ -1199,7 +1199,7 @@ namespace TombLib.LevelData.Compilers.Util
                     writer.Write(rect.Height - 1);
                 }
 
-                if (level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
+                if (level.Settings.GameVersion == TRVersion.Game.TR5 || level.Settings.GameVersion == TRVersion.Game.TR5Main)
                     writer.Write((ushort)0);
             }
         }

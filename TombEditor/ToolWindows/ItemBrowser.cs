@@ -1,6 +1,5 @@
 ﻿using DarkUI.Docking;
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using TombLib.Controls;
 using TombLib.Forms;
@@ -145,7 +144,7 @@ namespace TombEditor.ToolWindows
 
         private void comboItems_Format(object sender, ListControlConvertEventArgs e)
         {
-            WadGameVersion? gameVersion = _editor?.Level?.Settings?.WadGameVersion;
+            TRVersion.Game? gameVersion = _editor?.Level?.Settings?.GameVersion;
             IWadObject listItem = e.ListItem as IWadObject;
             if (gameVersion != null && listItem != null)
                 e.Value = listItem.ToString(gameVersion.Value);

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Windows.Forms;
-using TombLib.Wad;
+using TombLib.LevelData;
 
 namespace WadTool
 {
     public partial class FormNewWad2 : DarkUI.Forms.DarkForm
     {
-        public WadGameVersion Version { get; set; }
+        public TRVersion.Game Version { get; set; }
 
         public FormNewWad2()
         {
             InitializeComponent();
-            foreach (WadGameVersion version in Enum.GetValues(typeof(WadGameVersion)))
+            foreach (var version in TRVersion.NativeVersions)
                 comboGameVersion.Items.Add(version);
 
-            comboGameVersion.SelectedItem = WadGameVersion.TR4_TRNG;
+            comboGameVersion.SelectedItem = TRVersion.Game.TR4;
             ActiveControl = butCreate;
         }
 
@@ -26,7 +26,7 @@ namespace WadTool
 
         private void butCreate_Click(object sender, EventArgs e)
         {
-            Version = (WadGameVersion)comboGameVersion.SelectedItem;
+            Version = (TRVersion.Game)comboGameVersion.SelectedItem;
 
             DialogResult = DialogResult.OK;
             Close();

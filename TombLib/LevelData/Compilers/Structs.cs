@@ -929,8 +929,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write(StateID);
             writer.Write(Speed);
             writer.Write(Accel);
-            if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
-                level.Settings.GameVersion == GameVersion.TR5 || level.Settings.GameVersion == GameVersion.TR5Main)
+            if (level.Settings.GameVersion >= TRVersion.Game.TR4)
             {
                 writer.Write(SpeedLateral);
                 writer.Write(AccelLateral);

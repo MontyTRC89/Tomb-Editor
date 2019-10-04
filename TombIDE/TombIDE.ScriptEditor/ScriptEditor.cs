@@ -425,11 +425,11 @@ namespace TombIDE.ScriptEditor
 
 			switch (_ide.Project.GameVersion)
 			{
-				case GameVersion.TR4:
+				case TRVersion.Game.TR4:
 					CompileTR4Script();
 					break;
 
-				case GameVersion.TRNG:
+				case TRVersion.Game.TRNG:
 					CompileTRNGScript();
 					break;
 			}
@@ -822,7 +822,7 @@ namespace TombIDE.ScriptEditor
 
 		private void CompileTR4Script()
 		{
-			IScriptCompiler compiler = new ScriptCompilerNew(GameVersion.TR4);
+			IScriptCompiler compiler = new ScriptCompilerNew(TRVersion.Game.TR4);
 
 			if (compiler.CompileScripts(_ide.Project.ScriptPath, _ide.Project.EnginePath))
 				DarkMessageBox.Show(this, "Script compiled successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

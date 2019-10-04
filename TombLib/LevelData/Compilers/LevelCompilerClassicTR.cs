@@ -125,23 +125,23 @@ namespace TombLib.LevelData.Compilers
             //Write the level
             switch (_level.Settings.GameVersion)
             {
-                // case GameVersion.TR2:
+                // case TRVersion.Game.TR2:
                 //     WriteLevelTr2();
                 //     break;
-                // case GameVersion.TR3:
+                // case TRVersion.Game.TR3:
                 //     WriteLevelTr3();
                 //     break;
 
-                case GameVersion.TR4:
+                case TRVersion.Game.TR4:
                     WriteLevelTr4();
                     break;
-                case GameVersion.TRNG:
+                case TRVersion.Game.TRNG:
                     WriteLevelTr4(GetTRNGVersion());
                     break;
-                case GameVersion.TR5:
+                case TRVersion.Game.TR5:
                     WriteLevelTr5();
                     break;
-                case GameVersion.TR5Main:
+                case TRVersion.Game.TR5Main:
                     WriteLevelTr5Main();
                     break;
                 default:
@@ -444,7 +444,7 @@ namespace TombLib.LevelData.Compilers
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
                     ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
-                    if (TrCatalog.IsMoveableAI(_level.Settings.WadGameVersion, wadMoveable.Id.TypeId))
+                    if (TrCatalog.IsMoveableAI(_level.Settings.GameVersion, wadMoveable.Id.TypeId))
                     {
                         _aiItems.Add(new tr_ai_item
                         {
@@ -477,7 +477,7 @@ namespace TombLib.LevelData.Compilers
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
 
-                        if (_level.Settings.GameVersion == GameVersion.TR5Main)
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
                             if (!_luaIdToItems.ContainsKey(instance.LuaId))
                                 _luaIdToItems.Add(instance.LuaId, _items.Count - 1);
                     }
@@ -492,11 +492,11 @@ namespace TombLib.LevelData.Compilers
             int maxSafeItemCount, maxItemCount;
             switch(_level.Settings.GameVersion)
             {
-                case GameVersion.TRNG:
+                case TRVersion.Game.TRNG:
                     maxSafeItemCount = 255;
                     maxItemCount = 1023;
                     break;
-                case GameVersion.TR5Main:
+                case TRVersion.Game.TR5Main:
                     maxSafeItemCount = 1023;
                     maxItemCount = 32767;
                     break;
@@ -509,7 +509,7 @@ namespace TombLib.LevelData.Compilers
             if (_items.Count > maxItemCount)
             {
                 var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash" +
-                                 (_level.Settings.GameVersion == GameVersion.TR4 ? ", unless you're using TREP." : ".");
+                                 (_level.Settings.GameVersion == TRVersion.Game.TR4 ? ", unless you're using TREP." : ".");
                 _progressReporter.ReportWarn(warnString);
             }
 

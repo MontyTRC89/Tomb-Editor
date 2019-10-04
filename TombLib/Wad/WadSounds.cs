@@ -162,7 +162,7 @@ namespace TombLib.Wad
                 // Fill the new sound info
                 var oldInfo = wadSoundInfos[soundMap[i]];
                 var newInfo = new WadSoundInfo(i);
-                newInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, (uint)i);
+                newInfo.Name = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, (uint)i);
                 newInfo.Volume = (int)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
                 newInfo.RangeInSectors = oldInfo.Range;
                 newInfo.Chance = (int)Math.Round(oldInfo.Chance * 100.0f / 255.0f);

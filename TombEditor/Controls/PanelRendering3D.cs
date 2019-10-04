@@ -2493,11 +2493,11 @@ namespace TombEditor.Controls
                     // Add text message
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
-                        moveable.ToString(_editor.Level.Settings.WadGameVersion) +
-                        (_editor.Level.Settings.GameVersion != GameVersion.TRNG ?
+                        moveable.ToString(_editor.Level.Settings.GameVersion) +
+                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
                         "" :
                         " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                        (_editor.Level.Settings.GameVersion != GameVersion.TR5Main ?
+                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
                         "" :
                         " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
                             "\n" + GetObjectPositionString(room, instance) +
@@ -2641,11 +2641,11 @@ namespace TombEditor.Controls
                     // Add text message
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
-                        @static.ToString(_editor.Level.Settings.WadGameVersion) +
-                        (_editor.Level.Settings.GameVersion != GameVersion.TRNG ?
+                        @static.ToString(_editor.Level.Settings.GameVersion) +
+                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
                         "" :
                         " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                        (_editor.Level.Settings.GameVersion != GameVersion.TR5Main ?
+                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
                         "" :
                         " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
                             "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +

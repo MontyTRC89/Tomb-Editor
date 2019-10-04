@@ -3,10 +3,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -20,7 +19,7 @@ namespace TombLib.Wad.Tr4Wad
         {
             logger.Info("Converting TR4 WAD to Wad2");
 
-            var wad = new Wad2() { SoundSystem = SoundSystem.Xml, SuggestedGameVersion = WadGameVersion.TR4_TRNG };
+            var wad = new Wad2() { SoundSystem = SoundSystem.Xml, GameVersion = TRVersion.Game.TR4 };
 
             // Convert all textures
             Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);
@@ -289,7 +288,7 @@ namespace TombLib.Wad.Tr4Wad
                 newAnimation.FrameRate = oldAnimation.FrameDuration;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.AnimationIndex);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
-                newAnimation.Name = TrCatalog.GetAnimationName(WadGameVersion.TR4_TRNG, oldMoveable.ObjectID, (uint)j);
+                newAnimation.Name = TrCatalog.GetAnimationName(TRVersion.Game.TR4, oldMoveable.ObjectID, (uint)j);
 
                 // Fix wadmerger bug with inverted frame start/end on 0-frame anims
                 ushort newFrameStart = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameStart : oldAnimation.FrameEnd;

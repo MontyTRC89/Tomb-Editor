@@ -269,8 +269,8 @@ namespace WadTool.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            //if (e.Button == MouseButtons.Left)
-            //{
+            if (e.Button == MouseButtons.Left)
+            {
                 // Try to do gizmo picking
                 if (DrawGizmo)
                 {
@@ -299,7 +299,7 @@ namespace WadTool.Controls
                     }
                 }
                 SelectedNode = foundNode;
-            //}
+            }
 
             Invalidate();
 
@@ -323,7 +323,7 @@ namespace WadTool.Controls
             if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
                 Invalidate();
 
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
                 // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                 float deltaX = (e.X - _lastX) / Height;
@@ -332,13 +332,18 @@ namespace WadTool.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-                else
-                    Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                  -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                if (e.Button == MouseButtons.Right)
+                {
+                    if ((ModifierKeys & Keys.Control) == Keys.Control)
+                        Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                    else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
+                        Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
+                                     -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                }
+                if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
+                     e.Button == MouseButtons.Middle)
+                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+
                 Invalidate();
             }
         }

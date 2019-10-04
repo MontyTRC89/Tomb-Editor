@@ -214,7 +214,7 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.GameEnableQuickStartFeature)
                     settings.GameEnableQuickStartFeature = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.GameVersion)
-                    settings.GameVersion = (GameVersion)chunkIO.ReadChunkLong(chunkSize);
+                    settings.GameVersion = (TRVersion.Game)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.Tr5LaraType)
                     settings.Tr5LaraType = (Tr5LaraType)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.Tr5Weather)
@@ -962,7 +962,7 @@ namespace TombLib.LevelData.IO
 
                     if (id3 == Prj2Chunks.ObjectSoundSource)
                     {
-                        instance.WadReferencedSoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, chunkIO.Raw.ReadUInt16());
+                        instance.WadReferencedSoundName = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, chunkIO.Raw.ReadUInt16());
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }

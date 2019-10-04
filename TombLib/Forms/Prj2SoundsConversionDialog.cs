@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Forms
 {
     public partial class Prj2SoundsConversionDialog : DarkForm
     {
-        private readonly WadGameVersion _version;
+        private readonly TRVersion.Game _version;
         private readonly List<FileFormatConversions.SoundInfoConversionRow> _conversionRows;
 
-        public Prj2SoundsConversionDialog(WadGameVersion version, List<FileFormatConversions.SoundInfoConversionRow> conversionRows)
+        public Prj2SoundsConversionDialog(TRVersion.Game version, List<FileFormatConversions.SoundInfoConversionRow> conversionRows)
         {
-            _version = version;
+            _version = version.Native();
             _conversionRows = conversionRows;
 
             InitializeComponent();

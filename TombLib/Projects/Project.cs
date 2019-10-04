@@ -16,7 +16,7 @@ namespace TombLib.Projects
 		/// <summary>
 		/// Game engine version. (TR4, TRNG, TR5Main, ...)
 		/// </summary>
-		public GameVersion GameVersion { get; set; }
+		public TRVersion.Game GameVersion { get; set; }
 
 		/// <summary>
 		/// The path of the file, which launches the game.
@@ -64,7 +64,7 @@ namespace TombLib.Projects
 			Project projectCopy = new Project
 			{
 				Name = Name,
-				GameVersion = GameVersion,
+                GameVersion = GameVersion,
 				LaunchFilePath = LaunchFilePath,
 				ProjectPath = ProjectPath,
 				EnginePath = EnginePath,
@@ -142,8 +142,8 @@ namespace TombLib.Projects
 			{
 				foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
 				{
-					if (((GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
-						|| (GameVersion == GameVersion.TR5Main && Path.GetFileName(file).ToLower() == "pctomb5.exe"))
+					if (((GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
+						|| (GameVersion == TRVersion.Game.TR5Main && Path.GetFileName(file).ToLower() == "pctomb5.exe"))
 					{
 						EnginePath = engineDirectory;
 						break;
@@ -198,9 +198,9 @@ namespace TombLib.Projects
 		{
 			foreach (string file in Directory.GetFiles(EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if ((GameVersion == GameVersion.TR4 || GameVersion == GameVersion.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
+				if ((GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
 					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
-				else if ((GameVersion == GameVersion.TR5Main) && Path.GetFileName(file).ToLower() == "pctomb5.exe")
+				else if ((GameVersion == TRVersion.Game.TR5Main) && Path.GetFileName(file).ToLower() == "pctomb5.exe")
 					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
 			}
 
@@ -208,19 +208,27 @@ namespace TombLib.Projects
 		}
 
 		/// <summary>
-		/// Gets the .exe file name depending on the project's GameVersion. (tomb4.exe, PCTomb5.exe, ...)
+		/// Gets the .exe file name depending on the project's TRVersion.Game. (tomb4.exe, PCTomb5.exe, ...)
 		/// </summary>
 		public string GetExeFileName()
 		{
 			switch (GameVersion)
-			{
-				case GameVersion.TR4:
+            {
+                case TRVersion.Game.TR1:
+                    return "tomb.exe";
+
+                case TRVersion.Game.TR2:
+                    return "tomb2.exe";
+
+                case TRVersion.Game.TR3:
+                    return "tomb3.exe";
+
+                case TRVersion.Game.TR4:
+				case TRVersion.Game.TRNG:
 					return "tomb4.exe";
 
-				case GameVersion.TRNG:
-					return "tomb4.exe";
-
-				case GameVersion.TR5Main:
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TR5Main:
 					return "PCTomb5.exe";
 
 				default:
@@ -228,20 +236,26 @@ namespace TombLib.Projects
 			}
 		}
 
-		/// <summary>
-		/// Gets the level data file extension depending on the project's GameVersion. (.tr4, .trc, ...)
-		/// </summary>
-		public string GetLevelFileExtension()
+        /// <summary>
+        /// Gets the level data file extension depending on the project's GameVersion. (.tr4, .trc, ...)
+        /// </summary>
+        public string GetLevelFileExtension()
 		{
 			switch (GameVersion)
-			{
-				case GameVersion.TR4:
+            {
+                case TRVersion.Game.TR1:
+                    return ".phd";
+
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
+                    return ".tr2";
+
+                case TRVersion.Game.TR4:
+				case TRVersion.Game.TRNG:
 					return ".tr4";
 
-				case GameVersion.TRNG:
-					return ".tr4";
-
-				case GameVersion.TR5Main:
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TR5Main:
 					return ".trc";
 
 				default:

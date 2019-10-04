@@ -46,7 +46,7 @@ namespace WadTool
             foreach (var moveable in _wad.Moveables)
             {
                 var list = new List<DarkUI.Controls.DarkTreeNode>();
-                var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.SuggestedGameVersion));
+                var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
                 for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
                 {
                     var wadMesh = moveable.Value.Meshes.ElementAt(i);
@@ -62,7 +62,7 @@ namespace WadTool
             var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
             foreach (var @static in _wad.Statics)
             {
-                var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.SuggestedGameVersion));
+                var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
                 var wadMesh = @static.Value.Mesh;
                 var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
                 node.Tag = new MeshTreeNode(@static.Key, wadMesh);

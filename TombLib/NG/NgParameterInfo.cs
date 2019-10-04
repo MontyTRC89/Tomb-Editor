@@ -24,13 +24,13 @@ namespace TombLib.NG
             yield return TriggerType.HeavySwitch;
             yield return TriggerType.HeavyAntitrigger;
 
-            if (levelSettings.GameVersion == GameVersion.TRNG)
+            if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                 yield return TriggerType.ConditionNg;
             else
             {
-                if (levelSettings.GameVersion >= GameVersion.TR4)
+                if (levelSettings.GameVersion >= TRVersion.Game.TR4)
                     yield return TriggerType.Monkey;
-                if (levelSettings.GameVersion >= GameVersion.TR5)
+                if (levelSettings.GameVersion >= TRVersion.Game.TR5)
                 {
                     yield return TriggerType.Skeleton;
                     yield return TriggerType.TightRope;
@@ -60,13 +60,13 @@ namespace TombLib.NG
                 yield return TriggerTargetType.FlipEffect;
                 yield return TriggerTargetType.Secret;
                 yield return TriggerTargetType.FlyByCamera;
-                if (levelSettings.GameVersion == GameVersion.TRNG)
+                if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                 {
                     yield return TriggerTargetType.ActionNg;
                     yield return TriggerTargetType.FmvNg;
                     yield return TriggerTargetType.TimerfieldNg;
                 }
-                if (levelSettings.GameVersion == GameVersion.TR5Main)
+                if (levelSettings.GameVersion == TRVersion.Game.TR5Main)
                 {
                     yield return TriggerTargetType.LuaScript;
                 }
@@ -112,7 +112,7 @@ namespace TombLib.NG
                             return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
 
                         case TriggerTargetType.FlipEffect:
-                            if (levelSettings.GameVersion == GameVersion.TRNG)
+                            if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
                             else
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList

@@ -367,11 +367,11 @@ namespace TombEditor.Forms
                 pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
             // Populate game version list
-            //comboGameVersion.Items.AddRange(Enum.GetValues(typeof(GameVersion)).Cast<object>().ToArray());
-            comboGameVersion.Items.Add(GameVersion.TR4);
-            comboGameVersion.Items.Add(GameVersion.TRNG);
-            comboGameVersion.Items.Add(GameVersion.TR5);
-            comboGameVersion.Items.Add(GameVersion.TR5Main);
+            //comboGameVersion.Items.AddRange(Enum.GetValues(typeof(TRVersion.Game)).Cast<object>().ToArray());
+            comboGameVersion.Items.Add(TRVersion.Game.TR4);
+            comboGameVersion.Items.Add(TRVersion.Game.TRNG);
+            comboGameVersion.Items.Add(TRVersion.Game.TR5);
+            comboGameVersion.Items.Add(TRVersion.Game.TR5Main);
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
@@ -576,7 +576,7 @@ namespace TombEditor.Forms
 
             // Hide version-specific controls
 
-            bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
+            bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
 
             if (selectedSoundsDataGridView.Columns.Count >= 6)
@@ -585,7 +585,7 @@ namespace TombEditor.Forms
                 selectedSoundsDataGridView.Columns[5].Visible = currentVersionToCheck;
             }
 
-            currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5 || _levelSettings.GameVersion == GameVersion.TR5Main);
+            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5 || _levelSettings.GameVersion == TRVersion.Game.TR5Main);
             GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
             lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
             panelTr5LaraType.Visible = currentVersionToCheck;
@@ -1028,7 +1028,7 @@ namespace TombEditor.Forms
         // Game version
         private void comboGameVersion_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var gameVersion = (GameVersion)Enum.Parse(typeof(GameVersion), comboGameVersion.Text);
+            var gameVersion = (TRVersion.Game)Enum.Parse(typeof(TRVersion.Game), comboGameVersion.Text);
             if (_levelSettings.GameVersion == gameVersion)
                 return;
             _levelSettings.GameVersion = gameVersion; // Must also check none enum values
@@ -1235,7 +1235,7 @@ namespace TombEditor.Forms
 
             for (int i = 0; i < missingList.Count; i++)
             {
-                var originalName = TrCatalog.GetOriginalSoundName(_editor.Level.Settings.WadGameVersion, (uint)missingList[i]);
+                var originalName = TrCatalog.GetOriginalSoundName(_editor.Level.Settings.GameVersion, (uint)missingList[i]);
 
                 if (!string.IsNullOrEmpty(filter) && originalName.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) < 0)
                     continue;
@@ -1258,7 +1258,7 @@ namespace TombEditor.Forms
             string result = "";
             originalId = id;
 
-            if (_levelSettings.GameVersion == GameVersion.TRNG)
+            if (_levelSettings.GameVersion == TRVersion.Game.TRNG)
             {
                 if (id < 370)
                 {
@@ -1458,7 +1458,7 @@ namespace TombEditor.Forms
 
         private void AssignHardcodedSounds()
         {
-            var referenceSounds = TrCatalog.GetAllFixedByDefaultSounds(_levelSettings.WadGameVersion);
+            var referenceSounds = TrCatalog.GetAllFixedByDefaultSounds(_levelSettings.GameVersion);
             foreach (int id in referenceSounds.Keys.ToList())
                 if (!_levelSettings.SelectedSounds.Contains(id))
                     _levelSettings.SelectedSounds.Add(id);
@@ -1497,8 +1497,8 @@ namespace TombEditor.Forms
 
         private void AssignTriggerSounds()
         {
-            bool isTR4 = _editor.Level.Settings.GameVersion == GameVersion.TR4 ||
-                         _editor.Level.Settings.GameVersion == GameVersion.TRNG;
+            bool isTR4 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
+                         _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             foreach (var room in _editor.Level.Rooms)
                 if (room != null)
