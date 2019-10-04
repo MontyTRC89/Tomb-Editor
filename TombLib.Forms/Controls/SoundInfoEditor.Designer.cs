@@ -30,6 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
+            this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
+            this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
+            this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
+            this.cbRandomizePitch = new DarkUI.Controls.DarkCheckBox();
+            this.numericChance = new DarkUI.Controls.DarkNumericUpDown();
+            this.numericPitch = new DarkUI.Controls.DarkNumericUpDown();
+            this.numericRange = new DarkUI.Controls.DarkNumericUpDown();
+            this.butClipboardPaste = new DarkUI.Controls.DarkButton();
+            this.butClipboardCopy = new DarkUI.Controls.DarkButton();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.butMoveDown = new DarkUI.Controls.DarkButton();
             this.butMoveUp = new DarkUI.Controls.DarkButton();
@@ -37,16 +47,11 @@
             this.butAddSample = new DarkUI.Controls.DarkButton();
             this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
             this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
             this.tbID = new DarkUI.Controls.DarkTextBox();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.lblModeTooltip = new DarkUI.Controls.DarkLabel();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
-            this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
-            this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
-            this.cbRandomizePitch = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.numericChanceLabel = new DarkUI.Controls.DarkLabel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -56,21 +61,16 @@
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.numericVolumeLabel = new DarkUI.Controls.DarkLabel();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-            this.numericChance = new DarkUI.Controls.DarkNumericUpDown();
             this.comboLoop = new DarkUI.Controls.DarkComboBox();
-            this.numericPitch = new DarkUI.Controls.DarkNumericUpDown();
-            this.numericRange = new DarkUI.Controls.DarkNumericUpDown();
             this.butPlayPreview = new DarkUI.Controls.DarkButton();
             this.tbName = new DarkUI.Controls.DarkTextBox();
-            this.butClipboardPaste = new DarkUI.Controls.DarkButton();
             this.tbNameLabel = new DarkUI.Controls.DarkLabel();
-            this.butClipboardCopy = new DarkUI.Controls.DarkButton();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
-            this.darkGroupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
+            this.darkGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolTip
@@ -78,90 +78,6 @@
             this.toolTip.AutoPopDelay = 30000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
-            // 
-            // colSampleName
-            // 
-            this.colSampleName.HeaderText = "Name";
-            this.colSampleName.Name = "colSampleName";
-            this.colSampleName.Width = 150;
-            // 
-            // butMoveDown
-            // 
-            this.butMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butMoveDown.Image = global::TombLib.Properties.Resources.general_ArrowDown_16;
-            this.butMoveDown.ImagePadding = 3;
-            this.butMoveDown.Location = new System.Drawing.Point(312, 205);
-            this.butMoveDown.Name = "butMoveDown";
-            this.butMoveDown.Size = new System.Drawing.Size(88, 22);
-            this.butMoveDown.TabIndex = 101;
-            this.butMoveDown.Text = "Move down";
-            this.butMoveDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butMoveDown.Visible = false;
-            // 
-            // butMoveUp
-            // 
-            this.butMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butMoveUp.Image = global::TombLib.Properties.Resources.general_ArrowUp_16;
-            this.butMoveUp.ImagePadding = 3;
-            this.butMoveUp.Location = new System.Drawing.Point(220, 205);
-            this.butMoveUp.Name = "butMoveUp";
-            this.butMoveUp.Size = new System.Drawing.Size(88, 22);
-            this.butMoveUp.TabIndex = 100;
-            this.butMoveUp.Text = "Move up";
-            this.butMoveUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butMoveUp.Visible = false;
-            // 
-            // butDeleteSample
-            // 
-            this.butDeleteSample.Image = global::TombLib.Properties.Resources.general_trash_16;
-            this.butDeleteSample.ImagePadding = 3;
-            this.butDeleteSample.Location = new System.Drawing.Point(89, 205);
-            this.butDeleteSample.Name = "butDeleteSample";
-            this.butDeleteSample.Size = new System.Drawing.Size(83, 22);
-            this.butDeleteSample.TabIndex = 99;
-            this.butDeleteSample.Text = "Delete";
-            this.butDeleteSample.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteSample.Click += new System.EventHandler(this.ButDeleteSample_Click);
-            // 
-            // butAddSample
-            // 
-            this.butAddSample.Image = global::TombLib.Properties.Resources.general_plus_math_16;
-            this.butAddSample.ImagePadding = 3;
-            this.butAddSample.Location = new System.Drawing.Point(0, 205);
-            this.butAddSample.Name = "butAddSample";
-            this.butAddSample.Size = new System.Drawing.Size(83, 22);
-            this.butAddSample.TabIndex = 98;
-            this.butAddSample.Text = "Add new";
-            this.butAddSample.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddSample.Click += new System.EventHandler(this.ButAddSample_Click);
-            // 
-            // dgvSamples
-            // 
-            this.dgvSamples.AllowUserToAddRows = false;
-            this.dgvSamples.AllowUserToDeleteRows = false;
-            this.dgvSamples.AllowUserToDragDropRows = false;
-            this.dgvSamples.AllowUserToOrderColumns = true;
-            this.dgvSamples.AllowUserToPasteCells = false;
-            this.dgvSamples.AllowUserToResizeRows = true;
-            this.dgvSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvSamples.ColumnHeadersHeight = 17;
-            this.dgvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.SamplePathColumn});
-            this.dgvSamples.Location = new System.Drawing.Point(0, 233);
-            this.dgvSamples.Name = "dgvSamples";
-            this.dgvSamples.RowHeadersWidth = 41;
-            this.dgvSamples.Size = new System.Drawing.Size(400, 193);
-            this.dgvSamples.TabIndex = 97;
-            this.dgvSamples.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.DgvSamples_RowsAdded);
-            this.dgvSamples.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DgvSamples_RowsRemoved);
-            // 
-            // SamplePathColumn
-            // 
-            this.SamplePathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SamplePathColumn.HeaderText = "Sample name";
-            this.SamplePathColumn.Name = "SamplePathColumn";
             // 
             // cbGlobal
             // 
@@ -174,76 +90,6 @@
             this.cbGlobal.Text = "Global sound";
             this.toolTip.SetToolTip(this.cbGlobal, "Disable directional audio for this sound.");
             this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // tbID
-            // 
-            this.tbID.Location = new System.Drawing.Point(46, 3);
-            this.tbID.Name = "tbID";
-            this.tbID.ReadOnly = true;
-            this.tbID.Size = new System.Drawing.Size(56, 22);
-            this.tbID.TabIndex = 32;
-            // 
-            // darkLabel9
-            // 
-            this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel9.Location = new System.Drawing.Point(-3, 5);
-            this.darkLabel9.Name = "darkLabel9";
-            this.darkLabel9.Size = new System.Drawing.Size(42, 13);
-            this.darkLabel9.TabIndex = 31;
-            this.darkLabel9.Text = "ID:";
-            this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // darkGroupBox1
-            // 
-            this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkGroupBox1.Controls.Add(this.lblModeTooltip);
-            this.darkGroupBox1.Controls.Add(this.darkLabel7);
-            this.darkGroupBox1.Controls.Add(this.numericVolume);
-            this.darkGroupBox1.Controls.Add(this.cbDisablePanning);
-            this.darkGroupBox1.Controls.Add(this.cbRandomizeVolume);
-            this.darkGroupBox1.Controls.Add(this.cbRandomizePitch);
-            this.darkGroupBox1.Controls.Add(this.darkLabel2);
-            this.darkGroupBox1.Controls.Add(this.numericChanceLabel);
-            this.darkGroupBox1.Controls.Add(this.darkLabel3);
-            this.darkGroupBox1.Controls.Add(this.numericRangeLabel);
-            this.darkGroupBox1.Controls.Add(this.darkLabel4);
-            this.darkGroupBox1.Controls.Add(this.numericPitchLabel);
-            this.darkGroupBox1.Controls.Add(this.darkLabel5);
-            this.darkGroupBox1.Controls.Add(this.numericVolumeLabel);
-            this.darkGroupBox1.Controls.Add(this.darkLabel6);
-            this.darkGroupBox1.Controls.Add(this.numericChance);
-            this.darkGroupBox1.Controls.Add(this.comboLoop);
-            this.darkGroupBox1.Controls.Add(this.numericPitch);
-            this.darkGroupBox1.Controls.Add(this.numericRange);
-            this.darkGroupBox1.Location = new System.Drawing.Point(0, 59);
-            this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(400, 138);
-            this.darkGroupBox1.TabIndex = 30;
-            this.darkGroupBox1.TabStop = false;
-            // 
-            // lblModeTooltip
-            // 
-            this.lblModeTooltip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblModeTooltip.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblModeTooltip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblModeTooltip.Location = new System.Drawing.Point(174, 108);
-            this.lblModeTooltip.Name = "lblModeTooltip";
-            this.lblModeTooltip.Size = new System.Drawing.Size(226, 27);
-            this.lblModeTooltip.TabIndex = 31;
-            this.lblModeTooltip.Text = "hint";
-            this.lblModeTooltip.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // darkLabel7
-            // 
-            this.darkLabel7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel7.AutoSize = true;
-            this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel7.Location = new System.Drawing.Point(217, 9);
-            this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(67, 13);
-            this.darkLabel7.TabIndex = 30;
-            this.darkLabel7.Text = "Randomize:";
             // 
             // numericVolume
             // 
@@ -300,6 +146,265 @@
             this.cbRandomizePitch.Text = "pitch";
             this.toolTip.SetToolTip(this.cbRandomizePitch, "Slightly vary the pitch for each playback of the sound info (around 10%).");
             this.cbRandomizePitch.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericChance
+            // 
+            this.numericChance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numericChance.DecimalPlaces = 1;
+            this.numericChance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericChance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numericChance.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericChance.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericChance.Location = new System.Drawing.Point(78, 84);
+            this.numericChance.MousewheelSingleIncrement = true;
+            this.numericChance.Name = "numericChance";
+            this.numericChance.Size = new System.Drawing.Size(68, 22);
+            this.numericChance.TabIndex = 15;
+            this.toolTip.SetToolTip(this.numericChance, "Probability that any sample will play when triggered.");
+            this.numericChance.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericPitch
+            // 
+            this.numericPitch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numericPitch.DecimalPlaces = 1;
+            this.numericPitch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numericPitch.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericPitch.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericPitch.Location = new System.Drawing.Point(78, 32);
+            this.numericPitch.Maximum = new decimal(new int[] {
+            1983,
+            0,
+            0,
+            65536});
+            this.numericPitch.MousewheelSingleIncrement = true;
+            this.numericPitch.Name = "numericPitch";
+            this.numericPitch.Size = new System.Drawing.Size(68, 22);
+            this.numericPitch.TabIndex = 8;
+            this.toolTip.SetToolTip(this.numericPitch, "Pitch of the sound. Value is relative.");
+            this.numericPitch.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericRange
+            // 
+            this.numericRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numericRange.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericRange.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numericRange.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericRange.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericRange.Location = new System.Drawing.Point(78, 58);
+            this.numericRange.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericRange.MousewheelSingleIncrement = true;
+            this.numericRange.Name = "numericRange";
+            this.numericRange.Size = new System.Drawing.Size(68, 22);
+            this.numericRange.TabIndex = 12;
+            this.toolTip.SetToolTip(this.numericRange, "Range in blocks from where the sample can be heard relative to where it was trigg" +
+        "ered.");
+            this.numericRange.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // butClipboardPaste
+            // 
+            this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
+            this.butClipboardPaste.Location = new System.Drawing.Point(378, 31);
+            this.butClipboardPaste.Name = "butClipboardPaste";
+            this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
+            this.butClipboardPaste.TabIndex = 22;
+            this.toolTip.SetToolTip(this.butClipboardPaste, "Paste all settings and samples from the clipboard. (Must have been copied before." +
+        ")");
+            this.butClipboardPaste.Click += new System.EventHandler(this.butClipboardPaste_Click);
+            // 
+            // butClipboardCopy
+            // 
+            this.butClipboardCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butClipboardCopy.Image = global::TombLib.Properties.Resources.general_copy_16;
+            this.butClipboardCopy.Location = new System.Drawing.Point(350, 31);
+            this.butClipboardCopy.Name = "butClipboardCopy";
+            this.butClipboardCopy.Size = new System.Drawing.Size(22, 22);
+            this.butClipboardCopy.TabIndex = 22;
+            this.toolTip.SetToolTip(this.butClipboardCopy, "Copy all settings and samples into the clipboard.");
+            this.butClipboardCopy.Click += new System.EventHandler(this.butClipboardCopy_Click);
+            // 
+            // colSampleName
+            // 
+            this.colSampleName.HeaderText = "Name";
+            this.colSampleName.Name = "colSampleName";
+            this.colSampleName.Width = 150;
+            // 
+            // butMoveDown
+            // 
+            this.butMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butMoveDown.Image = global::TombLib.Properties.Resources.general_ArrowDown_16;
+            this.butMoveDown.ImagePadding = 3;
+            this.butMoveDown.Location = new System.Drawing.Point(312, 178);
+            this.butMoveDown.Name = "butMoveDown";
+            this.butMoveDown.Size = new System.Drawing.Size(88, 22);
+            this.butMoveDown.TabIndex = 101;
+            this.butMoveDown.Text = "Move down";
+            this.butMoveDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butMoveDown.Visible = false;
+            // 
+            // butMoveUp
+            // 
+            this.butMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butMoveUp.Image = global::TombLib.Properties.Resources.general_ArrowUp_16;
+            this.butMoveUp.ImagePadding = 3;
+            this.butMoveUp.Location = new System.Drawing.Point(220, 178);
+            this.butMoveUp.Name = "butMoveUp";
+            this.butMoveUp.Size = new System.Drawing.Size(88, 22);
+            this.butMoveUp.TabIndex = 100;
+            this.butMoveUp.Text = "Move up";
+            this.butMoveUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butMoveUp.Visible = false;
+            // 
+            // butDeleteSample
+            // 
+            this.butDeleteSample.Image = global::TombLib.Properties.Resources.general_trash_16;
+            this.butDeleteSample.ImagePadding = 3;
+            this.butDeleteSample.Location = new System.Drawing.Point(89, 178);
+            this.butDeleteSample.Name = "butDeleteSample";
+            this.butDeleteSample.Size = new System.Drawing.Size(83, 22);
+            this.butDeleteSample.TabIndex = 99;
+            this.butDeleteSample.Text = "Delete";
+            this.butDeleteSample.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeleteSample.Click += new System.EventHandler(this.ButDeleteSample_Click);
+            // 
+            // butAddSample
+            // 
+            this.butAddSample.Image = global::TombLib.Properties.Resources.general_plus_math_16;
+            this.butAddSample.ImagePadding = 3;
+            this.butAddSample.Location = new System.Drawing.Point(0, 178);
+            this.butAddSample.Name = "butAddSample";
+            this.butAddSample.Size = new System.Drawing.Size(83, 22);
+            this.butAddSample.TabIndex = 98;
+            this.butAddSample.Text = "Add new";
+            this.butAddSample.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddSample.Click += new System.EventHandler(this.ButAddSample_Click);
+            // 
+            // dgvSamples
+            // 
+            this.dgvSamples.AllowUserToAddRows = false;
+            this.dgvSamples.AllowUserToDeleteRows = false;
+            this.dgvSamples.AllowUserToDragDropRows = false;
+            this.dgvSamples.AllowUserToOrderColumns = true;
+            this.dgvSamples.AllowUserToPasteCells = false;
+            this.dgvSamples.AllowUserToResizeRows = true;
+            this.dgvSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvSamples.ColumnHeadersHeight = 17;
+            this.dgvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.SamplePathColumn});
+            this.dgvSamples.Location = new System.Drawing.Point(0, 206);
+            this.dgvSamples.Name = "dgvSamples";
+            this.dgvSamples.RowHeadersWidth = 41;
+            this.dgvSamples.Size = new System.Drawing.Size(400, 220);
+            this.dgvSamples.TabIndex = 97;
+            this.dgvSamples.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.DgvSamples_RowsAdded);
+            this.dgvSamples.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DgvSamples_RowsRemoved);
+            // 
+            // SamplePathColumn
+            // 
+            this.SamplePathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SamplePathColumn.HeaderText = "Sample name";
+            this.SamplePathColumn.Name = "SamplePathColumn";
+            // 
+            // tbID
+            // 
+            this.tbID.Location = new System.Drawing.Point(46, 3);
+            this.tbID.Name = "tbID";
+            this.tbID.ReadOnly = true;
+            this.tbID.Size = new System.Drawing.Size(56, 22);
+            this.tbID.TabIndex = 32;
+            // 
+            // darkLabel9
+            // 
+            this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel9.Location = new System.Drawing.Point(-3, 5);
+            this.darkLabel9.Name = "darkLabel9";
+            this.darkLabel9.Size = new System.Drawing.Size(42, 13);
+            this.darkLabel9.TabIndex = 31;
+            this.darkLabel9.Text = "ID:";
+            this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // darkGroupBox1
+            // 
+            this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkGroupBox1.Controls.Add(this.lblModeTooltip);
+            this.darkGroupBox1.Controls.Add(this.darkLabel7);
+            this.darkGroupBox1.Controls.Add(this.numericVolume);
+            this.darkGroupBox1.Controls.Add(this.cbDisablePanning);
+            this.darkGroupBox1.Controls.Add(this.cbRandomizeVolume);
+            this.darkGroupBox1.Controls.Add(this.cbRandomizePitch);
+            this.darkGroupBox1.Controls.Add(this.darkLabel2);
+            this.darkGroupBox1.Controls.Add(this.numericChanceLabel);
+            this.darkGroupBox1.Controls.Add(this.darkLabel3);
+            this.darkGroupBox1.Controls.Add(this.numericRangeLabel);
+            this.darkGroupBox1.Controls.Add(this.darkLabel4);
+            this.darkGroupBox1.Controls.Add(this.numericPitchLabel);
+            this.darkGroupBox1.Controls.Add(this.darkLabel5);
+            this.darkGroupBox1.Controls.Add(this.numericVolumeLabel);
+            this.darkGroupBox1.Controls.Add(this.darkLabel6);
+            this.darkGroupBox1.Controls.Add(this.numericChance);
+            this.darkGroupBox1.Controls.Add(this.comboLoop);
+            this.darkGroupBox1.Controls.Add(this.numericPitch);
+            this.darkGroupBox1.Controls.Add(this.numericRange);
+            this.darkGroupBox1.Location = new System.Drawing.Point(0, 59);
+            this.darkGroupBox1.Name = "darkGroupBox1";
+            this.darkGroupBox1.Size = new System.Drawing.Size(400, 113);
+            this.darkGroupBox1.TabIndex = 30;
+            this.darkGroupBox1.TabStop = false;
+            // 
+            // lblModeTooltip
+            // 
+            this.lblModeTooltip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblModeTooltip.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblModeTooltip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblModeTooltip.Location = new System.Drawing.Point(174, 87);
+            this.lblModeTooltip.Name = "lblModeTooltip";
+            this.lblModeTooltip.Size = new System.Drawing.Size(221, 19);
+            this.lblModeTooltip.TabIndex = 31;
+            this.lblModeTooltip.Text = "hint";
+            this.lblModeTooltip.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // darkLabel7
+            // 
+            this.darkLabel7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel7.AutoSize = true;
+            this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel7.Location = new System.Drawing.Point(217, 9);
+            this.darkLabel7.Name = "darkLabel7";
+            this.darkLabel7.Size = new System.Drawing.Size(67, 13);
+            this.darkLabel7.TabIndex = 30;
+            this.darkLabel7.Text = "Randomize:";
             // 
             // darkLabel2
             // 
@@ -394,35 +499,11 @@
             this.darkLabel6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel6.AutoSize = true;
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel6.Location = new System.Drawing.Point(217, 76);
+            this.darkLabel6.Location = new System.Drawing.Point(217, 61);
             this.darkLabel6.Name = "darkLabel6";
             this.darkLabel6.Size = new System.Drawing.Size(40, 13);
             this.darkLabel6.TabIndex = 17;
             this.darkLabel6.Text = "Mode:";
-            // 
-            // numericChance
-            // 
-            this.numericChance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericChance.DecimalPlaces = 1;
-            this.numericChance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericChance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericChance.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericChance.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numericChance.Location = new System.Drawing.Point(78, 84);
-            this.numericChance.MousewheelSingleIncrement = true;
-            this.numericChance.Name = "numericChance";
-            this.numericChance.Size = new System.Drawing.Size(68, 22);
-            this.numericChance.TabIndex = 15;
-            this.toolTip.SetToolTip(this.numericChance, "Probability that any sample will play when triggered.");
-            this.numericChance.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
             // comboLoop
             // 
@@ -433,69 +514,11 @@
             "One shot wait",
             "One shot rewound",
             "Loop"});
-            this.comboLoop.Location = new System.Drawing.Point(263, 73);
+            this.comboLoop.Location = new System.Drawing.Point(263, 58);
             this.comboLoop.Name = "comboLoop";
             this.comboLoop.Size = new System.Drawing.Size(132, 23);
             this.comboLoop.TabIndex = 18;
             this.comboLoop.SelectedIndexChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // numericPitch
-            // 
-            this.numericPitch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericPitch.DecimalPlaces = 1;
-            this.numericPitch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericPitch.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericPitch.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numericPitch.Location = new System.Drawing.Point(78, 32);
-            this.numericPitch.Maximum = new decimal(new int[] {
-            1983,
-            0,
-            0,
-            65536});
-            this.numericPitch.MousewheelSingleIncrement = true;
-            this.numericPitch.Name = "numericPitch";
-            this.numericPitch.Size = new System.Drawing.Size(68, 22);
-            this.numericPitch.TabIndex = 8;
-            this.toolTip.SetToolTip(this.numericPitch, "Pitch of the sound. Value is relative.");
-            this.numericPitch.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // numericRange
-            // 
-            this.numericRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericRange.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericRange.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericRange.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericRange.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numericRange.Location = new System.Drawing.Point(78, 58);
-            this.numericRange.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericRange.MousewheelSingleIncrement = true;
-            this.numericRange.Name = "numericRange";
-            this.numericRange.Size = new System.Drawing.Size(68, 22);
-            this.numericRange.TabIndex = 12;
-            this.toolTip.SetToolTip(this.numericRange, "Range in blocks from where the sample can be heard relative to where it was trigg" +
-        "ered.");
-            this.numericRange.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
             // butPlayPreview
             // 
@@ -521,18 +544,6 @@
             this.tbName.TabIndex = 1;
             this.tbName.TextChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
-            // butClipboardPaste
-            // 
-            this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
-            this.butClipboardPaste.Location = new System.Drawing.Point(378, 31);
-            this.butClipboardPaste.Name = "butClipboardPaste";
-            this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
-            this.butClipboardPaste.TabIndex = 22;
-            this.toolTip.SetToolTip(this.butClipboardPaste, "Paste all settings and samples from the clipboard. (Must have been copied before." +
-        ")");
-            this.butClipboardPaste.Click += new System.EventHandler(this.butClipboardPaste_Click);
-            // 
             // tbNameLabel
             // 
             this.tbNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -542,17 +553,6 @@
             this.tbNameLabel.TabIndex = 0;
             this.tbNameLabel.Text = "Name:";
             this.tbNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // butClipboardCopy
-            // 
-            this.butClipboardCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butClipboardCopy.Image = global::TombLib.Properties.Resources.general_copy_16;
-            this.butClipboardCopy.Location = new System.Drawing.Point(350, 31);
-            this.butClipboardCopy.Name = "butClipboardCopy";
-            this.butClipboardCopy.Size = new System.Drawing.Size(22, 22);
-            this.butClipboardCopy.TabIndex = 22;
-            this.toolTip.SetToolTip(this.butClipboardCopy, "Copy all settings and samples into the clipboard.");
-            this.butClipboardCopy.Click += new System.EventHandler(this.butClipboardCopy_Click);
             // 
             // SoundInfoEditor
             // 
@@ -577,13 +577,13 @@
             this.MinimumSize = new System.Drawing.Size(400, 346);
             this.Name = "SoundInfoEditor";
             this.Size = new System.Drawing.Size(400, 426);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).EndInit();
-            this.darkGroupBox1.ResumeLayout(false);
-            this.darkGroupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).EndInit();
+            this.darkGroupBox1.ResumeLayout(false);
+            this.darkGroupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
