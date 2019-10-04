@@ -579,8 +579,8 @@
       <state item="0" id="23" name="ROLL_BACK" />
       <state item="0" id="24" name="SLIDE_FORWARD" />
       <state item="0" id="25" name="JUMP_BACK" />
-      <state item="0" id="26" name="JUMP_LEFT" />
-      <state item="0" id="27" name="JUMP_RIGHT" />
+      <state item="0" id="26" name="JUMP_RIGHT" />
+      <state item="0" id="27" name="JUMP_LEFT" />
       <state item="0" id="28" name="JUMP_UP" />
       <state item="0" id="29" name="FALL_BACKWARD" />
       <state item="0" id="30" name="SHIMMY_LEFT" />

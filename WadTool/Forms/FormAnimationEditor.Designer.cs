@@ -176,6 +176,8 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -605,7 +607,9 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem,
             this.drawGridToolStripMenuItem,
             this.drawCollisionBoxToolStripMenuItem,
-            this.smoothAnimationsToolStripMenuItem});
+            this.toolStripSeparator9,
+            this.smoothAnimationsToolStripMenuItem,
+            this.scrollGridToolStripMenuItem});
             this.renderingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.renderingToolStripMenuItem.Name = "renderingToolStripMenuItem";
             this.renderingToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
@@ -2101,6 +2105,26 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
+            // scrollGridToolStripMenuItem
+            // 
+            this.scrollGridToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.scrollGridToolStripMenuItem.Checked = true;
+            this.scrollGridToolStripMenuItem.CheckOnClick = true;
+            this.scrollGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.scrollGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.scrollGridToolStripMenuItem.Name = "scrollGridToolStripMenuItem";
+            this.scrollGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.scrollGridToolStripMenuItem.Text = "Scroll grid";
+            this.scrollGridToolStripMenuItem.Click += new System.EventHandler(this.scrollGridToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2322,5 +2346,7 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel29;
         private System.Windows.Forms.ToolStripMenuItem cmSelectAllMenuItem;
         private System.Windows.Forms.ToolStripButton butTbResetCamera;
+        private System.Windows.Forms.ToolStripMenuItem scrollGridToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
     }
 }
