@@ -1345,14 +1345,14 @@
       <moveable id="70" name="Temple statue" />
       <moveable id="71" name="Monkey" />
       <moveable id="73" name="Tony Firehands" />
-      <moveable id="74" ai="1" name="AI Guard" />
-      <moveable id="75" ai="1" name="AI Ambush" />
-      <moveable id="76" ai="1" name="AI Patrol 1" />
-      <moveable id="77" ai="1" name="AI Modify" />
-      <moveable id="78" ai="1" name="AI Follow" />
-      <moveable id="79" ai="1" name="AI Patrol 2" />
-      <moveable id="80" ai="1" name="AI Path" />
-      <moveable id="81" ai="1" name="AI Check" />
+      <moveable id="74" ai="true" name="AI Guard" />
+      <moveable id="75" ai="true" name="AI Ambush" />
+      <moveable id="76" ai="true" name="AI Patrol 1" />
+      <moveable id="77" ai="true" name="AI Modify" />
+      <moveable id="78" ai="true" name="AI Follow" />
+      <moveable id="79" ai="true" name="AI Patrol 2" />
+      <moveable id="80" ai="true" name="AI Path" />
+      <moveable id="81" ai="true" name="AI Check" />
       <moveable id="82" name="Unknown Id #82" />
       <moveable id="83" name="Collapsible floor" />
       <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" />
@@ -2425,15 +2425,15 @@
       <moveable id="395" name="WHITE_LIGHT" description="White Light" />
       <moveable id="396" name="BLINKING_LIGHT" description="Blinking Light" />
       <moveable id="397" name="LENS_FLARE" description="Lens Flare" />
-      <moveable id="398" ai="1" name="AI_GUARD" description="Ai Guard" />
-      <moveable id="399" ai="1" name="AI_AMBUSH" description="Ai Ambush" />
-      <moveable id="400" ai="1" name="AI_PATROL1" description="Ai Patrol1" />
-      <moveable id="401" ai="1" name="AI_MODIFY" description="Ai Modify" />
-      <moveable id="402" ai="1" name="AI_FOLLOW" description="Ai Follow" />
-      <moveable id="403" ai="1" name="AI_PATROL2" description="Ai Patrol2" />
-      <moveable id="404" ai="1" name="AI_X1" description="Ai X1" />
-      <moveable id="405" ai="1" name="AI_X2" description="Ai X2" />
-      <moveable id="406" ai="1" name="LARA_START_POS" description="Lara Start Pos" />
+      <moveable id="398" ai="true" name="AI_GUARD" description="Ai Guard" />
+      <moveable id="399" ai="true" name="AI_AMBUSH" description="Ai Ambush" />
+      <moveable id="400" ai="true" name="AI_PATROL1" description="Ai Patrol1" />
+      <moveable id="401" ai="true" name="AI_MODIFY" description="Ai Modify" />
+      <moveable id="402" ai="true" name="AI_FOLLOW" description="Ai Follow" />
+      <moveable id="403" ai="true" name="AI_PATROL2" description="Ai Patrol2" />
+      <moveable id="404" ai="true" name="AI_X1" description="Ai X1" />
+      <moveable id="405" ai="true" name="AI_X2" description="Ai X2" />
+      <moveable id="406" ai="true" name="LARA_START_POS" description="Lara Start Pos" />
       <moveable id="407" name="KILL_ALL_TRIGGERS" description="Kill All Triggers" />
       <moveable id="408" name="TRIGGER_TRIGGERER" description="Trigger Triggerer" />
       <moveable id="409" name="SMASH_OBJECT1" description="Smash Object1" />
@@ -2599,16 +2599,16 @@
       <static id="47" name="DEBRIS7" />
       <static id="48" name="DEBRIS8" />
       <static id="49" name="DEBRIS9" />
-      <static id="50" name="SHATTER0" />
-      <static id="51" name="SHATTER1" />
-      <static id="52" name="SHATTER2" />
-      <static id="53" name="SHATTER3" />
-      <static id="54" name="SHATTER4" />
-      <static id="55" name="SHATTER5" />
-      <static id="56" name="SHATTER6" />
-      <static id="57" name="SHATTER7" />
-      <static id="58" name="SHATTER8" />
-      <static id="59" name="SHATTER9" />
+      <static id="50" name="SHATTER0" shatter="true" />
+      <static id="51" name="SHATTER1" shatter="true" />
+      <static id="52" name="SHATTER2" shatter="true" />
+      <static id="53" name="SHATTER3" shatter="true" />
+      <static id="54" name="SHATTER4" shatter="true" />
+      <static id="55" name="SHATTER5" shatter="true" />
+      <static id="56" name="SHATTER6" shatter="true" />
+      <static id="57" name="SHATTER7" shatter="true" />
+      <static id="58" name="SHATTER8" shatter="true" />
+      <static id="59" name="SHATTER9" shatter="true" />
       <static id="60" name="EXTRA00" />
       <static id="61" name="EXTRA01" />
       <static id="62" name="EXTRA02" />
@@ -3634,15 +3634,15 @@
       <moveable id="375" name="Strobe light" />
       <moveable id="376" name="Electrical light" />
       <moveable id="377" name="Lens flare" />
-      <moveable id="378" ai="1" name="AI guard" />
-      <moveable id="379" ai="1" name="AI ambush" />
-      <moveable id="380" ai="1" name="AI patrol 1" />
-      <moveable id="381" ai="1" name="AI modify" />
-      <moveable id="382" ai="1" name="AI follow" />
-      <moveable id="383" ai="1" name="AI patrol 2" />
-      <moveable id="384" ai="1" name="AI X1" />
-      <moveable id="385" ai="1" name="AI X2" />
-      <moveable id="386" ai="1" name="Lara start position" />
+      <moveable id="378" ai="true" name="AI guard" />
+      <moveable id="379" ai="true" name="AI ambush" />
+      <moveable id="380" ai="true" name="AI patrol 1" />
+      <moveable id="381" ai="true" name="AI modify" />
+      <moveable id="382" ai="true" name="AI follow" />
+      <moveable id="383" ai="true" name="AI patrol 2" />
+      <moveable id="384" ai="true" name="AI X1" />
+      <moveable id="385" ai="true" name="AI X2" />
+      <moveable id="386" ai="true" name="Lara start position" />
       <moveable id="387" name="Lara position changer" />
       <moveable id="388" name="Elevator" />
       <moveable id="389" name="Raising cog" />
@@ -4566,15 +4566,15 @@
       <moveable id="375" name="Strobe light" />
       <moveable id="376" name="Electrical light" />
       <moveable id="377" name="Lens flare" />
-      <moveable id="378" ai="1" name="AI guard" />
-      <moveable id="379" ai="1" name="AI ambush" />
-      <moveable id="380" ai="1" name="AI patrol 1" />
-      <moveable id="381" ai="1" name="AI modify" />
-      <moveable id="382" ai="1" name="AI follow" />
-      <moveable id="383" ai="1" name="AI patrol 2" />
-      <moveable id="384" ai="1" name="AI X1" />
-      <moveable id="385" ai="1" name="AI X2" />
-      <moveable id="386" ai="1" name="Lara start position" />
+      <moveable id="378" ai="true" name="AI guard" />
+      <moveable id="379" ai="true" name="AI ambush" />
+      <moveable id="380" ai="true" name="AI patrol 1" />
+      <moveable id="381" ai="true" name="AI modify" />
+      <moveable id="382" ai="true" name="AI follow" />
+      <moveable id="383" ai="true" name="AI patrol 2" />
+      <moveable id="384" ai="true" name="AI X1" />
+      <moveable id="385" ai="true" name="AI X2" />
+      <moveable id="386" ai="true" name="Lara start position" />
       <moveable id="387" name="Lara position changer" />
       <moveable id="388" name="Elevator" />
       <moveable id="389" name="Raising cog" />

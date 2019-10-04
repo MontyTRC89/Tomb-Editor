@@ -773,6 +773,22 @@ namespace TombEditor.Forms
             }
         }
 
+        // Merged static meshes list
+        private void ToggleSelectionForStatics(bool toggleValue, bool bypassStatics = true)
+        {
+            foreach (DataGridViewRow row in staticMeshMergeDataGridView.Rows)
+            {
+                if (toggleValue && bypassStatics &&
+                    TrCatalog.IsStaticShatterable(_levelSettings.GameVersion, ((AutoStaticMeshMergeEntry)row.DataBoundItem).meshId))
+                {
+                    row.Cells[1].Value = false;
+                    continue;
+                }
+
+                row.Cells[1].Value = toggleValue;
+            }
+        }
+
         // Texture list
         private Bitmap CreateTexturePreview(TextureCachePreviewKey data)
         {
@@ -1120,6 +1136,7 @@ namespace TombEditor.Forms
             settings.Textures.Clear();
             foreach (var reference in _textureFileDataGridViewDataSource)
                 settings.Textures.Add(reference.Texture);
+
             settings.AutoStaticMeshMerges.Clear();
             foreach (var entry in _staticMeshMergeGridViewDataSource)
             {
@@ -1576,5 +1593,10 @@ namespace TombEditor.Forms
             AssignWadSounds();
             PopulateSoundInfoList();
         }
+
+        private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
+        private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
+        private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
+
     }
 }
