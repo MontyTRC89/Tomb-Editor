@@ -178,7 +178,7 @@ namespace WadTool
             int index = 0;
             foreach (var keyframe in ActiveFrames)
             {
-                float midFrame = loop ? CurrentFrameIndex : frameCount;
+                float midFrame = loop ? CurrentFrameIndex - Selection.X : frameCount;
                 float bias = (currentStep <= midFrame) ? currentStep / midFrame : (frameCount - currentStep) / (frameCount - midFrame);
 
                 // Single-pass smoothstep doesn't look organic on fast animations, hence we're using 2-pass smootherstep here.
