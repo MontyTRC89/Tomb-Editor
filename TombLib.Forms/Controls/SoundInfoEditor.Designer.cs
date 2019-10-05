@@ -28,8 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip = new System.Windows.Forms.ToolTip();
             this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
             this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
             this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
@@ -67,6 +66,7 @@
             this.butAddSample = new DarkUI.Controls.DarkButton();
             this.butPlayPreview = new DarkUI.Controls.DarkButton();
             this.butBrowse = new DarkUI.Controls.DarkButton();
+            this.butResetToDefaults = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).BeginInit();
@@ -205,7 +205,7 @@
             // 
             this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
-            this.butClipboardPaste.Location = new System.Drawing.Point(378, 31);
+            this.butClipboardPaste.Location = new System.Drawing.Point(350, 31);
             this.butClipboardPaste.Name = "butClipboardPaste";
             this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
             this.butClipboardPaste.TabIndex = 22;
@@ -217,7 +217,7 @@
             // 
             this.butClipboardCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butClipboardCopy.Image = global::TombLib.Properties.Resources.general_copy_16;
-            this.butClipboardCopy.Location = new System.Drawing.Point(350, 31);
+            this.butClipboardCopy.Location = new System.Drawing.Point(322, 31);
             this.butClipboardCopy.Name = "butClipboardCopy";
             this.butClipboardCopy.Size = new System.Drawing.Size(22, 22);
             this.butClipboardCopy.TabIndex = 22;
@@ -458,7 +458,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbName.Location = new System.Drawing.Point(46, 31);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(168, 22);
+            this.tbName.Size = new System.Drawing.Size(150, 22);
             this.tbName.TabIndex = 1;
             this.tbName.TextChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
@@ -536,9 +536,9 @@
             this.butPlayPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlayPreview.Image = global::TombLib.Properties.Resources.actions_play_16;
             this.butPlayPreview.ImagePadding = 3;
-            this.butPlayPreview.Location = new System.Drawing.Point(220, 31);
+            this.butPlayPreview.Location = new System.Drawing.Point(202, 31);
             this.butPlayPreview.Name = "butPlayPreview";
-            this.butPlayPreview.Size = new System.Drawing.Size(124, 22);
+            this.butPlayPreview.Size = new System.Drawing.Size(114, 22);
             this.butPlayPreview.TabIndex = 2;
             this.butPlayPreview.Text = "In-game preview";
             this.butPlayPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -556,6 +556,17 @@
             this.butBrowse.Text = "Browse...";
             this.butBrowse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butBrowse.Click += new System.EventHandler(this.butBrowse_Click);
+            // 
+            // butResetToDefaults
+            // 
+            this.butResetToDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butResetToDefaults.Image = global::TombLib.Properties.Resources.general_undo_16;
+            this.butResetToDefaults.Location = new System.Drawing.Point(378, 31);
+            this.butResetToDefaults.Name = "butResetToDefaults";
+            this.butResetToDefaults.Size = new System.Drawing.Size(22, 22);
+            this.butResetToDefaults.TabIndex = 104;
+            this.toolTip.SetToolTip(this.butResetToDefaults, "Reset to defaults");
+            this.butResetToDefaults.Click += new System.EventHandler(this.butResetToDefaults_Click);
             // 
             // SoundInfoEditor
             // 
@@ -578,6 +589,7 @@
             this.Controls.Add(this.tbNameLabel);
             this.Controls.Add(this.butClipboardCopy);
             this.Controls.Add(this.butBrowse);
+            this.Controls.Add(this.butResetToDefaults);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(400, 346);
             this.Name = "SoundInfoEditor";
@@ -634,5 +646,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SamplePathColumn;
         private System.Windows.Forms.PictureBox picDisabledOverlay;
         private DarkUI.Controls.DarkButton butBrowse;
+        private DarkUI.Controls.DarkButton butResetToDefaults;
     }
 }
