@@ -216,7 +216,7 @@ namespace TombLib.Controls
         }
         private void butResetToDefaults_Click(object sender, EventArgs e)
         {
-            UpdateUI(new WadSoundInfo(), true);
+            UpdateUI(new WadSoundInfo(SoundInfo.Id), true);
 
             if (!_soundInfoCurrentlyChanging)
                 SoundInfoChanged?.Invoke(this, e);
