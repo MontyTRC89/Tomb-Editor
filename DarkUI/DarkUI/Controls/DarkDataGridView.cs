@@ -414,6 +414,16 @@ namespace DarkUI.Controls
             return result;
         }
 
+        public void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
+        {
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+            e.Graphics.DrawImage(image,
+                e.CellBounds.Left + (e.CellBounds.Width - image.Width) / 2 - 1,
+                e.CellBounds.Top + (e.CellBounds.Height - image.Height) / 2,
+                image.Width, image.Height);
+            e.Handled = true;
+        }
+
         private bool _updateScrollBarLayout;
 
         private void UpdateScrollBarLayout()

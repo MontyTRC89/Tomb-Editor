@@ -17,13 +17,13 @@ namespace TombLib.Wad
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Volume { get; set; } // Increasing the volume above 1 is not supported by old games.
+        public int Volume { get; set; }
         public int RangeInSectors { get; set; }
-        public int Chance { get; set; } // Must be a value between 0 and 1.
-        public int PitchFactor { get; set; } // 1.0f here will keep the pitch identical, 2.0f will double it. (Attention about the value range of this, it depends on the sample frequency, by default almost 2.0 is the maximum)
+        public int Chance { get; set; }
+        public int PitchFactor { get; set; } 
         public bool DisablePanning { get; set; }
         public bool RandomizePitch { get; set; } // The pitch is sped up and slowed down by 6000/(2^16). (Not relative to the pitch)
-        public bool RandomizeVolume { get; set; } // The volume is reduced by an absolete value of 1/8 of the full volume. (Not relative to the volume value)
+        public bool RandomizeVolume { get; set; } // The volume is reduced by an absolute value of 1/8 of the full volume. (Not relative to the volume value)
         public WadSoundLoopBehaviour LoopBehaviour { get; set; }
         public List<WadSample> EmbeddedSamples { get; set; }
         public bool Global { get; set; }
@@ -38,15 +38,16 @@ namespace TombLib.Wad
         public WadSoundInfo(int id)
         {
             Id = id;
-            Name = "UNKNOWN_SOUND";
-            Volume = 1;
+            Name = "NEW_SOUND";
+            Volume = 100;
             RangeInSectors = 8;
-            Chance = 0;
-            PitchFactor = 1;
+            Chance = 100;
+            PitchFactor = 0;
             DisablePanning = false;
             RandomizePitch = false;
             RandomizeVolume = false;
             LoopBehaviour = WadSoundLoopBehaviour.None;
+            Global = false;
             EmbeddedSamples = new List<WadSample>();
             SoundCatalog = "";
         }
@@ -65,6 +66,7 @@ namespace TombLib.Wad
             LoopBehaviour = s.LoopBehaviour;
             EmbeddedSamples = new List<WadSample>();
             SoundCatalog = s.SoundCatalog;
+            Global = s.Global;
             foreach (var sample in s.EmbeddedSamples)
                 EmbeddedSamples.Add(new WadSample(sample.FileName));
         }

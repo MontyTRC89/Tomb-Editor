@@ -279,5 +279,15 @@ namespace TombLib.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap misc_SoundToolOverlay {
+            get {
+                object obj = ResourceManager.GetObject("misc_SoundToolOverlay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

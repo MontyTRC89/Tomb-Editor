@@ -186,19 +186,9 @@ namespace TombEditor.Forms
             if (e.RowIndex < 0 || e.RowIndex >= commandList.Rows.Count)
                 return;
             if (commandList.Columns[e.ColumnIndex].Name == commandListColumnDelete.Name)
-                PaintCell(e, Properties.Resources.general_trash_16);
+                commandList.PaintCell(e, Properties.Resources.general_trash_16);
             else if (commandList.Columns[e.ColumnIndex].Name == commandListColumnAdd.Name)
-                PaintCell(e, Properties.Resources.general_plus_math_16);
-        }
-
-        private static void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
-        {
-            e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-            e.Graphics.DrawImage(image,
-                e.CellBounds.Left + (e.CellBounds.Width - image.Width) / 2 - 1,
-                e.CellBounds.Top + (e.CellBounds.Height - image.Height) / 2,
-                image.Width, image.Height);
-            e.Handled = true;
+                commandList.PaintCell(e, Properties.Resources.general_plus_math_16);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
