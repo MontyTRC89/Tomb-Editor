@@ -31,9 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveXMLAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.loadReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,10 +42,15 @@
             this.dgvSoundInfos = new DarkUI.Controls.DarkDataGridView();
             this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
-            this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.butSearch = new DarkUI.Controls.DarkButton();
+            this.tbSearch = new DarkUI.Controls.DarkTextBox();
+            this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
+            this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
+            this.newXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -84,39 +86,6 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // newXMLToolStripMenuItem
-            // 
-            this.newXMLToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.newXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newXMLToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_create_new_16;
-            this.newXMLToolStripMenuItem.Name = "newXMLToolStripMenuItem";
-            this.newXMLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.newXMLToolStripMenuItem.Text = "New XML";
-            this.newXMLToolStripMenuItem.Click += new System.EventHandler(this.NewXMLToolStripMenuItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.openToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.openToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Open_16;
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.openToolStripMenuItem.Text = "Open XML, TXT or SFX...";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.saveToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Save_16;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.saveToolStripMenuItem.Text = "Save XML";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveXMLAsToolStripMenuItem
             // 
@@ -179,10 +148,10 @@
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelStatus});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 449);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 448);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 26);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 27);
             this.darkStatusStrip1.TabIndex = 74;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -203,10 +172,10 @@
             this.dgvSoundInfos.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colID,
             this.colName});
-            this.dgvSoundInfos.Location = new System.Drawing.Point(10, 56);
+            this.dgvSoundInfos.Location = new System.Drawing.Point(8, 57);
             this.dgvSoundInfos.Name = "dgvSoundInfos";
             this.dgvSoundInfos.RowHeadersWidth = 41;
-            this.dgvSoundInfos.Size = new System.Drawing.Size(266, 386);
+            this.dgvSoundInfos.Size = new System.Drawing.Size(268, 356);
             this.dgvSoundInfos.TabIndex = 78;
             this.dgvSoundInfos.SelectionChanged += new System.EventHandler(this.dgvSoundInfos_SelectionChanged);
             // 
@@ -224,37 +193,15 @@
             this.colName.ReadOnly = true;
             this.colName.Width = 200;
             // 
-            // butAddNewSoundInfo
-            // 
-            this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
-            this.butAddNewSoundInfo.Location = new System.Drawing.Point(10, 27);
-            this.butAddNewSoundInfo.Name = "butAddNewSoundInfo";
-            this.butAddNewSoundInfo.Size = new System.Drawing.Size(130, 23);
-            this.butAddNewSoundInfo.TabIndex = 95;
-            this.butAddNewSoundInfo.Text = "Add new sound info";
-            this.butAddNewSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddNewSoundInfo.Click += new System.EventHandler(this.ButAddNewSoundInfo_Click);
-            // 
-            // butDeleteSoundInfo
-            // 
-            this.butDeleteSoundInfo.Image = global::SoundTool.Properties.Resources.general_trash_16;
-            this.butDeleteSoundInfo.Location = new System.Drawing.Point(146, 27);
-            this.butDeleteSoundInfo.Name = "butDeleteSoundInfo";
-            this.butDeleteSoundInfo.Size = new System.Drawing.Size(130, 23);
-            this.butDeleteSoundInfo.TabIndex = 94;
-            this.butDeleteSoundInfo.Text = "Delete sound infos";
-            this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteSoundInfo.Click += new System.EventHandler(this.ButDeleteSoundInfo_Click);
-            // 
             // darkGroupBox1
             // 
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkGroupBox1.Controls.Add(this.soundInfoEditor);
-            this.darkGroupBox1.Location = new System.Drawing.Point(282, 55);
+            this.darkGroupBox1.Location = new System.Drawing.Point(282, 27);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(495, 387);
+            this.darkGroupBox1.Size = new System.Drawing.Size(497, 415);
             this.darkGroupBox1.TabIndex = 96;
             this.darkGroupBox1.TabStop = false;
             // 
@@ -269,17 +216,96 @@
             this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
             this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
             this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(483, 373);
+            this.soundInfoEditor.Size = new System.Drawing.Size(485, 401);
             this.soundInfoEditor.TabIndex = 77;
             this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Image = global::SoundTool.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(252, 28);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 109;
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
+            // tbSearch
+            // 
+            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbSearch.Location = new System.Drawing.Point(8, 28);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(245, 23);
+            this.tbSearch.TabIndex = 108;
+            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
+            // 
+            // butAddNewSoundInfo
+            // 
+            this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
+            this.butAddNewSoundInfo.Location = new System.Drawing.Point(8, 419);
+            this.butAddNewSoundInfo.Name = "butAddNewSoundInfo";
+            this.butAddNewSoundInfo.Size = new System.Drawing.Size(131, 23);
+            this.butAddNewSoundInfo.TabIndex = 95;
+            this.butAddNewSoundInfo.Text = "Add new sound info";
+            this.butAddNewSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddNewSoundInfo.Click += new System.EventHandler(this.butAddNewSoundInfo_Click);
+            // 
+            // butDeleteSoundInfo
+            // 
+            this.butDeleteSoundInfo.Image = global::SoundTool.Properties.Resources.general_trash_16;
+            this.butDeleteSoundInfo.Location = new System.Drawing.Point(145, 419);
+            this.butDeleteSoundInfo.Name = "butDeleteSoundInfo";
+            this.butDeleteSoundInfo.Size = new System.Drawing.Size(131, 23);
+            this.butDeleteSoundInfo.TabIndex = 94;
+            this.butDeleteSoundInfo.Text = "Delete sound infos";
+            this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeleteSoundInfo.Click += new System.EventHandler(this.butDeleteSoundInfo_Click);
+            // 
+            // newXMLToolStripMenuItem
+            // 
+            this.newXMLToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newXMLToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_create_new_16;
+            this.newXMLToolStripMenuItem.Name = "newXMLToolStripMenuItem";
+            this.newXMLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.newXMLToolStripMenuItem.Text = "New XML";
+            this.newXMLToolStripMenuItem.Click += new System.EventHandler(this.NewXMLToolStripMenuItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.openToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Open_16;
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.openToolStripMenuItem.Text = "Open XML, TXT or SFX...";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.saveToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Save_16;
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.saveToolStripMenuItem.Text = "Save XML";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 475);
+            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.butAddNewSoundInfo);
+            this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.butDeleteSoundInfo);
             this.Controls.Add(this.dgvSoundInfos);
             this.Controls.Add(this.darkStatusStrip1);
@@ -324,6 +350,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.ToolStripMenuItem saveXMLAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadReferenceLevelToolStripMenuItem;
+        private DarkUI.Controls.DarkButton butSearch;
+        private DarkUI.Controls.DarkTextBox tbSearch;
     }
 }
 

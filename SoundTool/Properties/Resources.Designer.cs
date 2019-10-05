@@ -123,6 +123,16 @@ namespace SoundTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_search_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_search_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_trash_16 {
             get {
                 object obj = ResourceManager.GetObject("general_trash-16", resourceCulture);
