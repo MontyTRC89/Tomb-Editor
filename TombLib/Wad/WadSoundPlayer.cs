@@ -49,8 +49,8 @@ namespace TombLib.Wad
         {
             for (int i = 0; i < maxChannels; i++)
             {
-                if (_indices[i] == index &&
-                    _channels[i]?.PlaybackState == PlaybackState.Playing)
+                if (_indices[i] == index && _channels[i] != null &&
+                    _channels[i].PlaybackState == PlaybackState.Playing)
                     return i;
             }
             return -1;
@@ -82,7 +82,7 @@ namespace TombLib.Wad
 
             _indices[channelIndex] = soundInfo.Id;
 
-            if (soundInfo.EmbeddedSamples.Count == 0)
+            if (soundInfo.EmbeddedSamples == null || soundInfo.EmbeddedSamples.Count == 0)
                 return;
 
             // Figure out the precise play parameters
@@ -172,7 +172,7 @@ namespace TombLib.Wad
                 _channels[channel].PlaybackStopped += (s, e) =>
                 {
                     foreach (IDisposable disposable in disposables)
-                        disposable.Dispose();
+                        disposable?.Dispose();
                     _channels[channel] = null;
                     _indices[channel] = -1;
                 };
@@ -182,7 +182,7 @@ namespace TombLib.Wad
             {
                 // Clean up in case of a problem
                 foreach (IDisposable disposable in disposables)
-                    disposable.Dispose();
+                    disposable?.Dispose();
 
                 _logger.Error("Error while playing sample " + sample + ", exception: " + ex);
             }
