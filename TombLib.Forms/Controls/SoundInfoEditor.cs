@@ -30,6 +30,7 @@ namespace TombLib.Controls
         private bool _soundInfoCurrentlyChanging = false;
         private bool _readonly = false;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Level ReferenceLevel
         {
             get { return _referenceLevel; }
@@ -43,32 +44,6 @@ namespace TombLib.Controls
             }
         }
         private Level _referenceLevel = null;
-
-        [DefaultValue(true)]
-        public bool HasName
-        {
-            get { return tbName.Visible; }
-            set { tbName.Enabled = value; }
-        }
-
-        [DefaultValue(false)]
-        public bool ReadOnly
-        {
-            get { return _readonly; }
-            set
-            {
-                _readonly = value;
-                tbName.Enabled = !value;
-                numericVolume.Enabled = !value;
-                numericPitch.Enabled = !value;
-                numericRange.Enabled = !value;
-                numericChance.Enabled = !value;
-                cbRandomizeVolume.Enabled = !value;
-                cbRandomizePitch.Enabled = !value;
-                cbDisablePanning.Enabled = !value;
-                comboLoop.Enabled = !value;
-            }
-        }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadSoundInfo SoundInfo
@@ -129,6 +104,32 @@ namespace TombLib.Controls
                 {
                     _soundInfoCurrentlyChanging = false;
                 }
+            }
+        }
+
+        [DefaultValue(true)]
+        public bool HasName
+        {
+            get { return tbName.Visible; }
+            set { tbName.Enabled = value; }
+        }
+
+        [DefaultValue(false)]
+        public bool ReadOnly
+        {
+            get { return _readonly; }
+            set
+            {
+                _readonly = value;
+                tbName.Enabled = !value;
+                numericVolume.Enabled = !value;
+                numericPitch.Enabled = !value;
+                numericRange.Enabled = !value;
+                numericChance.Enabled = !value;
+                cbRandomizeVolume.Enabled = !value;
+                cbRandomizePitch.Enabled = !value;
+                cbDisablePanning.Enabled = !value;
+                comboLoop.Enabled = !value;
             }
         }
 

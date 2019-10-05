@@ -91,7 +91,7 @@
             this.newXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newXMLToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_create_new_16;
             this.newXMLToolStripMenuItem.Name = "newXMLToolStripMenuItem";
-            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.newXMLToolStripMenuItem.Text = "New XML";
             this.newXMLToolStripMenuItem.Click += new System.EventHandler(this.NewXMLToolStripMenuItem_Click);
             // 
@@ -101,8 +101,8 @@
             this.openToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.openToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Open_16;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.openToolStripMenuItem.Text = "Open XML or TXT";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.openToolStripMenuItem.Text = "Open XML or TXT...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
@@ -111,7 +111,7 @@
             this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Save_16;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.saveToolStripMenuItem.Text = "Save XML";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -120,7 +120,7 @@
             this.saveXMLAsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.saveXMLAsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveXMLAsToolStripMenuItem.Name = "saveXMLAsToolStripMenuItem";
-            this.saveXMLAsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.saveXMLAsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.saveXMLAsToolStripMenuItem.Text = "Save XML as...";
             this.saveXMLAsToolStripMenuItem.Click += new System.EventHandler(this.saveXMLAsToolStripMenuItem_Click);
             // 
@@ -130,15 +130,15 @@
             this.toolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(154, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
             // 
             // loadReferenceLevelToolStripMenuItem
             // 
             this.loadReferenceLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.loadReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.loadReferenceLevelToolStripMenuItem.Name = "loadReferenceLevelToolStripMenuItem";
-            this.loadReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.loadReferenceLevelToolStripMenuItem.Text = "Load reference level";
+            this.loadReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.loadReferenceLevelToolStripMenuItem.Text = "Load reference project...";
             this.loadReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.loadReferenceLevelToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
@@ -146,7 +146,7 @@
             this.exitToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
