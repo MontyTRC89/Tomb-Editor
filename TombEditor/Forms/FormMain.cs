@@ -710,7 +710,7 @@ namespace TombEditor.Forms
 
                         // Try to open file only if main window is opened, otherwise try to close everything.
                         for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
-                            if (Application.OpenForms[i].Name != Name)
+                            if (Application.OpenForms[i].Name != Name && !(Application.OpenForms[i] is PopUpInfo))
                                 Application.OpenForms[i].Close();
                     }
                     break;

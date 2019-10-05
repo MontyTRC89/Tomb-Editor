@@ -229,7 +229,7 @@ namespace TombLib.Forms
                     {
                         _animProgress = 0.0f;
                         _animTimer.Stop();
-                        Close();
+                        Hide();
                     }
                 }
             }
