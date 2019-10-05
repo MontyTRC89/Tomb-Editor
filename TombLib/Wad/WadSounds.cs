@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using TombLib.IO;
 using TombLib.LevelData;
@@ -148,6 +146,10 @@ namespace TombLib.Wad
                     info.Chance = readerSfx.ReadByte();
                     info.Pitch = readerSfx.ReadByte();
                     info.Characteristics = readerSfx.ReadUInt16();
+
+                    // Convert legacy chance value
+                    if (info.Chance == 0) info.Chance = 100;
+
                     wadSoundInfos.Add(info);
                 }
             }
@@ -203,115 +205,60 @@ namespace TombLib.Wad
                             var s = reader.ReadLine().Trim();
 
                             var sound = new WadSoundInfo(soundId);
-                            sound.RangeInSectors = 10;
-                            sound.SoundCatalog = filename;
-
+                            
+                            // Get the name (ends with :)
                             int endOfSoundName = s.IndexOf(':');
                             if (endOfSoundName == -1)
                             {
                                 soundId++;
                                 continue;
                             }
+                            else
+                                sound.Name = s.Substring(0, endOfSoundName);
 
-                            sound.Name = s.Substring(0, s.IndexOf(':'));
-
-                            var tokens = s.Split(' ', '\t');
-                            if (tokens.Length == 1)
+                            // Get everything else and remove empty tokens
+                            var tokens = s.Substring(endOfSoundName + 1).Split(' ', '\t').Where(token => !string.IsNullOrEmpty(token)).ToList();
+                            if (tokens.Count <= 1)
                             {
                                 soundId++;
                                 continue;
                             }
 
-                            int currentToken = 1;
+                            // Trim comments
+                            int commentTokenIndex = tokens.FindIndex(t => t.StartsWith(";"));
+                            if (commentTokenIndex != -1)
+                                tokens.RemoveRange(commentTokenIndex, tokens.Count - commentTokenIndex);
 
-                            do
+                            for (int i = 0; i < tokens.Count; i++)
                             {
-                                var token = tokens[currentToken];
+                                var   token = tokens[i];
+                                short temp  = 0;
 
-                                if (token == "")
-                                {
-                                    currentToken++;
-                                    continue;
-                                }
-
-                                short volume;
-                                short chance;
-
-                                if (token.Length == 1)
-                                {
-                                    if (token == "P")
-                                    {
-                                        sound.RandomizePitch = true;
-                                    }
-
-                                    if (token == "V")
-                                    {
-                                        sound.RandomizeVolume = true;
-                                    }
-
-                                    if (token == "N")
-                                    {
-                                        sound.DisablePanning = true;
-                                    }
-
-                                    if (token == "L")
-                                    {
-                                        sound.LoopBehaviour = WadSoundLoopBehaviour.Looped;
-                                    }
-
-                                    if (token == "R")
-                                    {
-                                        sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotRewound;
-                                    }
-
-                                    if (token == "W")
-                                    {
-                                        sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotWait;
-                                    }
-                                }
-                                else if (!token.StartsWith("VOL") || !Int16.TryParse(token.Substring(3), out volume))
-                                {
-                                    if (!token.StartsWith("CH") || !Int16.TryParse(token.Substring(2), out chance))
-                                    {
-                                        if (!token.StartsWith("PIT"))
-                                        {
-                                            if (!token.StartsWith("RAD"))
-                                            {
-                                                if (token[0] != '#')
-                                                {
-                                                    // If I'm here, then it's a sample
-                                                    // Let's save the name for loading it later
-                                                    sound.EmbeddedSamples.Add(new WadSample(token + ".wav"));
-                                                }
-                                                else if (token == "#g")
-                                                {
-                                                    // Global sounds must be automatically checked on
-                                                    sound.Global = true;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                sound.RangeInSectors = Int16.Parse(token.Substring(3));
-                                            }
-                                        }
-                                        else
-                                        {
-                                            sound.PitchFactor = Int16.Parse(token.Substring(3));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        sound.Chance = Int16.Parse(token.Substring(2));
-                                    }
-                                }
-                                else
-                                {
-                                    sound.Volume = Int16.Parse(token.Substring(3));
-                                }
-
-                                currentToken++;
+                                if (token.StartsWith("PIT") && short.TryParse(token.Substring(3), out temp))
+                                    sound.PitchFactor = temp;
+                                else if (token.StartsWith("RAD") && short.TryParse(token.Substring(3), out temp))
+                                    sound.RangeInSectors = temp;
+                                else if (token.StartsWith("VOL") && short.TryParse(token.Substring(3), out temp))
+                                    sound.Volume = temp;
+                                else if (token.StartsWith("CH") && short.TryParse(token.Substring(2), out temp))
+                                    sound.Chance = temp;
+                                else if (token == "P")
+                                    sound.RandomizePitch = true;
+                                else if (token == "V")
+                                    sound.RandomizeVolume = true;
+                                else if (token == "N")
+                                    sound.DisablePanning = true;
+                                else if (token == "L")
+                                    sound.LoopBehaviour = WadSoundLoopBehaviour.Looped;
+                                else if (token == "R")
+                                    sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotRewound;
+                                else if (token == "W")
+                                    sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotWait;
+                                else if (token.StartsWith("#g"))
+                                    sound.Global = true;
+                                else if (!token.StartsWith("#"))
+                                    sound.EmbeddedSamples.Add(new WadSample(token + ".wav"));
                             }
-                            while (currentToken < tokens.Length);
 
                             sounds.SoundInfos.Add(sound);
                             soundId++;

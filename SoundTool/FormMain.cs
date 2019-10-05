@@ -60,6 +60,9 @@ namespace SoundTool
             // Read the sounds archive in XML or TXT format
             var sounds = WadSounds.ReadFromFile(filename);
 
+            if (sounds == null)
+                return false;
+
             dgvSoundInfos.Rows.Clear();
 
             // Fill the grid
