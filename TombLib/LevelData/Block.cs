@@ -41,6 +41,13 @@ namespace TombLib.LevelData
         XnZn = 4
     }
 
+    public enum DiagonalType : byte
+    {
+        None = 0,
+        XnZnToXpZp = 1,
+        XnZpToXpZn = 2
+    }
+
     public enum BlockEdge : byte
     {
         /// <summary> Index of edges on the negative X and positive Z direction </summary>

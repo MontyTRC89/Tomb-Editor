@@ -649,10 +649,25 @@ namespace TombLib.LevelData.Compilers
                                                        connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
                                                        connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
 
-                            bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn ||
-                                                    connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp ||
-                                                    connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn ||
-                                                    connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp;
+                            bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn &&
+                                                    !connectionInfo2.IsTriangularPortal &&
+                                                    !connectionInfo3.IsTriangularPortal &&
+                                                    !connectionInfo4.IsTriangularPortal 
+                                                    ||
+                                                    !connectionInfo1.IsTriangularPortal &&
+                                                    connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn &&
+                                                    !connectionInfo3.IsTriangularPortal &&
+                                                    !connectionInfo4.IsTriangularPortal 
+                                                    ||
+                                                    !connectionInfo1.IsTriangularPortal &&
+                                                    !connectionInfo2.IsTriangularPortal &&
+                                                    connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp &&
+                                                    !connectionInfo4.IsTriangularPortal 
+                                                    ||
+                                                    !connectionInfo1.IsTriangularPortal &&
+                                                    !connectionInfo2.IsTriangularPortal &&
+                                                    !connectionInfo3.IsTriangularPortal &&
+                                                    connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp;
                                                        
                             // A bit complex but working code for water surface movement.
                             // Works better than winroomedit as it takes adjacent portals into account.

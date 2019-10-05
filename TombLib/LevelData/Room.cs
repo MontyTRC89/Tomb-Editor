@@ -1211,6 +1211,20 @@ namespace TombLib.LevelData
             public RoomConnectionType VisualType => (Portal?.HasTexturedFaces ?? true) ? RoomConnectionType.NoPortal : AnyType;
             ///<summary>Gives how the block geometrically behaves regarding portals</summary>
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
+        
+            public DiagonalType DiagonalType
+            {
+                get
+                {
+                    if (TraversableType == RoomConnectionType.FullPortal || TraversableType == RoomConnectionType.NoPortal)
+                        return DiagonalType.None;
+                    if (TraversableType == RoomConnectionType.TriangularPortalXnZn || TraversableType == RoomConnectionType.TriangularPortalXpZp)
+                        return DiagonalType.XnZnToXpZp;
+                    return DiagonalType.XnZpToXpZn;
+                }
+            }
+
+            public bool IsTriangularPortal => !(TraversableType == RoomConnectionType.FullPortal || TraversableType == RoomConnectionType.NoPortal); 
         }
 
         public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
