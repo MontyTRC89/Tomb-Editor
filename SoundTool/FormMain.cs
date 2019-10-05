@@ -265,6 +265,7 @@ namespace SoundTool
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             CheckForSavedChanges();
+            WadSoundPlayer.StopSample();
             base.OnFormClosing(e);
         }
 
