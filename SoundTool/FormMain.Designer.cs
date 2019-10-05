@@ -204,7 +204,7 @@
             this.dgvSoundInfos.RowHeadersWidth = 41;
             this.dgvSoundInfos.Size = new System.Drawing.Size(266, 386);
             this.dgvSoundInfos.TabIndex = 78;
-            this.dgvSoundInfos.Click += new System.EventHandler(this.dgvSoundInfos_Click);
+            this.dgvSoundInfos.SelectionChanged += new System.EventHandler(this.dgvSoundInfos_SelectionChanged);
             // 
             // colID
             // 
