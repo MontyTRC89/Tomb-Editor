@@ -45,10 +45,10 @@
             this.dgvSoundInfos = new DarkUI.Controls.DarkDataGridView();
             this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -179,10 +179,10 @@
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelStatus});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 452);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 449);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 23);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(786, 26);
             this.darkStatusStrip1.TabIndex = 74;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -224,21 +224,6 @@
             this.colName.ReadOnly = true;
             this.colName.Width = 200;
             // 
-            // soundInfoEditor
-            // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(483, 373);
-            this.soundInfoEditor.TabIndex = 77;
-            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
-            // 
             // butAddNewSoundInfo
             // 
             this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
@@ -273,6 +258,21 @@
             this.darkGroupBox1.TabIndex = 96;
             this.darkGroupBox1.TabStop = false;
             // 
+            // soundInfoEditor
+            // 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.Size = new System.Drawing.Size(483, 373);
+            this.soundInfoEditor.TabIndex = 77;
+            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -285,11 +285,11 @@
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.darkMenuStrip1;
-            this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(802, 513);
             this.Name = "FormMain";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SoundTool";
             this.darkMenuStrip1.ResumeLayout(false);

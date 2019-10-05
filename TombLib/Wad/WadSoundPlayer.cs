@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,8 @@ namespace TombLib.Wad
 {
     public static class WadSoundPlayer
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private static Random _rng = new Random();
         private static WasapiOut _channel = null;
 
@@ -34,7 +37,9 @@ namespace TombLib.Wad
                 if (chance != 1.0f && _rng.NextDouble() > chance)
                     return;
 
-                sampleIndex = _rng.Next(0, soundInfo.EmbeddedSamples.Count - 1);
+                sampleIndex = _rng.Next(0, soundInfo.EmbeddedSamples.Count);
+                if (sampleIndex == soundInfo.EmbeddedSamples.Count)
+                    sampleIndex = soundInfo.EmbeddedSamples.Count - 1;
 
                 if (!soundInfo.DisablePanning)
                     pan = (float)((_rng.NextDouble() - 0.5f) * 1.6);
@@ -114,12 +119,13 @@ namespace TombLib.Wad
                 };
                 _channel.Play();
             }
-            catch
+            catch (Exception ex)
             {
                 // Clean up in case of a problem
                 foreach (IDisposable disposable in disposables)
                     disposable.Dispose();
-                throw;
+
+                _logger.Error("Error while playing sample " + sample + ", exception: " + ex);
             }
         }
 
