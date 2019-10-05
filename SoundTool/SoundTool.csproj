@@ -125,6 +125,7 @@
     <None Include="Resources\general_Open-16.png" />
     <None Include="Resources\general_edit-16.png" />
     <None Include="Resources\general_create_new-16.png" />
+    <None Include="Resources\icons_general\general_search-16.png" />
     <Content Include="SoundTool.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -195,6 +195,9 @@ namespace SoundTool
             Text = winTitle;
 
             string message = "Sound Infos: " + dgvSoundInfos.Rows.Count;
+
+            if (ReferenceLevel != null)
+                message += " | Reference level: " + ReferenceLevel.Settings.MakeAbsolute(ReferenceLevel.Settings.LevelFilePath);
             labelStatus.Text = message;
         }
 
@@ -221,6 +224,39 @@ namespace SoundTool
                 return;
 
             soundInfoEditor.ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            UpdateUI();
+        }
+
+        private void SearchForSound()
+        {
+            if (dgvSoundInfos.Rows.Count == 0 || dgvSoundInfos.CurrentRow == null)
+            {
+                popup.ShowInfo(soundInfoEditor, "No sounds present. Nothing to search.");
+                return;
+            }
+
+            var currentRow = dgvSoundInfos.CurrentRow.Index;
+            if (currentRow == -1 || currentRow == dgvSoundInfos.Rows.Count - 1) currentRow = 0;
+
+            RestartSearch:
+            for (int i = currentRow + 1; i < dgvSoundInfos.Rows.Count; i++)
+            {
+                var item = (WadSoundInfo)dgvSoundInfos.Rows[i].Tag;
+                if (item.Name.IndexOf(tbSearch.Text, StringComparison.InvariantCultureIgnoreCase) >= 0 ||
+                    item.Id.ToString().IndexOf(tbSearch.Text) >= 0)
+                {
+                    dgvSoundInfos.ClearSelection();
+                    dgvSoundInfos.Rows[i].Selected = true;
+                    dgvSoundInfos.CurrentCell = dgvSoundInfos.Rows[i].Cells[0];
+                    return;
+                }
+            }
+
+            if (currentRow > 0)
+            {
+                currentRow = 0;
+                goto RestartSearch;
+            }
         }
 
         private void NewXMLToolStripMenuItem_Click(object sender, EventArgs e) => CreateNewArchive();
@@ -230,8 +266,10 @@ namespace SoundTool
         private void loadReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e) => LoadReferenceLevel();
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
-        private void ButAddNewSoundInfo_Click(object sender, EventArgs e) => AddSoundInfo();
-        private void ButDeleteSoundInfo_Click(object sender, EventArgs e) => DeleteSoundInfos();
+        private void butAddNewSoundInfo_Click(object sender, EventArgs e) => AddSoundInfo();
+        private void butDeleteSoundInfo_Click(object sender, EventArgs e) => DeleteSoundInfos();
+        private void butSearch_Click(object sender, EventArgs e) { SearchForSound(); }
+        private void tbSearch_KeyDown(object sender, KeyEventArgs e) { if (e.KeyCode == Keys.Enter) SearchForSound(); }
 
         private void AboutSoundToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
