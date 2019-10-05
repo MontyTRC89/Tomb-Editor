@@ -248,7 +248,6 @@
             this.dgvSamples.AllowUserToDragDropRows = false;
             this.dgvSamples.AllowUserToOrderColumns = true;
             this.dgvSamples.AllowUserToPasteCells = false;
-            this.dgvSamples.AllowUserToResizeRows = true;
             this.dgvSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));

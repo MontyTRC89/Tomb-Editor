@@ -51,7 +51,7 @@ namespace SoundTool
 
             if (filename == null)
                 filename = LevelFileDialog.BrowseFile(this, "Select archive to open",
-                                                      LevelSettings.FileFormatImportableSoundsCatalogs,
+                                                      WadSounds.FormatExtensions,
                                                       false);
 
             if (filename == null || !File.Exists(filename))
