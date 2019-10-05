@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
-using TombLib.IO;
-using TombLib.Utils;
+using TombLib.LevelData;
 
 namespace TombLib.Wad
 {
@@ -128,6 +123,20 @@ namespace TombLib.Wad
                     dataSize += sample.Data.Length;
                 return dataSize;
             }
+        }
+
+        public int SampleCount(LevelSettings settings)
+        {
+            if (EmbeddedSamples == null || EmbeddedSamples.Count <= 0)
+                return -1;
+
+            int result = 0;
+            foreach (var sample in EmbeddedSamples)
+            {
+                var path = WadSounds.TryGetSamplePath(settings, sample.FileName);
+                if (path != null) result++;
+            }
+            return result;
         }
 
         public override string ToString()

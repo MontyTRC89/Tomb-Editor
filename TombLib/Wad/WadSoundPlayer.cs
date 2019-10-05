@@ -67,7 +67,7 @@ namespace TombLib.Wad
                     waveStream = disposables.AddAndReturn(new WaveFileReader(memoryStream));
                 }
                 else
-                    waveStream = disposables.AddAndReturn(new WaveFileReader(WadSounds.TryGetSamplePath(level, sample.FileName)));
+                    waveStream = disposables.AddAndReturn(new WaveFileReader(WadSounds.TryGetSamplePath(level.Settings, sample.FileName)));
 
                 // Apply looping
                 ISampleProvider sampleStream;
