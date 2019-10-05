@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
             this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
             this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
             this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
@@ -40,6 +39,7 @@
             this.numericRange = new DarkUI.Controls.DarkNumericUpDown();
             this.butClipboardPaste = new DarkUI.Controls.DarkButton();
             this.butClipboardCopy = new DarkUI.Controls.DarkButton();
+            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
             this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -82,21 +82,9 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
-            // cbGlobal
-            // 
-            this.cbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbGlobal.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbGlobal.Location = new System.Drawing.Point(294, 4);
-            this.cbGlobal.Name = "cbGlobal";
-            this.cbGlobal.Size = new System.Drawing.Size(107, 17);
-            this.cbGlobal.TabIndex = 33;
-            this.cbGlobal.Text = "Global sound";
-            this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
             // numericVolume
             // 
             this.numericVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericVolume.DecimalPlaces = 1;
             this.numericVolume.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.numericVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numericVolume.IncrementAlternate = new decimal(new int[] {
@@ -151,7 +139,6 @@
             // numericChance
             // 
             this.numericChance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericChance.DecimalPlaces = 1;
             this.numericChance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.numericChance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numericChance.IncrementAlternate = new decimal(new int[] {
@@ -170,7 +157,6 @@
             // numericPitch
             // 
             this.numericPitch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericPitch.DecimalPlaces = 1;
             this.numericPitch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.numericPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numericPitch.IncrementAlternate = new decimal(new int[] {
@@ -237,6 +223,17 @@
             this.butClipboardCopy.TabIndex = 22;
             this.toolTip.SetToolTip(this.butClipboardCopy, "Copy all settings and samples into the clipboard.");
             this.butClipboardCopy.Click += new System.EventHandler(this.butClipboardCopy_Click);
+            // 
+            // cbGlobal
+            // 
+            this.cbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbGlobal.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbGlobal.Location = new System.Drawing.Point(294, 4);
+            this.cbGlobal.Name = "cbGlobal";
+            this.cbGlobal.Size = new System.Drawing.Size(107, 17);
+            this.cbGlobal.TabIndex = 33;
+            this.cbGlobal.Text = "Global sound";
+            this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
             // colSampleName
             // 

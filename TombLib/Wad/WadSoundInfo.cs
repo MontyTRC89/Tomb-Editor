@@ -40,7 +40,7 @@ namespace TombLib.Wad
             Id = id;
             Name = "NEW_SOUND";
             Volume = 100;
-            RangeInSectors = 8;
+            RangeInSectors = 10;
             Chance = 100;
             PitchFactor = 0;
             DisablePanning = false;
@@ -71,43 +71,6 @@ namespace TombLib.Wad
                 EmbeddedSamples.Add(new WadSample(sample.FileName));
         }
 
-        [XmlIgnore]
-        public byte VolumeByte2
-        {
-            get { return (byte)(Math.Max(0, Math.Min(255, Volume * 255 + 0.5f)) / 100.0f); }
-            set { Volume = (int)Math.Round(value * 100.0f / 255.0f); }
-        }
-
-        [XmlIgnore]
-        public byte RangeInSectorsByte2
-        {
-            get { return (byte)(Math.Max(0, Math.Min(255, RangeInSectors))); }
-            set { RangeInSectors = (int)(value); }
-        }
-
-        [XmlIgnore]
-        public byte ChanceByte2
-        {
-            get
-            {
-                byte result = (byte)Math.Max(0, Math.Min(255, Chance * 255 + 0.5f));
-                return result == 255 ? (byte)0 : result;
-            }
-            set { Chance = (int)Math.Round((value == 0) ? 1.0f : (value / 255.0f)); }
-        }
-
-        [XmlIgnore]
-        public byte PitchFactorByte2
-        {
-            get
-            {
-                float actualPitchFactor = PitchFactor;
-                if (EmbeddedSamples.Count > 0 && EmbeddedSamples[0].IsLoaded)
-                    actualPitchFactor *= (float)EmbeddedSamples[0].SampleRate / (float)WadSample.GameSupportedSampleRate;
-                return (byte)((/*0x80 ^*/ (byte)Math.Max(0, Math.Min(255, actualPitchFactor * 128 + 0.5f))) / 100.0f);
-            }
-            set { PitchFactor = (int)Math.Round((value /*^ 0x80*/) * 100.0f / 128.0f); }
-        }
 
         public static float GetMaxPitch(uint sampleFrequency)
         {
