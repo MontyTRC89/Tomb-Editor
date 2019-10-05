@@ -1005,7 +1005,7 @@
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Wad Tool";
+            this.Text = "WadTool";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
