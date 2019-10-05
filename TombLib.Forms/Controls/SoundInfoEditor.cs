@@ -1,14 +1,10 @@
-﻿using DarkUI.Config;
-using DarkUI.Controls;
+﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using TombLib.Forms;
@@ -80,30 +76,7 @@ namespace TombLib.Controls
                     picDisabledOverlay.Visible = false;
                 }
 
-                try
-                {
-                    // Prevent a number of sound info changed events
-                    _soundInfoCurrentlyChanging = true;
-
-                    tbID.Text = value.Id.ToString();
-                    tbName.Text = value.Name;
-                    numericVolume.Value = Math.Min(numericVolume.Maximum, Math.Max(numericVolume.Minimum, (decimal)value.Volume));
-                    numericPitch.Value = Math.Min(numericPitch.Maximum, Math.Max(numericPitch.Minimum, (decimal)value.PitchFactor));
-                    numericRange.Value = Math.Min(numericRange.Maximum, Math.Max(numericRange.Minimum, (decimal)value.RangeInSectors));
-                    numericChance.Value = Math.Min(numericChance.Maximum, Math.Max(numericChance.Minimum, (decimal)value.Chance));
-                    cbRandomizeVolume.Checked = value.RandomizeVolume;
-                    cbRandomizePitch.Checked = value.RandomizePitch;
-                    cbDisablePanning.Checked = value.DisablePanning;
-                    comboLoop.SelectedIndex = (int)(value.LoopBehaviour);
-                    cbGlobal.Checked = value.Global;
-                    dgvSamples.Rows.Clear();
-                    foreach (var sample in value.EmbeddedSamples)
-                        dgvSamples.Rows.Add(sample.FileName);
-                }
-                finally
-                {
-                    _soundInfoCurrentlyChanging = false;
-                }
+                UpdateUI(value, false);
             }
         }
 
@@ -146,6 +119,7 @@ namespace TombLib.Controls
             toolTip.SetToolTip(numericRangeLabel, toolTip.GetToolTip(numericRange));
             toolTip.SetToolTip(numericVolumeLabel, toolTip.GetToolTip(numericVolume));
         }
+
         protected void OnSoundInfoChanged(object sender, EventArgs e)
         {
             if (sender is DarkComboBox)
@@ -173,6 +147,42 @@ namespace TombLib.Controls
                 SoundInfoChanged?.Invoke(this, e);
         }
 
+        private void UpdateUI(WadSoundInfo newSoundInfo, bool onlyParams)
+        {
+            try
+            {
+                // Prevent a number of sound info changed events
+                _soundInfoCurrentlyChanging = true;
+
+                numericVolume.Value = Math.Min(numericVolume.Maximum, Math.Max(numericVolume.Minimum, (decimal)newSoundInfo.Volume));
+                numericPitch.Value = Math.Min(numericPitch.Maximum, Math.Max(numericPitch.Minimum, (decimal)newSoundInfo.PitchFactor));
+                numericRange.Value = Math.Min(numericRange.Maximum, Math.Max(numericRange.Minimum, (decimal)newSoundInfo.RangeInSectors));
+                numericChance.Value = Math.Min(numericChance.Maximum, Math.Max(numericChance.Minimum, (decimal)newSoundInfo.Chance));
+                cbRandomizeVolume.Checked = newSoundInfo.RandomizeVolume;
+                cbRandomizePitch.Checked = newSoundInfo.RandomizePitch;
+                cbDisablePanning.Checked = newSoundInfo.DisablePanning;
+                comboLoop.SelectedIndex = (int)(newSoundInfo.LoopBehaviour);
+                cbGlobal.Checked = newSoundInfo.Global;
+
+                if (!onlyParams)
+                {
+                    tbID.Text = newSoundInfo.Id.ToString();
+                    tbName.Text = newSoundInfo.Name;
+
+                    if (newSoundInfo.EmbeddedSamples != null && newSoundInfo.EmbeddedSamples.Count > 0)
+                    {
+                        dgvSamples.Rows.Clear();
+                        foreach (var sample in newSoundInfo.EmbeddedSamples)
+                            dgvSamples.Rows.Add(sample.FileName);
+                    }
+                }
+            }
+            finally
+            {
+                _soundInfoCurrentlyChanging = false;
+            }
+        }
+
         private void butClipboardCopy_Click(object sender, EventArgs e)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -196,8 +206,20 @@ namespace TombLib.Controls
             using (MemoryStream stream = new MemoryStream(data, false))
             {
                 var serializer = new XmlSerializer(typeof(WadSoundInfo));
-                SoundInfo = new WadSoundInfo((WadSoundInfo)serializer.Deserialize(stream));
+                var pastedInfo = new WadSoundInfo((WadSoundInfo)serializer.Deserialize(stream));
+
+                UpdateUI(pastedInfo, true);
+
+                if (!_soundInfoCurrentlyChanging)
+                    SoundInfoChanged?.Invoke(this, e);
             }
+        }
+        private void butResetToDefaults_Click(object sender, EventArgs e)
+        {
+            UpdateUI(new WadSoundInfo(), true);
+
+            if (!_soundInfoCurrentlyChanging)
+                SoundInfoChanged?.Invoke(this, e);
         }
 
         private void butAddSample_Click(object sender, EventArgs e)
@@ -218,17 +240,6 @@ namespace TombLib.Controls
                 dgvSamples.Rows.Remove(row);
         }
 
-        private void dgvSamples_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            OnSoundInfoChanged(null, null);
-        }
-
-        private void dgvSamples_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            OnSoundInfoChanged(null, null);
-        }
-        private void butPlayPreview_Click(object sender, EventArgs e) => WadSoundPlayer.PlaySoundInfo(ReferenceLevel, SoundInfo);
-
         private void butBrowse_Click(object sender, EventArgs e)
         {
             var files = LevelFileDialog.BrowseFiles(FindForm(), ReferenceLevel?.Settings, null, "Choose samples", FileExtensions, null);
@@ -246,5 +257,9 @@ namespace TombLib.Controls
                     dgvSamples.Rows.Add(Path.GetFileName(file).ToLower());
                 }
         }
+
+        private void dgvSamples_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e) => OnSoundInfoChanged(null, null);
+        private void dgvSamples_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => OnSoundInfoChanged(null, null);
+        private void butPlayPreview_Click(object sender, EventArgs e) => WadSoundPlayer.PlaySoundInfo(ReferenceLevel, SoundInfo);
     }
 }
