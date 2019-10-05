@@ -265,7 +265,7 @@ namespace WadTool
 
             var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == comboSound.SelectedIndex);
             if (soundInfo != null)
-                try { WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo, false); }
+                try { WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo); }
                 catch (Exception exc) { } // FIXME: do something!
         }
 

@@ -195,6 +195,8 @@ namespace WadTool
 
             if (DialogResult == DialogResult.OK) ApplyChanges();
             else DiscardChanges();
+
+            WadSoundPlayer.StopSample();
         }
 
         private void lstCommands_SelectedIndicesChanged(object sender, EventArgs e)

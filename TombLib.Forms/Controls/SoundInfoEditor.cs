@@ -227,7 +227,7 @@ namespace TombLib.Controls
         {
             OnSoundInfoChanged(null, null);
         }
-        private void butPlayPreview_Click(object sender, EventArgs e) => WadSoundPlayer.PlaySoundInfo(ReferenceLevel, SoundInfo, false);
+        private void butPlayPreview_Click(object sender, EventArgs e) => WadSoundPlayer.PlaySoundInfo(ReferenceLevel, SoundInfo);
 
         private void butBrowse_Click(object sender, EventArgs e)
         {
