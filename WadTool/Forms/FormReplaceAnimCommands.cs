@@ -178,5 +178,11 @@ namespace WadTool
         private void butFind_Click(object sender, EventArgs e) => Search();
         private void butReplace_Click(object sender, EventArgs e) => ReplaceOrDelete();
         private void butDelete_Click(object sender, EventArgs e) => ReplaceOrDelete(true);
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            WadSoundPlayer.StopSample();
+        }
     }
 }

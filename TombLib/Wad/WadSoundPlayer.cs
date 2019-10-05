@@ -13,13 +13,65 @@ namespace TombLib.Wad
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private static Random _rng = new Random();
-        private static WasapiOut _channel = null;
+        private const int maxChannels = 3;
 
-        public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo, bool rewind)
+        private static Random _rng = new Random();
+
+        private static int[] _indices = new int[maxChannels] { -1, -1, -1 };
+        private static WaveOut[] _channels = new WaveOut[maxChannels] { null, null, null };
+
+        public static int GetFreeChannel()
         {
-            if (_channel != null && _channel.PlaybackState == PlaybackState.Playing && rewind)
-                StopSample();
+            for (int i = 0; i < maxChannels; i++)
+                if (_channels[i] == null) return i;
+
+            for (int i = 0; i < maxChannels; i++)
+                if (_channels[i].PlaybackState != PlaybackState.Playing)
+                {
+                    StopSample(i);
+                    return i;
+                }
+
+            StopSample(0);
+            return 0; // Just return first array index, we don't need smart queuing for previews
+        }
+
+        public static int FindPlayingIndex(int index)
+        {
+            for (int i = 0; i < maxChannels; i++)
+            {
+                if (_indices[i] == index &&
+                    _channels[i].PlaybackState == PlaybackState.Playing)
+                    return i;
+            }
+            return -1;
+        }
+
+        public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo)
+        {
+            int channelIndex = FindPlayingIndex(soundInfo.Id);
+
+            if (channelIndex >= 0)
+            {
+                switch (soundInfo.LoopBehaviour)
+                {
+                    case WadSoundLoopBehaviour.Looped:
+                    case WadSoundLoopBehaviour.OneShotWait:
+                        return;
+
+                    case WadSoundLoopBehaviour.OneShotRewound:
+                        StopSample(channelIndex);
+                        break;
+
+                    case WadSoundLoopBehaviour.None:
+                        channelIndex = GetFreeChannel();
+                        break;
+                }
+            }
+            else
+                channelIndex = GetFreeChannel();
+
+            _indices[channelIndex] = soundInfo.Id;
 
             if (soundInfo.EmbeddedSamples.Count == 0)
                 return;
@@ -49,10 +101,10 @@ namespace TombLib.Wad
                     volume -= (float)_rng.NextDouble() * 0.125f;
             }
 
-            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], rewind, volume, pitch, pan, loopCount);
+            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], channelIndex, volume, pitch, pan, loopCount);
         }
 
-        public static void PlaySample(Level level, WadSample sample, bool rewind, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
+        public static void PlaySample(Level level, WadSample sample, int channel, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
         {
             if (volume <= 0.0f || loopCount <= 0)
                 return;
@@ -104,20 +156,18 @@ namespace TombLib.Wad
                 const int latencyInMilliseconds = 200;
                 int latencyInSamples = (sampleStream.WaveFormat.SampleRate * latencyInMilliseconds * 2) / 1000;
                 sampleStream = new OffsetSampleProvider(sampleStream) { LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples };
-
-                // Clean previous preview, if by any chance it's still playing
-                if (rewind)
-                    StopSample(); 
-
+                
                 // Play
-                _channel = disposables.AddAndReturn(new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, latencyInMilliseconds));
-                _channel.Init(sampleStream);
-                _channel.PlaybackStopped += (s, e) =>
+                _channels[channel] = disposables.AddAndReturn(new WaveOut());
+                _channels[channel].Init(sampleStream);
+                _channels[channel].PlaybackStopped += (s, e) =>
                 {
                     foreach (IDisposable disposable in disposables)
                         disposable.Dispose();
+                    _channels[channel] = null;
+                    _indices[channel] = -1;
                 };
-                _channel.Play();
+                _channels[channel].Play();
             }
             catch (Exception ex)
             {
@@ -129,14 +179,16 @@ namespace TombLib.Wad
             }
         }
 
-        public static void StopSample()
+        public static void StopSample(int index = -1)
         {
-            if (_channel != null)
-            {
-                _channel.Stop();
-                _channel.Dispose();
-                _channel = null;
-            }
+            for (int i = 0; i < maxChannels; i++)
+                if (index == -1 || index == i)
+                    if (_channels[i] != null)
+                    {
+                        _channels[i].Stop();
+                        _channels[i].Dispose();
+                        _channels[i] = null;
+                    }
         }
 
         private class RepeatedStream : ISampleProvider

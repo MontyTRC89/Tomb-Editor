@@ -90,7 +90,7 @@ namespace TombEditor.Forms
 
             try
             {
-                WadSoundPlayer.PlaySoundInfo(_editor.Level, soundInfo, true);
+                WadSoundPlayer.PlaySoundInfo(_editor.Level, soundInfo);
             }
             catch (Exception exc)
             {
