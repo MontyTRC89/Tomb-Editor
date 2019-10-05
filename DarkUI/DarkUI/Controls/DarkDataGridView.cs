@@ -1096,6 +1096,19 @@ namespace DarkUI.Controls
             }
         }
 
+        [DefaultValue(false)]
+        public bool Hidden
+        {
+            get { return _hidden ?? (OwningColumn as DarkDataGridViewButtonColumn)?.Visible ?? true; }
+            set
+            {
+                if (value == Hidden)
+                    return;
+                _hidden = value;
+                DataGridView?.InvalidateCell(this);
+            }
+        }
+        private bool? _hidden;
 
         protected override void OnMouseEnter(int rowIndex)
         {
@@ -1156,6 +1169,9 @@ namespace DarkUI.Controls
 
             if (paintParts.HasFlag(DataGridViewPaintParts.Border))
                 PaintBorder(graphics, clipBounds, cellBounds, cellStyle, advancedBorderStyle);
+
+            if (Hidden)
+                return;
 
             // Choose button colors
             Color textColor = cellStyle.ForeColor;

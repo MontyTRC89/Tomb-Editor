@@ -1439,8 +1439,16 @@ namespace TombEditor.Forms
                 soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.actions_refresh_16);
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogEditColumn.Name)
             {
+                var cell = soundsCatalogsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] as DarkDataGridViewButtonCell;
+
                 if (_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    cell.Hidden = false;
                     soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.general_edit_16);
+                }
+                else
+                    cell.Hidden = true;
+
             }
         }
 
