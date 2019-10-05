@@ -146,10 +146,6 @@ namespace TombLib.Wad
                     info.Chance = readerSfx.ReadByte();
                     info.Pitch = readerSfx.ReadByte();
                     info.Characteristics = readerSfx.ReadUInt16();
-
-                    // Convert legacy chance value
-                    if (info.Chance == 0) info.Chance = 100;
-
                     wadSoundInfos.Add(info);
                 }
             }
@@ -168,6 +164,7 @@ namespace TombLib.Wad
                 newInfo.Volume = (int)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
                 newInfo.RangeInSectors = oldInfo.Range;
                 newInfo.Chance = (int)Math.Round(oldInfo.Chance * 100.0f / 255.0f);
+                if (newInfo.Chance == 0) newInfo.Chance = 100; // Convert legacy chance value
                 newInfo.PitchFactor = (int)Math.Round((oldInfo.Pitch > 127 ? oldInfo.Pitch - 256 : oldInfo.Pitch) * 100.0f / 128.0f);
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
                 newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);

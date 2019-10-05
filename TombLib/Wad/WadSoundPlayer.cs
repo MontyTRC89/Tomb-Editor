@@ -13,12 +13,21 @@ namespace TombLib.Wad
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const int maxChannels = 3;
+        private const int maxChannels = 5;
 
         private static Random _rng = new Random();
 
-        private static int[] _indices = new int[maxChannels] { -1, -1, -1 };
-        private static WaveOut[] _channels = new WaveOut[maxChannels] { null, null, null };
+        private static int[] _indices = new int[maxChannels];
+        private static WaveOut[] _channels = new WaveOut[maxChannels];
+
+        static WadSoundPlayer()
+        {
+            for (int i = 0; i < maxChannels; i++)
+            {
+                _indices[i] = -1;
+                _channels[i] = null;
+            }
+        }
 
         public static int GetFreeChannel()
         {
@@ -41,7 +50,7 @@ namespace TombLib.Wad
             for (int i = 0; i < maxChannels; i++)
             {
                 if (_indices[i] == index &&
-                    _channels[i].PlaybackState == PlaybackState.Playing)
+                    _channels[i]?.PlaybackState == PlaybackState.Playing)
                     return i;
             }
             return -1;

@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
@@ -52,6 +53,11 @@ namespace WadTool
                 configuration.SaveTry();
 
                 // Run
+                if (!File.Exists(Application.StartupPath + "\\Catalogs\\TrCatalog.xml"))
+                {
+                    MessageBox.Show("TrCatalog.xml is missing.\nMake sure you have TrCatalog.xml in /Catalogs/ subfolder.");
+                    Environment.Exit(1);
+                }
                 TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
 
                 Application.AddMessageFilter(new ControlScrollFilter());
