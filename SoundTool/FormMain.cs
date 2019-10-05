@@ -187,7 +187,7 @@ namespace SoundTool
 
         private void UpdateUI()
         {
-            string winTitle = "Sound Tool - " + (_currentArchive == null ? "Untitled" : _currentArchive);
+            string winTitle = "SoundTool - " + (_currentArchive == null ? "Untitled" : _currentArchive);
             if (!_saved) winTitle += "*";
             Text = winTitle;
 
