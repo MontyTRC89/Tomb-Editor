@@ -236,7 +236,7 @@ namespace SoundTool
                 form.ShowDialog(this);
         }
 
-        private void dgvSoundInfos_Click(object sender, EventArgs e)
+        private void dgvSoundInfos_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvSoundInfos.SelectedRows.Count == 0)
                 return;
