@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace SoundTool
 {
@@ -33,6 +35,13 @@ namespace SoundTool
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.AddMessageFilter(new ControlScrollFilter());
+
+                if (!File.Exists(Application.StartupPath + "\\Catalogs\\TrCatalog.xml"))
+                {
+                    MessageBox.Show("TrCatalog.xml is missing.\nMake sure you have TrCatalog.xml in /Catalogs/ subfolder.");
+                    Environment.Exit(1);
+                }
+                TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
 
                 using (FormMain form = new FormMain(startFile))
                 {

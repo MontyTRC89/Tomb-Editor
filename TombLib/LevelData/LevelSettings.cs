@@ -478,12 +478,15 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
+
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]
         {
             new FileFormat("TRLE sounds catalog", "txt"),
             new FileFormat("Tomb Editor sounds catalog", "xml")
         };
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsXmlFiles = new[] { new FileFormat("XML file", "xml") };
+        public static IEnumerable<FileFormat> FileFormatImportableSoundsCatalogs =>
+            new[] { new FileFormat("TRLE .sfx compiled sound infos", "sfx") }.Concat(FileFormatsSoundsCatalogs);
 
         public WadSoundInfo WadTryGetSoundInfo(int id)
         {

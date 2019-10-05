@@ -51,7 +51,7 @@ namespace SoundTool
 
             if (filename == null)
                 filename = LevelFileDialog.BrowseFile(this, "Select archive to open",
-                                                      LevelSettings.FileFormatsSoundsCatalogs,
+                                                      LevelSettings.FileFormatImportableSoundsCatalogs,
                                                       false);
 
             if (filename == null || !File.Exists(filename))
@@ -216,7 +216,7 @@ namespace SoundTool
 
         private void LoadReferenceLevel()
         {
-            var fileName = LevelFileDialog.BrowseFile(this, "Open Tomb Editor reference level", LevelSettings.FileFormatsLevel, false);
+            var fileName = LevelFileDialog.BrowseFile(this, "Open Tomb Editor reference project", LevelSettings.FileFormatsLevel, false);
             if (string.IsNullOrEmpty(fileName))
                 return;
 
