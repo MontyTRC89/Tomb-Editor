@@ -746,12 +746,13 @@ namespace TombLib.LevelData.Compilers
             _finalSamplesList = new List<WadSample>();
             SortedDictionary<int, WadSample> loadedSamples = new SortedDictionary<int, WadSample>();
 
+            bool samplesMissing = false;
             Parallel.For(0, samples.Count, i =>
             {
                 WadSample currentSample = WadSample.NullSample;
                 try
                 {
-                    string samplePath = WadSounds.TryGetSamplePath(_level, samples[i].FileName);
+                    string samplePath = WadSounds.TryGetSamplePath(_level.Settings, samples[i].FileName);
 
                     // If sample was found, then load it...
                     if (!string.IsNullOrEmpty(samplePath))
@@ -769,6 +770,7 @@ namespace TombLib.LevelData.Compilers
                     {
                         currentSample = WadSample.NullSample;
                         logger.Warn(new FileNotFoundException(), "Unable to find sample '" + samplePath + "'");
+                        samplesMissing = true;
                     }
                 }
                 catch (Exception exc)
@@ -779,6 +781,9 @@ namespace TombLib.LevelData.Compilers
                 lock (loadedSamples)
                     loadedSamples.Add(i, currentSample);
             });
+
+            if (samplesMissing)
+                _progressReporter.ReportWarn("Some samples weren't found. Make sure sample paths are specified correctly. Check level settings for details.");
 
             _finalSamplesList = loadedSamples.Values.ToList();
         }

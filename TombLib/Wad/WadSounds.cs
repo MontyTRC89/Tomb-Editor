@@ -81,12 +81,12 @@ namespace TombLib.Wad
             return null;
         }
 
-        public static string TryGetSamplePath(Level level, string name)
+        public static string TryGetSamplePath(LevelSettings levelSettings, string name)
         {
             // Search the sample in all registered paths, in descending order
-            for (int p = 0; p < level.Settings.OldWadSoundPaths.Count; p++)
+            for (int p = 0; p < levelSettings.OldWadSoundPaths.Count; p++)
             {
-                string newPath = level.Settings.MakeAbsolute(level.Settings.OldWadSoundPaths[p].Path);
+                string newPath = levelSettings.MakeAbsolute(levelSettings.OldWadSoundPaths[p].Path);
                 if (newPath == null)
                     continue;
 

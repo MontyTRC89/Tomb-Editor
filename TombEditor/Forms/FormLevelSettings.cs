@@ -579,10 +579,10 @@ namespace TombEditor.Forms
             bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
 
-            if (selectedSoundsDataGridView.Columns.Count >= 6)
+            if (selectedSoundsDataGridView.Columns.Count >= 7)
             {
-                selectedSoundsDataGridView.Columns[4].Visible = currentVersionToCheck;
                 selectedSoundsDataGridView.Columns[5].Visible = currentVersionToCheck;
+                selectedSoundsDataGridView.Columns[6].Visible = currentVersionToCheck;
             }
 
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5 || _levelSettings.GameVersion == TRVersion.Game.TR5Main);
@@ -1241,10 +1241,12 @@ namespace TombEditor.Forms
 
                 int originalId;
                 string areaDesc = GetNGDescriptionAndOriginalID(soundInfo.Id, out originalId);
+                var sampleCount = soundInfo.SampleCount(_levelSettings);
+                string samplePrompt = sampleCount == 0 ? "[ missing ]" : (sampleCount == -1 ? "[ none ]" : sampleCount.ToString());
 
                 selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id,
-                    soundInfo.Name, soundInfo.SoundCatalog, areaDesc, originalId);
-                selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1]);
+                    soundInfo.Name, soundInfo.SoundCatalog, samplePrompt, areaDesc, originalId);
+                selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1], sampleCount == 0);
             }
 
             var missingList = GetListOfMissingSounds();
@@ -1260,7 +1262,7 @@ namespace TombEditor.Forms
                 int originalId;
                 string areaDesc = GetNGDescriptionAndOriginalID(missingList[i], out originalId);
 
-                selectedSoundsDataGridView.Rows.Add(true, missingList[i], originalName, "[ Not present in any of loaded catalogs ]", areaDesc, originalId);
+                selectedSoundsDataGridView.Rows.Add(true, missingList[i], originalName, "[ Not present in any of loaded catalogs ]", "", areaDesc, originalId);
                 selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1], true);
             }
 
