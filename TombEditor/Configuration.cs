@@ -35,6 +35,7 @@ namespace TombEditor
         public int Editor_UndoDepth { get; set; } = 20;
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_OpenLastProjectOnStartup { get; set; } = false;
+        public bool Editor_AllowMultipleInstances { get; set; } = false;
 
 
         // PRJ import defaults

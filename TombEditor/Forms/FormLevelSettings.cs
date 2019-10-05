@@ -1428,6 +1428,22 @@ namespace TombEditor.Forms
             }
         }
 
+        private void soundsCatalogsDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= soundsCatalogsDataGridView.Rows.Count)
+                return;
+
+            if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
+                soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.general_Open_16);
+            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogReloadButton.Name)
+                soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.actions_refresh_16);
+            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogEditColumn.Name)
+            {
+                if (_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                    soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.general_edit_16);
+            }
+        }
+
         private void soundsCatalogsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
@@ -1453,6 +1469,12 @@ namespace TombEditor.Forms
                 _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds.Reload(_levelSettings);
                 soundsCatalogsDataGridView.InvalidateRow(e.RowIndex);
                 PopulateSoundInfoListAndResetFilter();
+            }
+            else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogEditColumn.Name)
+            {
+                var path = _levelSettings.MakeAbsolute(_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path);
+                if (File.Exists("soundtool.exe") && File.Exists(path) && Path.GetExtension(path).Equals(".xml", StringComparison.InvariantCultureIgnoreCase))
+                    System.Diagnostics.Process.Start("soundtool.exe", "\"" + path + "\"");
             }
         }
 
@@ -1599,6 +1621,5 @@ namespace TombEditor.Forms
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
-
     }
 }

@@ -203,6 +203,7 @@
     </Compile>
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
     <Compile Include="Utils\LevelFileDialog.cs" />
+    <Compile Include="Utils\SingleInstanceManagement.cs" />
     <Compile Include="Utils\SynchronizationCallback.cs" />
     <Compile Include="Utils\WinFormsUtils.cs" />
   </ItemGroup>
@@ -268,6 +269,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\actions_refresh-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\misc\misc_SoundToolOverlay.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -698,9 +698,31 @@ namespace TombEditor.Forms
             //Script.Test();
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        protected override void WndProc(ref Message message)
         {
+            switch (message.Msg)
+            {
+                case SingleInstanceManagement.WM_COPYDATA:
+                    var fileName = SingleInstanceManagement.Catch(ref message);
+                    if (fileName != null && Path.GetExtension(fileName) == ".prj2")
+                    {
+                        SingleInstanceManagement.RestoreWindowState(this);
 
+                        // Try to open file only if main window is opened, otherwise try to close everything.
+                        for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
+                            if (Application.OpenForms[i].Name != Name)
+                                Application.OpenForms[i].Close();
+                    }
+                    break;
+
+                case SingleInstanceManagement.WM_SHOWWINDOW:
+                    SingleInstanceManagement.RestoreWindowState(this);
+                    break;
+
+                default:
+                    base.WndProc(ref message);
+                    break;
+            }
         }
     }
 }

@@ -28,9 +28,6 @@
             this.butAutodetectSoundsAndAssign = new DarkUI.Controls.DarkButton();
             this.butDeselectAllSounds = new DarkUI.Controls.DarkButton();
             this.butSelectAllSounds = new DarkUI.Controls.DarkButton();
-            this.butDeselectAllStatics = new DarkUI.Controls.DarkButton();
-            this.butSelectAllStatics = new DarkUI.Controls.DarkButton();
-            this.butSelectAllButShatterStatics = new DarkUI.Controls.DarkButton();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -81,6 +78,9 @@
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.tabStaticMeshes = new System.Windows.Forms.TabPage();
+            this.butSelectAllButShatterStatics = new DarkUI.Controls.DarkButton();
+            this.butDeselectAllStatics = new DarkUI.Controls.DarkButton();
+            this.butSelectAllStatics = new DarkUI.Controls.DarkButton();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
@@ -114,12 +114,6 @@
             this.tbFilterSounds = new DarkUI.Controls.DarkTextBox();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogReloadButton = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogsSoundCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
@@ -169,6 +163,13 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogReloadButton = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogEditColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogsSoundCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -324,36 +325,6 @@
             this.butSelectAllSounds.Text = "Select all";
             this.pathToolTip.SetToolTip(this.butSelectAllSounds, "Select all available sounds");
             this.butSelectAllSounds.Click += new System.EventHandler(this.butSelectAllSounds_Click);
-            // 
-            // butDeselectAllStatics
-            // 
-            this.butDeselectAllStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeselectAllStatics.Location = new System.Drawing.Point(617, 408);
-            this.butDeselectAllStatics.Name = "butDeselectAllStatics";
-            this.butDeselectAllStatics.Size = new System.Drawing.Size(80, 22);
-            this.butDeselectAllStatics.TabIndex = 110;
-            this.butDeselectAllStatics.Text = "Deselect all";
-            this.butDeselectAllStatics.Click += new System.EventHandler(this.butDeselectAllStatics_Click);
-            // 
-            // butSelectAllStatics
-            // 
-            this.butSelectAllStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectAllStatics.Location = new System.Drawing.Point(531, 408);
-            this.butSelectAllStatics.Name = "butSelectAllStatics";
-            this.butSelectAllStatics.Size = new System.Drawing.Size(80, 22);
-            this.butSelectAllStatics.TabIndex = 109;
-            this.butSelectAllStatics.Text = "Select all";
-            this.butSelectAllStatics.Click += new System.EventHandler(this.butSelectAllStatics_Click);
-            // 
-            // butSelectAllButShatterStatics
-            // 
-            this.butSelectAllButShatterStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectAllButShatterStatics.Location = new System.Drawing.Point(391, 408);
-            this.butSelectAllButShatterStatics.Name = "butSelectAllButShatterStatics";
-            this.butSelectAllButShatterStatics.Size = new System.Drawing.Size(134, 22);
-            this.butSelectAllButShatterStatics.TabIndex = 111;
-            this.butSelectAllButShatterStatics.Text = "Select all but shatters";
-            this.butSelectAllButShatterStatics.Click += new System.EventHandler(this.butSelectAllButShatterStatics_Click);
             // 
             // optionsList
             // 
@@ -919,6 +890,36 @@
             this.tabStaticMeshes.TabIndex = 8;
             this.tabStaticMeshes.Text = "Static Meshes";
             // 
+            // butSelectAllButShatterStatics
+            // 
+            this.butSelectAllButShatterStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectAllButShatterStatics.Location = new System.Drawing.Point(391, 408);
+            this.butSelectAllButShatterStatics.Name = "butSelectAllButShatterStatics";
+            this.butSelectAllButShatterStatics.Size = new System.Drawing.Size(134, 22);
+            this.butSelectAllButShatterStatics.TabIndex = 111;
+            this.butSelectAllButShatterStatics.Text = "Select all but shatters";
+            this.butSelectAllButShatterStatics.Click += new System.EventHandler(this.butSelectAllButShatterStatics_Click);
+            // 
+            // butDeselectAllStatics
+            // 
+            this.butDeselectAllStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeselectAllStatics.Location = new System.Drawing.Point(617, 408);
+            this.butDeselectAllStatics.Name = "butDeselectAllStatics";
+            this.butDeselectAllStatics.Size = new System.Drawing.Size(80, 22);
+            this.butDeselectAllStatics.TabIndex = 110;
+            this.butDeselectAllStatics.Text = "Deselect all";
+            this.butDeselectAllStatics.Click += new System.EventHandler(this.butDeselectAllStatics_Click);
+            // 
+            // butSelectAllStatics
+            // 
+            this.butSelectAllStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectAllStatics.Location = new System.Drawing.Point(531, 408);
+            this.butSelectAllStatics.Name = "butSelectAllStatics";
+            this.butSelectAllStatics.Size = new System.Drawing.Size(80, 22);
+            this.butSelectAllStatics.TabIndex = 109;
+            this.butSelectAllStatics.Text = "Select all";
+            this.butSelectAllStatics.Click += new System.EventHandler(this.butSelectAllStatics_Click);
+            // 
             // darkLabel19
             // 
             this.darkLabel19.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -1305,8 +1306,9 @@
             this.soundsCatalogsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.SoundsCatalogPathColumn,
             this.SoundsCatalogSearchColumn,
-            this.SoundsCatalogsAssignColumn,
             this.SoundsCatalogReloadButton,
+            this.SoundsCatalogEditColumn,
+            this.SoundsCatalogsAssignColumn,
             this.SoundsCatalogsSoundCountColumn,
             this.SoundsCatalogMessageColumn});
             this.soundsCatalogsDataGridView.Location = new System.Drawing.Point(6, 32);
@@ -1316,62 +1318,9 @@
             this.soundsCatalogsDataGridView.TabIndex = 104;
             this.soundsCatalogsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundsCatalogsDataGridView_CellContentClick);
             this.soundsCatalogsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundsCatalogsDataGridView_CellFormatting);
+            this.soundsCatalogsDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.soundsCatalogsDataGridView_CellPainting);
             this.soundsCatalogsDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.soundsCatalogsDataGridView_RowsRemoved);
             this.soundsCatalogsDataGridView.Sorted += new System.EventHandler(this.soundsCatalogsDataGridView_Sorted);
-            // 
-            // SoundsCatalogPathColumn
-            // 
-            this.SoundsCatalogPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogPathColumn.DataPropertyName = "Path";
-            this.SoundsCatalogPathColumn.FillWeight = 60F;
-            this.SoundsCatalogPathColumn.HeaderText = "Path";
-            this.SoundsCatalogPathColumn.Name = "SoundsCatalogPathColumn";
-            // 
-            // SoundsCatalogSearchColumn
-            // 
-            this.SoundsCatalogSearchColumn.HeaderText = "";
-            this.SoundsCatalogSearchColumn.Name = "SoundsCatalogSearchColumn";
-            this.SoundsCatalogSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogSearchColumn.Text = "Browse";
-            this.SoundsCatalogSearchColumn.Width = 60;
-            // 
-            // SoundsCatalogsAssignColumn
-            // 
-            this.SoundsCatalogsAssignColumn.HeaderText = "";
-            this.SoundsCatalogsAssignColumn.Name = "SoundsCatalogsAssignColumn";
-            this.SoundsCatalogsAssignColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogsAssignColumn.Text = "Include all";
-            this.SoundsCatalogsAssignColumn.ToolTipText = "Include all sounds from this catalog";
-            this.SoundsCatalogsAssignColumn.Width = 60;
-            // 
-            // SoundsCatalogReloadButton
-            // 
-            this.SoundsCatalogReloadButton.HeaderText = "";
-            this.SoundsCatalogReloadButton.Name = "SoundsCatalogReloadButton";
-            this.SoundsCatalogReloadButton.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogReloadButton.Text = "Reload";
-            this.SoundsCatalogReloadButton.ToolTipText = "Reload this catalog from disk";
-            this.SoundsCatalogReloadButton.Width = 60;
-            // 
-            // SoundsCatalogsSoundCountColumn
-            // 
-            this.SoundsCatalogsSoundCountColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogsSoundCountColumn.DataPropertyName = "SoundsCount";
-            this.SoundsCatalogsSoundCountColumn.FillWeight = 20F;
-            this.SoundsCatalogsSoundCountColumn.HeaderText = "Num. sounds";
-            this.SoundsCatalogsSoundCountColumn.Name = "SoundsCatalogsSoundCountColumn";
-            this.SoundsCatalogsSoundCountColumn.ReadOnly = true;
-            this.SoundsCatalogsSoundCountColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // SoundsCatalogMessageColumn
-            // 
-            this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogMessageColumn.DataPropertyName = "Message";
-            this.SoundsCatalogMessageColumn.FillWeight = 40F;
-            this.SoundsCatalogMessageColumn.HeaderText = "Message";
-            this.SoundsCatalogMessageColumn.Name = "SoundsCatalogMessageColumn";
-            this.SoundsCatalogMessageColumn.ReadOnly = true;
-            this.SoundsCatalogMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
             // soundsCatalogsDataGridViewControls
             // 
@@ -1889,6 +1838,70 @@
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
+            // SoundsCatalogPathColumn
+            // 
+            this.SoundsCatalogPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogPathColumn.DataPropertyName = "Path";
+            this.SoundsCatalogPathColumn.FillWeight = 60F;
+            this.SoundsCatalogPathColumn.HeaderText = "Path";
+            this.SoundsCatalogPathColumn.Name = "SoundsCatalogPathColumn";
+            // 
+            // SoundsCatalogSearchColumn
+            // 
+            this.SoundsCatalogSearchColumn.HeaderText = "";
+            this.SoundsCatalogSearchColumn.Name = "SoundsCatalogSearchColumn";
+            this.SoundsCatalogSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogSearchColumn.Text = "";
+            this.SoundsCatalogSearchColumn.ToolTipText = "Browse";
+            this.SoundsCatalogSearchColumn.Width = 24;
+            // 
+            // SoundsCatalogReloadButton
+            // 
+            this.SoundsCatalogReloadButton.HeaderText = "";
+            this.SoundsCatalogReloadButton.Name = "SoundsCatalogReloadButton";
+            this.SoundsCatalogReloadButton.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogReloadButton.Text = "";
+            this.SoundsCatalogReloadButton.ToolTipText = "Reload this catalog from disk";
+            this.SoundsCatalogReloadButton.Width = 24;
+            // 
+            // SoundsCatalogEditColumn
+            // 
+            this.SoundsCatalogEditColumn.HeaderText = "";
+            this.SoundsCatalogEditColumn.Name = "SoundsCatalogEditColumn";
+            this.SoundsCatalogEditColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogEditColumn.Text = "";
+            this.SoundsCatalogEditColumn.ToolTipText = "Edit";
+            this.SoundsCatalogEditColumn.Width = 24;
+            // 
+            // SoundsCatalogsAssignColumn
+            // 
+            this.SoundsCatalogsAssignColumn.HeaderText = "";
+            this.SoundsCatalogsAssignColumn.Name = "SoundsCatalogsAssignColumn";
+            this.SoundsCatalogsAssignColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogsAssignColumn.Text = "Include all";
+            this.SoundsCatalogsAssignColumn.ToolTipText = "Include all sounds from this catalog";
+            this.SoundsCatalogsAssignColumn.Width = 60;
+            // 
+            // SoundsCatalogsSoundCountColumn
+            // 
+            this.SoundsCatalogsSoundCountColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogsSoundCountColumn.DataPropertyName = "SoundsCount";
+            this.SoundsCatalogsSoundCountColumn.FillWeight = 20F;
+            this.SoundsCatalogsSoundCountColumn.HeaderText = "Num. sounds";
+            this.SoundsCatalogsSoundCountColumn.Name = "SoundsCatalogsSoundCountColumn";
+            this.SoundsCatalogsSoundCountColumn.ReadOnly = true;
+            this.SoundsCatalogsSoundCountColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // SoundsCatalogMessageColumn
+            // 
+            this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogMessageColumn.DataPropertyName = "Message";
+            this.SoundsCatalogMessageColumn.FillWeight = 40F;
+            this.SoundsCatalogMessageColumn.HeaderText = "Message";
+            this.SoundsCatalogMessageColumn.Name = "SoundsCatalogMessageColumn";
+            this.SoundsCatalogMessageColumn.ReadOnly = true;
+            this.SoundsCatalogMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2101,12 +2114,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsOriginalIdColumn;
         private DarkUI.Controls.DarkButton butAssignFromWads;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogPathColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogSearchColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
-        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogReloadButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogsSoundCountColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
         private DarkUI.Controls.DarkButton butSelectAllButShatterStatics;
         private DarkUI.Controls.DarkButton butDeselectAllStatics;
         private DarkUI.Controls.DarkButton butSelectAllStatics;
@@ -2117,5 +2124,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogPathColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogSearchColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogReloadButton;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogEditColumn;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogsSoundCountColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
     }
 }
