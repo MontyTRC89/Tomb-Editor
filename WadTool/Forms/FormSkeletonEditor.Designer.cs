@@ -146,6 +146,7 @@
             this.butLoadModel.TabIndex = 80;
             this.butLoadModel.Text = "Replace model";
             this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butLoadModel.Visible = false;
             this.butLoadModel.Click += new System.EventHandler(this.butLoadModel_Click);
             // 
             // darkStatusStrip1

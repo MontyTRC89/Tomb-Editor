@@ -252,10 +252,10 @@ namespace WadTool.Controls
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
-                    if (SelectedMesh == _model.Meshes[i])
+                    if (SelectedMesh == _model.Meshes[i] && _editor.ValidAnimationAndFrames)
                         effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
                     else
-                    effect.Parameters["Color"].SetValue(Vector4.One);
+                        effect.Parameters["Color"].SetValue(Vector4.One);
 
                     effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
 
@@ -269,42 +269,45 @@ namespace WadTool.Controls
                     //foreach (var submesh in mesh.Submeshes)
                     //   _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
-
-                // Draw box
-                if (SelectedMesh != null)
+                
+                if (_editor.ValidAnimationAndFrames)
                 {
-                    if (_vertexBufferVisibility != null)
-                        _vertexBufferVisibility.Dispose();
-                    int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
-                    var world = (_editor.CurrentAnim != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]);
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Skin.Meshes[meshIndex].BoundingBox);
+                    // Draw selection box
+                    if (SelectedMesh != null)
+                    {
+                        if (_vertexBufferVisibility != null)
+                            _vertexBufferVisibility.Dispose();
+                        int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
+                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Skin.Meshes[meshIndex].BoundingBox);
 
-                    _device.SetVertexBuffer(_vertexBufferVisibility);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
-                    _device.SetIndexBuffer(null, false);
+                        _device.SetVertexBuffer(_vertexBufferVisibility);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
+                        _device.SetIndexBuffer(null, false);
 
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                        solidEffect.Parameters["ModelViewProjection"].SetValue((_model.AnimationTransforms[meshIndex] * viewProjection).ToSharpDX());
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                        solidEffect.CurrentTechnique.Passes[0].Apply();
 
-                    _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
-                }
+                        _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
+                    }
 
-                if (DrawCollisionBox && _editor.ValidAnimationAndFrames)
-                {
-                    if (_vertexBufferVisibility != null)
-                        _vertexBufferVisibility.Dispose();
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(_editor.CurrentKeyFrame.BoundingBox);
+                    // Draw collision box
+                    if (DrawCollisionBox)
+                    {
+                        if (_vertexBufferVisibility != null)
+                            _vertexBufferVisibility.Dispose();
+                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(_editor.CurrentKeyFrame.BoundingBox);
 
-                    _device.SetVertexBuffer(_vertexBufferVisibility);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
-                    _device.SetIndexBuffer(null, false);
+                        _device.SetVertexBuffer(_vertexBufferVisibility);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
+                        _device.SetIndexBuffer(null, false);
 
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                        solidEffect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                        solidEffect.CurrentTechnique.Passes[0].Apply();
 
-                    _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
+                        _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
+                    }
                 }
             }
 
@@ -323,7 +326,7 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            if (DrawGizmo && SelectedMesh != null)
+            if (DrawGizmo && SelectedMesh != null && _editor.ValidAnimationAndFrames)
             {
                 // Draw the gizmo
                 SwapChain.ClearDepth();

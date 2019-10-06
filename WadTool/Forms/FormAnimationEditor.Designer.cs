@@ -62,7 +62,9 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
@@ -103,9 +105,6 @@ namespace WadTool
             this.butTbInterpolateFrames = new System.Windows.Forms.ToolStripButton();
             this.tbInterpolateFrameCount = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.labelBone = new System.Windows.Forms.ToolStripLabel();
-            this.comboBoneList = new DarkUI.Controls.ToolStripDarkComboBox();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.labelRoom = new System.Windows.Forms.ToolStripLabel();
             this.comboRoomList = new DarkUI.Controls.ToolStripDarkComboBox();
             this.lstAnimations = new DarkUI.Controls.DarkListView();
@@ -114,8 +113,28 @@ namespace WadTool
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.butAddNewAnimation = new DarkUI.Controls.DarkButton();
-            this.panelView = new DarkUI.Controls.DarkSectionPanel();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
+            this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.butSelectNoMeshes = new DarkUI.Controls.DarkButton();
+            this.butSelectAllMeshes = new DarkUI.Controls.DarkButton();
+            this.nudBBoxMaxY = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel9 = new DarkUI.Controls.DarkLabel();
+            this.nudBBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+            this.nudBBoxMaxX = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudBBoxMinY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudBBoxMinZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.butShrinkBBox = new DarkUI.Controls.DarkButton();
+            this.nudBBoxMinX = new DarkUI.Controls.DarkNumericUpDown();
+            this.butResetBBoxAnim = new DarkUI.Controls.DarkButton();
+            this.butCalcBBoxAnim = new DarkUI.Controls.DarkButton();
+            this.nudGrowY = new DarkUI.Controls.DarkNumericUpDown();
+            this.dgvBoundingMeshList = new DarkUI.Controls.DarkDataGridView();
+            this.dgvBoundingMeshListCheckboxes = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dgvBoundingMeshListMeshes = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nudGrowX = new DarkUI.Controls.DarkNumericUpDown();
+            this.butGrowBBox = new DarkUI.Controls.DarkButton();
+            this.nudGrowZ = new DarkUI.Controls.DarkNumericUpDown();
             this.panelTimeline = new System.Windows.Forms.Panel();
             this.timeline = new TombLib.Controls.AnimationTrackBar();
             this.panelTransport = new System.Windows.Forms.Panel();
@@ -131,13 +150,10 @@ namespace WadTool
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
             this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
             this.darkSectionPanel4 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tbEndHorVel = new DarkUI.Controls.DarkTextBox();
             this.tbStartHorVel = new DarkUI.Controls.DarkTextBox();
             this.tbEndVertVel = new DarkUI.Controls.DarkTextBox();
-            this.butClearAnimCollision = new DarkUI.Controls.DarkButton();
             this.tbStartVertVel = new DarkUI.Controls.DarkTextBox();
-            this.butCalculateAnimCollision = new DarkUI.Controls.DarkButton();
             this.nudNextFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.nudNextAnim = new DarkUI.Controls.DarkNumericUpDown();
             this.nudFramerate = new DarkUI.Controls.DarkNumericUpDown();
@@ -146,7 +162,8 @@ namespace WadTool
             this.darkButton3 = new DarkUI.Controls.DarkButton();
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.panelMain = new System.Windows.Forms.Panel();
-            this.panelTools = new System.Windows.Forms.Panel();
+            this.panelRight = new System.Windows.Forms.Panel();
+            this.panelLeft = new System.Windows.Forms.Panel();
             this.panelTransform = new DarkUI.Controls.DarkSectionPanel();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.picTransformPreview = new System.Windows.Forms.PictureBox();
@@ -176,13 +193,21 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
-            this.panelView.SuspendLayout();
+            this.darkSectionPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMaxY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMaxZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMaxX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMinY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMinZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMinX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGrowY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBoundingMeshList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGrowX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGrowZ)).BeginInit();
             this.panelTimeline.SuspendLayout();
             this.panelTransport.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
@@ -191,7 +216,8 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).BeginInit();
             this.panelMain.SuspendLayout();
-            this.panelTools.SuspendLayout();
+            this.panelRight.SuspendLayout();
+            this.panelLeft.SuspendLayout();
             this.panelTransform.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).BeginInit();
@@ -215,7 +241,7 @@ namespace WadTool
             this.topMenu.Location = new System.Drawing.Point(0, 0);
             this.topMenu.Name = "topMenu";
             this.topMenu.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.topMenu.Size = new System.Drawing.Size(975, 24);
+            this.topMenu.Size = new System.Drawing.Size(1039, 24);
             this.topMenu.TabIndex = 0;
             this.topMenu.Text = "darkMenuStrip1";
             // 
@@ -427,8 +453,8 @@ namespace WadTool
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("calculateBoundingBoxForAllFramesToolStripMenuItem.Image")));
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Name = "calculateBoundingBoxForAllFramesToolStripMenuItem";
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate collision box for all frames";
+            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate collision box";
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForAllFramesToolStripMenuItem_Click);
             // 
             // deleteBoundingBoxForAllFramesToolStripMenuItem
@@ -436,8 +462,8 @@ namespace WadTool
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Name = "deleteBoundingBoxForAllFramesToolStripMenuItem";
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete collision box for all frames";
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete collision box";
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.deleteBoundingBoxForAllFramesToolStripMenuItem_Click);
             // 
             // resampleAnimationToolStripMenuItem
@@ -587,8 +613,8 @@ namespace WadTool
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image")));
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Name = "calculateCollisionBoxForCurrentFrameToolStripMenuItem";
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate collision box for current frame";
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate collision box";
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click);
             // 
             // deleteCollisionBoxForCurrentFrameToolStripMenuItem
@@ -596,8 +622,8 @@ namespace WadTool
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Name = "deleteCollisionBoxForCurrentFrameToolStripMenuItem";
-            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Delete collision box for current frame";
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Delete collision box";
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click);
             // 
             // renderingToolStripMenuItem
@@ -651,6 +677,14 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
             // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+            // 
             // smoothAnimationsToolStripMenuItem
             // 
             this.smoothAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -663,16 +697,28 @@ namespace WadTool
             this.smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
             this.smoothAnimationsToolStripMenuItem.Click += new System.EventHandler(this.smoothAnimationsToolStripMenuItem_Click);
             // 
+            // scrollGridToolStripMenuItem
+            // 
+            this.scrollGridToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.scrollGridToolStripMenuItem.Checked = true;
+            this.scrollGridToolStripMenuItem.CheckOnClick = true;
+            this.scrollGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.scrollGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.scrollGridToolStripMenuItem.Name = "scrollGridToolStripMenuItem";
+            this.scrollGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.scrollGridToolStripMenuItem.Text = "Scroll grid";
+            this.scrollGridToolStripMenuItem.Click += new System.EventHandler(this.scrollGridToolStripMenuItem_Click);
+            // 
             // darkStatusStrip1
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusFrame});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 650);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 643);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(975, 25);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(1039, 25);
             this.darkStatusStrip1.TabIndex = 1;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -725,7 +771,7 @@ namespace WadTool
             this.tbStateId.Location = new System.Drawing.Point(44, 56);
             this.tbStateId.Name = "tbStateId";
             this.tbStateId.Size = new System.Drawing.Size(193, 22);
-            this.tbStateId.TabIndex = 103;
+            this.tbStateId.TabIndex = 7;
             this.tbStateId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbStateId_KeyDown);
             this.tbStateId.Validated += new System.EventHandler(this.tbStateId_Validated);
             // 
@@ -741,7 +787,7 @@ namespace WadTool
             // darkLabel6
             // 
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel6.Location = new System.Drawing.Point(139, 82);
+            this.darkLabel6.Location = new System.Drawing.Point(185, 82);
             this.darkLabel6.Name = "darkLabel6";
             this.darkLabel6.Size = new System.Drawing.Size(65, 13);
             this.darkLabel6.TabIndex = 100;
@@ -750,7 +796,7 @@ namespace WadTool
             // darkLabel5
             // 
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(69, 82);
+            this.darkLabel5.Location = new System.Drawing.Point(93, 82);
             this.darkLabel5.Name = "darkLabel5";
             this.darkLabel5.Size = new System.Drawing.Size(64, 13);
             this.darkLabel5.TabIndex = 98;
@@ -772,7 +818,7 @@ namespace WadTool
             this.tbName.Location = new System.Drawing.Point(44, 28);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(231, 22);
-            this.tbName.TabIndex = 95;
+            this.tbName.TabIndex = 6;
             this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
             this.tbName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbName_KeyDown);
             this.tbName.Validated += new System.EventHandler(this.animParameter_Validated);
@@ -793,7 +839,7 @@ namespace WadTool
             this.tbSearchAnimation.Location = new System.Drawing.Point(4, 28);
             this.tbSearchAnimation.Name = "tbSearchAnimation";
             this.tbSearchAnimation.Size = new System.Drawing.Size(221, 22);
-            this.tbSearchAnimation.TabIndex = 123;
+            this.tbSearchAnimation.TabIndex = 0;
             this.toolTip1.SetToolTip(this.tbSearchAnimation, "Numerical input - filter by state ID.\r\nString input - filter by animation name.\r\n" +
         "\r\nTokens:\r\ns:[name or ID] - state name or ID\r\na:[name or ID] - anim name or ID");
             this.tbSearchAnimation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchByStateID_KeyDown);
@@ -830,15 +876,12 @@ namespace WadTool
             this.butTbInterpolateFrames,
             this.tbInterpolateFrameCount,
             this.toolStripSeparator4,
-            this.labelBone,
-            this.comboBoneList,
-            this.toolStripSeparator3,
             this.labelRoom,
             this.comboRoomList});
             this.topBar.Location = new System.Drawing.Point(0, 24);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.topBar.Size = new System.Drawing.Size(975, 28);
+            this.topBar.Size = new System.Drawing.Size(1039, 28);
             this.topBar.TabIndex = 6;
             this.topBar.Text = "darkToolStrip1";
             // 
@@ -1128,32 +1171,7 @@ namespace WadTool
             this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
-            // 
-            // labelBone
-            // 
-            this.labelBone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.labelBone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelBone.Name = "labelBone";
-            this.labelBone.Size = new System.Drawing.Size(30, 25);
-            this.labelBone.Text = "Bone:";
-            // 
-            // comboBoneList
-            // 
-            this.comboBoneList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboBoneList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.comboBoneList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.comboBoneList.Name = "comboBoneList";
-            this.comboBoneList.SelectedIndex = -1;
-            this.comboBoneList.Size = new System.Drawing.Size(121, 25);
-            this.comboBoneList.SelectedIndexChanged += new System.EventHandler(this.comboBoneList_SelectedIndexChanged);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator4.Visible = false;
             // 
             // labelRoom
             // 
@@ -1162,6 +1180,7 @@ namespace WadTool
             this.labelRoom.Name = "labelRoom";
             this.labelRoom.Size = new System.Drawing.Size(34, 25);
             this.labelRoom.Text = "Room:";
+            this.labelRoom.Visible = false;
             // 
             // comboRoomList
             // 
@@ -1171,6 +1190,7 @@ namespace WadTool
             this.comboRoomList.Name = "comboRoomList";
             this.comboRoomList.SelectedIndex = -1;
             this.comboRoomList.Size = new System.Drawing.Size(121, 25);
+            this.comboRoomList.Visible = false;
             this.comboRoomList.SelectedIndexChanged += new System.EventHandler(this.comboRoomList_SelectedIndexChanged);
             // 
             // lstAnimations
@@ -1181,8 +1201,8 @@ namespace WadTool
             this.lstAnimations.Location = new System.Drawing.Point(4, 53);
             this.lstAnimations.MouseWheelScrollSpeedV = 0.2F;
             this.lstAnimations.Name = "lstAnimations";
-            this.lstAnimations.Size = new System.Drawing.Size(271, 196);
-            this.lstAnimations.TabIndex = 8;
+            this.lstAnimations.Size = new System.Drawing.Size(271, 151);
+            this.lstAnimations.TabIndex = 3;
             this.lstAnimations.SelectedIndicesChanged += new System.EventHandler(this.lstAnimations_SelectedIndicesChanged);
             this.lstAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
             // 
@@ -1200,7 +1220,7 @@ namespace WadTool
             this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(280, 120);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Animation List";
-            this.darkSectionPanel1.Size = new System.Drawing.Size(280, 281);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(280, 236);
             this.darkSectionPanel1.TabIndex = 9;
             // 
             // butShowAll
@@ -1210,7 +1230,7 @@ namespace WadTool
             this.butShowAll.Location = new System.Drawing.Point(253, 28);
             this.butShowAll.Name = "butShowAll";
             this.butShowAll.Size = new System.Drawing.Size(22, 22);
-            this.butShowAll.TabIndex = 124;
+            this.butShowAll.TabIndex = 2;
             this.toolTip1.SetToolTip(this.butShowAll, "Reset filtering");
             this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
             // 
@@ -1218,10 +1238,10 @@ namespace WadTool
             // 
             this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butDeleteAnimation.Image")));
-            this.butDeleteAnimation.Location = new System.Drawing.Point(252, 253);
+            this.butDeleteAnimation.Location = new System.Drawing.Point(252, 208);
             this.butDeleteAnimation.Name = "butDeleteAnimation";
             this.butDeleteAnimation.Size = new System.Drawing.Size(23, 24);
-            this.butDeleteAnimation.TabIndex = 23;
+            this.butDeleteAnimation.TabIndex = 5;
             this.toolTip1.SetToolTip(this.butDeleteAnimation, "Delete animation");
             this.butDeleteAnimation.Click += new System.EventHandler(this.butDeleteAnimation_Click);
             // 
@@ -1232,7 +1252,7 @@ namespace WadTool
             this.darkButton1.Location = new System.Drawing.Point(228, 28);
             this.darkButton1.Name = "darkButton1";
             this.darkButton1.Size = new System.Drawing.Size(22, 22);
-            this.darkButton1.TabIndex = 122;
+            this.darkButton1.TabIndex = 1;
             this.toolTip1.SetToolTip(this.darkButton1, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
         "");
             this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
@@ -1241,34 +1261,406 @@ namespace WadTool
             // 
             this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddNewAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butAddNewAnimation.Image")));
-            this.butAddNewAnimation.Location = new System.Drawing.Point(225, 253);
+            this.butAddNewAnimation.Location = new System.Drawing.Point(225, 208);
             this.butAddNewAnimation.Name = "butAddNewAnimation";
             this.butAddNewAnimation.Size = new System.Drawing.Size(23, 24);
-            this.butAddNewAnimation.TabIndex = 93;
+            this.butAddNewAnimation.TabIndex = 4;
             this.toolTip1.SetToolTip(this.butAddNewAnimation, "Add new animation");
             this.butAddNewAnimation.Click += new System.EventHandler(this.butAddNewAnimation_Click);
-            // 
-            // panelView
-            // 
-            this.panelView.Controls.Add(this.panelRendering);
-            this.panelView.Controls.Add(this.panelTimeline);
-            this.panelView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelView.Location = new System.Drawing.Point(284, 4);
-            this.panelView.Name = "panelView";
-            this.panelView.SectionHeader = null;
-            this.panelView.Size = new System.Drawing.Size(687, 590);
-            this.panelView.TabIndex = 10;
             // 
             // panelRendering
             // 
             this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(1, 1);
+            this.panelRendering.Location = new System.Drawing.Point(284, 4);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(685, 550);
+            this.panelRendering.Size = new System.Drawing.Size(551, 545);
             this.panelRendering.TabIndex = 9;
             this.panelRendering.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDoubleClick);
             this.panelRendering.MouseEnter += new System.EventHandler(this.panelRendering_MouseEnter);
             this.panelRendering.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseMove);
+            // 
+            // darkSectionPanel2
+            // 
+            this.darkSectionPanel2.Controls.Add(this.butSelectNoMeshes);
+            this.darkSectionPanel2.Controls.Add(this.butSelectAllMeshes);
+            this.darkSectionPanel2.Controls.Add(this.nudBBoxMaxY);
+            this.darkSectionPanel2.Controls.Add(this.darkLabel9);
+            this.darkSectionPanel2.Controls.Add(this.nudBBoxMaxZ);
+            this.darkSectionPanel2.Controls.Add(this.darkLabel10);
+            this.darkSectionPanel2.Controls.Add(this.nudBBoxMaxX);
+            this.darkSectionPanel2.Controls.Add(this.nudBBoxMinY);
+            this.darkSectionPanel2.Controls.Add(this.nudBBoxMinZ);
+            this.darkSectionPanel2.Controls.Add(this.butShrinkBBox);
+            this.darkSectionPanel2.Controls.Add(this.nudBBoxMinX);
+            this.darkSectionPanel2.Controls.Add(this.butResetBBoxAnim);
+            this.darkSectionPanel2.Controls.Add(this.butCalcBBoxAnim);
+            this.darkSectionPanel2.Controls.Add(this.nudGrowY);
+            this.darkSectionPanel2.Controls.Add(this.dgvBoundingMeshList);
+            this.darkSectionPanel2.Controls.Add(this.nudGrowX);
+            this.darkSectionPanel2.Controls.Add(this.butGrowBBox);
+            this.darkSectionPanel2.Controls.Add(this.nudGrowZ);
+            this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
+            this.darkSectionPanel2.Name = "darkSectionPanel2";
+            this.darkSectionPanel2.SectionHeader = "Bounding box";
+            this.darkSectionPanel2.Size = new System.Drawing.Size(200, 545);
+            this.darkSectionPanel2.TabIndex = 6;
+            // 
+            // butSelectNoMeshes
+            // 
+            this.butSelectNoMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butSelectNoMeshes.Location = new System.Drawing.Point(102, 348);
+            this.butSelectNoMeshes.Name = "butSelectNoMeshes";
+            this.butSelectNoMeshes.Size = new System.Drawing.Size(94, 22);
+            this.butSelectNoMeshes.TabIndex = 27;
+            this.butSelectNoMeshes.Text = "Select none";
+            this.toolTip1.SetToolTip(this.butSelectNoMeshes, "Select no meshes");
+            this.butSelectNoMeshes.Click += new System.EventHandler(this.butSelectNoMeshes_Click);
+            // 
+            // butSelectAllMeshes
+            // 
+            this.butSelectAllMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butSelectAllMeshes.Location = new System.Drawing.Point(4, 348);
+            this.butSelectAllMeshes.Name = "butSelectAllMeshes";
+            this.butSelectAllMeshes.Size = new System.Drawing.Size(93, 22);
+            this.butSelectAllMeshes.TabIndex = 26;
+            this.butSelectAllMeshes.Text = "Select all";
+            this.toolTip1.SetToolTip(this.butSelectAllMeshes, "Select all meshes");
+            this.butSelectAllMeshes.Click += new System.EventHandler(this.butSelectAllMeshes_Click);
+            // 
+            // nudBBoxMaxY
+            // 
+            this.nudBBoxMaxY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudBBoxMaxY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudBBoxMaxY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudBBoxMaxY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudBBoxMaxY.Location = new System.Drawing.Point(70, 518);
+            this.nudBBoxMaxY.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudBBoxMaxY.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudBBoxMaxY.MousewheelSingleIncrement = true;
+            this.nudBBoxMaxY.Name = "nudBBoxMaxY";
+            this.nudBBoxMaxY.Size = new System.Drawing.Size(60, 22);
+            this.nudBBoxMaxY.TabIndex = 39;
+            this.nudBBoxMaxY.ValueChanged += new System.EventHandler(this.nudBBoxMaxY_ValueChanged);
+            this.nudBBoxMaxY.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // darkLabel9
+            // 
+            this.darkLabel9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel9.AutoSize = true;
+            this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel9.Location = new System.Drawing.Point(1, 474);
+            this.darkLabel9.Name = "darkLabel9";
+            this.darkLabel9.Size = new System.Drawing.Size(42, 13);
+            this.darkLabel9.TabIndex = 9;
+            this.darkLabel9.Text = "Resize:";
+            // 
+            // nudBBoxMaxZ
+            // 
+            this.nudBBoxMaxZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudBBoxMaxZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudBBoxMaxZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudBBoxMaxZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudBBoxMaxZ.Location = new System.Drawing.Point(135, 518);
+            this.nudBBoxMaxZ.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudBBoxMaxZ.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudBBoxMaxZ.MousewheelSingleIncrement = true;
+            this.nudBBoxMaxZ.Name = "nudBBoxMaxZ";
+            this.nudBBoxMaxZ.Size = new System.Drawing.Size(61, 22);
+            this.nudBBoxMaxZ.TabIndex = 40;
+            this.nudBBoxMaxZ.ValueChanged += new System.EventHandler(this.nudBBoxMaxZ_ValueChanged);
+            this.nudBBoxMaxZ.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel10.AutoSize = true;
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(1, 403);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(85, 13);
+            this.darkLabel10.TabIndex = 8;
+            this.darkLabel10.Text = "Grow && shrink:";
+            // 
+            // nudBBoxMaxX
+            // 
+            this.nudBBoxMaxX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudBBoxMaxX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudBBoxMaxX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudBBoxMaxX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudBBoxMaxX.Location = new System.Drawing.Point(4, 518);
+            this.nudBBoxMaxX.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudBBoxMaxX.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudBBoxMaxX.MousewheelSingleIncrement = true;
+            this.nudBBoxMaxX.Name = "nudBBoxMaxX";
+            this.nudBBoxMaxX.Size = new System.Drawing.Size(61, 22);
+            this.nudBBoxMaxX.TabIndex = 38;
+            this.nudBBoxMaxX.ValueChanged += new System.EventHandler(this.nudBBoxMaxX_ValueChanged);
+            this.nudBBoxMaxX.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // nudBBoxMinY
+            // 
+            this.nudBBoxMinY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudBBoxMinY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudBBoxMinY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudBBoxMinY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudBBoxMinY.Location = new System.Drawing.Point(70, 490);
+            this.nudBBoxMinY.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudBBoxMinY.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudBBoxMinY.MousewheelSingleIncrement = true;
+            this.nudBBoxMinY.Name = "nudBBoxMinY";
+            this.nudBBoxMinY.Size = new System.Drawing.Size(60, 22);
+            this.nudBBoxMinY.TabIndex = 36;
+            this.nudBBoxMinY.ValueChanged += new System.EventHandler(this.nudBBoxMinY_ValueChanged);
+            this.nudBBoxMinY.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // nudBBoxMinZ
+            // 
+            this.nudBBoxMinZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudBBoxMinZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudBBoxMinZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudBBoxMinZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudBBoxMinZ.Location = new System.Drawing.Point(135, 490);
+            this.nudBBoxMinZ.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudBBoxMinZ.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudBBoxMinZ.MousewheelSingleIncrement = true;
+            this.nudBBoxMinZ.Name = "nudBBoxMinZ";
+            this.nudBBoxMinZ.Size = new System.Drawing.Size(61, 22);
+            this.nudBBoxMinZ.TabIndex = 37;
+            this.nudBBoxMinZ.ValueChanged += new System.EventHandler(this.nudBBoxMinZ_ValueChanged);
+            this.nudBBoxMinZ.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // butShrinkBBox
+            // 
+            this.butShrinkBBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butShrinkBBox.Location = new System.Drawing.Point(103, 446);
+            this.butShrinkBBox.Name = "butShrinkBBox";
+            this.butShrinkBBox.Size = new System.Drawing.Size(93, 23);
+            this.butShrinkBBox.TabIndex = 34;
+            this.butShrinkBBox.Text = "Shrink";
+            this.toolTip1.SetToolTip(this.butShrinkBBox, "Deflate bounding box");
+            this.butShrinkBBox.Click += new System.EventHandler(this.butShrinkBBox_Click);
+            // 
+            // nudBBoxMinX
+            // 
+            this.nudBBoxMinX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudBBoxMinX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudBBoxMinX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudBBoxMinX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudBBoxMinX.Location = new System.Drawing.Point(4, 490);
+            this.nudBBoxMinX.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudBBoxMinX.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudBBoxMinX.MousewheelSingleIncrement = true;
+            this.nudBBoxMinX.Name = "nudBBoxMinX";
+            this.nudBBoxMinX.Size = new System.Drawing.Size(61, 22);
+            this.nudBBoxMinX.TabIndex = 35;
+            this.nudBBoxMinX.ValueChanged += new System.EventHandler(this.nudBBoxMinX_ValueChanged);
+            this.nudBBoxMinX.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // butResetBBoxAnim
+            // 
+            this.butResetBBoxAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butResetBBoxAnim.Location = new System.Drawing.Point(102, 376);
+            this.butResetBBoxAnim.Name = "butResetBBoxAnim";
+            this.butResetBBoxAnim.Size = new System.Drawing.Size(94, 23);
+            this.butResetBBoxAnim.TabIndex = 29;
+            this.butResetBBoxAnim.Text = "Delete";
+            this.toolTip1.SetToolTip(this.butResetBBoxAnim, "Delete collision box");
+            this.butResetBBoxAnim.Click += new System.EventHandler(this.butResetBBoxAnim_Click);
+            // 
+            // butCalcBBoxAnim
+            // 
+            this.butCalcBBoxAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butCalcBBoxAnim.Location = new System.Drawing.Point(4, 376);
+            this.butCalcBBoxAnim.Name = "butCalcBBoxAnim";
+            this.butCalcBBoxAnim.Size = new System.Drawing.Size(93, 23);
+            this.butCalcBBoxAnim.TabIndex = 28;
+            this.butCalcBBoxAnim.Text = "Calculate";
+            this.toolTip1.SetToolTip(this.butCalcBBoxAnim, "Calculate collision box");
+            this.butCalcBBoxAnim.Click += new System.EventHandler(this.butCalcBBoxAnim_Click);
+            // 
+            // nudGrowY
+            // 
+            this.nudGrowY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudGrowY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudGrowY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudGrowY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudGrowY.Location = new System.Drawing.Point(70, 419);
+            this.nudGrowY.Maximum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            0});
+            this.nudGrowY.MousewheelSingleIncrement = true;
+            this.nudGrowY.Name = "nudGrowY";
+            this.nudGrowY.Size = new System.Drawing.Size(61, 22);
+            this.nudGrowY.TabIndex = 31;
+            // 
+            // dgvBoundingMeshList
+            // 
+            this.dgvBoundingMeshList.AllowUserToAddRows = false;
+            this.dgvBoundingMeshList.AllowUserToDeleteRows = false;
+            this.dgvBoundingMeshList.AllowUserToDragDropRows = false;
+            this.dgvBoundingMeshList.AllowUserToPasteCells = false;
+            this.dgvBoundingMeshList.AllowUserToResizeColumns = false;
+            this.dgvBoundingMeshList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvBoundingMeshList.ColumnHeadersHeight = 17;
+            this.dgvBoundingMeshList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dgvBoundingMeshListCheckboxes,
+            this.dgvBoundingMeshListMeshes});
+            this.dgvBoundingMeshList.Location = new System.Drawing.Point(4, 28);
+            this.dgvBoundingMeshList.MultiSelect = false;
+            this.dgvBoundingMeshList.Name = "dgvBoundingMeshList";
+            this.dgvBoundingMeshList.RowHeadersWidth = 41;
+            this.dgvBoundingMeshList.Size = new System.Drawing.Size(192, 314);
+            this.dgvBoundingMeshList.TabIndex = 25;
+            this.dgvBoundingMeshList.SelectionChanged += new System.EventHandler(this.dgvBoundingMeshList_SelectionChanged);
+            // 
+            // dgvBoundingMeshListCheckboxes
+            // 
+            this.dgvBoundingMeshListCheckboxes.HeaderText = "Use";
+            this.dgvBoundingMeshListCheckboxes.Name = "dgvBoundingMeshListCheckboxes";
+            this.dgvBoundingMeshListCheckboxes.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvBoundingMeshListCheckboxes.Width = 40;
+            // 
+            // dgvBoundingMeshListMeshes
+            // 
+            this.dgvBoundingMeshListMeshes.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dgvBoundingMeshListMeshes.HeaderText = "Mesh";
+            this.dgvBoundingMeshListMeshes.Name = "dgvBoundingMeshListMeshes";
+            this.dgvBoundingMeshListMeshes.ReadOnly = true;
+            this.dgvBoundingMeshListMeshes.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // nudGrowX
+            // 
+            this.nudGrowX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudGrowX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudGrowX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudGrowX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudGrowX.Location = new System.Drawing.Point(4, 419);
+            this.nudGrowX.Maximum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            0});
+            this.nudGrowX.MousewheelSingleIncrement = true;
+            this.nudGrowX.Name = "nudGrowX";
+            this.nudGrowX.Size = new System.Drawing.Size(61, 22);
+            this.nudGrowX.TabIndex = 30;
+            // 
+            // butGrowBBox
+            // 
+            this.butGrowBBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butGrowBBox.Location = new System.Drawing.Point(4, 446);
+            this.butGrowBBox.Name = "butGrowBBox";
+            this.butGrowBBox.Size = new System.Drawing.Size(94, 23);
+            this.butGrowBBox.TabIndex = 33;
+            this.butGrowBBox.Text = "Grow";
+            this.toolTip1.SetToolTip(this.butGrowBBox, "Inflate bounding box");
+            this.butGrowBBox.Click += new System.EventHandler(this.butGrowBBox_Click);
+            // 
+            // nudGrowZ
+            // 
+            this.nudGrowZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.nudGrowZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.nudGrowZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.nudGrowZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudGrowZ.Location = new System.Drawing.Point(136, 419);
+            this.nudGrowZ.Maximum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            0});
+            this.nudGrowZ.MousewheelSingleIncrement = true;
+            this.nudGrowZ.Name = "nudGrowZ";
+            this.nudGrowZ.Size = new System.Drawing.Size(60, 22);
+            this.nudGrowZ.TabIndex = 32;
             // 
             // panelTimeline
             // 
@@ -1276,24 +1668,26 @@ namespace WadTool
             this.panelTimeline.Controls.Add(this.timeline);
             this.panelTimeline.Controls.Add(this.panelTransport);
             this.panelTimeline.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelTimeline.Location = new System.Drawing.Point(1, 551);
+            this.panelTimeline.Location = new System.Drawing.Point(4, 549);
             this.panelTimeline.Name = "panelTimeline";
-            this.panelTimeline.Size = new System.Drawing.Size(685, 38);
+            this.panelTimeline.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.panelTimeline.Size = new System.Drawing.Size(1031, 38);
             this.panelTimeline.TabIndex = 8;
             // 
             // timeline
             // 
             this.timeline.Dock = System.Windows.Forms.DockStyle.Fill;
             this.timeline.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.timeline.Location = new System.Drawing.Point(0, 0);
+            this.timeline.Location = new System.Drawing.Point(0, 2);
             this.timeline.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.timeline.Maximum = 0;
             this.timeline.Minimum = 0;
             this.timeline.Name = "timeline";
             this.timeline.SelectionEnd = 0;
             this.timeline.SelectionStart = 0;
-            this.timeline.Size = new System.Drawing.Size(438, 38);
+            this.timeline.Size = new System.Drawing.Size(784, 36);
             this.timeline.TabIndex = 3;
+            this.timeline.TabStop = false;
             this.timeline.Value = 0;
             this.timeline.ValueChanged += new System.EventHandler(this.timeline_ValueChanged);
             this.timeline.SelectionChanged += new System.EventHandler(this.timeline_SelectionChanged);
@@ -1303,9 +1697,9 @@ namespace WadTool
             // 
             this.panelTransport.Controls.Add(this.darkToolStrip1);
             this.panelTransport.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelTransport.Location = new System.Drawing.Point(438, 0);
+            this.panelTransport.Location = new System.Drawing.Point(784, 2);
             this.panelTransport.Name = "panelTransport";
-            this.panelTransport.Size = new System.Drawing.Size(247, 38);
+            this.panelTransport.Size = new System.Drawing.Size(247, 36);
             this.panelTransport.TabIndex = 2;
             // 
             // darkToolStrip1
@@ -1330,7 +1724,7 @@ namespace WadTool
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(3, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(247, 38);
+            this.darkToolStrip1.Size = new System.Drawing.Size(247, 36);
             this.darkToolStrip1.TabIndex = 0;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
@@ -1340,7 +1734,7 @@ namespace WadTool
             this.toolStripSeparator6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator6.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 38);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 36);
             // 
             // butTransportStart
             // 
@@ -1351,7 +1745,7 @@ namespace WadTool
             this.butTransportStart.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportStart.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportStart.Name = "butTransportStart";
-            this.butTransportStart.Size = new System.Drawing.Size(28, 35);
+            this.butTransportStart.Size = new System.Drawing.Size(28, 33);
             this.butTransportStart.ToolTipText = "Go to start";
             this.butTransportStart.Click += new System.EventHandler(this.butTransportStart_Click);
             // 
@@ -1364,7 +1758,7 @@ namespace WadTool
             this.butTransportFrameBack.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportFrameBack.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportFrameBack.Name = "butTransportFrameBack";
-            this.butTransportFrameBack.Size = new System.Drawing.Size(28, 35);
+            this.butTransportFrameBack.Size = new System.Drawing.Size(28, 33);
             this.butTransportFrameBack.ToolTipText = "Back 1 frame";
             this.butTransportFrameBack.Click += new System.EventHandler(this.butTransportFrameBack_Click);
             // 
@@ -1377,7 +1771,7 @@ namespace WadTool
             this.butTransportPlay.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportPlay.Name = "butTransportPlay";
-            this.butTransportPlay.Size = new System.Drawing.Size(28, 35);
+            this.butTransportPlay.Size = new System.Drawing.Size(28, 33);
             this.butTransportPlay.ToolTipText = "Playback";
             this.butTransportPlay.Click += new System.EventHandler(this.butTransportPlay_Click);
             // 
@@ -1390,7 +1784,7 @@ namespace WadTool
             this.butTransportFrameForward.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportFrameForward.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportFrameForward.Name = "butTransportFrameForward";
-            this.butTransportFrameForward.Size = new System.Drawing.Size(28, 35);
+            this.butTransportFrameForward.Size = new System.Drawing.Size(28, 33);
             this.butTransportFrameForward.ToolTipText = "Forward 1 frame";
             this.butTransportFrameForward.Click += new System.EventHandler(this.butTransportFrameForward_Click);
             // 
@@ -1403,7 +1797,7 @@ namespace WadTool
             this.butTransportEnd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportEnd.Name = "butTransportEnd";
-            this.butTransportEnd.Size = new System.Drawing.Size(28, 35);
+            this.butTransportEnd.Size = new System.Drawing.Size(28, 33);
             this.butTransportEnd.ToolTipText = "Go to end";
             this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
             // 
@@ -1413,7 +1807,7 @@ namespace WadTool
             this.toolStripSeparator7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 38);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 36);
             // 
             // butTransportChained
             // 
@@ -1424,7 +1818,7 @@ namespace WadTool
             this.butTransportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportChained.Name = "butTransportChained";
-            this.butTransportChained.Size = new System.Drawing.Size(28, 35);
+            this.butTransportChained.Size = new System.Drawing.Size(28, 33);
             this.butTransportChained.ToolTipText = "Chain playback";
             this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
             // 
@@ -1437,7 +1831,7 @@ namespace WadTool
             this.butTransportSound.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportSound.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportSound.Name = "butTransportSound";
-            this.butTransportSound.Size = new System.Drawing.Size(28, 35);
+            this.butTransportSound.Size = new System.Drawing.Size(28, 33);
             this.butTransportSound.ToolTipText = "Toggle sound preview";
             this.butTransportSound.Click += new System.EventHandler(this.butTransportSound_Click);
             // 
@@ -1451,19 +1845,16 @@ namespace WadTool
             this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTransportLandWater.Name = "butTransportLandWater";
-            this.butTransportLandWater.Size = new System.Drawing.Size(28, 35);
+            this.butTransportLandWater.Size = new System.Drawing.Size(28, 33);
             this.butTransportLandWater.ToolTipText = "Toggle sound conditions";
             this.butTransportLandWater.Click += new System.EventHandler(this.butTransportLandWater_Click);
             // 
             // darkSectionPanel4
             // 
-            this.darkSectionPanel4.Controls.Add(this.darkLabel2);
             this.darkSectionPanel4.Controls.Add(this.tbEndHorVel);
             this.darkSectionPanel4.Controls.Add(this.tbStartHorVel);
             this.darkSectionPanel4.Controls.Add(this.tbEndVertVel);
-            this.darkSectionPanel4.Controls.Add(this.butClearAnimCollision);
             this.darkSectionPanel4.Controls.Add(this.tbStartVertVel);
-            this.darkSectionPanel4.Controls.Add(this.butCalculateAnimCollision);
             this.darkSectionPanel4.Controls.Add(this.nudNextFrame);
             this.darkSectionPanel4.Controls.Add(this.nudNextAnim);
             this.darkSectionPanel4.Controls.Add(this.tbStateId);
@@ -1483,22 +1874,12 @@ namespace WadTool
             this.darkSectionPanel4.Controls.Add(this.darkLabel6);
             this.darkSectionPanel4.Controls.Add(this.darkLabel7);
             this.darkSectionPanel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkSectionPanel4.Location = new System.Drawing.Point(0, 281);
+            this.darkSectionPanel4.Location = new System.Drawing.Point(0, 236);
             this.darkSectionPanel4.MaximumSize = new System.Drawing.Size(280, 238);
             this.darkSectionPanel4.Name = "darkSectionPanel4";
             this.darkSectionPanel4.SectionHeader = "Current Animation";
             this.darkSectionPanel4.Size = new System.Drawing.Size(280, 197);
             this.darkSectionPanel4.TabIndex = 127;
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(207, 82);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(50, 13);
-            this.darkLabel2.TabIndex = 96;
-            this.darkLabel2.Text = "Bounds:";
             // 
             // tbEndHorVel
             // 
@@ -1506,7 +1887,7 @@ namespace WadTool
             this.tbEndHorVel.Location = new System.Drawing.Point(211, 141);
             this.tbEndHorVel.Name = "tbEndHorVel";
             this.tbEndHorVel.Size = new System.Drawing.Size(64, 22);
-            this.tbEndHorVel.TabIndex = 132;
+            this.tbEndHorVel.TabIndex = 15;
             this.tbEndHorVel.TextChanged += new System.EventHandler(this.tbEndHorVel_ValueChanged);
             this.tbEndHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
@@ -1516,7 +1897,7 @@ namespace WadTool
             this.tbStartHorVel.Location = new System.Drawing.Point(142, 141);
             this.tbStartHorVel.Name = "tbStartHorVel";
             this.tbStartHorVel.Size = new System.Drawing.Size(64, 22);
-            this.tbStartHorVel.TabIndex = 131;
+            this.tbStartHorVel.TabIndex = 14;
             this.tbStartHorVel.TextChanged += new System.EventHandler(this.tbStartHorVel_ValueChanged);
             this.tbStartHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
@@ -1526,19 +1907,9 @@ namespace WadTool
             this.tbEndVertVel.Location = new System.Drawing.Point(73, 141);
             this.tbEndVertVel.Name = "tbEndVertVel";
             this.tbEndVertVel.Size = new System.Drawing.Size(64, 22);
-            this.tbEndVertVel.TabIndex = 130;
+            this.tbEndVertVel.TabIndex = 13;
             this.tbEndVertVel.TextChanged += new System.EventHandler(this.tbEndVertVel_ValueChanged);
             this.tbEndVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
-            // 
-            // butClearAnimCollision
-            // 
-            this.butClearAnimCollision.Image = global::WadTool.Properties.Resources.actions_delete_16;
-            this.butClearAnimCollision.Location = new System.Drawing.Point(246, 98);
-            this.butClearAnimCollision.Name = "butClearAnimCollision";
-            this.butClearAnimCollision.Size = new System.Drawing.Size(29, 22);
-            this.butClearAnimCollision.TabIndex = 93;
-            this.toolTip1.SetToolTip(this.butClearAnimCollision, "Clear bounding box for current animation");
-            this.butClearAnimCollision.Click += new System.EventHandler(this.butClearAnimCollision_Click);
             // 
             // tbStartVertVel
             // 
@@ -1546,19 +1917,9 @@ namespace WadTool
             this.tbStartVertVel.Location = new System.Drawing.Point(4, 141);
             this.tbStartVertVel.Name = "tbStartVertVel";
             this.tbStartVertVel.Size = new System.Drawing.Size(64, 22);
-            this.tbStartVertVel.TabIndex = 97;
+            this.tbStartVertVel.TabIndex = 12;
             this.tbStartVertVel.TextChanged += new System.EventHandler(this.tbStartVertVel_ValueChanged);
             this.tbStartVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
-            // 
-            // butCalculateAnimCollision
-            // 
-            this.butCalculateAnimCollision.Image = ((System.Drawing.Image)(resources.GetObject("butCalculateAnimCollision.Image")));
-            this.butCalculateAnimCollision.Location = new System.Drawing.Point(211, 98);
-            this.butCalculateAnimCollision.Name = "butCalculateAnimCollision";
-            this.butCalculateAnimCollision.Size = new System.Drawing.Size(30, 22);
-            this.butCalculateAnimCollision.TabIndex = 92;
-            this.toolTip1.SetToolTip(this.butCalculateAnimCollision, "Calculate bounding box for current animation");
-            this.butCalculateAnimCollision.Click += new System.EventHandler(this.butCalculateAnimCollision_Click);
             // 
             // nudNextFrame
             // 
@@ -1569,7 +1930,7 @@ namespace WadTool
             0,
             0,
             65536});
-            this.nudNextFrame.Location = new System.Drawing.Point(142, 98);
+            this.nudNextFrame.Location = new System.Drawing.Point(188, 98);
             this.nudNextFrame.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1577,8 +1938,8 @@ namespace WadTool
             0});
             this.nudNextFrame.MousewheelSingleIncrement = true;
             this.nudNextFrame.Name = "nudNextFrame";
-            this.nudNextFrame.Size = new System.Drawing.Size(64, 22);
-            this.nudNextFrame.TabIndex = 128;
+            this.nudNextFrame.Size = new System.Drawing.Size(87, 22);
+            this.nudNextFrame.TabIndex = 11;
             this.nudNextFrame.ValueChanged += new System.EventHandler(this.nudNextFrame_ValueChanged);
             this.nudNextFrame.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
@@ -1591,7 +1952,7 @@ namespace WadTool
             0,
             0,
             65536});
-            this.nudNextAnim.Location = new System.Drawing.Point(73, 98);
+            this.nudNextAnim.Location = new System.Drawing.Point(96, 98);
             this.nudNextAnim.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1599,8 +1960,8 @@ namespace WadTool
             0});
             this.nudNextAnim.MousewheelSingleIncrement = true;
             this.nudNextAnim.Name = "nudNextAnim";
-            this.nudNextAnim.Size = new System.Drawing.Size(64, 22);
-            this.nudNextAnim.TabIndex = 127;
+            this.nudNextAnim.Size = new System.Drawing.Size(87, 22);
+            this.nudNextAnim.TabIndex = 10;
             this.nudNextAnim.ValueChanged += new System.EventHandler(this.nudNextAnim_ValueChanged);
             this.nudNextAnim.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
@@ -1613,7 +1974,7 @@ namespace WadTool
             0,
             0,
             65536});
-            this.nudFramerate.Location = new System.Drawing.Point(4, 98);
+            this.nudFramerate.Location = new System.Drawing.Point(5, 98);
             this.nudFramerate.Maximum = new decimal(new int[] {
             255,
             0,
@@ -1626,8 +1987,8 @@ namespace WadTool
             0});
             this.nudFramerate.MousewheelSingleIncrement = true;
             this.nudFramerate.Name = "nudFramerate";
-            this.nudFramerate.Size = new System.Drawing.Size(64, 22);
-            this.nudFramerate.TabIndex = 126;
+            this.nudFramerate.Size = new System.Drawing.Size(86, 22);
+            this.nudFramerate.TabIndex = 9;
             this.nudFramerate.Value = new decimal(new int[] {
             1,
             0,
@@ -1642,7 +2003,7 @@ namespace WadTool
             this.butSearchStateID.Location = new System.Drawing.Point(252, 56);
             this.butSearchStateID.Name = "butSearchStateID";
             this.butSearchStateID.Size = new System.Drawing.Size(23, 23);
-            this.butSearchStateID.TabIndex = 125;
+            this.butSearchStateID.TabIndex = 8;
             this.butSearchStateID.Click += new System.EventHandler(this.butSearchStateID_Click);
             // 
             // cmbStateID
@@ -1652,6 +2013,7 @@ namespace WadTool
             this.cmbStateID.Name = "cmbStateID";
             this.cmbStateID.Size = new System.Drawing.Size(209, 23);
             this.cmbStateID.TabIndex = 124;
+            this.cmbStateID.TabStop = false;
             this.cmbStateID.SelectedIndexChanged += new System.EventHandler(this.cmbStateID_SelectedIndexChanged);
             // 
             // darkButton3
@@ -1659,7 +2021,7 @@ namespace WadTool
             this.darkButton3.Location = new System.Drawing.Point(142, 169);
             this.darkButton3.Name = "darkButton3";
             this.darkButton3.Size = new System.Drawing.Size(133, 23);
-            this.darkButton3.TabIndex = 123;
+            this.darkButton3.TabIndex = 17;
             this.darkButton3.Text = "Anim commands...";
             this.darkButton3.Click += new System.EventHandler(this.butEditAnimCommands_Click);
             // 
@@ -1668,33 +2030,42 @@ namespace WadTool
             this.butEditStateChanges.Location = new System.Drawing.Point(4, 169);
             this.butEditStateChanges.Name = "butEditStateChanges";
             this.butEditStateChanges.Size = new System.Drawing.Size(133, 23);
-            this.butEditStateChanges.TabIndex = 122;
+            this.butEditStateChanges.TabIndex = 16;
             this.butEditStateChanges.Text = "State changes...";
             this.butEditStateChanges.Click += new System.EventHandler(this.butEditStateChanges_Click);
             // 
             // panelMain
             // 
-            this.panelMain.Controls.Add(this.panelView);
-            this.panelMain.Controls.Add(this.panelTools);
+            this.panelMain.Controls.Add(this.panelRendering);
+            this.panelMain.Controls.Add(this.panelRight);
+            this.panelMain.Controls.Add(this.panelLeft);
+            this.panelMain.Controls.Add(this.panelTimeline);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 52);
             this.panelMain.Name = "panelMain";
             this.panelMain.Padding = new System.Windows.Forms.Padding(4);
-            this.panelMain.Size = new System.Drawing.Size(975, 598);
+            this.panelMain.Size = new System.Drawing.Size(1039, 591);
             this.panelMain.TabIndex = 129;
             // 
-            // panelTools
+            // panelRight
             // 
-            this.panelTools.Controls.Add(this.darkSectionPanel1);
-            this.panelTools.Controls.Add(this.darkSectionPanel4);
-            this.panelTools.Controls.Add(this.panelTransform);
-            this.panelTools.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelTools.Location = new System.Drawing.Point(4, 4);
-            this.panelTools.MaximumSize = new System.Drawing.Size(280, 10000);
-            this.panelTools.MinimumSize = new System.Drawing.Size(280, 289);
-            this.panelTools.Name = "panelTools";
-            this.panelTools.Size = new System.Drawing.Size(280, 590);
-            this.panelTools.TabIndex = 0;
+            this.panelRight.Controls.Add(this.darkSectionPanel2);
+            this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelRight.Location = new System.Drawing.Point(835, 4);
+            this.panelRight.Name = "panelRight";
+            this.panelRight.Size = new System.Drawing.Size(200, 545);
+            this.panelRight.TabIndex = 12;
+            // 
+            // panelLeft
+            // 
+            this.panelLeft.Controls.Add(this.darkSectionPanel1);
+            this.panelLeft.Controls.Add(this.darkSectionPanel4);
+            this.panelLeft.Controls.Add(this.panelTransform);
+            this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelLeft.Location = new System.Drawing.Point(4, 4);
+            this.panelLeft.Name = "panelLeft";
+            this.panelLeft.Size = new System.Drawing.Size(280, 545);
+            this.panelLeft.TabIndex = 11;
             // 
             // panelTransform
             // 
@@ -1716,7 +2087,7 @@ namespace WadTool
             this.panelTransform.Controls.Add(this.nudRotY);
             this.panelTransform.Controls.Add(this.nudRotZ);
             this.panelTransform.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelTransform.Location = new System.Drawing.Point(0, 478);
+            this.panelTransform.Location = new System.Drawing.Point(0, 433);
             this.panelTransform.Name = "panelTransform";
             this.panelTransform.SectionHeader = "Transform";
             this.panelTransform.Size = new System.Drawing.Size(280, 112);
@@ -1754,7 +2125,7 @@ namespace WadTool
             this.cmbTransformMode.Location = new System.Drawing.Point(44, 84);
             this.cmbTransformMode.Name = "cmbTransformMode";
             this.cmbTransformMode.Size = new System.Drawing.Size(147, 23);
-            this.cmbTransformMode.TabIndex = 99;
+            this.cmbTransformMode.TabIndex = 24;
             this.toolTip1.SetToolTip(this.cmbTransformMode, "Transform interpolation mode");
             this.cmbTransformMode.SelectedIndexChanged += new System.EventHandler(this.cmbTransformMode_SelectedIndexChanged);
             // 
@@ -1824,7 +2195,7 @@ namespace WadTool
             this.nudTransX.MousewheelSingleIncrement = true;
             this.nudTransX.Name = "nudTransX";
             this.nudTransX.Size = new System.Drawing.Size(64, 22);
-            this.nudTransX.TabIndex = 15;
+            this.nudTransX.TabIndex = 21;
             this.nudTransX.ValueChanged += new System.EventHandler(this.nudTransX_ValueChanged);
             // 
             // darkLabel27
@@ -1863,7 +2234,7 @@ namespace WadTool
             this.nudTransY.MousewheelSingleIncrement = true;
             this.nudTransY.Name = "nudTransY";
             this.nudTransY.Size = new System.Drawing.Size(64, 22);
-            this.nudTransY.TabIndex = 16;
+            this.nudTransY.TabIndex = 22;
             this.nudTransY.ValueChanged += new System.EventHandler(this.nudTransY_ValueChanged);
             // 
             // nudTransZ
@@ -1890,7 +2261,7 @@ namespace WadTool
             this.nudTransZ.MousewheelSingleIncrement = true;
             this.nudTransZ.Name = "nudTransZ";
             this.nudTransZ.Size = new System.Drawing.Size(65, 22);
-            this.nudTransZ.TabIndex = 17;
+            this.nudTransZ.TabIndex = 23;
             this.nudTransZ.ValueChanged += new System.EventHandler(this.nudTransZ_ValueChanged);
             // 
             // darkLabel1
@@ -1941,7 +2312,7 @@ namespace WadTool
             this.nudRotX.MousewheelSingleIncrement = true;
             this.nudRotX.Name = "nudRotX";
             this.nudRotX.Size = new System.Drawing.Size(64, 22);
-            this.nudRotX.TabIndex = 9;
+            this.nudRotX.TabIndex = 18;
             this.nudRotX.ValueChanged += new System.EventHandler(this.nudRotX_ValueChanged);
             // 
             // darkLabel19
@@ -1980,7 +2351,7 @@ namespace WadTool
             this.nudRotY.MousewheelSingleIncrement = true;
             this.nudRotY.Name = "nudRotY";
             this.nudRotY.Size = new System.Drawing.Size(64, 22);
-            this.nudRotY.TabIndex = 10;
+            this.nudRotY.TabIndex = 19;
             this.nudRotY.ValueChanged += new System.EventHandler(this.nudRotY_ValueChanged);
             // 
             // nudRotZ
@@ -2007,7 +2378,7 @@ namespace WadTool
             this.nudRotZ.MousewheelSingleIncrement = true;
             this.nudRotZ.Name = "nudRotZ";
             this.nudRotZ.Size = new System.Drawing.Size(64, 22);
-            this.nudRotZ.TabIndex = 11;
+            this.nudRotZ.TabIndex = 20;
             this.nudRotZ.ValueChanged += new System.EventHandler(this.nudRotZ_ValueChanged);
             // 
             // toolStripButton6
@@ -2105,31 +2476,11 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
-            // scrollGridToolStripMenuItem
-            // 
-            this.scrollGridToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.scrollGridToolStripMenuItem.Checked = true;
-            this.scrollGridToolStripMenuItem.CheckOnClick = true;
-            this.scrollGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.scrollGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.scrollGridToolStripMenuItem.Name = "scrollGridToolStripMenuItem";
-            this.scrollGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.scrollGridToolStripMenuItem.Text = "Scroll grid";
-            this.scrollGridToolStripMenuItem.Click += new System.EventHandler(this.scrollGridToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
-            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(975, 675);
+            this.ClientSize = new System.Drawing.Size(1039, 668);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.topBar);
             this.Controls.Add(this.darkStatusStrip1);
@@ -2137,7 +2488,7 @@ namespace WadTool
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.topMenu;
-            this.MinimumSize = new System.Drawing.Size(767, 598);
+            this.MinimumSize = new System.Drawing.Size(890, 660);
             this.Name = "FormAnimationEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -2152,7 +2503,18 @@ namespace WadTool
             this.topBar.PerformLayout();
             this.darkSectionPanel1.ResumeLayout(false);
             this.darkSectionPanel1.PerformLayout();
-            this.panelView.ResumeLayout(false);
+            this.darkSectionPanel2.ResumeLayout(false);
+            this.darkSectionPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMaxY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMaxZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMaxX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMinY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMinZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBBoxMinX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGrowY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBoundingMeshList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGrowX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGrowZ)).EndInit();
             this.panelTimeline.ResumeLayout(false);
             this.panelTransport.ResumeLayout(false);
             this.darkToolStrip1.ResumeLayout(false);
@@ -2163,7 +2525,8 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).EndInit();
             this.panelMain.ResumeLayout(false);
-            this.panelTools.ResumeLayout(false);
+            this.panelRight.ResumeLayout(false);
+            this.panelLeft.ResumeLayout(false);
             this.panelTransform.ResumeLayout(false);
             this.panelTransform.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).EndInit();
@@ -2236,8 +2599,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbDeleteFrame;
         private System.Windows.Forms.ToolStripButton butTbCopyFrame;
         private System.Windows.Forms.ToolStripButton butTbPasteFrame;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripLabel labelBone;
         private System.Windows.Forms.ToolStripMenuItem insertnFramesAfterCurrentOneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem curToolStripMenuItem;
@@ -2266,7 +2627,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem deleteCollisionBoxForCurrentFrameToolStripMenuItem;
         private DarkUI.Controls.DarkListView lstAnimations;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
-        private DarkUI.Controls.DarkSectionPanel panelView;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel4;
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Panel panelTools;
@@ -2284,7 +2644,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTransportPlay;
         private System.Windows.Forms.ToolStripButton butTransportFrameForward;
         private System.Windows.Forms.ToolStripButton butTransportEnd;
-        private DarkUI.Controls.ToolStripDarkComboBox comboBoneList;
         private DarkUI.Controls.ToolStripDarkComboBox comboRoomList;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -2295,9 +2654,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripButton butTransportLandWater;
-        private DarkUI.Controls.DarkLabel darkLabel2;
-        private DarkUI.Controls.DarkButton butClearAnimCollision;
-        private DarkUI.Controls.DarkButton butCalculateAnimCollision;
         private System.Windows.Forms.ToolStripButton butTbUndo;
         private System.Windows.Forms.ToolStripButton butTbRedo;
         private System.Windows.Forms.ToolStripMenuItem resampleAnimationToolStripMenuItem;
@@ -2348,5 +2704,28 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbResetCamera;
         private System.Windows.Forms.ToolStripMenuItem scrollGridToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.Panel panelLeft;
+        private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
+        private DarkUI.Controls.DarkNumericUpDown nudBBoxMaxY;
+        private DarkUI.Controls.DarkLabel darkLabel9;
+        private DarkUI.Controls.DarkNumericUpDown nudBBoxMaxZ;
+        private DarkUI.Controls.DarkLabel darkLabel10;
+        private DarkUI.Controls.DarkNumericUpDown nudBBoxMaxX;
+        private DarkUI.Controls.DarkNumericUpDown nudBBoxMinY;
+        private DarkUI.Controls.DarkNumericUpDown nudBBoxMinZ;
+        private DarkUI.Controls.DarkButton butShrinkBBox;
+        private DarkUI.Controls.DarkNumericUpDown nudBBoxMinX;
+        private DarkUI.Controls.DarkButton butResetBBoxAnim;
+        private DarkUI.Controls.DarkButton butCalcBBoxAnim;
+        private DarkUI.Controls.DarkNumericUpDown nudGrowY;
+        private DarkUI.Controls.DarkDataGridView dgvBoundingMeshList;
+        private DarkUI.Controls.DarkNumericUpDown nudGrowX;
+        private DarkUI.Controls.DarkButton butGrowBBox;
+        private DarkUI.Controls.DarkNumericUpDown nudGrowZ;
+        private DarkUI.Controls.DarkButton butSelectNoMeshes;
+        private DarkUI.Controls.DarkButton butSelectAllMeshes;
+        private System.Windows.Forms.Panel panelRight;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dgvBoundingMeshListCheckboxes;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvBoundingMeshListMeshes;
     }
 }

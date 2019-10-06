@@ -12,17 +12,19 @@ namespace TombLib.Graphics
         public BoundingBox BoundingBox { get; set; }
         public List<Quaternion> Quaternions { get; set; } = new List<Quaternion>();
 
-        public BoundingBox CalculateBoundingBox(AnimatedModel model, AnimatedModel skin)
+        public BoundingBox CalculateBoundingBox(AnimatedModel model, AnimatedModel skin, List<int> meshesToUse = null)
         {
             Vector3 min = new Vector3(float.MaxValue);
             Vector3 max = new Vector3(float.MinValue);
 
-            foreach (var mesh in skin.Meshes)
+            for (int i = 0; i < skin.Meshes.Count; i++)
             {
-                foreach (var vertex in mesh.Vertices)
+                if (meshesToUse != null && !meshesToUse.Contains(i))
+                    continue;
+
+                foreach (var vertex in skin.Meshes[i].Vertices)
                 {
-                    var meshIndex = skin.Meshes.IndexOf(mesh);
-                    var transformedPosition = MathC.HomogenousTransform(vertex.Position, model.AnimationTransforms[meshIndex]);
+                    var transformedPosition = MathC.HomogenousTransform(vertex.Position, model.AnimationTransforms[i]);
                     min = Vector3.Min(transformedPosition, min);
                     max = Vector3.Max(transformedPosition, max);
                 }
