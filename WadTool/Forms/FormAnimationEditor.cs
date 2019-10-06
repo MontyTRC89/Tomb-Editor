@@ -116,12 +116,6 @@ namespace WadTool
 
             panelRendering.InitializeRendering(_editor, _deviceManager, skin);
 
-            // Load skeleton in combobox
-            comboBoneList.ComboBox.Items.Add("(select mesh)");
-            foreach (var bone in panelRendering.Model.Bones)
-                comboBoneList.ComboBox.Items.Add(bone.Name);
-            comboBoneList.ComboBox.SelectedIndex = 0;
-
             RebuildAnimationsList();
 
             if (_editor.Animations.Count != 0)
@@ -129,6 +123,7 @@ namespace WadTool
 
             // Update UI which is dependent on initial anim state
             UpdateTransformUI();
+            PopulateMeshList();
 
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -156,10 +151,19 @@ namespace WadTool
             if (obj is WadToolClass.AnimationEditorMeshSelectedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorMeshSelectedEvent;
-                if (e != null)
-                    comboBoneList.ComboBox.SelectedIndex = e.Model.Meshes.IndexOf(e.Mesh) + 1;
-                else
-                    comboBoneList.ComboBox.SelectedIndex = 0;
+
+                _allowUpdate = false;
+                {
+                    dgvBoundingMeshList.ClearSelection();
+
+                    if (e != null && e.Mesh != null)
+                    {
+                        var index = e.Model.Meshes.IndexOf(e.Mesh);
+                        dgvBoundingMeshList.Rows[index].Selected = true;
+                        dgvBoundingMeshList.CurrentCell = dgvBoundingMeshList.Rows[index].Cells[0];
+                    }
+                }
+                _allowUpdate = true;
             }
 
             if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)
@@ -267,6 +271,29 @@ namespace WadTool
                 butTransportSound.Enabled = false;
                 butTransportLandWater.Enabled = false;
             }
+        }
+
+        private void PopulateMeshList()
+        {
+            dgvBoundingMeshList.Rows.Clear();
+            foreach (var bone in panelRendering.Model.Bones)
+                dgvBoundingMeshList.Rows.Add(true, bone.Name);
+        }
+
+        private void SelectMeshesInMeshList(bool toggle = true)
+        {
+            foreach (DataGridViewRow row in dgvBoundingMeshList.Rows)
+                row.Cells[0].Value = toggle;
+        }
+
+        private List<int> GetSelectedMeshList()
+        {
+            var result = new List<int>();
+            foreach (DataGridViewRow row in dgvBoundingMeshList.Rows)
+                if ((bool)row.Cells[0].Value)
+                    result.Add(row.Index);
+
+            return result;
         }
 
         private void RebuildAnimationsList()
@@ -387,29 +414,32 @@ namespace WadTool
 
             _editor.CurrentAnim = node;
 
-            tbName.Text = node.WadAnimation.Name;
-            nudFramerate.Value = node.WadAnimation.FrameRate;
-            nudNextAnim.Value = node.WadAnimation.NextAnimation;
-            nudNextFrame.Value = node.WadAnimation.NextFrame;
-            tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
-            tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
-            tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
-            tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
-
-            tbStateId.Text = node.WadAnimation.StateId.ToString();
-            UpdateStateChange();
-
-            timeline.Animation = node;
-
-            OnKeyframesListChanged();
-
-            // Preserve selection if anim is under same index and have same amount of frames
-            if (!sameAnimSameSize)
+            _allowUpdate = false;
             {
-                timeline.Value = 0;
-                timeline.ResetSelection();
-                comboBoneList.ComboBox.SelectedIndex = 0;
+                tbName.Text = node.WadAnimation.Name;
+                nudFramerate.Value = node.WadAnimation.FrameRate;
+                nudNextAnim.Value = node.WadAnimation.NextAnimation;
+                nudNextFrame.Value = node.WadAnimation.NextFrame;
+                tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
+                tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
+                tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
+                tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
+
+                tbStateId.Text = node.WadAnimation.StateId.ToString();
+                UpdateStateChange();
+
+                timeline.Animation = node;
+
+                OnKeyframesListChanged();
+
+                // Preserve selection if anim is under same index and have same amount of frames
+                if (!sameAnimSameSize)
+                {
+                    timeline.Value = 0;
+                    timeline.ResetSelection();
+                }
             }
+            _allowUpdate = true;
 
             if (node.DirectXAnimation.KeyFrames.Count > 0)
                 panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
@@ -461,23 +491,47 @@ namespace WadTool
             }
         }
 
+        private void SelectMesh(int index)
+        {
+            if (!_allowUpdate) return;
+
+            if (index < 0)
+                panelRendering.SelectedMesh = null;
+            else
+                panelRendering.SelectedMesh = panelRendering.Model.Meshes[index];
+
+            UpdateTransformUI();
+            panelRendering.Invalidate();
+        }
+
         private void UpdateTransformUI()
         {
             if (_editor.CurrentKeyFrame == null)
                 return;
 
             _allowUpdate = false;
+            {
+                var meshIndex = panelRendering.SelectedMesh == null ? 0 : panelRendering.Model.Meshes.IndexOf(panelRendering.SelectedMesh);
 
-            var meshIndex = panelRendering.SelectedMesh == null ? 0 : panelRendering.Model.Meshes.IndexOf(panelRendering.SelectedMesh);
-            panelTransform.SectionHeader = "Transform (Bone " + meshIndex + ")";
-            nudRotX.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].X);
-            nudRotY.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Y);
-            nudRotZ.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Z);
-            nudTransX.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].X;
-            nudTransY.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].Y;
-            nudTransZ.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].Z;
-            if (cmbTransformMode.SelectedIndex == -1) cmbTransformMode.SelectedIndex = 0;
+                nudRotX.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].X);
+                nudRotY.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Y);
+                nudRotZ.Value = (decimal)MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Z);
+                nudTransX.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].X;
+                nudTransY.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].Y;
+                nudTransZ.Value = (decimal)_editor.CurrentKeyFrame.Translations[0].Z;
+                if (cmbTransformMode.SelectedIndex == -1) cmbTransformMode.SelectedIndex = 0;
 
+                nudBBoxMinX.Value = (decimal)_editor.CurrentKeyFrame.BoundingBox.Minimum.X;
+                nudBBoxMinY.Value = (decimal)_editor.CurrentKeyFrame.BoundingBox.Minimum.Y;
+                nudBBoxMinZ.Value = (decimal)_editor.CurrentKeyFrame.BoundingBox.Minimum.Z;
+                nudBBoxMaxX.Value = (decimal)_editor.CurrentKeyFrame.BoundingBox.Maximum.X;
+                nudBBoxMaxY.Value = (decimal)_editor.CurrentKeyFrame.BoundingBox.Maximum.Y;
+                nudBBoxMaxZ.Value = (decimal)_editor.CurrentKeyFrame.BoundingBox.Maximum.Z;
+
+                var boneName = panelRendering.Model.Bones[meshIndex].Name;
+                if (string.IsNullOrEmpty(boneName)) boneName = "Bone " + meshIndex;
+                panelTransform.SectionHeader = "Transform (" + boneName + ")";
+            }
             _allowUpdate = true;
         }
 
@@ -498,24 +552,29 @@ namespace WadTool
         {
             if (!_editor.ValidAnimationAndFrames) return;
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+            
+            int start = 0;
+            int end   = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
 
-            int startFrame = timeline.Value;
-            for (int i = 0; i < _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count; i++)
+            if (!timeline.SelectionIsEmpty)
             {
-                timeline.Value = i;
-                CalculateKeyframeBoundingBox(i, false, clear);
+                start = timeline.Selection.X;
+                end   = timeline.Selection.Y;
             }
-            timeline.Value = (startFrame);
+
+            for (int i = start; i < end; i++)
+                CalculateKeyframeBoundingBox(i, false, clear);
+
+            // HACK: direct usage of DX keyframes all around WT anim editor
+            // results in wrong animation pose after keyframe bb recalc. So we build it it once more.
+
+            panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+            panelRendering.Invalidate();
         }
 
-        private void ClearAnimationBoundingBox(bool confirm = false)
+        private void ClearAnimationBoundingBox()
         {
             if (!_editor.ValidAnimationAndFrames) return;
-
-            if (confirm && (DarkMessageBox.Show(this, "Do you really want to delete the collision box for each frame of animation '" + _editor.CurrentAnim.WadAnimation.Name + "'?",
-                           "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No))
-                return;
-
             CalculateAnimationBoundingBox(true);
         }
 
@@ -523,27 +582,58 @@ namespace WadTool
         {
             if (!_editor.ValidAnimationAndFrames) return;
             if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-
+            
+            var meshList = GetSelectedMeshList();
             var keyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[index];
+            panelRendering.Model.BuildAnimationPose(keyFrame);
 
-            if (clear)
+            if (clear || meshList.Count == 0)
                 keyFrame.BoundingBox = new BoundingBox();
             else
-                keyFrame.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
+                keyFrame.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin, meshList);
 
-            panelRendering.Invalidate();
+            if (index == timeline.Value)
+            {
+                UpdateTransformUI();
+                panelRendering.Invalidate();
+            }
             Saved = false;
         }
 
-        private void ClearFrameBoundingBox(bool confirm = false)
+        private void InflateFrameBoundingBox(int index, Vector3 value, bool undo)
         {
             if (!_editor.ValidAnimationAndFrames) return;
+            if (value.Length() == 0f) return;
 
-            if (confirm && (DarkMessageBox.Show(this, "Do you really want to delete the collision box for the current keyframe?",
-                                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No))
-                return;
+            if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames[index].BoundingBox = _editor.CurrentAnim.DirectXAnimation.KeyFrames[index].BoundingBox.Inflate(value);
 
-            CalculateKeyframeBoundingBox(timeline.Value, true, true);
+            if (index == timeline.Value)
+            {
+                UpdateTransformUI();
+                panelRendering.Invalidate();
+            }
+            Saved = false;
+        }
+
+        private void InflateAnimationBoundingBox(Vector3 value)
+        {
+            if (!_editor.ValidAnimationAndFrames) return;
+            if (value.Length() == 0f) return;
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+            
+            int start = 0;
+            int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+
+            if (!timeline.SelectionIsEmpty)
+            {
+                start = timeline.Selection.X;
+                end = timeline.Selection.Y;
+            }
+
+            for (int i = start; i < end; i++)
+                InflateFrameBoundingBox(i, value, false);
         }
 
         public void UpdateTransform()
@@ -1004,7 +1094,7 @@ namespace WadTool
         private void ValidateAnimationParameter() => _editor.MadeChanges = false;
         private void UpdateAnimationParameter(Control control)
         {
-            if (_editor.CurrentAnim == null) return;
+            if (!_allowUpdate || _editor.CurrentAnim == null) return;
 
             float result = 0;
             if (control is DarkTextBox)
@@ -1015,6 +1105,8 @@ namespace WadTool
             }
             else if (control is DarkNumericUpDown)
                 result = (float)((DarkNumericUpDown)control).Value;
+
+            var bb = _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox;
 
             float oldValue = 0;
             bool roundToByte = false;
@@ -1046,6 +1138,24 @@ namespace WadTool
                     break;
                 case "tbEndHorVel":
                     oldValue = _editor.CurrentAnim.WadAnimation.EndLateralVelocity;
+                    break;
+                case "nudBBoxMinX":
+                    oldValue = bb.Minimum.X;
+                    break;
+                case "nudBBoxMinY":
+                    oldValue = bb.Minimum.Y;
+                    break;
+                case "nudBBoxMinZ":
+                    oldValue = bb.Minimum.Z;
+                    break;
+                case "nudBBoxMaxX":
+                    oldValue = bb.Maximum.X;
+                    break;
+                case "nudBBoxMaxY":
+                    oldValue = bb.Maximum.Y;
+                    break;
+                case "nudBBoxMaxZ":
+                    oldValue = bb.Maximum.Z;
                     break;
             }
 
@@ -1093,7 +1203,27 @@ namespace WadTool
                 case "tbEndHorVel":
                     _editor.CurrentAnim.WadAnimation.EndLateralVelocity = result;
                     break;
+                case "nudBBoxMinX":
+                    bb.Minimum = new Vector3(result, bb.Minimum.Y, bb.Minimum.Z);
+                    break;
+                case "nudBBoxMinY":
+                    bb.Minimum = new Vector3(bb.Minimum.X, result, bb.Minimum.Z);
+                    break;
+                case "nudBBoxMinZ":
+                    bb.Minimum = new Vector3(bb.Minimum.X, bb.Minimum.Y, result);
+                    break;
+                case "nudBBoxMaxX":
+                    bb.Maximum = new Vector3(result, bb.Maximum.Y, bb.Maximum.Z);
+                    break;
+                case "nudBBoxMaxY":
+                    bb.Maximum = new Vector3(bb.Maximum.X, result, bb.Maximum.Z);
+                    break;
+                case "nudBBoxMaxZ":
+                    bb.Maximum = new Vector3(bb.Maximum.X, bb.Maximum.Y, result);
+                    break;
             }
+
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox = bb;
 
             Saved = false;
             timeline.Invalidate();
@@ -1445,23 +1575,13 @@ namespace WadTool
                 Saved = false;
             }
         }
-        
-        private void comboBoneList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoneList.ComboBox.SelectedIndex < 1)
-                panelRendering.SelectedMesh = null;
-            else
-                panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboBoneList.ComboBox.SelectedIndex - 1];
-
-            UpdateTransformUI();
-            panelRendering.Invalidate();
-        }
 
         // Menu controls one-liners
 
         private void addNewAnimationToolStripMenuItem_Click(object sender, EventArgs e) => AddNewAnimation();
         private void deleteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => DeleteAnimation();
         private void insertFrameAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e) => AddNewFrame(timeline.Value + 1, true);
+        private void insertFramesAfterCurrentToolStripMenuItem_Click(object sender, EventArgs e) => InsertMultipleFrames();
         private void cutFramesToolStripMenuItem_Click(object sender, EventArgs e) => CutFrames();
         private void copyFramesToolStripMenuItem_Click(object sender, EventArgs e) => CopyFrames();
         private void pasteFramesToolStripMenuItem_Click(object sender, EventArgs e) => PasteFrames();
@@ -1472,8 +1592,8 @@ namespace WadTool
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
-        private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => ClearFrameBoundingBox(true);
-        private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(true);
+        private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, true);
+        private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => ClearAnimationBoundingBox();
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges();
         private void importToolStripMenuItem_Click(object sender, EventArgs e) => ImportAnimations();
@@ -1509,10 +1629,16 @@ namespace WadTool
         private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
         private void butSearchByStateID_Click(object sender, EventArgs e) => RebuildAnimationsList();
         private void butCalculateAnimCollision_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
-        private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox(false);
-        private void insertFramesAfterCurrentToolStripMenuItem_Click(object sender, EventArgs e) => InsertMultipleFrames();
+        private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox();
         private void butEditAnimCommands_Click(object sender, EventArgs e) => EditAnimCommands();
         private void butEditStateChanges_Click(object sender, EventArgs e) => EditStateChanges();
+
+        private void butSelectAllMeshes_Click(object sender, EventArgs e) => SelectMeshesInMeshList();
+        private void butSelectNoMeshes_Click(object sender, EventArgs e) => SelectMeshesInMeshList(false);
+        private void butCalcBBoxAnim_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
+        private void butResetBBoxAnim_Click(object sender, EventArgs e) => ClearAnimationBoundingBox();
+        private void butGrowBBox_Click(object sender, EventArgs e) => InflateAnimationBoundingBox(new Vector3((float)nudGrowX.Value, (float)nudGrowY.Value, (float)nudGrowZ.Value));
+        private void butShrinkBBox_Click(object sender, EventArgs e) => InflateAnimationBoundingBox(new Vector3((float)-nudGrowX.Value, (float)-nudGrowY.Value, (float)-nudGrowZ.Value));
 
         // Property controls one-liners
 
@@ -1555,6 +1681,13 @@ namespace WadTool
         private void nudTransX_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
         private void nudTransY_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
         private void nudTransZ_KeyUp(object sender, KeyEventArgs e) => UpdateTransform();
+
+        private void nudBBoxMinX_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMinX);
+        private void nudBBoxMinY_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMinY);
+        private void nudBBoxMinZ_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMinZ);
+        private void nudBBoxMaxX_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMaxX);
+        private void nudBBoxMaxY_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMaxY);
+        private void nudBBoxMaxZ_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMaxZ);
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
@@ -1821,7 +1954,12 @@ namespace WadTool
 
             switch (keyData)
             {
-                case Keys.Escape: comboBoneList.ComboBox.SelectedIndex = 0; timeline.ResetSelection(); break;
+                case Keys.Escape:
+                    SelectMesh(-1);
+                    dgvBoundingMeshList.ClearSelection();
+                    timeline.ResetSelection();
+                    break;
+
                 case Keys.Left: timeline.ValueLoopDec(); break;
                 case Keys.Right: timeline.ValueLoopInc(); break;
                 case Keys.Up: timeline.Value = timeline.Minimum; break;
@@ -2096,6 +2234,12 @@ namespace WadTool
 
             if (_allowUpdate && _editor.MadeChanges)
                 UpdateTransform();
+        }
+
+        private void dgvBoundingMeshList_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvBoundingMeshList.SelectedRows.Count < 1) return;
+            SelectMesh(dgvBoundingMeshList.SelectedRows[0].Index);
         }
     }
 }

@@ -195,9 +195,9 @@ namespace WadTool
                     translationVector = Vector3.Lerp(_backupPos[index], translationVector, weight);
 
                 // Foolproof stuff in case user hardly messes with transform during playback...
-                if (float.IsNaN(translationVector.X)) translationVector.X = 0;
-                if (float.IsNaN(translationVector.Y)) translationVector.Y = 0;
-                if (float.IsNaN(translationVector.Z)) translationVector.Z = 0;
+                if (float.IsNaN(translationVector.X)) translationVector.X = _backupPos[index].X;
+                if (float.IsNaN(translationVector.Y)) translationVector.Y = _backupPos[index].Y;
+                if (float.IsNaN(translationVector.Z)) translationVector.Z = _backupPos[index].Z;
 
                 keyframe.Translations[0] = translationVector;
                 keyframe.TranslationsMatrices[0] = Matrix4x4.CreateTranslation(translationVector);
@@ -219,9 +219,9 @@ namespace WadTool
                 var rotationVector = MathC.QuaternionToEuler(finalQuat);
 
                 // Foolproof stuff in case user hardly messes with transform during playback...
-                if (float.IsNaN(rotationVector.X)) rotationVector.X = 0;
-                if (float.IsNaN(rotationVector.Y)) rotationVector.Y = 0;
-                if (float.IsNaN(rotationVector.Z)) rotationVector.Z = 0;
+                if (float.IsNaN(rotationVector.X)) rotationVector.X = _backupRot[index].X;
+                if (float.IsNaN(rotationVector.Y)) rotationVector.Y = _backupRot[index].Y;
+                if (float.IsNaN(rotationVector.Z)) rotationVector.Z = _backupRot[index].Z;
 
                 // NaNs filtered out, now we can put actual data.
                 keyframe.Quaternions[meshIndex] = Quaternion.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);

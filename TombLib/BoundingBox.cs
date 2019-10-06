@@ -23,7 +23,7 @@ namespace TombLib
         public Vector3 Center => (Maximum + Minimum) * 0.5f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BoundingBox Intersec(BoundingBox other)
+        public BoundingBox Intersect(BoundingBox other)
         {
             return new BoundingBox(Vector3.Max(Minimum, other.Minimum), Vector3.Min(Maximum, other.Maximum));
         }
@@ -32,6 +32,18 @@ namespace TombLib
         public BoundingBox Union(BoundingBox other)
         {
             return new BoundingBox(Vector3.Min(Minimum, other.Minimum), Vector3.Max(Maximum, other.Maximum));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public BoundingBox Inflate(Vector3 value)
+        {
+            var newMinimum = new Vector3(Minimum.X - value.X, Minimum.Y + value.Y, Minimum.Z - value.Z);
+            var newMaximum = new Vector3(Maximum.X + value.X, Maximum.Y - value.Y, Maximum.Z + value.Z);
+
+            if (newMinimum.X > newMaximum.X || newMinimum.Y < newMaximum.Y || newMinimum.Z > newMaximum.Z)
+                return new BoundingBox(Minimum, Maximum);
+            else
+                return new BoundingBox(newMinimum, newMaximum);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
