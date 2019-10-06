@@ -1363,9 +1363,9 @@ namespace WadTool
             this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel9.Location = new System.Drawing.Point(1, 474);
             this.darkLabel9.Name = "darkLabel9";
-            this.darkLabel9.Size = new System.Drawing.Size(42, 13);
+            this.darkLabel9.Size = new System.Drawing.Size(120, 13);
             this.darkLabel9.TabIndex = 9;
-            this.darkLabel9.Text = "Resize:";
+            this.darkLabel9.Text = "Resize (current frame):";
             // 
             // nudBBoxMaxZ
             // 
