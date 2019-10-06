@@ -1689,6 +1689,33 @@ namespace WadTool
         private void nudBBoxMaxY_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMaxY);
         private void nudBBoxMaxZ_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBBoxMaxZ);
 
+        // Context menus for timeline
+
+        private void cmMarkInMenuItem_Click(object sender, EventArgs e) => timeline.SelectionStart = timeline.Value;
+        private void cmMarkOutMenuItem_Click(object sender, EventArgs e) => timeline.SelectionEnd = timeline.Value;
+        private void cnClearSelectionMenuItem_Click(object sender, EventArgs e) => timeline.ResetSelection();
+        private void cmSelectAllMenuItem_Click(object sender, EventArgs e) => timeline.SelectAll();
+        private void cmCreateAnimCommandMenuItem_Click(object sender, EventArgs e) => EditAnimCommands(new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)timeline.FrameIndex });
+
+        private void cmCreateStateChangeMenuItem_Click(object sender, EventArgs e)
+        {
+            WadStateChange sch = null;
+
+            if (!timeline.SelectionIsEmpty)
+            {
+                sch = new WadStateChange();
+                sch.Dispatches.Add(new WadAnimDispatch()
+                {
+                    InFrame = (ushort)timeline.SelectionStartFrameIndex,
+                    OutFrame = (ushort)timeline.SelectionEndFrameIndex,
+                    NextAnimation = 0,
+                    NextFrame = 0
+                });
+            }
+
+            EditStateChanges(sch);
+        }
+
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
         {
             if (_editor.CurrentAnim?.WadAnimation == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 1)
@@ -2184,31 +2211,6 @@ namespace WadTool
                 UpdateTransformUI();
         }
 
-        private void cmMarkInMenuItem_Click(object sender, EventArgs e) => timeline.SelectionStart = timeline.Value;
-        private void cmMarkOutMenuItem_Click(object sender, EventArgs e) => timeline.SelectionEnd = timeline.Value;
-        private void cnClearSelectionMenuItem_Click(object sender, EventArgs e) => timeline.ResetSelection();
-        private void cmSelectAllMenuItem_Click(object sender, EventArgs e) => timeline.SelectAll();
-        private void cmCreateAnimCommandMenuItem_Click(object sender, EventArgs e) => EditAnimCommands(new WadAnimCommand() { Type = WadAnimCommandType.PlaySound, Parameter1 = (short)timeline.FrameIndex });
-
-        private void cmCreateStateChangeMenuItem_Click(object sender, EventArgs e)
-        {
-            WadStateChange sch = null;
-
-            if (!timeline.SelectionIsEmpty)
-            {
-                sch = new WadStateChange();
-                sch.Dispatches.Add(new WadAnimDispatch()
-                {
-                    InFrame = (ushort)timeline.SelectionStartFrameIndex,
-                    OutFrame = (ushort)timeline.SelectionEndFrameIndex,
-                    NextAnimation = 0,
-                    NextFrame = 0
-                });
-            }
-
-            EditStateChanges(sch);
-        }
-
         private void cmbTransformMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             _editor.TransformMode = (AnimTransformMode)cmbTransformMode.SelectedIndex;
@@ -2240,6 +2242,11 @@ namespace WadTool
         {
             if (dgvBoundingMeshList.SelectedRows.Count < 1) return;
             SelectMesh(dgvBoundingMeshList.SelectedRows[0].Index);
+        }
+
+        private void dgvBoundingMeshList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value = !(bool)dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value;
         }
     }
 }
