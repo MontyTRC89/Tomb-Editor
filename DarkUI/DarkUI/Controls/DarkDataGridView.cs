@@ -1099,10 +1099,10 @@ namespace DarkUI.Controls
         [DefaultValue(false)]
         public bool Hidden
         {
-            get { return _hidden ?? (OwningColumn as DarkDataGridViewButtonColumn)?.Visible ?? true; }
+            get { return _hidden ?? !((OwningColumn as DarkDataGridViewButtonColumn)?.Visible ?? true); }
             set
             {
-                if (value == Hidden)
+                if (value == _hidden)
                     return;
                 _hidden = value;
                 DataGridView?.InvalidateCell(this);
@@ -1259,12 +1259,76 @@ namespace DarkUI.Controls
     }
 
     public class DarkDataGridViewCheckBoxCell : DataGridViewCheckBoxCell
-    { }
+    {
+        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex,
+            DataGridViewElementStates elementState, object value, object formattedValue, string errorText,
+            DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
+        {
+            if (FlatStyle == FlatStyle.System)
+            {
+                base.Paint(graphics, clipBounds, cellBounds, rowIndex, elementState, value,
+                    formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
+                return;
+            }
+
+            // Paint background
+            if (paintParts.HasFlag(DataGridViewPaintParts.Background))
+            {
+                Color backColor = elementState.HasFlag(DataGridViewElementStates.Selected) ?
+                cellStyle.SelectionBackColor : cellStyle.BackColor;
+                using (var brush = new SolidBrush(backColor))
+                    graphics.FillRectangle(brush, cellBounds);
+            }
+
+            if (paintParts.HasFlag(DataGridViewPaintParts.Border))
+                PaintBorder(graphics, clipBounds, cellBounds, cellStyle, advancedBorderStyle);
+
+            // Choose button colors
+            var borderColor = Colors.LightText;
+            var fillColor = Colors.LightestBackground;
+
+            // Size
+            const int size = Consts.CheckBoxSize;
+
+            var hS = (int)Math.Round(size / 2.0d, MidpointRounding.AwayFromZero);
+            var qS = (int)Math.Round((size - 4) / 2.0d, MidpointRounding.AwayFromZero);
+            var hW = (int)Math.Round(cellBounds.Width / 2.0d, MidpointRounding.AwayFromZero);
+            var hH = (int)Math.Round(cellBounds.Height / 2.0d, MidpointRounding.AwayFromZero);
+
+            // Bounds
+            Rectangle boxRect = new Rectangle(cellBounds.X + hW - hS, cellBounds.Y + hH - hS - 1, size, size);
+            Rectangle checkBoxRect = new Rectangle(cellBounds.X + hW - hS + 2, cellBounds.Y + hH - qS - 1, size - 3, size - 3);
+
+            using (var b = new SolidBrush(Colors.GreyBackground))
+                graphics.FillRectangle(b, boxRect);
+
+            using (var p = new Pen(borderColor))
+                graphics.DrawRectangle(p, boxRect);
+
+            if ((bool)formattedValue == true)
+            {
+                Rectangle checkBoxRectCross = checkBoxRect;
+                checkBoxRectCross.Inflate(new Size(-1, -1));
+                using (var p = new Pen(fillColor, 2) { StartCap = LineCap.Round, EndCap = LineCap.Round })
+                {
+                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+                    graphics.DrawLines(p, new Point[]
+                        {
+                                new Point(checkBoxRectCross.Left - 1, checkBoxRectCross.Bottom - checkBoxRectCross.Height / 2 - 1),
+                                new Point(checkBoxRectCross.Left + checkBoxRectCross.Width / 2 - 1, checkBoxRectCross.Bottom - 1),
+                                new Point(checkBoxRectCross.Right - 1, checkBoxRectCross.Top)
+                        });
+                    graphics.SmoothingMode = SmoothingMode.Default;
+                }
+            }
+        }
+    }
 
     public class DarkDataGridViewCheckBoxColumn : DataGridViewCheckBoxColumn
     {
         public DarkDataGridViewCheckBoxColumn()
         {
+            CellTemplate = new DarkDataGridViewCheckBoxCell();
             base.FlatStyle = FlatStyle.Flat;
         }
 
@@ -1272,6 +1336,12 @@ namespace DarkUI.Controls
         public new FlatStyle FlatStyle
         {
             get { return FlatStyle.Flat; }
+        }
+
+        public sealed override DataGridViewCell CellTemplate
+        {
+            get { return base.CellTemplate; }
+            set { base.CellTemplate = value; }
         }
     }
 

@@ -330,7 +330,7 @@ namespace TombLib.Wad.TrLevels
                         logger.Warn("Sample index out of range.");
                         continue;
                     }
-                    newInfo.EmbeddedSamples.Add(samples[sampleIndex]);
+                    newInfo.Samples.Add(samples[sampleIndex]);
                 }
 
                 wad.Sounds.SoundInfos.Add(newInfo);

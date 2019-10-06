@@ -82,7 +82,7 @@ namespace TombLib.Wad
 
             _indices[channelIndex] = soundInfo.Id;
 
-            if (soundInfo.EmbeddedSamples == null || soundInfo.EmbeddedSamples.Count == 0)
+            if (soundInfo.Samples == null || soundInfo.Samples.Count == 0)
                 return;
 
             // Figure out the precise play parameters
@@ -98,9 +98,9 @@ namespace TombLib.Wad
                 if (chance != 1.0f && _rng.NextDouble() > chance)
                     return;
 
-                sampleIndex = _rng.Next(0, soundInfo.EmbeddedSamples.Count);
-                if (sampleIndex == soundInfo.EmbeddedSamples.Count)
-                    sampleIndex = soundInfo.EmbeddedSamples.Count - 1;
+                sampleIndex = _rng.Next(0, soundInfo.Samples.Count);
+                if (sampleIndex == soundInfo.Samples.Count)
+                    sampleIndex = soundInfo.Samples.Count - 1;
 
                 if (!soundInfo.DisablePanning)
                     pan = (float)((_rng.NextDouble() - 0.5f) * 1.6);
@@ -110,7 +110,7 @@ namespace TombLib.Wad
                     volume -= (float)_rng.NextDouble() * 0.125f;
             }
 
-            PlaySample(level, soundInfo.EmbeddedSamples[sampleIndex], channelIndex, volume, pitch, pan, loopCount);
+            PlaySample(level, soundInfo.Samples[sampleIndex], channelIndex, volume, pitch, pan, loopCount);
         }
 
         public static void PlaySample(Level level, WadSample sample, int channel, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)

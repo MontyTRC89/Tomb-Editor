@@ -234,7 +234,7 @@ namespace TombLib.Wad
                 else if (id2 == Wad2Chunks.SoundInfoName || id2 == Wad2Chunks.SoundInfoNameObsolete)
                     tempSoundInfo.Name = chunkIO.ReadChunkString(chunkSize2);
                 else if (id2 == Wad2Chunks.SoundInfoSampleIndex)
-                    tempSoundInfo.EmbeddedSamples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]); // Legacy
+                    tempSoundInfo.Samples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]); // Legacy
                 else
                     return false;
                 _legacySounds = true;

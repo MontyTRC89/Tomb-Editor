@@ -176,7 +176,7 @@ namespace TombLib.Wad
                 int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
-                    newInfo.EmbeddedSamples.Add(new WadSample(samples[j]));
+                    newInfo.Samples.Add(new WadSample(samples[j]));
                 }
                 soundInfos.Add(newInfo);
             }
@@ -210,8 +210,9 @@ namespace TombLib.Wad
                                 soundId++;
                                 continue;
                             }
-                            else
-                                sound.Name = s.Substring(0, endOfSoundName);
+
+                            sound.Name = s.Substring(0, endOfSoundName);
+                            sound.SoundCatalog = filename;
 
                             // Get everything else and remove empty tokens
                             var tokens = s.Substring(endOfSoundName + 1).Split(' ', '\t').Where(token => !string.IsNullOrEmpty(token)).ToList();
@@ -254,7 +255,7 @@ namespace TombLib.Wad
                                 else if (token.StartsWith("#g"))
                                     sound.Global = true;
                                 else if (!token.StartsWith("#"))
-                                    sound.EmbeddedSamples.Add(new WadSample(token + ".wav"));
+                                    sound.Samples.Add(new WadSample(token + ".wav"));
                             }
 
                             sounds.SoundInfos.Add(sound);
