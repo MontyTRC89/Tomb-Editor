@@ -1336,40 +1336,26 @@ namespace TombEditor.Forms
         }
 
         // Select all sounds from desired sound info list.
-        private void AssignAllSounds(WadSounds sounds)
+        private void AssignAllSounds(WadSounds sounds, bool updateUI = true)
         {
             foreach (var sound in sounds.SoundInfos)
                 if (!_levelSettings.SelectedSounds.Contains(sound.Id))
                     _levelSettings.SelectedSounds.Add(sound.Id);
 
-            PopulateSoundInfoListAndResetFilter();
+            if (updateUI)
+                PopulateSoundInfoListAndResetFilter();
         }
 
         // Selects or deselects all sounds in UI.
         private void ToggleSelectionForAllSounds(bool toggleValue)
         {
-            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
-            {
-                row.Cells[0].Value = toggleValue;
-                selectedSoundsDataGridView_HighlightRow(row);
-            }
+            if (toggleValue == true)
+                foreach (var catalog in _levelSettings.SoundsCatalogs)
+                    AssignAllSounds(catalog.Sounds, false);
+            else
+                _levelSettings.SelectedSounds.Clear();
 
-            UpdateSelectedSounds();
-        }
-
-        // Updates list of selected sounds according to UI.
-        private void UpdateSelectedSounds()
-        {
-            foreach (DataGridViewRow row in selectedSoundsDataGridView.Rows)
-            {
-                int  currentIndex    = (int)row.Cells[1].Value;
-                bool currentSelected = (bool)row.Cells[0].Value;
-
-                if (_levelSettings.SelectedSounds.Contains(currentIndex) && !currentSelected)
-                    _levelSettings.SelectedSounds.Remove(currentIndex);
-                else if (!_levelSettings.SelectedSounds.Contains(currentIndex) && currentSelected)
-                    _levelSettings.SelectedSounds.Add(currentIndex);
-            }
+            PopulateSoundInfoListAndResetFilter();
         }
 
         // Updates statistics in the bottom of the page.
@@ -1388,8 +1374,17 @@ namespace TombEditor.Forms
 
             if (selectedSoundsDataGridView.Columns[e.ColumnIndex].Name == colSoundsEnabled.Name)
             {
-                selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[e.RowIndex]);
-                UpdateSelectedSounds();
+                var row = selectedSoundsDataGridView.Rows[e.RowIndex];
+
+                selectedSoundsDataGridView_HighlightRow(row);
+                int currentIndex = (int)row.Cells[1].Value;
+                bool currentSelected = (bool)row.Cells[0].Value;
+
+                if (_levelSettings.SelectedSounds.Contains(currentIndex) && !currentSelected)
+                    _levelSettings.SelectedSounds.Remove(currentIndex);
+                else if (!_levelSettings.SelectedSounds.Contains(currentIndex) && currentSelected)
+                    _levelSettings.SelectedSounds.Add(currentIndex);
+
                 UpdateSoundStatistics();
             }
         }
