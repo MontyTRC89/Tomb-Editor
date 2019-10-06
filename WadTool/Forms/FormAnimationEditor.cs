@@ -559,7 +559,7 @@ namespace WadTool
             if (!timeline.SelectionIsEmpty)
             {
                 start = timeline.Selection.X;
-                end   = timeline.Selection.Y;
+                end   = timeline.Selection.Y + 1;
             }
 
             for (int i = start; i < end; i++)
@@ -624,12 +624,12 @@ namespace WadTool
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
             
             int start = 0;
-            int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+            int end   = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
 
             if (!timeline.SelectionIsEmpty)
             {
                 start = timeline.Selection.X;
-                end = timeline.Selection.Y;
+                end   = timeline.Selection.Y + 1;
             }
 
             for (int i = start; i < end; i++)
