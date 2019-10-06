@@ -42,13 +42,33 @@ namespace TombEditor.ToolWindows
             // Update available items combo box
             if (obj is Editor.LoadedWadsChangedEvent)
             {
+                var allMoveables = _editor.Level.Settings.WadGetAllMoveables();
+                var allStatics   = _editor.Level.Settings.WadGetAllStatics();
+                
                 comboItems.Items.Clear();
-                foreach (var moveable in _editor.Level.Settings.WadGetAllMoveables().Values)
+                foreach (var moveable in allMoveables.Values)
                     comboItems.Items.Add(moveable);
-                foreach (var staticMesh in _editor.Level.Settings.WadGetAllStatics().Values)
+                foreach (var staticMesh in allStatics.Values)
                     comboItems.Items.Add(staticMesh);
-                if (comboItems.Items.Count > 0 && comboItems.SelectedIndex == -1)
+
+                if (comboItems.Items.Count > 0)
+                {
                     comboItems.SelectedIndex = 0;
+
+                    // Update visible conflicting item, otherwise it's not updated in 3D control.
+                    if(comboItems.SelectedItem is WadMoveable)
+                    {
+                        var currentObject = (WadMoveableId)panelItem.CurrentObject.Id;
+                        if (allMoveables.ContainsKey(currentObject))
+                            panelItem.CurrentObject = allMoveables[currentObject];
+                    }
+                    else if (comboItems.SelectedItem is WadStatic)
+                    {
+                        var currentObject = (WadStaticId)panelItem.CurrentObject.Id;
+                        if (allStatics.ContainsKey(currentObject))
+                            panelItem.CurrentObject = allStatics[currentObject];
+                    }
+                }
             }
 
             // Update selection of items combo box
