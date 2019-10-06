@@ -108,26 +108,26 @@ namespace TombLib.Utils
                         if (row.ExportSamples)
                         {
                             var samples = new List<string>();
-                            foreach (var sample in row.SoundInfo.EmbeddedSamples)
+                            foreach (var sample in row.SoundInfo.Samples)
                             {
                                 if (sample.IsLoaded)
                                 {
-                                    string sampleName = row.NewName.ToLower() + "_" + row.SoundInfo.EmbeddedSamples.IndexOf(sample) + ".wav";
+                                    string sampleName = row.NewName.ToLower() + "_" + row.SoundInfo.Samples.IndexOf(sample) + ".wav";
                                     samples.Add(sampleName);
                                     File.WriteAllBytes(Path.GetDirectoryName(dest) + "\\" + sampleName, sample.Data);
                                 }
                             }
 
-                            row.SoundInfo.EmbeddedSamples.Clear();
+                            row.SoundInfo.Samples.Clear();
                             foreach (var sample in samples)
-                                row.SoundInfo.EmbeddedSamples.Add(new WadSample(sample));
+                                row.SoundInfo.Samples.Add(new WadSample(sample));
                         }
                         else
                         {
-                            row.SoundInfo.EmbeddedSamples.Clear();
+                            row.SoundInfo.Samples.Clear();
                             var refInfo = sounds.TryGetSoundInfo(row.SoundInfo.Id);
                             if (refInfo != null)
-                                row.SoundInfo.EmbeddedSamples.AddRange(refInfo.EmbeddedSamples);
+                                row.SoundInfo.Samples.AddRange(refInfo.Samples);
                         }
                     }
 
@@ -328,19 +328,19 @@ namespace TombLib.Utils
                     if (row.SoundInfo != null)
                     {
                         var samples = new List<string>();
-                        foreach (var sample in row.SoundInfo.EmbeddedSamples)
+                        foreach (var sample in row.SoundInfo.Samples)
                         {
                             if (sample.IsLoaded)
                             {
-                                string sampleName =Path.GetFileNameWithoutExtension(dest) + "_" + row.NewName.ToLower() + "_" + row.SoundInfo.EmbeddedSamples.IndexOf(sample) + ".wav";
+                                string sampleName = Path.GetFileNameWithoutExtension(dest) + "_" + row.NewName.ToLower() + "_" + row.SoundInfo.Samples.IndexOf(sample) + ".wav";
                                 samples.Add(sampleName);
                                 File.WriteAllBytes(Path.GetDirectoryName(dest) + "\\" + sampleName, sample.Data);
                             }
                         }
 
-                        row.SoundInfo.EmbeddedSamples.Clear();
+                        row.SoundInfo.Samples.Clear();
                         foreach (var sample in samples)
-                            row.SoundInfo.EmbeddedSamples.Add(new WadSample(sample));
+                            row.SoundInfo.Samples.Add(new WadSample(sample));
                     }
 
                 // Sort sound infos

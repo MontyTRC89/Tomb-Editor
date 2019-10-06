@@ -130,8 +130,6 @@ namespace WadTool
             this.butCalcBBoxAnim = new DarkUI.Controls.DarkButton();
             this.nudGrowY = new DarkUI.Controls.DarkNumericUpDown();
             this.dgvBoundingMeshList = new DarkUI.Controls.DarkDataGridView();
-            this.dgvBoundingMeshListCheckboxes = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dgvBoundingMeshListMeshes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nudGrowX = new DarkUI.Controls.DarkNumericUpDown();
             this.butGrowBBox = new DarkUI.Controls.DarkButton();
             this.nudGrowZ = new DarkUI.Controls.DarkNumericUpDown();
@@ -162,6 +160,7 @@ namespace WadTool
             this.darkButton3 = new DarkUI.Controls.DarkButton();
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.panelView = new DarkUI.Controls.DarkSectionPanel();
             this.panelRight = new System.Windows.Forms.Panel();
             this.panelLeft = new System.Windows.Forms.Panel();
             this.panelTransform = new DarkUI.Controls.DarkSectionPanel();
@@ -193,7 +192,8 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panelView = new DarkUI.Controls.DarkSectionPanel();
+            this.dgvBoundingMeshListCheckboxes = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.dgvBoundingMeshListMeshes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -217,6 +217,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).BeginInit();
             this.panelMain.SuspendLayout();
+            this.panelView.SuspendLayout();
             this.panelRight.SuspendLayout();
             this.panelLeft.SuspendLayout();
             this.panelTransform.SuspendLayout();
@@ -228,7 +229,6 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudRotY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRotZ)).BeginInit();
             this.cmTimelineContextMenu.SuspendLayout();
-            this.panelView.SuspendLayout();
             this.SuspendLayout();
             // 
             // topMenu
@@ -1273,9 +1273,9 @@ namespace WadTool
             // panelRendering
             // 
             this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(0, 0);
+            this.panelRendering.Location = new System.Drawing.Point(1, 1);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(551, 545);
+            this.panelRendering.Size = new System.Drawing.Size(549, 543);
             this.panelRendering.TabIndex = 9;
             this.panelRendering.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDoubleClick);
             this.panelRendering.MouseEnter += new System.EventHandler(this.panelRendering_MouseEnter);
@@ -1596,21 +1596,6 @@ namespace WadTool
             this.dgvBoundingMeshList.TabIndex = 25;
             this.dgvBoundingMeshList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvBoundingMeshList_CellMouseDoubleClick);
             this.dgvBoundingMeshList.SelectionChanged += new System.EventHandler(this.dgvBoundingMeshList_SelectionChanged);
-            // 
-            // dgvBoundingMeshListCheckboxes
-            // 
-            this.dgvBoundingMeshListCheckboxes.HeaderText = "Use";
-            this.dgvBoundingMeshListCheckboxes.Name = "dgvBoundingMeshListCheckboxes";
-            this.dgvBoundingMeshListCheckboxes.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvBoundingMeshListCheckboxes.Width = 40;
-            // 
-            // dgvBoundingMeshListMeshes
-            // 
-            this.dgvBoundingMeshListMeshes.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvBoundingMeshListMeshes.HeaderText = "Mesh";
-            this.dgvBoundingMeshListMeshes.Name = "dgvBoundingMeshListMeshes";
-            this.dgvBoundingMeshListMeshes.ReadOnly = true;
-            this.dgvBoundingMeshListMeshes.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // nudGrowX
             // 
@@ -2050,6 +2035,16 @@ namespace WadTool
             this.panelMain.Size = new System.Drawing.Size(1039, 591);
             this.panelMain.TabIndex = 129;
             // 
+            // panelView
+            // 
+            this.panelView.Controls.Add(this.panelRendering);
+            this.panelView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelView.Location = new System.Drawing.Point(284, 4);
+            this.panelView.Name = "panelView";
+            this.panelView.SectionHeader = null;
+            this.panelView.Size = new System.Drawing.Size(551, 545);
+            this.panelView.TabIndex = 13;
+            // 
             // panelRight
             // 
             this.panelRight.Controls.Add(this.darkSectionPanel2);
@@ -2479,15 +2474,20 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
-            // panelView
+            // dgvBoundingMeshListCheckboxes
             // 
-            this.panelView.Controls.Add(this.panelRendering);
-            this.panelView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelView.Location = new System.Drawing.Point(284, 4);
-            this.panelView.Name = "panelView";
-            this.panelView.SectionHeader = null;
-            this.panelView.Size = new System.Drawing.Size(551, 545);
-            this.panelView.TabIndex = 13;
+            this.dgvBoundingMeshListCheckboxes.HeaderText = "Use";
+            this.dgvBoundingMeshListCheckboxes.Name = "dgvBoundingMeshListCheckboxes";
+            this.dgvBoundingMeshListCheckboxes.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvBoundingMeshListCheckboxes.Width = 40;
+            // 
+            // dgvBoundingMeshListMeshes
+            // 
+            this.dgvBoundingMeshListMeshes.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dgvBoundingMeshListMeshes.HeaderText = "Mesh";
+            this.dgvBoundingMeshListMeshes.Name = "dgvBoundingMeshListMeshes";
+            this.dgvBoundingMeshListMeshes.ReadOnly = true;
+            this.dgvBoundingMeshListMeshes.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // FormAnimationEditor
             // 
@@ -2538,6 +2538,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFramerate)).EndInit();
             this.panelMain.ResumeLayout(false);
+            this.panelView.ResumeLayout(false);
             this.panelRight.ResumeLayout(false);
             this.panelLeft.ResumeLayout(false);
             this.panelTransform.ResumeLayout(false);
@@ -2550,7 +2551,6 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudRotY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRotZ)).EndInit();
             this.cmTimelineContextMenu.ResumeLayout(false);
-            this.panelView.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2739,8 +2739,8 @@ namespace WadTool
         private DarkUI.Controls.DarkButton butSelectNoMeshes;
         private DarkUI.Controls.DarkButton butSelectAllMeshes;
         private System.Windows.Forms.Panel panelRight;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dgvBoundingMeshListCheckboxes;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvBoundingMeshListMeshes;
         private DarkUI.Controls.DarkSectionPanel panelView;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn dgvBoundingMeshListCheckboxes;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvBoundingMeshListMeshes;
     }
 }

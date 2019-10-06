@@ -740,7 +740,7 @@ namespace TombLib.LevelData.Compilers
             // Step 3: load samples
             var samples = new List<WadSample>();
             foreach (var soundInfo in _finalSoundInfosList)
-                foreach (var sample in soundInfo.EmbeddedSamples)
+                foreach (var sample in soundInfo.Samples)
                     samples.Add(sample);
 
             _finalSamplesList = new List<WadSample>();
@@ -813,10 +813,10 @@ namespace TombLib.LevelData.Compilers
                     {
                         var soundDetail = _finalSoundInfosList[i];
 
-                        if (soundDetail.EmbeddedSamples.Count > 0x3f)
+                        if (soundDetail.Samples.Count > 0x3f)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
                         ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
-                        characteristics |= (ushort)(soundDetail.EmbeddedSamples.Count << 2);
+                        characteristics |= (ushort)(soundDetail.Samples.Count << 2);
                         if (soundDetail.DisablePanning)
                             characteristics |= 0x1000;
                         if (soundDetail.RandomizePitch)
@@ -846,7 +846,7 @@ namespace TombLib.LevelData.Compilers
                             bw.WriteBlock(newSoundDetail);
                         }
 
-                        lastSampleIndex += soundDetail.EmbeddedSamples.Count;
+                        lastSampleIndex += soundDetail.Samples.Count;
                     }
 
                     bw.Write((uint)lastSampleIndex);

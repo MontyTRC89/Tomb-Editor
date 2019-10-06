@@ -59,7 +59,7 @@ namespace TombLib.Controls
                 result.LoopBehaviour = (WadSoundLoopBehaviour)(comboLoop.SelectedIndex);
                 result.Global = cbGlobal.Checked;
                 foreach (DataGridViewRow row in dgvSamples.Rows)
-                    result.EmbeddedSamples.Add(new WadSample(row.Cells[0].Value.ToString()));
+                    result.Samples.Add(new WadSample(row.Cells[0].Value.ToString()));
                 return new WadSoundInfo(result);
             }
             set
@@ -169,10 +169,10 @@ namespace TombLib.Controls
                     tbID.Text = newSoundInfo.Id.ToString();
                     tbName.Text = newSoundInfo.Name;
 
-                    if (newSoundInfo.EmbeddedSamples != null && newSoundInfo.EmbeddedSamples.Count > 0)
+                    if (newSoundInfo.Samples != null && newSoundInfo.Samples.Count > 0)
                     {
                         dgvSamples.Rows.Clear();
-                        foreach (var sample in newSoundInfo.EmbeddedSamples)
+                        foreach (var sample in newSoundInfo.Samples)
                             dgvSamples.Rows.Add(sample.FileName);
                     }
                 }

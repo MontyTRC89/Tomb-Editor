@@ -39,7 +39,7 @@ namespace TombLib.Forms
             this.columnSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnSamplePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnFound = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lstPaths = new DarkUI.Controls.DarkListBox(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
@@ -269,6 +269,6 @@ namespace TombLib.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn columnSampleName;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnSamplePath;
         private DarkUI.Controls.DarkDataGridViewButtonColumn columnSearch;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn columnFound;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn columnFound;
     }
 }

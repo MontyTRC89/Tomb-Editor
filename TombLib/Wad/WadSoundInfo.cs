@@ -25,7 +25,7 @@ namespace TombLib.Wad
         public bool RandomizePitch { get; set; } // The pitch is sped up and slowed down by 6000/(2^16). (Not relative to the pitch)
         public bool RandomizeVolume { get; set; } // The volume is reduced by an absolute value of 1/8 of the full volume. (Not relative to the volume value)
         public WadSoundLoopBehaviour LoopBehaviour { get; set; }
-        public List<WadSample> EmbeddedSamples { get; set; }
+        public List<WadSample> Samples { get; set; }
         public bool Global { get; set; }
         [XmlIgnore]
         public bool AddToLevel { get; set; }
@@ -48,7 +48,7 @@ namespace TombLib.Wad
             RandomizeVolume = false;
             LoopBehaviour = WadSoundLoopBehaviour.None;
             Global = false;
-            EmbeddedSamples = new List<WadSample>();
+            Samples = new List<WadSample>();
             SoundCatalog = "";
         }
 
@@ -64,11 +64,11 @@ namespace TombLib.Wad
             RandomizePitch = s.RandomizePitch;
             RandomizeVolume = s.RandomizeVolume;
             LoopBehaviour = s.LoopBehaviour;
-            EmbeddedSamples = new List<WadSample>();
+            Samples = new List<WadSample>();
             SoundCatalog = s.SoundCatalog;
             Global = s.Global;
-            foreach (var sample in s.EmbeddedSamples)
-                EmbeddedSamples.Add(new WadSample(sample.FileName));
+            foreach (var sample in s.Samples)
+                Samples.Add(new WadSample(sample.FileName));
         }
 
 
@@ -84,7 +84,7 @@ namespace TombLib.Wad
             get
             {
                 int dataSize = 0;
-                foreach (WadSample sample in EmbeddedSamples)
+                foreach (WadSample sample in Samples)
                     dataSize += sample.Data.Length;
                 return dataSize;
             }
@@ -92,11 +92,11 @@ namespace TombLib.Wad
 
         public int SampleCount(LevelSettings settings)
         {
-            if (EmbeddedSamples == null || EmbeddedSamples.Count <= 0)
+            if (Samples == null || Samples.Count <= 0)
                 return -1;
 
             int result = 0;
-            foreach (var sample in EmbeddedSamples)
+            foreach (var sample in Samples)
             {
                 var path = WadSounds.TryGetSamplePath(settings, sample.FileName);
                 if (path != null) result++;

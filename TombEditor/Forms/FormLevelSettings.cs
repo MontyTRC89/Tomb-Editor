@@ -339,6 +339,7 @@ namespace TombEditor.Forms
                     _levelSettings.OldWadSoundPaths.Clear();
                     foreach (var soundPath in _soundDataGridViewDataSource)
                         _levelSettings.OldWadSoundPaths.Add(soundPath.Clone());
+                    PopulateSoundInfoList();
                 };
             soundDataGridView.DataSource = _soundDataGridViewDataSource;
             soundDataGridViewControls.DataGridView = soundDataGridView;
@@ -897,7 +898,7 @@ namespace TombEditor.Forms
                 FitPreview(_previewTexture, new Rectangle(textureFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
                 _previewTexture.Show(this);
             }
-            else if (textureFileDataGridView.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn)
+            else if (textureFileDataGridView.Columns[e.ColumnIndex] is DarkDataGridViewCheckBoxColumn)
                 textureFileDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
@@ -961,7 +962,9 @@ namespace TombEditor.Forms
         private IEnumerable<ReferencedSoundsCatalogWrapper> soundsCatalogDataGridViewCreateNewRow()
         {
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select new soudns catalogs files", WadSounds.FormatExtensions, VariableType.LevelDirectory).ToList();
+                "Select new sound catalogs", WadSounds.FormatExtensions, VariableType.LevelDirectory)
+                // Filter out already loaded catalogs
+                .Where(path => !_levelSettings.SoundsCatalogs.Any(item => item.Path == path)).ToList();
 
             // Load catalogs concurrently
             ReferencedSoundsCatalogWrapper[] results = new ReferencedSoundsCatalogWrapper[paths.Count];
@@ -1448,7 +1451,6 @@ namespace TombEditor.Forms
                 }
                 else
                     cell.Hidden = true;
-
             }
         }
 

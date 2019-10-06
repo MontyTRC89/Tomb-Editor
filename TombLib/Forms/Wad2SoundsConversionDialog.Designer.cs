@@ -43,8 +43,8 @@ namespace TombLib.Forms
             this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.newIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.newNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ExportSamplesColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnFound = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.ExportSamplesColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -221,7 +221,7 @@ namespace TombLib.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn nameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn newIdColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn newNameColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn columnFound;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn ExportSamplesColumn;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn columnFound;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn ExportSamplesColumn;
     }
 }
