@@ -38,7 +38,7 @@ namespace TombEditor.Controls
             // Update field of view
             if (obj is Editor.ConfigurationChangedEvent)
             {
-                Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.RenderingItem_FieldOfView * (float)(Math.PI / 180);
+                Camera.FieldOfView = _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180);
                 Invalidate();
             }
 

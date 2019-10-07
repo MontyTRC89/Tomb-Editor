@@ -94,7 +94,7 @@ namespace TombEditor.ToolWindows
                 if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     GenerateToolStripCommands(toolStrip.Items, true);
 
-                RefreshControls(((Editor.ConfigurationChangedEvent)obj).Current);
+                RefreshControls(_editor.Configuration);
             }
             
             // Gray out menu options that do not apply

@@ -286,7 +286,7 @@ namespace TombEditor.Controls
         {
             // Update FOV
             if (obj is Editor.ConfigurationChangedEvent)
-                Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.Rendering3D_FieldOfView * (float)(Math.PI / 180);
+                Camera.FieldOfView = _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
             // Move camera position with room movements
             if (obj is Editor.RoomGeometryChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)

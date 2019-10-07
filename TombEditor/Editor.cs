@@ -354,9 +354,9 @@ namespace TombEditor
 
         public class ConfigurationChangedEvent : IEditorPropertyChangedEvent
         {
-            public Configuration Previous { get; internal set; }
-            public Configuration Current { get; internal set; }
+            public bool UpdateLayout { get; internal set; } = false;
             public bool UpdateKeyboardShortcuts { get; internal set; } = false;
+            public bool Save { get; internal set; } = false;
         }
         private Configuration _configuration;
         public Configuration Configuration
@@ -368,7 +368,7 @@ namespace TombEditor
                     return;
                 var previous = _configuration;
                 _configuration = value;
-                RaiseEvent(new ConfigurationChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new ConfigurationChangedEvent { UpdateLayout = true, UpdateKeyboardShortcuts = true, Save = true });
             }
         }
 
@@ -654,11 +654,9 @@ namespace TombEditor
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }
 
-        // Notify all components that values of the configuration have changed
-        // FIXME: Is it a hack?
-        public void ConfigurationChange(bool updateKeyboardShortcuts = false)
+        public void ConfigurationChange(bool updateKeyboardShortcuts = false, bool updateLayout = false, bool save = false)
         {
-            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration, UpdateKeyboardShortcuts = updateKeyboardShortcuts });
+            RaiseEvent(new ConfigurationChangedEvent { UpdateKeyboardShortcuts = updateKeyboardShortcuts, UpdateLayout = updateLayout, Save = save });
         }
 
         // Select a room and (optonally) center the camera
@@ -781,17 +779,14 @@ namespace TombEditor
             // Update configuration watcher
             if (obj is ConfigurationChangedEvent)
             {
-                Configuration previous = ((ConfigurationChangedEvent)obj).Previous;
-                Configuration current = ((ConfigurationChangedEvent)obj).Current;
+                if (((ConfigurationChangedEvent)obj).Save && !_configurationIsLoadedFromFile)
+                    Configuration.SaveTry();
 
-                if (!_configurationIsLoadedFromFile)
-                    current?.SaveTry();
+                _autoSavingTimer.Interval = Configuration.AutoSave_TimeInSeconds * 1000;
+                _autoSavingTimer.Enabled = Configuration.AutoSave_Enable && HasUnsavedChanges;
 
-                _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
-                _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
-
-                if (current.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))
-                    if (current.Editor_ReloadFilesAutomaticallyWhenChanged)
+                if (Configuration.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))
+                    if (Configuration.Editor_ReloadFilesAutomaticallyWhenChanged)
                     {
                         _levelSettingsWatcher = new LevelSettingsWatcher(
                             (sender, e) => LoadedTexturesChange(null, false),
@@ -808,12 +803,11 @@ namespace TombEditor
                     }
 
                 // Update coloring info
-                SectorColoringManager.ColoringInfo.SectorColorScheme = current.UI_ColorScheme;
+                SectorColoringManager.ColoringInfo.SectorColorScheme = Configuration.UI_ColorScheme;
 
                 // Resize undo stack if needed
-                UndoManager.Resize(current.Editor_UndoDepth);
+                UndoManager.Resize(Configuration.Editor_UndoDepth);
             }
-
 
             // Reset notifications, when changeing between 2D and 3D mode
             // Also reset selected sectors if wanted and restore last tool for desired mode
@@ -992,7 +986,7 @@ namespace TombEditor
 
             EditorEventRaised += Editor_EditorEventRaised;
             _configurationIsLoadedFromFile = true;
-            Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
+            Editor_EditorEventRaised(new ConfigurationChangedEvent { UpdateKeyboardShortcuts = true });
             _configurationIsLoadedFromFile = false;
         }
 

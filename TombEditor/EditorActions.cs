@@ -4390,6 +4390,12 @@ namespace TombEditor
             _editor.Tool = currentTool;
         }
 
+        public static void SetSelectionTileSize(float tileSize)
+        {
+            _editor.Configuration.TextureMap_TileSelectionSize = tileSize > 256.0f ? 32.0f : tileSize;
+            _editor.ConfigurationChange();
+        }
+
         public static void SelectWaterRooms()
         {
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
