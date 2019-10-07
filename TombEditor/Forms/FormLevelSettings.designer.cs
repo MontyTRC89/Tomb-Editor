@@ -20,17 +20,20 @@
             this.pathVariablesDataGridViewContextMenu = new DarkUI.Controls.DarkContextMenu();
             this.pathVariablesDataGridViewContextMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butAssignFromWads = new DarkUI.Controls.DarkButton();
+            this.butRemoveMissing = new DarkUI.Controls.DarkButton();
+            this.butAssignFromSoundSources = new DarkUI.Controls.DarkButton();
+            this.butAssignSoundsFromSelectedCatalogs = new DarkUI.Controls.DarkButton();
+            this.butAssignHardcodedSounds = new DarkUI.Controls.DarkButton();
+            this.butAutodetectSoundsAndAssign = new DarkUI.Controls.DarkButton();
+            this.butDeselectAllSounds = new DarkUI.Controls.DarkButton();
+            this.butSelectAllSounds = new DarkUI.Controls.DarkButton();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -80,9 +83,6 @@
             this.butSelectAllStatics = new DarkUI.Controls.DarkButton();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.colMeshName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMergeStatics = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.colInterpretShadesAsEffect = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.tabSkyAndFont = new System.Windows.Forms.TabPage();
@@ -108,18 +108,10 @@
             this.skyTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
-            this.butAssignFromWads = new DarkUI.Controls.DarkButton();
-            this.butRemoveMissing = new DarkUI.Controls.DarkButton();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
             this.butSearchSounds = new DarkUI.Controls.DarkButton();
-            this.butAssignFromSoundSources = new DarkUI.Controls.DarkButton();
             this.tbFilterSounds = new DarkUI.Controls.DarkTextBox();
-            this.butAssignSoundsFromSelectedCatalogs = new DarkUI.Controls.DarkButton();
-            this.butAssignHardcodedSounds = new DarkUI.Controls.DarkButton();
-            this.butAutodetectSoundsAndAssign = new DarkUI.Controls.DarkButton();
-            this.butDeselectAllSounds = new DarkUI.Controls.DarkButton();
-            this.butSelectAllSounds = new DarkUI.Controls.DarkButton();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -173,6 +165,14 @@
             this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMeshName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMergeStatics = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colInterpretShadesAsEffect = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -218,14 +218,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -235,6 +235,99 @@
             this.pathToolTip.InitialDelay = 300;
             this.pathToolTip.ReshowDelay = 100;
             this.pathToolTip.ShowAlways = true;
+            // 
+            // butAssignFromWads
+            // 
+            this.butAssignFromWads.Location = new System.Drawing.Point(440, 245);
+            this.butAssignFromWads.Name = "butAssignFromWads";
+            this.butAssignFromWads.Size = new System.Drawing.Size(72, 22);
+            this.butAssignFromWads.TabIndex = 115;
+            this.butAssignFromWads.Text = "From wads";
+            this.butAssignFromWads.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select sounds from wads");
+            this.butAssignFromWads.Click += new System.EventHandler(this.butAssignFromWads_Click);
+            // 
+            // butRemoveMissing
+            // 
+            this.butRemoveMissing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRemoveMissing.Location = new System.Drawing.Point(606, 480);
+            this.butRemoveMissing.Name = "butRemoveMissing";
+            this.butRemoveMissing.Size = new System.Drawing.Size(91, 22);
+            this.butRemoveMissing.TabIndex = 114;
+            this.butRemoveMissing.Text = "Clear missing";
+            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren\'t present in any of the catalogs");
+            this.butRemoveMissing.Click += new System.EventHandler(this.butRemoveMissing_Click);
+            // 
+            // butAssignFromSoundSources
+            // 
+            this.butAssignFromSoundSources.Location = new System.Drawing.Point(318, 245);
+            this.butAssignFromSoundSources.Name = "butAssignFromSoundSources";
+            this.butAssignFromSoundSources.Size = new System.Drawing.Size(116, 22);
+            this.butAssignFromSoundSources.TabIndex = 113;
+            this.butAssignFromSoundSources.Text = "From sound sources";
+            this.butAssignFromSoundSources.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignFromSoundSources, "Select sounds from sound sources placed in level");
+            this.butAssignFromSoundSources.Click += new System.EventHandler(this.ButAssignFromSoundSources_Click);
+            // 
+            // butAssignSoundsFromSelectedCatalogs
+            // 
+            this.butAssignSoundsFromSelectedCatalogs.Location = new System.Drawing.Point(181, 245);
+            this.butAssignSoundsFromSelectedCatalogs.Name = "butAssignSoundsFromSelectedCatalogs";
+            this.butAssignSoundsFromSelectedCatalogs.Size = new System.Drawing.Size(131, 22);
+            this.butAssignSoundsFromSelectedCatalogs.TabIndex = 112;
+            this.butAssignSoundsFromSelectedCatalogs.Text = "From selected catalogs";
+            this.butAssignSoundsFromSelectedCatalogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignSoundsFromSelectedCatalogs, "Select sounds from selected catalogs");
+            this.butAssignSoundsFromSelectedCatalogs.Click += new System.EventHandler(this.ButAssignSoundsFromSelectedCatalogs_Click);
+            // 
+            // butAssignHardcodedSounds
+            // 
+            this.butAssignHardcodedSounds.Location = new System.Drawing.Point(105, 245);
+            this.butAssignHardcodedSounds.Name = "butAssignHardcodedSounds";
+            this.butAssignHardcodedSounds.Size = new System.Drawing.Size(70, 22);
+            this.butAssignHardcodedSounds.TabIndex = 111;
+            this.butAssignHardcodedSounds.Text = "Hardcoded";
+            this.butAssignHardcodedSounds.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignHardcodedSounds, "Select hardcoded sounds");
+            this.butAssignHardcodedSounds.Click += new System.EventHandler(this.ButAssignHardcodedSounds_Click);
+            // 
+            // butAutodetectSoundsAndAssign
+            // 
+            this.butAutodetectSoundsAndAssign.BackColor = System.Drawing.Color.DarkGreen;
+            this.butAutodetectSoundsAndAssign.BackColorUseGeneric = false;
+            this.butAutodetectSoundsAndAssign.Image = global::TombEditor.Properties.Resources.actions_light_on_16;
+            this.butAutodetectSoundsAndAssign.Location = new System.Drawing.Point(6, 245);
+            this.butAutodetectSoundsAndAssign.Name = "butAutodetectSoundsAndAssign";
+            this.butAutodetectSoundsAndAssign.Size = new System.Drawing.Size(93, 22);
+            this.butAutodetectSoundsAndAssign.TabIndex = 110;
+            this.butAutodetectSoundsAndAssign.Text = "Autodetect";
+            this.butAutodetectSoundsAndAssign.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAutodetectSoundsAndAssign, "Find and select all sounds used in a level.\r\nThis includes hardcoded sounds, soun" +
+        "ds used in animations, sound sources and flipeffect sounds.\r\nScripted sounds are" +
+        " not included.");
+            this.butAutodetectSoundsAndAssign.Click += new System.EventHandler(this.ButAutodetectSoundsAndAssign_Click);
+            // 
+            // butDeselectAllSounds
+            // 
+            this.butDeselectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeselectAllSounds.Location = new System.Drawing.Point(617, 245);
+            this.butDeselectAllSounds.Name = "butDeselectAllSounds";
+            this.butDeselectAllSounds.Size = new System.Drawing.Size(80, 22);
+            this.butDeselectAllSounds.TabIndex = 108;
+            this.butDeselectAllSounds.Text = "Deselect all";
+            this.pathToolTip.SetToolTip(this.butDeselectAllSounds, "Deselect all sounds");
+            this.butDeselectAllSounds.Click += new System.EventHandler(this.butDeselectAllSounds_Click);
+            // 
+            // butSelectAllSounds
+            // 
+            this.butSelectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectAllSounds.Location = new System.Drawing.Point(531, 245);
+            this.butSelectAllSounds.Name = "butSelectAllSounds";
+            this.butSelectAllSounds.Size = new System.Drawing.Size(80, 22);
+            this.butSelectAllSounds.TabIndex = 107;
+            this.butSelectAllSounds.Text = "Select all";
+            this.pathToolTip.SetToolTip(this.butSelectAllSounds, "Select all available sounds");
+            this.butSelectAllSounds.Click += new System.EventHandler(this.butSelectAllSounds_Click);
             // 
             // optionsList
             // 
@@ -296,42 +389,6 @@
             this.darkSectionPanel1.SectionHeader = null;
             this.darkSectionPanel1.Size = new System.Drawing.Size(710, 533);
             this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // colSoundsId
-            // 
-            this.colSoundsId.HeaderText = "ID";
-            this.colSoundsId.Name = "colSoundsId";
-            this.colSoundsId.ReadOnly = true;
-            this.colSoundsId.Width = 40;
-            // 
-            // colSoundsName
-            // 
-            this.colSoundsName.HeaderText = "Name";
-            this.colSoundsName.Name = "colSoundsName";
-            this.colSoundsName.Width = 200;
-            // 
-            // SelectedSoundsCatalogColumn
-            // 
-            this.SelectedSoundsCatalogColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SelectedSoundsCatalogColumn.HeaderText = "From catalog";
-            this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
-            this.SelectedSoundsCatalogColumn.ReadOnly = true;
-            // 
-            // SelectedSoundsGameColumn
-            // 
-            this.SelectedSoundsGameColumn.HeaderText = "Range";
-            this.SelectedSoundsGameColumn.Name = "SelectedSoundsGameColumn";
-            this.SelectedSoundsGameColumn.ReadOnly = true;
-            this.SelectedSoundsGameColumn.ToolTipText = "Range name of TRNG extended soundmap";
-            this.SelectedSoundsGameColumn.Width = 80;
-            // 
-            // SelectedSoundsOriginalIdColumn
-            // 
-            this.SelectedSoundsOriginalIdColumn.HeaderText = "Orig. ID";
-            this.SelectedSoundsOriginalIdColumn.Name = "SelectedSoundsOriginalIdColumn";
-            this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
-            this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
-            this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
             // tabbedContainer
             // 
@@ -872,8 +929,8 @@
             this.darkLabel19.Name = "darkLabel19";
             this.darkLabel19.Size = new System.Drawing.Size(694, 32);
             this.darkLabel19.TabIndex = 4;
-            this.darkLabel19.Text = "If InterpretShadesAsEffect is set, static mesh vertex shades are interpreted as f" +
-    "ollows:\r\n0 = No Effect, 1-14 = Glow, 15-31 = Movement/Glow.";
+            this.darkLabel19.Text = "If \'Interpret shades as effect\' value is set, static mesh vertex shades are inter" +
+    "preted as follows:\r\n0 = No Effect, 1-14 = Glow, 15-31 = Movement/Glow.";
             // 
             // staticMeshMergeDataGridView
             // 
@@ -897,30 +954,6 @@
             this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
             this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(691, 383);
             this.staticMeshMergeDataGridView.TabIndex = 2;
-            // 
-            // colMeshName
-            // 
-            this.colMeshName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colMeshName.DataPropertyName = "StaticMesh";
-            this.colMeshName.HeaderText = "Mesh name";
-            this.colMeshName.Name = "colMeshName";
-            this.colMeshName.ReadOnly = true;
-            // 
-            // colMergeStatics
-            // 
-            this.colMergeStatics.DataPropertyName = "Merge";
-            this.colMergeStatics.FillWeight = 50F;
-            this.colMergeStatics.HeaderText = "Merge";
-            this.colMergeStatics.Name = "colMergeStatics";
-            this.colMergeStatics.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colMergeStatics.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // colInterpretShadesAsEffect
-            // 
-            this.colInterpretShadesAsEffect.DataPropertyName = "InterpretShadesAsEffect";
-            this.colInterpretShadesAsEffect.FillWeight = 50F;
-            this.colInterpretShadesAsEffect.HeaderText = "Interpret shades as effect?";
-            this.colInterpretShadesAsEffect.Name = "colInterpretShadesAsEffect";
             // 
             // darkLabel18
             // 
@@ -1214,28 +1247,6 @@
             this.tabSoundsCatalogs.TabIndex = 8;
             this.tabSoundsCatalogs.Text = "Sound Infos";
             // 
-            // butAssignFromWads
-            // 
-            this.butAssignFromWads.Location = new System.Drawing.Point(440, 245);
-            this.butAssignFromWads.Name = "butAssignFromWads";
-            this.butAssignFromWads.Size = new System.Drawing.Size(72, 22);
-            this.butAssignFromWads.TabIndex = 115;
-            this.butAssignFromWads.Text = "From wads";
-            this.butAssignFromWads.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select sounds from wads");
-            this.butAssignFromWads.Click += new System.EventHandler(this.butAssignFromWads_Click);
-            // 
-            // butRemoveMissing
-            // 
-            this.butRemoveMissing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRemoveMissing.Location = new System.Drawing.Point(606, 480);
-            this.butRemoveMissing.Name = "butRemoveMissing";
-            this.butRemoveMissing.Size = new System.Drawing.Size(91, 22);
-            this.butRemoveMissing.TabIndex = 114;
-            this.butRemoveMissing.Text = "Hide missing";
-            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren\'t present in any of the catalogs");
-            this.butRemoveMissing.Click += new System.EventHandler(this.butRemoveMissing_Click);
-            // 
             // darkLabel20
             // 
             this.darkLabel20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1268,17 +1279,6 @@
             this.butSearchSounds.TabIndex = 109;
             this.butSearchSounds.Click += new System.EventHandler(this.butFilterSounds_Click);
             // 
-            // butAssignFromSoundSources
-            // 
-            this.butAssignFromSoundSources.Location = new System.Drawing.Point(318, 245);
-            this.butAssignFromSoundSources.Name = "butAssignFromSoundSources";
-            this.butAssignFromSoundSources.Size = new System.Drawing.Size(116, 22);
-            this.butAssignFromSoundSources.TabIndex = 113;
-            this.butAssignFromSoundSources.Text = "From sound sources";
-            this.butAssignFromSoundSources.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignFromSoundSources, "Select sounds from sound sources placed in level");
-            this.butAssignFromSoundSources.Click += new System.EventHandler(this.ButAssignFromSoundSources_Click);
-            // 
             // tbFilterSounds
             // 
             this.tbFilterSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1287,66 +1287,6 @@
             this.tbFilterSounds.Size = new System.Drawing.Size(198, 22);
             this.tbFilterSounds.TabIndex = 100;
             this.tbFilterSounds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbFilterSounds_KeyDown);
-            // 
-            // butAssignSoundsFromSelectedCatalogs
-            // 
-            this.butAssignSoundsFromSelectedCatalogs.Location = new System.Drawing.Point(181, 245);
-            this.butAssignSoundsFromSelectedCatalogs.Name = "butAssignSoundsFromSelectedCatalogs";
-            this.butAssignSoundsFromSelectedCatalogs.Size = new System.Drawing.Size(131, 22);
-            this.butAssignSoundsFromSelectedCatalogs.TabIndex = 112;
-            this.butAssignSoundsFromSelectedCatalogs.Text = "From selected catalogs";
-            this.butAssignSoundsFromSelectedCatalogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignSoundsFromSelectedCatalogs, "Select sounds from selected catalogs");
-            this.butAssignSoundsFromSelectedCatalogs.Click += new System.EventHandler(this.ButAssignSoundsFromSelectedCatalogs_Click);
-            // 
-            // butAssignHardcodedSounds
-            // 
-            this.butAssignHardcodedSounds.Location = new System.Drawing.Point(105, 245);
-            this.butAssignHardcodedSounds.Name = "butAssignHardcodedSounds";
-            this.butAssignHardcodedSounds.Size = new System.Drawing.Size(70, 22);
-            this.butAssignHardcodedSounds.TabIndex = 111;
-            this.butAssignHardcodedSounds.Text = "Hardcoded";
-            this.butAssignHardcodedSounds.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignHardcodedSounds, "Select hardcoded sounds");
-            this.butAssignHardcodedSounds.Click += new System.EventHandler(this.ButAssignHardcodedSounds_Click);
-            // 
-            // butAutodetectSoundsAndAssign
-            // 
-            this.butAutodetectSoundsAndAssign.BackColor = System.Drawing.Color.DarkGreen;
-            this.butAutodetectSoundsAndAssign.BackColorUseGeneric = false;
-            this.butAutodetectSoundsAndAssign.Image = global::TombEditor.Properties.Resources.actions_light_on_16;
-            this.butAutodetectSoundsAndAssign.Location = new System.Drawing.Point(6, 245);
-            this.butAutodetectSoundsAndAssign.Name = "butAutodetectSoundsAndAssign";
-            this.butAutodetectSoundsAndAssign.Size = new System.Drawing.Size(93, 22);
-            this.butAutodetectSoundsAndAssign.TabIndex = 110;
-            this.butAutodetectSoundsAndAssign.Text = "Autodetect";
-            this.butAutodetectSoundsAndAssign.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAutodetectSoundsAndAssign, "Find and select all sounds used in a level.\r\nThis includes hardcoded sounds, soun" +
-        "ds used in animations, sound sources and flipeffect sounds.\r\nScripted sounds are" +
-        " not included.");
-            this.butAutodetectSoundsAndAssign.Click += new System.EventHandler(this.ButAutodetectSoundsAndAssign_Click);
-            // 
-            // butDeselectAllSounds
-            // 
-            this.butDeselectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeselectAllSounds.Location = new System.Drawing.Point(617, 245);
-            this.butDeselectAllSounds.Name = "butDeselectAllSounds";
-            this.butDeselectAllSounds.Size = new System.Drawing.Size(80, 22);
-            this.butDeselectAllSounds.TabIndex = 108;
-            this.butDeselectAllSounds.Text = "Deselect all";
-            this.pathToolTip.SetToolTip(this.butDeselectAllSounds, "Deselect all sounds");
-            this.butDeselectAllSounds.Click += new System.EventHandler(this.butDeselectAllSounds_Click);
-            // 
-            // butSelectAllSounds
-            // 
-            this.butSelectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectAllSounds.Location = new System.Drawing.Point(531, 245);
-            this.butSelectAllSounds.Name = "butSelectAllSounds";
-            this.butSelectAllSounds.Size = new System.Drawing.Size(80, 22);
-            this.butSelectAllSounds.TabIndex = 107;
-            this.butSelectAllSounds.Text = "Select all";
-            this.pathToolTip.SetToolTip(this.butSelectAllSounds, "Select all available sounds");
-            this.butSelectAllSounds.Click += new System.EventHandler(this.butSelectAllSounds_Click);
             // 
             // darkLabel21
             // 
@@ -1935,6 +1875,66 @@
             this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
             this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
+            // colSoundsId
+            // 
+            this.colSoundsId.HeaderText = "ID";
+            this.colSoundsId.Name = "colSoundsId";
+            this.colSoundsId.ReadOnly = true;
+            this.colSoundsId.Width = 40;
+            // 
+            // colSoundsName
+            // 
+            this.colSoundsName.HeaderText = "Name";
+            this.colSoundsName.Name = "colSoundsName";
+            this.colSoundsName.Width = 200;
+            // 
+            // SelectedSoundsCatalogColumn
+            // 
+            this.SelectedSoundsCatalogColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SelectedSoundsCatalogColumn.HeaderText = "From catalog";
+            this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
+            this.SelectedSoundsCatalogColumn.ReadOnly = true;
+            // 
+            // SelectedSoundsGameColumn
+            // 
+            this.SelectedSoundsGameColumn.HeaderText = "Range";
+            this.SelectedSoundsGameColumn.Name = "SelectedSoundsGameColumn";
+            this.SelectedSoundsGameColumn.ReadOnly = true;
+            this.SelectedSoundsGameColumn.ToolTipText = "Range name of TRNG extended soundmap";
+            this.SelectedSoundsGameColumn.Width = 80;
+            // 
+            // SelectedSoundsOriginalIdColumn
+            // 
+            this.SelectedSoundsOriginalIdColumn.HeaderText = "Orig. ID";
+            this.SelectedSoundsOriginalIdColumn.Name = "SelectedSoundsOriginalIdColumn";
+            this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
+            this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
+            this.SelectedSoundsOriginalIdColumn.Width = 80;
+            // 
+            // colMeshName
+            // 
+            this.colMeshName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colMeshName.DataPropertyName = "StaticMesh";
+            this.colMeshName.HeaderText = "Mesh name";
+            this.colMeshName.Name = "colMeshName";
+            this.colMeshName.ReadOnly = true;
+            // 
+            // colMergeStatics
+            // 
+            this.colMergeStatics.DataPropertyName = "Merge";
+            this.colMergeStatics.FillWeight = 50F;
+            this.colMergeStatics.HeaderText = "Merge";
+            this.colMergeStatics.Name = "colMergeStatics";
+            this.colMergeStatics.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colMergeStatics.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // colInterpretShadesAsEffect
+            // 
+            this.colInterpretShadesAsEffect.DataPropertyName = "InterpretShadesAsEffect";
+            this.colInterpretShadesAsEffect.FillWeight = 50F;
+            this.colInterpretShadesAsEffect.HeaderText = "Interpret shades as effect";
+            this.colInterpretShadesAsEffect.Name = "colInterpretShadesAsEffect";
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2156,9 +2156,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colMeshName;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colMergeStatics;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colInterpretShadesAsEffect;
         private System.Windows.Forms.DataGridViewImageColumn textureFileDataGridViewPreviewColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewPathColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn textureFileDataGridViewSearchColumn;
@@ -2167,5 +2164,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewSizeColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMeshName;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colMergeStatics;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colInterpretShadesAsEffect;
     }
 }
