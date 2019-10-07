@@ -52,6 +52,8 @@ namespace WadTool
             }
             else if (lstCommands.Items.Count > 0)
                 SelectCommand((WadAnimCommand)lstCommands.Items.First().Tag);
+            else
+                SelectCommand(null);
 
             if (Visible && lstCommands.SelectedIndices.Count > 0)
                 lstCommands.EnsureVisible();  // This code oly works when control is already visible
@@ -92,14 +94,15 @@ namespace WadTool
 
         public void SelectCommand(WadAnimCommand cmd, bool selectInTree = true)
         {
-            if (!_animation.WadAnimation.AnimCommands.Contains(cmd))
+            if (cmd != null && !_animation.WadAnimation.AnimCommands.Contains(cmd))
             {
                 _animation.WadAnimation.AnimCommands.Add(cmd);
                 lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd });
             }
+
             animCommandEditor.Command = cmd;
 
-            if (selectInTree)
+            if (cmd != null && selectInTree)
             {
                 for (int i = 0; i < lstCommands.Items.Count; i++)
                     if (lstCommands.Items[i].Text == cmd.ToString()) lstCommands.SelectItem(i);
@@ -116,7 +119,10 @@ namespace WadTool
                 if (lstCommands.SelectedIndices.Contains(i))
                     lstCommands.Items.RemoveAt(i);
 
-            SelectCommand(lstCommands.Items.FirstOrDefault()?.Tag as WadAnimCommand);
+            if (lstCommands.Items.Count > 0)
+                SelectCommand(lstCommands.Items.FirstOrDefault()?.Tag as WadAnimCommand);
+            else
+                SelectCommand(null);
             ApplyChanges(false);
         }
 
@@ -203,6 +209,8 @@ namespace WadTool
         {
             if (lstCommands.Items.Count > 0 && lstCommands.SelectedIndices.Count > 0)
                 SelectCommand((WadAnimCommand)(lstCommands.SelectedItem.Tag), false);
+            else
+                SelectCommand(null);
         }
 
         private void FormAnimCommandsEditor_KeyDown(object sender, KeyEventArgs e)
