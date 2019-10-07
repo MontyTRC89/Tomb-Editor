@@ -65,25 +65,6 @@ namespace WadTool
 
         public bool StartUpHelp_Show { get; set; } = false;
 
-        // Do NOT use a list because the xml serliazer will append the loaded values instead of replacing them!!!
-        public string[] OldWadSoundPaths3 { get; set; } = new string[]
-            {
-                "",
-                "samples",
-                "sounds",
-                "sound",
-                "sounds/samples",
-                "sound/samples",
-                "../sounds",
-                "../sound",
-                "../sounds/samples",
-                "../sound/samples",
-                "../../sounds",
-                "../../sound",
-                "../../sounds/samples",
-                "../../sound/samples"
-            };
-
         public const string VariableBegin = "$(";
         public const string VariableEnd = ")";
         public static readonly char Dir = Path.DirectorySeparatorChar;
