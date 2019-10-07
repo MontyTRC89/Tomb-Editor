@@ -175,7 +175,7 @@ namespace TombLib.Wad.Catalog
         {
             var sounds = Games[version.Native()].Sounds;
             foreach (var pair in sounds)
-                if (pair.Value.Description == name)
+                if (pair.Value.Description.Equals(name, StringComparison.InvariantCultureIgnoreCase))
                     return (int)pair.Key;
             return -1;
         }

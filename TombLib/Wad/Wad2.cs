@@ -104,23 +104,22 @@ namespace TombLib.Wad
             return new WadStaticId();
         }
 
-        public static Wad2 ImportFromFile(string fileName, bool withSounds, IEnumerable<string> oldWadSoundPaths, 
-                                          IDialogHandler progressReporter) // Last two parameters can be null.
+        public static Wad2 ImportFromFile(string fileName, bool withSounds, IDialogHandler progressReporter)
         {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
                 return Wad2Loader.LoadFromFile(fileName, withSounds);
             else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase) ||
-                fileName.EndsWith(".was", StringComparison.InvariantCultureIgnoreCase) ||
-                fileName.EndsWith(".sam", StringComparison.InvariantCultureIgnoreCase) ||
-                fileName.EndsWith(".sfx", StringComparison.InvariantCultureIgnoreCase) ||
-                fileName.EndsWith(".swd", StringComparison.InvariantCultureIgnoreCase))
+                     fileName.EndsWith(".was", StringComparison.InvariantCultureIgnoreCase) ||
+                     fileName.EndsWith(".sam", StringComparison.InvariantCultureIgnoreCase) ||
+                     fileName.EndsWith(".sfx", StringComparison.InvariantCultureIgnoreCase) ||
+                     fileName.EndsWith(".swd", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (!fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
                     fileName = Path.ChangeExtension(fileName, "wad");
 
                 var oldWad = new Tr4Wad.Tr4Wad();
                 oldWad.LoadWad(fileName);
-                return Tr4WadOperations.ConvertTr4Wad(oldWad, oldWadSoundPaths.ToList(), progressReporter);
+                return Tr4WadOperations.ConvertTr4Wad(oldWad, progressReporter);
             }
             else
             {

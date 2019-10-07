@@ -35,8 +35,6 @@ namespace TombLib.Utils
             }
         }
 
-        public const string SoundsCatalogPath = "Sounds\\TR4\\Sounds.xml";
-
         public static bool ConvertWad2ToNewSoundFormat(string src, string dest, string soundsCatalog)
         {
             try

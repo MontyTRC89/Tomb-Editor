@@ -29,8 +29,7 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
-                    .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+                newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
                 if (Path.GetExtension(fileName).ToLower() == ".wad2" && newWad.SoundSystem == SoundSystem.Dynamic)
                 {
                     if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
@@ -47,8 +46,7 @@ namespace WadTool
                         return;
                     }
 
-                    newWad = Wad2.ImportFromFile(fileName, true, tool.Configuration.OldWadSoundPaths3
-                        .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+                    newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
                 }
             }
             catch (OperationCanceledException)

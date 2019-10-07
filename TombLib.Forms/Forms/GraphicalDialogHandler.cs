@@ -72,7 +72,7 @@ namespace TombLib.Forms
                     owner.InvokeIfNecessary(() =>
                     {
                         while (dialogDescription.Sounds.LoadException != null)
-                            switch (MessageBox.Show(owner, "The soudns catalog file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Sounds.Path) +
+                            switch (MessageBox.Show(owner, "Sound catalog file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Sounds.Path) +
                             " could not be loaded: " + (dialogDescription.Sounds.LoadException?.Message ?? "null") + ". \n" +
                             "Do you want to load a substituting file now?", "Open project",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
@@ -88,20 +88,6 @@ namespace TombLib.Forms
                                     throw new OperationCanceledException("Canceled because sounds catalog file was not loadable");
                             }
                     });
-            }
-            else if (dialogDescription_ is DialogDescriptonMissingSounds)
-            {
-                var dialogDescription = (DialogDescriptonMissingSounds)dialogDescription_;
-
-                DialogResult result = DialogResult.Cancel;
-                owner.InvokeIfNecessary(() =>
-                {
-                    using (var form = new ImportTr4WadDialog(dialogDescription))
-                        result = form.ShowDialog(owner);
-                });
-
-                if (result != DialogResult.OK)
-                    throw new OperationCanceledException("Canceled because sounds are missing.");
             }
             else
             {

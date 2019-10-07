@@ -46,7 +46,6 @@ namespace TombLib.LevelData
                 Wad2 newWad = Wad2.ImportFromFile(
                     settings.MakeAbsolute(Path),
                     false,
-                    settings.OldWadSoundPaths.Select(soundPath => settings.ParseVariables(soundPath.Path)),
                     progressReporter ?? new ProgressReporterSimple());
                 Wad = newWad;
                 LoadException = null;
