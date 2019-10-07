@@ -232,9 +232,6 @@ namespace TombEditor.Forms
 
         private void SetupControls()
         {
-            // Define tile selection size
-            textureMap.TileSelectionSize = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
-
             // Clear previous elements
             comboEffect.Items.Clear();
             comboUvRotate.Items.Clear();

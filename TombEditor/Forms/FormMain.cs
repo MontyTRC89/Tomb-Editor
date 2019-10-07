@@ -220,12 +220,11 @@ namespace TombEditor.Forms
             // Reload window layout and keyboard shortcuts if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
             {
-                var @event = (Editor.ConfigurationChangedEvent)obj;
-                if (@event.Current.Window_Layout != @event.Previous.Window_Layout)
-                    LoadWindowLayout(_editor.Configuration);
-
-                if(@event.UpdateKeyboardShortcuts)
+                var e = (Editor.ConfigurationChangedEvent)obj;
+                if (e.UpdateKeyboardShortcuts)
                     GenerateMenusRecursive(menuStrip.Items, true);
+                if (e.UpdateLayout)
+                    LoadWindowLayout(_editor.Configuration);
             }
 
             // Update texture controls
@@ -371,7 +370,7 @@ namespace TombEditor.Forms
             {
                 // Always save window properties on exit and resave config!
                 Configuration.SaveWindowProperties(this, _editor.Configuration);
-                _editor.ConfigurationChange();
+                _editor.ConfigurationChange(false, false, true);
             }
 
             base.OnFormClosing(e);

@@ -245,6 +245,11 @@ namespace TombEditor
                 args.Editor.SelectedTexture = TextureArea.Invisible;
             });
 
+            AddCommand("ChangeTextureSelectionTileSize", "Change texture selection tile size", CommandType.Textures, delegate (CommandArgs args)
+            {
+                EditorActions.SetSelectionTileSize(args.Editor.Configuration.TextureMap_TileSelectionSize * 2);
+            });
+
             AddCommand("RotateObjectLeft", "Rotate object left", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)

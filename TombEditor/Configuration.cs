@@ -119,9 +119,9 @@ namespace TombEditor
         public float TextureMap_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
-        public float TextureMap_DefaultTileSelectionSize { get; set; } = 64.0f;
         public bool TextureMap_DrawSelectionDirectionIndicators { get; set; } = true;
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
+        public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
 
         // Gizmo options
 
@@ -301,17 +301,15 @@ namespace TombEditor
                 Save(stream);
         }
 
-        public void Save()
+        public void SaveTry(bool overwrite = true)
         {
-            Save(GetDefaultPath());
-        }
+            var path = GetDefaultPath();
 
-        public void SaveTry()
-        {
-            if (!string.IsNullOrEmpty(GetDefaultPath()))
+            if (!string.IsNullOrEmpty(path))
                 try
                 {
-                    Save();
+                    if (overwrite || !File.Exists(path))
+                        Save(path);
                 }
                 catch (Exception exc)
                 {

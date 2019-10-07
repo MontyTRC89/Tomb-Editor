@@ -48,9 +48,6 @@ namespace TombEditor.Forms
                       cmbRendering3DFont.Items.Add(font.Name); }
                 catch { throw; }
 
-            for (int i = 5; i <= 8; i++)
-                cmbSelectionTileSize.Items.Add((float)(Math.Pow(2, i)));
-
             var panels = AllOptionControls(this).Where(c => c is Panel).ToList();
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
@@ -169,7 +166,7 @@ namespace TombEditor.Forms
                     }
                 }
             }
-            _editor.ConfigurationChange();
+            _editor.ConfigurationChange(false, false, true);
         }
 
         private void butApply_Click(object sender, EventArgs e) => WriteConfigFromControls();

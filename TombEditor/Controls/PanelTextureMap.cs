@@ -178,7 +178,7 @@ namespace TombEditor.Controls
             else if (ModifierKeys.HasFlag(Keys.Shift) == rectangularSelection)
                 return new SelectionPrecisionType(16.0f, false);
             else
-                return new SelectionPrecisionType(TileSelectionSize, true);
+                return new SelectionPrecisionType(_editor.Configuration.TextureMap_TileSelectionSize, true);
         }
 
         protected virtual float MaxTextureSize { get; } = 256;
@@ -682,9 +682,5 @@ namespace TombEditor.Controls
         }
 
         public event EventHandler<EventArgs> SelectedTextureChanged;
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [ReadOnly(true)]
-        public float TileSelectionSize { get; set; } = 64.0f;
     }
 }

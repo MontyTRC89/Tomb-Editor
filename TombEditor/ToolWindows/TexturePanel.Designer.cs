@@ -108,7 +108,7 @@ namespace TombEditor.ToolWindows
             this.cmbTileSize.Size = new System.Drawing.Size(82, 23);
             this.cmbTileSize.TabIndex = 9;
             this.toolTip.SetToolTip(this.cmbTileSize, "Selection tile size");
-            this.cmbTileSize.SelectedIndexChanged += new System.EventHandler(this.cmbTileSize_SelectedIndexChanged);
+            this.cmbTileSize.SelectionChangeCommitted += new System.EventHandler(this.cmbTileSize_SelectionChangeCommitted);
             // 
             // butAnimationRanges
             // 
@@ -216,8 +216,8 @@ namespace TombEditor.ToolWindows
             // 
             // panelTextureMap
             // 
-            this.panelTextureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.panelTextureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelTextureMap.Location = new System.Drawing.Point(3, 54);
             this.panelTextureMap.Name = "panelTextureMap";

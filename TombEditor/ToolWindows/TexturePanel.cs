@@ -35,7 +35,8 @@ namespace TombEditor.ToolWindows
                 cmbTileSize.Items.Add((float)(Math.Pow(2, i)));
 
             cmbBlending.SelectedIndex = 0;
-            cmbTileSize.SelectedItem = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
+            if (cmbTileSize.Items.Contains(_editor.Configuration.TextureMap_TileSelectionSize))
+                cmbTileSize.SelectedItem = _editor.Configuration.TextureMap_TileSelectionSize;
         }
 
         protected override void Dispose(bool disposing)
@@ -104,6 +105,9 @@ namespace TombEditor.ToolWindows
             {
                 if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
+
+                if (cmbTileSize.Items.Contains(_editor.Configuration.TextureMap_TileSelectionSize))
+                    cmbTileSize.SelectedItem = _editor.Configuration.TextureMap_TileSelectionSize;
             }
         }
 
@@ -141,11 +145,6 @@ namespace TombEditor.ToolWindows
             if (texture != null)
                 using (var form = new FormBumpMaps(_editor, texture))
                     form.ShowDialog(this);
-        }
-
-        private void cmbTileSize_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            panelTextureMap.TileSelectionSize = (float)cmbTileSize.SelectedItem;
         }
 
         private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)
@@ -217,5 +216,7 @@ namespace TombEditor.ToolWindows
             if (texture != null)
                 EditorActions.UpdateTextureFilepath(this, texture);
         }
+
+        private void cmbTileSize_SelectionChangeCommitted(object sender, EventArgs e) => EditorActions.SetSelectionTileSize((float)cmbTileSize.SelectedItem);
     }
 }
