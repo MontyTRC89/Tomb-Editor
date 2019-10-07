@@ -76,9 +76,6 @@ namespace WadTool
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        // Helpers
-        private static string GetAnimLabel(int index, AnimationNode anim) => "(" + anim.Index + ") " + anim.WadAnimation.Name;
-
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
             InitializeComponent();
@@ -184,7 +181,7 @@ namespace WadTool
                             cursorPos = timeline.Value;
 
                         lstAnimations.Items[index].Tag = e.Animation;
-                        lstAnimations.Items[index].Text = GetAnimLabel(((AnimationNode)anim.Tag).Index, ((AnimationNode)anim.Tag));
+                        UpdateAnimLabel(((AnimationNode)anim.Tag));
 
                         if (e.Focus)
                         {
@@ -301,7 +298,7 @@ namespace WadTool
             lstAnimations.Items.Clear();
 
             // Try to filter by request
-            int index = 0;
+
             int searchNumber = -1;
             var searchString = tbSearchAnimation.Text.Trim().ToLower();
             string finalSearchString = "";
@@ -396,15 +393,16 @@ namespace WadTool
                         break;
                 }
 
-                var item = new DarkListItem(GetAnimLabel(index++, _editor.Animations[i]));
-                item.Tag = _editor.Animations[i];
-                lstAnimations.Items.Add(item);
+                lstAnimations.Items.Add(new DarkListItem() { Tag = _editor.Animations[i] });
+                UpdateAnimLabel(_editor.Animations[i]);
             }
 
-            if (lstAnimations.Items.Count != 0)
+            // Try to restore selection, if failed, select first visible one
+            if (lstAnimations.Items.Count > 0 && UpdateAnimListSelection(_editor.CurrentAnim.Index) < 0)
+            {
                 lstAnimations.SelectItem(0);
-
-            lstAnimations.EnsureVisible();
+                lstAnimations.EnsureVisible();
+            }
         }
 
         private void SelectAnimation(AnimationNode node)
@@ -664,13 +662,10 @@ namespace WadTool
             var dxAnimation = Animation.FromWad2(_editor.Moveable.Bones, wadAnimation);
             var node = new AnimationNode(wadAnimation, dxAnimation, _editor.Animations.Count);
 
-            var item = new DarkListItem(GetAnimLabel(_editor.Animations.Count, node));
-            item.Tag = node;
-
             _editor.Animations.Add(node);
-            lstAnimations.Items.Add(item);
-            lstAnimations.SelectItem(lstAnimations.Items.Count - 1);
-            lstAnimations.EnsureVisible();
+            lstAnimations.Items.Add(new DarkListItem() { Tag = node });
+            UpdateAnimLabel(node);
+            UpdateAnimListSelection(node.Index);
 
             tbName.Focus();
 
@@ -716,20 +711,6 @@ namespace WadTool
 
             // Update GUI
             RebuildAnimationsList();
-            if (lstAnimations.Items.Count != 0)
-            {
-                if (lstAnimations.SelectedIndices[0] == -1 || lstAnimations.SelectedItem == null)
-                {
-                    lstAnimations.SelectItem(0);
-                    lstAnimations.EnsureVisible();
-                }
-            }
-            else
-            {
-                _editor.CurrentAnim = null;
-                timeline.Animation = null;
-            }
-
             panelRendering.Invalidate();
             timeline.Invalidate();
 
@@ -936,8 +917,7 @@ namespace WadTool
             pastedAnim.DirectXAnimation.Name += " - Copy";
             pastedAnim.WadAnimation.Name += " - Copy";
             RebuildAnimationsList();
-            lstAnimations.SelectItem(animationIndex);
-            lstAnimations.EnsureVisible();
+            UpdateAnimListSelection(animationIndex);
             Saved = false;
         }
 
@@ -957,8 +937,7 @@ namespace WadTool
             pastedAnim.DirectXAnimation.Name += " - Copy";
             pastedAnim.WadAnimation.Name += " - Copy";
             RebuildAnimationsList();
-            lstAnimations.SelectItem(animationIndex);
-            lstAnimations.EnsureVisible();
+            UpdateAnimListSelection(animationIndex);
             Saved = false;
         }
 
@@ -1000,9 +979,14 @@ namespace WadTool
 
             // Update the GUI
             RebuildAnimationsList();
-            lstAnimations.SelectItem(_editor.CurrentAnim.Index);
-            lstAnimations.EnsureVisible();
-
+            if (UpdateAnimListSelection(_editor.Animations.Count - 1) < 0)
+            {
+                // Just update timeline if animation is invisible in the list
+                timeline.ResetSelection();
+                timeline.Value = 0;
+                timeline.Invalidate(); 
+            }
+            
             Saved = false;
         }
 
@@ -1352,7 +1336,7 @@ namespace WadTool
 
             if (updateGUI)
             {
-                lstAnimations.SelectItem(_editor.CurrentAnim.Index);
+                UpdateAnimListSelection(_editor.CurrentAnim.Index);
                 lstAnimations.EnsureVisible();
                 timeline.Highlight();
             }
@@ -1432,9 +1416,10 @@ namespace WadTool
             _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);
 
             _editor.CurrentAnim.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
-            lstAnimations.SelectItem(_editor.CurrentAnim.Index);
-            lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.CurrentAnim);
-            lstAnimations.EnsureVisible();
+
+            UpdateAnimLabel(_editor.CurrentAnim);
+            UpdateAnimListSelection(_editor.CurrentAnim.Index);
+            
             timeline.Value = 0;
             panelRendering.Invalidate();
         }
@@ -1464,28 +1449,9 @@ namespace WadTool
                 {
                     var origNode = _editor.Animations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
 
-                    if (origNode != null)
-                    {
-                        // Only try to update UI if we've switched to different anim
-                        if (origNode != _editor.CurrentAnim)
-                        {
-                            var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == _chainedPlaybackInitialAnim);
-                            if (listItem != null)
-                            {
-                                lstAnimations.SelectItem(lstAnimations.Items.IndexOf(listItem));
-                                lstAnimations.EnsureVisible();
-                            }
-                            else
-                            {
-                                lstAnimations.SelectedIndices.Clear();
-                                lstAnimations.Invalidate();
-                            }
-
-                            timeline.Value = _chainedPlaybackInitialCursorPos;
-                            timeline.SelectionStart = _chainedPlaybackInitialSelection.X;
-                            timeline.SelectionEnd = _chainedPlaybackInitialSelection.Y;
-                        }
-                    }
+                    // Try to update UI if we've switched to different anim
+                    if (origNode != null && origNode != _editor.CurrentAnim && UpdateAnimListSelection(_chainedPlaybackInitialAnim) < 0)
+                        SelectAnimation(origNode); // Update from UI failed, directly jump to original anim
                 }
 
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
@@ -1495,6 +1461,32 @@ namespace WadTool
             panelRendering.GridPosition = Vector3.Zero;
             panelRendering.Invalidate();
         }
+
+        private int UpdateAnimListSelection(int index)
+        {
+            var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == index);
+            if (listItem != null)
+            {
+                var listIndex = lstAnimations.Items.IndexOf(listItem);
+                lstAnimations.SelectItem(listIndex);
+                lstAnimations.EnsureVisible();
+                return listIndex;
+            }
+            else
+            {
+                lstAnimations.SelectedIndices.Clear();
+                lstAnimations.Invalidate();
+                return -1;
+            }
+        }
+
+        private void UpdateAnimLabel(AnimationNode anim, string label = null)
+        {
+            var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag) == anim);
+            if (listItem != null)
+                listItem.Text = string.IsNullOrEmpty(label) ? ("(" + anim.Index + ") " + anim.WadAnimation.Name) : label;
+        }
+
 
         private void SaveChanges()
         {
@@ -1571,7 +1563,7 @@ namespace WadTool
                 }
 
                 _editor.CurrentAnim.WadAnimation.Name = newName;
-                lstAnimations.SelectedItem.Text = GetAnimLabel(lstAnimations.SelectedIndices[0], _editor.CurrentAnim);
+                UpdateAnimLabel(_editor.CurrentAnim);
                 Saved = false;
             }
         }
@@ -1736,22 +1728,9 @@ namespace WadTool
 
                     if (nextNode != null)
                     {
-                        // Only try to update UI if next anim is different
-
-                        if (nextNode != _editor.CurrentAnim)
-                        {
-                            var listItem = lstAnimations.Items.FirstOrDefault(item => ((AnimationNode)item.Tag).Index == nextIndex);
-                            if (listItem != null)
-                            {
-                                lstAnimations.SelectItem(lstAnimations.Items.IndexOf(listItem));
-                                lstAnimations.EnsureVisible();
-                            }
-                            else
-                            {
-                                lstAnimations.SelectedIndices.Clear();
-                                lstAnimations.Invalidate();
-                            }
-                        }
+                        // Only try to update if next anim is different
+                        if (nextNode != _editor.CurrentAnim && UpdateAnimListSelection(nextIndex) < 0)
+                            SelectAnimation(nextNode); // Update from UI failed, directly jump to anim
 
                         var maxFrameNumber = nextNode.WadAnimation.FrameRate * (nextNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
                         if (nextFrame > maxFrameNumber)
@@ -2098,7 +2077,7 @@ namespace WadTool
 
             Saved = false;
 
-            lstAnimations.SelectItem(_editor.CurrentAnim.Index);
+            UpdateAnimListSelection(_editor.CurrentAnim.Index);
             timeline.Highlight();
         }
 
@@ -2169,10 +2148,10 @@ namespace WadTool
                     DeleteEveryNFrame(result);
                 }
 
-                if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1 < timeline.Value) {
+                if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1 < timeline.Value)
                     timeline.Value = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
-                }
-                lstAnimations.SelectItem(_editor.CurrentAnim.Index);
+
+                UpdateAnimListSelection(_editor.CurrentAnim.Index);
                 timeline.Highlight();
             }
         }
