@@ -101,8 +101,8 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 ObjectInstance selectedObject = _editor.SelectedObject;
-                butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
-                butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
+                butCopy.Enabled = selectedObject is ISpatial;
+                butStamp.Enabled = selectedObject is ISpatial;
             }
 
             // Update editor mode
