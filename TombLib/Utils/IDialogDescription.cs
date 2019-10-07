@@ -31,13 +31,4 @@ namespace TombLib.Utils
         public LevelSettings Settings { get; set; }
         public ReferencedSoundsCatalog Sounds { get; set; }
     }
-
-    public class DialogDescriptonMissingSounds : IDialogDescription
-    {
-        public string WadBasePath { get; set; }
-        public string WadBaseFileName { get; set; }
-        public List<SamplePathInfo> Samples { get; set; }
-        public List<string> SoundPaths { get; set; }
-        public Func<bool> FindTr4Samples { get; set; }
-    }
 }

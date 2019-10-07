@@ -15,7 +15,7 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
-        public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths, IDialogHandler progressReporter)
+        public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, IDialogHandler progressReporter)
         {
             logger.Info("Converting TR4 WAD to Wad2");
 
