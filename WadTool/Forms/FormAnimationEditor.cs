@@ -69,6 +69,10 @@ namespace WadTool
         private int _chainedPlaybackInitialAnim;
         private int _chainedPlaybackInitialCursorPos;
         private VectorInt2 _chainedPlaybackInitialSelection;
+        // State change vars
+        private int _chainedPlaybackIncomingAnimation = -1;
+        private int _chainedPlaybackIncomingFrame     = -1;
+        private VectorInt2 _chainedPlaybackIncomingFrameRange = -VectorInt2.One;
 
         // Live update flag, used when transform is updated during playback or scrubbling
         private bool _allowUpdate = true;
@@ -217,6 +221,18 @@ namespace WadTool
                 undoToolStripMenuItem.Enabled = stackEvent.UndoPossible;
                 redoToolStripMenuItem.Enabled = stackEvent.RedoPossible;
                 Saved = false;
+            }
+
+            if (obj is WadToolClass.AnimationEditorStateChangeEvent)
+            {
+                if (_timerPlayAnimation.Enabled && _chainedPlayback)
+                {
+                    var e = (WadToolClass.AnimationEditorStateChangeEvent)obj;
+
+                    _chainedPlaybackIncomingAnimation  = e.NextAnimation;
+                    _chainedPlaybackIncomingFrame      = e.NextFrame;
+                    _chainedPlaybackIncomingFrameRange = e.FrameRange;
+                }
             }
 
             if (obj is WadToolClass.MessageEvent)
@@ -1338,7 +1354,6 @@ namespace WadTool
             if (updateGUI)
             {
                 UpdateAnimListSelection(_editor.CurrentAnim.Index);
-                lstAnimations.EnsureVisible();
                 timeline.Highlight();
             }
         }
@@ -1714,19 +1729,46 @@ namespace WadTool
             if (_editor.CurrentAnim?.WadAnimation == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 1)
                 return;
 
-            int realFrameNumber = _editor.CurrentAnim.WadAnimation.FrameRate * (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1) + 1;
+            int realFrameNumber = _editor.RealNumberOfFrames();
 
             _frameCount++;
 
-            if (_frameCount >= realFrameNumber)
+            var nextIndex = _editor.CurrentAnim.WadAnimation.NextAnimation;
+            var nextFrame = _editor.CurrentAnim.WadAnimation.NextFrame;
+            var nextRange = new VectorInt2(realFrameNumber);
+
+            // If state change data is present, make sure it complies to current animation params.
+
+            if (_chainedPlayback &&
+                _chainedPlaybackIncomingAnimation    >= 0)
+            {
+                if (_chainedPlaybackIncomingAnimation    < _editor.Animations.Count &&
+                    _chainedPlaybackIncomingFrame        >= 0 &&
+                    _chainedPlaybackIncomingFrame        < _editor.RealNumberOfFrames(_chainedPlaybackIncomingAnimation) &&
+                    _chainedPlaybackIncomingFrameRange.X >= 0 &&
+                    _chainedPlaybackIncomingFrameRange.Y >= _chainedPlaybackIncomingFrameRange.X &&
+                    _chainedPlaybackIncomingFrameRange.Y <= realFrameNumber) // Some single-frame state changes refer to out-of-bounds frame 1
+                {
+                    nextIndex = (ushort)_chainedPlaybackIncomingAnimation;
+                    nextFrame = (ushort)_chainedPlaybackIncomingFrame;
+                    nextRange = _chainedPlaybackIncomingFrameRange;
+                }
+                else
+                {
+                    popup.ShowError(panelRendering, "Pending state change to animation #" + _chainedPlaybackIncomingAnimation + " had incorrect data and was ignored.");
+                    _chainedPlaybackIncomingAnimation = -1;
+                }
+            }
+
+            if (_frameCount >= nextRange.X && _frameCount <= nextRange.Y)
             {
                 // Chain playback handling
                 if (_chainedPlayback)
                 {
-                    var nextIndex = _editor.CurrentAnim.WadAnimation.NextAnimation;
-                    var nextFrame = _editor.CurrentAnim.WadAnimation.NextFrame;
-                    var nextNode  = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
+                    // Clear state change anim, as we don't need it anymore
+                    _chainedPlaybackIncomingAnimation  = -1;
 
+                    var nextNode  = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
                     if (nextNode != null)
                     {
                         // Only try to update if next anim is different

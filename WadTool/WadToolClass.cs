@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -246,6 +247,19 @@ namespace WadTool
         public void AnimationEditorCurrentAnimationChanged(AnimationNode anim)
         {
             RaiseEvent(new AnimationEditorCurrentAnimationChangedEvent(anim));
+        }
+
+
+        // Animation editor state change
+        public class AnimationEditorStateChangeEvent : IEditorEvent
+        {
+            public int NextAnimation { get; internal set; }
+            public int NextFrame { get; internal set; }
+            public VectorInt2 FrameRange { get; internal set; }
+        }
+        public void ChangeState(int nextAnim, int nextFrame, int frameLow, int frameHigh)
+        {
+            RaiseEvent(new AnimationEditorStateChangeEvent { NextAnimation = nextAnim, NextFrame = nextFrame, FrameRange = new VectorInt2(frameLow, frameHigh) } );
         }
 
         // Send message

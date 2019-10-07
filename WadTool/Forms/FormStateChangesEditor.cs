@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DarkUI.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -42,7 +43,7 @@ namespace WadTool
 
             _editor = editor;
 
-            dgvControls.CreateNewRow = newObject;
+            dgvControls.CreateNewRow =()=> new WadStateChangeRow();
             dgvControls.DataGridView = dgvStateChanges;
             dgvControls.Enabled = true;
 
@@ -54,6 +55,7 @@ namespace WadTool
         {
             _animation = animation;
 
+            lblStateChangeAnnouncement.Visible = false;
             dgvStateChanges.Rows.Clear();
 
             var rows = new List<WadStateChangeRow>();
@@ -110,9 +112,41 @@ namespace WadTool
             }
         }
 
-        private object newObject()
+        private void ChangeState()
         {
-            return new WadStateChangeRow();
+            if (dgvStateChanges.SelectedRows.Count > 0 &&
+                dgvStateChanges.SelectedRows[0].Index != dgvStateChanges.Rows.Count - 1)
+            {
+                var selectedRow = dgvStateChanges.SelectedRows[0];
+                var nextAnim = (ushort)(selectedRow.Cells[3].Value);
+
+                _editor.Tool.ChangeState(nextAnim, (ushort)(selectedRow.Cells[4].Value),
+                                                   (ushort)(selectedRow.Cells[1].Value),
+                                                   (ushort)(selectedRow.Cells[2].Value));
+
+                lblStateChangeAnnouncement.Visible = true;
+                lblStateChangeAnnouncement.Text = "Pending state change to anim #" + nextAnim;
+            }
+        }
+
+        private void dgvStateChanges_CellFormattingSafe(object sender, DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventArgs e)
+        {
+            if (!(e.Row.DataBoundItem is WadStateChangeRow))
+                return;
+            WadStateChangeRow item = (WadStateChangeRow)e.Row.DataBoundItem;
+
+            if (e.ColumnIndex == 0)
+                e.Value = item.StateId;
+            else if (e.ColumnIndex == 1)
+                e.Value = item.LowFrame;
+            else if (e.ColumnIndex == 2)
+                e.Value = item.HighFrame;
+            else if (e.ColumnIndex == 3)
+                e.Value = item.NextAnimation;
+            else if (e.ColumnIndex == 4)
+                e.Value = item.NextFrame;
+
+            e.FormattingApplied = true;
         }
 
         private void btOk_Click(object sender, EventArgs e)
@@ -145,31 +179,51 @@ namespace WadTool
             Close();
         }
 
+        private void dgvStateChanges_CellMouseDoubleClick(object sender, System.Windows.Forms.DataGridViewCellMouseEventArgs e) => ChangeState();
+
+        private void dgvStateChanges_CellValidating(object sender, System.Windows.Forms.DataGridViewCellValidatingEventArgs e)
+        {
+            try
+            {
+                var cell = dgvStateChanges.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+                Int16 parsedValue = 0;
+                if (e.FormattedValue == null || !Int16.TryParse(e.FormattedValue.ToString(), out parsedValue))
+                {
+                    if (!Int16.TryParse(cell.Value.ToString(), out parsedValue))
+                        cell.Value = (Int16)0;
+                    else
+                        cell.Value = parsedValue;
+                    return;
+                }
+
+                var limit = Int16.MaxValue;
+                var param = dgvStateChanges.Columns[e.ColumnIndex].Name;
+
+                if (param == columnNextAnimation.Name)
+                    limit = (Int16)(_editor.Animations.Count - 1);
+                else if (param == columnNextFrame.Name)
+                {
+                    Int16 limitNew = 0;
+                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
+                        limit = (Int16)(_editor.RealNumberOfFrames(limitNew));
+                }
+                else if (param == columnLowFrame.Name)
+                {
+                    Int16 limitNew = 0;
+                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[2].Value.ToString(), out limitNew))
+                        limit = limitNew;
+                }
+                else if (param == columnHighFrame.Name)
+                    limit = (Int16)(_editor.RealNumberOfFrames());
+
+                if (parsedValue > limit)
+                    cell.Value = limit;
+            }
+            catch (Exception ex) { }
+        }
+
         private void btCancel_Click(object sender, EventArgs e) => Close();
-
-        private void dgvStateChanges_CellFormattingSafe(object sender, DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventArgs e)
-        {
-            if (!(e.Row.DataBoundItem is WadStateChangeRow))
-                return;
-            WadStateChangeRow item = (WadStateChangeRow)e.Row.DataBoundItem;
-
-            if (e.ColumnIndex == 0)
-                e.Value = item.StateId;
-            else if (e.ColumnIndex == 1)
-                e.Value = item.LowFrame;
-            else if (e.ColumnIndex == 2)
-                e.Value = item.HighFrame;
-            else if (e.ColumnIndex == 3)
-                e.Value = item.NextAnimation;
-            else if (e.ColumnIndex == 4)
-                e.Value = item.NextFrame;
-
-            e.FormattingApplied = true;
-        }
-
-        private void dgvStateChanges_CellValidated(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
+        private void butPlayStateChange_Click(object sender, EventArgs e) => ChangeState();
     }
 }
