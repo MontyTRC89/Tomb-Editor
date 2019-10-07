@@ -4124,8 +4124,8 @@ namespace TombEditor
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
                         // Convert the level
-                        if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName, 
-                                                                     FileFormatConversions.SoundsCatalogPath, false))
+                        if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName,
+                                                                     "Sounds\\TR4\\Sounds.txt", false))
                         {
                             DarkMessageBox.Show(owner, "There was an error while converting your project to the new " +
                                             "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

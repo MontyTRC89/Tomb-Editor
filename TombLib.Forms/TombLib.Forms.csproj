@@ -175,12 +175,6 @@
     <Compile Include="Forms\GeometryIOSettingsDialog.Designer.cs">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ImportTr4WadDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ImportTr4WadDialog.Designer.cs">
-      <DependentUpon>ImportTr4WadDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\PopUpInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -243,9 +237,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportTr4WadDialog.resx">
-      <DependentUpon>ImportTr4WadDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
