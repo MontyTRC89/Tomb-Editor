@@ -707,10 +707,15 @@ namespace TombEditor.Forms
                     {
                         SingleInstanceManagement.RestoreWindowState(this);
 
-                        // Try to open file only if main window is opened, otherwise try to close everything.
-                        for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
-                            if (Application.OpenForms[i].Name != Name && !(Application.OpenForms[i] is PopUpInfo))
-                                Application.OpenForms[i].Close();
+                        if (_editor.Level.Settings.LevelFilePath != fileName)
+                        {
+                            // Try to open file only if main window is opened, otherwise try to close everything.
+                            for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
+                                if (Application.OpenForms[i].Name != Name && !(Application.OpenForms[i] is PopUpInfo))
+                                    Application.OpenForms[i].Close();
+
+                            EditorActions.OpenLevel(this, fileName);
+                        }
                     }
                     break;
 
