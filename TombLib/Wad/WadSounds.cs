@@ -232,25 +232,25 @@ namespace TombLib.Wad
                                 var   token = tokens[i];
                                 short temp  = 0;
 
-                                if (token.StartsWith("PIT") && short.TryParse(token.Substring(3), out temp))
+                                if (token.StartsWith("PIT", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(3), out temp))
                                     sound.PitchFactor = temp;
-                                else if (token.StartsWith("RAD") && short.TryParse(token.Substring(3), out temp))
+                                else if (token.StartsWith("RAD", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(3), out temp))
                                     sound.RangeInSectors = temp;
-                                else if (token.StartsWith("VOL") && short.TryParse(token.Substring(3), out temp))
+                                else if (token.StartsWith("VOL", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(3), out temp))
                                     sound.Volume = temp;
-                                else if (token.StartsWith("CH") && short.TryParse(token.Substring(2), out temp))
+                                else if (token.StartsWith("CH", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(2), out temp))
                                     sound.Chance = temp;
-                                else if (token == "P")
+                                else if (token.Equals("P", StringComparison.InvariantCultureIgnoreCase))
                                     sound.RandomizePitch = true;
-                                else if (token == "V")
+                                else if (token.Equals("V", StringComparison.InvariantCultureIgnoreCase))
                                     sound.RandomizeVolume = true;
-                                else if (token == "N")
+                                else if (token.Equals("N", StringComparison.InvariantCultureIgnoreCase))
                                     sound.DisablePanning = true;
-                                else if (token == "L")
+                                else if (token.Equals("L", StringComparison.InvariantCultureIgnoreCase))
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.Looped;
-                                else if (token == "R")
+                                else if (token.Equals("R", StringComparison.InvariantCultureIgnoreCase))
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotRewound;
-                                else if (token == "W")
+                                else if (token.Equals("W", StringComparison.InvariantCultureIgnoreCase))
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotWait;
                                 else if (token.StartsWith("#g"))
                                     sound.Global = true;
