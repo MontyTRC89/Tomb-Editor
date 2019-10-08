@@ -999,7 +999,7 @@ namespace TombEditor
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)
-            : this(synchronizationContext, configuration, Level.CreateSimpleLevel())
+            : this(synchronizationContext, configuration, Level.CreateSimpleLevel(configuration.Editor_DefaultProjectGameVersion))
         { }
 
         public static Editor Instance;

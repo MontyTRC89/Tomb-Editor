@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using TombLib.LevelData;
 using TombLib.Rendering;
 
 namespace TombEditor
@@ -38,8 +39,9 @@ namespace TombEditor
         public bool Editor_AllowMultipleInstances { get; set; } = false;
 
 
-        // PRJ import defaults
+        // Defaults
 
+        public TRVersion.Game Editor_DefaultProjectGameVersion { get; set; } = TRVersion.Game.TRNG;
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
 

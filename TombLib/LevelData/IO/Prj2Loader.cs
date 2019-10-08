@@ -133,7 +133,7 @@ namespace TombLib.LevelData.IO
                 {
                     bool Update1_0_8 = false;
 
-                    var oldWadSoundPaths = new List<OldWadSoundPath>();
+                    var oldWadSoundPaths = new List<WadSoundPath>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
                         if (id2 == Prj2Chunks.OldWadSoundUpdateTag1_0_8)
@@ -144,7 +144,7 @@ namespace TombLib.LevelData.IO
                         if (id2 != Prj2Chunks.OldWadSoundPath)
                             return false;
 
-                        var oldWadSoundPath = new OldWadSoundPath("");
+                        var oldWadSoundPath = new WadSoundPath("");
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Prj2Chunks.OldWadSoundPathPath)
@@ -171,7 +171,7 @@ namespace TombLib.LevelData.IO
                                 oldWadSoundPaths[i].Path = newSamplePath;
                     }
 
-                    settings.OldWadSoundPaths = oldWadSoundPaths;
+                    settings.WadSoundPaths = oldWadSoundPaths;
                 }
                 else if (id == Prj2Chunks.SoundsCatalogs)
                 {

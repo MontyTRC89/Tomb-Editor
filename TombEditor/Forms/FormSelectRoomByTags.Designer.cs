@@ -34,7 +34,7 @@ namespace TombEditor.Forms
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.tbTagSearch = new DarkUI.Controls.DarkTextBox();
+            this.tbTagSearch = new TombLib.Controls.DarkAutocompleteTextBox();
             this.cbAllTags = new DarkUI.Controls.DarkCheckBox();
             this.tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
@@ -119,7 +119,7 @@ namespace TombEditor.Forms
         private DarkUI.Controls.DarkButton butOk;
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkLabel darkLabel1;
-        public DarkUI.Controls.DarkTextBox tbTagSearch;
+        public TombLib.Controls.DarkAutocompleteTextBox tbTagSearch;
         public DarkUI.Controls.DarkCheckBox cbAllTags;
         private ToolTip tooltip;
     }
