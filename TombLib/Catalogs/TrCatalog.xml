@@ -1271,7 +1271,7 @@
       <state item="0" id="65" name="WADE_FORWARD" />
       <state item="0" id="66" name="UNDERWATER_ROLL" />
       <state item="0" id="67" name="FLARE_PICKUP" />
-      <state item="0" id="68" name="JUMP_ROLL" />
+      <state item="0" id="68" name="SWANDIVE_ROLL" />
       <state item="0" id="69" name="KICK" />
       <state item="0" id="70" name="ZIPLINE_RIDE" />
     </states>
