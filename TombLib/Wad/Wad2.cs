@@ -46,6 +46,8 @@ namespace TombLib.Wad
             Sounds = new WadSounds();
         }
 
+        public bool WadIsEmpty => String.IsNullOrEmpty(FileName) && Moveables.Count == 0 && Statics.Count == 0 && SpriteSequences.Count == 0;
+
         public HashSet<WadSoundInfo> SoundInfosUniqueObsolete
         {
             get

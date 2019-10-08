@@ -242,6 +242,8 @@ namespace WadTool
             // Now cause the moveable to reload
             _moveable.Version = DataVersion.GetNext();
 
+            _tool.ToggleUnsavedChanges();
+
             DialogResult = DialogResult.OK;
             Close();
         }

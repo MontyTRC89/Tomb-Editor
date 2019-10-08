@@ -154,6 +154,7 @@ namespace WadTool
                 Moveable.Animations.Add(GetSavedAnimation(animation));
 
             Moveable.Version = DataVersion.GetNext();
+            Tool.ToggleUnsavedChanges();
             return true;
         }
 

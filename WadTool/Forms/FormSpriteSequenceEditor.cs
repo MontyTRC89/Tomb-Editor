@@ -19,15 +19,18 @@ namespace WadTool
         public WadSpriteSequence SpriteSequence { get; }
         public Wad2 Wad { get; }
 
+        private WadToolClass _tool;
         private string _currentPath;
         private readonly Cache<WadTexture, Bitmap> _imageCache = new Cache<WadTexture, Bitmap>(1024, sprite => sprite.Image.ToBitmap());
 
-        public FormSpriteSequenceEditor(Wad2 wad, WadSpriteSequence spriteSequence)
+        public FormSpriteSequenceEditor(WadToolClass tool, Wad2 wad, WadSpriteSequence spriteSequence)
         {
             InitializeComponent();
 
             SpriteSequence = spriteSequence;
             Wad = wad;
+
+            _tool = tool;
             _currentPath = Wad.FileName;
 
             // Load data
@@ -177,6 +180,8 @@ namespace WadTool
             // Update data
             SpriteSequence.Sprites.Clear();
             SpriteSequence.Sprites.AddRange((IEnumerable<WadSprite>)dataGridView.DataSource);
+
+            _tool.ToggleUnsavedChanges();
 
             // Close
             DialogResult = DialogResult.OK;

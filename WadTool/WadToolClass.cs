@@ -272,6 +272,12 @@ namespace WadTool
             RaiseEvent(new AnimationEditorPlaybackEvent { Playing = playing, Chained = chained });
         }
 
+        // Update unsaved changes
+        public class UnsavedChangesEvent : IEditorEvent 
+        {
+            public bool UnsavedChanges { get; set; }
+        }
+        public void ToggleUnsavedChanges(bool unsaved = true) { RaiseEvent(new UnsavedChangesEvent { UnsavedChanges = unsaved }); }
 
         // Send message
         public class MessageEvent : IEditorEvent
