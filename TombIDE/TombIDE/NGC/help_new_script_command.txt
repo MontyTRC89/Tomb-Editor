@@ -262,7 +262,8 @@ to use a define to use a single word for a group of official mnemonic constants 
 
 #define DEBUG DGX_LOG_SCRIPT_COMMANDS+DGX_COMMON_VARIABLES+DGX_LARA
 and
-#define USUAL DGX_LARA+DGX_SFX_SOUNDS+DGX_CHEATS
+#define USUAL DGX_LARA+DGX_SFX_SOUNDS
++DGX_CHEATS
 
 
 In this way you can change easily the Diagnostic command typing:
@@ -618,7 +619,8 @@ Extra3 = Color of the light. You can type in this field the same values MIST_COL
 
 Extra Parameters for ADD_FLAME effect
 --------------------------------------
-Extra1 = Intensity. The value for this field change fully in according with the presence or less of FADD_FIRE_STRIP flag.
+Extra1 = Intensity. The value for this field change fully in according with the presence or less of FADD_FIRE_STRIP 
+flag.
 
 When you use the fire strip, in Extra1 you should type a value between +1000 to -8000. A reasonable value is -4000.
 
@@ -640,7 +642,8 @@ Max number of instances for level section: 256
 
 With Animation command you can perform new animation for lara when player hit some key.
 (This command is suggested only for advanced level builders to add new moves for Lara)
-
+
+
 
 Other to set the number of animation and hot key used to engage in game the animation, you should set also some condition about when this new lara command will be permitted, because perform an animation, for example a kick, while lara is underwater or hanged to rope it should be weird.
 
@@ -690,8 +693,10 @@ ENV_ Environment field
 ------------------------
 In Environment field you can set a single very spefic condition about the environment around to Lara.
 You should use this field only when your animation requires a correct environment around lara like: climbable walls, holes, walls ect.
-
-Remarks: 
+
+
+
+Remarks: 
 * Differently by FAN_ flags you can not type the sum of any ENV_ values, you can choose only a single ENV_ condition and you can add to it only ENV_POS_.. flags or ENV_NON_TRUE flag to inverse the mean of condition.
 
 
@@ -727,7 +732,8 @@ It will be read as: "Perform my animation only if state id of lara is currently 
 
 About state id values, you can also type the mnemonic constants STATE_... that you can find in MNEMONIC CONSTANTS list in Reference panel.
 If you don't understand what is a "state-id" or Animation index you can interpret then like a number to signal what lara is doing.
-
+
+
 
 For example following table show most important state-id:
 Climbing: $38 , $39, $3A, $3B, $3C, $3d
@@ -798,7 +804,8 @@ Remark: from 1.2.2.2 version the AssignSlot has new features, read carefully the
 MyUsedSlot field
 ----------------
 Number or constant name to identifiy a slot position of standard tomb4 wads (example: "ENEMY_JEEP" or 34)
-This slot identify where you placed your object in slot list.
+This slot identify where you placed your object 
+in slot list.
 
 
 
@@ -834,10 +841,12 @@ It's necessary you have at least one real crocodile in the CROCODILE slot.
 By default the alternate skin are present in following slots:
 
 Alternate skin of Baddy1 in MESHSWAP3 
-Alternate skin of Baddy2 in MESHSWAP2
+Alternate skin of Baddy2 in MESHSWAP2
+
 Alternate skin of Von Croy in MESHSWAP1
 Alternate skin of the Guide in MESHSWAP2
-When you reassign some of above enemies you have to supply also a new alternate skin but you cann't place it in meshswap slots, of course.
+
+When you reassign some of above enemies you have to supply also a new alternate skin but you cann't place it in meshswap slots, of course.
 
 For this reason, you have to place its alternate skin in the slot immediatly following that you used.
 
@@ -917,7 +926,8 @@ For example you can combine "Puzzle1" with "Key2" to get any other new item.
 
 2) You can set as final item not only the Puzzles items but also weapons, medipacks, examine items and all other inventory items.
 
-Thanks to above chance you could, for example, build a weapon letting to the player the target to pick up different pieces of this weapon, and only when he picked up all pieces he will be able to buil a working weapon.
+Thanks to above chance you could, for example
+, build a weapon letting to the player the target to pick up different pieces of this weapon, and only when he picked up all pieces he will be able to buil a working weapon.
 
 You can create a final item got with 2 but also 3, 4, 5 and more, pieces.
 To realize this target just you type two or more CombineItems command in same [Level] section.
@@ -935,7 +945,8 @@ In above commands we use the PUZZLE_ITEM3 only as intermediate item, therefore t
 Remark: in spite of above example, it's not logical got a Puzzle_Item3 with Puzzle_item1+PuzzleItem2, since there are already two combos to build a PuzzleItem.
 I used above example only to clear the progressive aggregate, but it should be more logical have our three pieces of weapon using some default combo items, for example:
 
- PUZZLE_ITEM1_COMBO1 + PUZZLE_ITEM1_COMBO2 + KEY_ITEM1_COMBO1
+ PUZZLE_ITEM1_COMBO1 + PUZZLE_ITEM1_COMBO2 + KEY_ITEM1_COMBO1
+
 
 
 Then, about the  script command to use, since the combine rule to get the PUZZLE_ITEM1 with (PUZZLE_ITEM1_COMBO1 + PUZZLE_ITEM1_COMBO2) is already present, you'll have to type simply this only command:
@@ -943,7 +954,8 @@ Then, about the  script command to use, since the combine rule to get the PUZZLE
 CombineItems=  PUZZLE_ITEM1, KEY_ITEM1_COMBO1, GRENADE_GUN_ITEM
 
 In this way, the player will pickup combo1 and combo2 for puzzle item1.
-He will pickup also the third piece, the KEY_ITEM1_COMBO1, and at end when he combined (with standard combine rule) the combo1+combo2 for puzzle item1, then he will be able to combine furtherly the new Puzzle1 item with the third piece of the weapon, stored in KEY_ITEM1_COMBO1 item.
+He will pickup also the third piece, the KEY_ITEM1_COMBO1, and at end when he combined (with standard combine rule) the combo1+combo2 for puzzle item1, then he will be able to combine furtherly the new Puzzle1 item with the third piece of the weapon, stored in KEY_ITEM1_COMBO1
+ item.
 
 
 Remarks:
@@ -1114,7 +1126,8 @@ For both detector you must set a Detector script command in script.txt to enable
 
 Fields of Detector script command:
 
-Flags (DTF_..) field
+Flags (DTF_..) field
+
 You can add different DTF_ values in first field of detector command to set its features.
 
 Currently there are following DTF_ flags:
@@ -1131,7 +1144,8 @@ Using DTF_ENGAGE_IN_RANGE the detector will be automatically showed when lara is
 With engage_in_range you can set for example 50 meters and the detector will be showed when lara is to 50 meter or less from nearest target.
 When lara will be more far the detector will be hidden.
 
-The engage mode DTF_ENGAGE_INVENTORY set detector like other equipment of lara. She has to pick up it (the detector is in amulet of horus slot, i.e. quest1) the item will go in inventory, then when lara select it in inventory the detector will be showed while to remove from screen just select it newly from inventory choosing "Cancel" text.
+The engage mode DTF_ENGAGE_INVENTORY set detector like other equipment of lara. She has to pick up it (the detector is in amulet of horus slot, i.e. quest1)
+ the item will go in inventory, then when lara select it in inventory the detector will be showed while to remove from screen just select it newly from inventory choosing "Cancel" text.
 
 
 DTF_REQUIRED_ITEM
@@ -1211,7 +1225,8 @@ If you want set anyway as target a non killable/pickuble item you have following
 - There is also another chance: you use an ACTION trigger (in special trigger of NGLE) to remove (kill) this item when lara reaches it (or pass it) walking on same square with kill trigger.
 
 Radar Mode.
-In radar mode all targets will be followed in same time, anyway only targets, enough closed to enter in visibility range (MetricScale * 6), will be showed on radar screen.
+In radar mode all targets will be followed in same time, anyway only targets, enough closed to enter in visibility range (MetricScale * 6), will be showed on radar screen.
+
 
 
 The radar panel show targets in different ways in according with them vertical position.
@@ -1278,7 +1293,8 @@ Id Diary field
 --------------
 You can have upto 10 different diary in all your adventure.
 Each diary will continue in further levels.
-For this reason it's important you type, in any [Level] section where you wish use a previous defined Diary command, the same Diary command with same ID value. The only difference it will be for the FirstString field that it will be ignored for the Diary commands used in further Level sections.
+For this reason it's important you type, in any [Level] section where you wish use a previous defined Diary command, the same Diary command with same ID value. The only difference it will be for the FirstString field that it will be ignored for the Diary commands
+ used in further Level sections.
 
 To distinguish the diary to use in some flipeffect trigger you have to specify its ID.
 Remark: the chance to have many diary, permits to use diary like an advanced Examine item, with many infos and images you can continuosly update or increase.
@@ -1324,7 +1340,8 @@ Remarks:
 - You have to supply the image#.bmp with your level files. If the level will be installed using TRLM 2009 (Tr Level Manager 1.5) it will be able to handle in correct way the bitmap images, while for information about manual installation to give to users, trng is able to find images in different folders:
 
 TRLE folder (i.e. in same folder of tomb4.exe)
-TRLE\PIX subfolder (this was used also by trep, and also trlm2009 will place all bitmap images (different by Load.bmp, of course) in PIX subfolder)
+TRLE\PIX subfolder
+ (this was used also by trep, and also trlm2009 will place all bitmap images (different by Load.bmp, of course) in PIX subfolder)
 
 
 - Currently trng supports only images in bitmap (.bmp) format, anyway you can insert the images in jpg format to safe space, and then add also the little utility CONVERTER.exe in PIX folderf to permit the conversion to .jpg format
@@ -1540,15 +1557,18 @@ If in diary layoutpage flags you set the PL_CUSTOM_LAYOUT this setting will ream
 The values of this tag (20,10,400,500) are in micro units, where 1 = 1/1000 of widht or heght of screen size.
 To compute these values you can use the utility [Get Screen Frames] you find in Tools panel of NG_Center program.
 
-"#FRAME_T1#=520,10,400,500"
-
+"#FRAME_T1#=520,10,400,500
+"
+
+
 Set the position and size of first frame used by text in this page.
 For "first" frame we mean the frame where place first block of text of this page.
 In some layout you can have two text frame, in this case the "
 #FRAME_T1#=" tag set the first of two text frames, or the unique text frame when there a single text frame.
 Also this tag requires micro units, see descript of "#FRAME_IMG#=" tag for more infos.
 
-"#FRAME_T2#=20,600,400,400"
+"#FRAME_T2#=20,600,400,400
+"
 
 Set the position and size for second text frame.
 When your layout foreseen two text frames you'll use the #FRAME_T2#= tag to set the position of second block of text for this page.
@@ -1644,7 +1664,8 @@ InnerKeyPadIndex = Index of keypad you inserted in elevator. Remember also to se
 
 Speed=Set the speed of movement for elevator. If you type IGNORE in this field the default speed is 20.
 About speed remember that this units is 1/1024 of sector. I.e. : 1024 = 1 sector, 256 = 1 click.
-Each second will be changed the position for 30 times, so it's better don't exagerate in speed value. The max value suggested is 50, if you pass over this value you could have troubles in collision computes when elevator hits lara.
+Each second will be changed the pos
+ition for 30 times, so it's better don't exagerate in speed value. The max value suggested is 50, if you pass over this value you could have troubles in collision computes when elevator hits lara.
  
 
 Frame Items array
@@ -1693,7 +1714,8 @@ You can set resistance of this enemy to Lara' shots.
 For example if you set a big value (1000) it will be very difficultous kill it. If you set a little value (20) it will be killed with few revolver shots.
 
 NEF_ flags field
-This field accept values NEF_... (See Mnemonic Constants list in Reference panel) to chose different settings.
+This field accept values NEF_... (See Mnemonic Constants list in Reference panel)
+ to chose different settings.
 Currently there are following values for NEF_ flags:
 NEF_EXPLODE
 When creature will be killed it explodes
@@ -1707,7 +1729,8 @@ The NEF_HIT flags set the behavior of lara shots on the creature.
 You can use only once NEF_HIT flag to set: blood, fragments, or smoke.
 If you use NEF_HIT_DEFAULT the response to shots will be not changed. If you don't set any NEF_HIT ... flag, the shots will have no effect
 
-NEF_NON_TARGET 
+NEF_NON_TARGET
+ 
 Enemy becomes non targetable from lara and it will be immortal
 NEF_NONE         
 Reserved, don't use. If you want omit to set NEF_ flags you must type only IGNORE in this field
@@ -1715,7 +1738,8 @@ NEF_ONLY_EXPLODE
 The enemy will become like skeleton or mummy. 
 Apparently the common ammos will have no effect but explosive ammos will can destroy it.
 NEF_SET_AS_CREATURE
-Experimental. You can use a non enemy and non trap slot and to use this flag to transform it like an enemy. Pratically lara will can aim this  object and kill it (theorically but it's yet experimental)
+Experimental. You can use a non enemy and non trap slot and to use this flag to transform it like an enemy. Pratically lara will can aim this  object and kill it (theorically but it's yet experimental)
+
 
 
 NEF_SET_AS_MORTAL
@@ -1726,7 +1750,8 @@ TombFlags (TCF_...) field
 This field is only for experiment. It corresponds to Flags field of slot structure. If you type wrong values in this field you can have many troubles.
 I suggest to set this field to IGNORE and to use only NEF flags to modify behavior of object (other NEF flags will be added in short time)
 Read the description of TCF_... constants to discover some known flag for this field.
-If you wish to do experiments with TombFlags field, here there are some values for well-known slots:
+
+If you wish to do experiments with TombFlags field, here there are some values for well-known slots:
 	$3A7B = used for skeleton
 	$327B = used for von croy
 	$3072 = used for guide
@@ -1808,7 +1833,8 @@ Differently it should be wrong to use following names:
 fmv04.wmv     (there is a not meaningful "0" in front of "4")
 fmv0.avi      (number start from "1")
 fmv41      (Missing extension)
-fmv5.bik    (".Bik" extension is not more supported)
+fmv5.bik    (".Bik" extension is not more supported
+)
 
 
 In script command "Fmv=" first number (NumberFmv) is number within the fmv file name.
@@ -1839,7 +1865,8 @@ Remark: the distance fog is visible only when VolumetricFx is disabled.
 
 StartLimitDistanceFog field
 ----------------------------
-The StartLimitDistanceFog value is the number of sectors from what the fog will be visibile. It used only for distance fog, i.e. the fog you get when VolumetricFx is disabled.
+The StartLimitDistanceFog value is the number of sectors from what the fog will be visibile. It used only for distance fog, i.e. the fog you get when VolumetricFx is disabled.
+
 To increase the effect of fog you should type in this field negative numbers. Bigger is the absolute value you type and stronger is the fog density.
 
 Remark: In spite of above speech it's not sure it's good using negative values because in this way you get also an abnormal intensity of fog color in transparent texture of level (like water) or objects (transparent or shining textures.
@@ -2119,7 +2146,8 @@ Field description
 
 IdGroup field
 -------------
-This first field is not an object index but the ID used to locate this ItemGroup command script when you want perform some operation on it whereby a trigger.
+This first field is not an object index but the ID used to locate this ItemGroup command script when you want perform some operation on it whereby a trigger.
+
 You should start with "1" for first ItemGroup in your [Level] section, and the increase their IDs: 2, 3, 4 ect.
 Valid range for id: 1 / 999
 
@@ -2184,7 +2212,8 @@ Diagnostic=ENABLED
 
 in [Options] section.
 
-The LogItem permits to have on screen the same information you see for Lara but in this case for another moveable.
+The LogItem permits to have on screen the same information you see for Lara but in this case for another moveable.
+
 The main target of this command is to get the informations useful to type a TestPosition command to interact with some moveable to launch an own custom animation.
 
 
@@ -2395,7 +2424,8 @@ But in our case we'll use the seconds, of course, anyway the method is the same.
 
 For example if we create this Organizer command:
 
-Organizer=1,  IGNORE, IGNORE, 6, 1, 5, 2, 4, 3
+Organizer=1,  IGNORE, IGNORE, 
+6, 1, 5, 2, 4, 3
 
 
 We should read above data in following way:
@@ -2594,7 +2624,8 @@ The full list of place-folders is the following:
 (GAME-TIME) The game time. See (2) note in following remark section
 (DATE-TIME) The date about when current savegame has been created or last time it has been changed. The format is DD/MM/YYYY (HH:MM:SS)
 (KM-DISTANCE) Number of Km of distance
-(METERS-DISTANCE) Number of remaing meters of distance (See (3) note)
+(METERS-DISTANCE) Number of remaing meters of distance (See (3) 
+note)
 
 
 Remarks:
@@ -2681,7 +2712,8 @@ Settings = SET_PERFORM_FROM_CD
 
 2) Build script.txt
 
-3) When you have in TRLE folder all level files (.dat , .tr4) necessary to play your game, you can save whole TRLE folder, including also the name of TRLE folder, in CD image to burn on cd support.
+3) When you have in TRLE folder all level files (.dat , .tr4
+) necessary to play your game, you can save whole TRLE folder, including also the name of TRLE folder, in CD image to burn on cd support.
 
 4) Before burning image you should add to image also following files, you find in Extra_NG_File.zip:
 
@@ -2806,7 +2838,8 @@ For example if you typed in [NG Strings] section of the script the following str
 24: The longest Night
 25: Created by Paolone
 
-And you wish that above three strings were showed on screen in sequence, you'll type in "Text" field  the first string, followed in "NumTexts" field from the number of strings to show ("3"):
+And you wish that above three strings were showed on screen in sequence, you'll type in "Text" field  the first string, followed in "NumTexts" field from the number of strings to show ("3"
+):
 
 
 StandBy=  .... , Pause - Hit a Key, 3, ....
@@ -2934,7 +2967,8 @@ In this field you type the slot (the number or the name) of items you mean check
 Remark: if you add in Flags field the value TPOS_TEST_ITEM_INDEX, in the "Slot Moveable" field  you have to type directly the index of item to check. 
 See descrition of TPOS_TEST_ITEM_INDEX flag for more infos.
 
-XDistanceMin and XDistanceMax fields
+XDistanceMin and XDistanceMax
+ fields
 ------------------------------------
 In these two field you have to type the min and max valid distance from X origin of lara and X origin of item to test.
 To understand what is the X axis watch the image "ExTestPosition_Axis.jpg" you find in 
@@ -2985,7 +3019,8 @@ These experiment are enough stupid because we already know the results, anyway I
 For example if lara hangs to edge of elevated 4 click block, we have another animation (that of hanging) and we could discover that in this animation the Y origin is no more to lara's feet but now is where lara has her knees(!)
 Creating a sample project (always with floor to 0 clicks) and creating also a pool room (a room with water), we could discover other Y origins for particular standard animations for example when lara is floating on water surface the Y origin of lara is the same of Y coordinate of water surface. Also while lara is floating up and down for the waves the Cy value reamins the same. So in this case the Y origin is about on the neck of lara.
 
-So, when you create your TestPosition command you should verify as first thing what is the point of lara where there is the Y origin in animation from what you mean launch your custom animation, and build your Y range on this reference.
+So, when you create your TestPosition command you should verify as first thing what is the point of lara where there is the Y origin in animation from what you mean launch your custom animation, and build your Y range on this reference.
+
 
 
 Now we could perform some examples using stand-up position of lara, when the Y origin is on her feet.
@@ -2995,7 +3030,8 @@ If the item is a little ball, and it is in front of lara, when the ball will be 
 Differently than example for X Range, when we set a range for Y distance, it's not sure we'll use same value with - and + signs, bacause when the Y pivot (origin of lara on Y axis) is in her feet, we could require different abs values for min and max.
 
 For example, if we want that above little ball (big like head of lara and with its Y origin in the center of sphere) was (about) in front of lara's head, we should set as Y ranges somewhat like:
-
+
+
 
 YDistanceMin = 550
 YDistanceMax = 650
@@ -3012,7 +3048,8 @@ SIZE OF LARA
 
 To understand better the size and mesh position of Lara in stand up position see the "ExTestPosition_LaraMesh.jpg" image.
 
-In spite of some distortion for perspective view, we could suppose following sizes for lara:
+In spite of some distortion 
+for perspective view, we could suppose following sizes for lara:
 
 Height in stand-up position (picture A or C) = 800
 
@@ -3036,7 +3073,8 @@ These two fields set the acceptable range for the relation (difference) between 
 The horizontal orientation is given by Lara.HorizonalOrient - Item.HorizontalOrient.
 To understand what I mean for "Horizontal" facing you could look the picture "ExTestPosition_H_Orienting.jpg" that you find in usual test position sample.
 The default H facing of items (lara or others) is 0 and this is the position you see in NGLE when you have just placed an item in the level map.
-To understand how the difference between H orientation changes you should see the project in AnimationTestPosition.zip file.
+To understand how the difference between H orientation changes you should see the project in AnimationTestPosition
+.zip file.
 
 If you set correct distance ranges (see previous fields) but you wrong the horizontal orientation difference you can get to have lara closed to item (correctly) but the item is not showing the correct side to lara.
 For example if you create an object like a cabinet, and you wish create an animation where lara forces the lock to open it, it's necessary that, not only lara is closed to cabinet object, but also that lara has in front of her the lock, because if lara has in front the back of cabinet or some side, the distance could be correct but the animation should have no sense.
@@ -3045,7 +3083,8 @@ You should as first step find the ideal difference between H orientation and the
 For example with the cabinet the diffrence could be $8000 (
 32768) (face to face) and the range should have a Min a few less for example $7f00  while the max bigger than same tollerance ( +/- $100 ) i.e. $8100.
 
-VOrientDiffMin and VOrientDiffMax fields
+VOrientDiffMin and VOrientDiffMax
+ fields
 ----------------------------------------
 These two values set the range for difference of Vertical orientation.
 See the image "ExTestPosition_vOrienting.jpg" to understand how V orientation works.
@@ -3055,7 +3094,8 @@ This range is not very important because 99 times on 100 both items (lara and ot
 You could set a range as  Min= -
 200 and Max = +200
 The very seldom case where lara has a different VOrient is the run with rash, when she swimm underwater or she is diving.
-Anyway you can use the sample project in AnimationTestPosition.zip file to verify this situation.
+Anyway you can use the sample project in AnimationTestPosition
+.zip file to verify this situation.
 
 ROrientDiffMin and ROrientDiffMax fields
 -----------------------------------------
@@ -3169,7 +3209,8 @@ When you want show a frame with "A" texture you'll type 0 (zero), when you want 
 
 For example if you TextureSequence command is:
 
-TextureSequence= 1, 4, IGNORE, 3, 2, 1, 0
+TextureSequence= 1, 4, IGNORE, 
+3, 2, 1, 0
 
 You'll have a sequence with ID = 1 (this is the number to set in flipeffect trigger to start/stop this sequence)
 
@@ -3243,7 +3284,8 @@ Pratically to keep the data of a single trigger are necessary three values and y
 
 The general syntax fo TriggerGroup becomes hence:
 
-TriggerGroup= IdGroup,  {Alfa1, Alfa2, Alfa3}, {Beta1, Beta2, Beta3}, {...}, {Omega1, Omega2, Omega3}
+TriggerGroup= IdGroup,  {Alfa1, Alfa2, Alfa3}, {Beta1, Beta2, Beta3}, {...}, 
+{Omega1, Omega2, Omega3}
 
 Remark: the "{" "}" parenthesis don't have to be written really, they are present in above row only to idenfity the optional group of trigger data you can add in TriggerGroup command.
 
@@ -3251,7 +3293,8 @@ In above syntax, the "alfa", "beta" or "Omega" are some specific exported trigge
 
 
 You should not modify the values you get from exporting, but you can add to first value (like "Alfa1", "Beta1"
- or "Omega1" in above example) some TGROUP_ flags to give specific means to current trigger.
+
+ or "Omega1" in above example) some TGROUP_ flags to give specific means to current trigger.
 
 You can add following TGROUP to first value of each exported trigger:
 
@@ -3271,7 +3314,8 @@ In this way just it was true at least a single condition to get true the final c
 The TGROUP_NOT works in a different way, it is like an "AND NOT" because is linked with previous condition (if it exists) whereby an AND but inverte the mean of current condition where it has been attached.
 Pratically you'll use the NOT when you don't find in condition list of trigger window the wished condition but only the opposite. Using this opposite condition with a NOT you'll inverte the mean of that condition.
 
-TGROUP_ELSE
+TGROUP_ELSE
+
 You can add 
 TGROUP_ELSE to conditions or common trigers.
 When you add this flag to some trigger you start an "else block".
@@ -3322,7 +3366,8 @@ we have the problem about how identify the index of enemy because could exist di
 To solve this problem we use above flags to specifiy the index to use for following triggers or conditions.
 This methodo is possible only when there is a way to locate dynamically a moveable.
 For example if we perform a condition like if "Lara collides with moveable of <&>slot", when the condition is true the engine will have discovered the index of moveable is touching lara. Now, if we attach to this condition the flag TGROUP_USE_FOUND_ITEM_INDEX the found index in current condition, will be used in following triggers or conditions, and we'll be able to perform a specific trigger over this enemy detected dynamically, for example to damage it "Remove vitaltiy to <#> enemy"
-When we know to want use above flag we can type our source trigger choosing any object indifferently because we know that it will be used another index of object to perform that action.
+When we know to want use above flag we can type our source trigger choosing any object 
+indifferently because we know that it will be used another index of object to perform that action.
 
 
 
@@ -3330,7 +3375,8 @@ The flag TGROUP_USE_OWNER_ANIM_ITEM_INDEX is more easy to understand and to use.
 You should use this flag only when current TriggerGroup will be performed by an animcommand inserted in some animation of some moveable.
 In this circustante the TGROUP_USE_OWNER_ANIM_ITEM_INDEX flag will force as index to use the index of moveable where you inserted this animcommand.
 
-The TGROUP_USE_TRIGGER_ITEM_INDEX flag
+The TGROUP_USE_TRIGGER_ITEM_INDEX
+ flag
 , reset the Index of moveable, forcing it newly to its original value. 
 Pratically if you in previous trigger or conditon had used a flag like TGROUP_USE_OWNER_ANIM_ITEM_INDEX  or  TGROUP_USE_FOUND_ITEM_INDEX, you can to use newly the real source indices in curent and following trigger or conditions, using this flag TGROUP_USE_TRIGGER_ITEM_INDEX.
 With this flag you inform the engine to use the effective index typed originally in that trigger.
@@ -3387,7 +3433,8 @@ For example to simulate a cirle, instead using a squared mesh with a transparent
 
 An alternative to Adapative frame rate setting
 ----------------------------------------------
-If you are not satisfacted by working of Adapative frame rate of Turbo command, you can set in your level some specific zones where have a reduced far view and other with bigger far view, using new flipeffect triggers to set dynamically the current level far view value.
+If you are not satisfacted by working of Adapative frame rate of Turbo command, you can set in your level some specific 
+zones where have a reduced far view and other with bigger far view, using new flipeffect triggers to set dynamically the current level far view value.
 Using this method you should disable the adaptive far view in turbo command otherwise there will be conflicts, and the you should to study your level in game to understand what are the zone where it's important to have a gain in fps reducing the level far view.
 For example if your level there is a wook with many trees very closed it's very problem you'll have some problem of speed, in this case you could place a strip of trigger to enable reduced far view when lara enters in this wood, while another bound of triggers to set a bigger far view when lara goes out from this wood.
 
@@ -3462,7 +3509,8 @@ And then you have to type this text also in [Strings] or [ExtraNG] strings secti
 Note: when you set a charset number, also this number should be typed in the string. For example if you use in the windowsfont the composite font name "128:MS Gothic", you'll have to type this composite name also in the string section “128:MS Gothic”
 
 Remark: If you omit the font name, typing IGNORE, trng will find a generic font responding to other settings, like bold and size.
-Anyway to get best results it's better type always a font name.
+Anyway to get best results it's better type always a font name.
+
 
 
 WindowsFontFlags (WFF_...) field
@@ -3480,14 +3528,17 @@ Then, this size will be stretched in according with current effective resolution
 
 Remark: About the space that will be necessary to host the text on the screen it's important advise that this size could be a bit different when the game work with different screen resolution, for this reason it's important you set a couple of [Size Font] and [Frame Size for text] to have some free space yet available in frame text, to compensate further adjustment.
 Said in other way: if you chose a big size for your font and you are happy because all text fits in the text frame you chose, you could have a bad surprise when the game will be played on other PC or in other different resolution, because the same text could be too long to be fit in that text frame and the player could be not able to read last rows of your text. 
-So, to avoid this risk, it's better let a safety extra space in your text frame to compensate these variations in font size between different computers and resolutions.
+So, to avoid this risk, it's better let a safety extra space in your text frame to compensate these variations in font size between different computers and resolutions.
+
 Theorically you should let empty about a 25/30 % of whole space to compensate above variations.
 
 
-ColorRbgId and ShadowColorRgbId fields
+ColorRbgId and ShadowColorRgbId
+ fields
 ---------------------------------------
 With these two fields you can set the color for font (
-ColorRbgId) and for further shadow color (ShadowColorRgbId)
+ColorRbgId) and for further shadow color (ShadowColorRgbId
+)
 The value you type is the identifier of some ColorRGB in same [Level] section.
 You should choose for shadow color a very different color respect than text color.  For example, if the text color is white, you should choose black for shadow, and vice-versa.
 
@@ -3507,7 +3558,8 @@ Example:
 WindowTitle= The Last Revenge by Paolone
 
 Remark: As for other commands using text, you should remember to add the same text also in english.txt file.
-If you want get different language version, just you type your text in english section, and then click on different language combo box and then you can overwrite the text showed in selected position.
+If you want get different language version, just you type your text in english section, and then click on different language combo box and then you can overwrite the text showed in selected position.
+
 
 
 
