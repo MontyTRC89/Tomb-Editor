@@ -17,19 +17,19 @@
         {
             this.components = new System.ComponentModel.Container();
             this.dgvStateChanges = new DarkUI.Controls.DarkDataGridView();
-            this.btCancel = new DarkUI.Controls.DarkButton();
-            this.btOk = new DarkUI.Controls.DarkButton();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.butPlayStateChange = new DarkUI.Controls.DarkButton();
-            this.lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.columnStateName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnStateId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnLowFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnHighFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextAnimation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btCancel = new DarkUI.Controls.DarkButton();
+            this.btOk = new DarkUI.Controls.DarkButton();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.butPlayStateChange = new DarkUI.Controls.DarkButton();
             this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -62,63 +62,6 @@
             this.dgvStateChanges.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.dgvStateChanges_CellFormattingSafe);
             this.dgvStateChanges.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvStateChanges_CellMouseDoubleClick);
             this.dgvStateChanges.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvStateChanges_CellValidating);
-            // 
-            // btCancel
-            // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(494, 232);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(81, 23);
-            this.btCancel.TabIndex = 50;
-            this.btCancel.Text = "Cancel";
-            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-            // 
-            // btOk
-            // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOk.Location = new System.Drawing.Point(407, 232);
-            this.btOk.Name = "btOk";
-            this.btOk.Size = new System.Drawing.Size(81, 23);
-            this.btOk.TabIndex = 51;
-            this.btOk.Text = "OK";
-            this.btOk.Click += new System.EventHandler(this.btOk_Click);
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkSectionPanel1.Controls.Add(this.butPlayStateChange);
-            this.darkSectionPanel1.Controls.Add(this.dgvStateChanges);
-            this.darkSectionPanel1.Controls.Add(this.dgvControls);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(5, 5);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(570, 221);
-            this.darkSectionPanel1.TabIndex = 52;
-            // 
-            // butPlayStateChange
-            // 
-            this.butPlayStateChange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butPlayStateChange.Image = global::WadTool.Properties.Resources.actions_play_16;
-            this.butPlayStateChange.Location = new System.Drawing.Point(537, 191);
-            this.butPlayStateChange.Name = "butPlayStateChange";
-            this.butPlayStateChange.Size = new System.Drawing.Size(27, 24);
-            this.butPlayStateChange.TabIndex = 50;
-            this.toolTip1.SetToolTip(this.butPlayStateChange, "Play state change in chain mode");
-            this.butPlayStateChange.Click += new System.EventHandler(this.butPlayStateChange_Click);
-            // 
-            // lblStateChangeAnnouncement
-            // 
-            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
-            this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
-            this.lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
-            this.lblStateChangeAnnouncement.Size = new System.Drawing.Size(393, 13);
-            this.lblStateChangeAnnouncement.TabIndex = 53;
-            this.lblStateChangeAnnouncement.Text = "Pending state change...";
             // 
             // columnStateName
             // 
@@ -168,6 +111,52 @@
             this.columnNextFrame.HeaderText = "Next frame";
             this.columnNextFrame.Name = "columnNextFrame";
             // 
+            // btCancel
+            // 
+            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btCancel.Location = new System.Drawing.Point(494, 232);
+            this.btCancel.Name = "btCancel";
+            this.btCancel.Size = new System.Drawing.Size(81, 23);
+            this.btCancel.TabIndex = 50;
+            this.btCancel.Text = "Cancel";
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            // 
+            // btOk
+            // 
+            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Location = new System.Drawing.Point(407, 232);
+            this.btOk.Name = "btOk";
+            this.btOk.Size = new System.Drawing.Size(81, 23);
+            this.btOk.TabIndex = 51;
+            this.btOk.Text = "OK";
+            this.btOk.Click += new System.EventHandler(this.btOk_Click);
+            // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkSectionPanel1.Controls.Add(this.butPlayStateChange);
+            this.darkSectionPanel1.Controls.Add(this.dgvStateChanges);
+            this.darkSectionPanel1.Controls.Add(this.dgvControls);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(5, 5);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(570, 221);
+            this.darkSectionPanel1.TabIndex = 52;
+            // 
+            // butPlayStateChange
+            // 
+            this.butPlayStateChange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPlayStateChange.Image = global::WadTool.Properties.Resources.actions_play_16;
+            this.butPlayStateChange.Location = new System.Drawing.Point(537, 191);
+            this.butPlayStateChange.Name = "butPlayStateChange";
+            this.butPlayStateChange.Size = new System.Drawing.Size(27, 24);
+            this.butPlayStateChange.TabIndex = 50;
+            this.toolTip1.SetToolTip(this.butPlayStateChange, "Play state change in chain mode");
+            this.butPlayStateChange.Click += new System.EventHandler(this.butPlayStateChange_Click);
+            // 
             // dgvControls
             // 
             this.dgvControls.AlwaysInsertAtZero = false;
@@ -179,6 +168,18 @@
             this.dgvControls.Name = "dgvControls";
             this.dgvControls.Size = new System.Drawing.Size(27, 178);
             this.dgvControls.TabIndex = 49;
+            // 
+            // lblStateChangeAnnouncement
+            // 
+            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
+            this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
+            this.lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
+            this.lblStateChangeAnnouncement.Size = new System.Drawing.Size(393, 13);
+            this.lblStateChangeAnnouncement.TabIndex = 53;
+            this.lblStateChangeAnnouncement.Text = "Pending state change...";
+            this.lblStateChangeAnnouncement.Visible = false;
             // 
             // FormStateChangesEditor
             // 

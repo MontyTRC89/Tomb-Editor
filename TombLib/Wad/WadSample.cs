@@ -377,14 +377,14 @@ namespace TombLib.Wad
         public override bool Equals(object other) => (other is WadSample) && Hash == ((WadSample)other).Hash;
         public override int GetHashCode() { return Hash.GetHashCode(); }
 
-        public static string LookupSound(string soundName, bool ignoreMissingSounds, string wadPath, List<string> oldWadSoundPaths)
+        public static string LookupSound(string soundName, bool ignoreMissingSounds, string wadPath, List<string> wadSoundPaths)
         {
             if (!Path.HasExtension(soundName))
                 soundName += ".wav";
 
-            foreach (var oldWadSoundPath in oldWadSoundPaths)
+            foreach (var wadSoundPath in wadSoundPaths)
             {
-                string realPath = Path.Combine(wadPath ?? "", oldWadSoundPath ?? "", soundName);
+                string realPath = Path.Combine(wadPath ?? "", wadSoundPath ?? "", soundName);
                 if (File.Exists(realPath))
                     return realPath;
             }
@@ -404,9 +404,9 @@ namespace TombLib.Wad
             0x64, 0x61, 0x74, 0x61, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         });
 
-        public static WadSample ReadSound(string soundName, bool ignoreMissingSounds, string wadPath, List<string> oldWadSoundPaths)
+        public static WadSample ReadSound(string soundName, bool ignoreMissingSounds, string wadPath, List<string> wadSoundPaths)
         {
-            string path = LookupSound(soundName, ignoreMissingSounds, wadPath, oldWadSoundPaths);
+            string path = LookupSound(soundName, ignoreMissingSounds, wadPath, wadSoundPaths);
             if (string.IsNullOrEmpty(path))
                 return NullSample;
 

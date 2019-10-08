@@ -117,7 +117,7 @@ namespace TombLib.LevelData.IO
                 using (var chunkOldWadSoundPaths = chunkIO.WriteChunk(Prj2Chunks.OldWadSoundPaths))
                 {
                     chunkIO.WriteChunkEmpty(Prj2Chunks.OldWadSoundUpdateTag1_0_8);
-                    foreach (OldWadSoundPath soundPath in settings.OldWadSoundPaths)
+                    foreach (WadSoundPath soundPath in settings.WadSoundPaths)
                         using (var chunkOldWadSoundPath = chunkIO.WriteChunk(Prj2Chunks.OldWadSoundPath))
                         {
                             chunkIO.WriteChunkString(Prj2Chunks.OldWadSoundPathPath, soundPath.Path);

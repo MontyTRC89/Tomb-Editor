@@ -254,7 +254,7 @@ namespace TombEditor.Forms
         private readonly BindingList<ReferencedWadWrapper> _objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
         private readonly BindingList<ReferencedSoundsCatalogWrapper> _soundsCatalogsDataGridViewDataSource = new BindingList<ReferencedSoundsCatalogWrapper>();
         private readonly BindingList<ReferencedTextureWrapper> _textureFileDataGridViewDataSource = new BindingList<ReferencedTextureWrapper>();
-        private readonly BindingList<OldWadSoundPath> _soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
+        private readonly BindingList<WadSoundPath> _soundDataGridViewDataSource = new BindingList<WadSoundPath>();
         private readonly BindingList<AutoStaticMeshMergeEntry> _staticMeshMergeGridViewDataSource = new BindingList<AutoStaticMeshMergeEntry>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
         private FormPreviewWad _previewWad = null;
@@ -332,13 +332,13 @@ namespace TombEditor.Forms
             soundsCatalogsDataGridViewControls.Enabled = true;
 
             // Initialize sound path data grid view
-            foreach (var soundPath in _levelSettings.OldWadSoundPaths)
+            foreach (var soundPath in _levelSettings.WadSoundPaths)
                 _soundDataGridViewDataSource.Add(soundPath.Clone());
             _soundDataGridViewDataSource.ListChanged += delegate
                 {
-                    _levelSettings.OldWadSoundPaths.Clear();
+                    _levelSettings.WadSoundPaths.Clear();
                     foreach (var soundPath in _soundDataGridViewDataSource)
-                        _levelSettings.OldWadSoundPaths.Add(soundPath.Clone());
+                        _levelSettings.WadSoundPaths.Add(soundPath.Clone());
                     PopulateSoundInfoList();
                 };
             soundDataGridView.DataSource = _soundDataGridViewDataSource;
@@ -368,11 +368,7 @@ namespace TombEditor.Forms
                 pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
             // Populate game version list
-            //comboGameVersion.Items.AddRange(Enum.GetValues(typeof(TRVersion.Game)).Cast<object>().ToArray());
-            comboGameVersion.Items.Add(TRVersion.Game.TR4);
-            comboGameVersion.Items.Add(TRVersion.Game.TRNG);
-            comboGameVersion.Items.Add(TRVersion.Game.TR5);
-            comboGameVersion.Items.Add(TRVersion.Game.TR5Main);
+            comboGameVersion.Items.AddRange(TRVersion.CompilableVersions.Cast<object>().ToArray());
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
@@ -732,12 +728,12 @@ namespace TombEditor.Forms
         }
 
         // Sound list
-        private OldWadSoundPath soundDataGridViewCreateNewRow()
+        private WadSoundPath soundDataGridViewCreateNewRow()
         {
             string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.LevelFilePath,
                 "Select a new sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
             if (result != null)
-                return new OldWadSoundPath(result);
+                return new WadSoundPath(result);
             return null;
         }
 
@@ -748,7 +744,7 @@ namespace TombEditor.Forms
 
             if (soundDataGridView.Columns[e.ColumnIndex].Name == soundDataGridViewColumnPath.Name)
             {
-                OldWadSoundPath path = _soundDataGridViewDataSource[e.RowIndex];
+                WadSoundPath path = _soundDataGridViewDataSource[e.RowIndex];
                 string parsedPath = _levelSettings.ParseVariables(path.Path);
                 string absolutePath = _levelSettings.MakeAbsolute(path.Path);
                 if (Path.IsPathRooted(parsedPath) && !Directory.Exists(absolutePath))
@@ -770,7 +766,7 @@ namespace TombEditor.Forms
                 string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _soundDataGridViewDataSource[e.RowIndex].Path,
                     "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
                 if (result != null)
-                    _soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
+                    _soundDataGridViewDataSource[e.RowIndex] = new WadSoundPath(result);
             }
         }
 

@@ -676,7 +676,7 @@ namespace TombEditor
                 if (!EditorActions.ContinueOnFileDrop(args.Window, "New level"))
                     return;
 
-                args.Editor.Level = Level.CreateSimpleLevel();
+                args.Editor.Level = Level.CreateSimpleLevel(args.Editor.Configuration.Editor_DefaultProjectGameVersion);
             });
 
             AddCommand("OpenLevel", "Open existing level...", CommandType.File, delegate (CommandArgs args)
@@ -1772,7 +1772,7 @@ namespace TombEditor
 
             AddCommand("SelectRoomsByTags", "Select rooms by tags", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.SelectRoomsByTags(args.Window, args.Editor);
+                EditorActions.SelectRoomsByTags(args.Window);
             });
 
             AddCommand("SetStaticMeshesColorToRoomLight", "Set room static meshes color to room color", CommandType.Objects, delegate (CommandArgs args)

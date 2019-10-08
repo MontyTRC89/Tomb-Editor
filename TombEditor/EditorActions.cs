@@ -4423,9 +4423,9 @@ namespace TombEditor
             TrySelectRooms(outsideRooms);
         }
 
-        public static void SelectRoomsByTags(IWin32Window owner, Editor editor)
+        public static void SelectRoomsByTags(IWin32Window owner)
         {
-            using (var formTags = new FormSelectRoomByTags())
+            using (var formTags = new FormSelectRoomByTags(_editor))
             {
                 if (formTags.ShowDialog(owner) != DialogResult.OK)
                     return;
@@ -4435,7 +4435,7 @@ namespace TombEditor
                     return;
 
                 bool findAllTags = formTags.findAllTags;
-                IEnumerable<Room> allRooms = editor.Level.Rooms;
+                IEnumerable<Room> allRooms = _editor.Level.Rooms;
                 IEnumerable<Room> matchingRooms = allRooms.Where((r, b) => {
                     if (findAllTags)
                         return r != null && r.Tags.Intersect(tags).Count() == tags.Count();

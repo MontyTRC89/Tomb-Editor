@@ -18,11 +18,13 @@ namespace TombLib.LevelData
         public LevelSettings Settings { get; private set; } = new LevelSettings { SoundSystem = SoundSystem.Xml };
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
         
-        public static Level CreateSimpleLevel()
+        public static Level CreateSimpleLevel(TRVersion.Game version = TRVersion.Game.TRNG)
         {
             logger.Info("Creating new empty level");
 
             Level result = new Level();
+            result.Settings.GameVersion = version;
+
             if (result.Rooms[0] == null)
                 result.Rooms[0] = new Room(result, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");
             return result;

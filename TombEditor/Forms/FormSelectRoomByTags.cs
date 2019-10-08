@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TombEditor.Forms
@@ -11,9 +7,14 @@ namespace TombEditor.Forms
     public partial class FormSelectRoomByTags : DarkUI.Forms.DarkForm
     {
         public bool findAllTags;
-        public FormSelectRoomByTags()
+        public FormSelectRoomByTags(Editor editor)
         {
             InitializeComponent();
+
+            tbTagSearch.AutocompleteWords.Clear();
+            foreach (var room in (editor.Level.Rooms))
+                if (room != null && room.ExistsInLevel)
+                    tbTagSearch.AutocompleteWords.AddRange(room.Tags.Except(tbTagSearch.AutocompleteWords));
         }
 
         private void ButOk_Click(object sender, EventArgs e)

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
@@ -22,8 +23,8 @@ namespace TombEditor.Forms
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(630, 458) + (Size - ClientSize);
-            MaximumSize = new Size(MinimumSize.Width, 1000);
+            MinimumSize = new Size(630, 520) + (Size - ClientSize);
+            MaximumSize = new Size(MinimumSize.Width, 10000);
             Size = MinimumSize;
 
             _editor = editor;
@@ -47,6 +48,9 @@ namespace TombEditor.Forms
                 try { var ff = new FontFamily(font.Name);
                       cmbRendering3DFont.Items.Add(font.Name); }
                 catch { throw; }
+
+            // Populate versions
+            cmbGameVersion.Items.AddRange(TRVersion.CompilableVersions.Cast<object>().ToArray());
 
             var panels = AllOptionControls(this).Where(c => c is Panel).ToList();
             foreach(var panel in panels)
@@ -116,9 +120,10 @@ namespace TombEditor.Forms
                         ((DarkTextBox)control).Text = (string)option;
                     else if (control is DarkComboBox)
                     {
-                             if (option is string) ((DarkComboBox)control).SelectedItem = (string)option;
-                        else if (option is int)    ((DarkComboBox)control).SelectedItem = (int)option;
-                        else if (option is float)  ((DarkComboBox)control).SelectedItem = (float)option;
+                             if (option is string)         ((DarkComboBox)control).SelectedItem = (string)option;
+                        else if (option is int)            ((DarkComboBox)control).SelectedItem = (int)option;
+                        else if (option is float)          ((DarkComboBox)control).SelectedItem = (float)option;
+                        else if (option is TRVersion.Game) ((DarkComboBox)control).SelectedItem = (TRVersion.Game)option;
                     }
                     else if (control is DarkNumericUpDown)
                     {
@@ -149,9 +154,10 @@ namespace TombEditor.Forms
                         SetOptionValue(name, config, ((DarkTextBox)control).Text);
                     else if (control is DarkComboBox)
                     {
-                             if (option is string) SetOptionValue(name, config, ((DarkComboBox)control).SelectedItem.ToString());
-                        else if (option is int)    SetOptionValue(name, config, (int)((DarkComboBox)control).SelectedItem);
-                        else if (option is float)  SetOptionValue(name, config, (float)((DarkComboBox)control).SelectedItem);
+                             if (option is string)         SetOptionValue(name, config, ((DarkComboBox)control).SelectedItem.ToString());
+                        else if (option is int)            SetOptionValue(name, config, (int)((DarkComboBox)control).SelectedItem);
+                        else if (option is float)          SetOptionValue(name, config, (float)((DarkComboBox)control).SelectedItem);
+                        else if (option is TRVersion.Game) SetOptionValue(name, config, (TRVersion.Game)((DarkComboBox)control).SelectedItem);
                     }
                     else if (control is DarkNumericUpDown)
                     {

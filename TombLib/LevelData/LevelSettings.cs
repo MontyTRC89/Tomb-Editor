@@ -80,18 +80,18 @@ namespace TombLib.LevelData
         }
     }
 
-    public class OldWadSoundPath : ICloneable
+    public class WadSoundPath : ICloneable
     {
         public string Path { get; set; }
 
-        public OldWadSoundPath(string path)
+        public WadSoundPath(string path)
         {
             Path = path;
         }
 
-        public OldWadSoundPath Clone()
+        public WadSoundPath Clone()
         {
-            return (OldWadSoundPath)MemberwiseClone();
+            return (WadSoundPath)MemberwiseClone();
         }
 
         object ICloneable.Clone()
@@ -135,26 +135,26 @@ namespace TombLib.LevelData
 
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
-        public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
+        public List<WadSoundPath> WadSoundPaths { get; set; } = new List<WadSoundPath>
             {
-                new OldWadSoundPath(""),
-                new OldWadSoundPath("Sounds"), // For directly loading wad files.
-                new OldWadSoundPath("Sound"),
-                new OldWadSoundPath("Sounds/Samples"),
-                new OldWadSoundPath("Sound/Samples"),
-                new OldWadSoundPath("../Sounds"), // For directly loading wad files.
-                new OldWadSoundPath("../Sound"),
-                new OldWadSoundPath("../Sounds/Samples"),
-                new OldWadSoundPath("../Sound/Samples"),
-                new OldWadSoundPath("../../Sounds"), // For directly loading wad files.
-                new OldWadSoundPath("../../Sound"),
-                new OldWadSoundPath("../../Sounds/Samples"),
-                new OldWadSoundPath("../../Sound/Samples"),
-                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
-                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "sound" + Dir + "Samples"),
-                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "sound" + Dir + "Samples"),
-                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
-                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
+                new WadSoundPath(""),
+                new WadSoundPath("Sounds"), // For directly loading wad files.
+                new WadSoundPath("Sound"),
+                new WadSoundPath("Sounds/Samples"),
+                new WadSoundPath("Sound/Samples"),
+                new WadSoundPath("../Sounds"), // For directly loading wad files.
+                new WadSoundPath("../Sound"),
+                new WadSoundPath("../Sounds/Samples"),
+                new WadSoundPath("../Sound/Samples"),
+                new WadSoundPath("../../Sounds"), // For directly loading wad files.
+                new WadSoundPath("../../Sound"),
+                new WadSoundPath("../../Sounds/Samples"),
+                new WadSoundPath("../../Sound/Samples"),
+                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
         public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
@@ -184,7 +184,7 @@ namespace TombLib.LevelData
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.Wads = Wads.ConvertAll(wad => wad.Clone());
-            result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
+            result.WadSoundPaths = WadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
             result.SoundsCatalogs = SoundsCatalogs.ConvertAll(catalog => catalog.Clone());
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());

@@ -89,7 +89,7 @@ namespace TombEditor
             public LevelSettingsWatcher Parent;
             public ReferencedWad Wad;
             public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(Wad.Path) };
-            public override IEnumerable<string> Directories => Parent.Settings?.OldWadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
+            public override IEnumerable<string> Directories => Parent.Settings?.WadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
             public override string Name => PathC.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(Wad.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => Wad.Equals((other as WatchedWad)?.Wad);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
@@ -179,7 +179,7 @@ namespace TombEditor
             public LevelSettingsWatcher Parent;
             public ReferencedSoundsCatalog SoundsCatalog;
             public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(SoundsCatalog.Path) };
-            public override IEnumerable<string> Directories => Parent.Settings?.OldWadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
+            public override IEnumerable<string> Directories => Parent.Settings?.WadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
             public override string Name => PathC.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(SoundsCatalog.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => SoundsCatalog.Equals((other as WatchedSoundCatalog)?.SoundsCatalog);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
