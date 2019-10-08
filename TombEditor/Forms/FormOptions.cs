@@ -166,7 +166,7 @@ namespace TombEditor.Forms
                     }
                 }
             }
-            _editor.ConfigurationChange(false, false, true);
+            _editor.ConfigurationChange();
         }
 
         private void butApply_Click(object sender, EventArgs e) => WriteConfigFromControls();
