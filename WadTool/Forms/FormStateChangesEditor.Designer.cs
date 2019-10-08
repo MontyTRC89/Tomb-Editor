@@ -17,26 +17,28 @@
         {
             this.components = new System.ComponentModel.Container();
             this.dgvStateChanges = new DarkUI.Controls.DarkDataGridView();
+            this.btCancel = new DarkUI.Controls.DarkButton();
+            this.btOk = new DarkUI.Controls.DarkButton();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.butPlayStateChange = new DarkUI.Controls.DarkButton();
+            this.lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.columnStateName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnStateId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnLowFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnHighFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextAnimation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnNextFrame = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btCancel = new DarkUI.Controls.DarkButton();
-            this.btOk = new DarkUI.Controls.DarkButton();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.butPlayStateChange = new DarkUI.Controls.DarkButton();
             this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvStateChanges
             // 
+            this.dgvStateChanges.AllowUserToAddRows = false;
+            this.dgvStateChanges.AllowUserToDeleteRows = false;
             this.dgvStateChanges.AllowUserToDragDropRows = false;
-            this.dgvStateChanges.AllowUserToOrderColumns = true;
             this.dgvStateChanges.AllowUserToPasteCells = false;
             this.dgvStateChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -44,6 +46,7 @@
             this.dgvStateChanges.AutoGenerateColumns = false;
             this.dgvStateChanges.ColumnHeadersHeight = 17;
             this.dgvStateChanges.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.columnStateName,
             this.columnStateId,
             this.columnLowFrame,
             this.columnHighFrame,
@@ -53,41 +56,12 @@
             this.dgvStateChanges.Name = "dgvStateChanges";
             this.dgvStateChanges.RowHeadersWidth = 40;
             this.dgvStateChanges.RowTemplate.Height = 16;
+            this.dgvStateChanges.ShowCellErrors = false;
             this.dgvStateChanges.Size = new System.Drawing.Size(525, 209);
             this.dgvStateChanges.TabIndex = 48;
+            this.dgvStateChanges.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.dgvStateChanges_CellFormattingSafe);
             this.dgvStateChanges.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvStateChanges_CellMouseDoubleClick);
             this.dgvStateChanges.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvStateChanges_CellValidating);
-            // 
-            // columnStateId
-            // 
-            this.columnStateId.DataPropertyName = "StateId";
-            this.columnStateId.HeaderText = "State ID";
-            this.columnStateId.Name = "columnStateId";
-            // 
-            // columnLowFrame
-            // 
-            this.columnLowFrame.DataPropertyName = "LowFrame";
-            this.columnLowFrame.HeaderText = "Low frame";
-            this.columnLowFrame.Name = "columnLowFrame";
-            // 
-            // columnHighFrame
-            // 
-            this.columnHighFrame.DataPropertyName = "HighFrame";
-            this.columnHighFrame.HeaderText = "High frame";
-            this.columnHighFrame.Name = "columnHighFrame";
-            // 
-            // columnNextAnimation
-            // 
-            this.columnNextAnimation.DataPropertyName = "NextAnimation";
-            this.columnNextAnimation.HeaderText = "Next animation";
-            this.columnNextAnimation.Name = "columnNextAnimation";
-            // 
-            // columnNextFrame
-            // 
-            this.columnNextFrame.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnNextFrame.DataPropertyName = "NextFrame";
-            this.columnNextFrame.HeaderText = "Next frame";
-            this.columnNextFrame.Name = "columnNextFrame";
             // 
             // btCancel
             // 
@@ -126,6 +100,7 @@
             // 
             // butPlayStateChange
             // 
+            this.butPlayStateChange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlayStateChange.Image = global::WadTool.Properties.Resources.actions_play_16;
             this.butPlayStateChange.Location = new System.Drawing.Point(537, 191);
             this.butPlayStateChange.Name = "butPlayStateChange";
@@ -133,6 +108,65 @@
             this.butPlayStateChange.TabIndex = 50;
             this.toolTip1.SetToolTip(this.butPlayStateChange, "Play state change in chain mode");
             this.butPlayStateChange.Click += new System.EventHandler(this.butPlayStateChange_Click);
+            // 
+            // lblStateChangeAnnouncement
+            // 
+            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
+            this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
+            this.lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
+            this.lblStateChangeAnnouncement.Size = new System.Drawing.Size(393, 13);
+            this.lblStateChangeAnnouncement.TabIndex = 53;
+            this.lblStateChangeAnnouncement.Text = "Pending state change...";
+            // 
+            // columnStateName
+            // 
+            this.columnStateName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnStateName.DataPropertyName = "StateName";
+            this.columnStateName.HeaderText = "State name";
+            this.columnStateName.Name = "columnStateName";
+            this.columnStateName.ReadOnly = true;
+            // 
+            // columnStateId
+            // 
+            this.columnStateId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnStateId.DataPropertyName = "StateId";
+            this.columnStateId.FillWeight = 50F;
+            this.columnStateId.HeaderText = "State ID";
+            this.columnStateId.Name = "columnStateId";
+            // 
+            // columnLowFrame
+            // 
+            this.columnLowFrame.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnLowFrame.DataPropertyName = "LowFrame";
+            this.columnLowFrame.FillWeight = 50F;
+            this.columnLowFrame.HeaderText = "Low frame";
+            this.columnLowFrame.Name = "columnLowFrame";
+            // 
+            // columnHighFrame
+            // 
+            this.columnHighFrame.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnHighFrame.DataPropertyName = "HighFrame";
+            this.columnHighFrame.FillWeight = 50F;
+            this.columnHighFrame.HeaderText = "High frame";
+            this.columnHighFrame.Name = "columnHighFrame";
+            // 
+            // columnNextAnimation
+            // 
+            this.columnNextAnimation.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnNextAnimation.DataPropertyName = "NextAnimation";
+            this.columnNextAnimation.FillWeight = 50F;
+            this.columnNextAnimation.HeaderText = "Next anim";
+            this.columnNextAnimation.Name = "columnNextAnimation";
+            // 
+            // columnNextFrame
+            // 
+            this.columnNextFrame.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnNextFrame.DataPropertyName = "NextFrame";
+            this.columnNextFrame.FillWeight = 50F;
+            this.columnNextFrame.HeaderText = "Next frame";
+            this.columnNextFrame.Name = "columnNextFrame";
             // 
             // dgvControls
             // 
@@ -145,17 +179,6 @@
             this.dgvControls.Name = "dgvControls";
             this.dgvControls.Size = new System.Drawing.Size(27, 178);
             this.dgvControls.TabIndex = 49;
-            // 
-            // lblStateChangeAnnouncement
-            // 
-            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
-            this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
-            this.lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
-            this.lblStateChangeAnnouncement.Size = new System.Drawing.Size(393, 13);
-            this.lblStateChangeAnnouncement.TabIndex = 53;
-            this.lblStateChangeAnnouncement.Text = "Pending state change...";
             // 
             // FormStateChangesEditor
             // 
@@ -190,13 +213,14 @@
         private DarkUI.Controls.DarkButton btCancel;
         private DarkUI.Controls.DarkButton btOk;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
+        private DarkUI.Controls.DarkButton butPlayStateChange;
+        private DarkUI.Controls.DarkLabel lblStateChangeAnnouncement;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnStateName;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnStateId;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnLowFrame;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnHighFrame;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNextAnimation;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNextFrame;
-        private DarkUI.Controls.DarkButton butPlayStateChange;
-        private DarkUI.Controls.DarkLabel lblStateChangeAnnouncement;
-        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
