@@ -46,11 +46,11 @@
             this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -209,7 +209,7 @@
             this.dgvSoundInfos.Name = "dgvSoundInfos";
             this.dgvSoundInfos.RowHeadersWidth = 41;
             this.dgvSoundInfos.Size = new System.Drawing.Size(268, 356);
-            this.dgvSoundInfos.TabIndex = 78;
+            this.dgvSoundInfos.TabIndex = 2;
             this.dgvSoundInfos.SelectionChanged += new System.EventHandler(this.dgvSoundInfos_SelectionChanged);
             // 
             // colID
@@ -238,6 +238,49 @@
             this.darkGroupBox1.TabIndex = 96;
             this.darkGroupBox1.TabStop = false;
             // 
+            // butSearch
+            // 
+            this.butSearch.Image = global::SoundTool.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(252, 28);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 1;
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
+            // tbSearch
+            // 
+            this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbSearch.Location = new System.Drawing.Point(8, 28);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(245, 23);
+            this.tbSearch.TabIndex = 0;
+            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
+            // 
+            // butAddNewSoundInfo
+            // 
+            this.butAddNewSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
+            this.butAddNewSoundInfo.Location = new System.Drawing.Point(8, 419);
+            this.butAddNewSoundInfo.Name = "butAddNewSoundInfo";
+            this.butAddNewSoundInfo.Size = new System.Drawing.Size(131, 23);
+            this.butAddNewSoundInfo.TabIndex = 3;
+            this.butAddNewSoundInfo.Text = "Add new sound info";
+            this.butAddNewSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddNewSoundInfo.Click += new System.EventHandler(this.butAddNewSoundInfo_Click);
+            // 
+            // butDeleteSoundInfo
+            // 
+            this.butDeleteSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butDeleteSoundInfo.Image = global::SoundTool.Properties.Resources.general_trash_16;
+            this.butDeleteSoundInfo.Location = new System.Drawing.Point(145, 419);
+            this.butDeleteSoundInfo.Name = "butDeleteSoundInfo";
+            this.butDeleteSoundInfo.Size = new System.Drawing.Size(131, 23);
+            this.butDeleteSoundInfo.TabIndex = 4;
+            this.butDeleteSoundInfo.Text = "Delete sound infos";
+            this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeleteSoundInfo.Click += new System.EventHandler(this.butDeleteSoundInfo_Click);
+            // 
             // soundInfoEditor
             // 
             this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -250,51 +293,8 @@
             this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
             this.soundInfoEditor.Name = "soundInfoEditor";
             this.soundInfoEditor.Size = new System.Drawing.Size(485, 401);
-            this.soundInfoEditor.TabIndex = 77;
+            this.soundInfoEditor.TabIndex = 5;
             this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
-            // 
-            // butSearch
-            // 
-            this.butSearch.Image = global::SoundTool.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(252, 28);
-            this.butSearch.Name = "butSearch";
-            this.butSearch.Selectable = false;
-            this.butSearch.Size = new System.Drawing.Size(24, 23);
-            this.butSearch.TabIndex = 109;
-            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
-            // 
-            // tbSearch
-            // 
-            this.tbSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbSearch.Location = new System.Drawing.Point(8, 28);
-            this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(245, 23);
-            this.tbSearch.TabIndex = 108;
-            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
-            // 
-            // butAddNewSoundInfo
-            // 
-            this.butAddNewSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
-            this.butAddNewSoundInfo.Location = new System.Drawing.Point(8, 419);
-            this.butAddNewSoundInfo.Name = "butAddNewSoundInfo";
-            this.butAddNewSoundInfo.Size = new System.Drawing.Size(131, 23);
-            this.butAddNewSoundInfo.TabIndex = 95;
-            this.butAddNewSoundInfo.Text = "Add new sound info";
-            this.butAddNewSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddNewSoundInfo.Click += new System.EventHandler(this.butAddNewSoundInfo_Click);
-            // 
-            // butDeleteSoundInfo
-            // 
-            this.butDeleteSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butDeleteSoundInfo.Image = global::SoundTool.Properties.Resources.general_trash_16;
-            this.butDeleteSoundInfo.Location = new System.Drawing.Point(145, 419);
-            this.butDeleteSoundInfo.Name = "butDeleteSoundInfo";
-            this.butDeleteSoundInfo.Size = new System.Drawing.Size(131, 23);
-            this.butDeleteSoundInfo.TabIndex = 94;
-            this.butDeleteSoundInfo.Text = "Delete sound infos";
-            this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteSoundInfo.Click += new System.EventHandler(this.butDeleteSoundInfo_Click);
             // 
             // FormMain
             // 

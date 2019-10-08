@@ -20,8 +20,6 @@ namespace TombLib.Controls
         private static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         { new FileFormat("Waveform audio", "wav") };
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         private const string _clipboardName = "SoundInfo";
         private bool _soundInfoCurrentlyChanging = false;
         private bool _readonly = false;
@@ -74,9 +72,8 @@ namespace TombLib.Controls
                 {
                     this.Enabled = true;
                     picDisabledOverlay.Visible = false;
+                    UpdateUI(value, false);
                 }
-
-                UpdateUI(value, false);
             }
         }
 
@@ -168,10 +165,10 @@ namespace TombLib.Controls
                 {
                     tbID.Text = newSoundInfo.Id.ToString();
                     tbName.Text = newSoundInfo.Name;
+                    dgvSamples.Rows.Clear();
 
                     if (newSoundInfo.Samples != null && newSoundInfo.Samples.Count > 0)
                     {
-                        dgvSamples.Rows.Clear();
                         foreach (var sample in newSoundInfo.Samples)
                             dgvSamples.Rows.Add(sample.FileName);
                     }

@@ -51,7 +51,7 @@
             this.butOK.Location = new System.Drawing.Point(435, 468);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 6;
+            this.butOK.TabIndex = 5;
             this.butOK.Text = "OK";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
@@ -62,7 +62,7 @@
             this.butCancel.Location = new System.Drawing.Point(521, 468);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 7;
+            this.butCancel.TabIndex = 6;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
@@ -77,7 +77,7 @@
             this.listenKeys.Location = new System.Drawing.Point(151, 468);
             this.listenKeys.Name = "listenKeys";
             this.listenKeys.Size = new System.Drawing.Size(278, 23);
-            this.listenKeys.TabIndex = 5;
+            this.listenKeys.TabIndex = 4;
             this.listenKeys.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.listenKeys.Visible = false;
             this.listenKeys.Click += new System.EventHandler(this.listenKeys_Click);
@@ -88,7 +88,7 @@
             this.butDefaults.Location = new System.Drawing.Point(7, 468);
             this.butDefaults.Name = "butDefaults";
             this.butDefaults.Size = new System.Drawing.Size(138, 23);
-            this.butDefaults.TabIndex = 4;
+            this.butDefaults.TabIndex = 3;
             this.butDefaults.Text = "Set all to default";
             this.butDefaults.Click += new System.EventHandler(this.butDefaults_Click);
             // 
@@ -129,7 +129,7 @@
             this.commandList.Name = "commandList";
             this.commandList.RowHeadersWidth = 41;
             this.commandList.Size = new System.Drawing.Size(594, 403);
-            this.commandList.TabIndex = 0;
+            this.commandList.TabIndex = 2;
             this.commandList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.commandList_CellContentClick);
             this.commandList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.commandList_CellDoubleClick);
             this.commandList.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.commandList_CellFormatting);
@@ -185,7 +185,7 @@
             this.tbSearch.Location = new System.Drawing.Point(121, 7);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(456, 23);
-            this.tbSearch.TabIndex = 8;
+            this.tbSearch.TabIndex = 0;
             this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
             // 
             // darkLabel1
@@ -206,7 +206,7 @@
             this.butSearch.Name = "butSearch";
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 23);
-            this.butSearch.TabIndex = 107;
+            this.butSearch.TabIndex = 1;
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // FormKeyboardLayout

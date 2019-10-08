@@ -507,7 +507,7 @@
             this.cbLightIsUsedForImportedGeometry.Location = new System.Drawing.Point(360, 104);
             this.cbLightIsUsedForImportedGeometry.Name = "cbLightIsUsedForImportedGeometry";
             this.cbLightIsUsedForImportedGeometry.Size = new System.Drawing.Size(70, 22);
-            this.cbLightIsUsedForImportedGeometry.TabIndex = 81;
+            this.cbLightIsUsedForImportedGeometry.TabIndex = 18;
             this.cbLightIsUsedForImportedGeometry.Text = "Imported";
             this.toolTip.SetToolTip(this.cbLightIsUsedForImportedGeometry, "Use light for imported geometry");
             this.cbLightIsUsedForImportedGeometry.CheckedChanged += new System.EventHandler(this.cbLightIsUsedForImportedGeometry_CheckedChanged);

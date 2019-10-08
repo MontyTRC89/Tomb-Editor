@@ -50,7 +50,7 @@ namespace TombEditor.Forms
             this.butOK.Location = new System.Drawing.Point(39, 159);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 0;
+            this.butOK.TabIndex = 8;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
@@ -62,7 +62,7 @@ namespace TombEditor.Forms
             this.butCancel.Location = new System.Drawing.Point(125, 159);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 1;
+            this.butCancel.TabIndex = 9;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -82,7 +82,7 @@ namespace TombEditor.Forms
             this.cbBit2.Location = new System.Drawing.Point(8, 32);
             this.cbBit2.Name = "cbBit2";
             this.cbBit2.Size = new System.Drawing.Size(49, 17);
-            this.cbBit2.TabIndex = 6;
+            this.cbBit2.TabIndex = 1;
             this.cbBit2.Text = "Bit 2";
             // 
             // cbClearBody
@@ -91,7 +91,7 @@ namespace TombEditor.Forms
             this.cbClearBody.Location = new System.Drawing.Point(76, 32);
             this.cbClearBody.Name = "cbClearBody";
             this.cbClearBody.Size = new System.Drawing.Size(81, 17);
-            this.cbClearBody.TabIndex = 9;
+            this.cbClearBody.TabIndex = 6;
             this.cbClearBody.Text = "Clear body";
             // 
             // cbBit1
@@ -100,7 +100,7 @@ namespace TombEditor.Forms
             this.cbBit1.Location = new System.Drawing.Point(8, 9);
             this.cbBit1.Name = "cbBit1";
             this.cbBit1.Size = new System.Drawing.Size(49, 17);
-            this.cbBit1.TabIndex = 10;
+            this.cbBit1.TabIndex = 0;
             this.cbBit1.Text = "Bit 1";
             // 
             // cbBit3
@@ -109,7 +109,7 @@ namespace TombEditor.Forms
             this.cbBit3.Location = new System.Drawing.Point(8, 55);
             this.cbBit3.Name = "cbBit3";
             this.cbBit3.Size = new System.Drawing.Size(49, 17);
-            this.cbBit3.TabIndex = 11;
+            this.cbBit3.TabIndex = 2;
             this.cbBit3.Text = "Bit 3";
             // 
             // cbBit4
@@ -118,7 +118,7 @@ namespace TombEditor.Forms
             this.cbBit4.Location = new System.Drawing.Point(8, 79);
             this.cbBit4.Name = "cbBit4";
             this.cbBit4.Size = new System.Drawing.Size(49, 17);
-            this.cbBit4.TabIndex = 12;
+            this.cbBit4.TabIndex = 3;
             this.cbBit4.Text = "Bit 4";
             // 
             // cbBit5
@@ -127,7 +127,7 @@ namespace TombEditor.Forms
             this.cbBit5.Location = new System.Drawing.Point(8, 102);
             this.cbBit5.Name = "cbBit5";
             this.cbBit5.Size = new System.Drawing.Size(49, 17);
-            this.cbBit5.TabIndex = 13;
+            this.cbBit5.TabIndex = 4;
             this.cbBit5.Text = "Bit 5";
             // 
             // tbOCB
@@ -137,7 +137,7 @@ namespace TombEditor.Forms
             this.tbOCB.Location = new System.Drawing.Point(39, 131);
             this.tbOCB.Name = "tbOCB";
             this.tbOCB.Size = new System.Drawing.Size(166, 22);
-            this.tbOCB.TabIndex = 15;
+            this.tbOCB.TabIndex = 7;
             this.tbOCB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbOCB_KeyPress);
             // 
             // label1

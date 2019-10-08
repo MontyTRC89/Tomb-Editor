@@ -51,7 +51,7 @@ namespace TombEditor.Forms
             this.butOk.Location = new System.Drawing.Point(3, 3);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(317, 26);
-            this.butOk.TabIndex = 1;
+            this.butOk.TabIndex = 0;
             this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
@@ -89,7 +89,7 @@ namespace TombEditor.Forms
             this.butCancel.Location = new System.Drawing.Point(326, 3);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(317, 26);
-            this.butCancel.TabIndex = 2;
+            this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);

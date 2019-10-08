@@ -60,7 +60,7 @@
             this.butCancel.Location = new System.Drawing.Point(653, 559);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 1;
+            this.butCancel.TabIndex = 5;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
@@ -70,7 +70,7 @@
             this.butOk.Location = new System.Drawing.Point(567, 559);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
-            this.butOk.TabIndex = 1;
+            this.butOk.TabIndex = 4;
             this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
@@ -138,7 +138,7 @@
             this.tbMeshFilter.Location = new System.Drawing.Point(309, 531);
             this.tbMeshFilter.Name = "tbMeshFilter";
             this.tbMeshFilter.Size = new System.Drawing.Size(424, 22);
-            this.tbMeshFilter.TabIndex = 4;
+            this.tbMeshFilter.TabIndex = 2;
             // 
             // comboLightingModel
             // 
@@ -152,7 +152,7 @@
             this.comboLightingModel.Location = new System.Drawing.Point(309, 559);
             this.comboLightingModel.Name = "comboLightingModel";
             this.comboLightingModel.Size = new System.Drawing.Size(252, 23);
-            this.comboLightingModel.TabIndex = 5;
+            this.comboLightingModel.TabIndex = 3;
             // 
             // darkLabel4
             // 

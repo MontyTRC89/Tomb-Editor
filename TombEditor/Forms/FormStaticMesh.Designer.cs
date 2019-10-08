@@ -57,7 +57,7 @@ namespace TombEditor.Forms
             this.butOK.Location = new System.Drawing.Point(45, 322);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 0;
+            this.butOK.TabIndex = 14;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
@@ -69,7 +69,7 @@ namespace TombEditor.Forms
             this.butCancel.Location = new System.Drawing.Point(131, 322);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 1;
+            this.butCancel.TabIndex = 15;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -80,7 +80,7 @@ namespace TombEditor.Forms
             this.cbDisableCollision.Location = new System.Drawing.Point(12, 12);
             this.cbDisableCollision.Name = "cbDisableCollision";
             this.cbDisableCollision.Size = new System.Drawing.Size(110, 17);
-            this.cbDisableCollision.TabIndex = 5;
+            this.cbDisableCollision.TabIndex = 0;
             this.cbDisableCollision.Text = "Disable collision";
             this.cbDisableCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -90,7 +90,7 @@ namespace TombEditor.Forms
             this.cbIceTrasparency.Location = new System.Drawing.Point(12, 58);
             this.cbIceTrasparency.Name = "cbIceTrasparency";
             this.cbIceTrasparency.Size = new System.Drawing.Size(102, 17);
-            this.cbIceTrasparency.TabIndex = 9;
+            this.cbIceTrasparency.TabIndex = 2;
             this.cbIceTrasparency.Text = "Ice trasparency";
             this.cbIceTrasparency.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -100,7 +100,7 @@ namespace TombEditor.Forms
             this.cbHeavyTriggerOnCollision.Location = new System.Drawing.Point(12, 219);
             this.cbHeavyTriggerOnCollision.Name = "cbHeavyTriggerOnCollision";
             this.cbHeavyTriggerOnCollision.Size = new System.Drawing.Size(199, 17);
-            this.cbHeavyTriggerOnCollision.TabIndex = 16;
+            this.cbHeavyTriggerOnCollision.TabIndex = 9;
             this.cbHeavyTriggerOnCollision.Text = "Activate heavy trigger on collision";
             this.cbHeavyTriggerOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -110,7 +110,7 @@ namespace TombEditor.Forms
             this.cbHardShatter.Location = new System.Drawing.Point(12, 196);
             this.cbHardShatter.Name = "cbHardShatter";
             this.cbHardShatter.Size = new System.Drawing.Size(90, 17);
-            this.cbHardShatter.TabIndex = 17;
+            this.cbHardShatter.TabIndex = 8;
             this.cbHardShatter.Text = "Hard shatter";
             this.cbHardShatter.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -120,7 +120,7 @@ namespace TombEditor.Forms
             this.cbHugeCollision.Location = new System.Drawing.Point(12, 173);
             this.cbHugeCollision.Name = "cbHugeCollision";
             this.cbHugeCollision.Size = new System.Drawing.Size(100, 17);
-            this.cbHugeCollision.TabIndex = 18;
+            this.cbHugeCollision.TabIndex = 7;
             this.cbHugeCollision.Text = "Huge collision";
             this.cbHugeCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -130,7 +130,7 @@ namespace TombEditor.Forms
             this.cbPoisonLaraOnCollision.Location = new System.Drawing.Point(12, 150);
             this.cbPoisonLaraOnCollision.Name = "cbPoisonLaraOnCollision";
             this.cbPoisonLaraOnCollision.Size = new System.Drawing.Size(148, 17);
-            this.cbPoisonLaraOnCollision.TabIndex = 19;
+            this.cbPoisonLaraOnCollision.TabIndex = 6;
             this.cbPoisonLaraOnCollision.Text = "Poison Lara on collision";
             this.cbPoisonLaraOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -140,7 +140,7 @@ namespace TombEditor.Forms
             this.cbExplodeKillingOnCollision.Location = new System.Drawing.Point(12, 127);
             this.cbExplodeKillingOnCollision.Name = "cbExplodeKillingOnCollision";
             this.cbExplodeKillingOnCollision.Size = new System.Drawing.Size(165, 17);
-            this.cbExplodeKillingOnCollision.TabIndex = 20;
+            this.cbExplodeKillingOnCollision.TabIndex = 5;
             this.cbExplodeKillingOnCollision.Text = "Explode killing on collision";
             this.cbExplodeKillingOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -150,7 +150,7 @@ namespace TombEditor.Forms
             this.cbBurnLaraOnCollision.Location = new System.Drawing.Point(12, 104);
             this.cbBurnLaraOnCollision.Name = "cbBurnLaraOnCollision";
             this.cbBurnLaraOnCollision.Size = new System.Drawing.Size(138, 17);
-            this.cbBurnLaraOnCollision.TabIndex = 21;
+            this.cbBurnLaraOnCollision.TabIndex = 4;
             this.cbBurnLaraOnCollision.Text = "Burn Lara on collision";
             this.cbBurnLaraOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -160,7 +160,7 @@ namespace TombEditor.Forms
             this.cbDamageLaraOnContact.Location = new System.Drawing.Point(12, 81);
             this.cbDamageLaraOnContact.Name = "cbDamageLaraOnContact";
             this.cbDamageLaraOnContact.Size = new System.Drawing.Size(155, 17);
-            this.cbDamageLaraOnContact.TabIndex = 22;
+            this.cbDamageLaraOnContact.TabIndex = 3;
             this.cbDamageLaraOnContact.Text = "Damage Lara on collision";
             this.cbDamageLaraOnContact.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -170,7 +170,7 @@ namespace TombEditor.Forms
             this.cbGlassTrasparency.Location = new System.Drawing.Point(12, 35);
             this.cbGlassTrasparency.Name = "cbGlassTrasparency";
             this.cbGlassTrasparency.Size = new System.Drawing.Size(115, 17);
-            this.cbGlassTrasparency.TabIndex = 23;
+            this.cbGlassTrasparency.TabIndex = 1;
             this.cbGlassTrasparency.Text = "Glass trasparency";
             this.cbGlassTrasparency.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
@@ -180,7 +180,7 @@ namespace TombEditor.Forms
             this.cbScalable.Location = new System.Drawing.Point(12, 265);
             this.cbScalable.Name = "cbScalable";
             this.cbScalable.Size = new System.Drawing.Size(68, 17);
-            this.cbScalable.TabIndex = 24;
+            this.cbScalable.TabIndex = 11;
             this.cbScalable.Text = "Scalable";
             this.cbScalable.CheckedChanged += new System.EventHandler(this.cbScalable_CheckedChanged);
             // 
@@ -202,7 +202,7 @@ namespace TombEditor.Forms
             this.numScalable.MousewheelSingleIncrement = true;
             this.numScalable.Name = "numScalable";
             this.numScalable.Size = new System.Drawing.Size(53, 22);
-            this.numScalable.TabIndex = 26;
+            this.numScalable.TabIndex = 12;
             this.numScalable.ValueChanged += new System.EventHandler(this.numScalable_ValueChanged);
             // 
             // tbOCB
@@ -211,7 +211,7 @@ namespace TombEditor.Forms
             this.tbOCB.Location = new System.Drawing.Point(45, 294);
             this.tbOCB.Name = "tbOCB";
             this.tbOCB.Size = new System.Drawing.Size(166, 22);
-            this.tbOCB.TabIndex = 28;
+            this.tbOCB.TabIndex = 13;
             this.tbOCB.TextChanged += new System.EventHandler(this.tbOCB_TextChanged);
             this.tbOCB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbOCB_KeyPress);
             // 
@@ -232,7 +232,7 @@ namespace TombEditor.Forms
             this.cbSpecificShatter.Location = new System.Drawing.Point(12, 242);
             this.cbSpecificShatter.Name = "cbSpecificShatter";
             this.cbSpecificShatter.Size = new System.Drawing.Size(198, 17);
-            this.cbSpecificShatter.TabIndex = 29;
+            this.cbSpecificShatter.TabIndex = 10;
             this.cbSpecificShatter.Text = "Shatterable by specific moveables";
             this.cbSpecificShatter.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 

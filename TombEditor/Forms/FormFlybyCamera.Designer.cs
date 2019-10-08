@@ -103,7 +103,7 @@ namespace TombEditor.Forms
             this.cbBit0.Location = new System.Drawing.Point(208, 12);
             this.cbBit0.Name = "cbBit0";
             this.cbBit0.Size = new System.Drawing.Size(300, 32);
-            this.cbBit0.TabIndex = 2;
+            this.cbBit0.TabIndex = 8;
             this.cbBit0.Text = "Make a cut to flyby from Lara camera position";
             // 
             // cbBit1
@@ -111,7 +111,7 @@ namespace TombEditor.Forms
             this.cbBit1.Location = new System.Drawing.Point(208, 35);
             this.cbBit1.Name = "cbBit1";
             this.cbBit1.Size = new System.Drawing.Size(300, 32);
-            this.cbBit1.TabIndex = 3;
+            this.cbBit1.TabIndex = 9;
             this.cbBit1.Text = "Track entity position";
             // 
             // cbBit2
@@ -119,7 +119,7 @@ namespace TombEditor.Forms
             this.cbBit2.Location = new System.Drawing.Point(208, 58);
             this.cbBit2.Name = "cbBit2";
             this.cbBit2.Size = new System.Drawing.Size(300, 32);
-            this.cbBit2.TabIndex = 4;
+            this.cbBit2.TabIndex = 10;
             this.cbBit2.Text = "Infinite loop";
             // 
             // cbBit3
@@ -127,7 +127,7 @@ namespace TombEditor.Forms
             this.cbBit3.Location = new System.Drawing.Point(208, 81);
             this.cbBit3.Name = "cbBit3";
             this.cbBit3.Size = new System.Drawing.Size(300, 32);
-            this.cbBit3.TabIndex = 5;
+            this.cbBit3.TabIndex = 11;
             this.cbBit3.Text = "Create tracking camera";
             // 
             // cbBit4
@@ -135,7 +135,7 @@ namespace TombEditor.Forms
             this.cbBit4.Location = new System.Drawing.Point(208, 104);
             this.cbBit4.Name = "cbBit4";
             this.cbBit4.Size = new System.Drawing.Size(300, 32);
-            this.cbBit4.TabIndex = 6;
+            this.cbBit4.TabIndex = 12;
             this.cbBit4.Text = "Focus on Lara\'s last head position";
             // 
             // cbBit5
@@ -143,7 +143,7 @@ namespace TombEditor.Forms
             this.cbBit5.Location = new System.Drawing.Point(208, 127);
             this.cbBit5.Name = "cbBit5";
             this.cbBit5.Size = new System.Drawing.Size(300, 32);
-            this.cbBit5.TabIndex = 7;
+            this.cbBit5.TabIndex = 13;
             this.cbBit5.Text = "Focus on Lara\'s head";
             // 
             // cbBit6
@@ -151,7 +151,7 @@ namespace TombEditor.Forms
             this.cbBit6.Location = new System.Drawing.Point(208, 150);
             this.cbBit6.Name = "cbBit6";
             this.cbBit6.Size = new System.Drawing.Size(300, 32);
-            this.cbBit6.TabIndex = 8;
+            this.cbBit6.TabIndex = 14;
             this.cbBit6.Text = "Snap back to Lara at the end of sequence";
             // 
             // cbBit13
@@ -159,7 +159,7 @@ namespace TombEditor.Forms
             this.cbBit13.Location = new System.Drawing.Point(208, 311);
             this.cbBit13.Name = "cbBit13";
             this.cbBit13.Size = new System.Drawing.Size(300, 32);
-            this.cbBit13.TabIndex = 15;
+            this.cbBit13.TabIndex = 21;
             this.cbBit13.Text = "Unused";
             // 
             // cbBit12
@@ -167,7 +167,7 @@ namespace TombEditor.Forms
             this.cbBit12.Location = new System.Drawing.Point(208, 288);
             this.cbBit12.Name = "cbBit12";
             this.cbBit12.Size = new System.Drawing.Size(300, 32);
-            this.cbBit12.TabIndex = 14;
+            this.cbBit12.TabIndex = 20;
             this.cbBit12.Text = "Unused";
             // 
             // cbBit11
@@ -175,7 +175,7 @@ namespace TombEditor.Forms
             this.cbBit11.Location = new System.Drawing.Point(208, 265);
             this.cbBit11.Name = "cbBit11";
             this.cbBit11.Size = new System.Drawing.Size(300, 32);
-            this.cbBit11.TabIndex = 13;
+            this.cbBit11.TabIndex = 19;
             this.cbBit11.Text = "Override cinematic mode and let Lara move";
             // 
             // cbBit10
@@ -183,7 +183,7 @@ namespace TombEditor.Forms
             this.cbBit10.Location = new System.Drawing.Point(208, 242);
             this.cbBit10.Name = "cbBit10";
             this.cbBit10.Size = new System.Drawing.Size(300, 32);
-            this.cbBit10.TabIndex = 12;
+            this.cbBit10.TabIndex = 18;
             this.cbBit10.Text = "Cinematic mode";
             // 
             // cbBit9
@@ -191,7 +191,7 @@ namespace TombEditor.Forms
             this.cbBit9.Location = new System.Drawing.Point(208, 219);
             this.cbBit9.Name = "cbBit9";
             this.cbBit9.Size = new System.Drawing.Size(300, 32);
-            this.cbBit9.TabIndex = 11;
+            this.cbBit9.TabIndex = 17;
             this.cbBit9.Text = "Disable exit from sequence with \"Look At\" key";
             // 
             // cbBit8
@@ -199,7 +199,7 @@ namespace TombEditor.Forms
             this.cbBit8.Location = new System.Drawing.Point(208, 196);
             this.cbBit8.Name = "cbBit8";
             this.cbBit8.Size = new System.Drawing.Size(300, 32);
-            this.cbBit8.TabIndex = 10;
+            this.cbBit8.TabIndex = 16;
             this.cbBit8.Text = "Freeze camera";
             // 
             // cbBit7
@@ -207,7 +207,7 @@ namespace TombEditor.Forms
             this.cbBit7.Location = new System.Drawing.Point(208, 173);
             this.cbBit7.Name = "cbBit7";
             this.cbBit7.Size = new System.Drawing.Size(317, 32);
-            this.cbBit7.TabIndex = 9;
+            this.cbBit7.TabIndex = 15;
             this.cbBit7.Text = "Cut cam: jump to a specificed camera in the same sequence";
             // 
             // cbBit15
@@ -215,7 +215,7 @@ namespace TombEditor.Forms
             this.cbBit15.Location = new System.Drawing.Point(208, 357);
             this.cbBit15.Name = "cbBit15";
             this.cbBit15.Size = new System.Drawing.Size(300, 32);
-            this.cbBit15.TabIndex = 17;
+            this.cbBit15.TabIndex = 23;
             this.cbBit15.Text = "Unused";
             // 
             // cbBit14
@@ -223,7 +223,7 @@ namespace TombEditor.Forms
             this.cbBit14.Location = new System.Drawing.Point(208, 334);
             this.cbBit14.Name = "cbBit14";
             this.cbBit14.Size = new System.Drawing.Size(300, 32);
-            this.cbBit14.TabIndex = 16;
+            this.cbBit14.TabIndex = 22;
             this.cbBit14.Text = "Activate heavy trigger";
             // 
             // label1
@@ -324,7 +324,7 @@ namespace TombEditor.Forms
             this.numSequence.MousewheelSingleIncrement = true;
             this.numSequence.Name = "numSequence";
             this.numSequence.Size = new System.Drawing.Size(71, 22);
-            this.numSequence.TabIndex = 83;
+            this.numSequence.TabIndex = 0;
             // 
             // numNumber
             // 
@@ -344,7 +344,7 @@ namespace TombEditor.Forms
             this.numNumber.MousewheelSingleIncrement = true;
             this.numNumber.Name = "numNumber";
             this.numNumber.Size = new System.Drawing.Size(71, 22);
-            this.numNumber.TabIndex = 84;
+            this.numNumber.TabIndex = 1;
             // 
             // numTimer
             // 
@@ -364,7 +364,7 @@ namespace TombEditor.Forms
             this.numTimer.MousewheelSingleIncrement = true;
             this.numTimer.Name = "numTimer";
             this.numTimer.Size = new System.Drawing.Size(71, 22);
-            this.numTimer.TabIndex = 85;
+            this.numTimer.TabIndex = 2;
             // 
             // numSpeed
             // 
@@ -379,7 +379,7 @@ namespace TombEditor.Forms
             this.numSpeed.MousewheelSingleIncrement = true;
             this.numSpeed.Name = "numSpeed";
             this.numSpeed.Size = new System.Drawing.Size(71, 22);
-            this.numSpeed.TabIndex = 86;
+            this.numSpeed.TabIndex = 3;
             // 
             // numFOV
             // 
@@ -399,7 +399,7 @@ namespace TombEditor.Forms
             this.numFOV.MousewheelSingleIncrement = true;
             this.numFOV.Name = "numFOV";
             this.numFOV.Size = new System.Drawing.Size(71, 22);
-            this.numFOV.TabIndex = 87;
+            this.numFOV.TabIndex = 4;
             // 
             // numRoll
             // 
@@ -420,7 +420,7 @@ namespace TombEditor.Forms
             this.numRoll.MousewheelSingleIncrement = true;
             this.numRoll.Name = "numRoll";
             this.numRoll.Size = new System.Drawing.Size(71, 22);
-            this.numRoll.TabIndex = 88;
+            this.numRoll.TabIndex = 5;
             // 
             // numRotationX
             // 
@@ -446,7 +446,7 @@ namespace TombEditor.Forms
             this.numRotationX.MousewheelSingleIncrement = true;
             this.numRotationX.Name = "numRotationX";
             this.numRotationX.Size = new System.Drawing.Size(71, 22);
-            this.numRotationX.TabIndex = 89;
+            this.numRotationX.TabIndex = 6;
             // 
             // numRotationY
             // 
@@ -467,7 +467,7 @@ namespace TombEditor.Forms
             this.numRotationY.MousewheelSingleIncrement = true;
             this.numRotationY.Name = "numRotationY";
             this.numRotationY.Size = new System.Drawing.Size(71, 22);
-            this.numRotationY.TabIndex = 90;
+            this.numRotationY.TabIndex = 7;
             // 
             // tbLuaScript
             // 

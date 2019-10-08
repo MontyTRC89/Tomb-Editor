@@ -73,7 +73,7 @@ namespace TombEditor.ToolWindows
             this.butMirror.Location = new System.Drawing.Point(173, 3);
             this.butMirror.Name = "butMirror";
             this.butMirror.Size = new System.Drawing.Size(23, 23);
-            this.butMirror.TabIndex = 11;
+            this.butMirror.TabIndex = 8;
             this.butMirror.Tag = "MirrorTexture";
             // 
             // butDoubleSide
@@ -84,7 +84,7 @@ namespace TombEditor.ToolWindows
             this.butDoubleSide.Location = new System.Drawing.Point(3, 3);
             this.butDoubleSide.Name = "butDoubleSide";
             this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
-            this.butDoubleSide.TabIndex = 10;
+            this.butDoubleSide.TabIndex = 5;
             this.butDoubleSide.Tag = "SetTextureDoubleSided";
             // 
             // butTextureSounds
@@ -94,7 +94,7 @@ namespace TombEditor.ToolWindows
             this.butTextureSounds.Location = new System.Drawing.Point(98, 30);
             this.butTextureSounds.Name = "butTextureSounds";
             this.butTextureSounds.Size = new System.Drawing.Size(90, 23);
-            this.butTextureSounds.TabIndex = 1;
+            this.butTextureSounds.TabIndex = 11;
             this.butTextureSounds.Text = "Sounds";
             this.toolTip.SetToolTip(this.butTextureSounds, "Edit texture sounds...");
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
@@ -117,7 +117,7 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.Location = new System.Drawing.Point(3, 30);
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Size = new System.Drawing.Size(90, 23);
-            this.butAnimationRanges.TabIndex = 0;
+            this.butAnimationRanges.TabIndex = 10;
             this.butAnimationRanges.Tag = "EditAnimationRanges";
             this.butAnimationRanges.Text = "Animations";
             // 
@@ -128,7 +128,7 @@ namespace TombEditor.ToolWindows
             this.butRotate.Location = new System.Drawing.Point(146, 3);
             this.butRotate.Name = "butRotate";
             this.butRotate.Size = new System.Drawing.Size(23, 23);
-            this.butRotate.TabIndex = 8;
+            this.butRotate.TabIndex = 7;
             this.butRotate.Tag = "RotateTexture";
             // 
             // cmbBlending
@@ -164,7 +164,7 @@ namespace TombEditor.ToolWindows
             this.butBrowseTexture.Location = new System.Drawing.Point(229, 3);
             this.butBrowseTexture.Name = "butBrowseTexture";
             this.butBrowseTexture.Size = new System.Drawing.Size(24, 23);
-            this.butBrowseTexture.TabIndex = 3;
+            this.butBrowseTexture.TabIndex = 2;
             this.toolTip.SetToolTip(this.butBrowseTexture, "Replace texture...");
             this.butBrowseTexture.Click += new System.EventHandler(this.butBrowseTexture_Click);
             // 
@@ -176,7 +176,7 @@ namespace TombEditor.ToolWindows
             this.butDeleteTexture.Location = new System.Drawing.Point(258, 3);
             this.butDeleteTexture.Name = "butDeleteTexture";
             this.butDeleteTexture.Size = new System.Drawing.Size(24, 23);
-            this.butDeleteTexture.TabIndex = 2;
+            this.butDeleteTexture.TabIndex = 3;
             this.toolTip.SetToolTip(this.butDeleteTexture, "Delete texture");
             this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
             // 
@@ -200,7 +200,7 @@ namespace TombEditor.ToolWindows
             this.butAddTexture.Location = new System.Drawing.Point(200, 3);
             this.butAddTexture.Name = "butAddTexture";
             this.butAddTexture.Size = new System.Drawing.Size(24, 23);
-            this.butAddTexture.TabIndex = 2;
+            this.butAddTexture.TabIndex = 1;
             this.butAddTexture.Tag = "AddTexture";
             // 
             // comboCurrentTexture
@@ -222,7 +222,7 @@ namespace TombEditor.ToolWindows
             this.panelTextureMap.Location = new System.Drawing.Point(3, 54);
             this.panelTextureMap.Name = "panelTextureMap";
             this.panelTextureMap.Size = new System.Drawing.Size(279, 586);
-            this.panelTextureMap.TabIndex = 12;
+            this.panelTextureMap.TabIndex = 4;
             // 
             // TexturePanel
             // 

@@ -16,7 +16,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoomOptions));
             this.cbNoPathfinding = new DarkUI.Controls.DarkCheckBox();
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
@@ -60,7 +59,7 @@
             this.cbNoPathfinding.Location = new System.Drawing.Point(129, 130);
             this.cbNoPathfinding.Name = "cbNoPathfinding";
             this.cbNoPathfinding.Size = new System.Drawing.Size(96, 17);
-            this.cbNoPathfinding.TabIndex = 9;
+            this.cbNoPathfinding.TabIndex = 8;
             this.cbNoPathfinding.Tag = "SetRoomNoPathfinding";
             this.cbNoPathfinding.Text = "No pathfinding";
             // 
@@ -71,7 +70,7 @@
             this.cbHorizon.Location = new System.Drawing.Point(3, 130);
             this.cbHorizon.Name = "cbHorizon";
             this.cbHorizon.Size = new System.Drawing.Size(58, 17);
-            this.cbHorizon.TabIndex = 7;
+            this.cbHorizon.TabIndex = 6;
             this.cbHorizon.Tag = "SetRoomSkybox";
             this.cbHorizon.Text = "Skybox";
             // 
@@ -116,7 +115,7 @@
             this.cbFlagOutside.Location = new System.Drawing.Point(3, 151);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(50, 17);
-            this.cbFlagOutside.TabIndex = 10;
+            this.cbFlagOutside.TabIndex = 9;
             this.cbFlagOutside.Tag = "SetRoomOutside";
             this.cbFlagOutside.Text = "Wind";
             // 
@@ -128,7 +127,7 @@
             this.cbFlagCold.Location = new System.Drawing.Point(64, 151);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
-            this.cbFlagCold.TabIndex = 11;
+            this.cbFlagCold.TabIndex = 10;
             this.cbFlagCold.Tag = "SetRoomCold";
             this.cbFlagCold.Text = "Cold";
             // 
@@ -139,7 +138,7 @@
             this.cbFlagDamage.Location = new System.Drawing.Point(64, 130);
             this.cbFlagDamage.Name = "cbFlagDamage";
             this.cbFlagDamage.Size = new System.Drawing.Size(64, 17);
-            this.cbFlagDamage.TabIndex = 8;
+            this.cbFlagDamage.TabIndex = 7;
             this.cbFlagDamage.Tag = "SetRoomDamage";
             this.cbFlagDamage.Text = "Damage";
             // 
@@ -162,7 +161,7 @@
             this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 194);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(59, 23);
-            this.panelRoomAmbientLight.TabIndex = 15;
+            this.panelRoomAmbientLight.TabIndex = 12;
             this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
             // 
             // darkLabel3
@@ -184,7 +183,7 @@
             this.cbNoLensflare.Location = new System.Drawing.Point(129, 151);
             this.cbNoLensflare.Name = "cbNoLensflare";
             this.cbNoLensflare.Size = new System.Drawing.Size(88, 17);
-            this.cbNoLensflare.TabIndex = 12;
+            this.cbNoLensflare.TabIndex = 11;
             this.cbNoLensflare.Tag = "SetRoomNoLensflare";
             this.cbNoLensflare.Text = "No lensflare";
             // 
@@ -222,7 +221,7 @@
             this.comboLightEffect.Location = new System.Drawing.Point(143, 194);
             this.comboLightEffect.Name = "comboLightEffect";
             this.comboLightEffect.Size = new System.Drawing.Size(97, 23);
-            this.comboLightEffect.TabIndex = 13;
+            this.comboLightEffect.TabIndex = 14;
             this.toolTip.SetToolTip(this.comboLightEffect, "Light / transform effect on room vertices");
             this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
             // 
@@ -246,7 +245,7 @@
             this.numLightEffectStrength.MousewheelSingleIncrement = true;
             this.numLightEffectStrength.Name = "numLightEffectStrength";
             this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
-            this.numLightEffectStrength.TabIndex = 14;
+            this.numLightEffectStrength.TabIndex = 15;
             this.numLightEffectStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolTip.SetToolTip(this.numLightEffectStrength, "Light / transform effect strength");
             this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
@@ -263,7 +262,7 @@
             this.comboPortalShade.Location = new System.Drawing.Point(68, 194);
             this.comboPortalShade.Name = "comboPortalShade";
             this.comboPortalShade.Size = new System.Drawing.Size(69, 23);
-            this.comboPortalShade.TabIndex = 113;
+            this.comboPortalShade.TabIndex = 13;
             this.toolTip.SetToolTip(this.comboPortalShade, "Smoothing on room edges");
             this.comboPortalShade.SelectedIndexChanged += new System.EventHandler(this.comboPortalShade_SelectedIndexChanged);
             // 
@@ -271,12 +270,11 @@
             // 
             this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRoomTags.AutocompleteWords = ((System.Collections.Generic.List<string>)(resources.GetObject("tbRoomTags.AutocompleteWords")));
             this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
             this.tbRoomTags.Name = "tbRoomTags";
             this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
-            this.tbRoomTags.TabIndex = 3;
+            this.tbRoomTags.TabIndex = 2;
             this.tbRoomTags.Tag = "SetRoomTags";
             this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
             this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
@@ -289,7 +287,7 @@
             this.butLocked.Location = new System.Drawing.Point(228, 86);
             this.butLocked.Name = "butLocked";
             this.butLocked.Size = new System.Drawing.Size(54, 22);
-            this.butLocked.TabIndex = 15;
+            this.butLocked.TabIndex = 20;
             this.butLocked.Tag = "LockRoom";
             // 
             // butSplitRoom
@@ -299,7 +297,7 @@
             this.butSplitRoom.Location = new System.Drawing.Point(228, 143);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
-            this.butSplitRoom.TabIndex = 20;
+            this.butSplitRoom.TabIndex = 23;
             this.butSplitRoom.Tag = "SplitRoom";
             // 
             // butRoomUp
@@ -309,7 +307,7 @@
             this.butRoomUp.Location = new System.Drawing.Point(258, 114);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Size = new System.Drawing.Size(24, 23);
-            this.butRoomUp.TabIndex = 19;
+            this.butRoomUp.TabIndex = 22;
             this.butRoomUp.Tag = "MoveRoomUp";
             // 
             // butRoomDown
@@ -319,7 +317,7 @@
             this.butRoomDown.Location = new System.Drawing.Point(258, 143);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(24, 23);
-            this.butRoomDown.TabIndex = 21;
+            this.butRoomDown.TabIndex = 24;
             this.butRoomDown.Tag = "MoveRoomDown";
             // 
             // butEditRoomName
@@ -329,7 +327,7 @@
             this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
-            this.butEditRoomName.TabIndex = 2;
+            this.butEditRoomName.TabIndex = 16;
             this.butEditRoomName.Tag = "EditRoomName";
             // 
             // butCropRoom
@@ -339,7 +337,7 @@
             this.butCropRoom.Location = new System.Drawing.Point(228, 114);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Size = new System.Drawing.Size(24, 23);
-            this.butCropRoom.TabIndex = 18;
+            this.butCropRoom.TabIndex = 21;
             this.butCropRoom.Tag = "CropRoom";
             // 
             // comboFlipMap
@@ -366,7 +364,7 @@
             this.comboFlipMap.Location = new System.Drawing.Point(90, 101);
             this.comboFlipMap.Name = "comboFlipMap";
             this.comboFlipMap.Size = new System.Drawing.Size(55, 23);
-            this.comboFlipMap.TabIndex = 5;
+            this.comboFlipMap.TabIndex = 4;
             this.comboFlipMap.SelectedIndexChanged += new System.EventHandler(this.comboFlipMap_SelectedIndexChanged);
             // 
             // comboReverberation
@@ -383,7 +381,7 @@
             this.comboReverberation.Location = new System.Drawing.Point(151, 101);
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(71, 23);
-            this.comboReverberation.TabIndex = 6;
+            this.comboReverberation.TabIndex = 5;
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
             // comboRoomType
@@ -404,7 +402,7 @@
             this.comboRoomType.Location = new System.Drawing.Point(3, 101);
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(81, 23);
-            this.comboRoomType.TabIndex = 4;
+            this.comboRoomType.TabIndex = 3;
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 
             // comboRoom
@@ -427,7 +425,7 @@
             this.butDublicateRoom.Location = new System.Drawing.Point(228, 57);
             this.butDublicateRoom.Name = "butDublicateRoom";
             this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
-            this.butDublicateRoom.TabIndex = 16;
+            this.butDublicateRoom.TabIndex = 18;
             this.butDublicateRoom.Tag = "DuplicateRoom";
             // 
             // butDeleteRoom
@@ -437,7 +435,7 @@
             this.butDeleteRoom.Location = new System.Drawing.Point(258, 57);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 23);
-            this.butDeleteRoom.TabIndex = 17;
+            this.butDeleteRoom.TabIndex = 19;
             this.butDeleteRoom.Tag = "DeleteRooms";
             // 
             // darkLabel2
@@ -447,7 +445,7 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 59);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(33, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(32, 13);
             this.darkLabel2.TabIndex = 110;
             this.darkLabel2.Text = "Tags:";
             // 
@@ -458,7 +456,7 @@
             this.butNewRoom.Location = new System.Drawing.Point(258, 28);
             this.butNewRoom.Name = "butNewRoom";
             this.butNewRoom.Size = new System.Drawing.Size(24, 23);
-            this.butNewRoom.TabIndex = 111;
+            this.butNewRoom.TabIndex = 17;
             this.butNewRoom.Tag = "AddNewRoom";
             // 
             // darkLabel1

@@ -50,7 +50,7 @@
             this.butCancel.Location = new System.Drawing.Point(378, 237);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 2;
+            this.butCancel.TabIndex = 5;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -61,7 +61,7 @@
             this.butOk.Location = new System.Drawing.Point(292, 237);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
-            this.butOk.TabIndex = 1;
+            this.butOk.TabIndex = 4;
             this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
@@ -73,7 +73,7 @@
             this.butBrowseTxt.Location = new System.Drawing.Point(367, 21);
             this.butBrowseTxt.Name = "butBrowseTxt";
             this.butBrowseTxt.Size = new System.Drawing.Size(79, 22);
-            this.butBrowseTxt.TabIndex = 8;
+            this.butBrowseTxt.TabIndex = 3;
             this.butBrowseTxt.Text = "Browse...";
             this.butBrowseTxt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butBrowseTxt.Click += new System.EventHandler(this.ButBrowseTxt_Click);
@@ -85,7 +85,7 @@
             this.tbTxtPath.Location = new System.Drawing.Point(6, 21);
             this.tbTxtPath.Name = "tbTxtPath";
             this.tbTxtPath.Size = new System.Drawing.Size(355, 22);
-            this.tbTxtPath.TabIndex = 7;
+            this.tbTxtPath.TabIndex = 2;
             // 
             // darkGroupBox1
             // 
@@ -140,7 +140,7 @@
             this.cbUseHalfPixelCorrection.Location = new System.Drawing.Point(6, 79);
             this.cbUseHalfPixelCorrection.Name = "cbUseHalfPixelCorrection";
             this.cbUseHalfPixelCorrection.Size = new System.Drawing.Size(169, 17);
-            this.cbUseHalfPixelCorrection.TabIndex = 12;
+            this.cbUseHalfPixelCorrection.TabIndex = 1;
             this.cbUseHalfPixelCorrection.Tag = "";
             this.cbUseHalfPixelCorrection.Text = "Use half-pixel UV correction";
             // 
@@ -162,7 +162,7 @@
             this.cbRespectMousepatch.Location = new System.Drawing.Point(6, 21);
             this.cbRespectMousepatch.Name = "cbRespectMousepatch";
             this.cbRespectMousepatch.Size = new System.Drawing.Size(265, 17);
-            this.cbRespectMousepatch.TabIndex = 5;
+            this.cbRespectMousepatch.TabIndex = 0;
             this.cbRespectMousepatch.Tag = "";
             this.cbRespectMousepatch.Text = "Respect T4Larson\'s mousepatch flyby handling";
             // 

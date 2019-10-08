@@ -140,7 +140,6 @@ namespace TombLib.Wad
                     else
                         waveStream = disposables.AddAndReturn(new WaveFileReader(path));
                 }
-                    
 
                 // Apply looping
                 ISampleProvider sampleStream;
@@ -148,6 +147,10 @@ namespace TombLib.Wad
                     sampleStream = waveStream.ToSampleProvider();
                 else
                     sampleStream = new RepeatedStream(waveStream) { LoopCount = loopCount };
+
+                // Always play sample as 22 khz
+                if (sampleStream.WaveFormat.SampleRate != 22050)
+                    sampleStream = new PitchedStream { Source = sampleStream, Pitch = 22050.0f / sampleStream.WaveFormat.SampleRate };
 
                 // Apply panning
                 if (pan != 1.0f)

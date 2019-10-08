@@ -36,7 +36,7 @@ namespace TombEditor.Forms
             this.butAssignBumpmap.Location = new System.Drawing.Point(218, 533);
             this.butAssignBumpmap.Name = "butAssignBumpmap";
             this.butAssignBumpmap.Size = new System.Drawing.Size(113, 23);
-            this.butAssignBumpmap.TabIndex = 2;
+            this.butAssignBumpmap.TabIndex = 3;
             this.butAssignBumpmap.Text = "Assign bumpmap";
             this.butAssignBumpmap.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAssignBumpmap.Click += new System.EventHandler(this.butAssignBumpmap_Click);
@@ -48,7 +48,7 @@ namespace TombEditor.Forms
             this.butOk.Location = new System.Drawing.Point(337, 533);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
-            this.butOk.TabIndex = 3;
+            this.butOk.TabIndex = 4;
             this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
@@ -61,7 +61,7 @@ namespace TombEditor.Forms
             this.cmbBump.Location = new System.Drawing.Point(8, 533);
             this.cmbBump.Name = "cmbBump";
             this.cmbBump.Size = new System.Drawing.Size(204, 23);
-            this.cmbBump.TabIndex = 14;
+            this.cmbBump.TabIndex = 2;
             // 
             // cbUseCustomFile
             // 
@@ -71,7 +71,7 @@ namespace TombEditor.Forms
             this.cbUseCustomFile.Location = new System.Drawing.Point(8, 510);
             this.cbUseCustomFile.Name = "cbUseCustomFile";
             this.cbUseCustomFile.Size = new System.Drawing.Size(107, 17);
-            this.cbUseCustomFile.TabIndex = 15;
+            this.cbUseCustomFile.TabIndex = 1;
             this.cbUseCustomFile.Text = "Use custom file:";
             this.cbUseCustomFile.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cbUseCustomFile_MouseDown);
             // 

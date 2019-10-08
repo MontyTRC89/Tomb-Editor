@@ -126,7 +126,7 @@ namespace TombEditor.Forms
             this.comboCurrentTexture.Location = new System.Drawing.Point(4, 5);
             this.comboCurrentTexture.Name = "comboCurrentTexture";
             this.comboCurrentTexture.Size = new System.Drawing.Size(359, 23);
-            this.comboCurrentTexture.TabIndex = 4;
+            this.comboCurrentTexture.TabIndex = 20;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
             // textureMap
@@ -138,7 +138,7 @@ namespace TombEditor.Forms
             this.textureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.textureMap.Name = "textureMap";
             this.textureMap.Size = new System.Drawing.Size(359, 578);
-            this.textureMap.TabIndex = 0;
+            this.textureMap.TabIndex = 21;
             this.textureMap.DoubleClick += new System.EventHandler(this.textureMap_DoubleClick);
             // 
             // panel1
@@ -200,7 +200,7 @@ namespace TombEditor.Forms
             this.comboUvRotate.Location = new System.Drawing.Point(184, 0);
             this.comboUvRotate.Name = "comboUvRotate";
             this.comboUvRotate.Size = new System.Drawing.Size(139, 23);
-            this.comboUvRotate.TabIndex = 11;
+            this.comboUvRotate.TabIndex = 19;
             this.comboUvRotate.SelectionChangeCommitted += new System.EventHandler(this.comboUvRotate_SelectionChangeCommitted);
             // 
             // comboEffect
@@ -210,7 +210,7 @@ namespace TombEditor.Forms
             this.comboEffect.Location = new System.Drawing.Point(0, 0);
             this.comboEffect.Name = "comboEffect";
             this.comboEffect.Size = new System.Drawing.Size(101, 23);
-            this.comboEffect.TabIndex = 7;
+            this.comboEffect.TabIndex = 17;
             this.comboEffect.SelectedIndexChanged += new System.EventHandler(this.comboEffect_SelectedIndexChanged);
             this.comboEffect.SelectionChangeCommitted += new System.EventHandler(this.comboEffect_SelectionChangeCommitted);
             // 
@@ -235,7 +235,7 @@ namespace TombEditor.Forms
             this.numericUpDownFPS.MousewheelSingleIncrement = true;
             this.numericUpDownFPS.Name = "numericUpDownFPS";
             this.numericUpDownFPS.Size = new System.Drawing.Size(71, 23);
-            this.numericUpDownFPS.TabIndex = 15;
+            this.numericUpDownFPS.TabIndex = 18;
             this.numericUpDownFPS.Value = new decimal(new int[] {
             15,
             0,
@@ -288,7 +288,7 @@ namespace TombEditor.Forms
             this.butEditSetName.Location = new System.Drawing.Point(399, 5);
             this.butEditSetName.Name = "butEditSetName";
             this.butEditSetName.Size = new System.Drawing.Size(24, 24);
-            this.butEditSetName.TabIndex = 22;
+            this.butEditSetName.TabIndex = 2;
             this.butEditSetName.Tag = "EditRoomName";
             this.butEditSetName.Click += new System.EventHandler(this.butEditSetName_Click);
             // 
@@ -333,7 +333,7 @@ namespace TombEditor.Forms
             this.butAddProcAnim.Location = new System.Drawing.Point(276, 52);
             this.butAddProcAnim.Name = "butAddProcAnim";
             this.butAddProcAnim.Size = new System.Drawing.Size(23, 23);
-            this.butAddProcAnim.TabIndex = 23;
+            this.butAddProcAnim.TabIndex = 15;
             this.butAddProcAnim.Tag = "";
             this.toolTip.SetToolTip(this.butAddProcAnim, "Generate and add frames after current sequence frame");
             this.butAddProcAnim.Click += new System.EventHandler(this.butAddProcAnim_Click);
@@ -345,7 +345,7 @@ namespace TombEditor.Forms
             this.butReplaceProcAnim.Location = new System.Drawing.Point(305, 52);
             this.butReplaceProcAnim.Name = "butReplaceProcAnim";
             this.butReplaceProcAnim.Size = new System.Drawing.Size(23, 23);
-            this.butReplaceProcAnim.TabIndex = 22;
+            this.butReplaceProcAnim.TabIndex = 16;
             this.butReplaceProcAnim.Tag = "";
             this.toolTip.SetToolTip(this.butReplaceProcAnim, "Generate and replace current animation");
             this.butReplaceProcAnim.Click += new System.EventHandler(this.butReplaceProcAnim_Click);
@@ -357,7 +357,7 @@ namespace TombEditor.Forms
             this.butMergeProcAnim.Location = new System.Drawing.Point(247, 52);
             this.butMergeProcAnim.Name = "butMergeProcAnim";
             this.butMergeProcAnim.Size = new System.Drawing.Size(23, 23);
-            this.butMergeProcAnim.TabIndex = 21;
+            this.butMergeProcAnim.TabIndex = 14;
             this.butMergeProcAnim.Tag = "";
             this.toolTip.SetToolTip(this.butMergeProcAnim, "Generate and merge into current animation");
             this.butMergeProcAnim.Click += new System.EventHandler(this.butMergeProcAnim_Click);
@@ -369,7 +369,7 @@ namespace TombEditor.Forms
             this.butCloneProcAnim.Location = new System.Drawing.Point(218, 52);
             this.butCloneProcAnim.Name = "butCloneProcAnim";
             this.butCloneProcAnim.Size = new System.Drawing.Size(23, 23);
-            this.butCloneProcAnim.TabIndex = 20;
+            this.butCloneProcAnim.TabIndex = 13;
             this.butCloneProcAnim.Tag = "";
             this.toolTip.SetToolTip(this.butCloneProcAnim, "Generate and merge into copy of current animation");
             this.butCloneProcAnim.Click += new System.EventHandler(this.butCloneProcAnim_Click);
@@ -381,7 +381,7 @@ namespace TombEditor.Forms
             this.cbSmooth.Location = new System.Drawing.Point(87, 56);
             this.cbSmooth.Name = "cbSmooth";
             this.cbSmooth.Size = new System.Drawing.Size(91, 17);
-            this.cbSmooth.TabIndex = 19;
+            this.cbSmooth.TabIndex = 11;
             this.cbSmooth.Text = "Smooth";
             this.toolTip.SetToolTip(this.cbSmooth, "Ease-in and ease-out animation");
             // 
@@ -390,7 +390,7 @@ namespace TombEditor.Forms
             this.cbLoop.Location = new System.Drawing.Point(5, 56);
             this.cbLoop.Name = "cbLoop";
             this.cbLoop.Size = new System.Drawing.Size(72, 17);
-            this.cbLoop.TabIndex = 18;
+            this.cbLoop.TabIndex = 10;
             this.cbLoop.Text = "Symmetric";
             this.toolTip.SetToolTip(this.cbLoop, "Make animation symmetric");
             // 
@@ -419,7 +419,7 @@ namespace TombEditor.Forms
             this.numFrames.MousewheelSingleIncrement = true;
             this.numFrames.Name = "numFrames";
             this.numFrames.Size = new System.Drawing.Size(67, 23);
-            this.numFrames.TabIndex = 15;
+            this.numFrames.TabIndex = 9;
             this.toolTip.SetToolTip(this.numFrames, "Amount of resulting animation frames");
             this.numFrames.Value = new decimal(new int[] {
             1,
@@ -479,7 +479,7 @@ namespace TombEditor.Forms
             this.numStrength.MousewheelSingleIncrement = true;
             this.numStrength.Name = "numStrength";
             this.numStrength.Size = new System.Drawing.Size(66, 23);
-            this.numStrength.TabIndex = 10;
+            this.numStrength.TabIndex = 8;
             this.toolTip.SetToolTip(this.numStrength, "Effect progress or strength");
             this.numStrength.Value = new decimal(new int[] {
             100,
@@ -494,7 +494,7 @@ namespace TombEditor.Forms
             this.butGenerateProcAnim.Location = new System.Drawing.Point(189, 52);
             this.butGenerateProcAnim.Name = "butGenerateProcAnim";
             this.butGenerateProcAnim.Size = new System.Drawing.Size(23, 23);
-            this.butGenerateProcAnim.TabIndex = 8;
+            this.butGenerateProcAnim.TabIndex = 12;
             this.butGenerateProcAnim.Tag = "";
             this.toolTip.SetToolTip(this.butGenerateProcAnim, "Generate new animation");
             this.butGenerateProcAnim.Click += new System.EventHandler(this.butGenerateProcAnim_Click);
@@ -597,7 +597,7 @@ namespace TombEditor.Forms
             this.texturesDataGridView.RowHeadersWidth = 41;
             this.texturesDataGridView.RowTemplate.Height = 48;
             this.texturesDataGridView.Size = new System.Drawing.Size(447, 373);
-            this.texturesDataGridView.TabIndex = 15;
+            this.texturesDataGridView.TabIndex = 5;
             this.texturesDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.texturesDataGridView_CellDoubleClick);
             this.texturesDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.texturesDataGridView_CellFormatting);
             this.texturesDataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.texturesDataGridView_CellParsing);
@@ -698,6 +698,7 @@ namespace TombEditor.Forms
             // 
             // texturesDataGridViewControls
             // 
+            this.texturesDataGridViewControls.AlwaysInsertAtZero = false;
             this.texturesDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.texturesDataGridViewControls.Enabled = false;
@@ -705,7 +706,7 @@ namespace TombEditor.Forms
             this.texturesDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.texturesDataGridViewControls.Name = "texturesDataGridViewControls";
             this.texturesDataGridViewControls.Size = new System.Drawing.Size(24, 373);
-            this.texturesDataGridViewControls.TabIndex = 16;
+            this.texturesDataGridViewControls.TabIndex = 6;
             // 
             // butAnimatedTextureSetDelete
             // 
@@ -717,7 +718,7 @@ namespace TombEditor.Forms
             this.butAnimatedTextureSetDelete.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.butAnimatedTextureSetDelete.Name = "butAnimatedTextureSetDelete";
             this.butAnimatedTextureSetDelete.Size = new System.Drawing.Size(24, 24);
-            this.butAnimatedTextureSetDelete.TabIndex = 3;
+            this.butAnimatedTextureSetDelete.TabIndex = 4;
             this.butAnimatedTextureSetDelete.Click += new System.EventHandler(this.butAnimatedTextureSetDelete_Click);
             // 
             // butAnimatedTextureSetNew
@@ -729,7 +730,7 @@ namespace TombEditor.Forms
             this.butAnimatedTextureSetNew.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.butAnimatedTextureSetNew.Name = "butAnimatedTextureSetNew";
             this.butAnimatedTextureSetNew.Size = new System.Drawing.Size(24, 24);
-            this.butAnimatedTextureSetNew.TabIndex = 2;
+            this.butAnimatedTextureSetNew.TabIndex = 3;
             this.butAnimatedTextureSetNew.Click += new System.EventHandler(this.butAnimatedTextureSetNew_Click);
             // 
             // comboAnimatedTextureSets

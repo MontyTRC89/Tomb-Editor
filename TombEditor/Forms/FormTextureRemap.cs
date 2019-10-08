@@ -14,9 +14,6 @@ namespace TombEditor.Forms
     public partial class FormTextureRemap : DarkForm
     {
         private Editor _editor;
-        private Vector2 _sourceStart;
-        private Vector2 _sourceEnd;
-        private Vector2 _destinationStart;
 
         public FormTextureRemap(Editor editor)
         {
@@ -30,13 +27,13 @@ namespace TombEditor.Forms
             comboDestinationTexture.Items.AddRange(editor.Level.Settings.Textures.ToArray());
             comboDestinationTexture.SelectedItem = firstTexture;
             if (firstTexture != null)
-                _sourceEnd = firstTexture.Image.Size;
+                sourceTextureMap.End = firstTexture.Image.Size;
         }
 
         private bool SourceContains(Vector2 texCoord)
         {
-            return _sourceStart.X <= texCoord.X && _sourceStart.Y <= texCoord.Y &&
-                _sourceEnd.X >= texCoord.X && _sourceEnd.Y >= texCoord.Y;
+            return sourceTextureMap.Start.X <= texCoord.X && sourceTextureMap.Start.Y <= texCoord.Y &&
+                sourceTextureMap.End.X >= texCoord.X && sourceTextureMap.End.Y >= texCoord.Y;
         }
 
         private void cbUntextureCompletely_CheckedChanged(object sender, EventArgs e)
@@ -76,10 +73,10 @@ namespace TombEditor.Forms
                             SourceContains(currentTextureArea.TexCoord2) &&
                             SourceContains(currentTextureArea.TexCoord3))
                         {
-                            currentTextureArea.TexCoord0 += _destinationStart - _sourceStart;
-                            currentTextureArea.TexCoord1 += _destinationStart - _sourceStart;
-                            currentTextureArea.TexCoord2 += _destinationStart - _sourceStart;
-                            currentTextureArea.TexCoord3 += _destinationStart - _sourceStart;
+                            currentTextureArea.TexCoord0 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            currentTextureArea.TexCoord1 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            currentTextureArea.TexCoord2 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            currentTextureArea.TexCoord3 += destinationTextureMap.Start - sourceTextureMap.Start;
                             currentTextureArea.Texture = destinationTexture;
                             if (untextureCompletely)
                                 currentTextureArea.Texture = null;
@@ -102,10 +99,10 @@ namespace TombEditor.Forms
                             SourceContains(frame.TexCoord2) &&
                             SourceContains(frame.TexCoord3))
                         {
-                            frame.TexCoord0 += _destinationStart - _sourceStart;
-                            frame.TexCoord1 += _destinationStart - _sourceStart;
-                            frame.TexCoord2 += _destinationStart - _sourceStart;
-                            frame.TexCoord3 += _destinationStart - _sourceStart;
+                            frame.TexCoord0 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            frame.TexCoord1 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            frame.TexCoord2 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            frame.TexCoord3 += destinationTextureMap.Start - sourceTextureMap.Start;
                             frame.Texture = destinationTexture;
                             ++animatedTextureCount;
                             if (untextureCompletely)
@@ -122,7 +119,7 @@ namespace TombEditor.Forms
 
             // Inform user
             if (DarkMessageBox.Show(this, "Remapped textures successfully (" + roomTextureCount + " in rooms, " + animatedTextureCount + " in texture animations.).\n" +
-                "Do you want close the texture remapping dialog now?", "Succcess", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                "Replace another texture?", "Succcess", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
                 Close();
         }
 
@@ -169,6 +166,41 @@ namespace TombEditor.Forms
             public FormTextureRemap FormParent { get; set; }
             public bool IsDestination { get; set; }
 
+            public Vector2 Start { get; set; }
+            public Vector2 End
+            {
+                get { return _end; }
+                set
+                {
+                    _end = value;
+
+                    if (!IsDestination)
+                    {
+                        bool clamped = false;
+
+                        var size = End - Start;
+                        var destStart = FormParent.destinationTextureMap.Start;
+                        var destEnd = destStart + size;
+
+                        if (destEnd.X > VisibleTexture.Image.Size.X)
+                        {
+                            clamped = true;
+                            destStart.X -= destEnd.X - VisibleTexture.Image.Size.X;
+                        }
+
+                        if (destEnd.Y > VisibleTexture.Image.Size.Y)
+                        {
+                            clamped = true;
+                            destStart.Y -= destEnd.Y - VisibleTexture.Image.Size.Y;
+                        }
+
+                        if (clamped)
+                            FormParent.destinationTextureMap.Start = destStart;
+                    }
+                }
+            }
+            private Vector2 _end;
+
             private void DrawArea(Vector2 start, Vector2 end, Graphics g)
             {
                 PointF drawStart = ToVisualCoord(start);
@@ -184,9 +216,9 @@ namespace TombEditor.Forms
             protected override void OnPaintSelection(PaintEventArgs e)
             {
                 if (IsDestination)
-                    DrawArea(FormParent._destinationStart, FormParent._destinationStart + (FormParent._sourceEnd - FormParent._sourceStart) * (float)FormParent.scalingFactor.Value, e.Graphics);
+                    DrawArea(FormParent.destinationTextureMap.Start, FormParent.destinationTextureMap.Start + (FormParent.sourceTextureMap.End - FormParent.sourceTextureMap.Start), e.Graphics);
                 else
-                    DrawArea(FormParent._sourceStart, FormParent._sourceEnd, e.Graphics);
+                    DrawArea(FormParent.sourceTextureMap.Start, FormParent.sourceTextureMap.End, e.Graphics);
             }
 
             private Vector2 Quantize2(Vector2 texCoord, bool end)
@@ -207,25 +239,47 @@ namespace TombEditor.Forms
             {
                 if (!IsDestination && e.Button == MouseButtons.Left)
                 {
-                    FormParent._sourceStart = Quantize2(FromVisualCoord(e.Location, false), false);
+                    FormParent.sourceTextureMap.End = Quantize2(FromVisualCoord(e.Location, true), true);
                     Invalidate();
-                    FormParent.destinationTextureMap.Invalidate();
-                }
-                else if (!IsDestination && e.Button == MouseButtons.Middle)
-                {
-                    FormParent._sourceEnd = Quantize2(FromVisualCoord(e.Location, false), true);
-                    Invalidate();
+
                     FormParent.destinationTextureMap.Invalidate();
                 }
                 else if (IsDestination && e.Button == MouseButtons.Left)
                 {
-                    FormParent._destinationStart = Quantize2(FromVisualCoord(e.Location, false), false);
+                    var newStart = Quantize2(FromVisualCoord(e.Location, false), false);
+                    var size = FormParent.sourceTextureMap.End - FormParent.sourceTextureMap.Start;
+
+                    var finalStart = FormParent.destinationTextureMap.Start;
+
+                    if (newStart.X >= 0 && newStart.X + size.X <= VisibleTexture.Image.Size.X)
+                        finalStart.X = newStart.X;
+
+                    if (newStart.Y >= 0 && newStart.Y + size.Y <= VisibleTexture.Image.Size.Y)
+                        finalStart.Y = newStart.Y;
+
+                    FormParent.destinationTextureMap.Start = finalStart;
+
                     Invalidate();
                 }
             }
 
             protected override void OnMouseDown(MouseEventArgs e)
             {
+                if (!IsDestination)
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        var newStart = Quantize2(FromVisualCoord(e.Location, false), false);
+                        if (newStart.X >= 0 && newStart.Y >= 0 && 
+                            newStart.X < VisibleTexture.Image.Size.X && newStart.Y < VisibleTexture.Image.Size.Y)
+                        {
+                            FormParent.sourceTextureMap.Start = newStart;
+                            Invalidate();
+                            FormParent.destinationTextureMap.Invalidate();
+                        }
+                    }
+                }
+
                 base.OnMouseDown(e);
                 ProcessMouse(e);
             }
@@ -233,6 +287,12 @@ namespace TombEditor.Forms
             protected override void OnMouseMove(MouseEventArgs e)
             {
                 base.OnMouseMove(e);
+                ProcessMouse(e);
+            }
+
+            protected override void OnMouseUp(MouseEventArgs e)
+            {
+                base.OnMouseUp(e);
                 ProcessMouse(e);
             }
         }

@@ -53,7 +53,7 @@
             this.cbSlots.Location = new System.Drawing.Point(12, 35);
             this.cbSlots.Name = "cbSlots";
             this.cbSlots.Size = new System.Drawing.Size(268, 23);
-            this.cbSlots.TabIndex = 1;
+            this.cbSlots.TabIndex = 0;
             // 
             // butCancel
             // 
@@ -62,7 +62,7 @@
             this.butCancel.Location = new System.Drawing.Point(200, 68);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 4;
+            this.butCancel.TabIndex = 2;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.ButCancel_Click);
@@ -73,7 +73,7 @@
             this.butOk.Location = new System.Drawing.Point(114, 68);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
-            this.butOk.TabIndex = 3;
+            this.butOk.TabIndex = 1;
             this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.ButOk_Click);

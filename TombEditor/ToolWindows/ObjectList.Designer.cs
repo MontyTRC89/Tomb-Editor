@@ -20,8 +20,8 @@
             this.butEditObject = new DarkUI.Controls.DarkButton();
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.panelTriggerList = new System.Windows.Forms.Panel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.lstObjects = new DarkUI.Controls.DarkListView();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelTriggerTools.SuspendLayout();
             this.panelTriggerList.SuspendLayout();
             this.SuspendLayout();
@@ -42,7 +42,7 @@
             this.butEditObject.Location = new System.Drawing.Point(3, 3);
             this.butEditObject.Name = "butEditObject";
             this.butEditObject.Size = new System.Drawing.Size(24, 24);
-            this.butEditObject.TabIndex = 5;
+            this.butEditObject.TabIndex = 1;
             this.toolTip.SetToolTip(this.butEditObject, "Edit selected object");
             this.butEditObject.Click += new System.EventHandler(this.butEditObject_Click);
             // 
@@ -52,7 +52,7 @@
             this.butDeleteObject.Location = new System.Drawing.Point(33, 3);
             this.butDeleteObject.Name = "butDeleteObject";
             this.butDeleteObject.Size = new System.Drawing.Size(24, 24);
-            this.butDeleteObject.TabIndex = 6;
+            this.butDeleteObject.TabIndex = 2;
             this.toolTip.SetToolTip(this.butDeleteObject, "Delete selected object");
             this.butDeleteObject.Click += new System.EventHandler(this.butDeleteObject_Click);
             // 
@@ -66,12 +66,6 @@
             this.panelTriggerList.Size = new System.Drawing.Size(284, 118);
             this.panelTriggerList.TabIndex = 58;
             // 
-            // toolTip
-            // 
-            this.toolTip.AutoPopDelay = 5000;
-            this.toolTip.InitialDelay = 500;
-            this.toolTip.ReshowDelay = 100;
-            // 
             // lstObjects
             // 
             this.lstObjects.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -79,11 +73,17 @@
             this.lstObjects.MouseWheelScrollSpeedV = 0.2F;
             this.lstObjects.Name = "lstObjects";
             this.lstObjects.Size = new System.Drawing.Size(279, 114);
-            this.lstObjects.TabIndex = 7;
+            this.lstObjects.TabIndex = 0;
             this.lstObjects.Text = "darkListView1";
             this.lstObjects.SelectedIndicesChanged += new System.EventHandler(this.lstObjects_SelectedIndicesChanged);
             this.lstObjects.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjects_KeyDown);
             this.lstObjects.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstObjects_MouseDoubleClick);
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // ObjectList
             // 
