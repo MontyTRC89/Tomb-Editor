@@ -163,8 +163,8 @@ namespace WadTool
         private void DiscardChanges(bool undo = true)
         {
             // Add the new state changes
-            _editor.CurrentAnim.WadAnimation.AnimCommands.Clear();
-            _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(_oldAnimCommands);
+            _animation.WadAnimation.AnimCommands.Clear();
+            _animation.WadAnimation.AnimCommands.AddRange(_oldAnimCommands);
 
             // Update state in parent window
             _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
