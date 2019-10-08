@@ -456,7 +456,7 @@ namespace WadTool
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("calculateBoundingBoxForAllFramesToolStripMenuItem.Image")));
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Name = "calculateBoundingBoxForAllFramesToolStripMenuItem";
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate collision box";
+            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate bounding box";
             this.calculateBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForAllFramesToolStripMenuItem_Click);
             // 
             // deleteBoundingBoxForAllFramesToolStripMenuItem
@@ -465,7 +465,7 @@ namespace WadTool
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Name = "deleteBoundingBoxForAllFramesToolStripMenuItem";
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete collision box";
+            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete bounding box";
             this.deleteBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.deleteBoundingBoxForAllFramesToolStripMenuItem_Click);
             // 
             // resampleAnimationToolStripMenuItem
@@ -534,7 +534,7 @@ namespace WadTool
             this.deleteFrameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteFrameToolStripMenuItem.Image")));
             this.deleteFrameToolStripMenuItem.Name = "deleteFrameToolStripMenuItem";
             this.deleteFrameToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
-            this.deleteFrameToolStripMenuItem.Text = "Delete frame";
+            this.deleteFrameToolStripMenuItem.Text = "Delete frames";
             this.deleteFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteFramesToolStripMenuItem_Click);
             // 
             // deleteEveryNthFrameToolStripMenuItem
@@ -616,7 +616,7 @@ namespace WadTool
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image")));
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Name = "calculateCollisionBoxForCurrentFrameToolStripMenuItem";
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate collision box";
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate bounding box";
             this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click);
             // 
             // deleteCollisionBoxForCurrentFrameToolStripMenuItem
@@ -625,7 +625,7 @@ namespace WadTool
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Name = "deleteCollisionBoxForCurrentFrameToolStripMenuItem";
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
-            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Delete collision box";
+            this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Delete bounding box";
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click);
             // 
             // renderingToolStripMenuItem
