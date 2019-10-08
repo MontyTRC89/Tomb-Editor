@@ -57,7 +57,7 @@ namespace WadTool
         {
             _animation = animation;
 
-            lblStateChangeAnnouncement.Visible = false;
+            lblStateChangeAnnouncement.Text = string.Empty;
             dgvStateChanges.Rows.Clear();
 
             var rows = new List<WadStateChangeRow>();
@@ -101,6 +101,13 @@ namespace WadTool
                 if (e != null && e.Animation == _animation)
                     Initialize(e.Animation, null);
             }
+
+            if (obj is WadToolClass.AnimationEditorPlaybackEvent)
+            {
+                var e = obj as WadToolClass.AnimationEditorPlaybackEvent;
+                lblStateChangeAnnouncement.Text = string.Empty;
+                lblStateChangeAnnouncement.Visible = e.Playing && e.Chained;
+            }
         }
 
         protected override void OnShown(EventArgs e)
@@ -122,7 +129,6 @@ namespace WadTool
                 var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
                 _editor.Tool.ChangeState(item.NextAnimation, item.NextFrame, item.LowFrame, item.HighFrame);
 
-                lblStateChangeAnnouncement.Visible = true;
                 lblStateChangeAnnouncement.Text = "Pending state change to anim #" + item.NextAnimation;
             }
         }

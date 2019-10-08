@@ -249,7 +249,6 @@ namespace WadTool
             RaiseEvent(new AnimationEditorCurrentAnimationChangedEvent(anim));
         }
 
-
         // Animation editor state change
         public class AnimationEditorStateChangeEvent : IEditorEvent
         {
@@ -261,6 +260,18 @@ namespace WadTool
         {
             RaiseEvent(new AnimationEditorStateChangeEvent { NextAnimation = nextAnim, NextFrame = nextFrame, FrameRange = new VectorInt2(frameLow, frameHigh) } );
         }
+
+        // Animation editor playback toggle
+        public class AnimationEditorPlaybackEvent : IEditorEvent
+        {
+            public bool Playing { get; set; }
+            public bool Chained { get; set; }
+        }
+        public void TogglePlayback(bool playing, bool chained)
+        {
+            RaiseEvent(new AnimationEditorPlaybackEvent { Playing = playing, Chained = chained });
+        }
+
 
         // Send message
         public class MessageEvent : IEditorEvent

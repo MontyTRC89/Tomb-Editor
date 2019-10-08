@@ -1476,6 +1476,9 @@ namespace WadTool
             // Reset grid position and refresh view
             panelRendering.GridPosition = Vector3.Zero;
             panelRendering.Invalidate();
+
+            // Translate global event
+            _editor.Tool.TogglePlayback(_timerPlayAnimation.Enabled, _chainedPlayback);
         }
 
         private int UpdateAnimListSelection(int index)
@@ -2132,6 +2135,9 @@ namespace WadTool
                 butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
             else
                 butTransportChained.Image = Properties.Resources.transport_chain_disabled_24;
+
+            // Translate global event
+            _editor.Tool.TogglePlayback(_timerPlayAnimation.Enabled, _chainedPlayback);
         }
 
         private void lstAnimations_Click(object sender, EventArgs e)
