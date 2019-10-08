@@ -78,8 +78,6 @@ namespace WadTool
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
 
-                Text = "Wad Tool - " + (_tool.DestinationWad?.FileName ?? "New");
-
                 if (_tool.DestinationWad != null)
                 {
                     labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
@@ -95,6 +93,10 @@ namespace WadTool
 
             if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
+                panelSource.SectionHeader = "Source";
+                if (_tool?.SourceWad != null)
+                    panelSource.SectionHeader += (String.IsNullOrEmpty(_tool.SourceWad.FileName) ? " (Imported)" : " (" + Path.GetFileName(_tool.SourceWad.FileName) + ")");
+
                 treeSourceWad.Wad = _tool.SourceWad;
                 treeSourceWad.UpdateContent();
 
@@ -159,6 +161,73 @@ namespace WadTool
                     lblRefLevel.Text = "(project not loaded)";
                 }
             }
+
+            if (obj is WadToolClass.UnsavedChangesEvent)
+            {
+                UpdateSaveUI(((WadToolClass.UnsavedChangesEvent)obj).UnsavedChanges);
+            }
+        }
+
+        private void UpdateSaveUI(bool hasUnsavedChanges)
+        {
+            Text  = "WadTool";
+            if (_tool?.DestinationWad != null)
+            {
+                var newOrImported = String.IsNullOrEmpty(_tool.DestinationWad.FileName);
+
+                Text += " - ";
+                Text += newOrImported ? "Untitled" : _tool.DestinationWad.FileName;
+                Text += hasUnsavedChanges ? "*" : "";
+
+                var reallyHasUnsavedChanges = newOrImported || hasUnsavedChanges;
+
+                if (reallyHasUnsavedChanges)
+                {
+                    butSaveAs.Enabled = true;
+                    saveWad2AsToolStripMenuItem.Enabled = true;
+                }
+
+                butSave.Enabled = reallyHasUnsavedChanges;
+                saveWad2ToolStripMenuItem.Enabled = reallyHasUnsavedChanges;
+            }
+            else
+            {
+                butSave.Enabled = false;
+                saveWad2ToolStripMenuItem.Enabled = false;
+                butSaveAs.Enabled = false;
+                saveWad2AsToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private DialogResult CheckIfSaved()
+        {
+            if (butSave.Enabled && !_tool.DestinationWad.WadIsEmpty)
+                return DarkMessageBox.Show(this, "You have unsaved changes. Do you want to save changes?",
+                                           "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            else
+                return DialogResult.OK;
+        }
+
+        private void TryMakeNewWad()
+        {
+            var result = CheckIfSaved();
+            if (result == DialogResult.Yes)
+                WadActions.SaveWad(_tool, this, _tool.DestinationWad, false);
+            else if (result == DialogResult.Cancel)
+                return;
+
+            WadActions.CreateNewWad(_tool, this);
+        }
+
+        private void TryOpenDestWad()
+        {
+            var result = CheckIfSaved();
+            if (result == DialogResult.Yes)
+                WadActions.SaveWad(_tool, this, _tool.DestinationWad, false);
+            else if (result == DialogResult.Cancel)
+                return;
+
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
         private void CopyObject(bool otherSlot)
@@ -167,10 +236,6 @@ namespace WadTool
 
             if (WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), otherSlot))
                 treeDestWad.Select(objectsToCopy);
-        }
-
-        private void Panel3D_ObjectWasModified(object sender, System.EventArgs e)
-        {
         }
 
         private void openSourceWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -202,12 +267,12 @@ namespace WadTool
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.LoadWadOpenFileDialog(_tool, this, true);
+            TryOpenDestWad();
         }
 
         private void butOpenDestWad_Click(object sender, EventArgs e)
         {
-            WadActions.LoadWadOpenFileDialog(_tool, this, true);
+            TryOpenDestWad();
         }
 
         private void butOpenSourceWad_Click(object sender, EventArgs e)
@@ -257,7 +322,7 @@ namespace WadTool
 
         private void butNewWad_Click(object sender, EventArgs e)
         {
-            WadActions.CreateNewWad(_tool, this);
+            TryMakeNewWad();
         }
 
         private void butChangeSlot_Click(object sender, EventArgs e)
@@ -278,7 +343,7 @@ namespace WadTool
 
         private void newWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.CreateNewWad(_tool, this);
+            TryMakeNewWad();
         }
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)
@@ -475,6 +540,26 @@ namespace WadTool
 
             _tool.UndoManager.Resize(_tool.Configuration.AnimationEditor_UndoDepth);
             panel3D.Invalidate();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if(e.CloseReason == CloseReason.UserClosing ||
+                e.CloseReason == CloseReason.None)
+            {
+                var result = CheckIfSaved();
+                if (result == DialogResult.Yes)
+                {
+                    WadActions.SaveWad(_tool, this, _tool.DestinationWad, false);
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
         }
     }
 }

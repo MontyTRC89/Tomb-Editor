@@ -97,6 +97,8 @@ namespace WadTool
 
             _workingStatic.Version = DataVersion.GetNext();
 
+            _tool.ToggleUnsavedChanges();
+
             DialogResult = DialogResult.OK;
             Close();
         }

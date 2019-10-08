@@ -96,6 +96,8 @@ namespace WadTool
 
             SelectedMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
 
+            _tool.ToggleUnsavedChanges();
+
             DialogResult = DialogResult.OK;
             Close();
         }

@@ -25,12 +25,14 @@ namespace WadTool
 
         public static void LoadWad(WadToolClass tool, IWin32Window owner, bool destination, string fileName)
         {
+            bool isWad2 = Path.GetExtension(fileName).ToLower() == ".wad2";
+
             // Load the WAD/Wad2
             Wad2 newWad = null;
             try
             {
                 newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
-                if (Path.GetExtension(fileName).ToLower() == ".wad2" && newWad.SoundSystem == SoundSystem.Dynamic)
+                if (isWad2 && newWad.SoundSystem == SoundSystem.Dynamic)
                 {
                     if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
                                             "to the new Xml sound system. A backup copy will be created under the same directory. " +
@@ -62,9 +64,15 @@ namespace WadTool
 
             // Set wad
             if (destination)
+            {
                 tool.DestinationWad = newWad;
+                tool.ToggleUnsavedChanges(false);
+            }
             else
+            {
+                if (!isWad2) newWad.FileName = fileName;  // Keep original path only for source old wad, as it's not saveable
                 tool.SourceWad = newWad;
+            }
         }
 
         public static void LoadWadOpenFileDialog(WadToolClass tool, IWin32Window owner, bool destination)
@@ -118,7 +126,7 @@ namespace WadTool
                 }
 
 
-            // Ask the  about it
+            // Ask about it
             if (ask || string.IsNullOrWhiteSpace(outPath))
                 using (var dialog = new SaveFileDialog())
                 {
@@ -144,6 +152,10 @@ namespace WadTool
                 // Immediately reload new wad, if it wasn't saved before (new or imported)
                 if(wadToSave.FileName == null)
                     LoadWad(tool, owner, true, outPath);
+
+                // Update last actual filename and call global event to update UI etc
+                wadToSave.FileName = outPath;
+                tool.ToggleUnsavedChanges(false);
             }
             catch (Exception exc)
             {
@@ -160,6 +172,7 @@ namespace WadTool
                     return;
 
                 tool.DestinationWad = new Wad2 { GameVersion = form.Version, SoundSystem = SoundSystem.Xml };
+                tool.ToggleUnsavedChanges(false);
             }
         }
 
@@ -462,7 +475,7 @@ namespace WadTool
             }
             else if (wadObject is WadSpriteSequence)
             {
-                using (var form = new FormSpriteSequenceEditor(wad, (WadSpriteSequence)wadObject))
+                using (var form = new FormSpriteSequenceEditor(tool, wad, (WadSpriteSequence)wadObject))
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
@@ -515,6 +528,7 @@ namespace WadTool
             }
 
             tool.DestinationWadChanged();
+            tool.ToggleUnsavedChanges();
         }
 
         public static WadMesh CreateFakeMesh(string name)
