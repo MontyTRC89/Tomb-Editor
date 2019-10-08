@@ -45,7 +45,7 @@ namespace TombEditor.Forms
             this.butOk.Location = new System.Drawing.Point(217, 39);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
-            this.butOk.TabIndex = 1;
+            this.butOk.TabIndex = 2;
             this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.ButOk_Click);
             // 
@@ -56,7 +56,7 @@ namespace TombEditor.Forms
             this.butCancel.Location = new System.Drawing.Point(303, 39);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 2;
+            this.butCancel.TabIndex = 3;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.ButCancel_Click);
             // 
@@ -85,7 +85,7 @@ namespace TombEditor.Forms
             this.cbAllTags.Location = new System.Drawing.Point(53, 43);
             this.cbAllTags.Name = "cbAllTags";
             this.cbAllTags.Size = new System.Drawing.Size(140, 17);
-            this.cbAllTags.TabIndex = 3;
+            this.cbAllTags.TabIndex = 1;
             this.cbAllTags.Tag = "cbAllTags";
             this.cbAllTags.Text = "All tags instead of any";
             this.tooltip.SetToolTip(this.cbAllTags, "Only Select Rooms that contain the specified tags instead of containing any");

@@ -86,7 +86,7 @@
             this.lstTriggers.MultiSelect = true;
             this.lstTriggers.Name = "lstTriggers";
             this.lstTriggers.Size = new System.Drawing.Size(279, 114);
-            this.lstTriggers.TabIndex = 4;
+            this.lstTriggers.TabIndex = 0;
             this.lstTriggers.Text = "darkListView1";
             this.lstTriggers.SelectedIndicesChanged += new System.EventHandler(this.lstTriggers_SelectedIndicesChanged);
             this.lstTriggers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstTriggers_KeyDown);

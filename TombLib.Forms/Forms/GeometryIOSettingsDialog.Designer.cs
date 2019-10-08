@@ -56,7 +56,7 @@
             this.butOK.Location = new System.Drawing.Point(141, 291);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 0;
+            this.butOK.TabIndex = 16;
             this.butOK.Text = "OK";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
@@ -67,7 +67,7 @@
             this.butCancel.Location = new System.Drawing.Point(227, 291);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 1;
+            this.butCancel.TabIndex = 17;
             this.butCancel.Text = "Cancel";
             // 
             // cbFlipZ
@@ -155,7 +155,7 @@
             this.nmScale.MousewheelSingleIncrement = true;
             this.nmScale.Name = "nmScale";
             this.nmScale.Size = new System.Drawing.Size(101, 22);
-            this.nmScale.TabIndex = 1;
+            this.nmScale.TabIndex = 8;
             this.nmScale.Value = new decimal(new int[] {
             1,
             0,
@@ -177,7 +177,7 @@
             this.cbPremultiplyUV.Location = new System.Drawing.Point(6, 67);
             this.cbPremultiplyUV.Name = "cbPremultiplyUV";
             this.cbPremultiplyUV.Size = new System.Drawing.Size(130, 17);
-            this.cbPremultiplyUV.TabIndex = 3;
+            this.cbPremultiplyUV.TabIndex = 11;
             this.cbPremultiplyUV.Text = "Premultiply UV";
             // 
             // cbWrapUV
@@ -185,7 +185,7 @@
             this.cbWrapUV.Location = new System.Drawing.Point(6, 44);
             this.cbWrapUV.Name = "cbWrapUV";
             this.cbWrapUV.Size = new System.Drawing.Size(130, 17);
-            this.cbWrapUV.TabIndex = 2;
+            this.cbWrapUV.TabIndex = 10;
             this.cbWrapUV.Text = "Wrap UV";
             // 
             // cbFlipUV_V
@@ -193,7 +193,7 @@
             this.cbFlipUV_V.Location = new System.Drawing.Point(6, 21);
             this.cbFlipUV_V.Name = "cbFlipUV_V";
             this.cbFlipUV_V.Size = new System.Drawing.Size(130, 17);
-            this.cbFlipUV_V.TabIndex = 1;
+            this.cbFlipUV_V.TabIndex = 9;
             this.cbFlipUV_V.Text = "Invert V coordinate";
             // 
             // lblPreset
@@ -215,7 +215,7 @@
             this.cmbPresetList.Location = new System.Drawing.Point(52, 251);
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(243, 23);
-            this.cmbPresetList.TabIndex = 6;
+            this.cmbPresetList.TabIndex = 15;
             this.cmbPresetList.SelectedIndexChanged += new System.EventHandler(this.cmbPresetList_SelectedIndexChanged);
             // 
             // panelContents
@@ -250,7 +250,7 @@
             this.cbSwapYZTrans.Location = new System.Drawing.Point(6, 65);
             this.cbSwapYZTrans.Name = "cbSwapYZTrans";
             this.cbSwapYZTrans.Size = new System.Drawing.Size(134, 19);
-            this.cbSwapYZTrans.TabIndex = 7;
+            this.cbSwapYZTrans.TabIndex = 14;
             this.cbSwapYZTrans.Text = "Swap Y / Z translation";
             // 
             // cbSwapXZTrans
@@ -258,7 +258,7 @@
             this.cbSwapXZTrans.Location = new System.Drawing.Point(6, 43);
             this.cbSwapXZTrans.Name = "cbSwapXZTrans";
             this.cbSwapXZTrans.Size = new System.Drawing.Size(134, 19);
-            this.cbSwapXZTrans.TabIndex = 6;
+            this.cbSwapXZTrans.TabIndex = 13;
             this.cbSwapXZTrans.Text = "Swap X / Z translation";
             // 
             // cbSwapXYTrans
@@ -266,7 +266,7 @@
             this.cbSwapXYTrans.Location = new System.Drawing.Point(6, 21);
             this.cbSwapXYTrans.Name = "cbSwapXYTrans";
             this.cbSwapXYTrans.Size = new System.Drawing.Size(134, 19);
-            this.cbSwapXYTrans.TabIndex = 5;
+            this.cbSwapXYTrans.TabIndex = 12;
             this.cbSwapXYTrans.Text = "Swap X / Y translation";
             // 
             // groupMisc
@@ -275,7 +275,7 @@
             this.groupMisc.Location = new System.Drawing.Point(6, 192);
             this.groupMisc.Name = "groupMisc";
             this.groupMisc.Size = new System.Drawing.Size(128, 53);
-            this.groupMisc.TabIndex = 9;
+            this.groupMisc.TabIndex = 0;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
             // 
@@ -284,8 +284,8 @@
             this.cbImportBakedLight.AutoSize = true;
             this.cbImportBakedLight.Location = new System.Drawing.Point(6, 21);
             this.cbImportBakedLight.Name = "cbImportBakedLight";
-            this.cbImportBakedLight.Size = new System.Drawing.Size(114, 17);
-            this.cbImportBakedLight.TabIndex = 3;
+            this.cbImportBakedLight.Size = new System.Drawing.Size(113, 17);
+            this.cbImportBakedLight.TabIndex = 7;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
             // groupTextures

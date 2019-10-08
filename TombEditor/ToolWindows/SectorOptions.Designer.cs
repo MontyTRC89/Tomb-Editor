@@ -88,7 +88,7 @@
             this.butAddGhostBlock.Location = new System.Drawing.Point(3, 197);
             this.butAddGhostBlock.Name = "butAddGhostBlock";
             this.butAddGhostBlock.Size = new System.Drawing.Size(24, 24);
-            this.butAddGhostBlock.TabIndex = 15;
+            this.butAddGhostBlock.TabIndex = 14;
             this.butAddGhostBlock.Tag = "AddGhostBlocksToSelection";
             // 
             // butCeiling
@@ -209,7 +209,7 @@
             this.butForceSolidFloor.Location = new System.Drawing.Point(32, 197);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
             this.butForceSolidFloor.Size = new System.Drawing.Size(24, 24);
-            this.butForceSolidFloor.TabIndex = 14;
+            this.butForceSolidFloor.TabIndex = 15;
             this.butForceSolidFloor.Tag = "ToggleForceFloorSolid";
             this.butForceSolidFloor.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
@@ -328,7 +328,7 @@
             this.butDiagonalWall.Margin = new System.Windows.Forms.Padding(2, 0, 2, 2);
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Size = new System.Drawing.Size(92, 24);
-            this.butDiagonalWall.TabIndex = 17;
+            this.butDiagonalWall.TabIndex = 18;
             this.butDiagonalWall.Tag = "SetDiagonalWall";
             this.butDiagonalWall.Text = "Diag wall";
             this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -342,7 +342,7 @@
             this.butDiagonalFloor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 2);
             this.butDiagonalFloor.Name = "butDiagonalFloor";
             this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
-            this.butDiagonalFloor.TabIndex = 15;
+            this.butDiagonalFloor.TabIndex = 16;
             this.butDiagonalFloor.Tag = "SetDiagonalFloorStep";
             this.butDiagonalFloor.Text = "Floor step";
             this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -356,7 +356,7 @@
             this.butDiagonalCeiling.Margin = new System.Windows.Forms.Padding(2, 0, 2, 2);
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
             this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 24);
-            this.butDiagonalCeiling.TabIndex = 16;
+            this.butDiagonalCeiling.TabIndex = 17;
             this.butDiagonalCeiling.Tag = "SetDiagonalCeilingStep";
             this.butDiagonalCeiling.Text = "Ceiling step";
             this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;

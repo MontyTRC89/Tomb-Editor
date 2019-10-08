@@ -77,7 +77,7 @@
             this.butCancel.Location = new System.Drawing.Point(435, 286);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 7;
+            this.butCancel.TabIndex = 4;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -88,7 +88,7 @@
             this.butOK.Location = new System.Drawing.Point(349, 286);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 6;
+            this.butOK.TabIndex = 3;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
@@ -99,7 +99,7 @@
             this.cbAllowOversizedRooms.Location = new System.Drawing.Point(259, 253);
             this.cbAllowOversizedRooms.Name = "cbAllowOversizedRooms";
             this.cbAllowOversizedRooms.Size = new System.Drawing.Size(255, 17);
-            this.cbAllowOversizedRooms.TabIndex = 5;
+            this.cbAllowOversizedRooms.TabIndex = 2;
             this.cbAllowOversizedRooms.Text = "Allow rooms bigger than 32x32";
             this.cbAllowOversizedRooms.CheckedChanged += new System.EventHandler(this.cbAllowOversizedRooms_CheckedChanged);
             // 
@@ -126,7 +126,7 @@
             this.numericZn.MousewheelSingleIncrement = true;
             this.numericZn.Name = "numericZn";
             this.numericZn.Size = new System.Drawing.Size(62, 22);
-            this.numericZn.TabIndex = 7;
+            this.numericZn.TabIndex = 3;
             this.numericZn.ValueChanged += new System.EventHandler(this.numericZn_ValueChanged);
             // 
             // numericZp
@@ -152,7 +152,7 @@
             this.numericZp.MousewheelSingleIncrement = true;
             this.numericZp.Name = "numericZp";
             this.numericZp.Size = new System.Drawing.Size(62, 22);
-            this.numericZp.TabIndex = 1;
+            this.numericZp.TabIndex = 0;
             this.numericZp.ValueChanged += new System.EventHandler(this.numericZp_ValueChanged);
             // 
             // numericXp
@@ -178,7 +178,7 @@
             this.numericXp.MousewheelSingleIncrement = true;
             this.numericXp.Name = "numericXp";
             this.numericXp.Size = new System.Drawing.Size(62, 22);
-            this.numericXp.TabIndex = 5;
+            this.numericXp.TabIndex = 2;
             this.numericXp.ValueChanged += new System.EventHandler(this.numericXp_ValueChanged);
             // 
             // numericXn
@@ -204,7 +204,7 @@
             this.numericXn.MousewheelSingleIncrement = true;
             this.numericXn.Name = "numericXn";
             this.numericXn.Size = new System.Drawing.Size(62, 22);
-            this.numericXn.TabIndex = 3;
+            this.numericXn.TabIndex = 1;
             this.numericXn.ValueChanged += new System.EventHandler(this.numericXn_ValueChanged);
             // 
             // gridControl
@@ -227,7 +227,7 @@
             this.optUseFloor.Location = new System.Drawing.Point(261, 228);
             this.optUseFloor.Name = "optUseFloor";
             this.optUseFloor.Size = new System.Drawing.Size(204, 19);
-            this.optUseFloor.TabIndex = 4;
+            this.optUseFloor.TabIndex = 1;
             this.optUseFloor.TabStop = true;
             this.optUseFloor.Text = "Fill new sectors with floor";
             this.optUseFloor.CheckedChanged += new System.EventHandler(this.optUseFloor_CheckedChanged);
@@ -238,7 +238,7 @@
             this.optUseWalls.Location = new System.Drawing.Point(261, 205);
             this.optUseWalls.Name = "optUseWalls";
             this.optUseWalls.Size = new System.Drawing.Size(204, 19);
-            this.optUseWalls.TabIndex = 3;
+            this.optUseWalls.TabIndex = 0;
             this.optUseWalls.Text = "Fill new sectors with walls";
             this.optUseWalls.CheckedChanged += new System.EventHandler(this.optUseWalls_CheckedChanged);
             // 

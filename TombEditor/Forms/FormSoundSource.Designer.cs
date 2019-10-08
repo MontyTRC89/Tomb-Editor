@@ -98,7 +98,7 @@
             this.tbSearch.Location = new System.Drawing.Point(8, 21);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(421, 23);
-            this.tbSearch.TabIndex = 108;
+            this.tbSearch.TabIndex = 0;
             this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
             // 
             // comboPlayMode
@@ -114,7 +114,7 @@
             this.comboPlayMode.Location = new System.Drawing.Point(77, 486);
             this.comboPlayMode.Name = "comboPlayMode";
             this.comboPlayMode.Size = new System.Drawing.Size(277, 23);
-            this.comboPlayMode.TabIndex = 64;
+            this.comboPlayMode.TabIndex = 2;
             // 
             // darkLabel2
             // 
@@ -134,7 +134,7 @@
             this.butPlaySound.Location = new System.Drawing.Point(360, 486);
             this.butPlaySound.Name = "butPlaySound";
             this.butPlaySound.Size = new System.Drawing.Size(92, 23);
-            this.butPlaySound.TabIndex = 62;
+            this.butPlaySound.TabIndex = 3;
             this.butPlaySound.Text = "Play sound";
             this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butPlaySound.Click += new System.EventHandler(this.butPlay_Click);
@@ -147,7 +147,7 @@
             this.lstSounds.Location = new System.Drawing.Point(8, 50);
             this.lstSounds.Name = "lstSounds";
             this.lstSounds.Size = new System.Drawing.Size(444, 430);
-            this.lstSounds.TabIndex = 61;
+            this.lstSounds.TabIndex = 1;
             this.lstSounds.Text = "darkListView1";
             this.lstSounds.Click += new System.EventHandler(this.lstSounds_Click);
             this.lstSounds.DoubleClick += new System.EventHandler(this.lstSounds_DoubleClick);

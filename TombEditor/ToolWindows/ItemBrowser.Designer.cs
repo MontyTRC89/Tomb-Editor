@@ -123,7 +123,7 @@
             this.butFindItem.Location = new System.Drawing.Point(190, 6);
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Size = new System.Drawing.Size(92, 23);
-            this.butFindItem.TabIndex = 5;
+            this.butFindItem.TabIndex = 7;
             this.butFindItem.Tag = "LocateItem";
             this.butFindItem.Text = "Locate item";
             this.butFindItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -148,7 +148,7 @@
             this.butItemDown.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.butItemDown.Name = "butItemDown";
             this.butItemDown.Size = new System.Drawing.Size(23, 23);
-            this.butItemDown.TabIndex = 69;
+            this.butItemDown.TabIndex = 6;
             this.butItemDown.Text = "▼";
             this.toolTip.SetToolTip(this.butItemDown, "Next item");
             this.butItemDown.Click += new System.EventHandler(this.butItemDown_Click);
@@ -160,7 +160,7 @@
             this.butItemUp.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.butItemUp.Name = "butItemUp";
             this.butItemUp.Size = new System.Drawing.Size(23, 23);
-            this.butItemUp.TabIndex = 68;
+            this.butItemUp.TabIndex = 5;
             this.butItemUp.Text = "▲";
             this.toolTip.SetToolTip(this.butItemUp, "Previous item");
             this.butItemUp.Click += new System.EventHandler(this.butItemUp_Click);
