@@ -171,7 +171,7 @@
             // 
             // lblStateChangeAnnouncement
             // 
-            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
             this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
