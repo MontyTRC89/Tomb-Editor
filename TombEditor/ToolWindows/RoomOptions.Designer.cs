@@ -242,7 +242,7 @@
             0,
             0,
             0});
-            this.numLightEffectStrength.MousewheelSingleIncrement = true;
+            this.numLightEffectStrength.LoopValues = false;
             this.numLightEffectStrength.Name = "numLightEffectStrength";
             this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
             this.numLightEffectStrength.TabIndex = 15;

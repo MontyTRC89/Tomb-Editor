@@ -480,7 +480,7 @@
             0,
             0,
             0});
-            this.numRadius.MousewheelSingleIncrement = true;
+            this.numRadius.LoopValues = false;
             this.numRadius.Name = "numRadius";
             this.numRadius.Size = new System.Drawing.Size(73, 22);
             this.numRadius.TabIndex = 90;
@@ -514,7 +514,7 @@
             0,
             0,
             -2147483648});
-            this.numIntensity.MousewheelSingleIncrement = true;
+            this.numIntensity.LoopValues = false;
             this.numIntensity.Name = "numIntensity";
             this.numIntensity.Size = new System.Drawing.Size(73, 22);
             this.numIntensity.TabIndex = 89;
@@ -558,7 +558,7 @@
             0,
             0,
             0});
-            this.numAmbient.MousewheelSingleIncrement = true;
+            this.numAmbient.LoopValues = false;
             this.numAmbient.Name = "numAmbient";
             this.numAmbient.Size = new System.Drawing.Size(73, 22);
             this.numAmbient.TabIndex = 94;

@@ -288,7 +288,7 @@
             0,
             0,
             0});
-			this.numeric_UndoStackSize.MousewheelSingleIncrement = true;
+			this.numeric_UndoStackSize.LoopValues = false;
 			this.numeric_UndoStackSize.Name = "numeric_UndoStackSize";
 			this.numeric_UndoStackSize.Size = new System.Drawing.Size(150, 20);
 			this.numeric_UndoStackSize.TabIndex = 18;
@@ -435,7 +435,7 @@
             0,
             0,
             0});
-			this.numeric_FontSize.MousewheelSingleIncrement = true;
+			this.numeric_FontSize.LoopValues = false;
 			this.numeric_FontSize.Name = "numeric_FontSize";
 			this.numeric_FontSize.Size = new System.Drawing.Size(150, 20);
 			this.numeric_FontSize.TabIndex = 1;

@@ -112,7 +112,7 @@
             0,
             0,
             0});
-            this.chosenId.MousewheelSingleIncrement = true;
+            this.chosenId.LoopValues = false;
             this.chosenId.Name = "chosenId";
             this.chosenId.Size = new System.Drawing.Size(81, 22);
             this.chosenId.TabIndex = 1;

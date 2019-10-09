@@ -267,7 +267,6 @@
             0,
             0});
             this.numericVolume.Location = new System.Drawing.Point(78, 6);
-            this.numericVolume.MousewheelSingleIncrement = true;
             this.numericVolume.Name = "numericVolume";
             this.numericVolume.Size = new System.Drawing.Size(68, 22);
             this.numericVolume.TabIndex = 4;
@@ -420,7 +419,6 @@
             0,
             65536});
             this.numericChance.Location = new System.Drawing.Point(78, 84);
-            this.numericChance.MousewheelSingleIncrement = true;
             this.numericChance.Name = "numericChance";
             this.numericChance.Size = new System.Drawing.Size(68, 22);
             this.numericChance.TabIndex = 15;
@@ -458,7 +456,7 @@
             0,
             0,
             -2147483648});
-            this.numericPitch.MousewheelSingleIncrement = true;
+            this.numericPitch.LoopValues = false;
             this.numericPitch.Name = "numericPitch";
             this.numericPitch.Size = new System.Drawing.Size(68, 22);
             this.numericPitch.TabIndex = 8;
@@ -481,7 +479,6 @@
             0,
             0,
             0});
-            this.numericRange.MousewheelSingleIncrement = true;
             this.numericRange.Name = "numericRange";
             this.numericRange.Size = new System.Drawing.Size(68, 22);
             this.numericRange.TabIndex = 12;

@@ -321,7 +321,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numSequence.MousewheelSingleIncrement = true;
+            this.numSequence.LoopValues = false;
             this.numSequence.Name = "numSequence";
             this.numSequence.Size = new System.Drawing.Size(71, 22);
             this.numSequence.TabIndex = 0;
@@ -341,7 +341,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numNumber.MousewheelSingleIncrement = true;
+            this.numNumber.LoopValues = false;
             this.numNumber.Name = "numNumber";
             this.numNumber.Size = new System.Drawing.Size(71, 22);
             this.numNumber.TabIndex = 1;
@@ -361,7 +361,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numTimer.MousewheelSingleIncrement = true;
+            this.numTimer.LoopValues = false;
             this.numTimer.Name = "numTimer";
             this.numTimer.Size = new System.Drawing.Size(71, 22);
             this.numTimer.TabIndex = 2;
@@ -376,7 +376,7 @@ namespace TombEditor.Forms
             0,
             65536});
             this.numSpeed.Location = new System.Drawing.Point(82, 98);
-            this.numSpeed.MousewheelSingleIncrement = true;
+            this.numSpeed.LoopValues = false;
             this.numSpeed.Name = "numSpeed";
             this.numSpeed.Size = new System.Drawing.Size(71, 22);
             this.numSpeed.TabIndex = 3;
@@ -396,7 +396,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numFOV.MousewheelSingleIncrement = true;
+            this.numFOV.LoopValues = false;
             this.numFOV.Name = "numFOV";
             this.numFOV.Size = new System.Drawing.Size(71, 22);
             this.numFOV.TabIndex = 4;
@@ -417,7 +417,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numRoll.MousewheelSingleIncrement = true;
+            this.numRoll.LoopValues = false;
             this.numRoll.Name = "numRoll";
             this.numRoll.Size = new System.Drawing.Size(71, 22);
             this.numRoll.TabIndex = 5;
@@ -443,7 +443,7 @@ namespace TombEditor.Forms
             0,
             0,
             -2147483648});
-            this.numRotationX.MousewheelSingleIncrement = true;
+            this.numRotationX.LoopValues = false;
             this.numRotationX.Name = "numRotationX";
             this.numRotationX.Size = new System.Drawing.Size(71, 22);
             this.numRotationX.TabIndex = 6;
@@ -464,7 +464,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numRotationY.MousewheelSingleIncrement = true;
+            this.numRotationY.LoopValues = false;
             this.numRotationY.Name = "numRotationY";
             this.numRotationY.Size = new System.Drawing.Size(71, 22);
             this.numRotationY.TabIndex = 7;

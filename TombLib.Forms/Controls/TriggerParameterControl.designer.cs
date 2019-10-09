@@ -80,7 +80,7 @@ namespace TombLib.Controls
             0,
             0,
             0});
-            this.numericUpDown.MousewheelSingleIncrement = true;
+            this.numericUpDown.LoopValues = false;
             this.numericUpDown.Name = "numericUpDown";
             this.numericUpDown.Size = new System.Drawing.Size(259, 23);
             this.numericUpDown.TabIndex = 2;

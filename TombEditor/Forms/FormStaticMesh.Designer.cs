@@ -199,7 +199,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numScalable.MousewheelSingleIncrement = true;
+            this.numScalable.LoopValues = false;
             this.numScalable.Name = "numScalable";
             this.numScalable.Size = new System.Drawing.Size(53, 22);
             this.numScalable.TabIndex = 12;
