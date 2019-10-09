@@ -2306,8 +2306,14 @@ namespace WadTool
                 case AnimTransformMode.Smooth:
                     picTransformPreview.Image = Properties.Resources.transform_smooth;
                     break;
+                case AnimTransformMode.SmoothReverse:
+                    picTransformPreview.Image = Properties.Resources.transform_smooth_reverse;
+                    break;
                 case AnimTransformMode.Linear:
                     picTransformPreview.Image = Properties.Resources.transform_linear;
+                    break;
+                case AnimTransformMode.LinearReverse:
+                    picTransformPreview.Image = Properties.Resources.transform_linear_reverse;
                     break;
                 case AnimTransformMode.Symmetric:
                     picTransformPreview.Image = Properties.Resources.transform_symmetric;
