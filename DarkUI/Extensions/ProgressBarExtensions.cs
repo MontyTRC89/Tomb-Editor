@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace DarkUI.Extensions
 {
@@ -12,6 +12,9 @@ namespace DarkUI.Extensions
         /// </summary>
         public static void SetProgressNoAnimation(this ProgressBar pb, int value)
         {
+            if (value == pb.Value)
+                return;
+
             // To get around the progressive animation, we need to move the
             // progress bar backwards.
             if (value == pb.Maximum)
