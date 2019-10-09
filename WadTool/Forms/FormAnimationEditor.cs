@@ -1324,12 +1324,9 @@ namespace WadTool
         private void DeleteEveryNFrame(int n)
         {
             for (int i = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1; i >= 0; i -= n)
-            {
                 _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveAt(i);
-            }
-
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
         }
+
         private void InterpolateAnimation(int numFrames, bool fixAnimCommands, bool updateGUI = true)
         {
             int stepCount = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
@@ -1361,6 +1358,35 @@ namespace WadTool
                 UpdateAnimListSelection(_editor.CurrentAnim.Index);
                 timeline.Highlight();
             }
+        }
+
+        private void ReverseAnimation()
+        {
+            if (!_editor.ValidAnimationAndFrames) return;
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+            int start = 0;
+            int end   = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+
+            if (!_editor.SelectionIsEmpty)
+            {
+                start = _editor.Selection.X;
+                end   = _editor.Selection.Y;
+            }
+
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames.Reverse(start, end - start);
+
+            // Update animation commands
+            foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
+                if (ac.FrameBased && ac.Parameter1 >= start && ac.Parameter1 <= end)
+                    ac.Parameter1 = (short)((_editor.CurrentAnim.WadAnimation.FrameRate * end) - (ac.Parameter1 - (_editor.CurrentAnim.WadAnimation.FrameRate * start)));
+
+            Saved = false;
+
+            timeline.Highlight(start, end);
+            SelectFrame(); // We need to forcefully update current frame because frame number wasn't changed
+            UpdateTransformUI();
         }
 
         private void EditAnimCommands(WadAnimCommand cmd = null)
@@ -2341,5 +2367,7 @@ namespace WadTool
             if (e.RowIndex < 0) return;
             dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value = !(bool)dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value;
         }
+
+        private void reverseAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReverseAnimation();
     }
 }
