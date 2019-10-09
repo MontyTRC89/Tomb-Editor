@@ -603,6 +603,7 @@
             this.butOpenRefLevel.Name = "butOpenRefLevel";
             this.butOpenRefLevel.Size = new System.Drawing.Size(23, 25);
             this.butOpenRefLevel.Text = "Open source file";
+            this.butOpenRefLevel.ToolTipText = "Open reference project";
             this.butOpenRefLevel.Click += new System.EventHandler(this.butOpenRefLevel_Click);
             // 
             // butCloseRefLevel
@@ -615,6 +616,7 @@
             this.butCloseRefLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCloseRefLevel.Name = "butCloseRefLevel";
             this.butCloseRefLevel.Size = new System.Drawing.Size(23, 25);
+            this.butCloseRefLevel.ToolTipText = "Close reference project";
             this.butCloseRefLevel.Click += new System.EventHandler(this.butCloseRefLevel_Click);
             // 
             // tableLayoutPanel1

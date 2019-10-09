@@ -386,7 +386,7 @@ namespace WadTool
 
                     if (askConfirm)
                     {
-                        result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.GameVersion) + " is already occupied in the destination wad." +
+                        result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.GameVersion) + " is already occupied in the destination wad.\n" +
                                                          "Do you want to replace it (Yes) or to select another Id (No)?",
                                                          "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     }
