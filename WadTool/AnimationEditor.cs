@@ -14,7 +14,9 @@ namespace WadTool
     {
         Simple,         // Brutally overwrite all properties for all frames
         Smooth,         // Smootherstep interpolation
+        SmoothReverse,
         Linear,         // Do simple linear interpolation, a-la WadMerger
+        LinearReverse,
         Symmetric,      // Nifty symmetric smoothstep interpolation
         SymmetricLinear // Linear symmetric interpolation
     }
@@ -180,19 +182,20 @@ namespace WadTool
             var deltaRot = newRot - _initialRot;
 
             // Define animation properties
-            bool evolve = TransformMode != AnimTransformMode.Simple && ActiveFrames.Count > 1;
-            bool smooth = TransformMode != AnimTransformMode.Linear && TransformMode != AnimTransformMode.SymmetricLinear;
-            bool loop   = TransformMode == AnimTransformMode.Symmetric || TransformMode == AnimTransformMode.SymmetricLinear;
+            bool evolve  = TransformMode != AnimTransformMode.Simple && ActiveFrames.Count > 1;
+            bool smooth  = TransformMode == AnimTransformMode.Smooth || TransformMode == AnimTransformMode.SmoothReverse || TransformMode == AnimTransformMode.Symmetric;
+            bool reverse = TransformMode == AnimTransformMode.LinearReverse || TransformMode == AnimTransformMode.SmoothReverse;
+            bool loop    = TransformMode == AnimTransformMode.Symmetric || TransformMode == AnimTransformMode.SymmetricLinear;
 
             // Calculate evolution
+            float frameCount = loop || reverse ? Selection.Y - Selection.X : CurrentFrameIndex - Selection.X;
             float currentStep = 0;
-            float frameCount = loop ? Selection.Y - Selection.X : CurrentFrameIndex - Selection.X;
 
             int index = 0;
             foreach (var keyframe in ActiveFrames)
             {
-                float midFrame = loop ? CurrentFrameIndex - Selection.X : frameCount;
-                float bias = (currentStep <= midFrame) ? currentStep / midFrame : (frameCount - currentStep) / (frameCount - midFrame);
+                float midFrame = loop ? CurrentFrameIndex - Selection.X : (reverse ? CurrentFrameIndex : frameCount);
+                float bias = (currentStep <= midFrame) ? (reverse ? 1.0f : currentStep / midFrame) : (frameCount - currentStep) / (frameCount - midFrame);
 
                 // Single-pass smoothstep doesn't look organic on fast animations, hence we're using 2-pass smootherstep here.
                 float weight = smooth ? (float)MathC.SmoothStep(0, 1, MathC.SmoothStep(0, 1, bias)) : bias;

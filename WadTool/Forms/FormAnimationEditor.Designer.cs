@@ -2132,7 +2132,9 @@ namespace WadTool
             this.cmbTransformMode.Items.AddRange(new object[] {
             "None",
             "Smooth",
+            "Smooth reverse",
             "Linear",
+            "Linear reverse",
             "Symmetric smooth",
             "Symmetric linear"});
             this.cmbTransformMode.Location = new System.Drawing.Point(44, 84);

@@ -397,4 +397,10 @@
   <data name="transform_symmetric_linear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_transform\transform_symmetric_linear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="transform_linear_reverse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transform\transform_linear_reverse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="transform_smooth_reverse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_transform\transform_smooth_reverse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
