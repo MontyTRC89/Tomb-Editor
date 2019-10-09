@@ -7,6 +7,7 @@ using TombLib.Forms;
 using TombLib.Utils;
 using System.IO;
 using TombLib.LevelData.IO;
+using System.Collections.Generic;
 
 namespace SoundTool
 {
@@ -114,9 +115,19 @@ namespace SoundTool
             Saved = true;
         }
 
+        private int FindFreeSoundID()
+        {
+            List<int> ids = new List<int>();
+            foreach (DataGridViewRow row in dgvSoundInfos.Rows) ids.Add(((WadSoundInfo)row.Tag).Id);
+            ids.Sort();
+            int next = -1;
+            foreach (var id in ids) { next++; if (id != next) return next; }
+            return next + 1;
+        }
+
         private void AddSoundInfo()
         {
-            using (var form = new FormInputBox("Add new sound info", "Insert the ID of the new sound:"))
+            using (var form = new FormInputBox("Add new sound info", "Insert the ID of the new sound:", FindFreeSoundID().ToString()))
             {
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
