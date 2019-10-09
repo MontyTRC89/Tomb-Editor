@@ -40,8 +40,7 @@ namespace WadTool
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.findReplaceAnimcommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reverseAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resampleAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resampleAnimationToKeyframesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -194,7 +193,7 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reverseAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -322,16 +321,15 @@ namespace WadTool
             this.curToolStripMenuItem,
             this.copyToolStripMenuItem1,
             this.pasteToolStripMenuItem1,
-            this.toolStripMenuItem2,
+            this.toolStripSeparator3,
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem,
             this.toolStripMenuItem7,
-            this.findReplaceAnimcommandsToolStripMenuItem,
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem,
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem,
-            this.reverseAnimationToolStripMenuItem,
             this.resampleAnimationToolStripMenuItem,
-            this.resampleAnimationToKeyframesToolStripMenuItem});
+            this.resampleAnimationToKeyframesToolStripMenuItem,
+            this.reverseAnimationToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.findReplaceAnimcommandsToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";
             this.animationToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
@@ -451,24 +449,14 @@ namespace WadTool
             this.findReplaceAnimcommandsToolStripMenuItem.Text = "Find && replace animcommands...";
             this.findReplaceAnimcommandsToolStripMenuItem.Click += new System.EventHandler(this.findReplaceAnimcommandsToolStripMenuItem_Click);
             // 
-            // calculateBoundingBoxForAllFramesToolStripMenuItem
+            // reverseAnimationToolStripMenuItem
             // 
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("calculateBoundingBoxForAllFramesToolStripMenuItem.Image")));
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Name = "calculateBoundingBoxForAllFramesToolStripMenuItem";
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Text = "Calculate bounding box";
-            this.calculateBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForAllFramesToolStripMenuItem_Click);
-            // 
-            // deleteBoundingBoxForAllFramesToolStripMenuItem
-            // 
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Name = "deleteBoundingBoxForAllFramesToolStripMenuItem";
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Text = "Delete bounding box";
-            this.deleteBoundingBoxForAllFramesToolStripMenuItem.Click += new System.EventHandler(this.deleteBoundingBoxForAllFramesToolStripMenuItem_Click);
+            this.reverseAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.reverseAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.reverseAnimationToolStripMenuItem.Name = "reverseAnimationToolStripMenuItem";
+            this.reverseAnimationToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.reverseAnimationToolStripMenuItem.Text = "Reverse animation";
+            this.reverseAnimationToolStripMenuItem.Click += new System.EventHandler(this.reverseAnimationToolStripMenuItem_Click);
             // 
             // resampleAnimationToolStripMenuItem
             // 
@@ -2493,14 +2481,13 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
-            // reverseAnimationToolStripMenuItem
+            // toolStripSeparator3
             // 
-            this.reverseAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.reverseAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.reverseAnimationToolStripMenuItem.Name = "reverseAnimationToolStripMenuItem";
-            this.reverseAnimationToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.reverseAnimationToolStripMenuItem.Text = "Reverse animation";
-            this.reverseAnimationToolStripMenuItem.Click += new System.EventHandler(this.reverseAnimationToolStripMenuItem_Click);
+            this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(247, 6);
             // 
             // FormAnimationEditor
             // 
@@ -2611,7 +2598,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem calculateCollisionBoxForCurrentFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
-        private System.Windows.Forms.ToolStripMenuItem calculateBoundingBoxForAllFramesToolStripMenuItem;
         private DarkUI.Controls.DarkToolStrip topBar;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel labelAnims;
@@ -2650,7 +2636,6 @@ namespace WadTool
         private DarkUI.Controls.DarkTextBox tbSearchAnimation;
         private DarkUI.Controls.DarkButton darkButton1;
         private DarkUI.Controls.DarkButton butShowAll;
-        private System.Windows.Forms.ToolStripMenuItem deleteBoundingBoxForAllFramesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteCollisionBoxForCurrentFrameToolStripMenuItem;
         private DarkUI.Controls.DarkListView lstAnimations;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
@@ -2756,5 +2741,6 @@ namespace WadTool
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn dgvBoundingMeshListCheckboxes;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvBoundingMeshListMeshes;
         private System.Windows.Forms.ToolStripMenuItem reverseAnimationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }

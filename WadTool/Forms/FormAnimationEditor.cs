@@ -102,7 +102,6 @@ namespace WadTool
             // Hacks for textbox...
             tbStateId.AutoSize = false;
             tbStateId.Height = 23;
-            tbStateId.MouseWheel += tbStateID_MouseWheel;
 
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
@@ -1642,10 +1641,9 @@ namespace WadTool
         private void copyAnimationToolStripMenuItem_Click(object sender, EventArgs e) => CopyAnimation();
         private void pasteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => PasteAnimation();
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
+        private void reverseAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReverseAnimation();
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
-        private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, true);
-        private void deleteBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e) => ClearAnimationBoundingBox();
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e) => SaveChanges();
         private void importToolStripMenuItem_Click(object sender, EventArgs e) => ImportAnimations();
@@ -2079,6 +2077,8 @@ namespace WadTool
 
             _timerPlayAnimation.Stop();
             _timerPlayAnimation.Tick -= timerPlayAnimation_Tick;
+
+            _editor.Tool.UndoManager.ClearAll();
         }
 
         
@@ -2244,19 +2244,6 @@ namespace WadTool
                 UpdateStateChange(true);
         }
 
-        private void tbStateID_MouseWheel(object sender, MouseEventArgs e)
-        {
-            // FIXME: this code is disabled to prevent undo stack flood.
-            // If anybody will discover a way to prevent doing that, I will be glad.
-
-            /*
-            if (e.Delta < 0 && cmbStateID.SelectedIndex < cmbStateID.Items.Count - 1)
-                cmbStateID.SelectedIndex++;
-            else if (e.Delta > 0 && cmbStateID.SelectedIndex > 0)
-                cmbStateID.SelectedIndex--;
-            */
-        }
-
         private void butSearchStateID_Click(object sender, EventArgs e)
         {
             var searchPopUp = new PopUpSearch(cmbStateID);
@@ -2367,7 +2354,5 @@ namespace WadTool
             if (e.RowIndex < 0) return;
             dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value = !(bool)dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value;
         }
-
-        private void reverseAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReverseAnimation();
     }
 }
