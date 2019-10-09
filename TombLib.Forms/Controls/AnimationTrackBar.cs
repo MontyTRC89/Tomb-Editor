@@ -17,7 +17,7 @@ namespace TombLib.Controls
         private static readonly Brush _highlightBrush = new SolidBrush(Color.FromArgb(160, 200, 200, 200));
         private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(170, 170, 170, 170));
         private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
-        private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 110, 110, 250));
+        private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 100, 170, 255));
         private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 110, 110));
 
         private static readonly int _cursorWidth = 6;

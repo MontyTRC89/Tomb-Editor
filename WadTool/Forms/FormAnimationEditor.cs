@@ -57,15 +57,21 @@ namespace WadTool
         private int _frameCount;
         private bool _smooth = true;
         private bool _scrollGrid = true;
+        private bool _recoverGridHeight = false; // Disabled by default for now
         private bool _previewSounds;
         private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
         private int _currentMaterialIndex;
         private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
 
         private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
+        private static readonly int _gridRecoveryWaitInterval = 30 * 2;    // 2 seconds
+        private static readonly float _gridRecoveryStep = 1 / (30 * 0.5f); // 0.5 seconds
+
+        private float _gridRecoveryCount;
 
         // Chained playback vars
         private bool _chainedPlayback;
+        private int _chainedPlaybackSetPosRecoveryCount;
         private int _chainedPlaybackInitialAnim;
         private int _chainedPlaybackInitialCursorPos;
         private VectorInt2 _chainedPlaybackInitialSelection;
@@ -490,8 +496,7 @@ namespace WadTool
             if (k > 0)
             {
                 var nextIndex = (frameIndex < _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1) ?
-                                          frameIndex + 1 :
-                                          0;
+                                          frameIndex + 1 : frameIndex;
                 k = Math.Min(k, 1);
                 KeyFrame nextKeyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[nextIndex];
                 panelRendering.Model.BuildAnimationPose(keyFrame, nextKeyFrame, k);
@@ -1466,8 +1471,18 @@ namespace WadTool
                     var origNode = _editor.Animations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
 
                     // Try to update UI if we've switched to different anim
-                    if (origNode != null && origNode != _editor.CurrentAnim && UpdateAnimListSelection(_chainedPlaybackInitialAnim) < 0)
-                        SelectAnimation(origNode); // Update from UI failed, directly jump to original anim
+                    if (origNode != null && origNode != _editor.CurrentAnim)
+                    {
+                        if (UpdateAnimListSelection(_chainedPlaybackInitialAnim) < 0)
+                            SelectAnimation(origNode); // Update in UI failed, directly jump to original anim
+                        else
+                        {
+                            // Restore selection and cursor
+                            timeline.Value = _chainedPlaybackInitialCursorPos;
+                            timeline.SelectionStart = _chainedPlaybackInitialSelection.X;
+                            timeline.SelectionEnd   = _chainedPlaybackInitialSelection.Y;
+                        }
+                    }
                 }
 
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
@@ -1774,9 +1789,24 @@ namespace WadTool
                     var nextNode  = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
                     if (nextNode != null)
                     {
+                        // Take SetPosition animcommands into account
+                        if (_scrollGrid && _editor.CurrentAnim.WadAnimation.AnimCommands.Count > 0)
+                        {
+                            var setPosCommands = _editor.CurrentAnim.WadAnimation.AnimCommands.Where(cmd => cmd.Type == WadAnimCommandType.SetPosition);
+                            if (setPosCommands.Count() > 0)
+                            {
+                                _chainedPlaybackSetPosRecoveryCount = 0; // Reset pending grid recovery
+                            }
+                        }
+                            _editor.CurrentAnim.WadAnimation.AnimCommands
+                                .Where(cmd => cmd.Type == WadAnimCommandType.SetPosition)
+                                .ToList()
+                                .ForEach(cmd =>
+                                panelRendering.GridPosition += new Vector3(cmd.Parameter1, cmd.Parameter2, cmd.Parameter3));
+
                         // Only try to update if next anim is different
                         if (nextNode != _editor.CurrentAnim && UpdateAnimListSelection(nextIndex) < 0)
-                            SelectAnimation(nextNode); // Update from UI failed, directly jump to anim
+                            SelectAnimation(nextNode); // Update in UI failed, directly jump to anim
 
                         var maxFrameNumber = nextNode.WadAnimation.FrameRate * (nextNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
                         if (nextFrame > maxFrameNumber)
@@ -1792,30 +1822,6 @@ namespace WadTool
                 }
                 else
                     _frameCount = 0;
-            }
-            
-            bool isKeyFrame = (_frameCount % (_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate) == 0);
-
-            // Update animation
-            if (isKeyFrame)
-            {
-                int newFrameNumber = (int)Math.Round((double)(_frameCount / _editor.CurrentAnim.WadAnimation.FrameRate));
-
-                if (newFrameNumber > timeline.Maximum)
-                    timeline.Value = 0;
-                else
-                    timeline.Value = newFrameNumber;
-
-                // Reset grid position if animation isn't looped
-                if (!_chainedPlayback && newFrameNumber == timeline.Maximum &&
-                    _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
-                    panelRendering.GridPosition = Vector3.Zero;
-            }
-            else if(_smooth)
-            {
-                float k = (float)_frameCount / (float)(_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate);
-                k = k - (float)Math.Floor(k);
-                SelectFrame(k);
             }
 
             // Scroll the grid
@@ -1854,13 +1860,65 @@ namespace WadTool
                         case 58: // LADDER_LEFT
                         case 77: // MONKEY_LEFT
                             startVel = new Vector3(-startVel.Z, 0, -startVel.X);
-                            endVel   = new Vector3(-endVel.Z, 0, -endVel.X);
+                            endVel = new Vector3(-endVel.Z, 0, -endVel.X);
                             break;
                     }
                 }
 
                 var shiftX = Vector3.Lerp(startVel, endVel, (float)_frameCount / (float)realFrameNumber);
                 panelRendering.GridPosition += shiftX;
+
+                if (_recoverGridHeight)
+                {
+                    // Count recovery interval if we have shifted Y position.
+                    if (panelRendering.GridPosition.Y != 0 &&
+                        !_editor.CurrentAnim.WadAnimation.AnimCommands.Any(cmd => cmd.Type == WadAnimCommandType.SetPosition) &&
+                        _editor.CurrentAnim.WadAnimation.NextAnimation == _editor.CurrentAnim.Index)
+                        _chainedPlaybackSetPosRecoveryCount++;
+                    else
+                        _chainedPlaybackSetPosRecoveryCount = 0;
+
+                    // Start restoring it
+                    if (_chainedPlaybackSetPosRecoveryCount >= _gridRecoveryWaitInterval)
+                    {
+                        _gridRecoveryCount += _gridRecoveryStep;
+
+                        Vector3 shiftY = new Vector3(panelRendering.GridPosition.X, 0.0f, panelRendering.GridPosition.Y);
+                        if (_gridRecoveryCount < 1.0f)
+                            shiftY.Y = (float)MathC.SmoothStep(panelRendering.GridPosition.Y, 0.0f, _gridRecoveryCount);
+                        else
+                        {
+                            _gridRecoveryCount = 0.0f;
+                            _chainedPlaybackSetPosRecoveryCount = 0;
+                        }
+
+                        panelRendering.GridPosition = shiftY;
+                    }
+                }
+            }
+
+            bool isKeyFrame = (_frameCount % (_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate) == 0);
+
+            // Update animation
+            if (isKeyFrame)
+            {
+                int newFrameNumber = (int)Math.Round((double)(_frameCount / _editor.CurrentAnim.WadAnimation.FrameRate));
+
+                if (newFrameNumber > timeline.Maximum)
+                    timeline.Value = 0;
+                else
+                    timeline.Value = newFrameNumber;
+
+                // Reset grid position if animation isn't looped
+                if (!_chainedPlayback && newFrameNumber == timeline.Maximum &&
+                    _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
+                    panelRendering.GridPosition = Vector3.Zero;
+            }
+            else if(_smooth)
+            {
+                float k = (float)_frameCount / (float)(_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate);
+                k = _frameCount == realFrameNumber - 1 ? 1.0f : k - (float)Math.Floor(k);
+                SelectFrame(k);
             }
 
             UpdateStatusLabel();

@@ -318,7 +318,7 @@ namespace WadTool.Controls
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
                 _device.SetIndexBuffer(_plane.IndexBuffer, true);
 
-                var shift = Matrix4x4.CreateTranslation(new Vector3(-GridPosition.X, 0, -GridPosition.Z));
+                var shift = Matrix4x4.CreateTranslation(new Vector3(-GridPosition.X, GridPosition.Y, -GridPosition.Z));
                 solidEffect.Parameters["ModelViewProjection"].SetValue((shift * viewProjection).ToSharpDX());
                 solidEffect.Parameters["Color"].SetValue(Vector4.One);
                 solidEffect.Techniques[0].Passes[0].Apply();
