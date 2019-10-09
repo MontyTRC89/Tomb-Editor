@@ -167,7 +167,7 @@
             0,
             0,
             -2147483648});
-            this.tbPosX.MousewheelSingleIncrement = true;
+            this.tbPosX.LoopValues = false;
             this.tbPosX.Name = "tbPosX";
             this.tbPosX.Size = new System.Drawing.Size(73, 22);
             this.tbPosX.TabIndex = 0;
@@ -194,7 +194,7 @@
             0,
             0,
             -2147483648});
-            this.tbPosZ.MousewheelSingleIncrement = true;
+            this.tbPosZ.LoopValues = false;
             this.tbPosZ.Name = "tbPosZ";
             this.tbPosZ.Size = new System.Drawing.Size(73, 22);
             this.tbPosZ.TabIndex = 4;
@@ -241,7 +241,7 @@
             0,
             0,
             -2147483648});
-            this.tbPosY.MousewheelSingleIncrement = true;
+            this.tbPosY.LoopValues = false;
             this.tbPosY.Name = "tbPosY";
             this.tbPosY.Size = new System.Drawing.Size(73, 22);
             this.tbPosY.TabIndex = 2;
@@ -302,7 +302,7 @@
             0,
             0,
             -2147483648});
-            this.tbVertical.MousewheelSingleIncrement = true;
+            this.tbVertical.LoopValues = false;
             this.tbVertical.Name = "tbVertical";
             this.tbVertical.Size = new System.Drawing.Size(73, 22);
             this.tbVertical.TabIndex = 2;
@@ -328,7 +328,7 @@
             0,
             0,
             -2147483648});
-            this.tbHorizontal.MousewheelSingleIncrement = true;
+            this.tbHorizontal.LoopValues = false;
             this.tbHorizontal.Name = "tbHorizontal";
             this.tbHorizontal.Size = new System.Drawing.Size(73, 22);
             this.tbHorizontal.TabIndex = 0;
@@ -411,7 +411,7 @@
             0,
             0,
             0});
-            this.tbFlipEffectFrame.MousewheelSingleIncrement = true;
+            this.tbFlipEffectFrame.LoopValues = false;
             this.tbFlipEffectFrame.Name = "tbFlipEffectFrame";
             this.tbFlipEffectFrame.Size = new System.Drawing.Size(73, 23);
             this.tbFlipEffectFrame.TabIndex = 0;
@@ -438,7 +438,7 @@
             0,
             0,
             -2147483648});
-            this.tbFlipEffect.MousewheelSingleIncrement = true;
+            this.tbFlipEffect.LoopValues = false;
             this.tbFlipEffect.Name = "tbFlipEffect";
             this.tbFlipEffect.Size = new System.Drawing.Size(73, 23);
             this.tbFlipEffect.TabIndex = 2;
@@ -480,7 +480,7 @@
             0,
             0,
             0});
-            this.nudSoundId.MousewheelSingleIncrement = true;
+            this.nudSoundId.LoopValues = false;
             this.nudSoundId.Name = "nudSoundId";
             this.nudSoundId.Size = new System.Drawing.Size(59, 23);
             this.nudSoundId.TabIndex = 105;
@@ -553,7 +553,7 @@
             0,
             0,
             0});
-            this.tbPlaySoundFrame.MousewheelSingleIncrement = true;
+            this.tbPlaySoundFrame.LoopValues = false;
             this.tbPlaySoundFrame.Name = "tbPlaySoundFrame";
             this.tbPlaySoundFrame.Size = new System.Drawing.Size(73, 23);
             this.tbPlaySoundFrame.TabIndex = 0;

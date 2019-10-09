@@ -1791,7 +1791,7 @@
             0,
             65536});
             this.numPadding.Location = new System.Drawing.Point(129, 42);
-            this.numPadding.MousewheelSingleIncrement = true;
+            this.numPadding.LoopValues = false;
             this.numPadding.Name = "numPadding";
             this.numPadding.Size = new System.Drawing.Size(67, 22);
             this.numPadding.TabIndex = 102;

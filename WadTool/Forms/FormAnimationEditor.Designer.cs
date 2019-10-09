@@ -1341,6 +1341,7 @@ namespace WadTool
             0,
             0});
             this.nudBBoxMaxY.Location = new System.Drawing.Point(70, 518);
+            this.nudBBoxMaxY.LoopValues = false;
             this.nudBBoxMaxY.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1351,7 +1352,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudBBoxMaxY.MousewheelSingleIncrement = true;
             this.nudBBoxMaxY.Name = "nudBBoxMaxY";
             this.nudBBoxMaxY.Size = new System.Drawing.Size(60, 22);
             this.nudBBoxMaxY.TabIndex = 39;
@@ -1380,6 +1380,7 @@ namespace WadTool
             0,
             0});
             this.nudBBoxMaxZ.Location = new System.Drawing.Point(135, 518);
+            this.nudBBoxMaxZ.LoopValues = false;
             this.nudBBoxMaxZ.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1390,7 +1391,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudBBoxMaxZ.MousewheelSingleIncrement = true;
             this.nudBBoxMaxZ.Name = "nudBBoxMaxZ";
             this.nudBBoxMaxZ.Size = new System.Drawing.Size(61, 22);
             this.nudBBoxMaxZ.TabIndex = 40;
@@ -1419,6 +1419,7 @@ namespace WadTool
             0,
             0});
             this.nudBBoxMaxX.Location = new System.Drawing.Point(4, 518);
+            this.nudBBoxMaxX.LoopValues = false;
             this.nudBBoxMaxX.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1429,7 +1430,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudBBoxMaxX.MousewheelSingleIncrement = true;
             this.nudBBoxMaxX.Name = "nudBBoxMaxX";
             this.nudBBoxMaxX.Size = new System.Drawing.Size(61, 22);
             this.nudBBoxMaxX.TabIndex = 38;
@@ -1447,6 +1447,7 @@ namespace WadTool
             0,
             0});
             this.nudBBoxMinY.Location = new System.Drawing.Point(70, 490);
+            this.nudBBoxMinY.LoopValues = false;
             this.nudBBoxMinY.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1457,7 +1458,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudBBoxMinY.MousewheelSingleIncrement = true;
             this.nudBBoxMinY.Name = "nudBBoxMinY";
             this.nudBBoxMinY.Size = new System.Drawing.Size(60, 22);
             this.nudBBoxMinY.TabIndex = 36;
@@ -1475,6 +1475,7 @@ namespace WadTool
             0,
             0});
             this.nudBBoxMinZ.Location = new System.Drawing.Point(135, 490);
+            this.nudBBoxMinZ.LoopValues = false;
             this.nudBBoxMinZ.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1485,7 +1486,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudBBoxMinZ.MousewheelSingleIncrement = true;
             this.nudBBoxMinZ.Name = "nudBBoxMinZ";
             this.nudBBoxMinZ.Size = new System.Drawing.Size(61, 22);
             this.nudBBoxMinZ.TabIndex = 37;
@@ -1514,6 +1514,7 @@ namespace WadTool
             0,
             0});
             this.nudBBoxMinX.Location = new System.Drawing.Point(4, 490);
+            this.nudBBoxMinX.LoopValues = false;
             this.nudBBoxMinX.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -1524,7 +1525,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudBBoxMinX.MousewheelSingleIncrement = true;
             this.nudBBoxMinX.Name = "nudBBoxMinX";
             this.nudBBoxMinX.Size = new System.Drawing.Size(61, 22);
             this.nudBBoxMinX.TabIndex = 35;
@@ -1564,12 +1564,12 @@ namespace WadTool
             0,
             0});
             this.nudGrowY.Location = new System.Drawing.Point(70, 419);
+            this.nudGrowY.LoopValues = false;
             this.nudGrowY.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-            this.nudGrowY.MousewheelSingleIncrement = true;
             this.nudGrowY.Name = "nudGrowY";
             this.nudGrowY.Size = new System.Drawing.Size(61, 22);
             this.nudGrowY.TabIndex = 31;
@@ -1623,12 +1623,12 @@ namespace WadTool
             0,
             0});
             this.nudGrowX.Location = new System.Drawing.Point(4, 419);
+            this.nudGrowX.LoopValues = false;
             this.nudGrowX.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-            this.nudGrowX.MousewheelSingleIncrement = true;
             this.nudGrowX.Name = "nudGrowX";
             this.nudGrowX.Size = new System.Drawing.Size(61, 22);
             this.nudGrowX.TabIndex = 30;
@@ -1655,12 +1655,12 @@ namespace WadTool
             0,
             0});
             this.nudGrowZ.Location = new System.Drawing.Point(136, 419);
+            this.nudGrowZ.LoopValues = false;
             this.nudGrowZ.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-            this.nudGrowZ.MousewheelSingleIncrement = true;
             this.nudGrowZ.Name = "nudGrowZ";
             this.nudGrowZ.Size = new System.Drawing.Size(60, 22);
             this.nudGrowZ.TabIndex = 32;
@@ -1934,12 +1934,12 @@ namespace WadTool
             0,
             65536});
             this.nudNextFrame.Location = new System.Drawing.Point(188, 98);
+            this.nudNextFrame.LoopValues = false;
             this.nudNextFrame.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
-            this.nudNextFrame.MousewheelSingleIncrement = true;
             this.nudNextFrame.Name = "nudNextFrame";
             this.nudNextFrame.Size = new System.Drawing.Size(87, 22);
             this.nudNextFrame.TabIndex = 11;
@@ -1956,12 +1956,12 @@ namespace WadTool
             0,
             65536});
             this.nudNextAnim.Location = new System.Drawing.Point(96, 98);
+            this.nudNextAnim.LoopValues = false;
             this.nudNextAnim.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
-            this.nudNextAnim.MousewheelSingleIncrement = true;
             this.nudNextAnim.Name = "nudNextAnim";
             this.nudNextAnim.Size = new System.Drawing.Size(87, 22);
             this.nudNextAnim.TabIndex = 10;
@@ -1978,6 +1978,7 @@ namespace WadTool
             0,
             65536});
             this.nudFramerate.Location = new System.Drawing.Point(5, 98);
+            this.nudFramerate.LoopValues = false;
             this.nudFramerate.Maximum = new decimal(new int[] {
             255,
             0,
@@ -1988,7 +1989,6 @@ namespace WadTool
             0,
             0,
             0});
-            this.nudFramerate.MousewheelSingleIncrement = true;
             this.nudFramerate.Name = "nudFramerate";
             this.nudFramerate.Size = new System.Drawing.Size(86, 22);
             this.nudFramerate.TabIndex = 9;
@@ -2195,6 +2195,7 @@ namespace WadTool
             0,
             65536});
             this.nudTransX.Location = new System.Drawing.Point(44, 56);
+            this.nudTransX.LoopValues = false;
             this.nudTransX.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -2205,7 +2206,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudTransX.MousewheelSingleIncrement = true;
             this.nudTransX.Name = "nudTransX";
             this.nudTransX.Size = new System.Drawing.Size(64, 22);
             this.nudTransX.TabIndex = 21;
@@ -2234,6 +2234,7 @@ namespace WadTool
             0,
             65536});
             this.nudTransY.Location = new System.Drawing.Point(127, 56);
+            this.nudTransY.LoopValues = false;
             this.nudTransY.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -2244,7 +2245,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudTransY.MousewheelSingleIncrement = true;
             this.nudTransY.Name = "nudTransY";
             this.nudTransY.Size = new System.Drawing.Size(64, 22);
             this.nudTransY.TabIndex = 22;
@@ -2261,6 +2261,7 @@ namespace WadTool
             0,
             65536});
             this.nudTransZ.Location = new System.Drawing.Point(210, 56);
+            this.nudTransZ.LoopValues = false;
             this.nudTransZ.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -2271,7 +2272,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudTransZ.MousewheelSingleIncrement = true;
             this.nudTransZ.Name = "nudTransZ";
             this.nudTransZ.Size = new System.Drawing.Size(65, 22);
             this.nudTransZ.TabIndex = 23;
@@ -2312,6 +2312,7 @@ namespace WadTool
             0,
             65536});
             this.nudRotX.Location = new System.Drawing.Point(44, 28);
+            this.nudRotX.LoopValues = true;
             this.nudRotX.Maximum = new decimal(new int[] {
             360,
             0,
@@ -2322,7 +2323,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudRotX.MousewheelSingleIncrement = true;
             this.nudRotX.Name = "nudRotX";
             this.nudRotX.Size = new System.Drawing.Size(64, 22);
             this.nudRotX.TabIndex = 18;
@@ -2351,6 +2351,7 @@ namespace WadTool
             0,
             65536});
             this.nudRotY.Location = new System.Drawing.Point(127, 28);
+            this.nudRotY.LoopValues = true;
             this.nudRotY.Maximum = new decimal(new int[] {
             360,
             0,
@@ -2361,7 +2362,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudRotY.MousewheelSingleIncrement = true;
             this.nudRotY.Name = "nudRotY";
             this.nudRotY.Size = new System.Drawing.Size(64, 22);
             this.nudRotY.TabIndex = 19;
@@ -2378,6 +2378,7 @@ namespace WadTool
             0,
             65536});
             this.nudRotZ.Location = new System.Drawing.Point(211, 28);
+            this.nudRotZ.LoopValues = true;
             this.nudRotZ.Maximum = new decimal(new int[] {
             360,
             0,
@@ -2388,7 +2389,6 @@ namespace WadTool
             0,
             0,
             -2147483648});
-            this.nudRotZ.MousewheelSingleIncrement = true;
             this.nudRotZ.Name = "nudRotZ";
             this.nudRotZ.Size = new System.Drawing.Size(64, 22);
             this.nudRotZ.TabIndex = 20;

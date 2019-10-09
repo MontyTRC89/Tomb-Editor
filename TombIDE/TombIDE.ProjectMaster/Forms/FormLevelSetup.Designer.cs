@@ -130,7 +130,7 @@
             0,
             0,
             0});
-			this.numeric_SoundID.MousewheelSingleIncrement = true;
+			this.numeric_SoundID.LoopValues = false;
 			this.numeric_SoundID.Name = "numeric_SoundID";
 			this.numeric_SoundID.Size = new System.Drawing.Size(220, 20);
 			this.numeric_SoundID.TabIndex = 1;

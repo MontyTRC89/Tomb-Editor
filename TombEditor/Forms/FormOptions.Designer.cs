@@ -411,7 +411,7 @@
             0,
             65536});
             this.darkNumericUpDown1.Location = new System.Drawing.Point(254, 48);
-            this.darkNumericUpDown1.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown1.LoopValues = false;
             this.darkNumericUpDown1.Name = "darkNumericUpDown1";
             this.darkNumericUpDown1.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown1.TabIndex = 3;
@@ -545,7 +545,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown39.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown39.LoopValues = false;
             this.darkNumericUpDown39.Name = "darkNumericUpDown39";
             this.darkNumericUpDown39.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown39.TabIndex = 8;
@@ -614,7 +614,7 @@
             0,
             65536});
             this.darkNumericUpDown38.Location = new System.Drawing.Point(254, 124);
-            this.darkNumericUpDown38.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown38.LoopValues = false;
             this.darkNumericUpDown38.Name = "darkNumericUpDown38";
             this.darkNumericUpDown38.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown38.TabIndex = 11;
@@ -663,7 +663,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown37.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown37.LoopValues = false;
             this.darkNumericUpDown37.Name = "darkNumericUpDown37";
             this.darkNumericUpDown37.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown37.TabIndex = 6;
@@ -1436,7 +1436,7 @@
             0,
             65536});
             this.darkNumericUpDown40.Location = new System.Drawing.Point(291, 22);
-            this.darkNumericUpDown40.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown40.LoopValues = false;
             this.darkNumericUpDown40.Name = "darkNumericUpDown40";
             this.darkNumericUpDown40.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown40.TabIndex = 2;
@@ -1496,7 +1496,7 @@
             0,
             65536});
             this.darkNumericUpDown22.Location = new System.Drawing.Point(291, 21);
-            this.darkNumericUpDown22.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown22.LoopValues = false;
             this.darkNumericUpDown22.Name = "darkNumericUpDown22";
             this.darkNumericUpDown22.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown22.TabIndex = 30;
@@ -1543,7 +1543,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown14.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown14.LoopValues = false;
             this.darkNumericUpDown14.Name = "darkNumericUpDown14";
             this.darkNumericUpDown14.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown14.TabIndex = 27;
@@ -1589,7 +1589,7 @@
             0,
             65536});
             this.darkNumericUpDown11.Location = new System.Drawing.Point(393, -29);
-            this.darkNumericUpDown11.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown11.LoopValues = false;
             this.darkNumericUpDown11.Name = "darkNumericUpDown11";
             this.darkNumericUpDown11.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown11.TabIndex = 20;
@@ -1605,7 +1605,7 @@
             0,
             65536});
             this.darkNumericUpDown8.Location = new System.Drawing.Point(291, 105);
-            this.darkNumericUpDown8.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown8.LoopValues = false;
             this.darkNumericUpDown8.Name = "darkNumericUpDown8";
             this.darkNumericUpDown8.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown8.TabIndex = 25;
@@ -1626,7 +1626,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown10.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown10.LoopValues = false;
             this.darkNumericUpDown10.Name = "darkNumericUpDown10";
             this.darkNumericUpDown10.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown10.TabIndex = 21;
@@ -1667,7 +1667,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown9.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown9.LoopValues = false;
             this.darkNumericUpDown9.Name = "darkNumericUpDown9";
             this.darkNumericUpDown9.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown9.TabIndex = 23;
@@ -1712,7 +1712,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown20.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown20.LoopValues = false;
             this.darkNumericUpDown20.Name = "darkNumericUpDown20";
             this.darkNumericUpDown20.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown20.TabIndex = 25;
@@ -1749,7 +1749,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown21.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown21.LoopValues = false;
             this.darkNumericUpDown21.Name = "darkNumericUpDown21";
             this.darkNumericUpDown21.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown21.TabIndex = 27;
@@ -1921,7 +1921,7 @@
             0,
             131072});
             this.darkNumericUpDown15.Location = new System.Drawing.Point(291, 282);
-            this.darkNumericUpDown15.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown15.LoopValues = false;
             this.darkNumericUpDown15.Name = "darkNumericUpDown15";
             this.darkNumericUpDown15.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown15.TabIndex = 28;
@@ -1996,7 +1996,7 @@
             0,
             65536});
             this.darkNumericUpDown13.Location = new System.Drawing.Point(291, 393);
-            this.darkNumericUpDown13.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown13.LoopValues = false;
             this.darkNumericUpDown13.Name = "darkNumericUpDown13";
             this.darkNumericUpDown13.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown13.TabIndex = 20;
@@ -2022,7 +2022,7 @@
             0,
             65536});
             this.darkNumericUpDown12.Location = new System.Drawing.Point(291, 365);
-            this.darkNumericUpDown12.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown12.LoopValues = false;
             this.darkNumericUpDown12.Name = "darkNumericUpDown12";
             this.darkNumericUpDown12.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown12.TabIndex = 18;
@@ -2058,7 +2058,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown7.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown7.LoopValues = false;
             this.darkNumericUpDown7.Name = "darkNumericUpDown7";
             this.darkNumericUpDown7.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown7.TabIndex = 16;
@@ -2124,7 +2124,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown36.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown36.LoopValues = false;
             this.darkNumericUpDown36.Name = "darkNumericUpDown36";
             this.darkNumericUpDown36.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown36.TabIndex = 40;
@@ -2155,7 +2155,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown35.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown35.LoopValues = false;
             this.darkNumericUpDown35.Name = "darkNumericUpDown35";
             this.darkNumericUpDown35.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown35.TabIndex = 38;
@@ -2186,7 +2186,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown34.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown34.LoopValues = false;
             this.darkNumericUpDown34.Name = "darkNumericUpDown34";
             this.darkNumericUpDown34.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown34.TabIndex = 36;
@@ -2217,7 +2217,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown33.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown33.LoopValues = false;
             this.darkNumericUpDown33.Name = "darkNumericUpDown33";
             this.darkNumericUpDown33.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown33.TabIndex = 34;
@@ -2248,7 +2248,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown32.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown32.LoopValues = false;
             this.darkNumericUpDown32.Name = "darkNumericUpDown32";
             this.darkNumericUpDown32.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown32.TabIndex = 32;
@@ -2305,7 +2305,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown6.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown6.LoopValues = false;
             this.darkNumericUpDown6.Name = "darkNumericUpDown6";
             this.darkNumericUpDown6.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown6.TabIndex = 9;
@@ -2336,7 +2336,7 @@
             0,
             65536});
             this.darkNumericUpDown5.Location = new System.Drawing.Point(165, 119);
-            this.darkNumericUpDown5.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown5.LoopValues = false;
             this.darkNumericUpDown5.Name = "darkNumericUpDown5";
             this.darkNumericUpDown5.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown5.TabIndex = 7;
@@ -2367,7 +2367,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown4.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown4.LoopValues = false;
             this.darkNumericUpDown4.Name = "darkNumericUpDown4";
             this.darkNumericUpDown4.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown4.TabIndex = 5;
@@ -2398,7 +2398,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown3.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown3.LoopValues = false;
             this.darkNumericUpDown3.Name = "darkNumericUpDown3";
             this.darkNumericUpDown3.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown3.TabIndex = 3;
@@ -2414,7 +2414,7 @@
             0,
             65536});
             this.darkNumericUpDown2.Location = new System.Drawing.Point(165, 35);
-            this.darkNumericUpDown2.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown2.LoopValues = false;
             this.darkNumericUpDown2.Name = "darkNumericUpDown2";
             this.darkNumericUpDown2.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown2.TabIndex = 2;
@@ -2498,7 +2498,7 @@
             0,
             0,
             131072});
-            this.darkNumericUpDown23.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown23.LoopValues = false;
             this.darkNumericUpDown23.Name = "darkNumericUpDown23";
             this.darkNumericUpDown23.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown23.TabIndex = 37;
@@ -2534,7 +2534,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown24.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown24.LoopValues = false;
             this.darkNumericUpDown24.Name = "darkNumericUpDown24";
             this.darkNumericUpDown24.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown24.TabIndex = 39;
@@ -2556,7 +2556,7 @@
             0,
             131072});
             this.darkNumericUpDown16.Location = new System.Drawing.Point(165, 91);
-            this.darkNumericUpDown16.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown16.LoopValues = false;
             this.darkNumericUpDown16.Name = "darkNumericUpDown16";
             this.darkNumericUpDown16.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown16.TabIndex = 35;
@@ -2608,7 +2608,7 @@
             0,
             0,
             196608});
-            this.darkNumericUpDown17.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown17.LoopValues = false;
             this.darkNumericUpDown17.Name = "darkNumericUpDown17";
             this.darkNumericUpDown17.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown17.TabIndex = 33;
@@ -2640,7 +2640,7 @@
             0,
             0,
             131072});
-            this.darkNumericUpDown18.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown18.LoopValues = false;
             this.darkNumericUpDown18.Name = "darkNumericUpDown18";
             this.darkNumericUpDown18.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown18.TabIndex = 29;
@@ -2686,7 +2686,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown19.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown19.LoopValues = false;
             this.darkNumericUpDown19.Name = "darkNumericUpDown19";
             this.darkNumericUpDown19.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown19.TabIndex = 31;
@@ -2764,7 +2764,7 @@
             0,
             131072});
             this.darkNumericUpDown31.Location = new System.Drawing.Point(165, 175);
-            this.darkNumericUpDown31.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown31.LoopValues = false;
             this.darkNumericUpDown31.Name = "darkNumericUpDown31";
             this.darkNumericUpDown31.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown31.TabIndex = 41;
@@ -2796,7 +2796,7 @@
             0,
             131072});
             this.darkNumericUpDown25.Location = new System.Drawing.Point(165, 119);
-            this.darkNumericUpDown25.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown25.LoopValues = false;
             this.darkNumericUpDown25.Name = "darkNumericUpDown25";
             this.darkNumericUpDown25.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown25.TabIndex = 37;
@@ -2827,7 +2827,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown26.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown26.LoopValues = false;
             this.darkNumericUpDown26.Name = "darkNumericUpDown26";
             this.darkNumericUpDown26.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown26.TabIndex = 39;
@@ -2849,7 +2849,7 @@
             0,
             131072});
             this.darkNumericUpDown27.Location = new System.Drawing.Point(165, 91);
-            this.darkNumericUpDown27.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown27.LoopValues = false;
             this.darkNumericUpDown27.Name = "darkNumericUpDown27";
             this.darkNumericUpDown27.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown27.TabIndex = 35;
@@ -2891,7 +2891,7 @@
             0,
             262144});
             this.darkNumericUpDown28.Location = new System.Drawing.Point(165, 63);
-            this.darkNumericUpDown28.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown28.LoopValues = false;
             this.darkNumericUpDown28.Name = "darkNumericUpDown28";
             this.darkNumericUpDown28.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown28.TabIndex = 33;
@@ -2918,7 +2918,7 @@
             0,
             0,
             131072});
-            this.darkNumericUpDown29.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown29.LoopValues = false;
             this.darkNumericUpDown29.Name = "darkNumericUpDown29";
             this.darkNumericUpDown29.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown29.TabIndex = 29;
@@ -2964,7 +2964,7 @@
             0,
             0,
             0});
-            this.darkNumericUpDown30.MousewheelSingleIncrement = true;
+            this.darkNumericUpDown30.LoopValues = false;
             this.darkNumericUpDown30.Name = "darkNumericUpDown30";
             this.darkNumericUpDown30.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown30.TabIndex = 31;

@@ -15,8 +15,8 @@ namespace DarkUI.Controls
         public decimal IncrementAlternate { get; set; } = 1.0M;
 
         [Category("Behavior")]
-        [Description("Forces mousewheel to scroll by one increment.")]
-        public bool MousewheelSingleIncrement { get; set; } = true;
+        [Description("Jumps to minimum value if maximum is reached.")]
+        public bool LoopValues { get; set; } = false;
 
         private bool _mouseDown;
         private Point? _mousePos;
@@ -119,38 +119,42 @@ namespace DarkUI.Controls
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (MousewheelSingleIncrement)
-            {
-                decimal newValue = Value;
+            decimal newValue = Value;
 
-                if (e.Delta > 0)
-                    newValue += ModifierKeys == Keys.Shift ? IncrementAlternate : Increment;
-                else
-                    newValue -= ModifierKeys == Keys.Shift ? IncrementAlternate : Increment;
+            if (e.Delta > 0)
+                newValue += ModifierKeys == Keys.Shift ? IncrementAlternate : Increment;
+            else
+                newValue -= ModifierKeys == Keys.Shift ? IncrementAlternate : Increment;
 
+            if (LoopValues)
+                Value = newValue > Maximum ? Minimum + (newValue % Maximum) : (newValue < Minimum ? Maximum + (newValue % Maximum) : newValue);
+            else
                 Value = Math.Min(Maximum, Math.Max(Minimum, newValue));
 
-                var eH = e as HandledMouseEventArgs;
-                if (eH != null) eH.Handled = true;
-            }
-            else
-                base.OnMouseWheel(e);
+            var eH = e as HandledMouseEventArgs;
+            if (eH != null) eH.Handled = true;
         }
 
         public override void UpButton()
         {
-            if (ModifierKeys.HasFlag(Keys.Shift))
-                Value = Math.Min(Maximum, Value + IncrementAlternate);
+            decimal newValue = Value;
+            newValue += ModifierKeys == Keys.Shift ? IncrementAlternate : Increment;
+
+            if (LoopValues)
+                Value = newValue > Maximum ? Minimum + (newValue % Maximum) : (newValue < Minimum ? Maximum + (newValue % Maximum) : newValue);
             else
-                base.UpButton();
+                Value = Math.Min(Maximum, newValue);
         }
 
         public override void DownButton()
         {
-            if (ModifierKeys.HasFlag(Keys.Shift))
-                Value = Math.Max(Minimum, Value - IncrementAlternate);
+            decimal newValue = Value;
+            newValue -= ModifierKeys == Keys.Shift ? IncrementAlternate : Increment;
+
+            if (LoopValues)
+                Value = newValue > Maximum ? Minimum + (newValue % Maximum) : (newValue < Minimum ? Maximum + (newValue % Maximum) : newValue);
             else
-                base.DownButton();
+                Value = Math.Max(Minimum, newValue);
         }
     }
 }

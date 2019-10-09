@@ -315,7 +315,7 @@
             0,
             0,
             -2147483648});
-            this.numIntensity.MousewheelSingleIncrement = true;
+            this.numIntensity.LoopValues = false;
             this.numIntensity.Name = "numIntensity";
             this.numIntensity.Size = new System.Drawing.Size(60, 22);
             this.numIntensity.TabIndex = 7;
@@ -345,7 +345,7 @@
             0,
             0,
             0});
-            this.numInnerRange.MousewheelSingleIncrement = true;
+            this.numInnerRange.LoopValues = false;
             this.numInnerRange.Name = "numInnerRange";
             this.numInnerRange.Size = new System.Drawing.Size(60, 22);
             this.numInnerRange.TabIndex = 8;
@@ -375,7 +375,7 @@
             0,
             0,
             0});
-            this.numOuterRange.MousewheelSingleIncrement = true;
+            this.numOuterRange.LoopValues = false;
             this.numOuterRange.Name = "numOuterRange";
             this.numOuterRange.Size = new System.Drawing.Size(60, 22);
             this.numOuterRange.TabIndex = 9;
@@ -400,7 +400,7 @@
             0,
             0,
             0});
-            this.numInnerAngle.MousewheelSingleIncrement = true;
+            this.numInnerAngle.LoopValues = false;
             this.numInnerAngle.Name = "numInnerAngle";
             this.numInnerAngle.Size = new System.Drawing.Size(60, 22);
             this.numInnerAngle.TabIndex = 10;
@@ -425,7 +425,7 @@
             0,
             0,
             0});
-            this.numOuterAngle.MousewheelSingleIncrement = true;
+            this.numOuterAngle.LoopValues = false;
             this.numOuterAngle.Name = "numOuterAngle";
             this.numOuterAngle.Size = new System.Drawing.Size(60, 22);
             this.numOuterAngle.TabIndex = 11;
@@ -455,7 +455,7 @@
             0,
             0,
             -2147483648});
-            this.numDirectionX.MousewheelSingleIncrement = true;
+            this.numDirectionX.LoopValues = false;
             this.numDirectionX.Name = "numDirectionX";
             this.numDirectionX.Size = new System.Drawing.Size(60, 22);
             this.numDirectionX.TabIndex = 13;
@@ -485,7 +485,7 @@
             0,
             0,
             -2147483648});
-            this.numDirectionY.MousewheelSingleIncrement = true;
+            this.numDirectionY.LoopValues = false;
             this.numDirectionY.Name = "numDirectionY";
             this.numDirectionY.Size = new System.Drawing.Size(60, 22);
             this.numDirectionY.TabIndex = 12;

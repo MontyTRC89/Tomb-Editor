@@ -232,7 +232,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numericUpDownFPS.MousewheelSingleIncrement = true;
+            this.numericUpDownFPS.LoopValues = false;
             this.numericUpDownFPS.Name = "numericUpDownFPS";
             this.numericUpDownFPS.Size = new System.Drawing.Size(71, 23);
             this.numericUpDownFPS.TabIndex = 18;
@@ -416,7 +416,7 @@ namespace TombEditor.Forms
             0,
             0,
             0});
-            this.numFrames.MousewheelSingleIncrement = true;
+            this.numFrames.LoopValues = false;
             this.numFrames.Name = "numFrames";
             this.numFrames.Size = new System.Drawing.Size(67, 23);
             this.numFrames.TabIndex = 9;
@@ -476,7 +476,7 @@ namespace TombEditor.Forms
             0,
             0,
             -2147483648});
-            this.numStrength.MousewheelSingleIncrement = true;
+            this.numStrength.LoopValues = false;
             this.numStrength.Name = "numStrength";
             this.numStrength.Size = new System.Drawing.Size(66, 23);
             this.numStrength.TabIndex = 8;

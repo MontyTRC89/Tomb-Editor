@@ -152,7 +152,7 @@
             0,
             0,
             262144});
-            this.nmScale.MousewheelSingleIncrement = true;
+            this.nmScale.LoopValues = false;
             this.nmScale.Name = "nmScale";
             this.nmScale.Size = new System.Drawing.Size(101, 22);
             this.nmScale.TabIndex = 8;
