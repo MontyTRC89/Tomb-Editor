@@ -134,7 +134,7 @@ namespace WadTool.Controls
 
         public void ResetCamera()
         {
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 1, 1000000, (float)Math.PI / 4.0f);
             Invalidate();
         }
 
