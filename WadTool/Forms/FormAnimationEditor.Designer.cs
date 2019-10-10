@@ -2330,11 +2330,6 @@ namespace WadTool
             0,
             0,
             0});
-            this.nudRotX.Minimum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            -2147483648});
             this.nudRotX.Name = "nudRotX";
             this.nudRotX.Size = new System.Drawing.Size(64, 22);
             this.nudRotX.TabIndex = 18;
@@ -2369,11 +2364,6 @@ namespace WadTool
             0,
             0,
             0});
-            this.nudRotY.Minimum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            -2147483648});
             this.nudRotY.Name = "nudRotY";
             this.nudRotY.Size = new System.Drawing.Size(64, 22);
             this.nudRotY.TabIndex = 19;
@@ -2396,11 +2386,6 @@ namespace WadTool
             0,
             0,
             0});
-            this.nudRotZ.Minimum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            -2147483648});
             this.nudRotZ.Name = "nudRotZ";
             this.nudRotZ.Size = new System.Drawing.Size(64, 22);
             this.nudRotZ.TabIndex = 20;

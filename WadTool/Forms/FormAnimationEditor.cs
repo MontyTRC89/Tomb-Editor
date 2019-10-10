@@ -101,7 +101,7 @@ namespace WadTool
 
             // Hacks for textbox...
             tbStateId.AutoSize = false;
-            tbStateId.Height = 23;
+            tbStateId.Height = butSearchStateID.Height;
 
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
@@ -1422,6 +1422,9 @@ namespace WadTool
                 return;
             }
 
+            if (flipZ)
+                popup.ShowWarning(panelRendering, "Broken identity rotation detected. Impossible to mirror animation correctly.");
+
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             for (int i = start; i <= end; i++)
@@ -1433,7 +1436,7 @@ namespace WadTool
                 // FIXME: There is a strange bug, bounding box sometimes corrupts in rendering panel and goes normal
                 // after anim editor reopening.
 
-                 var newMin = new Vector3(-frame.BoundingBox.Minimum.X, frame.BoundingBox.Minimum.Y, frame.BoundingBox.Minimum.Z);
+                var newMin = new Vector3(-frame.BoundingBox.Minimum.X, frame.BoundingBox.Minimum.Y, frame.BoundingBox.Minimum.Z);
                 var newMax = new Vector3(-frame.BoundingBox.Maximum.X, frame.BoundingBox.Maximum.Y, frame.BoundingBox.Maximum.Z);
                 frame.BoundingBox = new BoundingBox(newMin, newMax);
 
@@ -1464,6 +1467,7 @@ namespace WadTool
                     {
                         var r1 = MathC.RadToDeg(frame.Rotations[pair[0]]);
 
+                        var r1Xrot = (360.0f - r1.X) % 360.0f;
                         var r1Yrot = (360.0f - r1.Y) % 360.0f;
                         var r1Zrot = (360.0f - r1.Z) % 360.0f;
 
@@ -1481,7 +1485,7 @@ namespace WadTool
             _editor.Tool.UndoManager.Undo();
             _editor.Tool.UndoManager.Redo();
 
-            if (_editor.Moveable.Id.TypeId != 0 && _editor.Moveable.Meshes.Count > 3)
+            if (!flipZ && _editor.Moveable.Id.TypeId != 0 && _editor.Moveable.Meshes.Count > 3)
                 popup.ShowInfo(panelRendering, "Animation mirroring may fail on certain non-Lara models.\nPlease check animation integrity.");
 
             Saved = false;
