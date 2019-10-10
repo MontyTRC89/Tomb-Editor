@@ -6,6 +6,7 @@ namespace TombLib.Graphics
     public class Bone
     {
         public string Name { get; set; }
+        public Vector3 Pivot { get; set; }
         public Matrix4x4 Transform { get; set; }
         public Matrix4x4 GlobalTransform { get; set; }
         public Bone Parent { get; set; }

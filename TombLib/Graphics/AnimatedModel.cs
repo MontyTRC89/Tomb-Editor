@@ -11,6 +11,15 @@ namespace TombLib.Graphics
 {
     public class AnimatedModel : Model<ObjectMesh, ObjectVertex>
     {
+        private struct BoneSignature
+        {
+            public int Index;
+            public int Depth;
+            public int ParentIndex;
+            public Vector3 Pivot;
+            public List<int> ChildIndices;
+        }
+
         public Vector3 Offset;
         public Bone Root { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
@@ -151,6 +160,7 @@ namespace TombLib.Graphics
             {
                 var nb = new Bone();
                 nb.Name = bones[i].Name;
+                nb.Pivot = bones[i].Translation;
                 nb.Index = i;
                 model.Bones.Add(nb);
             }
@@ -209,6 +219,96 @@ namespace TombLib.Graphics
             }
             
             return model.Bones[0];
+        }
+
+        public List<int[]> GetBonePairs(float symmetryMargin = 16.0f)
+        {
+            var sigList = new List<BoneSignature>();
+            sigList = CollectBoneSignatures(Bones[0], 0, -1, sigList).OrderBy(item => item.Index).ToList();
+            var result = new List<int[]>();
+
+            // Traverse through collected signatures in 2 passes
+            for (int i = 0; i <= 1; i++)
+            {
+                foreach (var sig in sigList)
+                {
+                    // Entry already was paired, bypass it
+                    if (result.Any(pair => (pair[0] != -1 && pair[1] == sig.Index) || (pair[1] != -1 && pair[0] == sig.Index)))
+                        continue;
+
+                    // Find out potentially matching bone signatures
+                    var others = sigList.Where(item =>
+                        sig.Index != item.Index &&
+                        sig.ChildIndices.Count == item.ChildIndices.Count && // Child count should always match!
+                        sig.Depth == item.Depth && // Own depth should always be the same!
+                        sigList[sig.ParentIndex].Depth == sigList[item.ParentIndex].Depth).ToList(); // Parent depth should always be the same!
+
+                    bool boneAdded = false;
+                    foreach (var other in others)
+                    {
+                        if ((i == 0 &&
+
+                            // On first pass, prioritize ones with same parent index and pivot symmetry.
+                            // Pivot symmetry is declared if X pivot position is mirrored for both bones
+                            // and bones are well apart on Z axis (to correctly identify models like scorpion or crocodile).
+                            // Unfortunately, there's a case when both bones are symmetrical but are pivoted
+                            // from single point (e.g. DEMIGOD3 spear), in this case we can't predict symmetry correctly,
+                            // so such cases are bypassed.
+
+                            sig.ParentIndex == other.ParentIndex && 
+                            Math.Abs(Math.Abs(sig.Pivot.X) - Math.Abs(other.Pivot.X)) <= symmetryMargin && 
+                            Math.Abs(sig.Pivot.X - other.Pivot.X) > symmetryMargin && 
+                            MathC.WithinEpsilon(sig.Pivot.Z, other.Pivot.Z, symmetryMargin)) ||
+
+                            // On second pass, prioritize bones with already found matching parent mesh pairs.
+
+                            (i == 1 && 
+                            (result.Any(pair => (pair[0] == sig.ParentIndex && pair[1] == other.ParentIndex) || 
+                                                (pair[0] == other.ParentIndex && pair[1] == sig.ParentIndex)))))
+                        {
+                            int p0 = result.IndexOf(pair => pair[0] == sig.Index);
+                            int p1 = result.IndexOf(pair => pair[0] == other.Index);
+
+                            if (p0 == -1 && p1 == -1)
+                                result.Add(new int[2] { sig.Index, other.Index });  // No entry in pair list
+                            else if (p0 == -1)
+                                result[p1] = new int[2] { sig.Index, other.Index }; // Entry was already in list
+                            else if (p1 == -1)
+                                result[p0] = new int[2] { sig.Index, other.Index }; // Found match was already in list
+
+                            boneAdded = true;
+                            break;
+                        }
+                    }
+
+                    if (!boneAdded && i == 1)
+                        result.Add(new int[2] { sig.Index, -1 }); // Entry isn't found, create new one on last pass
+                }
+            }
+
+            // PARANOIA: try to flter out stray decoupled pairs
+            result = result.Where(item => !(item[1] == -1 && 
+                     result.Any(item2 => (item2[0] == item[0] || item2[1] == item[0]) && item2[1] != -1))).ToList();
+
+            return result;
+        }
+
+        private List<BoneSignature> CollectBoneSignatures(Bone bone, int depth, int parentIndex, List<BoneSignature> list)
+        {
+            var childIndices = new List<int>();
+
+            foreach (var child in bone.Children)
+            {
+                // Recursively scan through all bones
+                CollectBoneSignatures(child, depth + 1, Bones.IndexOf(bone), list);
+
+                // Add child to own bone signature
+                if (Bones.IndexOf(child) != parentIndex)
+                    childIndices.Add(Bones.IndexOf(child));
+            }
+
+            list.Add(new BoneSignature() { Index = Bones.IndexOf(bone), Depth = depth, ParentIndex = parentIndex, Pivot = bone.Pivot, ChildIndices = childIndices });
+            return list;
         }
     }
 }

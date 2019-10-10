@@ -1387,6 +1387,79 @@ namespace WadTool
             SelectFrame(); // We need to forcefully update current frame because frame number wasn't changed
             UpdateTransformUI();
         }
+        private void MirrorAnimation()
+        {
+            if (!_editor.ValidAnimationAndFrames) return;
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+            int start = 0;
+            int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
+
+            if (!_editor.SelectionIsEmpty)
+            {
+                start = _editor.Selection.X;
+                end = _editor.Selection.Y;
+            }
+
+            var bonePairs = panelRendering.Model.GetBonePairs();
+
+            for (int i = start; i <= end; i++)
+            {
+                var frame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[i];
+
+                frame.Translations[0] = new Vector3(-frame.Translations[0].X, frame.Translations[0].Y, frame.Translations[0].Z);
+
+                // FIXME: There is a strange bug, bounding box sometimes corrupts in rendering panel and goes normal
+                // after anim editor reopening.
+
+                var newMin = new Vector3(-frame.BoundingBox.Minimum.X, frame.BoundingBox.Minimum.Y, frame.BoundingBox.Minimum.Z);
+                var newMax = new Vector3(-frame.BoundingBox.Maximum.X, frame.BoundingBox.Maximum.Y, frame.BoundingBox.Maximum.Z);
+                frame.BoundingBox = new BoundingBox(newMin, newMax);
+
+                foreach (var pair in bonePairs)
+                {
+                    if (pair[1] != -1) // Paired bone
+                    {
+                        var r1 = MathC.RadToDeg(frame.Rotations[pair[0]]);
+                        var r2 = MathC.RadToDeg(frame.Rotations[pair[1]]);
+
+                        var r1Yrot = (360.0f - r1.Y) % 360.0f;
+                        var r1Xrot = (360.0f - r1.X) % 360.0f;
+                        var r1Zrot = (360.0f - r1.Z) % 360.0f;
+                        var r2Yrot = (360.0f - r2.Y) % 360.0f;
+                        var r2Xrot = (360.0f - r2.X) % 360.0f;
+                        var r2Zrot = (360.0f - r2.Z) % 360.0f;
+
+                        var nr1 = MathC.DegToRad(new Vector3(r2.X, r2Yrot, r2Zrot));
+                        var nr2 = MathC.DegToRad(new Vector3(r1.X, r1Yrot, r1Zrot));
+
+                        frame.Rotations[pair[0]] = nr1;
+                        frame.Rotations[pair[1]] = nr2;
+
+                        frame.Quaternions[pair[0]] = Quaternion.CreateFromYawPitchRoll(nr1.Y, nr1.X, nr1.Z);
+                        frame.Quaternions[pair[1]] = Quaternion.CreateFromYawPitchRoll(nr2.Y, nr2.X, nr2.Z);
+                    }
+                    else // Non-paired bone
+                    {
+                        var r1 = MathC.RadToDeg(frame.Rotations[pair[0]]);
+
+                        var r1Yrot = (360.0f - r1.Y) % 360.0f;
+                        var r1Zrot = (360.0f - r1.Z) % 360.0f;
+
+                        r1 = MathC.DegToRad(new Vector3(r1.X, r1Yrot, r1Zrot));
+
+                        frame.Rotations[pair[0]] = r1;
+                        frame.Quaternions[pair[0]] = Quaternion.CreateFromYawPitchRoll(r1.Y, r1.X, r1.Z);
+                    }
+                }
+            }
+
+            Saved = false;
+
+            timeline.Highlight(start, end);
+            SelectFrame(); // We need to forcefully update current frame because frame number wasn't changed
+            UpdateTransformUI();
+        }
 
         private void EditAnimCommands(WadAnimCommand cmd = null)
         {
@@ -2354,5 +2427,7 @@ namespace WadTool
             if (e.RowIndex < 0) return;
             dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value = !(bool)dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value;
         }
+
+        private void mirrorAnimationToolStripMenuItem_Click(object sender, EventArgs e) => MirrorAnimation();
     }
 }
