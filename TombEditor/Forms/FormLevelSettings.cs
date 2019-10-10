@@ -783,6 +783,7 @@ namespace TombEditor.Forms
                 }
 
                 row.Cells[1].Value = toggleValue;
+                if (toggleValue == false) row.Cells[2].Value = false;
             }
         }
 
