@@ -1406,9 +1406,13 @@ namespace WadTool
             }
 
             // FIXME: Try to account for messed up Y/Z rotation relation, but it won't help here anyway for now...
+            // Calculate average rotation of the animation. If it's 90 degrees, let's flip Z axis.
+            float accumulatedRotation = 0;
+            foreach (var kf in _editor.CurrentAnim.DirectXAnimation.KeyFrames)
+                accumulatedRotation += Math.Abs((Math.Round(MathC.RadToDeg(kf.Rotations[0]).Y / 90.0f) * 90.0f) % 180.0f) != 0 ? 1 : 0;
 
-            var identityRot = MathC.RadToDeg(_editor.CurrentAnim.DirectXAnimation.KeyFrames[0].Rotations[0]);
-            bool flipZ = Math.Abs((Math.Round(identityRot.Y / 90.0f) * 90.0f) % 180.0f) != 0;
+            accumulatedRotation /= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+            bool flipZ = accumulatedRotation > 0.5f;
 
             var bonePairs = panelRendering.Model.GetBonePairs(flipZ);
 
@@ -1429,7 +1433,7 @@ namespace WadTool
                 // FIXME: There is a strange bug, bounding box sometimes corrupts in rendering panel and goes normal
                 // after anim editor reopening.
 
-                var newMin = new Vector3(-frame.BoundingBox.Minimum.X, frame.BoundingBox.Minimum.Y, frame.BoundingBox.Minimum.Z);
+                 var newMin = new Vector3(-frame.BoundingBox.Minimum.X, frame.BoundingBox.Minimum.Y, frame.BoundingBox.Minimum.Z);
                 var newMax = new Vector3(-frame.BoundingBox.Maximum.X, frame.BoundingBox.Maximum.Y, frame.BoundingBox.Maximum.Z);
                 frame.BoundingBox = new BoundingBox(newMin, newMax);
 

@@ -268,8 +268,14 @@ namespace TombLib.Graphics
                             // On last pass, prioritize bones with already found matching parent mesh pairs.
 
                             (i == symmetryMargin && 
-                            (result.Any(pair => (pair[0] == sig.ParentIndex && pair[1] == other.ParentIndex) || 
-                                                (pair[0] == other.ParentIndex && pair[1] == sig.ParentIndex)))))
+                            ((result.Any(pair => (pair[0] == sig.ParentIndex && pair[1] == other.ParentIndex) || 
+                                                 (pair[0] == other.ParentIndex && pair[1] == sig.ParentIndex)))) ||
+                                                
+                            // Additionally do final exact comparison of Y/Z values and X distance (fixes TR3 Shiva without breaking anything else)
+
+                            (MathC.WithinEpsilon(compZ1, compZ2, symmetryMargin) && 
+                             MathC.WithinEpsilon(sig.Pivot.Y, other.Pivot.Y, symmetryMargin) && 
+                             Math.Abs(compX1 - compX2) >= symmetryMargin)))
                         {
                             int p0 = result.IndexOf(pair => pair[0] == sig.Index);
                             int p1 = result.IndexOf(pair => pair[0] == other.Index);
