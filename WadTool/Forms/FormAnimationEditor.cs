@@ -455,7 +455,9 @@ namespace WadTool
                 // Preserve selection if anim is under same index and have same amount of frames
                 if (!sameAnimSameSize)
                 {
-                    timeline.Value = 0;
+                    if (!_timerPlayAnimation.Enabled)
+                        timeline.Value = 0;
+
                     timeline.ResetSelection();
                 }
             }

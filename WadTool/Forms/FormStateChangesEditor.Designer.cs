@@ -27,9 +27,9 @@
             this.btOk = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.butPlayStateChange = new DarkUI.Controls.DarkButton();
-            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             this.lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -37,7 +37,6 @@
             // dgvStateChanges
             // 
             this.dgvStateChanges.AllowUserToAddRows = false;
-            this.dgvStateChanges.AllowUserToDeleteRows = false;
             this.dgvStateChanges.AllowUserToDragDropRows = false;
             this.dgvStateChanges.AllowUserToPasteCells = false;
             this.dgvStateChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -60,8 +59,10 @@
             this.dgvStateChanges.Size = new System.Drawing.Size(525, 209);
             this.dgvStateChanges.TabIndex = 48;
             this.dgvStateChanges.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.dgvStateChanges_CellFormattingSafe);
+            this.dgvStateChanges.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvStateChanges_CellEndEdit);
             this.dgvStateChanges.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvStateChanges_CellMouseDoubleClick);
             this.dgvStateChanges.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvStateChanges_CellValidating);
+            this.dgvStateChanges.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dgvStateChanges_UserDeletedRow);
             // 
             // columnStateName
             // 
@@ -157,18 +158,6 @@
             this.toolTip1.SetToolTip(this.butPlayStateChange, "Play state change in chain mode");
             this.butPlayStateChange.Click += new System.EventHandler(this.butPlayStateChange_Click);
             // 
-            // dgvControls
-            // 
-            this.dgvControls.AlwaysInsertAtZero = false;
-            this.dgvControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvControls.Enabled = false;
-            this.dgvControls.Location = new System.Drawing.Point(537, 6);
-            this.dgvControls.MinimumSize = new System.Drawing.Size(24, 24);
-            this.dgvControls.Name = "dgvControls";
-            this.dgvControls.Size = new System.Drawing.Size(27, 178);
-            this.dgvControls.TabIndex = 49;
-            // 
             // lblStateChangeAnnouncement
             // 
             this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -180,6 +169,18 @@
             this.lblStateChangeAnnouncement.TabIndex = 53;
             this.lblStateChangeAnnouncement.Text = "Pending state change...";
             this.lblStateChangeAnnouncement.Visible = false;
+            // 
+            // dgvControls
+            // 
+            this.dgvControls.AlwaysInsertAtZero = false;
+            this.dgvControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvControls.Enabled = false;
+            this.dgvControls.Location = new System.Drawing.Point(537, 6);
+            this.dgvControls.MinimumSize = new System.Drawing.Size(24, 24);
+            this.dgvControls.Name = "dgvControls";
+            this.dgvControls.Size = new System.Drawing.Size(27, 178);
+            this.dgvControls.TabIndex = 49;
             // 
             // FormStateChangesEditor
             // 
