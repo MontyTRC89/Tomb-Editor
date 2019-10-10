@@ -288,6 +288,10 @@ namespace TombLib
         public static float RadToDeg(float r) => r * (180.0f / (float)Math.PI);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float DegToRad(float r) => (float)Math.PI * r / 180.0f;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 RadToDeg(Vector3 r) => new Vector3(RadToDeg(r.X), RadToDeg(r.Y), RadToDeg(r.Z));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 DegToRad(Vector3 r) => new Vector3(DegToRad(r.X), DegToRad(r.Y), DegToRad(r.Z));
 
         public static double Lerp(double value1, double value2, double amount)
             => value1 * (1 - amount) + value2 * amount;
