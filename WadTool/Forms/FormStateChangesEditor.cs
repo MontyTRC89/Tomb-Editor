@@ -14,6 +14,9 @@ namespace WadTool
         private readonly AnimationEditor _editor;
         private AnimationNode _animation;
         private bool _createdNew = false;
+        private bool _initializing = false;
+
+        private List<WadStateChange> _backupStates;
 
         private class WadStateChangeRow
         {
@@ -55,7 +58,14 @@ namespace WadTool
 
         private void Initialize(AnimationNode animation, WadStateChange newStateChange)
         {
+            if (_initializing) return;
+            _initializing = true;
+
             _animation = animation;
+
+            _backupStates = new List<WadStateChange>();
+            foreach (var sc in animation.WadAnimation.StateChanges)
+                _backupStates.Add(sc.Clone());
 
             lblStateChangeAnnouncement.Text = string.Empty;
             dgvStateChanges.Rows.Clear();
@@ -77,6 +87,8 @@ namespace WadTool
             }
 
             dgvStateChanges.DataSource = new BindingList<WadStateChangeRow>(new List<WadStateChangeRow>(rows));
+
+            _initializing = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -90,6 +102,8 @@ namespace WadTool
         {
             if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
             {
+                DiscardChanges();
+
                 var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
                 if (e != null && e.Animation != _animation)
                     Initialize(e.Animation, null);
@@ -133,23 +147,11 @@ namespace WadTool
             }
         }
 
-        private void dgvStateChanges_CellFormattingSafe(object sender, DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventArgs e)
+        private void SaveChanges()
         {
-            if (!(e.Row.DataBoundItem is WadStateChangeRow))
-                return;
+            if (_initializing) return;
+            _initializing = true;
 
-            if (e.ColumnIndex == 0)
-                e.CellStyle.ForeColor = Color.Gray;
-            else if (e.ColumnIndex == 4)
-            {
-                var item = (WadStateChangeRow)e.Row.DataBoundItem;
-                var cell = dgvStateChanges.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                cell.ToolTipText = TrCatalog.GetAnimationName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, item.NextAnimation);
-            }
-        }
-
-        private void btOk_Click(object sender, EventArgs e)
-        {
             // Update data
             StateChanges = new List<WadStateChange>();
             var tempDictionary = new Dictionary<int, WadStateChange>();
@@ -173,8 +175,40 @@ namespace WadTool
 
             // Update state in parent window
             _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
+            _initializing = false;
+        }
 
-            // Close
+        private void DiscardChanges()
+        {
+            if (_initializing) return;
+            _initializing = true;
+
+            _animation.WadAnimation.StateChanges.Clear();
+            _animation.WadAnimation.StateChanges.AddRange(_backupStates);
+
+            // Update state in parent window
+            _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
+            _initializing = false;
+        }
+
+        private void dgvStateChanges_CellFormattingSafe(object sender, DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventArgs e)
+        {
+            if (!(e.Row.DataBoundItem is WadStateChangeRow))
+                return;
+
+            if (e.ColumnIndex == 0)
+                e.CellStyle.ForeColor = Color.Gray;
+            else if (e.ColumnIndex == 4)
+            {
+                var item = (WadStateChangeRow)e.Row.DataBoundItem;
+                var cell = dgvStateChanges.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                cell.ToolTipText = TrCatalog.GetAnimationName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, item.NextAnimation);
+            }
+        }
+
+        private void btOk_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
             Close();
         }
 
@@ -235,7 +269,15 @@ namespace WadTool
             catch (Exception ex) { }
         }
 
-        private void btCancel_Click(object sender, EventArgs e) => Close();
+        private void btCancel_Click(object sender, EventArgs e)
+        {
+            DiscardChanges();
+            Close();
+        }
+
         private void butPlayStateChange_Click(object sender, EventArgs e) => ChangeState();
+
+        private void dgvStateChanges_CellEndEdit(object sender, System.Windows.Forms.DataGridViewCellEventArgs e) => SaveChanges();
+        private void dgvStateChanges_UserDeletedRow(object sender, System.Windows.Forms.DataGridViewRowEventArgs e) => SaveChanges();
     }
 }
