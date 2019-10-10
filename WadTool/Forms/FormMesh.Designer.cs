@@ -95,6 +95,7 @@
             this.Name = "FormMesh";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Meshes";
             this.ResumeLayout(false);

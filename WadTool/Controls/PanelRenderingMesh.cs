@@ -13,9 +13,11 @@ namespace WadTool.Controls
     public class PanelRenderingMesh : RenderingPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Configuration Configuration { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadMesh Mesh { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 0, 1000000, (float)Math.PI / 4.0f);
+        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 1, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGrid { get; set; } = true;
 
@@ -33,12 +35,16 @@ namespace WadTool.Controls
         private RasterizerState _rasterizerWireframe;
         private VertexInputLayout _layout;
         private GeometricPrimitive _plane;
-        private WadRenderer _wadRenderer;
+        private WadRenderer _wadRenderer; 
+        
+        protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
+
+            Configuration = tool.Configuration;
 
             base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
@@ -75,8 +81,6 @@ namespace WadTool.Controls
             }
             base.Dispose(disposing);
         }
-
-        protected override Vector4 ClearColor => new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
 
         protected override void OnDraw()
         {
