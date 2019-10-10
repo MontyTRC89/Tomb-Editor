@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -87,6 +86,7 @@ namespace WadTool.Controls
         private GeometricPrimitive _plane;
         private AnimatedModel _model;
         private AnimatedModel _skinModel;
+        private RasterizerState _rasterizerWireframe;
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
         public void InitializeRendering(AnimationEditor editor, DeviceManager deviceManager, WadMoveable skin)
@@ -127,6 +127,9 @@ namespace WadTool.Controls
                         IsScissorEnabled = false,
                         SlopeScaledDepthBias = 0
                     };
+
+                _rasterizerWireframe = RasterizerState.New(deviceManager.___LegacyDevice, renderStateDesc);
+
                 _gizmo = new GizmoAnimationEditor(editor, _device, _deviceManager.___LegacyEffects["Solid"], this);
                 _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             }
@@ -272,6 +275,8 @@ namespace WadTool.Controls
                 
                 if (_editor.ValidAnimationAndFrames)
                 {
+                    _device.SetRasterizerState(_rasterizerWireframe);
+
                     // Draw selection box
                     if (SelectedMesh != null)
                     {
@@ -317,6 +322,7 @@ namespace WadTool.Controls
                 _device.SetVertexBuffer(0, _plane.VertexBuffer);
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
                 _device.SetIndexBuffer(_plane.IndexBuffer, true);
+                _device.SetRasterizerState(_rasterizerWireframe);
 
                 var shift = Matrix4x4.CreateTranslation(new Vector3(-GridPosition.X, GridPosition.Y, -GridPosition.Z));
                 solidEffect.Parameters["ModelViewProjection"].SetValue((shift * viewProjection).ToSharpDX());
