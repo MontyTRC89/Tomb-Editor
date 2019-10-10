@@ -285,7 +285,7 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float RadToDeg(float r) => r * (180.0f / (float)Math.PI);
+        public static float RadToDeg(float r) => r * (180.0f / (float)Math.PI) + (r < 0 ? 360.0f : 0.0f);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float DegToRad(float r) => (float)Math.PI * r / 180.0f;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
