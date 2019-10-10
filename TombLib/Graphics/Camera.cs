@@ -45,7 +45,7 @@ namespace TombLib.Graphics
             // Lock the y axis rotation between the min and max values
             RotationX = Math.Min(Math.Max(rotationX, minRotationX), maxRotationX);
             RotationY = rotationY;
-            MinDistance = minDistance;
+            MinDistance = minDistance == 0 ? 1 : minDistance; // Fix lockups
             MaxDistance = maxDistance;
 
             // Lock the distance between the min and max values
