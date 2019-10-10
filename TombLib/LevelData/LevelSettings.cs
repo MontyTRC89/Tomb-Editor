@@ -137,22 +137,21 @@ namespace TombLib.LevelData
 
         public List<WadSoundPath> WadSoundPaths { get; set; } = new List<WadSoundPath>
             {
-                new WadSoundPath(""),
                 new WadSoundPath("Sounds"), // For directly loading wad files.
                 new WadSoundPath("Sound"),
-                new WadSoundPath("Sounds/Samples"),
-                new WadSoundPath("Sound/Samples"),
-                new WadSoundPath("../Sounds"), // For directly loading wad files.
-                new WadSoundPath("../Sound"),
-                new WadSoundPath("../Sounds/Samples"),
-                new WadSoundPath("../Sound/Samples"),
-                new WadSoundPath("../../Sounds"), // For directly loading wad files.
-                new WadSoundPath("../../Sound"),
-                new WadSoundPath("../../Sounds/Samples"),
-                new WadSoundPath("../../Sound/Samples"),
-                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "sound" + Dir + "Samples"),
+                new WadSoundPath("Sounds" + Dir + "Samples"),
+                new WadSoundPath("Sound" + Dir + "Samples"),
+                new WadSoundPath(".." + Dir + "Sounds"), // For directly loading wad files.
+                new WadSoundPath(".." + Dir + "Sound"),
+                new WadSoundPath(".." + Dir + "Sounds" + Dir + "Samples"),
+                new WadSoundPath(".." + Dir + "Sound" + Dir + "Samples"),
+                new WadSoundPath(".." + Dir + ".." + Dir + "Sounds"), // For directly loading wad files.
+                new WadSoundPath(".." + Dir + ".." + Dir + "Sound"),
+                new WadSoundPath(".." + Dir + ".." + Dir + "Sounds" + Dir + "Samples"),
+                new WadSoundPath(".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };

@@ -894,8 +894,6 @@ namespace TombEditor.Forms
                 FitPreview(_previewTexture, new Rectangle(textureFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
                 _previewTexture.Show(this);
             }
-            else if (textureFileDataGridView.Columns[e.ColumnIndex] is DarkDataGridViewCheckBoxColumn)
-                textureFileDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
         // Object list
@@ -1363,7 +1361,6 @@ namespace TombEditor.Forms
                                                  (missingSoundsCount == 0 ? "" : " | Missing sounds: " + missingSoundsCount);
         }
 
-        private void selectedSoundsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) => selectedSoundsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
         private void selectedSoundsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;

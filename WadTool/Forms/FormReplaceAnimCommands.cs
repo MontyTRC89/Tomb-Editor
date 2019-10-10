@@ -162,8 +162,6 @@ namespace WadTool
             Search(false);
         }
 
-
-        private void dgvResults_CellContentClick(object sender, DataGridViewCellEventArgs e) => dgvResults.CommitEdit(DataGridViewDataErrorContexts.Commit);
         private void dgvResults_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
