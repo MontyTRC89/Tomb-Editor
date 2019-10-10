@@ -221,14 +221,14 @@ namespace TombLib.Graphics
             return model.Bones[0];
         }
 
-        public List<int[]> GetBonePairs(float symmetryMargin = 16.0f)
+        public List<int[]> GetBonePairs(bool flipZ = false, int symmetryMargin = 16)
         {
             var sigList = new List<BoneSignature>();
             sigList = CollectBoneSignatures(Bones[0], 0, -1, sigList).OrderBy(item => item.Index).ToList();
             var result = new List<int[]>();
 
             // Traverse through collected signatures in 2 passes
-            for (int i = 0; i <= 1; i++)
+            for (int i = 0; i <= symmetryMargin; i++)
             {
                 foreach (var sig in sigList)
                 {
@@ -246,23 +246,28 @@ namespace TombLib.Graphics
                     bool boneAdded = false;
                     foreach (var other in others)
                     {
-                        if ((i == 0 &&
+                        float compX1 = !flipZ ? sig.Pivot.X   :   sig.Pivot.Z;
+                        float compX2 = !flipZ ? other.Pivot.X : other.Pivot.Z;
+                        float compZ1 = !flipZ ? sig.Pivot.Z   :   sig.Pivot.X;
+                        float compZ2 = !flipZ ? other.Pivot.Z : other.Pivot.X;
 
-                            // On first pass, prioritize ones with same parent index and pivot symmetry.
+                        if ((i != symmetryMargin &&
+
+                            // Prioritize bones with same parent index and pivot symmetry.
                             // Pivot symmetry is declared if X pivot position is mirrored for both bones
                             // and bones are well apart on Z axis (to correctly identify models like scorpion or crocodile).
                             // Unfortunately, there's a case when both bones are symmetrical but are pivoted
                             // from single point (e.g. DEMIGOD3 spear), in this case we can't predict symmetry correctly,
                             // so such cases are bypassed.
 
-                            sig.ParentIndex == other.ParentIndex && 
-                            Math.Abs(Math.Abs(sig.Pivot.X) - Math.Abs(other.Pivot.X)) <= symmetryMargin && 
-                            Math.Abs(sig.Pivot.X - other.Pivot.X) > symmetryMargin && 
-                            MathC.WithinEpsilon(sig.Pivot.Z, other.Pivot.Z, symmetryMargin)) ||
+                            sig.ParentIndex == other.ParentIndex &&
+                            Math.Abs(Math.Abs(compX1) - Math.Abs(compX2)) <= i &&
+                            Math.Abs(compX1 - compX2) >= i &&
+                            MathC.WithinEpsilon(compZ1, compZ2, symmetryMargin)) ||
 
-                            // On second pass, prioritize bones with already found matching parent mesh pairs.
+                            // On last pass, prioritize bones with already found matching parent mesh pairs.
 
-                            (i == 1 && 
+                            (i == symmetryMargin && 
                             (result.Any(pair => (pair[0] == sig.ParentIndex && pair[1] == other.ParentIndex) || 
                                                 (pair[0] == other.ParentIndex && pair[1] == sig.ParentIndex)))))
                         {
@@ -281,7 +286,7 @@ namespace TombLib.Graphics
                         }
                     }
 
-                    if (!boneAdded && i == 1)
+                    if (!boneAdded && i == symmetryMargin)
                         result.Add(new int[2] { sig.Index, -1 }); // Entry isn't found, create new one on last pass
                 }
             }

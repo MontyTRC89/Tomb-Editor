@@ -361,7 +361,7 @@ namespace TombLib.Wad.Catalog
                             continue;
 
                         uint id = uint.Parse(moveableNode.Attributes["id"].Value);
-                        var names = (moveableNode.Attributes["name"]?.Value ?? "").Split(',');
+                        var names = (moveableNode.Attributes["name"]?.Value ?? "").Split('|');
 
                         var skinId = id;
                         if (moveableNode.Attributes["use_body_from"] != null)
@@ -381,7 +381,7 @@ namespace TombLib.Wad.Catalog
                             continue;
 
                         uint id = uint.Parse(staticNode.Attributes["id"].Value);
-                        var names = (staticNode.Attributes["name"]?.Value ?? "").Split(',');
+                        var names = (staticNode.Attributes["name"]?.Value ?? "").Split('|');
                         bool shatter = bool.Parse(staticNode.Attributes["shatter"]?.Value ?? "false");
                         game.Statics.Add(id, new Item { Names = new List<string>(names), Shatterable = shatter });
                     }
@@ -410,7 +410,7 @@ namespace TombLib.Wad.Catalog
                             continue;
 
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
-                        var names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split(',');
+                        var names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
                         game.SpriteSequences.Add(id, new Item { Names = new List<string>(names) });
                     }
 
