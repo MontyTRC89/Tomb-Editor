@@ -1390,7 +1390,6 @@ namespace WadTool
         private void MirrorAnimation()
         {
             if (!_editor.ValidAnimationAndFrames) return;
-            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             int start = 0;
             int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
@@ -1401,7 +1400,20 @@ namespace WadTool
                 end = _editor.Selection.Y;
             }
 
-            var bonePairs = panelRendering.Model.GetBonePairs();
+            // FIXME: Try to account for messed up Y/Z rotation relation, but it won't help here anyway for now...
+
+            var identityRot = MathC.RadToDeg(_editor.CurrentAnim.DirectXAnimation.KeyFrames[0].Rotations[0]);
+            bool flipZ = Math.Abs((Math.Round(identityRot.Y / 90.0f) * 90.0f) % 180.0f) != 0;
+
+            var bonePairs = panelRendering.Model.GetBonePairs(flipZ);
+
+            if (bonePairs == null || bonePairs.Count == 0)
+            {
+                popup.ShowError(panelRendering, "No valid bones were found for mirroring.");
+                return;
+            }
+
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             for (int i = start; i <= end; i++)
             {
@@ -1453,6 +1465,14 @@ namespace WadTool
                     }
                 }
             }
+
+            // HACK: Bounce undo because otherwise bounding box and translation won't update correctly.
+            // Most likely, the reason is somewhere in rendering panel.
+
+            _editor.Tool.UndoManager.Undo();
+            _editor.Tool.UndoManager.Redo();
+
+            popup.ShowInfo(panelRendering, "Animation mirroring may fail on certain models.\nPlease check animation integrity.");
 
             Saved = false;
 
