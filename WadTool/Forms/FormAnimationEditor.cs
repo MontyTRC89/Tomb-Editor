@@ -1280,7 +1280,10 @@ namespace WadTool
                     keyframe.Rotations[j] = MathC.QuaternionToEuler(keyframe.Quaternions[j]);
                 }
 
-                keyframe.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
+                // Nicely lerp bounding box as well
+                var bbMin = Vector3.Lerp(frame1.BoundingBox.Minimum, frame2.BoundingBox.Minimum, k * (i + 1));
+                var bbMax = Vector3.Lerp(frame1.BoundingBox.Maximum, frame2.BoundingBox.Maximum, k * (i + 1));
+                keyframe.BoundingBox = new BoundingBox(bbMin, bbMax);
             }
 
             Saved = false;
