@@ -558,6 +558,9 @@
   <ItemGroup>
     <None Include="Resources\icons_transform\transform_smooth_reverse.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons_general\general_Mirror.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)WadToolConfiguration.xml"
