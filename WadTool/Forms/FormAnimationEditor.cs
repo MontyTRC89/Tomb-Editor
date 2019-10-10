@@ -1474,7 +1474,8 @@ namespace WadTool
             _editor.Tool.UndoManager.Undo();
             _editor.Tool.UndoManager.Redo();
 
-            popup.ShowInfo(panelRendering, "Animation mirroring may fail on certain models.\nPlease check animation integrity.");
+            if (_editor.Moveable.Id.TypeId != 0 && _editor.Moveable.Meshes.Count > 3)
+                popup.ShowInfo(panelRendering, "Animation mirroring may fail on certain non-Lara models.\nPlease check animation integrity.");
 
             Saved = false;
 
