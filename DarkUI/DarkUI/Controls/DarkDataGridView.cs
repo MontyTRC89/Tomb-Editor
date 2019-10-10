@@ -447,7 +447,7 @@ namespace DarkUI.Controls
                     // Setup rows
                     int rowCount = _base.Rows.Count + 1;
                     int rowInView = CountVisibleRows(_base.FirstDisplayedScrollingRowIndex, size.Height - _scrollSize);
-                    bool rowScrollVisible = _scrollBars.HasFlag(ScrollBars.Vertical) && rowInView < rowCount;
+                    bool rowScrollVisible = _scrollBars.HasFlag(ScrollBars.Vertical) && rowInView < rowCount - 1;
                     if (rowScrollVisible)
                     {
                         _vScrollBar.ViewSize = rowInView + 1;
