@@ -88,7 +88,6 @@ namespace DarkUI.Controls
             _base.MouseMove += BaseMouseMove;
             _base.CellMouseDoubleClick += BaseCellMouseDoubleClick;
             _base.CellMouseClick += BaseCellMouseClick;
-            _base.CellContentDoubleClick += BaseCellContentDoubleClick;
             _base.DragEnter += BaseDragEnter;
             _base.DragOver += BaseDragOver;
             _base.DragLeave += BaseDragLeave;
@@ -163,6 +162,8 @@ namespace DarkUI.Controls
 
         private void BaseCellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.RowIndex == -1) return;
+
             if (_base.Columns[e.ColumnIndex] is DarkDataGridViewCheckBoxColumn || _base.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn)
             {
                 var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
@@ -180,6 +181,7 @@ namespace DarkUI.Controls
                     if (_base.Columns[i] is DarkDataGridViewCheckBoxColumn || _base.Columns[i] is DataGridViewCheckBoxColumn)
                     {
                         _base.Rows[e.RowIndex].Cells[i].Value = !((bool)_base.Rows[e.RowIndex].Cells[i].Value);
+                        _base.RefreshEdit();
                         break;
                     }
                 }
@@ -187,19 +189,14 @@ namespace DarkUI.Controls
 
         private void BaseCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.RowIndex == -1) return;
+
             var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
             if (cell is DarkDataGridViewCheckBoxCell || cell is DataGridViewCheckBoxCell)
             {
                 cell.Value = !((bool)cell.Value);
                 _base.RefreshEdit();
             }
-        }
-
-        private void BaseCellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            //if (cell is DarkDataGridViewCheckBoxCell || cell is DataGridViewCheckBoxCell)
-            //    _base.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
         private void BaseKeyDown(object sender, KeyEventArgs e)
