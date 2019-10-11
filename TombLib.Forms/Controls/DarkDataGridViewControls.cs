@@ -60,6 +60,7 @@ namespace TombLib.Controls
                 else
                     newIndex = DataGridView.EditableRowCollection.Add(newRow);
 
+                DataGridView.ClearSelection();
                 DataGridView.Rows[newIndex].Selected = true;
             }
             if (startIndex > 0 && DataGridView.EditableRowCollection.Count > startIndex)
