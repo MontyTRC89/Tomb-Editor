@@ -22,9 +22,6 @@ namespace DarkUI.Controls
         private Color _buttonColor = Colors.LightBackground;
         private Bitmap _buttonIcon = DefaultButtonIcon;
 
-        // Remember control state
-        private DarkControlState _controlState = DarkControlState.Normal;
-
         // Text
         private Padding _textPadding = new Padding(2);
         
@@ -173,40 +170,9 @@ namespace DarkUI.Controls
         {
             base.Invalidate();
         }
-
-        private void SetControlState(DarkControlState controlState)
-        {
-            if (_controlState != controlState)
-            {
-                _controlState = controlState;
-                Invalidate();
-            }
-        }
         #endregion Methods
 
         #region On Events
-
-        #region UI Events
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            SetControlState(DarkControlState.Hover);
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            SetControlState(DarkControlState.Normal);
-        }
-
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            SetControlState(DarkControlState.Normal);
-        }
-
-        #endregion Mouse Events
 
         #region Data Events
         protected override void OnTextChanged(EventArgs e)
@@ -268,7 +234,7 @@ namespace DarkUI.Controls
             Rectangle textRect = new Rectangle(1 + _textPadding.Left, 1 + _textPadding.Top, ClientRectangle.Width - (2 + buttonRect.Width + _textPadding.Horizontal), ClientRectangle.Height - (2 + _textPadding.Vertical));
 
             // Draw background
-            using (var buttonBrush = new SolidBrush(_controlState == DarkControlState.Hover ? Colors.LighterBackground : _buttonColor))
+            using (var buttonBrush = new SolidBrush(_buttonColor))
                 e.Graphics.FillRectangle(buttonBrush, buttonRect);
             e.Graphics.DrawImage(_buttonIcon, buttonIconRect);
             ControlPaint.DrawBorder(e.Graphics, buttonRect, _borderColor, ButtonBorderStyle.Solid);
