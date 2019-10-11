@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using TombLib;
 using TombLib.LevelData;
 
 namespace TombEditor.Forms

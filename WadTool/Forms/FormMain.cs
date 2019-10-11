@@ -10,6 +10,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.IO;
+using TombLib;
 
 namespace WadTool
 {
@@ -33,6 +34,9 @@ namespace WadTool
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());
+
+            // Load window size
+            Configuration.LoadWindowProperties(this, _tool.Configuration);
 
             // Try to load reference project on start-up, if specified in config
             if ((!string.IsNullOrEmpty(tool.Configuration.Tool_ReferenceProject) &&
@@ -564,6 +568,7 @@ namespace WadTool
                     return;
                 }
 
+                Configuration.SaveWindowProperties(this, _tool.Configuration);
                 _tool.Configuration.SaveTry();
             }
 

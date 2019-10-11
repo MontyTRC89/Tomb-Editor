@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib;
 using TombLib.Utils;
 using TombLib.Wad;
 using RateType = System.UInt64;

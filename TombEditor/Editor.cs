@@ -280,7 +280,7 @@ namespace TombEditor
                         throw new ArgumentException("The object to be selected is not part of the level.");
                 }
 
-                if(value != null && value is PositionBasedObjectInstance)
+                if (value != null && value is PositionBasedObjectInstance)
                     LastSelection = LastSelectionType.PositionBasedObject;
 
                 if (value == _selectedObject)
@@ -303,7 +303,7 @@ namespace TombEditor
             get { return _selectedSectors; }
             set
             {
-                if(value != SectorSelection.None)
+                if (value != SectorSelection.None)
                     LastSelection = LastSelectionType.Block;
 
                 if (value == _selectedSectors)
@@ -648,7 +648,7 @@ namespace TombEditor
         public void UndoStackChanged()
         {
             RaiseEvent(new UndoStackChangedEvent() { UndoPossible = UndoManager.UndoPossible, RedoPossible = UndoManager.RedoPossible,
-                                                     UndoReversible = UndoManager.UndoReversible, RedoReversible = UndoManager.UndoReversible });
+                UndoReversible = UndoManager.UndoReversible, RedoReversible = UndoManager.UndoReversible });
         }
 
         // Change sector highlights
@@ -667,7 +667,7 @@ namespace TombEditor
             SelectedSectors = SectorSelection.None;
             SelectedRoom = newRoom;
 
-            if(Configuration.Rendering3D_ResetCameraOnRoomSwitch)
+            if (Configuration.Rendering3D_ResetCameraOnRoomSwitch)
                 ResetCamera(true);
         }
 
@@ -751,12 +751,13 @@ namespace TombEditor
         {
             public Editor Parent;
             public override IEnumerable<string> Directories => null;
-            public override IEnumerable<string> Files => new[] { Configuration.GetDefaultPath() };
+            public override IEnumerable<string> Files { get { return new[] { Parent.Configuration.GetDefaultPath() }; } }
+
             public override string Name => "Configuration";
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => other is ConfigurationWatchedObj;
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
-                Configuration configuration = Configuration.Load(Configuration.GetDefaultPath());
+                Configuration configuration = Parent.Configuration.Load<Configuration>(Parent.Configuration.GetDefaultPath());
 
                 // Update configuration
                 Parent.SynchronizationContext.Send(o =>

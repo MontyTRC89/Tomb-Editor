@@ -131,8 +131,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoundingBox.cs" />
-    <Compile Include="BoundingSphere.cs" />
+    <Compile Include="Types\BoundingBox.cs" />
+    <Compile Include="Types\BoundingSphere.cs" />
+    <Compile Include="Utils\Configuration.cs" />
     <Compile Include="Forms\Prj2SoundsConversionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -252,15 +253,15 @@
     <Compile Include="Script\ScriptCompilerTRNG.cs" />
     <Compile Include="Utils\FileFormatConversions.cs" />
     <Compile Include="Utils\DataVersion.cs" />
-    <Compile Include="MathC.cs" />
+    <Compile Include="Utils\MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />
     <Compile Include="NG\NgParameterRange.cs" />
     <Compile Include="NG\NgTriggerSubtypes.cs" />
     <Compile Include="NG\NgCatalog.cs" />
     <Compile Include="NG\NgTriggerSubtype.cs" />
-    <Compile Include="Ray.cs" />
-    <Compile Include="RectangleInt2.cs" />
-    <Compile Include="Rectangle2.cs" />
+    <Compile Include="Types\Ray.cs" />
+    <Compile Include="Types\RectangleInt2.cs" />
+    <Compile Include="Types\Rectangle2.cs" />
     <Compile Include="ResourcesC\ResourcesC.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -303,8 +304,8 @@
     <Compile Include="Utils\Undo.cs" />
     <Compile Include="Utils\VertexNormalAverageHelper.cs" />
     <Compile Include="Utils\ZLib.cs" />
-    <Compile Include="VectorInt2.cs" />
-    <Compile Include="VectorInt3.cs" />
+    <Compile Include="Types\VectorInt2.cs" />
+    <Compile Include="Types\VectorInt3.cs" />
     <Compile Include="Wad\AnimationFile.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
     <Compile Include="Wad\WadAdditionalSoundInfo.cs" />

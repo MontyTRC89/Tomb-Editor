@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -24,6 +25,10 @@ namespace WadTool
             aceReplace.Initialize(_editor, true);
             aceFind.Command = refCommand == null ? new WadAnimCommand() { Type = WadAnimCommandType.SetPosition } : refCommand;
             aceReplace.Command = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
+
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Tool.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Tool.Configuration));
 
             UpdateUI();
         }
