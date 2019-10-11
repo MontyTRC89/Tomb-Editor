@@ -137,6 +137,7 @@ namespace WadTool
                     butEditStaticModel.Visible = (mainSelection.Value.Id is WadStaticId);
                     butEditSpriteSequence.Visible = (mainSelection.Value.Id is WadSpriteSequenceId);
 
+                    panel3D.ResetCamera();
                     panel3D.Invalidate();
                 }
 
