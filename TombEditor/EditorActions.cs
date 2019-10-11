@@ -305,27 +305,39 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void ResetObjectRotation(RotationAxis axis = RotationAxis.None)
+        public static void ResetObjectRotation(PositionBasedObjectInstance obj, RotationAxis axis = RotationAxis.None)
         {
-            if (_editor.SelectedObject is IRotateableYX)
+            if (!(obj is IRotateableY || obj is IRotateableYX || obj is IRotateableYXRoll)) return;
+            _editor.UndoManager.PushObjectTransformed(obj);
+
+            if (obj is IRotateableYX)
             {
                 if (axis == RotationAxis.X || axis == RotationAxis.None)
-                    (_editor.SelectedObject as IRotateableYX).RotationX = 0;
+                    (obj as IRotateableYX).RotationX = 0;
             }
 
-            if (_editor.SelectedObject is IRotateableY)
+            if (obj is IRotateableY)
             {
                 if (axis == RotationAxis.Y || axis == RotationAxis.None)
-                    (_editor.SelectedObject as IRotateableY).RotationY = 0;
+                    (obj as IRotateableY).RotationY = 0;
             }
 
-            if (_editor.SelectedObject is IRotateableYXRoll)
+            if (obj is IRotateableYXRoll)
             {
                 if (axis == RotationAxis.Roll || axis == RotationAxis.None)
-                    (_editor.SelectedObject as IRotateableYXRoll).Roll = 0;
+                    (obj as IRotateableYXRoll).Roll = 0;
             }
 
-            _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
+            _editor.ObjectChange(obj, ObjectChangeType.Change);
+        }
+
+        public static void ResetObjectScale(PositionBasedObjectInstance obj)
+        {
+            if (!(obj is IScaleable)) return;
+            _editor.UndoManager.PushObjectTransformed(obj);
+
+            (obj as IScaleable).Scale = 1;
+            _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
         public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false)
