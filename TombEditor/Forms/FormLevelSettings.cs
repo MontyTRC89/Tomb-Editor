@@ -1486,7 +1486,8 @@ namespace TombEditor.Forms
 
         private void ButAutodetectSoundsAndAssign_Click(object sender, EventArgs e)
         {
-            _levelSettings.SelectedSounds.Clear();
+            if (DarkMessageBox.Show(this, "Deselect all sounds before autodetection?", "Deselect sounds", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                _levelSettings.SelectedSounds.Clear();
 
             AssignHardcodedSounds();
             AssignWadSounds();
@@ -1502,6 +1503,13 @@ namespace TombEditor.Forms
             foreach (int id in referenceSounds.Keys.ToList())
                 if (!_levelSettings.SelectedSounds.Contains(id))
                     _levelSettings.SelectedSounds.Add(id);
+
+            foreach (var catalog in _levelSettings.SoundsCatalogs)
+                foreach (var sound in catalog.Sounds.SoundInfos)
+                    if (sound.Global)
+                        if (!_levelSettings.SelectedSounds.Contains(sound.Id))
+                            _levelSettings.SelectedSounds.Add(sound.Id);
+
         }
 
         private void AssignCatalogSounds(ReferencedSoundsCatalog catalog)

@@ -166,8 +166,7 @@ namespace TombLib.LevelData
             if (Convert512PixelsToDoubleRows == value)
                 return;
             Convert512PixelsToDoubleRows = value;
-            if (Image.Width == 512)
-                Reload(settings);
+            Reload(settings);
         }
 
         public void SetReplaceMagentaWithTransparency(LevelSettings settings, bool value)
