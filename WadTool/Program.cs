@@ -20,7 +20,7 @@ namespace WadTool
         {
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
-            var configuration = Configuration.LoadOrUseDefault(initialEvents);
+            var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
 
             // Setup logging
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))

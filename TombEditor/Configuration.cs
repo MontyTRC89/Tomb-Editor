@@ -1,14 +1,7 @@
 ﻿using DarkUI.Docking;
-using DarkUI.Forms;
-using NLog;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
 
@@ -16,20 +9,9 @@ namespace TombEditor
 {
     // Just add properties to this class to add now configuration options.
     // They will be loaded and saved automatically.
-    public class Configuration
+    public class Configuration : ConfigurationBase
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        [XmlIgnore]
-        public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
-        [XmlElement(nameof(Log_MinLevel))]
-        public string Log_MinLevelSerialized
-        {
-            get { return Log_MinLevel.Name; }
-            set { Log_MinLevel = LogLevel.FromString(value); }
-        }
-        public bool Log_WriteToFile { get; set; } = true;
-        public int Log_ArchiveN { get; set; } = 4;
+        public override string ConfigName { get { return "TombEditorConfiguration.xml"; } }
 
         // Global editor options
 
@@ -287,110 +269,5 @@ namespace TombEditor
                 }
             }
         };
-
-        public static string GetDefaultPath()
-        {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TombEditorConfiguration.xml");
-        }
-
-        public void Save(Stream stream)
-        {
-            new XmlSerializer(typeof(Configuration)).Serialize(stream, this);
-        }
-
-        public void Save(string path)
-        {
-            using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                Save(stream);
-        }
-
-        public void SaveTry(bool overwrite = true)
-        {
-            var path = GetDefaultPath();
-
-            if (!string.IsNullOrEmpty(path))
-                try
-                {
-                    if (overwrite || !File.Exists(path))
-                        Save(path);
-                }
-                catch (Exception exc)
-                {
-                    logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
-                }
-        }
-
-        public static Configuration Load(Stream stream)
-        {
-            using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreWhitespace = false }))
-                return (Configuration)new XmlSerializer(typeof(Configuration)).Deserialize(reader);
-        }
-
-        public static Configuration Load(string filePath)
-        {
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return Load(stream);
-        }
-
-        public static Configuration Load()
-        {
-            return Load(GetDefaultPath());
-        }
-
-        public static Configuration LoadOrUseDefault(ICollection<LogEventInfo> log = null)
-        {
-            string path = GetDefaultPath();
-            if (!File.Exists(path))
-            {
-                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration();
-            }
-
-            try
-            {
-                return Load();
-            }
-            catch (Exception exc)
-            {
-                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration();
-            }
-        }
-
-        public static void SaveWindowProperties(DarkForm form, Configuration config)
-        {
-            var name = "Window_" + form.Name;
-
-            // HACK: this prevents saving wrong position to XML file
-            if (form.WindowState == FormWindowState.Minimized)
-            {
-                return;
-            }
-
-            config.GetType().GetProperty(name + "_Size")?.SetValue(config, form.Size);
-            config.GetType().GetProperty(name + "_Position")?.SetValue(config, form.Location);
-            config.GetType().GetProperty(name + "_Maximized")?.SetValue(config, form.WindowState == FormWindowState.Maximized);
-        }
-
-        public static void LoadWindowProperties(DarkForm form, Configuration config)
-        {
-            var name = "Window_" + form.Name;
-
-            var size = config.GetType().GetProperty(name + "_Size")?.GetValue(config);
-            var pos = config.GetType().GetProperty(name + "_Position")?.GetValue(config);
-            var max = config.GetType().GetProperty(name + "_Maximized")?.GetValue(config);
-
-            if (size is Size)  form.Size = (Size)size;
-            if (pos  is Point) form.Location = (Point)pos;
-            if (max  is bool)  form.WindowState = (bool)max ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            // HACK: this fixed corrupted XML files
-            if (form.Location.X <= -127 || form.Location.Y <= -127) form.Location = new Point(0, 0);
-
-            if (form.Location.X == -1 && form.Location.Y == -1)
-                form.StartPosition = FormStartPosition.CenterParent;
-            else
-                form.StartPosition = FormStartPosition.Manual;
-        }
     }
 }

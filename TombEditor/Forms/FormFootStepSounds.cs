@@ -4,6 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;

@@ -16,6 +16,7 @@ using TombLib.Wad.TrLevels;
 using TombLib.Wad;
 using System.IO;
 using System.Xml;
+using TombLib;
 
 namespace TombEditor.Forms
 {

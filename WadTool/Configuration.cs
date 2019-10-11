@@ -1,35 +1,15 @@
-﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Drawing;
 using System.Numerics;
-using System.Reflection;
-using System.Xml.Serialization;
+using TombLib;
 
 namespace WadTool
 {
-    public enum VariableType
-    {
-        EditorDirectory
-    }
-
     // Just add properties to this class to add now configuration options.
     // They will be loaded and saved automatically.
-    public class Configuration
-    {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        [XmlIgnore]
-        public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
-        [XmlElement(nameof(Log_MinLevel))]
-        public string Log_MinLevelSerialized
-        {
-            get { return Log_MinLevel.Name; }
-            set { Log_MinLevel = LogLevel.FromString(value); }
-        }
-        public bool Log_WriteToFile { get; set; } = true;
-        public int Log_ArchiveN { get; set; } = 0;
+    public class Configuration : ConfigurationBase
+    {
+        public override string ConfigName { get { return "WadToolConfiguration.xml"; } }
 
         public bool Tool_MakeEmptyWadAtStartup { get; set; } = false;
         public string Tool_ReferenceProject { get; set; } = string.Empty;
@@ -75,121 +55,20 @@ namespace WadTool
 
         public bool StartUpHelp_Show { get; set; } = false;
 
-        public const string VariableBegin = "$(";
-        public const string VariableEnd = ")";
-        public static readonly char Dir = Path.DirectorySeparatorChar;
-
-        public string GetVariable(VariableType variableType)
-        {
-            switch (variableType)
-            {
-                case VariableType.EditorDirectory:
-                    return Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-                default:
-                    throw new ArgumentException();
-            }
-        }
-
-        public string ParseVariables(string path, params VariableType[] excluded)
-        {
-            int startIndex = 0;
-            do
-            {
-                // Find variable
-                startIndex = path.IndexOf(VariableBegin, startIndex);
-                if (startIndex == -1)
-                    break;
-                int afterStartIndex = startIndex + VariableBegin.Length;
-                int endIndex = path.IndexOf(VariableEnd, afterStartIndex);
-                if (endIndex == -1)
-                    break;
-                string variableName = path.Substring(afterStartIndex, endIndex - afterStartIndex);
-
-                // Parse variable
-                VariableType variableType;
-                if (!Enum.TryParse(variableName, out variableType) ||
-                    excluded.Contains(variableType))
-                {
-                    startIndex = endIndex + VariableEnd.Length;
-                    continue;
-                }
-                string variableContent = GetVariable(variableType);
-                path = path.Remove(startIndex, endIndex + VariableEnd.Length - startIndex);
-                path = path.Insert(startIndex, variableContent);
-                startIndex += variableContent.Length;
-            } while (true);
-
-            return path;
-        }
-
-        public static string GetDefaultPath()
-        {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "WadToolConfiguration.xml");
-        }
-
-        public void Save(Stream stream)
-        {
-            new XmlSerializer(typeof(Configuration)).Serialize(stream, this);
-        }
-
-        public void Save(string path)
-        {
-            using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                Save(stream);
-        }
-
-        public void Save()
-        {
-            Save(GetDefaultPath());
-        }
-
-        public void SaveTry()
-        {
-            if (!string.IsNullOrEmpty(GetDefaultPath()))
-                try
-                {
-                    Save();
-                }
-                catch (Exception exc)
-                {
-                    logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
-                }
-        }
-
-        public static Configuration Load(Stream stream)
-        {
-            return (Configuration)new XmlSerializer(typeof(Configuration)).Deserialize(stream);
-        }
-
-        public static Configuration Load(string filePath)
-        {
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return Load(stream);
-        }
-
-        public static Configuration Load()
-        {
-            return Load(GetDefaultPath());
-        }
-
-        public static Configuration LoadOrUseDefault(ICollection<LogEventInfo> log = null)
-        {
-            string path = GetDefaultPath();
-            if (!File.Exists(path))
-            {
-                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration();
-            }
-
-            try
-            {
-                return Load();
-            }
-            catch (Exception exc)
-            {
-                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration();
-            }
-        }
+        public Point Window_FormMain_Position { get; set; } = new Point(-1);
+        public Size Window_FormMain_Size { get; set; } = new Size(1200, 700);
+        public bool Window_FormMain_Maximized { get; set; } = false;
+        public Point Window_FormAnimationEditor_Position { get; set; } = new Point(-1);
+        public Size Window_FormAnimationEditor_Size { get; set; } = new Size(1055, 707);
+        public bool Window_FormAnimationEditor_Maximized { get; set; } = false;
+        public Point Window_FormStateChangesEditor_Position { get; set; } = new Point(-1);
+        public Size Window_FormStateChangesEditor_Size { get; set; } = new Size(596, 299);
+        public bool Window_FormStateChangesEditor_Maximized { get; set; } = false;
+        public Point Window_FormAnimCommandsEditor_Position { get; set; } = new Point(-1);
+        public Size Window_FormAnimCommandsEditor_Size { get; set; } = new Size(397, 359); 
+        public bool Window_FormAnimCommandsEditor_Maximized { get; set; } = false;
+        public Point Window_FormReplaceAnimCommands_Position { get; set; } = new Point(-1);
+        public Size Window_FormReplaceAnimCommands_Size { get; set; } = new Size(811, 460);
+        public bool Window_FormReplaceAnimCommands_Maximized { get; set; } = false;
     }
 }

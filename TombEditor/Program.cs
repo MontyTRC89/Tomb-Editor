@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib.NG;
+using TombLib;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -27,7 +28,7 @@ namespace TombEditor
 
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
-            var configuration = Configuration.LoadOrUseDefault(initialEvents);
+            var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
 
             if (configuration.Editor_AllowMultipleInstances ||
                 mutex.WaitOne(TimeSpan.Zero, true))

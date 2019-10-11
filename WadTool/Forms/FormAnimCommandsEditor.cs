@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -25,6 +26,10 @@ namespace WadTool
             _editor = editor;
             Initialize(animation, startupCommand, true);
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
+
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Tool.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Tool.Configuration));
         }
 
         private void Initialize(AnimationNode animation, WadAnimCommand startupCommand, bool genBackup = false)
